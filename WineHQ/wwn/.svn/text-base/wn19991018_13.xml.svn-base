@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="13" date="18 Oct 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the thirteenth release of the Wine's kernel cousin
+publication. Its main goal is  to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Well, this week has also been very calm here on wine-devel, like
+previous week. Fortunately, patches keep making their way to
+wine-patches.
+
+</intro>
+
+<stats posts="32" size="104" contrib="21" multiples="6" lastweek="10">
+
+<person posts="5" size="12" who="'Juergen Schmied' &lt;juergen.schmied@metronet.de&gt;" />
+<person posts="5" size="11" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="2" size="5" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="2" size="4" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="3" who="Rein Klazes &lt;rklazes@casema.net&gt;" />
+<person posts="2" size="11" who="Ove Kaaven &lt;ovek@arcticnet.no&gt;" />
+
+</stats>
+
+<section
+  title="Mouse wheel"
+  subject="Mouse wheel"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-77.html"
+>
+
+Noomen Hamza submitted a patch to wine-patches regarding mouse wheel
+support in wine. Noomen goal was to <quote who="Noomen Hamza">include
+WM_MOUSEWHEEL within wine and process this message to scroll some
+controls</quote>
+
+<p />
+
+Ove K&#229;ven also reported he started working on the same issue, but had
+some remarks about Noomen's work. Especially, Ove was concerned if
+<quote who="Ove K&#229;ven">WM_MOUSEWHEEL should be considered a keyboard message
+(it follows focus, after all), or mouse message, or something else, in
+message.c and queue.c</quote>. Noomen's patch made it a mouse message,
+whereas Ove was more willing to make it a keyboard one.
+
+<p />
+
+Noomen was happy with the result he had (spinning the wheel made
+controls behave correctly), whether Ove was more concerned with
+implementation correctness. Let's assume that the merge of both their
+work will benefit those two points.
+
+<p />
+
+</section>
+
+<section
+  title="Executable version detection"
+  subject="Executable version detection"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-101.html"
+>
+
+J&#252;rgend Schmied sent out for review an enhanced algorithm to detect
+automatically the windows' version needed to run a given binary. Note
+that this is not related to the bug some people experienced with
+latest wine 19990923.
+
+<p />
+
+So, here's the proposal:
+
+<quote who="J&#252;rgend Schmied">First, there is no save way to detect the
+windows version a program is expecting. However some hints are allowing to
+guess the version a program needs.
+
+<ul>
+
+<li />First the version detection looks onto the native dlls provided.
+This is necessary since most programs are able to run on
+win95/98 as well as on nt4. The native dlls are not that tolerant.
+
+<li />The most important information is the subsystem version (pe-exe-
+header). If this version is &gt;=4 the executable is a 'real' (not win32s)
+program. This value is constant for all subsequently versions of
+windows (win95/98/nt4/nt5).
+
+<li />Unfortunately there is no documented way to detect if a given set
+of native dlls and a program is a win95/98 (ascii) or nt4/5
+(unicode) version of the program. I solved this by looking into the
+import-table of the native dlls. All system-dlls (comctl32, comdlg32,
+shell32, ole32) are importing the ntdll. Any try to distinct by any
+fields in the pe header or by the version resource does not work.
+
+<li />for nt351 the field Major/MiniorOperatingSystemVersion contains
+a usable value (3.51)
+
+</ul>
+
+<p />
+
+Drawbacks of this method:
+
+<ul>
+
+<li />There are executables written to run under win31 and win95
+detecting the windows version and _then_ loading special dlls
+taking advantage of the features of win95. Since these programs
+are not linked statically against any native win95 dll the windows
+version is detected as win31.
+
+<li />If you running a nt-program without any native dll provided the
+windows version is based on the subsystem number of the
+executable set to win95. Mostly effected by this are the native
+applets of nt. All other programs I tested with are written to run
+on win95 as well as nt4 and running fine.
+
+<p />
+
+For this (rare) cases you still have to set the -winver flag.
+
+</ul>
+
+</quote>
+
+</section>
+
+</kc>

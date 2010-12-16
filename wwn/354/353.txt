@@ -1,0 +1,3887 @@
+From scott at open-vote.org  Wed Oct  1 02:43:39 2008
+From: scott at open-vote.org (Scott Ritchie)
+Date: Wed, 01 Oct 2008 00:43:39 -0700
+Subject: Wine PulseAudio Driver
+In-Reply-To: <3f4fd2640809290125qda2abd3icf2f26443ddaec64@mail.gmail.com>
+References: <798c010e0809270236y3986b0efn478c04c27c82ebbe@mail.gmail.com>	
+	<3a768c550809271137j16a61c88wa8076b759ca3fa20@mail.gmail.com>	
+	<1222548705.9019.12.camel@teapot> <48E08CD8.3090801@open-vote.org>
+	<3f4fd2640809290125qda2abd3icf2f26443ddaec64@mail.gmail.com>
+Message-ID: <48E32A2B.8080006@open-vote.org>
+
+Reece Dunn wrote:
+> 2008/9/29 Scott Ritchie <scott at open-vote.org>:
+>> Arthur Taylor wrote:
+>>> Also, in the patch, configure checks for pulseaudio >= 0.9.7. I have
+>>> since noticed that it uses parts of the api from 0.9.11 and compilation
+>>> will fail against previous versions.
+>>>
+>>> Thanks
+>> As an aside, 0.9.11 is newer than most users have (Ubuntu 8.04 has
+>> 0.9.10, for instance).  This isn't a bad thing at the moment, just
+>> something to be aware of.
+> 
+> Intrepid (Ubuntu 8.10) is using the same version - 0.9.10.
+> 
+> $ paplay --version
+> paplay 0.9.10
+> Compiled with libpulse 0.9.10
+> Linked with libpulse 0.9.10
+> 
+> - Reece
+
+Yeah.  For a while I thought Intrepid might get 0.9.11, but then 0.9.12
+came out and it had some regressions so they'll probably stick with 0.9.11.
+
+Thanks,
+Scott Ritchie
+
+
+From mah at jump-ing.de  Wed Oct  1 03:34:19 2008
+From: mah at jump-ing.de (Markus Hitter)
+Date: Wed, 1 Oct 2008 10:34:19 +0200
+Subject: Discussion of bug versions
+In-Reply-To: <20080929023527.44cc89c1@test-main>
+References: <665539.85288.qm@web23108.mail.ird.yahoo.com>
+	<48E01749.1000303@earthlink.net>
+	<20080929023527.44cc89c1@test-main>
+Message-ID: <BC1457B8-4356-4E3E-9BC1-944F29A8AB58@jump-ing.de>
+
+While on the topic, please remove Mac OS up to 10.3 from the list of  
+operating systems. Mac OS X 10.4.x was the first publicly available  
+Macintosh OS running on Intel processors, so there won't ever be  
+anybody running Wine on e.g. MacOS 9.
+
+
+MarKus
+
+- - - - - - - - - - - - - - - - - - -
+Dipl. Ing. Markus Hitter
+http://www.jump-ing.de/
+
+
+
+
+
+
+From robertshearman at gmail.com  Wed Oct  1 05:13:59 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Wed, 1 Oct 2008 11:13:59 +0100
+Subject: [2/2] runtest: Let the test program handle the lack of a test
+	name.
+In-Reply-To: <5c6ee3b70809291645y58ed4023o628fbbe4fe604aa3@mail.gmail.com>
+References: <5c6ee3b70809291645y58ed4023o628fbbe4fe604aa3@mail.gmail.com>
+Message-ID: <1096648c0810010313p48a6f97dge00c19a6a7276780@mail.gmail.com>
+
+2008/9/30 Dylan Smith <dylan.ah.smith at gmail.com>:
+> -exec $WINETEST_WRAPPER "$topobjdir/wine" "$program" "$infile" "$@"
+> +exec $WINETEST_WRAPPER "$topobjdir/wine" "$program" $infile $@
+
+It looks like this will cause problems now if $infile contains spaces
+or if any of the arguments in $@ contain spaces.
+
+-- 
+Rob Shearman
+
+
+From robertshearman at gmail.com  Wed Oct  1 05:16:25 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Wed, 1 Oct 2008 11:16:25 +0100
+Subject: wintab32: Avoid memorizing LOGCONTEXT struct
+In-Reply-To: <78a7dad00809291610n603b6849m9ca001c7166d1a31@mail.gmail.com>
+References: <78a7dad00809291610n603b6849m9ca001c7166d1a31@mail.gmail.com>
+Message-ID: <1096648c0810010316t5c6e3683jc525f84bb787a383@mail.gmail.com>
+
+2008/9/30 John Klehm <xixsimplicityxix at gmail.com>:
+> +    TRACE("Name: %s, Options: %x, Status: %x, Locks: %x, MsgBase: %x, Device: %x, PktRate: %x, %x%s, %x%s, %x%s, BtnDnMask: %x, BtnUpMask: %x, InOrgX: %i, InOrgY: %i, InOrgZ: %i, InExtX: %i, InExtY: %i, InExtZ: %i, OutOrgX: %i, OutOrgY: %i, OutOrgZ: %i, OutExtX: %i, OutExtY: %i, OutExtZ: %i, SensX: %i, SensY: %i, SensZ: %i, SysMode: %i, SysOrgX: %i, SysOrgY: %i, SysExtX: %i, SysExtY: %i, SysSensX: %i, SysSensY: %i\n",
+
+Even in the age of widescreen displays, a line of 421 columns in
+length is too long...
+
+-- 
+Rob Shearman
+
+
+From robertshearman at gmail.com  Wed Oct  1 05:18:45 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Wed, 1 Oct 2008 11:18:45 +0100
+Subject: Noisy FIXME
+In-Reply-To: <1222627051.3440.4.camel@tavi.lattica.com>
+References: <1222627051.3440.4.camel@tavi.lattica.com>
+Message-ID: <1096648c0810010318m304610d2ged0d55842ca16c40@mail.gmail.com>
+
+2008/9/28 Dimi Paun <dimi at lattica.com>:
+> Silence noisy FIXME about uninteresting ExtTextOut() flags.
+> Keep the FIXME in the string to make it easily grep-able.
+>
+> diff --git a/dlls/gdi32/font.c b/dlls/gdi32/font.c
+> index 1e8cac3..c3e4840 100644
+> --- a/dlls/gdi32/font.c
+> +++ b/dlls/gdi32/font.c
+> @@ -1657,7 +1657,7 @@ BOOL WINAPI ExtTextOutW( HDC hdc, INT x, INT y, UINT flags,
+>     breakRem = dc->breakRem;
+>
+>     if (flags & (ETO_NUMERICSLOCAL | ETO_NUMERICSLATIN | ETO_PDY))
+> -        FIXME("flags ETO_NUMERICSLOCAL | ETO_NUMERICSLATIN | ETO_PDY unimplemented\n");
+> +        TRACE("FIXME: flags ETO_NUMERICSLOCAL | ETO_NUMERICSLATIN | ETO_PDY unimplemented\n");
+
+I think the FIXME should at least by fired once since some of the
+flags may cause hard-to-debug display issues.
+
+-- 
+Rob Shearman
+
+
+From robertshearman at gmail.com  Wed Oct  1 06:45:45 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Wed, 1 Oct 2008 12:45:45 +0100
+Subject: add ctxtcall.idl (resend)
+In-Reply-To: <98726.7009.qm@web23207.mail.ird.yahoo.com>
+References: <98726.7009.qm@web23207.mail.ird.yahoo.com>
+Message-ID: <1096648c0810010445s69d7847fla564e4c03fe93e68@mail.gmail.com>
+
+2008/9/28 Louis. Lenders <xerox_xerox2000 at yahoo.co.uk>:
+> Hi, this is part of bug http://bugs.winehq.org/show_bug.cgi?id=13462.
+> test shows the interface is available (in winxp) , test follows
+
+This patch looks good to me.
+
+-- 
+Rob Shearman
+
+
+From dylan.ah.smith at gmail.com  Wed Oct  1 07:16:06 2008
+From: dylan.ah.smith at gmail.com (Dylan Smith)
+Date: Wed, 1 Oct 2008 08:16:06 -0400
+Subject: [2/2] runtest: Let the test program handle the lack of a test
+	name.
+In-Reply-To: <1096648c0810010313p48a6f97dge00c19a6a7276780@mail.gmail.com>
+References: <5c6ee3b70809291645y58ed4023o628fbbe4fe604aa3@mail.gmail.com>
+	<1096648c0810010313p48a6f97dge00c19a6a7276780@mail.gmail.com>
+Message-ID: <5c6ee3b70810010516l363468c4o90fc63de1ea67ec6@mail.gmail.com>
+
+On Wed, Oct 1, 2008 at 6:13 AM, Rob Shearman <robertshearman at gmail.com>wrote:
+
+> 2008/9/30 Dylan Smith <dylan.ah.smith at gmail.com>:
+> > -exec $WINETEST_WRAPPER "$topobjdir/wine" "$program" "$infile" "$@"
+> > +exec $WINETEST_WRAPPER "$topobjdir/wine" "$program" $infile $@
+>
+> It looks like this will cause problems now if $infile contains spaces
+> or if any of the arguments in $@ contain spaces.
+>
+> --
+> Rob Shearman
+>
+
+I didn't think about that, thanks for pointing that out.
+
+A change there does need to be made, because what happens when I run runtest
+without arguments is:
+Fatal: test '' does not exist.
+
+So I do need to pass in no arguments when $infile isn't given, but that can
+also be done with the following code:
+
+if [ -z "$infile" ]; then
+    exec $WINETEST_WRAPPER "$topobjdir/wine" "$program"
+else
+    exec $WINETEST_WRAPPER "$topobjdir/wine" "$program" "$infile" "$@"
+fi
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20081001/10cdfeff/attachment.htm 
+
+From felix at compsoc.nuigalway.ie  Wed Oct  1 07:22:03 2008
+From: felix at compsoc.nuigalway.ie (Darragh Bailey)
+Date: Wed, 1 Oct 2008 13:22:03 +0100
+Subject: Discussion of bug versions
+In-Reply-To: <b6bb06270809291053s615be376m312d3be6b0c9f58d@mail.gmail.com>
+References: <48DFF0D7.4030809@codeweavers.com> <48DFFA8D.3000800@kievinfo.com>
+	<b6bb06270809291053s615be376m312d3be6b0c9f58d@mail.gmail.com>
+Message-ID: <20081001122203.GA29374@riviera.nuigalway.ie>
+
+On Mon, Sep 29, 2008 at 12:53:17PM -0500, Austin English wrote:
+> On Sun, Sep 28, 2008 at 4:43 PM, Vitaliy Margolen
+> <wine-devel at kievinfo.com> wrote:
+> > Jeremy White wrote:
+> >> We discussed bugzilla versions at Wineconf, re:
+> >>
+> >> http://bugs.winehq.org/show_bug.cgi?id=12728
+> >>
+> >> There were several points of consensus.  First, it would be helpful
+> >> if we could reduce the number of versions visible in the drop down
+> >> box when entering a new bug.  That would seem to require
+> >> a bugzilla code change, though.  Anyone know of an easy way to
+> >> accomplish this?
+> > AFAIK it's already done in automated fashion in AppDB. Can take code from there.
+> 
+> +1 I HATE having to scroll for 15 seconds just to get to the current
+> version. The problem is, how can we remove all those old versions
+> while not deleting the bugs/flooding wine-bugs mailing list? Can we
+> disable global e-mail while renaming them? Can we make a new 'version'
+> that is "old", "pre-0.9.50", etc.? And move all those there?
+
+If that is bothering people so much, perhaps a patch to bugzilla to be
+able to change the order versions are displayed in would be more 
+appropriate than removing old versions.
+
+-- 
+Darragh
+
+"Nothing is foolproof to a sufficiently talented fool."
+
+
+From meissner at suse.de  Wed Oct  1 07:27:06 2008
+From: meissner at suse.de (Marcus Meissner)
+Date: Wed, 1 Oct 2008 14:27:06 +0200
+Subject: Marcus pictures
+Message-ID: <20081001122706.GB16599@suse.de>
+
+Hi,
+
+http://gallery.kuschelt.net/main.php?g2_view=core.ShowItem&g2_itemId=163676&g2_page=3
+
+has my pictures of Wine Conf.
+
+Ciao, Marcus
+
+
+From robertshearman at gmail.com  Wed Oct  1 07:40:32 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Wed, 1 Oct 2008 13:40:32 +0100
+Subject: howto fix bug 13462
+In-Reply-To: <727272.30964.qm@web23203.mail.ird.yahoo.com>
+References: <727272.30964.qm@web23203.mail.ird.yahoo.com>
+Message-ID: <1096648c0810010540t72e2ae9dv21adcff0ebe7f18a@mail.gmail.com>
+
+2008/9/29 Louis. Lenders <xerox_xerox2000 at yahoo.co.uk>:
+> Rob Shearman <robertshearman <at> gmail.com> writes:
+>
+> Hi Rob, i think i got the test ready now, i'll send it when the defenitions
+> are
+> in place in ctxtcall.idl. Now still strugling how to fix the bug.
+>
+>  I fixed up the patch below, also by looking how things are done in similar
+> places in wine-code. With patch applied I can see that
+> ContextCallback_ContextCallback and ContextCallback_Release are called from
+> the
+> application (tested with NASA WorldWind), and the simple stubs are enough to
+> let
+> the app continue fine. But i'm not sure if everything is 100% ok. Is this
+> what
+> you more or less meant in your first comment?
+
+Looks good apart from some small issues below:
+
+> diff --git a/dlls/ole32/compobj.c b/dlls/ole32/compobj.c
+> index 37907ec..a1f41fd 100644
+> --- a/dlls/ole32/compobj.c
+> +++ b/dlls/ole32/compobj.c
+> @@ -55,6 +55,7 @@
+>  #include "objbase.h"
+>  #include "ole2.h"
+>  #include "ole2ver.h"
+> +#include "ctxtcall.h"
+>
+>  #include "compobj_private.h"
+>
+> @@ -3615,25 +3616,39 @@ HRESULT WINAPI CoRegisterChannelHook(REFGUID
+> guidExtension, IChannelHook *pChann
+>  typedef struct Context
+>  {
+>      const IComThreadingInfoVtbl *lpVtbl;
+> +    const IContextCallback *lpVtblIContextCallback;
+
+This should be of type IContextCallbackVtbl. Also
+s/lpVtblIContextCallback/lpVtblContextCallback/.
+
+>      LONG refs;
+>      APTTYPE apttype;
+>  } Context;
+>
+> +static inline Context *impl_from_Context(IComThreadingInfo *iface)
+> +{
+> +    return (Context *)((char*)iface - FIELD_OFFSET(Context, lpVtbl));
+> +}
+> +
+>  static HRESULT WINAPI Context_QueryInterface(IComThreadingInfo *iface,
+> REFIID riid, LPVOID *ppv)
+>  {
+> +    Context* This=impl_from_Context((IComThreadingInfo*) iface);
+>      *ppv = NULL;
+>
+>      if (IsEqualIID(riid, &IID_IComThreadingInfo) ||
+>          IsEqualIID(riid, &IID_IUnknown))
+>      {
+>          *ppv = iface;
+> -        IUnknown_AddRef(iface);
+> -        return S_OK;
+>      }
+> +    else if(IsEqualIID(riid, &IID_IContextCallback))
+> +        {
+> +        *ppv = &This->lpVtblIContextCallback;
+> +        }
+> +    else
+> +        {
+> +        FIXME("interface not implemented %s\n", debugstr_guid(riid));
+> +        return E_NOINTERFACE;
+> +        }
+>
+> -    FIXME("interface not implemented %s\n", debugstr_guid(riid));
+> -    return E_NOINTERFACE;
+> -}
+> +    IUnknown_AddRef(iface);
+> +    return S_OK;
+> +}
+>
+>  static ULONG WINAPI Context_AddRef(IComThreadingInfo *iface)
+>  {
+> @@ -3691,6 +3706,31 @@ static HRESULT WINAPI
+> Context_SetCurrentLogicalThreadId(IComThreadingInfo *iface
+>      return E_NOTIMPL;
+>  }
+>
+> +
+> +static HRESULT WINAPI  ContextCallback_QueryInterface(IContextCallback
+> *iface, REFIID riid, LPVOID *ppv)
+> +{
+> +    FIXME("\n");
+> +    return E_NOTIMPL;
+> +}
+> +
+> +static ULONG WINAPI  ContextCallback_AddRef(IContextCallback *iface)
+> +{
+> +    FIXME("\n");
+> +    return E_NOTIMPL;
+> +}
+> +
+> +static ULONG WINAPI ContextCallback_Release(IContextCallback *iface)
+> +{
+> +    FIXME("\n");
+> +    return E_NOTIMPL;
+> +}
+
+These functions should be called Context_IContextCallback_* instead of
+ContextCallback_* to show that they are part of the same object as the
+Context_* functions. Also, you should be able to easily implement
+these using impl_from_Context(IComThreadingInfo *iface) and
+Context_QueryInterface, Context_AddRef and Context_Release.
+
+> +
+> +static HRESULT WINAPI ContextCallback_ContextCallback(IContextCallback
+> *iface, PFNCONTEXTCALL pfnCallback, ComCallData* pParam, REFIID riid, int
+> iMethod, IUnknown* pUnk)
+> +{
+> +    FIXME("not implemented yet\n");
+> +    return E_NOTIMPL;
+> +}
+
+You should dump the parameters in the FIXME so that we have more of an
+idea of what is going on. Something like "(%p, %p, %s, %d, %p):
+stub\n" would be appropriate.
+
+> +
+>  static const IComThreadingInfoVtbl Context_Threading_Vtbl =
+>  {
+>      Context_QueryInterface,
+> @@ -3702,6 +3742,14 @@ static const IComThreadingInfoVtbl
+> Context_Threading_Vtbl =
+>      Context_SetCurrentLogicalThreadId
+>  };
+>
+> +static const IContextCallbackVtbl Context_Callback_Vtbl =
+> +{
+> +    ContextCallback_QueryInterface,
+> +    ContextCallback_AddRef,
+> +    ContextCallback_Release,
+> +    ContextCallback_ContextCallback
+> +};
+> +
+>  /***********************************************************************
+>   *           CoGetObjectContext [OLE32.@]
+>   *
+> @@ -3735,6 +3783,7 @@ HRESULT WINAPI CoGetObjectContext(REFIID riid, void
+> **ppv)
+>          return E_OUTOFMEMORY;
+>
+>      context->lpVtbl = &Context_Threading_Vtbl;
+> +
+> context->lpVtblIContextCallback=(IContextCallback*)&Context_Callback_Vtbl;
+
+You can remove this typecast when the type of lpVtblContextCallback is fixed.
+
+>      context->refs = 1;
+>      if (apt->multi_threaded)
+>          context->apttype = APTTYPE_MTA;
+
+
+-- 
+Rob Shearman
+
+
+From robertshearman at gmail.com  Wed Oct  1 07:42:05 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Wed, 1 Oct 2008 13:42:05 +0100
+Subject: wininet: Add tests for InternetTimeFromSystemTimeW with
+	insufficient buffer.
+In-Reply-To: <1096648c0810010321q6355efbdn658994866f23a333@mail.gmail.com>
+References: <1096648c0810010321q6355efbdn658994866f23a333@mail.gmail.com>
+Message-ID: <1096648c0810010542p8626cbfq80b4b1bf7bc40936@mail.gmail.com>
+
+2008/10/1 Rob Shearman <robertshearman at gmail.com>:
+> ---
+>  dlls/wininet/tests/http.c |   18 ++++++++++++++++++
+>  1 files changed, 18 insertions(+), 0 deletions(-)
+>
+
+Please ignore this message. There are several problems with the patch,
+one of which is that the tests weren't run with Wine and currently
+fail.
+
+-- 
+Rob Shearman
+
+
+From xixsimplicityxix at gmail.com  Wed Oct  1 09:57:50 2008
+From: xixsimplicityxix at gmail.com (John Klehm)
+Date: Wed, 1 Oct 2008 09:57:50 -0500
+Subject: wintab32: Avoid memorizing LOGCONTEXT struct
+In-Reply-To: <1096648c0810010316t5c6e3683jc525f84bb787a383@mail.gmail.com>
+References: <78a7dad00809291610n603b6849m9ca001c7166d1a31@mail.gmail.com>
+	<1096648c0810010316t5c6e3683jc525f84bb787a383@mail.gmail.com>
+Message-ID: <78a7dad00810010757h70263723hfd69afd17871257@mail.gmail.com>
+
+On Wed, Oct 1, 2008 at 5:16 AM, Rob Shearman <robertshearman at gmail.com> wrote:
+> 2008/9/30 John Klehm <xixsimplicityxix at gmail.com>:
+>> +    TRACE("Name: %s, Options: %x, Status: %x, Locks: %x, MsgBase: %x, Device: %x, PktRate: %x, %x%s, %x%s, %x%s, BtnDnMask: %x, BtnUpMask: %x, InOrgX: %i, InOrgY: %i, InOrgZ: %i, InExtX: %i, InExtY: %i, InExtZ: %i, OutOrgX: %i, OutOrgY: %i, OutOrgZ: %i, OutExtX: %i, OutExtY: %i, OutExtZ: %i, SensX: %i, SensY: %i, SensZ: %i, SysMode: %i, SysOrgX: %i, SysOrgY: %i, SysExtX: %i, SysExtY: %i, SysSensX: %i, SysSensY: %i\n",
+>
+> Even in the age of widescreen displays, a line of 421 columns in
+> length is too long...
+>
+
+Well it was already long, I just longened it :).  I'll change it to
+around 80ish.
+
+--John Klehm
+
+
+From zac at zacbrown.org  Wed Oct  1 10:30:14 2008
+From: zac at zacbrown.org (Zac Brown)
+Date: Wed, 01 Oct 2008 11:30:14 -0400
+Subject: winhttp: tests/server.c[new]: Add basic internal server test
+In-Reply-To: <48E396B6.4050203@zacbrown.org>
+References: <48E396B6.4050203@zacbrown.org>
+Message-ID: <48E39786.7050302@zacbrown.org>
+
+Zac Brown wrote:
+> Add basic internal server test. Thanks to Hans for some help.
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+
+As a note, these tests pass on XP and 2003.
+
+
+From xixsimplicityxix at gmail.com  Wed Oct  1 13:11:07 2008
+From: xixsimplicityxix at gmail.com (John Klehm)
+Date: Wed, 1 Oct 2008 13:11:07 -0500
+Subject: wine.inf: Add entry for fake wintab32.dll
+In-Reply-To: <a1affb700810011105r3edc6de0x3776ba6865895bb@mail.gmail.com>
+References: <a1affb700810011105r3edc6de0x3776ba6865895bb@mail.gmail.com>
+Message-ID: <78a7dad00810011111n9a2c24ay24c11a1fb771e4e2@mail.gmail.com>
+
+On Wed, Oct 1, 2008 at 1:05 PM, Andrew Nguyen <arethusa26 at gmail.com> wrote:
+> ---
+>  tools/wine.inf.in |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+>
+> Add entry for fake wintab32.dll
+
+We have a real wintab32.dll.  What are you trying to fix?
+
+Cheers,
+--John
+
+
+From truiken at gmail.com  Wed Oct  1 13:16:09 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Wed, 1 Oct 2008 13:16:09 -0500
+Subject: wine.inf: Add entry for fake wintab32.dll
+In-Reply-To: <78a7dad00810011111n9a2c24ay24c11a1fb771e4e2@mail.gmail.com>
+References: <a1affb700810011105r3edc6de0x3776ba6865895bb@mail.gmail.com>
+	<78a7dad00810011111n9a2c24ay24c11a1fb771e4e2@mail.gmail.com>
+Message-ID: <22821af30810011116x68301b39ge3f17cf7ca5e31ec@mail.gmail.com>
+
+On Wed, Oct 1, 2008 at 1:11 PM, John Klehm <xixsimplicityxix at gmail.com> wrote:
+> On Wed, Oct 1, 2008 at 1:05 PM, Andrew Nguyen <arethusa26 at gmail.com> wrote:
+>> ---
+>>  tools/wine.inf.in |    1 +
+>>  1 files changed, 1 insertions(+), 0 deletions(-)
+>>
+>> Add entry for fake wintab32.dll
+>
+> We have a real wintab32.dll.  What are you trying to fix?
+>
+
+That's not what the change means.  Adding a 'fake' dll means adding a
+fake PE file to (usually) c:\windows\system32 because some apps check
+for the physical presence of the dll.
+
+-- 
+James Hawkins
+
+
+From xixsimplicityxix at gmail.com  Wed Oct  1 13:21:00 2008
+From: xixsimplicityxix at gmail.com (John Klehm)
+Date: Wed, 1 Oct 2008 13:21:00 -0500
+Subject: wine.inf: Add entry for fake wintab32.dll
+In-Reply-To: <22821af30810011116x68301b39ge3f17cf7ca5e31ec@mail.gmail.com>
+References: <a1affb700810011105r3edc6de0x3776ba6865895bb@mail.gmail.com>
+	<78a7dad00810011111n9a2c24ay24c11a1fb771e4e2@mail.gmail.com>
+	<22821af30810011116x68301b39ge3f17cf7ca5e31ec@mail.gmail.com>
+Message-ID: <78a7dad00810011121t5eb54d4l20968f921bf2a486@mail.gmail.com>
+
+On Wed, Oct 1, 2008 at 1:16 PM, James Hawkins <truiken at gmail.com> wrote:
+> On Wed, Oct 1, 2008 at 1:11 PM, John Klehm <xixsimplicityxix at gmail.com> wrote:
+>> On Wed, Oct 1, 2008 at 1:05 PM, Andrew Nguyen <arethusa26 at gmail.com> wrote:
+>>> ---
+>>>  tools/wine.inf.in |    1 +
+>>>  1 files changed, 1 insertions(+), 0 deletions(-)
+>>>
+>>> Add entry for fake wintab32.dll
+>>
+>> We have a real wintab32.dll.  What are you trying to fix?
+>>
+>
+> That's not what the change means.  Adding a 'fake' dll means adding a
+> fake PE file to (usually) c:\windows\system32 because some apps check
+> for the physical presence of the dll.
+>
+
+Ahh thanks James.
+
+Best,
+--John Klehm
+
+
+From paul.vriens.wine at gmail.com  Wed Oct  1 14:25:13 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Wed, 01 Oct 2008 21:25:13 +0200
+Subject: [2/2] inetcomm: Add a stub implementation of IIMAPTransport.
+In-Reply-To: <200809251356.09920.hans@codeweavers.com>
+References: <200809251356.09920.hans@codeweavers.com>
+Message-ID: <48E3CE99.5060000@gmail.com>
+
+Hans Leidekker wrote:
+> diff --git a/dlls/inetcomm/imaptransport.c b/dlls/inetcomm/imaptransport.c
+> new file mode 100644
+> index 0000000..99011b2
+> --- /dev/null
+> +++ b/dlls/inetcomm/imaptransport.c
+> @@ -0,0 +1,498 @@
+> +/*
+> + * IMAP Transport
+> + *
+> + * Copyright 2008 Hans Leidekker for CodeWeavers
+> + * 
+> + */
+
+This one misses license information. (Patch is already committed though).
+
+-- 
+Cheers,
+
+Paul.
+
+
+From juan.lang at gmail.com  Wed Oct  1 14:31:21 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Wed, 1 Oct 2008 12:31:21 -0700
+Subject: [PATCH] wintrust: Add a stub for OpenPersonalTrustDBDialog
+Message-ID: <3a768c550810011231w12e9b284qf5c09f62298df639@mail.gmail.com>
+
+Hi Detlef,
+
+I'm not sure why this wasn't committed, but my hunch is this:
++ * RETURNS
++ *  Success: TRUE (The Dialog was opened)
++ *  Failure: FALSE
++ *
++ */
++BOOL WINAPI OpenPersonalTrustDBDialog(HWND hwnd)
++{
++    FIXME("(%p) stub\n", hwnd);
++    return TRUE;
+
+Shouldn't it return FALSE instead?
+
+In any case, this is a very simple function to implement:  it calls
+cryptui:CryptUIDlgCertMgr.  I'll send in a patch that implements it,
+if you don't mind.
+--Juan
+
+
+From most at museresearch.com  Wed Oct  1 19:30:41 2008
+From: most at museresearch.com (Michael Ost)
+Date: Wed, 01 Oct 2008 17:30:41 -0700
+Subject: Fullscreen window in metacity hides owned window
+Message-ID: <48E41631.7090508@museresearch.com>
+
+We are seeing a problem in Metacity where a fullscreen window obscures a 
+second created window that has a particular style: WS_DLGFRAME | 
+WS_THICKFRAME.
+
+When window A is created fullscreen (WS_POPUP, size matches screen res) 
+and window B is created as an "owned window" 
+(WS_DLGFRAME|WS_THICKFRAME|WS_OVERLAPPED style with "A" as its parent) 
+you cannot see "B" if Metacity is running.
+
+You can if other window managers are running. We tried kwin, xfce, 
+fluxbox, enlightenment or fvvm. So the problem is something specific to 
+Metacity.
+
+You can also see window "B" if you remove either the WS_DLGFRAME or 
+WS_THICKFRAME bit from the style.
+
+Any hints about where to look within Wine or what could be happening?
+
+- mo
+
+PS: the code (ctrl+c to quit)...
+
+#include <windows.h>
+
+const char g_szClassName[] = "myWindowClass";
+
+// Step 4: the Window Procedure
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+     switch(msg)
+     {
+         case WM_CLOSE:
+             DestroyWindow(hwnd);
+         break;
+         case WM_DESTROY:
+             PostQuitMessage(0);
+         break;
+         default:
+             return DefWindowProc(hwnd, msg, wParam, lParam);
+     }
+     return 0;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+     LPSTR lpCmdLine, int nCmdShow)
+{
+     WNDCLASSEX wc;
+     HWND hwnd, hwnd4;
+     MSG Msg;
+
+     //Step 1: Registering the Window Class
+     wc.cbSize        = sizeof(WNDCLASSEX);
+     wc.style         = 0;
+     wc.lpfnWndProc   = WndProc;
+     wc.cbClsExtra    = 0;
+     wc.cbWndExtra    = 0;
+     wc.hInstance     = hInstance;
+     wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
+     wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+     wc.lpszMenuName  = NULL;
+     wc.lpszClassName = g_szClassName;
+     wc.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
+
+     if(!RegisterClassEx(&wc))
+     {
+         MessageBox(NULL, "Window Registration Failed!", "Error!",
+             MB_ICONEXCLAMATION | MB_OK);
+         return 0;
+     }
+
+     // Step 2: Creating the Window
+	int width = ::GetSystemMetrics(SM_CXSCREEN);
+	int height = ::GetSystemMetrics(SM_CYSCREEN);
+     hwnd = CreateWindowEx(
+         WS_EX_CLIENTEDGE,
+         g_szClassName,
+         "A",
+         WS_POPUP,
+         CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+         NULL, NULL, hInstance, NULL);
+
+     if(hwnd == NULL)
+     {
+         MessageBox(NULL, "Window Creation Failed!", "Error!",
+             MB_ICONEXCLAMATION | MB_OK);
+         return 0;
+     }
+
+         hwnd4 = CreateWindowEx(
+         WS_EX_CLIENTEDGE,
+         g_szClassName,
+         "B",
+#if 1 // invisible
+         WS_DLGFRAME|WS_THICKFRAME|WS_OVERLAPPED,
+#else // visible
+         WS_THICKFRAME|WS_OVERLAPPED,
+#endif
+         300, 300, 240, 120,
+         hwnd, NULL, hInstance, NULL);
+
+     if(hwnd4 == NULL)
+     {
+         MessageBox(NULL, "Window Creation Failed!", "Error!",
+             MB_ICONEXCLAMATION | MB_OK);
+         return 0;
+     }
+
+     ShowWindow(hwnd, nCmdShow);
+     ShowWindow(hwnd4, nCmdShow);
+     UpdateWindow(hwnd);
+     UpdateWindow(hwnd4);
+
+     // Step 3: The Message Loop
+     while(GetMessage(&Msg, NULL, 0, 0) > 0)
+     {
+         TranslateMessage(&Msg);
+         DispatchMessage(&Msg);
+     }
+     return Msg.wParam;
+}
+
+
+From jhawkins at codeweavers.com  Wed Oct  1 22:41:25 2008
+From: jhawkins at codeweavers.com (James Hawkins)
+Date: Wed, 1 Oct 2008 22:41:25 -0500
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <22821af30810012018w27042f57mbd40ac6382a1ef2a@mail.gmail.com>
+References: <22821af30810012018w27042f57mbd40ac6382a1ef2a@mail.gmail.com>
+Message-ID: <22821af30810012041l267b06a1kb1537ced52f9e59f@mail.gmail.com>
+
+Hold off on this patch.  There's a missing debugstr_w and a crash on
+patchwatcher.
+
+-- 
+James Hawkins
+
+
+From theycallhimart at gmail.com  Thu Oct  2 05:42:39 2008
+From: theycallhimart at gmail.com (Arthur Taylor)
+Date: Thu, 02 Oct 2008 03:42:39 -0700
+Subject: Wine PulseAudio Driver
+In-Reply-To: <3a768c550809271428sf235294j6370a6994e04bcae@mail.gmail.com>
+References: <798c010e0809270236y3986b0efn478c04c27c82ebbe@mail.gmail.com>
+	<3a768c550809271137j16a61c88wa8076b759ca3fa20@mail.gmail.com>
+	<1222548705.9019.12.camel@teapot>
+	<3a768c550809271428sf235294j6370a6994e04bcae@mail.gmail.com>
+Message-ID: <1222944159.5745.5.camel@teapot>
+
+I have put a newer patch in bugzilla:
+http://bugs.winehq.org/attachment.cgi?id=16412&action=edit
+Currently I am looking for any feedback at all. Should I send a message
+to wine-patches as well?
+
+> 2.  We ought to be able to use PulseAudio's ALSA emulation.  If that
+> doesn't work, then either our ALSA driver should be fixed, or
+> PulseAudio's ALSA interface should be fixed.
+
+IMHO this is a situation were it makes more sense to use pulse's native
+API over going through ALSA's, as we aren't just trying to join
+ALSA-pulse, we are trying to join WaveOut-ALSA-pulse (or even dsound on
+top of waveout.) Currently I can match the alsa driver's perceptive
+quality (buzz word) on my system using this code, dsound and all. By far
+beats the current ALSA-pulse or ESD solutions.
+
+Thanks
+- Art
+
+
+
+From leslie_alistair at hotmail.com  Thu Oct  2 06:32:25 2008
+From: leslie_alistair at hotmail.com (Alistair Leslie-Hughes)
+Date: Thu, 2 Oct 2008 21:32:25 +1000
+Subject: gdiplus: Stub GdipRecordMetafileFileName
+	andGdipRecordMetafileFileNameI
+References: <48DCB2A0.9070405@hotmail.com>
+Message-ID: <gc2bga$32k$1@ger.gmane.org>
+
+
+"Alistair Leslie-Hughes" <leslie_alistair at hotmail.com> wrote in message 
+news:48DCB2A0.9070405 at hotmail.com...
+> Hi,
+>
+> Changelog:
+> gdiplus: Stub GdipRecordMetafileFileName and GdipRecordMetafileFileNameI
+>
+Was there anything wrong with this patch?
+
+Best Regards
+ Alistair Leslie-Hughes 
+
+
+
+
+From bunglehead at gmail.com  Thu Oct  2 07:04:09 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Thu, 02 Oct 2008 16:04:09 +0400
+Subject: gdiplus: Stub
+	GdipRecordMetafileFileName	andGdipRecordMetafileFileNameI
+In-Reply-To: <gc2bga$32k$1@ger.gmane.org>
+References: <48DCB2A0.9070405@hotmail.com> <gc2bga$32k$1@ger.gmane.org>
+Message-ID: <48E4B8B9.5030904@gmail.com>
+
+Alistair Leslie-Hughes wrote:
+> "Alistair Leslie-Hughes" <leslie_alistair at hotmail.com> wrote in message 
+> news:48DCB2A0.9070405 at hotmail.com...
+>   
+>> Hi,
+>>
+>> Changelog:
+>> gdiplus: Stub GdipRecordMetafileFileName and GdipRecordMetafileFileNameI
+>>
+>>     
+> Was there anything wrong with this patch?
+>
+> Best Regards
+>  Alistair Leslie-Hughes 
+>   
+1.GDIPCONST WCHAR* should be declared as wstr in spec
+2. debug output for strings should differ
+
+
+From theycallhimart at gmail.com  Wed Oct  1 03:16:46 2008
+From: theycallhimart at gmail.com (Arthur Taylor)
+Date: Wed, 01 Oct 2008 01:16:46 -0700
+Subject: Wine PulseAudio Driver
+In-Reply-To: <3a768c550809271428sf235294j6370a6994e04bcae@mail.gmail.com>
+References: <798c010e0809270236y3986b0efn478c04c27c82ebbe@mail.gmail.com>
+	<3a768c550809271137j16a61c88wa8076b759ca3fa20@mail.gmail.com>
+	<1222548705.9019.12.camel@teapot>
+	<3a768c550809271428sf235294j6370a6994e04bcae@mail.gmail.com>
+Message-ID: <1222849006.6796.27.camel@teapot>
+
+> Um.. I still don't see the patch?  Sorry, but I'm too lazy to get it
+> myself.  Could you send it here?
+
+Attached is a newer copy from the one currently in bugzilla. I'm still
+not sure of the proper procedure for doing things as this is probably my
+largest contribution yet. (Set the driver using the registry, winecfg
+patch is separate.)
+
+> Also, just to warn you:  some people disagree that a PulseAudio driver
+> is a good idea.  Even if you write a good one, it might have to live
+> out of tree.  The usual arguments are:
+> 1.  Drivers can bitrot (and have in the past), and having 6 poorly
+> implemented audio drivers is clearly worse than having one good one,
+> even if that one is using a deprecated API and doesn't work nicely
+> with other apps.
+
+I've noticed a lot of hostility toward pulseaudio in general ;-) My
+thought is that if x11 was thrust on people today everyone would hate it
+too, but that isn't a good comparison as x11 is ancient by comparison
+and de-facto.
+
+> 2.  We ought to be able to use PulseAudio's ALSA emulation.  If that
+> doesn't work, then either our ALSA driver should be fixed, or
+> PulseAudio's ALSA interface should be fixed.
+
+IMHO this is a situation were it makes more sense to use pulse's native
+API over going through ALSA's, as we aren't just trying to join
+ALSA-pulse, we are trying to join WaveOut-ALSA-pulse (or even dsound on
+top of waveout.) Currently I can match the alsa driver's perceptive
+quality (buzz word) on my system using this code, dsound games and all.
+Mind you, my sound hardware is nothing to write home about. By far beats
+the current ALSA-pulse or ESD solutions.
+
+> I have no particular opinion and whether this gets accepted isn't up
+> to me.  I'm just reiterating what's been said about audio drivers in
+> the past.  So, please don't attempt to persuade me, as it won't make
+> any difference ;-)
+> --Juan
+
+To wine developers: would it be useful to review dlls/winmm? Currently
+all mm-drivers (aux, mid, mod, wid, wod) functions are called using
+MDRV_Message calls. The arguments of a MDRV_Message are the device id
+(an array index), the message identifier, dwUser as the driver instance,
+and two parameters that depend upon the message. The driver instance
+DWORD seems useless to me, and it's value, while consistent, looks
+uninitialized (on my system is either 57 if I enable tracing, or random
+crazy large for a pointer if not.)
+	My problem is that WaveIn / WaveOut devices are supposed to be able to
+support multiple streams if the hardware allows it, however it is
+impossible to support this currently as all MDRV_Message gives us is the
+device id the message is for (the only arguments to a WODM_PAUSE is the
+device id for instance.) This makes multiple streams impossible and
+therefor waveout drivers only support one stream per device. wineesd.drv
+gets around this by staticly making 10 waveout and 10 wavein devices,
+all effectively the same.
+	If MDRV_Message were to pass in dwUser the device opening instance
+handle which winmm creates and apps use for the wave{out,in}* calls it
+would be possible to support multiple streams per device, and devices
+could represent hardware 1:1 like they are supposed to. So my questions
+are this: would changing the value of dwUser to the device instance
+handle be a good idea, and do any current mm-drivers depend upon dwUser
+being the seemingly uninitialized driver instance value?
+
+Thanks
+-- 
+Arthur Taylor <theycallhimart at gmail.com>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: winepulse-0.5.patch
+Type: text/x-patch
+Size: 108091 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081001/3ada4f0f/attachment-0001.bin 
+
+From juan.lang at gmail.com  Thu Oct  2 09:35:51 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Thu, 2 Oct 2008 07:35:51 -0700
+Subject: Wine PulseAudio Driver
+In-Reply-To: <1222944159.5745.5.camel@teapot>
+References: <798c010e0809270236y3986b0efn478c04c27c82ebbe@mail.gmail.com>
+	<3a768c550809271137j16a61c88wa8076b759ca3fa20@mail.gmail.com>
+	<1222548705.9019.12.camel@teapot>
+	<3a768c550809271428sf235294j6370a6994e04bcae@mail.gmail.com>
+	<1222944159.5745.5.camel@teapot>
+Message-ID: <3a768c550810020735p270abdd3q3c26833962348679@mail.gmail.com>
+
+Hi Art,
+
+> Currently I am looking for any feedback at all.
+
+I believe you've already gotten some:  split up your patches so that
+we can read them a little more easily.  If you send a large patch as a
+new contributor, it's very unlikely to get committed.
+
+Also, this function:
++/*
++const char * PULSE_getMessage(UINT msg) {
++    static char unknown[32];
+is commented out.  Please leave stuff like that out of your patches,
+it's a little distracting.  That was the only instance of that I saw
+in the patch, so your patch looks of generally good quality.  Still,
+try to make your patches as clean as possible.
+
+> Should I send a message to wine-patches as well?
+Only if it's ready to be committed.  Since you're asking for feedback,
+I assume that's not the case ;-)  Since you're asking for feedback:
+what, in particular, do you want feedback on?  Are you soliciting
+"does this work for you" feedback?  Is there some aspect of the design
+you're not sure about?
+
+Also, I'm happy to try it, but the bug is just asking for a feature,
+not describing something that doesn't work without this.  Is there
+some other criterion I can use to evaluate it?  Doesn't steal audio,
+doesn't stutter as much, ???
+--Juan
+
+
+From robertshearman at gmail.com  Thu Oct  2 09:37:39 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Thu, 2 Oct 2008 15:37:39 +0100
+Subject: version: check for out of memory when VerInstallFileA/W
+	converstion. (response to coverity 635)
+In-Reply-To: <48E4D950.4000105@codeweavers.com>
+References: <48E4D950.4000105@codeweavers.com>
+Message-ID: <1096648c0810020737q4bc7ab44m37302faabc6e47f7@mail.gmail.com>
+
+2008/10/2 Aric Stewart <aric at codeweavers.com>:
+> @@ -543,34 +543,50 @@ DWORD WINAPI VerInstallFileW(
+>          len = WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, NULL, 0, NULL, NULL );
+>          if ((wsrcf = HeapAlloc( GetProcessHeap(), 0, len )))
+>              WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, wsrcf, len, NULL, NULL );
+> +        else if (len)
+> +            ret = VIF_OUTOFMEMORY;
+
+IIRC HeapAlloc(..., 0) returns a non-NULL value, so the "if (len)"
+part is not needed.
+
+...
+> +    rc = VerInstallFileA(0x0, "in.txt", "out.txt", "C:\\windows\\temp", "C:\\windows\\temp\\test\\", "C:\\", tmpname, &size);
+> +    ok (rc == 0x10000 && tmpname[0]==0," expected return 0x10000 and no tempname, got %08x/\'%s\'\n",rc,tmpname);
+
+You shouldn't hard-code paths such as this.
+
+-- 
+Rob Shearman
+
+
+From dmitry at codeweavers.com  Thu Oct  2 09:38:20 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Thu, 2 Oct 2008 23:38:20 +0900
+Subject: Fullscreen window in metacity hides owned window
+In-Reply-To: <48E41631.7090508@museresearch.com>
+References: <48E41631.7090508@museresearch.com>
+Message-ID: <20081002233820.b1114eb5.dmitry@codeweavers.com>
+
+Michael Ost <most at museresearch.com> wrote:
+
+> We are seeing a problem in Metacity where a fullscreen window obscures a 
+> second created window that has a particular style: WS_DLGFRAME | 
+> WS_THICKFRAME.
+> 
+> When window A is created fullscreen (WS_POPUP, size matches screen res) 
+> and window B is created as an "owned window" 
+> (WS_DLGFRAME|WS_THICKFRAME|WS_OVERLAPPED style with "A" as its parent) 
+> you cannot see "B" if Metacity is running.
+> 
+> You can if other window managers are running. We tried kwin, xfce, 
+> fluxbox, enlightenment or fvvm. So the problem is something specific to 
+> Metacity.
+> 
+> You can also see window "B" if you remove either the WS_DLGFRAME or 
+> WS_THICKFRAME bit from the style.
+> 
+> Any hints about where to look within Wine or what could be happening?
+
+Have a look at dlls/winex11.drv/window.c. It looks like windows of type
+_NET_WM_WINDOW_TYPE_DIALOG have a similar problem to the one related to
+_NET_WM_WINDOW_TYPE_UTILITY. Try to comment out appropriate line of code
+and see if that helps.
+
+-- 
+Dmitry.
+
+
+From juan.lang at gmail.com  Thu Oct  2 09:51:21 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Thu, 2 Oct 2008 07:51:21 -0700
+Subject: [PATCH 1/2] wininet: Return error codes explicitly from URLCache
+	functions instead of returning a BOOL and storing the error
+	code in the last error value.
+Message-ID: <3a768c550810020751w2265436bp507ea770c9e6ff4d@mail.gmail.com>
+
+Hi Rob,
+
++ * Locks the index for system-wide exclusive access.
++ *
++ * RETURNS
++ *  TRUE if successful
++ *  FALSE if failed and calls SetLastError.
+  */
+ static LPURLCACHE_HEADER
+URLCacheContainer_LockIndex(URLCACHECONTAINER * pContainer)
+
+The comment's off here.
+
+@@ -1346,34 +1353,32 @@ static BOOL
+URLCache_AddEntryToHash(LPURLCACHE_HEADER pHeader, LPCSTR lpszUrl, D
+  *    FALSE if the hash table could not be created
+  *
+  */
+-static HASH_CACHEFILE_ENTRY
+*URLCache_CreateHashTable(LPURLCACHE_HEADER pHeader,
+HASH_CACHEFILE_ENTRY *pPrevHash)
++static DWORD URLCache_CreateHashTable(LPURLCACHE_HEADER pHeader,
+HASH_CACHEFILE_ENTRY *pPrevHash, HASH_CACHEFILE_ENTRY **ppHash)
+I think you forgot to update the comment here.
+
+--Juan
+
+
+From dmitry at codeweavers.com  Thu Oct  2 09:58:11 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Thu, 2 Oct 2008 23:58:11 +0900
+Subject: gdi32: if a font substitution is given then only match to that
+	substitution not to the original family name.
+In-Reply-To: <48E4C1AE.5060300@codeweavers.com>
+References: <48E4C1AE.5060300@codeweavers.com>
+Message-ID: <20081002235811.faa8fd72.dmitry@codeweavers.com>
+
+Aric Stewart <aric at codeweavers.com> wrote:
+
+>          LIST_FOR_EACH(family_elem_ptr, &font_list) {
+>              family = LIST_ENTRY(family_elem_ptr, Family, entry);
+> -            if (!strcmpiW(family->FamilyName, FaceName) ||
+> -                (psub && !strcmpiW(family->FamilyName, psub->to.name)))
+> +            if ((!psub && !strcmpiW(family->FamilyName, FaceName)) ||
+> +                ( psub && !strcmpiW(family->FamilyName, psub->to.name)))
+>              {
+>                  LIST_FOR_EACH(face_elem_ptr, &family->faces) { 
+>                      face = LIST_ENTRY(face_elem_ptr, Face, entry);
+
+Changing the order of 2 comparisons in the 'if' block would be
+clear IMO, and would help avoiding to check psub twice.
+
+-- 
+Dmitry.
+
+
+From robertshearman at gmail.com  Thu Oct  2 10:03:04 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Thu, 2 Oct 2008 16:03:04 +0100
+Subject: (try 2)version: check for out of memory when VerInstallFileA/W
+	converstion. (response to coverity 635)
+In-Reply-To: <48E4E0D1.6070907@codeweavers.com>
+References: <48E4E0D1.6070907@codeweavers.com>
+Message-ID: <1096648c0810020803u1f107e2ax97109a273a5343df@mail.gmail.com>
+
+2008/10/2 Aric Stewart <aric at codeweavers.com>:
+> @@ -543,34 +543,50 @@ DWORD WINAPI VerInstallFileW(
+>          len = WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, NULL, 0, NULL, NULL );
+>          if ((wsrcf = HeapAlloc( GetProcessHeap(), 0, len )))
+>              WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, wsrcf, len, NULL, NULL );
+> +        else
+> +            ret = VIF_OUTOFMEMORY;
+>      }
+> -    if (srcdir)
+> +    if (srcdir &&  !ret)
+
+Remove the extra space here.
+
+> +    static const CHAR szSrcDir[] = "C:\\windows\\temp";
+> +    static const CHAR szDestDir[] = "C:\\windows\\temp\\test";
+> +    static const CHAR szCurDir[] = "C:\\";
+
+This isn't exactly what I meant. C:\Windows might not even exist on
+NT4/Win2000 and the temp directory might not be in %WINDIR%\temp. You
+should use GetTempPath instead. (Hard-coding C:\ is also something to
+be avoided if at all possible.)
+
+-- 
+Rob Shearman
+
+
+From aric at codeweavers.com  Thu Oct  2 10:05:13 2008
+From: aric at codeweavers.com (Aric Stewart)
+Date: Thu, 02 Oct 2008 10:05:13 -0500
+Subject: (try 2)version: check for out of memory when VerInstallFileA/W
+	converstion. (response to coverity 635)
+In-Reply-To: <1096648c0810020803u1f107e2ax97109a273a5343df@mail.gmail.com>
+References: <48E4E0D1.6070907@codeweavers.com>
+	<1096648c0810020803u1f107e2ax97109a273a5343df@mail.gmail.com>
+Message-ID: <48E4E329.2000007@codeweavers.com>
+
+Whoops on the whitespace.
+
+The paths are irrelevent.  They are intentionally pointing at a file and 
+location that is not existing.  Should I change the paths to express 
+that more explicitly;  something like: "D:\\oes\\not\\exist" ?
+
+-aric
+
+Rob Shearman wrote:
+> 2008/10/2 Aric Stewart <aric at codeweavers.com>:
+>> @@ -543,34 +543,50 @@ DWORD WINAPI VerInstallFileW(
+>>          len = WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, NULL, 0, NULL, NULL );
+>>          if ((wsrcf = HeapAlloc( GetProcessHeap(), 0, len )))
+>>              WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, wsrcf, len, NULL, NULL );
+>> +        else
+>> +            ret = VIF_OUTOFMEMORY;
+>>      }
+>> -    if (srcdir)
+>> +    if (srcdir &&  !ret)
+> 
+> Remove the extra space here.
+> 
+>> +    static const CHAR szSrcDir[] = "C:\\windows\\temp";
+>> +    static const CHAR szDestDir[] = "C:\\windows\\temp\\test";
+>> +    static const CHAR szCurDir[] = "C:\\";
+> 
+> This isn't exactly what I meant. C:\Windows might not even exist on
+> NT4/Win2000 and the temp directory might not be in %WINDIR%\temp. You
+> should use GetTempPath instead. (Hard-coding C:\ is also something to
+> be avoided if at all possible.)
+> 
+
+
+From robertshearman at gmail.com  Thu Oct  2 10:12:42 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Thu, 2 Oct 2008 16:12:42 +0100
+Subject: (try 2)version: check for out of memory when VerInstallFileA/W
+	converstion. (response to coverity 635)
+In-Reply-To: <48E4E329.2000007@codeweavers.com>
+References: <48E4E0D1.6070907@codeweavers.com>
+	<1096648c0810020803u1f107e2ax97109a273a5343df@mail.gmail.com>
+	<48E4E329.2000007@codeweavers.com>
+Message-ID: <1096648c0810020812tb26d9f5mebaf159e11af83bd@mail.gmail.com>
+
+2008/10/2 Aric Stewart <aric at codeweavers.com>:
+> Whoops on the whitespace.
+>
+> The paths are irrelevent.  They are intentionally pointing at a file and
+> location that is not existing.  Should I change the paths to express that
+> more explicitly;  something like: "D:\\oes\\not\\exist" ?
+
+Sure, that would work. That way we can be sure it won't give us
+different results on different test machines.
+
+> Rob Shearman wrote:
+>>
+>> 2008/10/2 Aric Stewart <aric at codeweavers.com>:
+>>>
+>>> @@ -543,34 +543,50 @@ DWORD WINAPI VerInstallFileW(
+>>>         len = WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, NULL, 0,
+>>> NULL, NULL );
+>>>         if ((wsrcf = HeapAlloc( GetProcessHeap(), 0, len )))
+>>>             WideCharToMultiByte( CP_ACP, 0, srcfilename, -1, wsrcf, len,
+>>> NULL, NULL );
+>>> +        else
+>>> +            ret = VIF_OUTOFMEMORY;
+>>>     }
+>>> -    if (srcdir)
+>>> +    if (srcdir &&  !ret)
+>>
+>> Remove the extra space here.
+>>
+>>> +    static const CHAR szSrcDir[] = "C:\\windows\\temp";
+>>> +    static const CHAR szDestDir[] = "C:\\windows\\temp\\test";
+>>> +    static const CHAR szCurDir[] = "C:\\";
+>>
+>> This isn't exactly what I meant. C:\Windows might not even exist on
+>> NT4/Win2000 and the temp directory might not be in %WINDIR%\temp. You
+>> should use GetTempPath instead. (Hard-coding C:\ is also something to
+>> be avoided if at all possible.)
+
+-- 
+Rob Shearman
+
+
+From juan.lang at gmail.com  Thu Oct  2 11:10:11 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Thu, 2 Oct 2008 09:10:11 -0700
+Subject: Be careful out there
+Message-ID: <3a768c550810020910l63a6928cv8b3174e975b0be5@mail.gmail.com>
+
+Unfortunately, there is some Microsoft code available on the Internet.
+ More unfortunately, Google has indexed some of it.  I was searching
+for an undocumented function and ran across something that seemed to
+describe it.  I clicked on the link, and fortunately the indexed page
+was just a reference to the actual source file, because the source
+file was Microsoft's.  (The source file was also available.  No, I
+didn't look at it.)
+
+Be very careful:  reading Microsoft's source code is a clear way to
+taint yourself as a developer.
+--Juan
+
+
+From most at museresearch.com  Thu Oct  2 11:43:23 2008
+From: most at museresearch.com (Michael Ost)
+Date: Thu, 02 Oct 2008 09:43:23 -0700
+Subject: Fullscreen window in metacity hides owned window
+In-Reply-To: <20081002233820.b1114eb5.dmitry@codeweavers.com>
+References: <48E41631.7090508@museresearch.com>
+	<20081002233820.b1114eb5.dmitry@codeweavers.com>
+Message-ID: <48E4FA2B.2080202@museresearch.com>
+
+Dmitry Timoshkov wrote:
+> Michael Ost <most at museresearch.com> wrote:
+> 
+>> We are seeing a problem in Metacity where a fullscreen window obscures a 
+>> second created window that has a particular style: WS_DLGFRAME | 
+>> WS_THICKFRAME.
+>>
+>> When window A is created fullscreen (WS_POPUP, size matches screen res) 
+>> and window B is created as an "owned window" 
+>> (WS_DLGFRAME|WS_THICKFRAME|WS_OVERLAPPED style with "A" as its parent) 
+>> you cannot see "B" if Metacity is running.
+>>
+>> You can if other window managers are running. We tried kwin, xfce, 
+>> fluxbox, enlightenment or fvvm. So the problem is something specific to 
+>> Metacity.
+>>
+>> You can also see window "B" if you remove either the WS_DLGFRAME or 
+>> WS_THICKFRAME bit from the style.
+>>
+>> Any hints about where to look within Wine or what could be happening?
+> 
+> Have a look at dlls/winex11.drv/window.c. It looks like windows of type
+> _NET_WM_WINDOW_TYPE_DIALOG have a similar problem to the one related to
+> _NET_WM_WINDOW_TYPE_UTILITY. Try to comment out appropriate line of code
+> and see if that helps.
+
+The problem happens because the first test in set_wm_hints catches the 
+WS_THICKFRAME bit and sets the window style to 
+_NET_WM_WINDOW_TYPE_NORMAL. If I move the WS_DLGFRAME test first, and 
+set the style to _NET_WM_WINDOW_TYPE_DIALOG, then it works.
+
+As I read the MSDN window style docs, it seems like a dialog style 
+should trump a THICKFRAME style. But I am not so familiar with what the 
+_NET_WM_WINDOW_TYPE_* styles mean and how to map them to Windows' styles.
+
+So, what's the preferred fix? Should I change set_wm_hints to catch the 
+DIALOG styles first (see diff below)? That seems reasonable to me. Does 
+that sound safe to you?
+
+Is this something that should be generally available or just a one off 
+hack for my version of wine?
+
+Thanks for your help! ... mo
+
+PS: diff showing change to catch dialog styles first in set_wm_hints...
+
+[root at Deceptor winex11.drv]# diff -Naur window.c-1.0-1.fc8.5muse window.c
+--- window.c-1.0-1.fc8.5muse    2008-10-02 09:27:09.000000000 -0700
++++ window.c    2008-10-02 09:38:22.000000000 -0700
+@@ -903,10 +903,10 @@
+      set_size_hints( display, data, style );
+
+      /* set the WM_WINDOW_TYPE */
+-    if (style & WS_THICKFRAME) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_NORMAL);
+-    else if (ex_style & WS_EX_APPWINDOW) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_NORMAL);
+-    else if (style & WS_DLGFRAME) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_DIALOG);
++    if (style & WS_DLGFRAME) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_DIALOG);
+      else if (ex_style & WS_EX_DLGMODALFRAME) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_DIALOG);
++    else if (style & WS_THICKFRAME) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_NORMAL);
++    else if (ex_style & WS_EX_APPWINDOW) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_NORMAL);
+      else if ((style & WS_POPUP) && owner) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_DIALOG);
+  #if 0  /* many window managers don't handle utility windows very well */
+      else if (ex_style & WS_EX_TOOLWINDOW) window_type = 
+x11drv_atom(_NET_WM_WINDOW_TYPE_UTILITY);
+
+
+
+From dmitry at codeweavers.com  Thu Oct  2 11:51:52 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Fri, 3 Oct 2008 01:51:52 +0900
+Subject: Fullscreen window in metacity hides owned window
+In-Reply-To: <48E4FA2B.2080202@museresearch.com>
+References: <48E41631.7090508@museresearch.com>
+	<20081002233820.b1114eb5.dmitry@codeweavers.com>
+	<48E4FA2B.2080202@museresearch.com>
+Message-ID: <20081003015152.59cfed68.dmitry@codeweavers.com>
+
+Michael Ost <most at museresearch.com> wrote:
+
+> So, what's the preferred fix? Should I change set_wm_hints to catch the 
+> DIALOG styles first (see diff below)? That seems reasonable to me. Does 
+> that sound safe to you?
+> 
+> Is this something that should be generally available or just a one off 
+> hack for my version of wine?
+
+I'd say go ahead and send the patch.
+
+-- 
+Dmitry.
+
+
+From andrewfenn at gmail.com  Thu Oct  2 12:23:03 2008
+From: andrewfenn at gmail.com (Andrew Fenn)
+Date: Fri, 3 Oct 2008 00:23:03 +0700
+Subject: Be careful out there
+In-Reply-To: <3a768c550810020910l63a6928cv8b3174e975b0be5@mail.gmail.com>
+References: <3a768c550810020910l63a6928cv8b3174e975b0be5@mail.gmail.com>
+Message-ID: <b594ca9d0810021023w2a082b0q622f6a853af7f913@mail.gmail.com>
+
+Actually I wanted to ask a question about this..
+
+When implementing an API do we have to change the variable names from
+those given in the msdn documentation?
+
+More specifically, the typedefs for the xinput structs ( documentation
+here: http://msdn.microsoft.com/en-us/library/bb173049(VS.85).aspx ).
+Do I have the change the names of these or can I just keep them the
+same?
+
+Regards,
+Andrew
+
+On Thu, Oct 2, 2008 at 11:10 PM, Juan Lang <juan.lang at gmail.com> wrote:
+> Unfortunately, there is some Microsoft code available on the Internet.
+>  More unfortunately, Google has indexed some of it.  I was searching
+> for an undocumented function and ran across something that seemed to
+> describe it.  I clicked on the link, and fortunately the indexed page
+> was just a reference to the actual source file, because the source
+> file was Microsoft's.  (The source file was also available.  No, I
+> didn't look at it.)
+>
+> Be very careful:  reading Microsoft's source code is a clear way to
+> taint yourself as a developer.
+> --Juan
+>
+>
+>
+
+
+From theycallhimart at gmail.com  Thu Oct  2 12:34:02 2008
+From: theycallhimart at gmail.com (Arthur Taylor)
+Date: Thu, 02 Oct 2008 10:34:02 -0700
+Subject: Wine PulseAudio Driver
+In-Reply-To: <3a768c550810020735p270abdd3q3c26833962348679@mail.gmail.com>
+References: <798c010e0809270236y3986b0efn478c04c27c82ebbe@mail.gmail.com>
+	<3a768c550809271137j16a61c88wa8076b759ca3fa20@mail.gmail.com>
+	<1222548705.9019.12.camel@teapot>
+	<3a768c550809271428sf235294j6370a6994e04bcae@mail.gmail.com>
+	<1222944159.5745.5.camel@teapot>
+	<3a768c550810020735p270abdd3q3c26833962348679@mail.gmail.com>
+Message-ID: <1222968842.10217.10.camel@teapot>
+
+> Hi Art,
+> 
+> > Currently I am looking for any feedback at all.
+> 
+> I believe you've already gotten some:  split up your patches so that
+> we can read them a little more easily.  If you send a large patch as a
+> new contributor, it's very unlikely to get committed.
+
+Humm, I can see splitting the changes to configure.ac and Makefile.in,
+but as for splitting the rest of it, should I split it per-file?
+
+> Is there
+> some other criterion I can use to evaluate it?  Doesn't steal audio,
+> doesn't stutter as much, ???
+
+I'm looking for instances where the patch falls on its face so I can fix
+them (where falling on it's face is defined as)
+- Crashing / stalling an app
+- Crashing the PA server
+- Continual stuttering or no audio.
+
+I'm also looking for comments on the code. Is it sane, are the variable
+names okay? Are there functions I should divide / join?
+
+Thanks
+- Art
+
+
+
+From kornelpal at gmail.com  Thu Oct  2 12:40:26 2008
+From: kornelpal at gmail.com (=?ISO-8859-1?Q?Korn=E9l_P=E1l?=)
+Date: Thu, 02 Oct 2008 19:40:26 +0200
+Subject: Be careful out there
+In-Reply-To: <b594ca9d0810021023w2a082b0q622f6a853af7f913@mail.gmail.com>
+References: <3a768c550810020910l63a6928cv8b3174e975b0be5@mail.gmail.com>
+	<b594ca9d0810021023w2a082b0q622f6a853af7f913@mail.gmail.com>
+Message-ID: <48E5078A.1080605@gmail.com>
+
+Andrew Fenn wrote:
+> Actually I wanted to ask a question about this..
+> 
+> When implementing an API do we have to change the variable names from
+> those given in the msdn documentation?
+> 
+> More specifically, the typedefs for the xinput structs ( documentation
+> here: http://msdn.microsoft.com/en-us/library/bb173049(VS.85).aspx ).
+> Do I have the change the names of these or can I just keep them the
+> same?
+
+If you change these name your implementation will only be binary 
+compatible but source code has to be modified to work with your headers. 
+So you should use the same names in header files.
+
+Korn?l
+
+
+From juan.lang at gmail.com  Thu Oct  2 13:16:41 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Thu, 2 Oct 2008 11:16:41 -0700
+Subject: Wine PulseAudio Driver
+In-Reply-To: <1222968842.10217.10.camel@teapot>
+References: <798c010e0809270236y3986b0efn478c04c27c82ebbe@mail.gmail.com>
+	<3a768c550809271137j16a61c88wa8076b759ca3fa20@mail.gmail.com>
+	<1222548705.9019.12.camel@teapot>
+	<3a768c550809271428sf235294j6370a6994e04bcae@mail.gmail.com>
+	<1222944159.5745.5.camel@teapot>
+	<3a768c550810020735p270abdd3q3c26833962348679@mail.gmail.com>
+	<1222968842.10217.10.camel@teapot>
+Message-ID: <3a768c550810021116t7f76ecd1n867750d02b14f679@mail.gmail.com>
+
+> Humm, I can see splitting the changes to configure.ac and Makefile.in,
+> but as for splitting the rest of it, should I split it per-file?
+
+No.  Patches should be split along functional lines.  E.g.,
+patch 1: add stub driver
+patch 2: add small feature x to driver
+patch 3: add small feature y to driver
+patch 4: add pulseaudio option to winecfg
+
+> I'm looking for instances where the patch falls on its face so I can fix
+> them (where falling on it's face is defined as)
+> - Crashing / stalling an app
+> - Crashing the PA server
+> - Continual stuttering or no audio.
+
+Ah.  For that I expect you'll need to solicit a wider audience.  I
+don't actually use Wine for all that much, hacking on it is my hobby.
+You might build it and ask for users at wine-users to give feedback,
+just as a thought.
+
+> I'm also looking for comments on the code. Is it sane, are the variable
+> names okay? Are there functions I should divide / join?
+
+That's much harder to do until you've split up your driver a lot more.
+--Juan
+
+
+From saulius2 at ar.fi.lt  Thu Oct  2 13:16:49 2008
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Thu, 2 Oct 2008 21:16:49 +0300 (EEST)
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <A0BC05B5-C550-49D6-9E4C-4F85057BF701@java.pl>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<EEDB1C7D-011E-431A-97FA-9C0E24015C82@free.fr>
+	<D4593677-794F-45A0-89C8-8A8179C1BBFA@java.pl>
+	<486E996F.5000907@sprintpcs.com> <486EF6C0.20109@codeweavers.com>
+	<5963B75B-F12E-41CE-AC48-0D3256390CC1@java.pl>
+	<alpine.DEB.1.10.0807101417450.18163@amboise.dolphin>
+	<A0BC05B5-C550-49D6-9E4C-4F85057BF701@java.pl>
+Message-ID: <alpine.DEB.1.10.0810021836450.7248@localhost.localdomain>
+
+Sorry for the lag,
+
+* On Thu, 10 Jul 2008, Adam Strzelecki wrote:
+> 
+>> Is it really technically impossible to access the Quartz APIs or write 
+>> Mac applications using C?
+>
+> Well it is possible, for example iTunes is non Objective-C Carbon
+> (API) app AFAIK. Problem is that Carbon (pure C interface) is
+> considered as deprecated by Apple and may disappear from future
+> releases of OSXes at all, most 98% of applications are Objective-C
+> Cocoa anyway. Moreover most of the functionality introduced in 10.5 or
+> 10.4 went just into Cocoa, and never was backported to Carbon.
+> So it isn't matter that it isn't possible, but it is IMHO more
+> reasonable to do it in Objective-C.
+
+Then what about some thunking from carbonic source code to binary 
+Objective-C code?
+
+Well, I have found some text [1] on the web about bridging D (not C) [2] 
+with ObjectiveC:
+
+| So basically, since the whole Objective-C runtime is accessible from C 
+| calls, it?s pretty easy to do whatever we want with it.
+
+If that's true, then some MacOSy hacker should give it a try.  The bigger 
+task here probably would be implementation of some callback stuff in C 
+with the right calling convention / ABI (as ObjC seems to send some kind 
+of "messages" back).
+
+Somewhat scary part may be bridging of exception handling, but if Wine did 
+this for WinAPI, with gobjc/libFoundation present and with Apple docs 
+given [3] it should be doable also.
+
+I googled a bit more.  There are at least two ways of achieving this 
+mentioned in the docs of libFoundation: by using XML-RPC call and by 
+wrapping classes in ANSI-C APIs. [4]
+
+And the last -- I found libffi for Unix-like systems which seems to be 
+used on the MacOS X [5]:
+
+| On Mac OS X libffi is commonly used with BridgeSupport, which provides 
+| programming language neutral descriptions of framework interfaces, and 
+| Nu which binds direct Objective-C access from Lisp.
+
+HTH.
+
+
+[1] http://michelf.com/weblog/2007/d-objc-bridge/
+[2] http://en.wikipedia.org/wiki/D_(programming_language)
+[3] http://www.google.lt/search?q=+objectivec+abi+site:developer.apple.com
+[4] http://www.opengroupware.org/en/devs/languages/ansic/index.html
+[5] http://en.wikipedia.org/wiki/Libffi
+
+From kjella79 at yahoo.no  Thu Oct  2 13:56:41 2008
+From: kjella79 at yahoo.no (Kjell Rune Skaaraas)
+Date: Thu, 2 Oct 2008 18:56:41 +0000 (GMT)
+Subject: D3DXAssembleShader, unknown texture formats and misc
+Message-ID: <621468.14292.qm@web27107.mail.ukl.yahoo.com>
+
+Hello,I'm taking a stab at implmenting D3DXAssembleShader, which takes shader instructions like "mul r1, r2.xy, r3.z" and turns them into binary code (one-to-one mapping). Although I've got very little clue what I'm really doing, I've come quite a way on a parser that breaks it down into the separate parts and made some reverse lookups on tables of opcodes, registrys, masks etc. that I found in the wine code. I've basicly come so far that I got the parts like mul = 0x00000005, r = temp registry = 0x00000000, register number = 0x00000001, writemask = 0x000F0000 etc. for all the arguments, but I'm struggling a bit putting it all together into the correct binary format. I have found a lot of material on the *text* format of the shader instructions, but pretty much none on the binary format. Clearly some documentation must have been used/made when you implemented glsl and the other shader backends as they read this stuff and translates it to OpenGL calls.
+ Does anyone have anything they could share with me? P.S. Don't expect too much of me though, 1) It's so ugly it makes grown men cry, 2) Current it leaks memory bigtime and 3) It's a text hack that will never validate shader code or anything like that BUT I think I can make this work for code that already works.On a different note, a game I have is pulling up two completely unknown texture formats R16 and AL16 as fourcc. I figured I could at least find out something about them and add them to the debug tables, but the only references I find on google are to wine and wine bug reports. I figure they may be related to R16F (same with ints?) and L16 (luminosity, so AL16 with alpha?) but I can't find anything on them.Oh yeah and for the misc question - where's the right place to add test code? I expect my?D3DXAssembleShader function will need a lot of it - at least one for each opcode, registry tests, write mask tests,?whitespace and commenting tests+++. No
+ code for you to review yet, not until it works. THEN you can bring out the tar and feathers over the code. Regards,Kjell Rune
+
+
+      _________________________________________________________
+Alt i ett. F? Yahoo! Mail med adressekartotek, kalender og
+notisblokk. http://no.mail.yahoo.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20081002/f412bde4/attachment.htm 
+
+From thunderbird2k at gmx.net  Thu Oct  2 14:07:11 2008
+From: thunderbird2k at gmx.net (Roderick Colenbrander)
+Date: Thu, 02 Oct 2008 21:07:11 +0200
+Subject: Be careful out there
+In-Reply-To: <48E5078A.1080605@gmail.com>
+References: <3a768c550810020910l63a6928cv8b3174e975b0be5@mail.gmail.com>
+	<b594ca9d0810021023w2a082b0q622f6a853af7f913@mail.gmail.com>
+	<48E5078A.1080605@gmail.com>
+Message-ID: <20081002190711.132040@gmx.net>
+
+The names in the headers don't matter to programs which use them and source which is compiled using them. Only the order matters. Using the same names is fine.
+
+Roderick
+
+> Andrew Fenn wrote:
+> > Actually I wanted to ask a question about this..
+> > 
+> > When implementing an API do we have to change the variable names from
+> > those given in the msdn documentation?
+> > 
+> > More specifically, the typedefs for the xinput structs ( documentation
+> > here: http://msdn.microsoft.com/en-us/library/bb173049(VS.85).aspx ).
+> > Do I have the change the names of these or can I just keep them the
+> > same?
+> 
+> If you change these name your implementation will only be binary 
+> compatible but source code has to be modified to work with your headers. 
+> So you should use the same names in header files.
+> 
+> Korn?l
+> 
+
+-- 
+Ist Ihr Browser Vista-kompatibel? Jetzt die neuesten 
+Browser-Versionen downloaden: http://www.gmx.net/de/go/browser
+
+
+From scott at open-vote.org  Thu Oct  2 15:17:11 2008
+From: scott at open-vote.org (Scott Ritchie)
+Date: Thu, 02 Oct 2008 13:17:11 -0700
+Subject: Detecting Wine
+In-Reply-To: <CECA86E6-4D83-4487-9B65-81D07E159296@jump-ing.de>
+References: <31073ef90809291339n961e6aeg72380801d30550ac@mail.gmail.com>	<3a768c550809291441w733160adg78db918e785cbd9a@mail.gmail.com>	<31073ef90809291453v15cddcd9vcae24320441a4f64@mail.gmail.com>	<3a768c550809291455g2ebfb7aay95001fe5855fa109@mail.gmail.com>	<31073ef90809291506p39cada59uecc3c8a90efa3e83@mail.gmail.com>	<2611daec0809300355t416c96fif006ed5afb0d09c1@mail.gmail.com>
+	<CECA86E6-4D83-4487-9B65-81D07E159296@jump-ing.de>
+Message-ID: <48E52C47.7000903@open-vote.org>
+
+Markus Hitter wrote:
+> Am 30.09.2008 um 12:55 schrieb Eric Pouech:
+> 
+>> Your design is wrong IMO. You don't handle reparse points at all;  
+>> you only
+>> rely on the nature of a drive, which isn't sufficient in most  
+>> cases. See
+>> mounting volumes for example where you can mount a whole volume  
+>> anywhere in
+>> an NTFS partition.
+>>
+>> The correct fix would be to:
+>> - ensure your code handles those cases correctly (which it doesn't)
+>> - ensure that wine returns the correct relevant information for remote
+>> mounted FS (which I'm pretty sure sure it's not done today)
+> 
+> A reasonable 99% shortcut would probably be to parse C: only. This  
+> should be sufficient for almost all users, especially the clueless  
+> ones, on Wine as well as on Windows.
+> 
+> 
+> MarKus
+
+As long as the scan can be canceled, that should cover just about every
+use case.  Clueless users let it work, clueful users know to cancel it
+because it's looping with their reparse points in C:\ and never getting
+to D:\
+
+Thanks,
+Scott Ritchie
+
+
+From winehacker at gmail.com  Thu Oct  2 15:27:52 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Thu, 2 Oct 2008 16:27:52 -0400
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+References: <22821af30810021216t5bd6de6cnb3c52865e3ebf4b0@mail.gmail.com>
+	<22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+Message-ID: <19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+
+On Thu, Oct 2, 2008 at 3:25 PM, James Hawkins <jhawkins at codeweavers.com> wrote:
+> Hi,  I can't repro this problem on my machine, so I'm sending this
+> patch to patchwatcher by way of wine-patches to get some info.  Please
+> do not apply.
+
+Regarding our wineconf discussion about patchwatcher spam on
+wine-patches and filtering. Perhaps we need 2 email address patches
+can be sent to. My thinking is the flow could be something like:
+
+1. By default everyone sends a patch to wine-patches
+2. If a patch gets rejected the author gets a failure mail in private,
+and now retries or testing patches should go to wine-patches-testing N
+times until they get it right
+3. once its right, patchwatch could then forward the new good patch to
+wine-patches or could send an email to the dev saying that its good
+enough to now send to wine-patches.
+
+Doing it like this, if everyone follows the rules, we won't get a ton
+of patchwatcher retries filling up wine-patches.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From xerox_xerox2000 at yahoo.co.uk  Thu Oct  2 15:31:25 2008
+From: xerox_xerox2000 at yahoo.co.uk (Louis Lenders)
+Date: Thu, 2 Oct 2008 20:31:25 +0000 (UTC)
+Subject: howto fix bug 13462
+References: <727272.30964.qm@web23203.mail.ird.yahoo.com>
+	<1096648c0810010540t72e2ae9dv21adcff0ebe7f18a@mail.gmail.com>
+Message-ID: <loom.20081002T202224-122@post.gmane.org>
+
+Rob Shearman <robertshearman <at> gmail.com> writes:
+Thanks very much for your comments Rob,
+I've updated the patch here:
+http://bugs.winehq.org/attachment.cgi?id=16397
+
+Hopefully correct now?
+
+But now got another problem with the test, i changed it a bit like here:
+http://bugs.winehq.org/attachment.cgi?id=16430
+
+This test passes fine in Xp, but not in wine, more specific, this part fails:
+pCoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+.
+.
+.
+.     if(hr == S_OK) 
+        refs = IContextCallback_Release(pComThreadingInfo);
+    
+    ok(refs == 0, "pComThreadingInfo should have 0 refs instead of %d refs\n",
+refs);
+ 
+In windows it shows the refcount should be zero in the end, but with my patch
+and this test, it doesn't (refcount =2 in the end). I added several traces to
+the code to show how the refcount was in/decreased, but wasn't able to figure
+out what goes wrong, it's quite mysterious. Whereas this test fails, the one
+that starts with 
+pCoInitializeEx(NULL, COINIT_MULTITHREADED) passes just fine in wine. Am i still
+missing something? 
+
+
+
+From truiken at gmail.com  Thu Oct  2 15:35:27 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Thu, 2 Oct 2008 15:35:27 -0500
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+References: <22821af30810021216t5bd6de6cnb3c52865e3ebf4b0@mail.gmail.com>
+	<22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+	<19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+Message-ID: <22821af30810021335g332b3c25u7eca0e52a1a844eb@mail.gmail.com>
+
+On Thu, Oct 2, 2008 at 3:27 PM, Steven Edwards <winehacker at gmail.com> wrote:
+> On Thu, Oct 2, 2008 at 3:25 PM, James Hawkins <jhawkins at codeweavers.com> wrote:
+>> Hi,  I can't repro this problem on my machine, so I'm sending this
+>> patch to patchwatcher by way of wine-patches to get some info.  Please
+>> do not apply.
+>
+> Regarding our wineconf discussion about patchwatcher spam on
+> wine-patches and filtering. Perhaps we need 2 email address patches
+> can be sent to. My thinking is the flow could be something like:
+>
+> 1. By default everyone sends a patch to wine-patches
+> 2. If a patch gets rejected the author gets a failure mail in private,
+> and now retries or testing patches should go to wine-patches-testing N
+> times until they get it right
+> 3. once its right, patchwatch could then forward the new good patch to
+> wine-patches or could send an email to the dev saying that its good
+> enough to now send to wine-patches.
+>
+> Doing it like this, if everyone follows the rules, we won't get a ton
+> of patchwatcher retries filling up wine-patches.
+>
+
+Just so everyone is clear, I emailed Dan before submitting the patches
+asking if there was a way to send a patch directly to patchwatcher and
+bypass wine-patches, but he said there's not a way yet and that
+sending the patch to wine-patches should be OK for now.
+
+-- 
+James Hawkins
+
+
+From austinenglish at gmail.com  Thu Oct  2 15:42:49 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Thu, 2 Oct 2008 15:42:49 -0500
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+References: <22821af30810021216t5bd6de6cnb3c52865e3ebf4b0@mail.gmail.com>
+	<22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+	<19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+Message-ID: <b6bb06270810021342j47abe19ei1dd1c7e55027e93a@mail.gmail.com>
+
+On Thu, Oct 2, 2008 at 3:27 PM, Steven Edwards <winehacker at gmail.com> wrote:
+> On Thu, Oct 2, 2008 at 3:25 PM, James Hawkins <jhawkins at codeweavers.com> wrote:
+>> Hi,  I can't repro this problem on my machine, so I'm sending this
+>> patch to patchwatcher by way of wine-patches to get some info.  Please
+>> do not apply.
+>
+> Regarding our wineconf discussion about patchwatcher spam on
+> wine-patches and filtering. Perhaps we need 2 email address patches
+> can be sent to. My thinking is the flow could be something like:
+>
+> 1. By default everyone sends a patch to wine-patches
+> 2. If a patch gets rejected the author gets a failure mail in private,
+> and now retries or testing patches should go to wine-patches-testing N
+> times until they get it right
+> 3. once its right, patchwatch could then forward the new good patch to
+> wine-patches or could send an email to the dev saying that its good
+> enough to now send to wine-patches.
+
+You'd still be sending the patch twice to wine-patches, and by that
+logic, for _EVERY_ patch, not just ones that were rejected.
+
+I think the idea at Wineconf was the best:
+Submit patches to wine-patches
+Patchwatcher does its voodoo magic
+If patch is good -> wine-patches-approved
+If patch fails -> wine-patches-rejected + e-mail to author
+
+However, I think your idea has merit...if Dan would be willing, could
+add a test e-mail, that doesn't spam everyone, for testing only on
+patchwater. I.e., patch-test at kegel.com. Results would then join the
+rest on the results page (or possibly just e-mailed back, but that
+seems like more work for little gain.
+
+-Austin
+
+
+From winehacker at gmail.com  Thu Oct  2 15:47:33 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Thu, 2 Oct 2008 16:47:33 -0400
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <b6bb06270810021342j47abe19ei1dd1c7e55027e93a@mail.gmail.com>
+References: <22821af30810021216t5bd6de6cnb3c52865e3ebf4b0@mail.gmail.com>
+	<22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+	<19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+	<b6bb06270810021342j47abe19ei1dd1c7e55027e93a@mail.gmail.com>
+Message-ID: <19e31a080810021347n3fced5f4w92f662e5649ca885@mail.gmail.com>
+
+On Thu, Oct 2, 2008 at 4:42 PM, Austin English <austinenglish at gmail.com> wrote:
+> You'd still be sending the patch twice to wine-patches, and by that
+> logic, for _EVERY_ patch, not just ones that were rejected.
+
+No. you would only have to send it again if the first one was rejected
+by patchwatcher. By default no ones work flow would change, just the
+email you are sending it to for retries saving everyones inbox on
+spam. If your patch was bad you would still have to do extra leg work
+but all of that would be done in private. If we get make test working
+in more places then its possible the number of first time failures to
+wine-patches will go down also if we can encourage people to run make
+test before submitting patches.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From austinenglish at gmail.com  Thu Oct  2 15:57:03 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Thu, 2 Oct 2008 15:57:03 -0500
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <19e31a080810021347n3fced5f4w92f662e5649ca885@mail.gmail.com>
+References: <22821af30810021216t5bd6de6cnb3c52865e3ebf4b0@mail.gmail.com>
+	<22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+	<19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+	<b6bb06270810021342j47abe19ei1dd1c7e55027e93a@mail.gmail.com>
+	<19e31a080810021347n3fced5f4w92f662e5649ca885@mail.gmail.com>
+Message-ID: <b6bb06270810021357t7d65a090la0570c023b757e87@mail.gmail.com>
+
+On Thu, Oct 2, 2008 at 3:47 PM, Steven Edwards <winehacker at gmail.com> wrote:
+> On Thu, Oct 2, 2008 at 4:42 PM, Austin English <austinenglish at gmail.com> wrote:
+>> You'd still be sending the patch twice to wine-patches, and by that
+>> logic, for _EVERY_ patch, not just ones that were rejected.
+>
+> No. you would only have to send it again if the first one was rejected
+> by patchwatcher. By default no ones work flow would change, just the
+> email you are sending it to for retries saving everyones inbox on
+> spam. If your patch was bad you would still have to do extra leg work
+> but all of that would be done in private. If we get make test working
+> in more places then its possible the number of first time failures to
+> wine-patches will go down also if we can encourage people to run make
+> test before submitting patches.
+>
+> --
+> Steven Edwards
+>
+> "There is one thing stronger than all the armies in the world, and
+> that is an idea whose time has come." - Victor Hugo
+>
+
+Here's how I understand your idea, correct me if I'm wrong:
+
+WinedevA submits a patch to wine-patches. Crashes on patchwatcher,
+etc. WinedevA gets a private e-mail from patchwatcher saying "you're a
+failure, learn to code better, fix this, etc.". WinedevA fixes patch
+up, resubmits to wine-patches-testing multiple times, finally gets it
+right. He does a little dance, celebrates, etc. Patchwatcher then
+forwards this good patch to wine-patches.
+
+WinedevB submits a patch to wine-patches, works fine. Passes
+patchwatcher, no valgrind warnings, etc. Because it passed, it then
+forwards it to wine-patches. Unless patchwatcher somehow keeps track
+of all patches that have failed and been resubmitted, which seems like
+extra work for nothing.
+
+I thought we had a consensus on the process I mentioned earlier...
+
+-Austin
+
+
+From robertshearman at gmail.com  Thu Oct  2 16:21:58 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Thu, 2 Oct 2008 22:21:58 +0100
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+References: <22821af30810021216t5bd6de6cnb3c52865e3ebf4b0@mail.gmail.com>
+	<22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+	<19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+Message-ID: <1096648c0810021421n41f0a407r68e33f7e20d834c2@mail.gmail.com>
+
+2008/10/2 Steven Edwards <winehacker at gmail.com>:
+> On Thu, Oct 2, 2008 at 3:25 PM, James Hawkins <jhawkins at codeweavers.com> wrote:
+>> Hi,  I can't repro this problem on my machine, so I'm sending this
+>> patch to patchwatcher by way of wine-patches to get some info.  Please
+>> do not apply.
+>
+> Regarding our wineconf discussion about patchwatcher spam on
+> wine-patches and filtering. Perhaps we need 2 email address patches
+> can be sent to. My thinking is the flow could be something like:
+>
+> 1. By default everyone sends a patch to wine-patches
+> 2. If a patch gets rejected the author gets a failure mail in private,
+> and now retries or testing patches should go to wine-patches-testing N
+> times until they get it right
+> 3. once its right, patchwatch could then forward the new good patch to
+> wine-patches or could send an email to the dev saying that its good
+> enough to now send to wine-patches.
+>
+> Doing it like this, if everyone follows the rules, we won't get a ton
+> of patchwatcher retries filling up wine-patches.
+
+I don't like this idea because of the expression "If you gave an
+infinite number of monkeys an infinite number of typewriters they
+would eventually produce the complete works of Shakespeare." In other
+words, if someone were to just send patches all day to patchwatcher,
+changing one thing at a time until they passed then one would
+eventually get through. However, the result in this case would
+probably not be a quality patch since patchwatcher would not be able
+to catch all possible bugs.
+
+We want to be able to track how many retries a patch has had to go
+through before getting through since the more it had the more bugs it
+is likely to have. Therefore, we want all patchwatcher failures to go
+to a separate mailing list where we can see if a patch is being sent
+repeatedly so that we can email them to say "hey, you may want to take
+a while to rethink this patch or ask for help on wine-devel".
+
+James, please note that I'm not accusing you of being one of said
+monkeys, I realise this is an exception :-)
+
+-- 
+Rob Shearman
+
+
+From winehacker at gmail.com  Thu Oct  2 20:14:04 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Thu, 2 Oct 2008 21:14:04 -0400
+Subject: msi: Implement the DROP TABLE sql command.
+In-Reply-To: <1096648c0810021421n41f0a407r68e33f7e20d834c2@mail.gmail.com>
+References: <22821af30810021216t5bd6de6cnb3c52865e3ebf4b0@mail.gmail.com>
+	<22821af30810021225k6120d531jd60e221d69bdcb83@mail.gmail.com>
+	<19e31a080810021327j31154d4fj9b3834270c138afa@mail.gmail.com>
+	<1096648c0810021421n41f0a407r68e33f7e20d834c2@mail.gmail.com>
+Message-ID: <19e31a080810021814n28bd18c0lada7cef515a51c68@mail.gmail.com>
+
+On Thu, Oct 2, 2008 at 5:21 PM, Rob Shearman <robertshearman at gmail.com> wrote:
+> I don't like this idea because of the expression "If you gave an
+> infinite number of monkeys an infinite number of typewriters they
+> would eventually produce the complete works of Shakespeare." In other
+> words, if someone were to just send patches all day to patchwatcher,
+> changing one thing at a time until they passed then one would
+> eventually get through. However, the result in this case would
+> probably not be a quality patch since patchwatcher would not be able
+> to catch all possible bugs.
+>
+> We want to be able to track how many retries a patch has had to go
+> through before getting through since the more it had the more bugs it
+> is likely to have. Therefore, we want all patchwatcher failures to go
+> to a separate mailing list where we can see if a patch is being sent
+> repeatedly so that we can email them to say "hey, you may want to take
+> a while to rethink this patch or ask for help on wine-devel".
+
+I agree with that. There is no reason why the wine-patches-testing
+thing could not be a separate mailing list that we could monitor as
+well. I just don't think it would need that high level of attention
+like wine-patches because it would be the exception case rather than
+the rule (assuming we get winetest passing for most people before they
+submit patches), interested parties could review it, albeit less often
+and still have the effect of filtering the spam from the main mailing
+list.
+
+> James, please note that I'm not accusing you of being one of said
+> monkeys, I realise this is an exception :-)
+
+Me either. =) It was just seeing this thread made me think about it
+more and it did not seem that we had clear consensus on this issue at
+wineconf. In the end it does not matter, Alexandre will decide what
+works best for him. I think thats going to end up being some sort of
+tagging system like we discussed so that all patches good and bad get
+through with review. It would just be nice to have an outside way to
+privately send patches to patchwatcher without spamming everyone else.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From robertshearman at gmail.com  Fri Oct  3 02:33:20 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Fri, 3 Oct 2008 08:33:20 +0100
+Subject: [PATCH 1/2] wininet: Return error codes explicitly from URLCache
+	functions instead of returning a BOOL and storing the error
+	code in the last error value.
+In-Reply-To: <3a768c550810020751w2265436bp507ea770c9e6ff4d@mail.gmail.com>
+References: <3a768c550810020751w2265436bp507ea770c9e6ff4d@mail.gmail.com>
+Message-ID: <1096648c0810030033r37d96f7do47698aabd83056d2@mail.gmail.com>
+
+2008/10/2 Juan Lang <juan.lang at gmail.com>:
+> Hi Rob,
+>
+> + * Locks the index for system-wide exclusive access.
+> + *
+> + * RETURNS
+> + *  TRUE if successful
+> + *  FALSE if failed and calls SetLastError.
+>  */
+>  static LPURLCACHE_HEADER
+> URLCacheContainer_LockIndex(URLCACHECONTAINER * pContainer)
+>
+> The comment's off here.
+>
+> @@ -1346,34 +1353,32 @@ static BOOL
+> URLCache_AddEntryToHash(LPURLCACHE_HEADER pHeader, LPCSTR lpszUrl, D
+>  *    FALSE if the hash table could not be created
+>  *
+>  */
+> -static HASH_CACHEFILE_ENTRY
+> *URLCache_CreateHashTable(LPURLCACHE_HEADER pHeader,
+> HASH_CACHEFILE_ENTRY *pPrevHash)
+> +static DWORD URLCache_CreateHashTable(LPURLCACHE_HEADER pHeader,
+> HASH_CACHEFILE_ENTRY *pPrevHash, HASH_CACHEFILE_ENTRY **ppHash)
+> I think you forgot to update the comment here.
+
+Good spot. I'll fix these cases and resend.
+
+Thanks for reviewing,
+-- 
+Rob Shearman
+
+
+From mah at jump-ing.de  Fri Oct  3 03:52:03 2008
+From: mah at jump-ing.de (Markus Hitter)
+Date: Fri, 3 Oct 2008 10:52:03 +0200
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <alpine.DEB.1.10.0810021836450.7248@localhost.localdomain>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<EEDB1C7D-011E-431A-97FA-9C0E24015C82@free.fr>
+	<D4593677-794F-45A0-89C8-8A8179C1BBFA@java.pl>
+	<486E996F.5000907@sprintpcs.com> <486EF6C0.20109@codeweavers.com>
+	<5963B75B-F12E-41CE-AC48-0D3256390CC1@java.pl>
+	<alpine.DEB.1.10.0807101417450.18163@amboise.dolphin>
+	<A0BC05B5-C550-49D6-9E4C-4F85057BF701@java.pl>
+	<alpine.DEB.1.10.0810021836450.7248@localhost.localdomain>
+Message-ID: <E58742AF-4990-4465-A633-E5548CAC768C@jump-ing.de>
+
+
+Am 02.10.2008 um 20:16 schrieb Saulius Krasuckas:
+
+> * On Thu, 10 Jul 2008, Adam Strzelecki wrote:
+>>> Is it really technically impossible to access the Quartz APIs or  
+>>> write Mac applications using C?
+>>
+>> Well it is possible, for example iTunes is non Objective-C Carbon
+>> (API) app AFAIK. Problem is that Carbon (pure C interface) is
+>> considered as deprecated by Apple and may disappear from future
+>> releases of OSXes at all, most 98% of applications are Objective-C
+>> Cocoa anyway. Moreover most of the functionality introduced in  
+>> 10.5 or
+>> 10.4 went just into Cocoa, and never was backported to Carbon.
+>> So it isn't matter that it isn't possible, but it is IMHO more
+>> reasonable to do it in Objective-C.
+>
+> Then what about some thunking from carbonic source code to binary  
+> Objective-C code?
+
+While the above is correct, modern Cocoa, in opposite to it's  
+precedessor NeXTstep/OpenStep, is based on Quartz and CoreFoundation,  
+both of which are plain C APIs. There's no need for neither Carbon  
+nor Cocoa nor Objective-C to get some basic graphics to the Mac OS X  
+screen.
+
+
+MarKus
+
+- - - - - - - - - - - - - - - - - - -
+Dipl. Ing. Markus Hitter
+http://www.jump-ing.de/
+
+
+
+
+
+
+From ono at java.pl  Fri Oct  3 06:09:11 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Fri, 3 Oct 2008 13:09:11 +0200
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <E58742AF-4990-4465-A633-E5548CAC768C@jump-ing.de>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<EEDB1C7D-011E-431A-97FA-9C0E24015C82@free.fr>
+	<D4593677-794F-45A0-89C8-8A8179C1BBFA@java.pl>
+	<486E996F.5000907@sprintpcs.com> <486EF6C0.20109@codeweavers.com>
+	<5963B75B-F12E-41CE-AC48-0D3256390CC1@java.pl>
+	<alpine.DEB.1.10.0807101417450.18163@amboise.dolphin>
+	<A0BC05B5-C550-49D6-9E4C-4F85057BF701@java.pl>
+	<alpine.DEB.1.10.0810021836450.7248@localhost.localdomain>
+	<E58742AF-4990-4465-A633-E5548CAC768C@jump-ing.de>
+Message-ID: <DDF24482-EBEB-4AC9-A7EB-EA09CDE287CB@java.pl>
+
+> I googled a bit more.  There are at least two ways of achieving this  
+> mentioned in the docs of libFoundation: by using XML-RPC call and by  
+> wrapping classes in ANSI-C APIs. [4]
+
+Well actually you can easily access all Obj-C features trough the  
+following pure C API:
+http://developer.apple.com/documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html
+
+> While the above is correct, modern Cocoa, in opposite to it's  
+> precedessor NeXTstep/OpenStep, is based on Quartz and  
+> CoreFoundation, both of which are plain C APIs. There's no need for  
+> neither Carbon nor Cocoa nor Objective-C to get some basic graphics  
+> to the Mac OS X screen.
+
+You are right, however what we all want to have is probably some Wine  
+seamless integration with OSX GUI at higher level than Quartz which is  
+just equivalent of WinGDI, and for this you need to somehow use  
+HIToolkit of Carbon extra to do windows management, font handling etc.  
+for example:
+http://developer.apple.com/documentation/Carbon/Reference/Window_Manager/Reference/reference.html#/ 
+/apple_ref/c/func/CreateNewWindow
+.. to create new window.
+
+The problem here is that HIToolkit from Carbon is a bit pushed away by  
+Apple in favor of Cocoa, and the reason is that Carbon has its roots  
+in Mac OS 8, and Cocoa is the new API for Mac OS X NextStep based  
+system, moreover there's no 64-bit HIToolkit (which doesn't matter for  
+Wine now, but may matter in the future).
+
+There's nice discussion here:
+http://www.lazarus.freepascal.org/index.php?name=PNphpBB2&file=printview&t=5017&start=15
+
+I believe if pure C source is a constraint for Wine, one should try to  
+make winequartz.drv to be Quartz API for all WinGDI like stuff + some  
+HIToolbox for Window management and CoreText for text display.
+
+Regards,
+-- 
+Adam Strzelecki
+
+
+
+From hans at meelstraat.net  Fri Oct  3 06:45:19 2008
+From: hans at meelstraat.net (Hans Leidekker)
+Date: Fri, 3 Oct 2008 13:45:19 +0200
+Subject: msxml3: Add IXMLHTTPRequest support
+In-Reply-To: <48E600A2.9090303@hotmail.com>
+References: <48E600A2.9090303@hotmail.com>
+Message-ID: <200810031345.20300.hans@meelstraat.net>
+
+On Friday 03 October 2008 13:23:14 Alistair Leslie-Hughes wrote:
+
+> Changelog:
+> 	msxml3: Add IXMLHTTPRequest support
+
+Would it be possible to use winhttp instead of nanohttp? The less
+we depend on libxml the better I'd say.
+
+ -Hans
+
+
+From leslie_alistair at hotmail.com  Fri Oct  3 06:47:50 2008
+From: leslie_alistair at hotmail.com (Alistair Leslie-Hughes)
+Date: Fri, 3 Oct 2008 21:47:50 +1000
+Subject: msxml3: Add IXMLHTTPRequest support
+In-Reply-To: <48E600A2.9090303@hotmail.com>
+	<200810031345.20300.hans@meelstraat.net>
+References: <48E600A2.9090303@hotmail.com>
+	<200810031345.20300.hans@meelstraat.net>
+Message-ID: <BAY117-DS3270494FD24BF13E3C479933C0@phx.gbl>
+
+From: "Hans Leidekker" <hans at meelstraat.net>
+Sent: Friday, October 03, 2008 9:45 PM
+To: <wine-devel at winehq.org>; "Alistair Leslie-Hughes" 
+<leslie_alistair at hotmail.com>
+Subject: Re: msxml3: Add IXMLHTTPRequest support
+
+> On Friday 03 October 2008 13:23:14 Alistair Leslie-Hughes wrote:
+>
+>> Changelog:
+>> msxml3: Add IXMLHTTPRequest support
+>
+> Would it be possible to use winhttp instead of nanohttp? The less
+> we depend on libxml the better I'd say.
+>
+Sure. This nanphttp was just my initial thought.  I'll resend a corrected 
+patch shortly.
+
+Best Regards
+ Alistair Leslie-Hughes 
+
+
+
+From jacek at codeweavers.com  Fri Oct  3 04:54:49 2008
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Fri, 03 Oct 2008 11:54:49 +0200
+Subject: msxml3: Add IXMLHTTPRequest support
+In-Reply-To: <200810031345.20300.hans@meelstraat.net>
+References: <48E600A2.9090303@hotmail.com>
+	<200810031345.20300.hans@meelstraat.net>
+Message-ID: <48E5EBE9.6090402@codeweavers.com>
+
+Hans Leidekker wrote:
+> Would it be possible to use winhttp instead of nanohttp? The less
+> we depend on libxml the better I'd say.
+>   
+
+We probably should use urlmon, not winhttp.
+
+
+Jacek
+
+
+From juan.lang at gmail.com  Fri Oct  3 09:59:50 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Fri, 3 Oct 2008 07:59:50 -0700
+Subject: msxml3: Add IXMLHTTPRequest support (try 2)
+Message-ID: <3a768c550810030759o2d3595bfqebe373f1dc7bb751@mail.gmail.com>
+
+Hi Alistair, maybe I'm being overly picky, but::
+--- /dev/null
++++ b/dlls/msxml3/httprequest.c
+@@ -0,0 +1,343 @@
++/*
+
+This file has DOS line endings.  The rest of the files do not.  It's
+really distracting in the patch, since this portion of the patch has
+^M at the end of every line.
+--Juan
+
+
+From stefan at codeweavers.com  Fri Oct  3 10:12:34 2008
+From: stefan at codeweavers.com (=?UTF-8?Q?Stefan_D=C3=B6singer?=)
+Date: Fri, 3 Oct 2008 10:12:34 -0500
+Subject: D3DXAssembleShader, unknown texture formats and misc
+In-Reply-To: <621468.14292.qm@web27107.mail.ukl.yahoo.com>
+References: <621468.14292.qm@web27107.mail.ukl.yahoo.com>
+Message-ID: <001e01c9256a$76df5a40$649e0ec0$@com>
+
+I have a mostly finished assembler, and a HLSL compiler in the works. I have a git tree out there which has the patches, but the server is currently shut down. I'm currently away from home, but I'll return tomorrow. If I forget to reply, can you remind me in a few days?
+
+ 
+
+From: wine-devel-bounces at winehq.org [mailto:wine-devel-bounces at winehq.org] On Behalf Of Kjell Rune Skaaraas
+Sent: Thursday, October 02, 2008 1:57 PM
+To: wine-devel at winehq.org
+Subject: D3DXAssembleShader, unknown texture formats and misc
+
+ 
+
+
+Hello,
+
+I'm taking a stab at implmenting D3DXAssembleShader, which takes shader instructions like "mul r1, r2.xy, r3.z" and turns them into binary code (one-to-one mapping). Although I've got very little clue what I'm really doing, I've come quite a way on a parser that breaks it down into the separate parts and made some reverse lookups on tables of opcodes, registrys, masks etc. that I found in the wine code. I've basicly come so far that I got the parts like mul = 0x00000005, r = temp registry = 0x00000000, register number = 0x00000001, writemask = 0x000F0000 etc. for all the arguments, but I'm struggling a bit putting it all together into the correct binary format. I have found a lot of material on the *text* format of the shader instructions, but pretty much none on the binary format. Clearly some documentation must have been used/made when you implemented glsl and the other shader backends as they read this stuff and translates it to OpenGL calls. Does anyone have anything they could share with me? 
+
+P.S. Don't expect too much of me though, 1) It's so ugly it makes grown men cry, 2) Current it leaks memory bigtime and 3) It's a text hack that will never validate shader code or anything like that BUT I think I can make this work for code that already works.
+
+On a different note, a game I have is pulling up two completely unknown texture formats R16 and AL16 as fourcc. I figured I could at least find out something about them and add them to the debug tables, but the only references I find on google are to wine and wine bug reports. I figure they may be related to R16F (same with ints?) and L16 (luminosity, so AL16 with alpha?) but I can't find anything on them.
+
+Oh yeah and for the misc question - where's the right place to add test code? I expect my D3DXAssembleShader function will need a lot of it - at least one for each opcode, registry tests, write mask tests, whitespace and commenting tests+++. No code for you to review yet, not until it works. THEN you can bring out the tar and feathers over the code. 
+
+Regards,
+
+Kjell Rune
+
+ 
+
+  _____  
+
+ 
+
+
+Alt i ett. F? Yahoo! <http://no.mail.yahoo.com>  Mail med adressekartotek, kalender og notisblokk.
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20081003/919acf32/attachment.htm 
+
+From stefan at codeweavers.com  Fri Oct  3 10:19:18 2008
+From: stefan at codeweavers.com (=?UTF-8?Q?Stefan_D=C3=B6singer?=)
+Date: Fri, 3 Oct 2008 10:19:18 -0500
+Subject: d3d8/9: Use WINED3D_OK instead of D3D_OK in vertexshader.c.
+In-Reply-To: <1096648c0810030455v53550b22xfb2d887232fb35fe@mail.gmail.com>
+References: <1096648c0810030455v53550b22xfb2d887232fb35fe@mail.gmail.com>
+Message-ID: <002301c9256b$67d328f0$37797ad0$@com>
+
+Actually, since the return value comes from WineD3D, we should use WINED3D_OK here. Although there is not really a scheme behind all this and we never cared about that because both WINED3D_OK and D3D_OK are #define'd to S_OK.
+
+
+> -----Original Message-----
+> From: wine-patches-bounces at winehq.org [mailto:wine-patches-
+> bounces at winehq.org] On Behalf Of Rob Shearman
+> Sent: Friday, October 03, 2008 6:56 AM
+> To: wine-patches
+> Subject: d3d8/9: Use WINED3D_OK instead of D3D_OK in vertexshader.c.
+> 
+> ---
+>  dlls/d3d8/vertexshader.c |    4 ++--
+>  dlls/d3d9/vertexshader.c |    4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+
+
+
+From stefan at codeweavers.com  Fri Oct  3 10:45:43 2008
+From: stefan at codeweavers.com (=?UTF-8?Q?Stefan_D=C3=B6singer?=)
+Date: Fri, 3 Oct 2008 10:45:43 -0500
+Subject: d3d8/9: Use WINED3D_OK instead of D3D_OK in vertexshader.c.
+In-Reply-To: <d658b69e0810030824p3d7f1bb9la5a5d3a17f1eea89@mail.gmail.com>
+References: <1096648c0810030455v53550b22xfb2d887232fb35fe@mail.gmail.com>	
+	<002301c9256b$67d328f0$37797ad0$@com>
+	<d658b69e0810030824p3d7f1bb9la5a5d3a17f1eea89@mail.gmail.com>
+Message-ID: <000601c9256f$18340630$489c1290$@com>
+
+
+
+> -----Original Message-----
+> From: Henri Verbeet [mailto:hverbeet at gmail.com]
+> Sent: Friday, October 03, 2008 10:25 AM
+> To: Stefan D?singer
+> Subject: Re: d3d8/9: Use WINED3D_OK instead of D3D_OK in vertexshader.c.
+> 
+> 2008/10/3 Stefan D?singer <stefan at codeweavers.com>:
+> > Actually, since the return value comes from WineD3D, we should use
+> WINED3D_OK here. Although there is not really a scheme behind all this
+> and we never cared about that because both WINED3D_OK and D3D_OK are
+> #define'd to S_OK.
+> >
+> Yes, that's what the patch does :-)
+Woops. Confusion
+
+
+
+
+From austinenglish at gmail.com  Fri Oct  3 11:46:12 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Fri, 3 Oct 2008 11:46:12 -0500
+Subject: Silencing a noisy fixme - feedback requested
+Message-ID: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+
+Howdy,
+
+I was taking a look at some of the noisy fixme's, and wanted some
+feedback on the attached patch.
+This particular fixme is _really_ noisy...out of this
+(http://bugs.winehq.org/attachment.cgi?id=16447)
+log, it has 9635 of the 13117 lines!
+
+"fixme:ntdll:NtLockFile I/O completion on lock not implemented yet" 9635 times!
+
+Not sure if this is the best way to go about this or not. Any advice
+appreciated (or if anyone else wants to silence it :-P).
+
+-Austin
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: ntdll_fixme.txt
+Url: http://www.winehq.org/pipermail/wine-devel/attachments/20081003/d9a76463/attachment-0001.txt 
+
+From dimi at lattica.com  Fri Oct  3 11:54:53 2008
+From: dimi at lattica.com (Dimi Paun)
+Date: Fri, 03 Oct 2008 12:54:53 -0400
+Subject: Silencing a noisy fixme - feedback requested
+In-Reply-To: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+References: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+Message-ID: <1223052893.17757.97.camel@dimi.lattica.com>
+
+
+On Fri, 2008-10-03 at 11:46 -0500, Austin English wrote:
+> +    BOOLEAN     warn = TRUE;
+
+This has to be static, else it will always be TRUE.
+
+-- 
+Dimi Paun <dimi at lattica.com>
+Lattica, Inc.
+
+
+
+From austinenglish at gmail.com  Fri Oct  3 12:01:00 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Fri, 3 Oct 2008 12:01:00 -0500
+Subject: Silencing a noisy fixme - feedback requested
+In-Reply-To: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+References: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+Message-ID: <b6bb06270810031001l1049f88fgf3e36d605aea5056@mail.gmail.com>
+
+On Fri, Oct 3, 2008 at 11:46 AM, Austin English <austinenglish at gmail.com> wrote:
+> Howdy,
+>
+> I was taking a look at some of the noisy fixme's, and wanted some
+> feedback on the attached patch.
+> This particular fixme is _really_ noisy...out of this
+> (http://bugs.winehq.org/attachment.cgi?id=16447)
+> log, it has 9635 of the 13117 lines!
+>
+> "fixme:ntdll:NtLockFile I/O completion on lock not implemented yet" 9635 times!
+>
+> Not sure if this is the best way to go about this or not. Any advice
+> appreciated (or if anyone else wants to silence it :-P).
+>
+> -Austin
+>
+
+How's this look?
+
+Thanks for the quick help everyone!
+
+-Austin
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: ntdll_fixme.txt
+Url: http://www.winehq.org/pipermail/wine-devel/attachments/20081003/20a55865/attachment.txt 
+
+From hverbeet at gmail.com  Fri Oct  3 12:01:52 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Fri, 3 Oct 2008 19:01:52 +0200
+Subject: Silencing a noisy fixme - feedback requested
+In-Reply-To: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+References: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+Message-ID: <d658b69e0810031001o5afaa384p54d57e3206b3d957@mail.gmail.com>
+
+2008/10/3 Austin English <austinenglish at gmail.com>:
+> Howdy,
+>
+> I was taking a look at some of the noisy fixme's, and wanted some
+> feedback on the attached patch.
+That patch won't make the FIXME any less noisy, for one.
+
+> This particular fixme is _really_ noisy...out of this
+> (http://bugs.winehq.org/attachment.cgi?id=16447)
+> log, it has 9635 of the 13117 lines!
+>
+> "fixme:ntdll:NtLockFile I/O completion on lock not implemented yet" 9635 times!
+>
+> Not sure if this is the best way to go about this or not. Any advice
+> appreciated (or if anyone else wants to silence it :-P).
+>
+In general I'm not a big fan of blindly silencing FIXMEs, probably
+because scary text in scary consoles doesn't bother me much, and can
+be useful on occasion.
+
+
+From bunglehead at gmail.com  Fri Oct  3 11:55:23 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Fri, 03 Oct 2008 20:55:23 +0400
+Subject: Silencing a noisy fixme - feedback requested
+In-Reply-To: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+References: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+Message-ID: <48E64E7B.1000204@gmail.com>
+
+Austin English wrote:
+> Howdy,
+>
+> I was taking a look at some of the noisy fixme's, and wanted some
+> feedback on the attached patch.
+> This particular fixme is _really_ noisy...out of this
+> (http://bugs.winehq.org/attachment.cgi?id=16447)
+> log, it has 9635 of the 13117 lines!
+>
+> "fixme:ntdll:NtLockFile I/O completion on lock not implemented yet" 9635 times!
+>
+> Not sure if this is the best way to go about this or not. Any advice
+> appreciated (or if anyone else wants to silence it :-P).
+>
+> -Austin
+>   
+Did you want static variable?
+
+
+
+From juan.lang at gmail.com  Fri Oct  3 11:56:25 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Fri, 3 Oct 2008 09:56:25 -0700
+Subject: Silencing a noisy fixme - feedback requested
+In-Reply-To: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+References: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+Message-ID: <3a768c550810030956k176f9094ha2d003a188bcc4d6@mail.gmail.com>
+
+Hi Austin,
+
+> Not sure if this is the best way to go about this or not. Any advice
+> appreciated (or if anyone else wants to silence it :-P).
+
+You're close.  The only fix is:
++    BOOLEAN     warn = TRUE;
+should be static.  (Otherwise it'll be TRUE every time the function is
+called, so it'll always be printed.)
+--Juan
+
+
+From dimi at lattica.com  Fri Oct  3 13:48:01 2008
+From: dimi at lattica.com (Dimi Paun)
+Date: Fri, 03 Oct 2008 14:48:01 -0400
+Subject: Silencing a noisy fixme - feedback requested
+In-Reply-To: <b6bb06270810031001l1049f88fgf3e36d605aea5056@mail.gmail.com>
+References: <b6bb06270810030946oaccbb45q9981f83d60a6d746@mail.gmail.com>
+	<b6bb06270810031001l1049f88fgf3e36d605aea5056@mail.gmail.com>
+Message-ID: <1223059681.17757.100.camel@dimi.lattica.com>
+
+
+On Fri, 2008-10-03 at 12:01 -0500, Austin English wrote:
+> +    if (apc_user) 
+> +       if (warn) {
+> +           FIXME("I/O completion on lock not implemented yet\n");
+> +           warn = FALSE;
+> +       }
+
+It's a style thing, but I for one would much prefer
+brackets around the outer if to prevent easy to make
+mistakes with dandling ifs.
+
+-- 
+Dimi Paun <dimi at lattica.com>
+Lattica, Inc.
+
+
+
+From dylan.ah.smith at gmail.com  Sat Oct  4 00:52:50 2008
+From: dylan.ah.smith at gmail.com (Dylan Smith)
+Date: Sat, 4 Oct 2008 01:52:50 -0400
+Subject: richedit: Show arrow cursor over scrollbar. (Fixes bug 15334)
+In-Reply-To: <5c6ee3b70810032221h3323e8cbscbedb131463021d2@mail.gmail.com>
+References: <5c6ee3b70810032221h3323e8cbscbedb131463021d2@mail.gmail.com>
+Message-ID: <5c6ee3b70810032252k7be3b3aand5a777c6a0075b91@mail.gmail.com>
+
+On Sat, Oct 4, 2008 at 1:21 AM, Dylan Smith <dylan.ah.smith at gmail.com>wrote:
+
+> Implemented the code to check for this condition in the function that
+> handles WM_SETCURSOR.  For each scrollbar I checked for visibility and
+> checked the MessagePos to see if the mouse was over the scrollbar.
+> ---
+>  dlls/riched20/editor.c |   19 +++++++++++++++++++
+>  1 files changed, 19 insertions(+), 0 deletions(-)
+>
+
+This fix works alright in Wine, but I found out that it wasn't working when
+I cross-compiled riched20.dll and wordpad and then ran it on Windows XP.  It
+seems as if GetScrollBarInfo was returning a SCROLLBARINFO struct with an
+rcScrollBar RECT in client coordinates in Wine and in screen coordinates in
+Windows XP.
+
+This underlying problem should be fixed first before fixing richedit.  Later
+this patch would be modified to move the call to ScreenToClient after the
+check to see if the position is within the scrollbars, which I found fixes
+the problem on Windows.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20081004/7d6250d5/attachment.htm 
+
+From dank at kegel.com  Sat Oct  4 01:52:13 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Fri, 3 Oct 2008 23:52:13 -0700
+Subject: Layered windows required to support Clippy properly?
+Message-ID: <a71bd89a0810032352m4641bc34o60b4048d4bf4a913@mail.gmail.com>
+
+I see in wine-1.1.5's announcement that we now have
+partial support for "Layered Windows",
+http://msdn.microsoft.com/en-us/library/ms997507.aspx
+Which apps use this?
+
+Seems that it used to make screen captures hard,
+so one way to find them is to look for apps that
+say you have to turn on "Capture Alpha-Blending" on in UltraVNC
+to see them remotely.  Candidates include:
+Visual Studio - tooltips
+Microsoft Office - Clippy
+Possibly photoshop cs3
+
+Another way is to look for apps that recommend the
+Vista Layered Windows Performance hotfix or Vista SP1.
+Candidates include:
+Yahoo Messenger for Windows Vista
+
+Another way is to look for apps that make Wine output
+fixme:xrender:X11DRV_AlphaBlend Ignoring SourceConstantAlpha ...
+Candidates include:
+Miranda IM http://bugs.winehq.org/show_bug.cgi?id=11902
+MSN Messenger http://bugs.winehq.org/show_bug.cgi?id=8555
+Skype http://bugs.winehq.org/show_bug.cgi?id=12334
+
+I'm getting the feeling it's widespread.  Anyone else
+know of examples of apps that Wine displays poorly
+because of the lack of this feature?
+- Dan
+
+
+From wine at mkarcher.dialup.fu-berlin.de  Sat Oct  4 13:44:28 2008
+From: wine at mkarcher.dialup.fu-berlin.de (Michael Karcher)
+Date: Sat, 04 Oct 2008 20:44:28 +0200
+Subject: Wine: Possible typo in dll/msxml3/tests/domdoc.c
+Message-ID: <1223145868.25572.3.camel@hermes2.karcher.local>
+
+Hello Huw Davies,
+
+it looks like test_removeChild (introduced by you in commit 187ab1c0)
+contains a typo. The test passes both ways, but from the code flow I
+suspect that node_list2 was obtained for a reason, namely using it.
+
+Regards,
+  Michael Karcher
+
+This patch fixes the type, if it turn out to really be a typo.
+
+diff --git a/dlls/msxml3/tests/domdoc.c b/dlls/msxml3/tests/domdoc.c
+index 29bebb9..0494e9f 100644
+--- a/dlls/msxml3/tests/domdoc.c
++++ b/dlls/msxml3/tests/domdoc.c
+@@ -1785,7 +1785,7 @@ static void test_removeChild(void)
+     r = IXMLDOMNode_get_childNodes( node, &node_list2 );
+     ok( r == S_OK, "ret %08x\n", r);
+  
+-    r = IXMLDOMNodeList_get_item( node_list, 0, &node4 );
++    r = IXMLDOMNodeList_get_item( node_list2, 0, &node4 );
+     ok( r == S_OK, "ret %08x\n", r);
+ 
+     r = IXMLDOMElement_removeChild( element, NULL, &node2 );
+
+
+
+
+From wine at mkarcher.dialup.fu-berlin.de  Sat Oct  4 14:00:28 2008
+From: wine at mkarcher.dialup.fu-berlin.de (Michael Karcher)
+Date: Sat, 04 Oct 2008 21:00:28 +0200
+Subject: Wine: Possible typo in dll/msxml3/tests/domdoc.c
+In-Reply-To: <1223145868.25572.3.camel@hermes2.karcher.local>
+References: <1223145868.25572.3.camel@hermes2.karcher.local>
+Message-ID: <1223146828.25572.7.camel@hermes2.karcher.local>
+
+[resend, as I used a non-subscribed From: in the first try]
+
+Am Samstag, den 04.10.2008, 20:44 +0200 schrieb Michael Karcher:
+> Hello Huw Davies,
+> 
+> it looks like test_removeChild (introduced by you in commit 187ab1c0)
+> contains a typo.
+
+Ugh. Please disregard the previous mail. The test after "fixing" the
+typo does *not* succeed in WinXP, only in wine.
+
+Regards,
+  Michael Karcher
+
+
+
+From wine at mkarcher.dialup.fu-berlin.de  Sat Oct  4 15:28:31 2008
+From: wine at mkarcher.dialup.fu-berlin.de (Michael Karcher)
+Date: Sat, 04 Oct 2008 22:28:31 +0200
+Subject: Wine: Possible typo in dll/msxml3/tests/domdoc.c
+In-Reply-To: <1223146828.25572.7.camel@hermes2.karcher.local>
+References: <1223145868.25572.3.camel@hermes2.karcher.local>
+	<1223146828.25572.7.camel@hermes2.karcher.local>
+Message-ID: <1223152111.25572.12.camel@hermes2.karcher.local>
+
+Am Samstag, den 04.10.2008, 21:00 +0200 schrieb Michael Karcher:
+> > it looks like test_removeChild (introduced by you in commit 187ab1c0)
+> > contains a typo.
+> Ugh. Please disregard the previous mail. The test after "fixing" the
+> typo does *not* succeed in WinXP, only in wine.
+Last followup on this thread, hopefully.
+
+It looks like it indeed was a typo, and from that typo wrong conclusions
+about the behavior of native were made. I have a modified testcase and a
+patch for wine to better match native behavior ready (A series of three
+patches up to now). As I am going to continue working on msxml3 now, I
+will submit the whole stuff in a couple of hours as one series.
+
+Regards,
+  Michael Karcher
+
+
+
+From dmitry at codeweavers.com  Sun Oct  5 00:41:57 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 5 Oct 2008 14:41:57 +0900
+Subject: [try 4][PATCH 1/2] user32/tests: Added test about minimal child
+	windowsizes.
+References: <48E52C91.9060504@fkoeberle.de>
+Message-ID: <A179611EACB544C3AD15DD936B2D4E8C@DMITRY>
+
+"Florian K?berle" <florian at fkoeberle.de> wrote:
+
+> Changes since try 3:
+> + I found out that the minimal child window size is "4 + 2*borderWidth"
+> by testing multiple values for some registery keys like
+> "HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics\BorderWidth" on a
+> Windows XP machine. I don't know where the 4 comes from, but it could be
+> hard coded in Windows too.
+
+That still looks more like a hack and you still need find what that
+values mean. "4 + 2*borderWidth" is not something to trust in general.
+
+-- 
+Dmitry. 
+
+
+
+From dmitry at codeweavers.com  Sun Oct  5 00:47:35 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 5 Oct 2008 14:47:35 +0900
+Subject: gdi32: Fix for capella problem with codepages in symbol fonts
+References: <1222982253.6022.17.camel@saracura.intra.claninfo.com.br>
+Message-ID: <83D0E0DD4D2D4535ABBA5A7161E9637D@DMITRY>
+
+"Stefan Ziel" <stefan.ziel at terra.com.br> wrote:
+
+> Ignore characterset bit for symbol fonts
+
+> -    if(!TranslateCharsetInfo((DWORD*)(INT_PTR)lf.lfCharSet, &csi, TCI_SRCCHARSET)) {
+> +    if (lf.lfCharSet == SYMBOL_CHARSET){
+> +        /* codepage for symbol is not definied -> ignore it */
+> +        csi.fs.fsCsb[0] = 0;
+
+This patch is obviously wrong, TranslateCharsetInfo does handle
+SYMBOL_CHARSET, and code page for symbol *is* defined. In any
+case the first thing to do is write a test case.
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Sun Oct  5 00:51:38 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 5 Oct 2008 14:51:38 +0900
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+References: <1222985616.645.10.camel@debian.localdomain>
+Message-ID: <0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+
+"Nikolay Sivov" <bunglehead at gmail.com> wrote:
+
+> +UINT WINAPI GetRoleTextA(DWORD role, LPSTR lpRole, UINT rolemax)
+> +{
+> +    UINT length;
+> +    WCHAR *roletextW;
+> +    CHAR *roletextA;
+> +
+> +    TRACE("%u %p %u\n", role, lpRole, rolemax);
+> +
+> +    length = GetRoleTextW(role, NULL, 0);
+> +    if(length == 0)
+> +        return 0;
+> +
+> +    roletextW = HeapAlloc(GetProcessHeap(), 0, (length + 1)*sizeof(WCHAR));
+> +    if(!roletextW)
+> +        return 0;
+> +
+> +    GetRoleTextW(role, roletextW, length + 1);
+> +
+> +    length = WideCharToMultiByte( CP_ACP, 0, roletextW, -1, NULL, 0, NULL, NULL );
+> +
+> +    if(!lpRole){
+> +        HeapFree(GetProcessHeap(), 0, roletextW);
+> +        return length - 1;
+> +    }
+> +
+> +    roletextA = HeapAlloc(GetProcessHeap(), 0, length);
+> +    WideCharToMultiByte( CP_ACP, 0, roletextW, -1, roletextA, length, NULL, NULL );
+> +
+> +    if(rolemax < length)
+> +        length = rolemax;
+> +
+> +    memcpy(lpRole, roletextA, length);
+> +    lpRole[length-1] = '\0';
+> +
+> +    HeapFree(GetProcessHeap(), 0, roletextA);
+> +    HeapFree(GetProcessHeap(), 0, roletextW);
+> +
+> +    return length - 1;
+> +}
+
+Why do you need to allocate an intermediate roletextA?
+
+-- 
+Dmitry.
+
+
+From bunglehead at gmail.com  Sun Oct  5 01:35:52 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Sun, 05 Oct 2008 10:35:52 +0400
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+In-Reply-To: <0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+Message-ID: <48E86048.8070606@gmail.com>
+
+Dmitry Timoshkov wrote:
+> "Nikolay Sivov" <bunglehead at gmail.com> wrote:
+>
+>> +UINT WINAPI GetRoleTextA(DWORD role, LPSTR lpRole, UINT rolemax)
+>> +{
+>> +    UINT length;
+>> +    WCHAR *roletextW;
+>> +    CHAR *roletextA;
+>> +
+>> +    TRACE("%u %p %u\n", role, lpRole, rolemax);
+>> +
+>> +    length = GetRoleTextW(role, NULL, 0);
+>> +    if(length == 0)
+>> +        return 0;
+>> +
+>> +    roletextW = HeapAlloc(GetProcessHeap(), 0, (length + 
+>> 1)*sizeof(WCHAR));
+>> +    if(!roletextW)
+>> +        return 0;
+>> +
+>> +    GetRoleTextW(role, roletextW, length + 1);
+>> +
+>> +    length = WideCharToMultiByte( CP_ACP, 0, roletextW, -1, NULL, 0, 
+>> NULL, NULL );
+>> +
+>> +    if(!lpRole){
+>> +        HeapFree(GetProcessHeap(), 0, roletextW);
+>> +        return length - 1;
+>> +    }
+>> +
+>> +    roletextA = HeapAlloc(GetProcessHeap(), 0, length);
+>> +    WideCharToMultiByte( CP_ACP, 0, roletextW, -1, roletextA, 
+>> length, NULL, NULL );
+>> +
+>> +    if(rolemax < length)
+>> +        length = rolemax;
+>> +
+>> +    memcpy(lpRole, roletextA, length);
+>> +    lpRole[length-1] = '\0';
+>> +
+>> +    HeapFree(GetProcessHeap(), 0, roletextA);
+>> +    HeapFree(GetProcessHeap(), 0, roletextW);
+>> +
+>> +    return length - 1;
+>> +}
+>
+> Why do you need to allocate an intermediate roletextA?
+>
+WideCharToMultiByte requires to have a sufficient buffer. I think it's 
+the easiest way to allocate necessary buffer instead of using local 
+buffer of some hardcoded length. What do you think?
+
+
+From dmitry at codeweavers.com  Sun Oct  5 02:43:44 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 5 Oct 2008 16:43:44 +0900
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+Message-ID: <03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+
+"Nikolay Sivov" <bunglehead at gmail.com> wrote:
+
+>> Why do you need to allocate an intermediate roletextA?
+>>
+> WideCharToMultiByte requires to have a sufficient buffer. I think it's 
+> the easiest way to allocate necessary buffer instead of using local 
+> buffer of some hardcoded length. What do you think?
+
+And what is the problem with WideCharToMultiByte?
+
+-- 
+Dmitry.
+
+
+From bunglehead at gmail.com  Sun Oct  5 03:02:55 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Sun, 05 Oct 2008 12:02:55 +0400
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+In-Reply-To: <03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+Message-ID: <48E874AF.7030908@gmail.com>
+
+Dmitry Timoshkov wrote:
+> "Nikolay Sivov" <bunglehead at gmail.com> wrote:
+>
+>>> Why do you need to allocate an intermediate roletextA?
+>>>
+>> WideCharToMultiByte requires to have a sufficient buffer. I think 
+>> it's the easiest way to allocate necessary buffer instead of using 
+>> local buffer of some hardcoded length. What do you think?
+>
+> And what is the problem with WideCharToMultiByte?
+>
+No problems with it. The reason is that I couldn't use rolemax as an 
+WideCharToMultiByte argument cause it could be less then required 
+buffer. After that I don't want to use something like CHAR buff[64] 
+because of unexplainable length, so I allocate it in heap.
+Why it's wrong?
+
+
+From dmitry at codeweavers.com  Sun Oct  5 03:09:47 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 5 Oct 2008 17:09:47 +0900
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+Message-ID: <ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+
+"Nikolay Sivov" <bunglehead at gmail.com> wrote:
+
+>>>> Why do you need to allocate an intermediate roletextA?
+>>>>
+>>> WideCharToMultiByte requires to have a sufficient buffer. I think 
+>>> it's the easiest way to allocate necessary buffer instead of using 
+>>> local buffer of some hardcoded length. What do you think?
+>>
+>> And what is the problem with WideCharToMultiByte?
+>>
+> No problems with it. The reason is that I couldn't use rolemax as an 
+> WideCharToMultiByte argument cause it could be less then required 
+> buffer. After that I don't want to use something like CHAR buff[64] 
+> because of unexplainable length, so I allocate it in heap.
+> Why it's wrong?
+
+I still fail to see why you can't use rolemax in WideCharToMultiByte,
+obviously that's the size of the target buffer.
+
+-- 
+Dmitry.
+
+
+From bunglehead at gmail.com  Sun Oct  5 04:38:38 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Sun, 05 Oct 2008 13:38:38 +0400
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+In-Reply-To: <ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+	<ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+Message-ID: <48E88B1E.5080803@gmail.com>
+
+Dmitry Timoshkov wrote:
+> "Nikolay Sivov" <bunglehead at gmail.com> wrote:
+>
+>>>>> Why do you need to allocate an intermediate roletextA?
+>>>>>
+>>>> WideCharToMultiByte requires to have a sufficient buffer. I think 
+>>>> it's the easiest way to allocate necessary buffer instead of using 
+>>>> local buffer of some hardcoded length. What do you think?
+>>>
+>>> And what is the problem with WideCharToMultiByte?
+>>>
+>> No problems with it. The reason is that I couldn't use rolemax as an 
+>> WideCharToMultiByte argument cause it could be less then required 
+>> buffer. After that I don't want to use something like CHAR buff[64] 
+>> because of unexplainable length, so I allocate it in heap.
+>> Why it's wrong?
+>
+> I still fail to see why you can't use rolemax in WideCharToMultiByte,
+> obviously that's the size of the target buffer.
+>
+The thought that WideCharToMultiByte will not fill buffer of 
+insufficient length, that's where I was wrong. I've just posted a 
+corrected patch. Any feedback will be appreciated.
+
+
+From dmitry at codeweavers.com  Sun Oct  5 04:59:07 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 5 Oct 2008 18:59:07 +0900
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+	<ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+	<48E88B1E.5080803@gmail.com>
+Message-ID: <E783AD0BFB504B3C966D2FA546823701@DMITRY>
+
+"Nikolay Sivov" <bunglehead at gmail.com> wrote:
+
+> The thought that WideCharToMultiByte will not fill buffer of 
+> insufficient length, that's where I was wrong. I've just posted a 
+> corrected patch. Any feedback will be appreciated.
+
+After looking at your patch I don't see much difference with what
+LoadStringA/W already do. Why don't you use those directly?
+
+-- 
+Dmitry.
+
+
+From bunglehead at gmail.com  Sun Oct  5 05:30:38 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Sun, 05 Oct 2008 14:30:38 +0400
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+In-Reply-To: <E783AD0BFB504B3C966D2FA546823701@DMITRY>
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+	<ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+	<48E88B1E.5080803@gmail.com>
+	<E783AD0BFB504B3C966D2FA546823701@DMITRY>
+Message-ID: <48E8974E.7050506@gmail.com>
+
+Dmitry Timoshkov wrote:
+> "Nikolay Sivov" <bunglehead at gmail.com> wrote:
+>
+>> The thought that WideCharToMultiByte will not fill buffer of 
+>> insufficient length, that's where I was wrong. I've just posted a 
+>> corrected patch. Any feedback will be appreciated.
+>
+> After looking at your patch I don't see much difference with what
+> LoadStringA/W already do. Why don't you use those directly?
+>
+LoadStringA doesn't return necessary buffer length when called with 
+(buflen = 0) but LoadStringW does.
+Since I need to return a necessary buffer length from both 
+GetRoleText[A/W] I used LoadStringW in both cases,
+converting to multibyte in ansi call.
+
+P.S. Is there any documented RT_STRING max length? If it's I could use a 
+local buffer of this length for GetRoleTextA
+
+
+From robertshearman at gmail.com  Sun Oct  5 06:21:50 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Sun, 5 Oct 2008 12:21:50 +0100
+Subject: d3d8: initialize IDirect3DDevice8 *device to NULL incase of
+	immedient cleanup. (coverity 795)
+In-Reply-To: <48E6190C.9090408@codeweavers.com>
+References: <48E6190C.9090408@codeweavers.com>
+Message-ID: <1096648c0810050421m446dd39x19d2359fef12359d@mail.gmail.com>
+
+2008/10/3 Aric Stewart <aric at codeweavers.com>:
+> -    IDirect3DDevice8 *device;
+> +    IDirect3DDevice8 *device=NULL;
+
+Add spaces around the "=" here to match the rest of the code.
+
+-- 
+Rob Shearman
+
+
+From dmitry at codeweavers.com  Sun Oct  5 08:01:15 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 5 Oct 2008 22:01:15 +0900
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+	<ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+	<48E88B1E.5080803@gmail.com>
+	<E783AD0BFB504B3C966D2FA546823701@DMITRY>
+	<48E8974E.7050506@gmail.com>
+Message-ID: <FCA651F6496B486491D614C008321455@DMITRY>
+
+"Nikolay Sivov" <bunglehead at gmail.com> wrote:
+
+> LoadStringA doesn't return necessary buffer length when called with 
+> (buflen = 0) but LoadStringW does.
+> Since I need to return a necessary buffer length from both 
+> GetRoleText[A/W] I used LoadStringW in both cases,
+> converting to multibyte in ansi call.
+
+I don't see in your tests that GetRoleText is supposed to return the string
+length when it's called with buffer length set to 0.
+
+> P.S. Is there any documented RT_STRING max length? If it's I could use a 
+> local buffer of this length for GetRoleTextA
+
+I'm not aware of such a documentation. The only way to prove/find something
+is write a test case.
+
+-- 
+Dmitry.
+
+
+From bunglehead at gmail.com  Sun Oct  5 08:21:59 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Sun, 05 Oct 2008 17:21:59 +0400
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+In-Reply-To: <FCA651F6496B486491D614C008321455@DMITRY>
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+	<ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+	<48E88B1E.5080803@gmail.com>
+	<E783AD0BFB504B3C966D2FA546823701@DMITRY>
+	<48E8974E.7050506@gmail.com>
+	<FCA651F6496B486491D614C008321455@DMITRY>
+Message-ID: <48E8BF77.8010801@gmail.com>
+
+Dmitry Timoshkov wrote:
+> "Nikolay Sivov" <bunglehead at gmail.com> wrote:
+>
+>> LoadStringA doesn't return necessary buffer length when called with 
+>> (buflen = 0) but LoadStringW does.
+>> Since I need to return a necessary buffer length from both 
+>> GetRoleText[A/W] I used LoadStringW in both cases,
+>> converting to multibyte in ansi call.
+>
+> I don't see in your tests that GetRoleText is supposed to return the 
+> string
+> length when it's called with buffer length set to 0.
+>
+GetRoleText supposed to return string length when buffer is NULL.
+Cause there's no way to get this length by LoadStringA *without* passing 
+a not-NULL pointer to buffer (I don't now how long should
+it be) so I used LoadStringW for ansi call too.
+
+
+From marcus at jet.franken.de  Sun Oct  5 16:06:58 2008
+From: marcus at jet.franken.de (Marcus Meissner)
+Date: Sun, 5 Oct 2008 23:06:58 +0200
+Subject: request for windows test ddraw/dsurface
+Message-ID: <20081005210658.GA4613@galeere>
+
+Hi,
+
+I am suspecting that in IDirectDraw1 the behaviour
+regarding backbuffer creation might change if we have
+a just created frontbuffer of the same size.
+
+(This is similar to behaviour shown by bulanci.exe
+of http://bugs.winehq.org/show_bug.cgi?id=9008 )
+
+Can someone please try this on Windows please?
+
+Ciao, Marcus
+
+diff --git a/dlls/ddraw/tests/dsurface.c b/dlls/ddraw/tests/dsurface.c
+index fc7bb88..50f6986 100644
+--- a/dlls/ddraw/tests/dsurface.c
++++ b/dlls/ddraw/tests/dsurface.c
+@@ -1331,10 +1331,21 @@ static void AttachmentTest(void)
+     /* This old ddraw version happily creates explicit front buffers */
+     memset(&ddsd, 0, sizeof(ddsd));
+     ddsd.dwSize = sizeof(ddsd);
++    ddsd.dwHeight = 800;
++    ddsd.dwWidth = 600;
+     ddsd.dwFlags = DDSD_CAPS;
+     ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FRONTBUFFER;
+     hr = IDirectDraw_CreateSurface(lpDD, &ddsd, &surface1, NULL);
+     ok(hr==DD_OK,"CreateSurface returned: %x\n",hr);
++
++    /* MARCUS: Lets try creating a backbuffer with frontbuffer live... */
++    memset(&ddsd, 0, sizeof(ddsd));
++    ddsd.dwSize = sizeof(ddsd);
++    ddsd.dwFlags = DDSD_CAPS;
++    ddsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
++    hr = IDirectDraw_CreateSurface(lpDD, &ddsd, &surface2, NULL);
++    ok(hr==DDERR_INVALIDCAPS,"CreateSurface backbuffer after frontbuffer returned: %x\n",hr);
++
+     IDirectDrawSurface_Release(surface1);
+ 
+     /* Try a single primary and two offscreen plain surfaces */
+
+
+From bunglehead at gmail.com  Sun Oct  5 16:49:19 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Mon, 06 Oct 2008 01:49:19 +0400
+Subject: request for windows test ddraw/dsurface
+In-Reply-To: <20081005210658.GA4613@galeere>
+References: <20081005210658.GA4613@galeere>
+Message-ID: <48E9365F.2000900@gmail.com>
+
+Marcus Meissner wrote:
+> Hi,
+>
+> I am suspecting that in IDirectDraw1 the behaviour
+> regarding backbuffer creation might change if we have
+> a just created frontbuffer of the same size.
+>
+> (This is similar to behaviour shown by bulanci.exe
+> of http://bugs.winehq.org/show_bug.cgi?id=9008 )
+>
+> Can someone please try this on Windows please?
+>
+> Ciao, Marcus
+>
+> diff --git a/dlls/ddraw/tests/dsurface.c b/dlls/ddraw/tests/dsurface.c
+> index fc7bb88..50f6986 100644
+> --- a/dlls/ddraw/tests/dsurface.c
+> +++ b/dlls/ddraw/tests/dsurface.c
+> @@ -1331,10 +1331,21 @@ static void AttachmentTest(void)
+>      /* This old ddraw version happily creates explicit front buffers */
+>      memset(&ddsd, 0, sizeof(ddsd));
+>      ddsd.dwSize = sizeof(ddsd);
+> +    ddsd.dwHeight = 800;
+> +    ddsd.dwWidth = 600;
+>      ddsd.dwFlags = DDSD_CAPS;
+>      ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FRONTBUFFER;
+>      hr = IDirectDraw_CreateSurface(lpDD, &ddsd, &surface1, NULL);
+>      ok(hr==DD_OK,"CreateSurface returned: %x\n",hr);
+> +
+> +    /* MARCUS: Lets try creating a backbuffer with frontbuffer live... */
+> +    memset(&ddsd, 0, sizeof(ddsd));
+> +    ddsd.dwSize = sizeof(ddsd);
+> +    ddsd.dwFlags = DDSD_CAPS;
+> +    ddsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
+> +    hr = IDirectDraw_CreateSurface(lpDD, &ddsd, &surface2, NULL);
+> +    ok(hr==DDERR_INVALIDCAPS,"CreateSurface backbuffer after frontbuffer returned: %x\n",hr);
+> +
+>      IDirectDrawSurface_Release(surface1);
+>  
+>      /* Try a single primary and two offscreen plain surfaces */
+>
+>
+>   
+Hi, on WinXP SP2 it fails with:
+
+dsurface.c:1347: Test failed: CreateSurface backbuffer after frontbuffer 
+returned: 80070057
+dsurface: 1109 tests executed (0 marked as todo, 1 failure), 0 skipped.
+
+
+
+From austinenglish at gmail.com  Sun Oct  5 17:41:31 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Sun, 5 Oct 2008 17:41:31 -0500
+Subject: [PATCH] also remove backbuffer flags in the v1 DDRAW interface
+In-Reply-To: <48e91558.1dbf7e0a.50b8.7d58SMTPIN_ADDED@mx.google.com>
+References: <48e91558.1dbf7e0a.50b8.7d58SMTPIN_ADDED@mx.google.com>
+Message-ID: <b6bb06270810051541u75b1240dp9185269a892943f8@mail.gmail.com>
+
+On Sun, Oct 5, 2008 at 2:26 PM, Marcus Meissner <marcus at jet.franken.de> wrote:
+> Hi,
+>
+> This fixes http://bugs.winehq.org/show_bug.cgi?id=9008
+> by also filtering out the backbuffer flag.
+>
+> Ciao, Marcus
+> ---
+>  dlls/ddraw/ddraw_thunks.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/dlls/ddraw/ddraw_thunks.c b/dlls/ddraw/ddraw_thunks.c
+> index b748ad4..c77b3bb 100644
+> --- a/dlls/ddraw/ddraw_thunks.c
+> +++ b/dlls/ddraw/ddraw_thunks.c
+> @@ -386,10 +386,10 @@ IDirectDrawImpl_CreateSurface(LPDIRECTDRAW This, LPDDSURFACEDESC pSDesc,
+>     IDirectDrawSurfaceImpl *impl;
+>     HRESULT hr;
+>
+> -    /* Remove front buffer flag, this causes failure in v7, and its added to normal
+> -     * primaries anyway
+> +    /* Remove front and back buffer flag, this causes failure in v7,
+> +     * and its added to normal primaries anyway.
+
+Nitpick, but typo there: should be "it's", not "its"
+
+-Austin
+
+
+From zgold at bluesata.com  Sun Oct  5 23:20:59 2008
+From: zgold at bluesata.com (Zachary Goldberg)
+Date: Mon, 6 Oct 2008 00:20:59 -0400
+Subject: Wineconf follow up: Cosmetic website changes
+Message-ID: <b050a5e70810052120x730002b6h37b945fbd16698f@mail.gmail.com>
+
+Hello all,
+
+I just wanted to start up a thread to continue the conversation from
+Wineconf about revamping the WineHQ homepage.  The last notes I took
+on the subject had Dan Kegel considering doing an actual redesign.
+
+--Zach
+
+
+From zgold at bluesata.com  Sun Oct  5 23:22:19 2008
+From: zgold at bluesata.com (Zachary Goldberg)
+Date: Mon, 6 Oct 2008 00:22:19 -0400
+Subject: Wineconf follow up: Wine Usage Data Collection
+Message-ID: <b050a5e70810052122yeb202e1m14c01b6bc277817c@mail.gmail.com>
+
+Hello All,
+
+Just wanted to continue the thread from Wineconf about tracking usage
+data in Wine.  We had discussed adding an opt-in system at first run
+where all invokations of Wine would send a token to WineHQ to track
+the number of times users run given applications to help direct
+development.  Thoughts?
+
+--Zach
+
+
+From austinenglish at gmail.com  Sun Oct  5 23:32:59 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Sun, 5 Oct 2008 23:32:59 -0500
+Subject: Wineconf follow up: Wine Usage Data Collection
+In-Reply-To: <b050a5e70810052122yeb202e1m14c01b6bc277817c@mail.gmail.com>
+References: <b050a5e70810052122yeb202e1m14c01b6bc277817c@mail.gmail.com>
+Message-ID: <b6bb06270810052132u5c070b7sb68ebd5955e5608a@mail.gmail.com>
+
+On Sun, Oct 5, 2008 at 11:22 PM, Zachary Goldberg <zgold at bluesata.com> wrote:
+> Hello All,
+>
+> Just wanted to continue the thread from Wineconf about tracking usage
+> data in Wine.  We had discussed adding an opt-in system at first run
+> where all invokations of Wine would send a token to WineHQ to track
+> the number of times users run given applications to help direct
+> development.  Thoughts?
+>
+> --Zach
+>
+>
+>
+
+I like this idea. Couple unaddressed problems:
+
+If it's stored in WINEPREFIX, then each time a new prefix is used,
+they'll get the prompt each time. Then again, maybe most people aren't
+doing this.
+How are we tracking apps? By filename/md5sum/filesize/installed filepath?
+
+-Austin
+
+
+From dank at kegel.com  Sun Oct  5 23:52:37 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 5 Oct 2008 21:52:37 -0700
+Subject: Wineconf follow up: Cosmetic website changes
+Message-ID: <a71bd89a0810052152x7c0b3cc2t8e2b2726144607e7@mail.gmail.com>
+
+That's right, I foolishly volunteered to put together
+a draft for winehq.org's front page inspired by
+openoffice.org's front page.
+
+The main constraint discussed at wineconf was that
+the site navigation should not change with this
+redesign ('cause that requires lots more work).
+
+Also, it's inaccurate to call this a cosmetic
+change; it's really driven by usability concerns.
+I have a sneaking suspicion that http://wiki.winehq.org
+is at this point a better place to send beginners to
+than http://winehq.org, and that's just wrong...
+our simplest URL should also be our best foot forward.
+- Dan
+
+
+From zgold at bluesata.com  Mon Oct  6 00:20:56 2008
+From: zgold at bluesata.com (Zachary Goldberg)
+Date: Mon, 6 Oct 2008 01:20:56 -0400
+Subject: Wineconf follow up: Cosmetic website changes
+In-Reply-To: <a71bd89a0810052152x7c0b3cc2t8e2b2726144607e7@mail.gmail.com>
+References: <a71bd89a0810052152x7c0b3cc2t8e2b2726144607e7@mail.gmail.com>
+Message-ID: <b050a5e70810052220v381b607au1650d17436aea559@mail.gmail.com>
+
+On Mon, Oct 6, 2008 at 12:52 AM, Dan Kegel <dank at kegel.com> wrote:
+> That's right, I foolishly volunteered to put together
+> a draft for winehq.org's front page inspired by
+> openoffice.org's front page.
+>
+> The main constraint discussed at wineconf was that
+> the site navigation should not change with this
+> redesign ('cause that requires lots more work).
+>
+> Also, it's inaccurate to call this a cosmetic
+> change; it's really driven by usability concerns.
+> I have a sneaking suspicion that http://wiki.winehq.org
+> is at this point a better place to send beginners to
+> than http://winehq.org, and that's just wrong...
+> our simplest URL should also be our best foot forward.
+> - Dan
+>
+>
+
+>
+
+So there seem to be some fundamental issues conflicting here.
+wiki.winehq.org is a good place to send newbies because it has tons of
+information, but its not an easy landing page for somebody new to look
+at.
+
+OOO's website however has very little in the way of raw information,
+however it does have nice and easy aesthetics which directs users to
+said information.
+
+Thus it seems what we want is to aesthetically change winehq.org to be
+point to the big databases of information we already have.  Am I
+correct?
+
+The only real thing we need to do is make our links to answers more
+obvious which could be trivially done by adding <h1> around the wiki
+link.  More seriously though what are your goals in the redesign?
+What do you plan to rip out/keep?
+
+Currently the homepage has a whole bunch of different things, which do
+we want to keep?
+
+* Left menu nav for main winehq sites
+* About static pages nav
+* download nav
+* support nav
+* Dev. nav
+* search in the bottom left corner
+* Landing paragraph + random screenshot
+* Main news feed
+* Latest release
+* Random quote
+* Ads by Google
+* WWN Backlisting
+* Hosted by CW / Paypal buttons
+
+
+From dmitry at codeweavers.com  Mon Oct  6 00:30:14 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 6 Oct 2008 14:30:14 +0900
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+	<ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+	<48E88B1E.5080803@gmail.com>
+	<E783AD0BFB504B3C966D2FA546823701@DMITRY>
+	<48E8974E.7050506@gmail.com>
+	<FCA651F6496B486491D614C008321455@DMITRY>
+	<48E8BF77.8010801@gmail.com>
+Message-ID: <09F430FE86454329A5C824CE1CE9AB81@DMITRY>
+
+"Nikolay Sivov" <bunglehead at gmail.com> wrote:
+
+>>> LoadStringA doesn't return necessary buffer length when called with 
+>>> (buflen = 0) but LoadStringW does.
+>>> Since I need to return a necessary buffer length from both 
+>>> GetRoleText[A/W] I used LoadStringW in both cases,
+>>> converting to multibyte in ansi call.
+>>
+>> I don't see in your tests that GetRoleText is supposed to return the 
+>> string
+>> length when it's called with buffer length set to 0.
+>>
+> GetRoleText supposed to return string length when buffer is NULL.
+> Cause there's no way to get this length by LoadStringA *without* passing 
+> a not-NULL pointer to buffer (I don't now how long should
+> it be) so I used LoadStringW for ansi call too.
+
+Again, I don't see in your tests that GetRoleText is supposed
+to return the string length when it's called with buffer length
+set to 0.
+
+-- 
+Dmitry.
+
+
+From zgold at bluesata.com  Mon Oct  6 00:36:29 2008
+From: zgold at bluesata.com (Zachary Goldberg)
+Date: Mon, 6 Oct 2008 01:36:29 -0400
+Subject: Please Review WWN 353
+Message-ID: <b050a5e70810052236r3de7bf47l3eba339d0f6c8d48@mail.gmail.com>
+
+All,
+
+This WWN is all my writing and no quotes, and thus a lot more room for
+typographical and other errors.  Thus I wanted to send everybody the
+WWN for review before publication.  In particular please check the
+first section for name typos etc.
+
+http://home.bluesata.com/WineWWN/WineHQ/?issue=353
+
+-Zach
+
+
+From dank at kegel.com  Mon Oct  6 00:42:09 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 5 Oct 2008 22:42:09 -0700
+Subject: Wineconf follow up: Cosmetic website changes
+In-Reply-To: <b050a5e70810052220v381b607au1650d17436aea559@mail.gmail.com>
+References: <a71bd89a0810052152x7c0b3cc2t8e2b2726144607e7@mail.gmail.com>
+	<b050a5e70810052220v381b607au1650d17436aea559@mail.gmail.com>
+Message-ID: <a71bd89a0810052242u1912f59eh4de5c7624e323c3d@mail.gmail.com>
+
+On Sun, Oct 5, 2008 at 10:20 PM, Zachary Goldberg <zgold at bluesata.com> wrote:
+> So there seem to be some fundamental issues conflicting here.
+> wiki.winehq.org is a good place to send newbies because it has tons of
+> information, but its not an easy landing page for somebody new to look
+> at.
+
+Oh, I don't know.  Seems to me that the wiki it's a *better*
+landing page for newbies; it does a better job of leading them
+by the hand without making them scroll or click.
+
+winehq.org has a lot of stuff they don't care about, and they
+have to scroll or click to get to something friendly.
+
+> OOO's website however has very little in the way of raw information,
+> however it does have nice and easy aesthetics which directs users to
+> said information.
+
+If it directs users to information well, it's not aesthetics, it's usability.
+
+The idea is to use the front page to quickly handle the most
+frequent questions (how to get it, where's the doc), and if that's
+not what they're after, to direct them to a page based on
+their 'role' (e.g. user or developer).
+
+> Currently the homepage has a whole bunch of different things, which do
+> we want to keep?
+>
+> * Left menu nav for main winehq sites
+> * About static pages nav
+> * download nav
+> * support nav
+> * Dev. nav
+> * search in the bottom left corner
+> * Landing paragraph + random screenshot
+> * Main news feed
+> * Latest release
+> * Random quote
+> * Ads by Google
+> * WWN Backlisting
+> * Hosted by CW / Paypal buttons
+
+Anything users don't care about should not be on the front
+page (except for a 'Developers' link).
+- Dan
+
+
+From dmitry at codeweavers.com  Mon Oct  6 01:17:57 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 6 Oct 2008 15:17:57 +0900
+Subject: [1/2] user32: Converted rcScrollBar to screen coordinates.
+References: <5c6ee3b70810052230y6f064c97q8644ff5b82dac8ff@mail.gmail.com>
+Message-ID: <DCEE2C06D4F7473B991520A7538D0891@DMITRY>
+
+"Dylan Smith" <dylan.ah.smith at gmail.com> wrote:
+
+> @@ -1252,6 +1253,9 @@ static BOOL SCROLL_GetScrollBarInfo(HWND hwnd, LONG idObject, LPSCROLLBARINFO in
+>  
+>      SCROLL_GetScrollBarRect(hwnd, nBar, &info->rcScrollBar, &nDummy,
+>                              &info->dxyLineButton, &info->xyThumbTop);
+> +    /* rcScrollBar needs to be in screen coordinates */
+> +    GetWindowRect(hwnd, &rect);
+> +    OffsetRect(&info->rcScrollBar, rect.left, rect.top);
+
+You need to fix SCROLL_GetScrollBarRect for the SB_CTL case instead.
+ 
+> +static void scrollbar_test4(void)
+> +{
+> +    BOOL ret;
+> +    SCROLLBARINFO sbi;
+> +    RECT rect;
+> +
+> +    /* Test GetScrollBarInfo to make sure it returns rcScrollBar in screen
+> +     * coordinates. */
+> +    sbi.cbSize = sizeof(sbi);
+> +    ret = GetScrollBarInfo( hScroll, OBJID_CLIENT, &sbi);
+> +    ok( ret, "The GetScrollBarInfo() call should not fail.\n" );
+> +    GetWindowRect( hScroll, &rect );
+> +    ok( ret, "The GetWindowRect() call should not fail.\n" );
+> +    ok( !(sbi.rgstate[0] & (STATE_SYSTEM_INVISIBLE|STATE_SYSTEM_OFFSCREEN)),
+> +        "unexpected rgstate(0x%x)\n", sbi.rgstate[0]);
+> +    ok( !memcmp(&rect, &sbi.rcScrollBar, sizeof(RECT)),
+> +        "WindowRect(%d, %d, %d, %d) != rcScrollBar(%d, %d, %d, %d)\n",
+
+EqualRect is better than memcmp.
+
+-- 
+Dmitry.
+
+
+From winehacker at gmail.com  Mon Oct  6 01:18:40 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Mon, 6 Oct 2008 02:18:40 -0400
+Subject: Wineconf follow up: Wine Usage Data Collection
+In-Reply-To: <b6bb06270810052132u5c070b7sb68ebd5955e5608a@mail.gmail.com>
+References: <b050a5e70810052122yeb202e1m14c01b6bc277817c@mail.gmail.com>
+	<b6bb06270810052132u5c070b7sb68ebd5955e5608a@mail.gmail.com>
+Message-ID: <19e31a080810052318s77070d32w1e5387c4c34fadbb@mail.gmail.com>
+
+On Mon, Oct 6, 2008 at 12:32 AM, Austin English <austinenglish at gmail.com> wrote:
+> If it's stored in WINEPREFIX, then each time a new prefix is used,
+> they'll get the prompt each time. Then again, maybe most people aren't
+> doing this.
+> How are we tracking apps? By filename/md5sum/filesize/installed filepath?
+
+I don't think enough people really use prefixes currently for it to
+matter though I'd like to see that change in the future as part of the
+desktop integration work we discussed at WineConf. Also I think a
+mixture of name/sha1 hash is a good way to go. It would do wonders for
+us to tie in to appdb in case there is are tricks and tips for various
+versions of software such as stock, sp1, sp2, etc.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From dylan.ah.smith at gmail.com  Mon Oct  6 01:38:40 2008
+From: dylan.ah.smith at gmail.com (Dylan Smith)
+Date: Mon, 6 Oct 2008 02:38:40 -0400
+Subject: [1/2] user32: Converted rcScrollBar to screen coordinates.
+In-Reply-To: <DCEE2C06D4F7473B991520A7538D0891@DMITRY>
+References: <5c6ee3b70810052230y6f064c97q8644ff5b82dac8ff@mail.gmail.com>
+	<DCEE2C06D4F7473B991520A7538D0891@DMITRY>
+Message-ID: <5c6ee3b70810052338n69bf022fk4c2885926f49afd8@mail.gmail.com>
+
+On Mon, Oct 6, 2008 at 2:17 AM, Dmitry Timoshkov <dmitry at codeweavers.com>wrote:
+
+> You need to fix SCROLL_GetScrollBarRect for the SB_CTL case instead.
+>
+
+SCROLL_GetScrollBarRect is used is used in multiple places where client
+coordinates are expected, and it isn't just the SB_CTL case that needs to be
+changed, in fact it was the SB_VERT case that I noticed first.
+
+EqualRect is better than memcmp.
+>
+
+Yup.  I didn't know the function existed until now.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20081006/eafc4b15/attachment.htm 
+
+From dmitry at codeweavers.com  Mon Oct  6 01:49:18 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 6 Oct 2008 15:49:18 +0900
+Subject: [1/2] user32: Converted rcScrollBar to screen coordinates.
+References: <5c6ee3b70810052230y6f064c97q8644ff5b82dac8ff@mail.gmail.com>
+	<DCEE2C06D4F7473B991520A7538D0891@DMITRY>
+	<5c6ee3b70810052338n69bf022fk4c2885926f49afd8@mail.gmail.com>
+Message-ID: <9ABE09FEBB5D4E6697100EB6FAB59DCB@DMITRY>
+
+"Dylan Smith" <dylan.ah.smith at gmail.com> wrote:
+
+>> You need to fix SCROLL_GetScrollBarRect for the SB_CTL case instead.
+>>
+> 
+> SCROLL_GetScrollBarRect is used is used in multiple places where client
+> coordinates are expected, and it isn't just the SB_CTL case that needs to be
+> changed, in fact it was the SB_VERT case that I noticed first.
+
+Then you need to test the remaining cases as well.
+
+-- 
+Dmitry.
+
+
+From kai.blin at gmail.com  Mon Oct  6 02:02:45 2008
+From: kai.blin at gmail.com (Kai Blin)
+Date: Mon, 6 Oct 2008 09:02:45 +0200
+Subject: Please Review WWN 353
+In-Reply-To: <b050a5e70810052236r3de7bf47l3eba339d0f6c8d48@mail.gmail.com>
+References: <b050a5e70810052236r3de7bf47l3eba339d0f6c8d48@mail.gmail.com>
+Message-ID: <200810060902.50426.kai.blin@gmail.com>
+
+On Monday 06 October 2008 07:36:29 Zachary Goldberg wrote:
+> All,
+>
+> This WWN is all my writing and no quotes, and thus a lot more room for
+> typographical and other errors.  Thus I wanted to send everybody the
+> WWN for review before publication.  In particular please check the
+> first section for name typos etc.
+
+A couple of issues that sprung to my eye:
+
+The intro paragraph still claims it's WineWeeklyNews.
+
+"News: WineConf 2008"
+- the things I work on are spelled secur32 and kerberos
+- I _think_ the pink ninja's first name is Caron, not Caran, might be wrong 
+here.
+- It's not Andrew Bodat, it's Andrew Bogott
+
+"WineConf 2008 Keynote"
+the Wine trademark was granted by the USPTO the SFC, not by the SFLC.
+
+Cheers,
+Kai
+
+-- 
+Kai Blin
+WorldForge developer  http://www.worldforge.org/
+Wine developer        http://wiki.winehq.org/KaiBlin
+Samba team member     http://www.samba.org/samba/team/
+--
+Will code for cotton.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081006/b15cb3a8/attachment.pgp 
+
+From marcus at jet.franken.de  Mon Oct  6 02:15:17 2008
+From: marcus at jet.franken.de (Marcus Meissner)
+Date: Mon, 6 Oct 2008 09:15:17 +0200
+Subject: [PATCH] also remove backbuffer flags in the v1 DDRAW interface
+In-Reply-To: <b6bb06270810051541u75b1240dp9185269a892943f8@mail.gmail.com>
+References: <48e91558.1dbf7e0a.50b8.7d58SMTPIN_ADDED@mx.google.com>
+	<b6bb06270810051541u75b1240dp9185269a892943f8@mail.gmail.com>
+Message-ID: <20081006071517.GA27724@galeere>
+
+On Sun, Oct 05, 2008 at 05:41:31PM -0500, Austin English wrote:
+> On Sun, Oct 5, 2008 at 2:26 PM, Marcus Meissner <marcus at jet.franken.de> wrote:
+> > Hi,
+> >
+> > This fixes http://bugs.winehq.org/show_bug.cgi?id=9008
+> > by also filtering out the backbuffer flag.
+> >
+> > Ciao, Marcus
+> > ---
+> >  dlls/ddraw/ddraw_thunks.c |    6 +++---
+> >  1 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/dlls/ddraw/ddraw_thunks.c b/dlls/ddraw/ddraw_thunks.c
+> > index b748ad4..c77b3bb 100644
+> > --- a/dlls/ddraw/ddraw_thunks.c
+> > +++ b/dlls/ddraw/ddraw_thunks.c
+> > @@ -386,10 +386,10 @@ IDirectDrawImpl_CreateSurface(LPDIRECTDRAW This, LPDDSURFACEDESC pSDesc,
+> >     IDirectDrawSurfaceImpl *impl;
+> >     HRESULT hr;
+> >
+> > -    /* Remove front buffer flag, this causes failure in v7, and its added to normal
+> > -     * primaries anyway
+> > +    /* Remove front and back buffer flag, this causes failure in v7,
+> > +     * and its added to normal primaries anyway.
+> 
+> Nitpick, but typo there: should be "it's", not "its"
+
+It also fails in patchwatcher (and locally, not caused by my
+installation), please disregard the patch. :/
+
+Ciao, Marcus
+
+
+From dmitry at codeweavers.com  Mon Oct  6 02:37:48 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 6 Oct 2008 16:37:48 +0900
+Subject: Please Review WWN 353
+References: <b050a5e70810052236r3de7bf47l3eba339d0f6c8d48@mail.gmail.com>
+	<200810060902.50426.kai.blin@gmail.com>
+Message-ID: <A62F067EF0C940B290165A0EC257835F@DMITRY>
+
+"Kai Blin" <kai.blin at gmail.com> wrote:
+
+> "News: WineConf 2008"
+> - the things I work on are spelled secur32 and kerberos
+> - I _think_ the pink ninja's first name is Caron, not Caran, might be wrong 
+> here.
+> - It's not Andrew Bodat, it's Andrew Bogott
+
+In addition to things pointed out by Kai:
+- Marcus Messiener should be Marcus Meissner
+- Huw Davis should be Huw Davies
+- Caran Jenson should be Caron Jensen
+- Ken Thomas should be Ken Thomases
+- Jacek Thoman should be Jacek Caban
+- Andrew Belfour should be Andrew Balfour
+- John Parshall should be Jon Parshall
+
+(you can use Wine changelog to verify if other names are spelled
+correctly)
+
+-- 
+Dmitry.
+
+
+From bunglehead at gmail.com  Mon Oct  6 03:17:04 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Mon, 06 Oct 2008 12:17:04 +0400
+Subject: [2/2] oleacc: implemented GetRoleText[A/W] with tests
+In-Reply-To: <09F430FE86454329A5C824CE1CE9AB81@DMITRY>
+References: <1222985616.645.10.camel@debian.localdomain>
+	<0FDA45CEA1544E7EB2AD6861E4C6D843@DMITRY>
+	<48E86048.8070606@gmail.com>
+	<03682BB9C66D48C9AC674BF3EE8F8110@DMITRY>
+	<48E874AF.7030908@gmail.com>
+	<ADB2220317E2463F83A896AB8ABEBAAA@DMITRY>
+	<48E88B1E.5080803@gmail.com>
+	<E783AD0BFB504B3C966D2FA546823701@DMITRY>
+	<48E8974E.7050506@gmail.com>
+	<FCA651F6496B486491D614C008321455@DMITRY>
+	<48E8BF77.8010801@gmail.com>
+	<09F430FE86454329A5C824CE1CE9AB81@DMITRY>
+Message-ID: <48E9C980.6000609@gmail.com>
+
+Dmitry Timoshkov wrote:
+> "Nikolay Sivov" <bunglehead at gmail.com> wrote:
+>
+>>>> LoadStringA doesn't return necessary buffer length when called with 
+>>>> (buflen = 0) but LoadStringW does.
+>>>> Since I need to return a necessary buffer length from both 
+>>>> GetRoleText[A/W] I used LoadStringW in both cases,
+>>>> converting to multibyte in ansi call.
+>>>
+>>> I don't see in your tests that GetRoleText is supposed to return the 
+>>> string
+>>> length when it's called with buffer length set to 0.
+>>>
+>> GetRoleText supposed to return string length when buffer is NULL.
+>> Cause there's no way to get this length by LoadStringA *without* 
+>> passing a not-NULL pointer to buffer (I don't now how long should
+>> it be) so I used LoadStringW for ansi call too.
+>
+> Again, I don't see in your tests that GetRoleText is supposed
+> to return the string length when it's called with buffer length
+> set to 0.
+>
+I've made these tests but I still don't follow you:
+- GetRoleTextW returns length when called with NULL buffer (and zero or 
+not-zero buflen)
+- GetRoleTextA returns length only when called with NULL buffer. On zero 
+buflen it returns 0.
+
+As I understood you want to use LoadStringA in GetRoleTextA and remove 
+all wide->mb conversions. But:
+
+there are 3 last lines of LoadStringA:
+---
+    buffer[retval] = 0;
+    TRACE("returning %s\n", debugstr_a(buffer));
+    return retval;
+---
+It's the only place when length is returned. So it will always write to 
+buffer => I can't get a length with it without writing.
+And it doesn't matter that GetRoleTextA returns 0 on buflen = 0 cause 
+behavior on NULL buffer still different between LoadStringA (will crash) 
+and LoadStringW (will return length).
+
+
+

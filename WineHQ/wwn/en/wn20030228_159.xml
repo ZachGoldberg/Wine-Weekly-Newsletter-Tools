@@ -1,0 +1,655 @@
+<kc version="0.1.0">
+
+<title>Wine Traffic</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="159" date="02/28/2003" />
+
+<intro>
+<p>This is the 159th release of the Wine's kernel cousin publication. 
+Its main goal is to inform you of what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+
+<stats posts="267" size="784" contrib="61" multiples="32" lastweek="24">
+
+<person posts="40" size="126" who="Dan Kegel" />
+<person posts="24" size="66" who="Mike Hearn" />
+<person posts="21" size="59" who="Eric Pouech" />
+<person posts="18" size="42" who="Dimitrie O. Paun" />
+<person posts="17" size="40" who="Alexandre Julliard" />
+<person posts="14" size="57" who="Gareth Hughes" />
+<person posts="11" size="27" who="Sylvain Petreolle" />
+<person posts="10" size="31" who="David Fraser" />
+<person posts="8" size="20" who="Dmitry Timoshkov" />
+<person posts="8" size="16" who="Steven Edwards" />
+<person posts="7" size="39" who="J. Grant" />
+<person posts="6" size="18" who="Tony Lambregts" />
+<person posts="6" size="14" who="Gregory M. Turner" />
+<person posts="5" size="12" who="Gerhard W. Gruber" />
+<person posts="5" size="12" who="Mike McCormack" />
+<person posts="4" size="12" who="Uwe Bonnes" />
+<person posts="4" size="11" who="Shachar Shemesh" />
+<person posts="3" size="13" who="James Gregory" />
+<person posts="3" size="12" who="Jakub Jelinek" />
+<person posts="3" size="11" who="Michael Stefaniuc" />
+<person posts="3" size="5" who="Serenity" />
+<person posts="2" size="12" who="Oleg Prokhorov" />
+<person posts="2" size="6" who="David Hammerton" />
+<person posts="2" size="6" who="Roderick Colenbrander" />
+<person posts="2" size="5" who="Stefan Jones" />
+<person posts="2" size="5" who="Keith Matthews" />
+<person posts="2" size="5" who="Tom Wickline" />
+<person posts="2" size="4" who="Dave Pickles" />
+<person posts="2" size="4" who="Stefan Leichter" />
+<person posts="2" size="4" who="Johan Gill" />
+<person posts="1" size="5" who="Daniel Jacobowitz" />
+<person posts="1" size="4" who="Robert Reif" />
+<person posts="1" size="4" who=" (Thorsten Kolb)" />
+<person posts="1" size="3" who="Paul McNett" />
+<person posts="1" size="3" who="Jaco Greeff" />
+<person posts="1" size="3" who="Dustin Navea" />
+<person posts="1" size="3" who="Stefan Jones" />
+<person posts="1" size="3" who="Alberto Massari" />
+<person posts="1" size="3" who="Ulrich Weigand" />
+<person posts="1" size="3" who="Steven Tower" />
+<person posts="1" size="2" who="Jaco Greeff" />
+<person posts="1" size="2" who="Vincent Beron" />
+<person posts="1" size="2" who="Z_God" />
+<person posts="1" size="2" who="Boris Reisig" />
+<person posts="1" size="2" who="David Laight" />
+<person posts="1" size="2" who="Jeremy White" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="Andrew Johnson" />
+<person posts="1" size="1" who="Duane Clark" />
+<person posts="1" size="1" who="Jeff Smith" />
+<person posts="1" size="1" who="Joe Millenbach" />
+<person posts="1" size="1" who="Kevin DeKorte" />
+<person posts="1" size="1" who="Drew \DanteAliegri\ Ogle" />
+<person posts="1" size="1" who="liu spider" />
+<person posts="1" size="1" who="Waldeck Schutzer" />
+<person posts="1" size="1" who="Eric" />
+<person posts="1" size="1" who="Lonnie Cumberland" />
+<person posts="1" size="1" who="Igor" />
+
+</stats>
+
+<section 
+	title="News: Compiling with MS VC++, CodeWeavers &amp; Taratella, MS Paint" 
+	subject="News"
+	archive="http://codingstyle.com/articles/using-ms-vcpp-with-gnu-wine.html" 
+	posts="3"
+	startdate="02/22/2003"
+	enddate="02/28/2003"
+>
+<topic>News</topic>
+<p>File this one under the "As Seen on Slashdot" category.  
+Combine this with the instructions below from Dan Kegel and
+you'll have some good tips for using MS VC++ tools.
+Jonathan Grant wrote an article for Codingstyle.com about 
+<a href="http://codingstyle.com/articles/using-ms-vcpp-with-gnu-wine.html">MS VC++  
+</a> tools under
+Linux.  The commandline executables are run under Wine.  The advantage:</p>
+<quote who="Jonathan Grant"><p>
+ Using Visual C++ on GNU/Wine gives me all the benefits of being 
+ able to develop a 100% compatible MS-Windows version of the game, 
+ while saving me the time of maintaining another Win2k machine 
+ version of the source and moving to that machine to compile.  
+ It has been a great time saver for me and I strongly expect 
+ this information will be very useful to myself and others in 
+ the future.</p></quote>
+
+<p>CodeWeavers has a 
+<a href="http://www.internetnews.com/ent-news/article.php/1593991">deal with Tarantella</a> 
+to serve up apps.  Combined with CrossOver Office you get something with functionality 
+like Citrix or MS Terminal Server.  The actual 
+<a href="http://www.codeweavers.com/about/press_releases/?id=20030224">press release</a> 
+came out on Monday, CodeWeavers 
+<a href="http://www.codeweavers.com/products/cxofficeserver/crossover_for_tarantella.php">explained</a>
+the cost savings:</p>
+<quote who="CodeWeavers"><p>
+ With CrossOver Office Server Edition, those cost savings can be 
+ furthered by allowing Windows applications to be run on Tarantella 
+ ia Server Edition, rather than MS Terminal Server. Server Edition 
+ delivers the same core Windows productivity applications that users 
+ need, but at a fraction of the cost of MS solutions. In addition, 
+ users free themselves from the need for MS Windows OS licenses, 
+ as well as the need to license individual CALs for each thin-client 
+ station.
+</p></quote>
+
+<p>Frank's Corner mentioned where to download MS Paint:</p>
+<quote who="Franks Corner"><p>
+If you don't have Windows, but really like to play around with MS Paint, you 
+can download it here: 
+<a href="ftp://ftp.microsoft.com/softlib/mslfiles/paint95.exe">ms paint</a> 
+Just type <tt>wine mspaint95.exe</tt> to install it. </p></quote>
+
+<p>There's a ton of stuff for download in that directory.  Nothing jumped
+out as being very interesting, but there very well could be something useful
+in there.</p>
+
+</section>
+
+
+
+<section
+        title="Threading Work"
+        subject="POSIX / pthreads / wineserver - can I help?"
+        archive="http://www.winehq.org/hypermail/wine-patches/2003/02/0.html"
+        posts="10"
+        startdate="02/27/2003"
+>
+<topic>Patches</topic>          
+
+<p>This week Alexandre has been committing some large patches into CVS
+that have to deal with threading.  They're pretty much over my head,
+and I didn't really understand the direction, but I was able to 
+decipher the bits about integrating with the new Linux threading.
+Thankfully someone asked a question this week and Alexandre supplied
+a little insight into what the plans are.  Stefan Jones offered to help:
+</p>
+<quote who="Stefan Jones"><p>
+I have started
+reading up the wine source code and understand basics of the wineserver
+message passing and the TEB / tls system. I know little about windows
+programming though. Any hint on what I can work on, help, to get this 
+working again?
+</p></quote>
+
+<p>Alexandre gave a general outline of his work:</p>
+<quote who="Alexandre Julliard"><p>
+generic pthreads simply doesn't offer the
+functionality we need. It's possible to use the glibc nptl pthreads,
+but that's only because of the way they are implemented on top of
+kernel threads; this isn't a general property of pthreads, so a 100%
+POSIX threaded Wine is not possible.
+</p><p>
+Once I get the nptl support working there will probably be a number of
+things that can be done to take better advantage of the new threading
+support, and any help with that is welcome. But in all cases such code
+can only be added as an option, it can't replace the existing code
+since we have to run on older kernels as well as on other systems.
+</p></quote>
+
+<p>So, future kernels can take advantage of the Linux NPTL threading.
+Everything else will stay the same - standard old pthreads haven't
+and won't work for Wine.  Along the same lines, someone asked about
+the shared memory wineserver.  TransGaming developed a test
+implementation that showed dramatic speedups.  It was last discussed
+back in <a href="http://www.winehq.org/news/?view=154#Kernel%20Module%20/%20Shared%20Memory%20Revisited">issue #154</a> and at the time its main deficiency
+was pointed out - the ability for a badly behaving application to
+crash Wine.  Alexandre explained why he didn't like it:</p>
+<quote who="Alexandre Julliard"><p>
+It's a neat hack, but it doesn't preserve the core idea
+behind the server design, which is that processes are properly
+isolated. With the shm server you basically go back to the Win9x days
+where any buggy process can trash the system structures; and I don't
+think that this is where we want to go.</p></quote>
+
+</section>
+
+
+<section 
+	title="Commandline MSVC" 
+	subject="Fix to allow running msvc from commandline in linux"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/02/0181.html" 
+	posts="1"
+	startdate="02/22/2003"
+>
+<topic>Patches</topic>
+<p>Dan Kegel posted a small patch to Wine's cmd replacement.  With it he
+noted the following:</p>
+<quote who="Dan Kegel"><p>
+OK, so there's msvcmaker, but I don't use guis,
+so I threw together a way to build the wine
+tests using cl and nmake.  I have the following files
+in ~/bin:
+</p><p>
+nmake:
+<ul><code>
+   wine -- wcmd /c F:\\bin\\nmake.bat "$@"</code></ul>
+</p><p>
+nmake.bat:
+<ul><code>
+   call f:/bin/vcvars32.bat<br />
+   echo on<br />
+   nmake %1 %2 %3 %4 %5 %6</code></ul>
+</p><p>
+vcvars32.bat:
+<ul>
+   same as normal one, but without quotes</ul>
+</p><p>
+nmakemaker: 
+<ul>
+	(attached)</ul>
+</p><p>
+Then in any dll/tests directory, I can type
+<ul><code>
+   nmakemaker > foo.mak<br />
+   nmake /f foo.mak</code></ul>
+</p><p>
+and build all my tests with msvc.   Each test
+is built as a separate executable, but that's the
+way I like it for testing anyway.
+</p><p>
+Now I guess I'll submit patches to make everyone else's
+tests actually *compile* under msvc.
+</p><p>
+It was real funny to see that article on slashdot appear
+as I was doing this.  I seem to have gone a bit further
+than that guy, since I don't have to use that awful, horrible wcmd window.
+</p></quote>
+
+
+</section>
+
+
+
+
+
+<section 
+	title="X11Drv / NTDll Separation " 
+	subject="x11drv, ntdll separation"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/02/0691.html" 
+	posts="12"
+	startdate="02/22/2003"
+	enddate="02/24/2003"
+>
+<topic>Graphics</topic>
+<p>David Fraser asked about DLL separation.  It's an issue that
+hasn't come up much lately because a lot of it is done. 
+Some really hard parts remain but it's not as high a priority as
+it once was.  (Those really hard parts would include the x11drv,
+user32, gdi32, and kernel32 DLLs.)  Anyway, he wondered about
+x11drv:</p>
+<quote who="David Fraser"><p>
+
+I was wanting to do some work on x11drv dll separation.
+The last remaining dll separation between x11drv and ntdll is 
+VIRTUAL_SetFaultHandler.
+This is called from X11DRV_DIB_CreateDIBSection, where it tries to set 
+the fault handler to X11DRV_DIB_FaultHandler, with addr=dm.dmBits and 
+arg=res.
+</p><p>
+ From reading the code it seems that this is done because it is not 
+known whether the calling app requires read or write access to the data 
+in bmp.  If the app then tries to read or write and doesn't have the 
+appropriate access, this will generate an exception which will then 
+raise the X11DRV_DIB_FaultHandler which would then set the appropriate 
+access, in a way that ensures data gets handled correctly.
+</p><p>
+I presume I'm misunderstanding this, because looking at MSDN for 
+CreateDIBSection, it says:
+<ul>
+The CreateDIBSection function creates a device-independent bitmap (DIB) 
+that applications can write to directly.</ul>
+and further down...
+<ul>
+Windows NT: You need to guarantee that the GDI subsystem has completed 
+any drawing to a bitmap created by CreateDIBSection before you draw to 
+the bitmap yourself. Access to the bitmap must be synchronized. Do this 
+by calling the GdiFlush function.</ul>
+</p><p>
+So it would seem apps could always be given read-write access to this 
+bitmap.
+</p><p>
+Why is the special fault handler needed? What is the best way to 
+approach getting rid of it?
+</p></quote>
+
+<p>If it was easy, it would have been done, right?  David Hammerton
+explained where the difficulty was:</p>
+<quote who="David Hammerton"><p>
+I wrote some documentation a while back on this when we (TransGaming) 
+submitted our dibengine to rewind/winehq.
+</p><p>
+You can read the docu at:
+<ul><a href="http://www.winehq.org/hypermail/wine-devel/2002/09/0680.html">
+  http://www.winehq.org/hypermail/wine-devel/2002/09/0680.html</a></ul></p><p>
+
+Basically its beacuse a DIBSection is like a mixture of a DIB and a HBITMAP, 
+in that it has properties of both: The app can write directly to the pixel 
+data while also being able to perform GDI operations on it, which we do 
+through X. Because of the way X works we therefor have to have two copies of 
+the DIBSection hanging around, and be able to sync them when required (eg, if 
+the most 'up to date' version is in X, we need to know when the app tries to 
+write to / read from the DIB so as we can sync them).
+</p><p>
+And really - the best way to get rid of it is to finish the DIB engine :)
+</p></quote>
+
+<p>Eric Pouech explained the same thing and mentioned where the offending
+fault handler comes into play,
+<quote who="Eric Pouech">
+basically, both the app and X11 are 
+used to read and write into it (each DIB is associated to an X11 pixmap, 
+and, for example, when the app writes to the DIB section, there's a need 
+to update the pixmap. on the other way aroud, GDI operation on the DIB, 
+are in fact done on the X11 pixmap. then modifications have to be 
+updated into the bits of the DIB.
+the fault handler is used to synchronize both accesses</quote></p>
+
+<p>After the comments about the "only" thing needed was a DIB engine
+Johan Gill mentioned, <quote who="Johan Gill">
+And I have it in my tree :) It should be ready for submission in a few 
+months from now.</quote></p>
+
+<p>Mike Hearn was concerned there might be a duplication of the work done
+by TransGaming, but Johan clarified that, <quote who="Johan Gill">
+It is their work, but I'm doing heavy changes.</quote></p>
+
+<p>David then explained why he was interested in separating it out,
+<quote who="David Fraser">
+ What stage is the implementation currently at? According to the 
+ TransGaming docs, there are still a number of functions to fill in...
+ I would be interested in seeing a patch no matter how much/little is 
+ implemented ... because my main aim in getting rid of the fault handler 
+ is so that the x11drv can be ported to Windows...</quote></p>
+
+<p>Mike Hearn picked up on it and asked:</p>
+<quote who="Mike Hearn"><p>
+Would that actually let you drop a file into MS Windows and suddenly
+allow any windows app to be export via X11 at the API level?
+</p><p>
+If so, then all I can say is "whoa". If not, then, well, that'd be a
+cool hack some day :)</p></quote>
+
+<p>David then explained more issues with making that happen:</p>
+<quote who="David Fraser"><p>
+Yup, that's the point ... will take quite a bit of work but until the 
+x11drv and gdi32 dlls are separated out it's not even feasible ... if 
+you're interested see 
+<a href="http://sources.redhat.com/XOpenWin/">http://sources.redhat.com/XOpenWin/</a> 
+which is a currently quite dormant project to try do this. The relevant bugs for 
+dll separation are:
+<dl>
+<dt><a href="http://bugs.winehq.org/show_bug.cgi?id=538">
+http://bugs.winehq.org/show_bug.cgi?id=538</a></dt><dd>
+  DLL Separation: x11drv from gdi32</dd>
+
+<dt><a href="http://bugs.winehq.org/show_bug.cgi?id=540">
+http://bugs.winehq.org/show_bug.cgi?id=540</a></dt><dd>
+  DLL Separation: x11drv from user32 (clipboard)</dd>
+
+<dt><a href="http://bugs.winehq.org/show_bug.cgi?id=542">
+http://bugs.winehq.org/show_bug.cgi?id=542</a></dt><dd>
+  DLL Separation: x11drv from user32 (misc)</dd>
+
+<dt><a href="http://bugs.winehq.org/show_bug.cgi?id=543">
+http://bugs.winehq.org/show_bug.cgi?id=543</a></dt><dd>
+  DLL Separation: x11drv from ntdll (FILE_DupUnixHandle)</dd>
+
+<dt><a href="http://bugs.winehq.org/show_bug.cgi?id=545">
+http://bugs.winehq.org/show_bug.cgi?id=545</a></dt><dd>  
+ DLL Separation: x11drv from ntdll (VIRTUAL_SetFaultHandler)</dd>
+</dl></p></quote>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+<section 
+	title="Libwine Portability" 
+	subject="Re: wrc: change -J to -I-"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/02/0860.html" 
+	posts="11"
+	startdate="02/26/2003"
+>
+<p>In the course of discussion on a patch to wrc, Dimi remarked,
+<quote who="Dimitrie Paun">
+BTW, can we have a little static lib that we can link to wrc where
+we can put the getopt_long code? It's needed in a bunch of places...</quote></p>
+
+<p>Alexandre replied, 
+<quote who="Alexandre Julliard">
+Sure, but there's no need for a getopt-specific library, it can use
+the normal portability mechanisms of libwine (though I'm planning to
+split the portability bits of libwine into a separate lib, but that's
+a different issue...)</quote></p>
+
+<p>Steven Edwards wanted to know if the interfaces in libwine would be 
+frozen soon and Alexandre mentioned,
+<quote who="Alexandre Julliard">
+It's unlikely they will get frozen before 0.9. We should probably
+start to use symbol versioning by 0.9 too, but I'm not sure how well
+this would work on ReactOS...</quote></p>
+
+<p>
+Symbol versioning is a way for the dynamic linker to determine that the libraries
+loaded contain the functions that an application needs.  Or, more likely, that
+the function performs as expected - over time a
+function might change in the way that arguments are passed to it or the return
+value is different.  Mike Hearn felt it might be overkill to implement and
+just changing the name of the library might be enough.  Alexandre explained
+why it might be better:</p>
+
+<quote who="Alexandre Julliard"><p>
+The wine internal libraries are still about a megabyte of code, and
+it's silly to duplicate all of that whenever a single function
+changes. Symbol versioning is much better solution to that problem,
+and I don't see much reason for not using it (except on platforms that
+don't support it of course).
+</p></quote>
+
+<p>In this case, Dimi wanted to know if he should write a getopt_long
+function.  Alexandre said yes,
+<quote who="Alexandre Julliard">
+Yes, that's the way to do it, except it has to be implemented, not
+stubbed out.
+The idea is that port.[ch] provides an emulation of the
+missing functions so that people writing the code don't need to worry
+about whether they exist or not. But if the replacement is broken then
+we very much want the caller to be aware of that; which is why I put
+the #ifdefs in wrc so that it's explicit that long options don't work
+if configure didn't find getopt_long().</quote></p>
+
+</section>
+
+
+
+
+
+
+<section 
+	title="Using Clientside Fonts" 
+	subject="building font metrics and Java"
+	archive="http://www.winehq.org/hypermail/wine-users/2003/02/0073.html" 
+	posts="5"
+	startdate="02/15/2003"
+>
+<topic>Fixes</topic>
+<p>Marc Williams complained about font handling:</p>
+<quote who="Marc Williams"><p>
+
+I have a question about Wine's font handling.  I am experiencing
+behavior in Wine that I don't believe is normal.  At the very least, it
+is not desirable.
+</p><p>
+Ever since the first time I installed Wine over a year ago and up until
+the present, I couldn't figure out why Wine would, seemingly at random,
+decide it had to rebuild the font metrics when starting a Windows app. 
+And this takes a fair length of time on my older machine with quite a
+few MS fonts installed.  Sometimes, I would go a week or more without it
+having to rebuild the font metrics; other times it would be almost after
+every reboot.  I couldn't figure out a pattern.  Until this morning.
+</p><p>
+It seems to be Java related.
+</p><p>
+So here's my question:  Is this normal? 
+</p></quote>
+
+<p>Duane Clark explained the problem and the solution:</p>
+<quote who="Duane Clark"><p>
+What is happening is that a default set of fonts are known to the font 
+server, presumably xfs. When Wine is run, it checks that list of fonts 
+and caches them.
+</p><p>
+When you run Java, it registers some additional private fonts with xfs. 
+Now when you run Wine, it sees that the list of fonts has changed and 
+reruns the caching.
+</p><p>
+You have a couple of alternatives. With that version of RedHat, you 
+really don't need to have Wine use the xfs font server ("server side" 
+font rendering). If you install a collection of TrueType fonts into your 
+windows/Fonts directory, wherever you have your fake C: drive installed, 
+then Wine should do direct rendering of fonts("client side" font 
+rendering). When Wine does direct rendering, you will never cache fonts 
+again. Yea! ;)
+</p><p>
+You can get fonts from the C:\windows\Fonts directory on a real Windows 
+installation, and also from here:
+<ul>
+<a href="http://corefonts.sourceforge.net/">http://corefonts.sourceforge.net/</a></ul>
+</p><p>
+Alternatively, if you want to continue to use "server side" font 
+rendering, figure out where the Java fonts are located, and add that 
+path to the default search path for xfs, so that xfs (and therefore 
+Wine) already knows about them. Assuming it has not changed since RH7.3, 
+the font paths are set in the file /etc/X11/fs/config.
+</p></quote>
+
+<p>Marc reported success.</p>
+
+</section>
+
+
+
+
+
+
+<section 
+	title="Finding Missing Locks with Smatch" 
+	subject="Re: SMATCH: missing LeaveCriticalSection in error path"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/02/0733.html" 
+	posts="3"
+	startdate="02/22/2003"
+	enddate="02/23/2003"
+>
+<topic>Debugging</topic>
+<p>
+Michael Stefaniuc continued some work from last week with Smatch.
+He posted a small patch for a missing LeaveCriticalSection which
+prompted Dmitry Timoshkov to ask,
+<quote who="Dmitry Timoshkov">
+ Michael, I'm just curious, how hard it would be to adapt your SMATCH
+ script for finding EnterCriticalSection/LeaveCriticalSection pair
+ matching to do a similar work with wine_tsx11_lock/wine_tsx11_unlock,
+ GDI_GetObjPtr/GDI_ReleaseObj, DC_GetDC[Ptr|Update]/GDI_ReleaseObj,
+ USER_Lock/USER_Unlock, WIN_GetPtr/WIN_ReleasePtr, WIN_FindWndPtr/
+ WIN_ReleaseWndPtr and some other internal Wine locks? </quote></p>
+
+<p>The next day Michael had it working:</p>
+<quote who="Michael Stefaniuc"><p>
+Not hard at all, I've created a new script
+<a href="http://people.redhat.com/mstefani/wine/smatch/wine_locks.pl">
+http://people.redhat.com/mstefani/wine/smatch/wine_locks.pl</a>
+that takes care of locks of the form:
+<ul><code>
+  lock(this);<br />
+  do_something();<br />
+  unlock(this);</code></ul></p><p>
+and put all of the above locking pairs into it. To add a new locking
+pair all that's needed is to add an entry for it in the %locks hash.
+</p><p>
+Running wine_locks.pl requires this patch
+<a href="http://people.redhat.com/mstefani/wine/smatch/smatch.pm.diff">
+http://people.redhat.com/mstefani/wine/smatch/smatch.pm.diff</a>
+for smatch.pm because it treats every ARGV entry as filename (i'll
+contact the smatch author to find a solution that doesn't require this
+hack).
+</p><p>
+Besides some NOTABUG's in the CriticalSection locking i found only this:
+<ul>
+wine/windows/win.c 104 127 create_window_handle(31) 1 USER_Lock not
+released</ul></p><p>
+I'm not sure if it's a bug or not.
+</p></quote>
+
+
+
+
+
+</section>
+
+
+
+
+
+<section 
+	title="Making Config Tools" 
+	subject="Wine 0.9 config applets?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/02/0664.html" 
+	posts="17"
+	startdate="02/21/2003"
+	enddate="02/25/2003"
+>
+<topic>Configuration</topic>
+<p>Mike Hearn wanted to know what was going on with creating
+some configuration tools:</p>
+<quote who="Mike Hearn"><p>
+That reminds me, on the Wine 0.9 TODO it says "expect a preview of the
+wine config applets in the second week of 2003". Anybody know what the
+status of these are? I think it makes sense to start pro-actively
+targetting 0.9 tasks, and having control panel applets for Wine seems
+like a good idea.
+</p><p>
+Hmmm, do we even have a control panel? Presumably programs can install
+control applets (capplets in gnome-speak), but I don't see any way to
+see them other than executing the cpl files manually.
+</p></quote>
+
+<p>A few months ago Jaco Greeff had mentioned he was working on it,
+we covered that back in 
+<a href="http://www.winehq.org/news/?view=148#Registry%20Editors%20/%20Configuration%20Programs">issue #148</a>.
+The tool was advanced enough for Jaco to show off a screenshot.
+Dimi replied to Mike:</p>
+<quote who="Dimitrie Paun"><p>
+Last time I talked to Jaco, he was busy finding work. Hopefully he'll
+resurface soon, maybe he has a nice surprise for us :).
+</p><p>
+Thing is, that particular configuration applet is the key to our
+autoconf efforts. Once that's in place, we can do C1 right away,
+as well as C3. C5 seems to be just a matter of getting some work
+done, as the proposed solution appears to be working just fine.
+C6 seems to be simple, once all the other pieces are in, while
+C7 looks like it's in a usable state already.
+</p></quote>
+
+<p>What he's referring to are items off the to-do list.  In particular
+C1 and C3 are merging configuration into the registry
+and making the defaults good enough to allow starting of the
+control panel without other configuration.  Wine has had the
+ability for quite some time to use it's registry (similar to 
+Window's registry except text editable) to store program data.
+However, without tools to actually edit the thing - and vi doesn't
+count - it just hasn't been worth abandoning the traditional 
+config file.</p>
+
+<p>Jeff Smith gave a pointer towards another tool that comes with Wine,
+<quote who="Jeff Smith">
+Try 'wine control'.  That is our winelib control panel app if I am
+not mistaken.</quote></p>
+
+
+
+
+</section>
+
+
+
+
+
+
+</kc>
+

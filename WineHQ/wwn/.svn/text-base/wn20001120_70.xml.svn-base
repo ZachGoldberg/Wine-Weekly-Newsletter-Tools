@@ -1,0 +1,266 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="70" date="20 Nov 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 70th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="86" size="265" contrib="40" multiples="20" lastweek="20">
+<person posts="7" size="17" who="lawson_whitney@juno.com" />
+<person posts="6" size="63" who="Andrew Lynch &lt;lynchaj@yahoo.com&gt;" />
+<person posts="6" size="15" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="5" size="9" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="5" size="10" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="4" size="9" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="7" who="Taral &lt;taral@taral.net&gt;" />
+<person posts="3" size="7" who="Jeremy Newman &lt;jnewman@codeweavers.com&gt;" />
+<person posts="3" size="7" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="3" size="6" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+</stats>
+
+
+<section 
+  title="Wine and CygWin"
+  subject="Has Anyone Successfully Built Wine on Cygwin?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0115.html"
+  posts="28"
+  startdate="08 Nov 2000 00:00:00 -0800"
+  enddate="17 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andrew Lynch asked: 
+<quote who="Andrew Lynch">
+Has anyone successfully built Wine on Cygwin?  Before you laugh out
+loud and send nasty flames, please read the whole message.  Thanks.
+
+<p />
+
+Cygwin recently added Xfree86 4.0 X server capability for Win NT/9x
+which appeared to be the final component needed for a Wine port. It
+has gcc and appears to have most if not all the tools needed to do a
+Wine build.
+
+<p />
+
+I know already that Cygwin is not listed as one of the supported
+platforms (as stated in the README) but it seems to me that Wine under
+Cygwin would be an ideal test environment since it runs under Win
+NT/9x directly alongside the app under test. It could be at least a
+free alternative to running Wine on Linux/*BSD/Solaris with Win NT/9x
+in VMware assuming Win NT/9x is already a sunk cost on most machines.
+</quote>
+
+
+<p />
+
+Andrew tried to compile Wine, but got some configuration error
+messages, and asked for support.
+
+<p />
+
+Francois Gouget and Alexandre Julliard had a look at the trace
+provided by Andrew. It turned out to be a configuration issue
+(configure acted as it was running on NetBSD and returned some
+erroneous information). A patch was provided which help Andrew go
+further. But, he then got stucked by compilation errors in inline
+assembly code. James Abbatiello and Dimitrie O Paun then helped fixing 
+this issue.
+
+<p />
+
+Dimitrie made then a small wrap up of the situation:<quote who="Dimitrie Paun">
+I have several hacks in my tree right now that allowed me to _compile_ 
+most of wine. The compilation still fails in the server and the comm
+support. Now, the big problem is that I do not know how to get .so in
+Cygwin, and as such the linking fails ATM.
+
+<p />
+
+In other words, we are still far away from a working Wine!
+
+<p />
+
+Now, as Hidenori noticed, we should be able to create dynamically linked
+libraries, but .dll rather than .so. So, the next tasks would be to:
+<ol>
+   <li>Modify the configure.in to test for this case</li>
+   <li>Adjust the Makefile.in system to support .dll as an alternative</li>
+   <li>Patch the winebuild program to use them</li>
+</ol>
+</quote>
+
+<p />
+
+So, some progress have been made, but no final result is available.
+
+<p />
+
+Francois Gouget reacting to this progress, but also to Plex86 being
+able to run Windows95, added <quote who="Francois Gouget">
+With all the progress being made it looks like soon we'll be able to
+run Word 2000 in Wine on Cygwin, in Windows 95, in plex 86, on Linux! 
+(in vmware on win2000, in ... oops, infinite loop) ;-)))
+</quote>
+
+<p />
+
+</section>
+
+
+<section 
+  title="Drunkard's last round"
+  subject="Drunkard's last round"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0215.html"
+  posts="1"
+  startdate="13 Nov 2000 00:00:00 -0800"
+  enddate="13 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Zygo Blaxell sadly announced:<quote who="Zygo Blaxell">
+Well, it's been fun, but I'm afraid I can no longer sustain the
+Drunkard automatic Wine builds on my site. Some of the more radical
+anti-Microsoft factions that influence content on hungrycats.org have
+decided that there are better ways to use ~3% of that machine.
+
+<p />
+
+Effective immediately I'm removing the parts of the Drunkard web pages 
+that instruct users how to add Drunkard to their Debian apt sources.list;
+at the end of November, I'll stop the build process; at the end of the
+millennium, the Drunkard web page will go away as well.
+
+<p />
+
+If anyone would like to set up a replacement for Drunkard, I would be
+willing to provide a small amount of technical assistance to get you 
+up and running. I'll also advertise your site on my site until the end 
+of the millennium. After that, you're on your own (and you should
+probably contact web-admin to get yourself listed at winehq.org). 
+Good luck.
+</quote>
+
+<p />
+
+Drunkard has been providing automatic RPM building for Wine, and an
+heavy site for downloads (almost 800 users per day, with around 20 MB
+of downloadable material (source and binary)).
+
+<p />
+
+Thanks Zygo for the help you provided to the Wine development. If
+someone is willing to take over the Drunkard (server, technical setup
+as well), you can contact <a href="mailto:web-admin@winehq.org">WineHQ 
+administrators</a>.
+</section>
+
+
+<section 
+  title="WineHQ 2: the sequel"
+  subject="Beta test new design for winehq.org"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0230.html"
+  posts="17"
+  startdate="15 Nov 2000 00:00:00 -0800"
+  enddate="19 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jeremy White announced:
+<quote who="Jeremy White">
+Jeremy Newman has whipped up a proposed redesign for the WineHQ web site.
+
+<p />
+
+You can see it at <a href="http://www.winehq.org/Winehq2/">
+http://www.winehq.org/Winehq2/</a>
+</quote>
+
+
+<p />
+
+and asked for comments and reactions.
+
+<p />
+
+Lots of remarks sparked. Mostly on enhancements and broken links. Some 
+interesting questions emerged though:
+<ul>
+   <li>in the logo, how shall the Wine glass be shaped. It looks more
+a Champaign flute (some people like Uwe Bonnes even suggested some
+other shapes from glass manufacturers). For the wine (it's a lower
+case 'w') glass experts, it's not clear yet whether the Wine glass
+shall be a Burgundy or a Bordeaux style glass. What about creating a
+foundation to decide on that ? (oops we're not KDE nor GNOME)...</li>
+   <li>some others didn't like the shadings on mouse over events for
+the links (especially on slow connections)</li>
+   <li>How should Wine be spelled ? (Wine vs WINE...) It turned out
+Wine and WineLib seemed to reach some kind of consensus.</li>
+   <li>Some layout enhancements were proposed</li>
+</ul>
+
+<p />
+
+Apart from those sensitive remarks, the overall design seem to please
+the Wine development community, so the cut over shall be done in a
+short period of time.</section>
+
+
+<section 
+  title="Bill Gates to support Wine ?"
+  subject="Reproducing Windows APIs feasible, Gates said"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0266.html"
+  posts="1"
+  startdate="17 Nov 2000 00:00:00 -0800"
+  enddate="17 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Paul Merrel reported some quotes he found in the press:
+
+<quote who="Paul E. Merrell">
+In the world according to Gates, the notion that Microsoft had a
+monopoly was ludicrous. "Give me any seat at the table - Java, OS/2,
+Linux - and I'd end up where I am," he proclaimed. "I could blow
+Microsoft away! I'd have programmers in India clone our APIs. If you
+were smart enough, you could do it." 
+</quote>
+
+
+<p />
+
+Those articles can be found at:
+<ul>
+   <li>
+<a href="http://www.wired.com/wired/archive/8.11/microsoft.html?pg=20&amp;topic=&amp;topic_set=">
+reporting on meeting between Microsoft and U.S. Department of Justice
+anti-trust lawyers</a></li>
+<li>Article starts <a href="http://www.wired.com/wired/archive/8.11/microsoft.html">here</a></li>
+</ul>
+
+<p />
+
+As Paul put it:
+<quote who="Paul E. Merrell">
+Just thought you might appreciate the confirmation that reconstructing
+the Windoze APIs is possible. &lt;g&gt;  Seriously, the quote might be
+useful should Microsoft later challenge the legality of the Wine work
+product. Gates seems to be saying implicitly it's not only possible,
+but legal to recreate the Windoze APIs. </quote>
+</section>
+
+</kc>

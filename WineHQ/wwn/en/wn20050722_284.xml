@@ -1,0 +1,489 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="284" date="07/22/2005" />
+<intro> <p>This is the 284th issue of the Wine Weekly News publication.
+Its main goal is to lose trailers. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="142" size="764" contrib="53" multiples="32" lastweek="28">
+
+<person posts="11" size="33" who="Saulius Krasuckas" />
+<person posts="9" size="27" who="Felix Nawothnig" />
+<person posts="9" size="25" who="Alexandre Julliard" />
+<person posts="7" size="40" who="Oliver Stieber" />
+<person posts="7" size="19" who="Dimi Paun" />
+<person posts="5" size="17" who="Robert Shearman" />
+<person posts="5" size="16" who="Marcus Meissner" />
+<person posts="5" size="15" who="Paul Vriens" />
+<person posts="5" size="14" who="Raphael" />
+<person posts="4" size="13" who="Ivan Gyurdiev" />
+<person posts="4" size="13" who="Juan Lang" />
+<person posts="3" size="14" who="Savio Ramos" />
+<person posts="3" size="13" who="Glenn Wurster" />
+<person posts="3" size="10" who="Kevin Koltzau" />
+<person posts="3" size="9" who="Dmitry Timoshkov" />
+<person posts="3" size="9" who="Phil Krylov" />
+<person posts="3" size="8" who="Jakob Eriksson" />
+<person posts="3" size="8" who="Damjan Jovanovic" />
+<person posts="3" size="8" who="Michael Jung" />
+<person posts="2" size="11" who="Tony Lambregts" />
+<person posts="2" size="7" who="Paul Walker" />
+<person posts="2" size="7" who="Hans Kristian Rosbach" />
+<person posts="2" size="6" who="Boaz Harrosh" />
+<person posts="2" size="6" who="Francois Gouget" />
+<person posts="2" size="6" who="Huw D M Davies" />
+<person posts="2" size="5" who="James Hawkins" />
+<person posts="2" size="5" who="Matthew Davison" />
+<person posts="2" size="5" who="Hans Leidekker" />
+<person posts="2" size="5" who="Andreas Mohr" />
+<person posts="2" size="5" who="Vincent B&#233;ron" />
+<person posts="2" size="5" who="=?ISO-8859-1?Q?Alex_Villac=ED=ADs_Lasso?=" />
+<person posts="2" size="5" who="Troy Rollo" />
+<person posts="1" size="295" who="Eric Pouech" />
+<person posts="1" size="6" who="Dustin Navea" />
+<person posts="1" size="5" who="Robert Lunnon" />
+<person posts="1" size="4" who="Chris Morgan" />
+<person posts="1" size="3" who="Jeremy White" />
+<person posts="1" size="3" who="Jeffrey Zellman" />
+<person posts="1" size="3" who="Paul Millar" />
+<person posts="1" size="3" who="Paul Millar" />
+<person posts="1" size="3" who="Uwe Bonnes" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="2" size="4" who="Gerald Pfeifer" />
+<person posts="1" size="2" who="Ivan Leo Puoti" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Erik de Castro Lopo" />
+<person posts="1" size="2" who="Frank Richter" />
+<person posts="1" size="2" who="Paul Vriens" />
+<person posts="1" size="2" who="Boaz Harrosh" />
+<person posts="1" size="2" who="Hiji" />
+<person posts="1" size="2" who="(josie)" />
+
+</stats>
+<section 
+	title="News: Installer Challenge"
+	subject="News"
+	archive="http://www.codeweavers.com/about/general/press/?id=20050719"
+	posts="1"
+	startdate="07/16/2005"
+	enddate="07/22/2005"
+>
+<topic>News</topic>
+<p>CodeWeavers has thrown down the gauntlet.  Program installation, a
+long time thorn in the side of Wine users, is getting some attention.
+CodeWeavers announced plans to get any installer running under Wine.
+If your favorite program doesn't install, then contact CodeWeavers and 
+they'll promise to fix the bugs in Wine and make it work.  In return, 
+you'll have to use their test framework to make sure regressions don't
+slip in later that breaks things.  </p>
+
+<p>The 
+<a href="http://www.codeweavers.com/about/general/press/?id=20050719">press
+release</a> outlines the goals of the project.  For information about how
+to get involved, check out the 
+<a href="http://www.codeweavers.com/compatibility/challenge/">installer
+challenge</a> page.  From that page:</p>
+<quote who="CodeWeavers"><p>
+
+We are on a mission to improve Wine until it can run nearly every Windows program, and we would like your help.
+</p><p>
+Over the past year we've completed support for a set of technologies key to making Windows applications install: the Component Object Model (COM aka OLE) DLLs and the Microsoft Installer service (MSI). That work is now largely done, and we would like to start taking advantage of it to showcase what Wine can do.
+</p><p>
+The basic idea is that if you send us a piece of software, we will commit to making it install. In exchange, we need you to promise to run a regression test of that installation, thereby ensuring that it continues to install into the future. </p></quote> 
+
+</section>
+<section 
+	title="Installer Challenge &amp; DCOM"
+	subject="Celebrating some hard work"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/07/0542.html"
+	posts="8"
+	startdate="07/19/2005"
+>
+<topic>RPC / COM / OLE</topic>
+<p>Jeremy White sent a long email to wine-devel to discuss the
+big projects tackled by CodeWeavers over the past few months:</p>
+<quote who="Jeremy White"><p>
+
+You may have noticed Rob submitting a long string of OLE
+patches.
+</p><p>
+That is formally the last set of 'hard work' we planned to
+do as part of our work on our 5.0 release.  Now we just
+have to do the 'easy part' - stabilizing for release &lt;g&gt;.
+</p><p>
+The big picture items included the window manager rewrite,
+the OLE/COM work, and the work on MSI.
+</p><p>
+I'd like to take a minute to thank all the people, both
+inside and outside CodeWeavers, that helped to work on
+these projects.
+</p><p>
+I think that these tasks represent a fairly signficant
+milestone for Wine - we seem to have enough working that
+Alexandre is willing to contemplate a non alpha release;
+that's a pretty big deal.  (Another 11 years, and maybe 1.0
+will actually happen :-/).
+</p><p>
+At any rate, this work has been a bit hard on us, because
+it's largely been under the hood, unsexy work that tends
+to cause regressions.  So from a customer perspective, the
+rational analysis is:  "you did all that work and now my
+windows don't scroll right?  Morons!"
+</p><p>
+But one of the key benefits that the OLE/MSI work gives
+us, in particular, is that we can now intelligently
+debug issues with COM, which was always a nightmare
+to debug before.
+</p><p>
+And, as you all probably know, many installers rely heavily
+on both COM and MSI to do their work.
+</p><p>
+So we now believe that many, many more installers will
+'just work' than before.  And we further believe that those
+that don't work can be fixed in a much more straightforward
+way.
+</p><p>
+Thus, I am now making good on my promise to
+lock Rob and Aric in a room and make installers go.
+We've announced a formal, CrossOver based program over
+on our web site.  However, I wanted to let you know that
+we'll do the same on an informal basis, particularly
+for known Wine developers.
+</p><p>
+I'm hoping that as a result of this work we'll soon be able
+to claim with a straight face:  "Most things install."
+</p><p>
+So, if you have an app that doesn't install, post a message
+to wine-devel, and let's see if we can't make some lemonade
+and have a party!
+</p></quote>
+
+<p>That long string of patches mentioned by Jeremy hit wine-patches
+at almost the exact same time as the announcement.  It consisted of
+16 patches touching on all sorts of DCOM stuff way over my head and
+using words like <i>marshal</i> and <i>ITypeInfo</i>.  For those
+of you just tuning in, this seems to be the culmination of about nine
+months of work.  Last November a big push began to overhaul DCOM with
+a lot of major changes.  In reality, DCOM issues have been plaguing 
+Wine for about 5 years now with a series of successes and failures
+on our part.  We're not out of the woods yet, and there's certainly
+more work to be done, but things are definitely on an upswing.  Rob explained
+what was behind the patches:</p> 
+<quote who="Robert Shearman"><p>
+
+I can put all of the patches in to one big patch if anyone wants to test 
+before the patches are committed.
+</p><p>
+Here is a list of some of the applications I tested with:
+<ul>
+<li>Adobe Acrobat Reader 6.01 - has some graphical glitches and requires IE 
+to be installed but still installs. InstallShield.</li>
+<li>iTunes - Has some stability problems - sometimes deadlocks (due to 
+marshaling proxies?), but installs most of the time. InstallShield.</li>
+<li>Halo - Installs fine.</li>
+<li>Everquest - Installs fine.</li>
+<li>Dark Ages of Camelot - Installs fine.</li>
+<li>World of Warcraft - Installs fine.</li>
+<li>Starcraft - Installs fine.</li>
+<li>WordPerfect Office 12 - Installs fine. InstallShield.</li>
+<li>CSI Dark Motives - Installs fine. InstallShield.</li>
+<li>Google Earth - Installs fine. InstallShield.</li>
+<li>X-Win32 LX - Installs fine. InstallShield.</li>
+<li>Sims 2 (CD) - Leaves files open on CD so can't install.</li>
+<li>Final Fantasy XI - Hangs during install. InstallShield.</li>
+<li>Call of Duty - Leaves setup.exe open on CD so can't change disks.</li>
+<li>Palm Desktop - Fails as it requires interprocess ROT. InstallShield.</li>
+<li>Battlefield 2 - Hangs during install. InstallShield.</li>
+</ul></p></quote>
+
+<p>Uwe Bonnes requested Alexandre notify everyone when the patches were
+in place.  He didn't have to wait very long; the patches were committed
+within a few hours and Alexandre replying,
+<quote who="Alexandre Julliard">
+ Everything should be in now (with many thanks to Rob for doing a great
+ job of splitting his work in small self-contained chunks).</quote></p>
+
+<p>Dimi Paun was impressed:</p>
+
+<quote who="Dimitrie Paun"><p>
+
+Yeah -- this was one of the nicest patch set I've seen in a while.
+</p><p>
+Guys, this is simply *amazing*! I'm in constant awe at the quality
+and volume of the patches that I've seen lately, to speak nothing of
+the difficulty behind them.
+</p><p>
+Kudos!
+</p></quote>
+
+<p>Raphael Junqueira was too:</p>
+<quote who="Raphael Junqueira"><p>
+
+Champagne ? :)
+</p><p>
+very impressive job Rob :)</p></quote>
+
+<p>Now, everyone go find an installer to break and get it to CodeWeavers.</p>
+</section>
+<section 
+	title="HTML Help Status"
+	subject="Status of HTML Help"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/07/0489.html"
+	posts="1"
+	startdate="07/16/2005"
+>
+<topic>Web/HTML</topic>
+
+<p>James Hawkins gave a status update on some work he's doing:</p>
+<quote who="James Hawkins"><p>
+
+In light of a recent wine-users' query about wine's help system, I've
+decided to shed some light on the status of wine's HTML Help
+implementation.  I decided not to send patches till I had the base
+interfaces fleshed out, and this process is almost complete.  As of
+now you can pass a .chm file to hh.exe which will bring up the help
+viewer.  The toolbar with the Back, Stop, Refresh etc buttons is
+complete (minus correct icons..I can't draw), and the user can browse
+through the contents of the help file (the most important part).  I
+still have to implement the navigator pane, but that's really
+secondary to the browser.  I have a working .exe and visual studio
+project if anyone wants to take a look at it before I start submitting
+patches; just reply and I'll send it to you.  For more information on
+what's left TODO with the project, check out my wiki page:
+
+<ul><a href="http://wiki.winehq.org/JamesHawkins">
+wiki.winehq.org/JamesHawkins</a></ul></p></quote>
+</section>
+<section 
+	title="stdole2.tlb"
+	subject="stdole2.tlb"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/07/0471.html"
+	posts="6"
+	startdate="07/16/2005"
+	enddate="07/20/2005"
+>
+<topic>RPC / COM / OLE</topic>
+<p>
+Related to the DCOM work, Ivan Gyurdiev wanted to know what was going on
+with the stdole2.tlb typelib.  For some background on this, see WWN
+<a href="http://www.winehq.com/wwn/238#Creating%20Type%20Libraries">#238</a>
+for more information about this topic.  Ivan wrote:</p>
+<quote who="Ivan Gyurdiev"><p>
+I was wondering what the status of stdole2.tlb is in wine.
+GTA: San Andreas will not install without it..
+
+<ul><a href="http://bugs.winehq.org/show_bug.cgi?id=3108">
+http://bugs.winehq.org/show_bug.cgi?id=3108</a></ul></p></quote>
+
+<p>Rob Shearman explained what was going on:</p>
+<quote who="Robert Shearman"><p>
+Ivan, I believe the status was that a similar enough stdole2 cannot be 
+generated using widl without some extensions.</p><p>
+There are two options:
+<ol>
+<li> Generate the file manually by invoking ICreateTypeLib2 functions (I 
+believe Microsoft does it this way).</li>
+<li> Add another mode to widl that allows the necessary forward references 
+in idl files. Huw Davies knows more about this problem.</li>
+
+</ol></p></quote>
+
+<p>Huw Davies then submitted a patch implementing it and explained:</p>
+<quote who="Huw Davies"><p>
+Here's a semi-complete stdole2.tlb.  There are a few small issues with
+widl and enums that mean that the uuids of two enums are commented
+out, as is one function that takes a defaultvalue parameter that is an
+enum.  It should be easy enough to fix widl to cope with these.
+</p><p>
+The harder problem is that coclass StdFont contains dispinterface
+FontEvents, which appears later on in the typelib than the coclass
+itself.  It's not possible to do this in idl, so we'll need to come up
+with some sort of widl extension to let us do so.  For the time being
+the reference to FontEvents in StdFont is commented out.
+</p><p>
+I've not tested this with an InstallShield installer - feedback
+welcome.</p></quote>
+
+<p>Ivan reported some success with his installer:</p>
+<quote who="Ivan Gyurdiev"><p>
+Thank you very much - GTA will now begin installing,
+will get through all the InstallShield screens,
+and then it gets to the last one where it should begin installing,
+and it freezes and nothing happens.</p></quote>
+
+
+</section>
+<section 
+	title="WLDAP32"
+	subject="WLDAP32: new dll"
+	archive="http://www.winehq.com/hypermail/wine-patches/2005/07/0319.html"
+	posts="12"
+	startdate="07/11/2005"
+	enddate="07/22/2005"
+>
+<topic>Integration</topic>
+<p>Hans Leidekker has been implementing 
+<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/ldap/ldap/lightweight_directory_access_protocol_ldap_api.asp">WLDAP32</a>
+for several weeks now.  He originally posted this message about two weeks
+ago:</p> 
+<quote who="Hans Leidekker"><p>
+The last three weekends I have been working on an implementation
+of WLDAP32 (comes standard on XP) on top of OpenLDAP. I have many
+functions fleshed out now so I think it's about time to start
+feeding patches.
+</p></quote>
+
+<p>Some of the individual patches have noted these additions in the
+changelogs:</p>
+<p>#1</p>
+<quote who="Hans Leidekker"><p>
+Configure checks for OpenLDAP headers and libraries.
+</p></quote>
+
+<p>#2</p>
+<quote who="Hans Leidekker"><p>
+ Dynamically load ldap libraries.
+</p></quote>
+
+<p>#3</p>
+<quote who="Hans Leidekker"><p>
+Implement ldap_bind* functions.
+</p></quote>
+
+<p>#4</p>
+<quote who="Hans Leidekker"><p>
+Although not strictly necessary, I did the ldap_unbind functions
+as wrappers because I'd like the debug logging to show ldap_bind
+and matching ldap_unbind calls.
+</p><p>
+Changelog
+<ul>
+Implement ldap_simple_bind* and ldap_unbind* functions.</ul>
+</p></quote>
+
+<p>#5</p>
+<quote who="Hans Leidekker"><p>
+Implement ldap_init* and ldap_open* functions.</p></quote>
+
+<p>#6</p>
+<quote who="Hans Leidekker"><p>
+Implement ldap_search* functions.
+</p></quote>
+
+<p>Hans is continuing to work on adding more functionality and patches have
+been arriving steadily for the past few weeks.</p>
+
+</section>
+<section 
+	title="Kernel or glibc Problem?" 
+	subject="Frequent and annoying Wine bug"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/07/0491.html" 
+	posts="2"
+	startdate="07/16/2005"
+	enddate="07/19/2005"
+>
+<topic>Debugging</topic>
+<p>Uh oh.. there may be monsters lurking in the woods.  
+Robbert Xerox sent in an unconfirmed bug with this description:</p>
+<quote who="Robbert Xerox"><p>
+I know this is not a wine-bug channel, but this
+bug is affecting quite some apps, and seems to affect
+more and more ...
+</p><p>
+At least five apps from wine-bug mailinglist throw up
+an exception which either reads: "Assertion Failed
+!bogus context in Local_Unwind()" or "in
+Exception_Handler". As a reference I filed 2 bugs, and
+commented another one where you can read the
++relay,+seh logs:
+<ul>
+<li><a href="http://bugs.winehq.org/show_bug.cgi?id=3097">Bug 3097</a></li>
+<li><a href="http://bugs.winehq.org/show_bug.cgi?id=3127">Bug 3127</a></li>
+<li><a href="http://bugs.winehq.org/show_bug.cgi?id=3139">Bug 3139</a></li>
+</ul>
+</p><p>
+Some googling around makes me believe that this is a
+Borland specific error. I tried to install Demo
+Borland compiler in wine to see if i could reproduce
+this error, but unfortunately it fails with exactly
+the same error.
+</p><p>
+all programs show the same pattern before an exception
+is thrown: they call LoadstringA() ,with something
+like
+ L"Failed to get data for '%s'" or L"Access
+violation at address %p in module '%s'. %s of address
+%p" See the bugs for more info.
+</p><p>
+I think this bug is really affecting quite some more
+apps then the ones mentioned in wine-bugs so would be
+great if anyone could shine a light on this, as of how
+to solve the bug. Regards
+</p></quote>
+
+<p>Alexandre thought the problem was hiding somewhere else:</p>
+<quote who="Alexandre Julliard"><p>
+
+I tried several of the apps you mention and they all work fine here,
+so I suspect some sort of glibc/kernel issue. You should provide more
+details on your setup, and ask other people who see the problem to
+provide details too so that we can see if there's a correlation with
+kernel versions etc.</p></quote>
+
+
+
+</section>
+<section 
+	title="64-bit Support"
+	subject="difference with long datatype in 64bit gcc and msvc++"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/07/0552.html"
+	posts="5"
+	startdate="07/19/2005"
+	enddate="07/20/2005"
+>
+<topic>Ports</topic>
+<p>Making changes to allow for 64-bit support has been on the minds of
+many people.  Dmitry Timoshkov seems to have tackled the problem first
+about 9 months ago.  I remember Dmitry discussing it with some people
+at WineConf and a bunch of us thinking that some things were hard.
+Since then various folks have taken stabs at it
+in some form or another.  Kevin Koltzau asked this week about a
+compiler difference:</p>
+<quote who="Kevin Koltzau"><p>
+gcc and msvc++ have different opinions on the size of a long in 64bit code, 
+gcc has sizeof(long)==8 while msvc++ has sizeof(long)==4
+</p><p>
+Binary compatibility with win64 will be just about impossible as the long 
+datatype is used extensively throughout the headers and code
+</p><p>
+doing -Dlong=int works in simple cases, but not as a general rule
+</p><p>
+I'm at a loss as to where to go from here, suggestions are most welcome.
+</p></quote>
+
+<p>Juan Lang thought the problem wasn't that difficult:</p>
+<quote who="Juan Lang"><p>
+Can you give an example of a non-simple case?
+</p><p>
+What about defining LONG as int in win64?</p></quote>
+
+<p>Kevin explained,
+<quote who="Kevin Koltzau">
+
+you could start with running "grep long *" inside the include directory.  
+Every instance would need to be changed in some form, I count well over a 
+thousand instances in just the headers.</quote></p>
+
+<p>Dmitry suggested redefining things to handle those instance,
+<quote who="Dmitry Timoshkov">
+We need to replace 'long' by 'LONG' and 'int' by 'INT' in the headers.
+That's a job for a simple script. Then synchronize headers with an actual
+implementation, that's a little bit harder since we need to closely inspect
+every API implementation.</quote></p>
+
+<p>A patch for that hasn't appeared, but Kevin did add several other
+64-bit related functions.</p>
+
+</section></kc>

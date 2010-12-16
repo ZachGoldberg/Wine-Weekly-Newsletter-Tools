@@ -1,0 +1,420 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="19" date="29 Nov 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the nineteenth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="119" size="575" contrib="35" multiples="19" lastweek="12">
+
+<person posts="18" size="45" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="14" size="36" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="13" size="46" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="8" size="25" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="7" size="98" who="Peter Ganten &lt;peter@ganten.org&gt;" />
+<person posts="5" size="177" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="15" who="Juergen Lock &lt;nox@jelal.kn-bremen.de&gt;" />
+<person posts="4" size="9" who="'Juergen Schmied' &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="8" who="lawson_whitney@juno.com" />
+<person posts="4" size="15" who="Karl Lessard &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="4" size="12" who="Dave Pickles &lt;davep@nugate.demon.co.uk&gt;" />
+
+</stats>
+
+<section
+  title="GraphOn patent"
+  subject="GraphOn patent"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-296.html"
+>
+
+Following last week discussion on <kcref subject="Extending DISPLAY DLL"
+sectionnum="0">GraphOn patent an Wine implication</kcref>, Doug Ridgway found
+the details of the patent (you can get more at <a
+href="http://www.patents.ibm.com/details?pn=US05831609__"> IBM online patent
+site</a>):
+
+<p />
+
+<quote who="Doug Ridgway">filed June 6, 1995, in continuation of a patent filed in 1994:
+
+<p />
+
+<blockquote>
+
+The present invention is directed towards a translation software
+that provides remote access to an application program that is
+executing on a host machine in its native operating system
+environment. The translation software monitors messages that are
+relayed from the application program to an application interface that
+is provided via the native operating system..."
+
+</blockquote>
+
+</quote>
+
+<p />
+
+Anyway, it turns out that Wine should be safe regarding this, because:
+
+<ul>
+
+<li />the techniques used by Wine are rather different than the one Doug
+pointed out in the claim (<quote who="Doug Ridgway">device driver
+interception</quote>).
+
+<li />patent has been applied in 1995 (as an extension of a 1994
+patent), so Wine (which started in 1993) has anteriority
+
+<li />we have no clue of GraphOn wills on this matter. So, no need to
+spread more FUD.
+
+</ul>
+</section>
+<section
+  title="COMDEX Report"
+  subject="COMDEX report"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-300.html"
+>
+
+Here's Marcus Meissner report on his COMDEX visit:
+
+<quote who="Marcus Meissner">You might remember me asking about who is going
+to talk on COMDEX Fall'99 in Vegas.
+
+<p />
+
+Since nobody came forth, Jeremy White asked Douglas Ridgway if there
+was someone speaking on COMDEX... Douglas did not know either, so
+Jeremy called ZD Events. It turned out that the "project leaders"
+mentioned on <a href="http://www.comdex.com/">
+http://www.comdex.com/</a>
+actually was some marketing guy of Corel who had canceled this talk.
+
+<p />
+
+ZD Events even asked if Jeremy didn't knew something of WINE and he
+would like to do the talk ... You might guess the reaction ;)
+
+<p />
+
+Since Jeremy does not know much about the technical details, and
+Alexandre does not really want to talk since his spoken english is not
+very fluent, Jeremy asked me to participate too.
+
+<p />
+
+So we met on the COMDEX floor 2 hours before the talk, did merge the
+slides of my denmark talk with slides of Jeremy and Alexandre and
+prepared a small demo.
+
+<p />
+
+The whole thing happened in the Las Vegas Hilton, Pavilion 1,
+capacity around 200 people. We did not fill the whole room, but I
+guess approx 120 (?) people were in there. Not much suits in the
+audience, but with computer people you never know anyway who might
+attend.
+
+<p />
+
+No other WINE developers came forth except us 3.
+
+<p />
+
+Jeremy started on what WINE is, and what it might mean to business
+people including a brief history.
+
+<p />
+
+I followed with the largest part, a basic introduction to the
+technical side of WINE, how it works, what parts are implemented how,
+and problems we do face.
+
+<p />
+
+Alexandre concluded with a current overview of the project, what is
+done, and what needs to be done and how users can help. One
+interesting point he said that the 1.0 release might even happen, but
+probably not before second quarter 2000.
+
+<p />
+
+After this Jeremy demoed Pegasus Mail and I demoed Monkey Island 3.
+
+<p />
+
+We did some Question and Answers after that, some did go over to
+specific business question to things CodeWeavers does, some others
+went to specific implementation details.
+
+<p />
+
+The talk seem to well received, but not overly enthusiastic.
+
+<p />
+
+Afterwards Jeremy, Alexandre and I went to a small bar and had some
+real wine (beer in Alexandre's case ;) on the European WINE partyfund.
+
+<p />
+
+In general, some points that came up that might be interesting:
+
+<ul>
+
+<li />Jeremy and Alexandre are considering a WINE developer conference
+sometime next year. Either on European soil or on North American.
+
+<li />The reason for the almost instantly following cvs commits is that
+Alexandre processes patches in batches, reads through them to consider
+them good, and applies them in batches if they do not interfere
+
+<li />The reason why he does think that multiple committers are a bad
+idea is the inherent complexity of WINE, and that even small changes
+may break stuff and that it would get out of control with multiple
+committers.
+
+<li />CodeWeavers is doing fine according to Jeremy. ;)
+
+</ul>
+
+</quote>
+
+</section>
+
+<section
+  title="16/32 bit weirdness in messages"
+  subject="16/32 bit weirdness in messages"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-320.html"
+>
+
+Rein Klaze posted a patch to solve issues he had with one application:
+
+<quote who="Rein Klaze">I have an application here that has stopped working since the
+introduction of 32 bit message queues.
+
+<p />
+
+The application breaks when it posts a WM_COMMAND message using
+PostMessage16.
+
+<p />
+
+The message is received by a  GetMessage and dispatched by
+DispatchMessageA in DIALOG_DoDialogBox(). However these are win32
+functions and when calling the 16 bit dialogproc, a message
+translation 32-&gt;16 bits is done which messes up the parameters.
+
+</quote>
+
+<p />
+
+Ulrich Weigand gave more details of the problem:
+
+<quote who="Ulrich Weigand">Actually, this is just a symptom of a more general problem: retrieving
+a message that was posted with PostMessage16 using GetMessageA (or
+vice versa) is broken.
+
+<p />
+
+I'm not sure yet what the correct fix for this problem is, but it will
+probably have to involve message translation at some point...
+
+<p />
+
+As a temporary fix, using either 16- or 32-bit GetMessage in some of
+the Wine-internal message loops (as your patch does) might help a bit,
+but I think your trigger is not quite correct: actually, whether the
+16- or 32-bit version of DoDialogBox was called isn't of any interest;
+the question should rather be whether the <b>one</b> message that is next
+in the queue was <b>posted</b> using 16- or 32-bit PostMessage.
+
+<p />
+
+(Note that you can have those messages <b>mixed</b> in the same
+queue. Sure, a 16-bit program tends to have 16-bit messages in its
+queue, which is why your patch works for you, but it could just as
+well get messages posted into its queue by <b>other</b>, 32-bit apps -- or
+simply by libraries that have thunked up ...)</quote>
+
+<p />
+
+Ulrich Weigand also gave some more information on how Windows handle
+this type of situation:
+
+<quote who="Ulrich Weigand">These 16/32 bit conversions most definitely exist in Win9x ;-) In
+fact, the Win95 USER always converts all messages to the 16-bit style
+before doing anything else.
+
+<p />
+
+[ This is not <b>quite</b> as bad as it seems, as the Win95 '16-bit' style
+is different from the original Win3.1 message style in that it allows for a
+DWORD wParam internally. Thus, conversions 32-&gt;16-&gt;32 do not clobber
+the high word of wParam; they do forget the high word of uMsg, however,
+which is why you can't use user-defined messages > 65535 on Win9x. ]
+
+<p />
+
+For Wine, I guess tagging the messages with a flag would be
+preferable, as we could avoid conversions in the typical case, then.
+The question remains what to do with those messages containing a
+pointer; the default message conversion converts 32-bit to 16-bit
+pointers, either allocating  selectors on the fly or copying data to
+the segptr heap. These need to be freed to avoid leaks, which is no
+problem in the case of SendMessage() (where the conversion already
+works), but is difficult in the case of GetMessage(), as we don't know
+how long the app will keep the pointer...
+
+<p />
+
+Win95 solves this problem in a quite simple way: if a pointer would
+need to be converted while retrieving a message with GetMessage(),
+this message is simply silently dropped from the message queue ;-)</quote>
+
+</section>
+
+<section
+  title="16 bit DLLs and WineLib"
+  subject="16 bit DLLs and WineLib"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-367.html"
+>
+
+Lawson Whitney was looking for a way <quote who="Lawson Whitney">to [load and]
+call a function exported by a 16-bit dll (or the built-in, when it
+gets to be more than a stub) from a winelib program. If the windose
+API was anything but nested brain-damage and leveraged fertilizer,
+there would be a CallProc16 exported by kernel32 for the purpose. I
+mean, there is a GetProcAddress16, which is not much use without
+one. For that matter, I don't see any reason wine should not have one
+just because windose doesn't.</quote>
+
+<p />
+
+Ulrich Weigand gave a list of ways to do it using regular Windows
+techniques:
+
+<quote who="Ulrich Weigand"> If you want to use standard Win32 calls, you have basically three
+possibilities: either Universal Thunks, or Generic Thunks, or else
+Flat Thunks. (Note that depending on the particular Windows version,
+not all of them are available on real Windows. Only Win9x has them
+all...)
+
+<ul>
+
+<li />Universal Thunks
+
+<p />
+
+You just need to call UTRegister. This will load a 16-bit DLL,
+retrieve the address of a specified 16-bit routine, and return a
+32-bit function pointer that you can call whenever you want the 16-bit
+function to be called.
+
+<p />
+
+Disadvantages: you can use it only once (per 32-bit module), so you
+can call only one 16-bit routine.
+
+<p />
+
+<li />Generic Thunks:
+
+<p />
+
+These are intended to be used starting from 16-bit code, so it's a
+little awkward to use if you want to start from 32-bit code. At least
+under Wine, however, you should be able to load the 16-bit DLL using
+LoadLibrary16, retrieve the address of a routine using
+WIN32_GetProcAddress16, and then call the function using WOWCallback16
+or WOWCallback16Ex.
+
+<p />
+
+Disadvantages: probably won't work this way under Windows.
+
+<p />
+
+<li />Flat Thunks:
+
+<p />
+
+These are intended to be used via assembly glue code provided by the
+Windows Thunk Compiler. As we don't have that, you'd need to simulate
+this e.g. by setting up a CONTEXT86 structure as required and then
+calling QT_Thunk.
+
+<p />
+
+Disadvantages: difficult to use, won't work this way under Windows.
+
+</ul>
+
+<p />
+
+So, I'd recommend using UTRegister if you only want to call one routine
+(this will also work on Windows), and using WOWCallback16 if you have
+more than one or don't care whether it runs on Windows as well ...</quote>
+
+</section>
+
+<section
+  title="Wine on FreeBSD"
+  subject="Wine on FreeBSD"
+>
+<p />
+J&#252;rgend Lock provided some extra documentation for patches to apply to
+the FreeBSD kernel in order to have the better support:
+
+<quote who="J&#252;rgend Lock"><p />
+Similarly if you are on FreeBSD you may want to apply an LDT sharing
+patch too (unfortunately this one still isn't in the tree, neither
+-current nor -stable), and there also is a small sigtrap fix that's
+needed for wine's debugger. (Actually now that its using ptrace() by
+default it may no longer make a difference but it still doesn't
+hurt...)
+
+<p />
+
+And if you're running a system from the -stable branch older than Nov
+15 1999, like a 3.3-RELEASE, then you also need to apply a signal
+handling change that was MFC'd at that date. More information
+including patches for the -stable branch is in the ports tree:
+
+<p />
+
+<blockquote>
+
+<a href="ftp://ftp.freebsd.org/pub/FreeBSD/FreeBSD-current/ports/emulators/wine/files/">
+ftp://ftp.freebsd.org/pub/FreeBSD/FreeBSD-current/ports/emulators/wine/files/</a>
+
+</blockquote>
+
+<p />
+(the signal handling patch, patch-3.3-sys-fsgs, and the latest
+README haven't yet been committed as i write this, if they still
+aren't there when you look, go here:
+
+<blockquote>
+
+<a href="http://www.jelal.kn-bremen.de/freebsd/ports/emulators/wine/files/">
+http://www.jelal.kn-bremen.de/freebsd/ports/emulators/wine/files/</a>
+
+</blockquote>
+
+)</quote>
+
+</section>
+
+</kc>

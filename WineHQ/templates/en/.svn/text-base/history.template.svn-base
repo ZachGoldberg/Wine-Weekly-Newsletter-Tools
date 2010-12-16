@@ -1,0 +1,260 @@
+<!--TITLE:[Wine History]-->
+<!--BLURB:[What is Wine, and what does it do exactly?]-->
+
+<h1 class="title">Wine History</h1>
+
+<p>
+
+Wine's roots can be traced back to 1993.  At the time several forces were
+converging that made running Windows applications appealing.  Microsoft had
+successfully steered its Windows program to the forefront of personal
+computers.  IBM had hopes that OS/2 would catch on, but even they admitted
+that support of Windows programs was necessary and built the ability into
+their product.  The free software movement spawned in the eighties was
+rapidly gaining ground as people discovered it was possible to run a
+multiuser, multitasking operating system on a PC.
+
+</p><p>
+
+Sun's acquisition of Praxsys Technologies in September of 1992 led to the
+development of a product called Wabi.  Sun first demonstrated the
+software at the 1993 Solaris Developers Conference.  It allowed users of
+Solaris x86 and Solaris 2.2 for SPARC to run Windows applications out of the
+box. Other products at the time allowed Windows programs to be run, but they
+required machine-level emulation and the installation of DOS and Windows.
+Wabi was unique in that it allowed Windows windowing calls to be translated
+directly to X Windows calls.  By emulating the rest of the x86 code it was
+possible to actually run Windows programs faster on a RISC workstation!
+Wabi's more advanced features included Bitstream's font handling technology
+to handle TrueType fonts.
+
+</p><p>
+
+Users of the upstart Linux operating system began discussing the possibility
+of a similar approach in June of 1993.  At the time, the chances of Wabi
+being ported to Linux were slim to none.  A mailing list was set up to 
+facilitate discussion.  The name "Wine" was quickly adopted.  Several of 
+the early developers included some of the first Linux kernel hackers including
+Eric Youngdale and David Metcalfe.  Other recognizable names included 
+Alexandre Julliard who now leads Wine and Miguel de Icaza of GNOME fame.  
+Bob Amstadt headed the development.
+
+</p><p>
+
+Initial work consisted of getting a program loader working that could run
+Windows' 16-bit binaries.  That work was primarily headed by Bob.
+Alexandre's involvement centered around merging windowing functions written
+by Peter MacDonald in Tcl/Tk.  Progress moved along quickly, and within
+the first 6 months it was possible to run Solitaire.  November of 1993 also
+saw the first port of Wine to another architecture - John Brezak submitted
+patches to allow Wine to run on NetBSD.  Bob estimated that with the current
+rate of development the team was six months to a year away from release.
+Ironically, Wine continued to be six months to a year from release for the
+next decade.
+
+</p><p>
+
+Early communication between developers took many forms, including the
+linux-kernel mailing list.  The very first Wine mailing list was operated
+by Robert to allow discussions between developers.  After a year with many
+successes and growing interest in the project they asked for the creation
+of the newsgroup comp.emulators.ms-windows.wine.  The vote was
+overwhelmingly in favor of its creation and it became part of the Usenet
+hierarchy on July 19th, 1994.  The current mailing lists where most 
+development is discussed were created by Doug Ridgway in October, 1998.  
+
+</p><p>
+
+The early years saw many changes to Wine's development.  Robert stepped
+down in 1994 and Alexandre took over development.  Windowing was rewritten
+as straight Xlib calls.  Perhaps most importantly, Microsoft began releasing
+32-bit code and adding new functionality to their operating systems.  It
+was no longer enough to just load code and run it, a tighter integration
+was needed with the underlying operating systems (primarily Linux.) Mechanisms 
+needed to be added that supported network connections and registry files.
+Wine's architecture had relied on a shared address space between applications.
+Gradually it became clear that address space separation was needed to
+increase security and support shared libraries trying to access the same
+space.  Work commenced in early 2000 and continues to this day.
+
+</p><p>
+
+Alexandre recalled some of the early milestones for Wine in a keynote
+he gave at the first Wineconf:
+<ul><li>May 1995: beginnings of Win32 support			</li>
+ <li>July 1995: switch to autoconf				</li>
+ <li>January 1996: Word and Excel reported to run		</li>
+ <li>November 1997: Creation of winehq.com web site		</li>
+
+</ul></p><p>
+
+Volunteers began contributing to aspects other than programming.  John
+Sheets and Susan Farley worked on some of the original documentation.  
+Doug Ridgway set up the <a href="http://www.winehq.org/">WineHQ</a> web
+site in 1997.  The site was taken over by Corel for a few years, and
+then CodeWeavers took it over from them in March, 2002.  Jeremy Newman
+now serves as the webmaster.  
+The <a href="http://www.winehq.org/news">Wine Weekly News</a> first
+appeared on the web site in 1999.  Originally authored by Eric Pouech, 
+Brian Vincent took over in 2001.   Over the past few years several
+features have been added to the web site.  A redesign in early 2003
+added several pages to help new users get acquainted with Wine, project
+lists for developers to think about, and a large list of frequently
+asked questions.
+
+</p><p>
+
+In 1998 a strategic decision was made by Corel to wholeheartedly support
+Linux.  The key elements were centered around providing a Linux-based system 
+that was both simple to install and easy to use.  To this end, they sought to 
+provide both a Linux based distribution and support for their applications.
+Corel's suite of office programs demanded a high level of Wine sophistication.  
+For the first time in Wine history commercial development was funding its
+development.  Internally, Corel had two different teams working on Linux.
+One group concentrated on server development, the other on application
+support.  Corel maintained a great relationship with Wine, partly due to
+the involvement of another company doing a lot of the work - CodeWeavers.
+
+</p><p>
+
+The bubble soon burst.  Rumors began circulating at the end of 2000
+that Corel would discontinue its support for Linux.  By early 2001 Corel
+officially announced it would spin off its Linux division, specifically
+the group working on the distribution.  Their support for work on Wine 
+ended.  The intellectual property  and some of the developers eventually
+formed a new Linux company - Xandros.  
+
+</p><p>
+
+It wasn't long before others joined in to fill the void.  By this time
+Alexandre had already taken a position with
+<a href="http://www.codeweavers.com">CodeWeavers</a> doing much of the
+low level work on Wine.  CodeWeavers had gotten involved with Wine in
+1999 and were contracted by Corel to improve parts of Wine that would
+benefit Corel's applications.  CodeWeavers began developing their own products
+and putting a lot of polish on Wine.  Their own version of Wine included
+graphical management tools and an easy setup.  Several distributions
+made it available for download.  Their first product,
+<a href="http://www.codeweavers.com/products/">CrossOver Plugin</a>,
+allowed Linux users to run Netscape plugins designed for Windows.
+Newer versions of the product have added support for even more plugins.
+They released CrossOver Office in March, 2002 to provide support for
+office applications like Excel and Lotus Notes.
+
+</p><p>
+
+<a href="http://www.transgaming.com/">TransGaming</a>
+formed in August of 2001.  Gavriel State, who  had been with
+Corel, left and formed his own company.  Newer PC games had been
+focusing on Microsoft's DirectX interfaces for everything from input
+devices to 3D acceleration.
+By tying it to their operating systems it made porting games to different
+platforms very difficult.  DirectX support in Wine was first added by
+Marcus Meissner in 1997 and was very limited.  Gav
+sought to commercialize the development of it and create a new version
+of Wine designed for gamers.  More technologies than just DirectX were 
+needed and some of the early work focused on including support
+for copy protection measures.  WineX 1.0 was released in October of 2001
+with support for six games.
+
+</p><p>
+
+Also in 2001 another company announced intentions to work with Wine.
+<a href="http://www.lindows.com/">Lindows.com</a>
+wanted to create a Linux distribution that was simple to use
+and let users run Windows programs.  It wasn't long before they abandoned
+the idea in favor of native Linux applications.  Before that happened 
+they sponsored Wineconf - a three day event in March, 2002 that brought 
+together developers from around the world.  To make matters more interesting,
+on the eve of the conference the Wine community had concluded another 
+licensing <s>flamewar</s> discussion.
+
+</p><p>
+
+Wine's storied history of licensing has sparked many debates.  The issue of
+licensing surrounds itself with two primary areas - the license of the Wine
+code itself and the license of applications produced using Winelib.  The
+Wine developers' goal is to give people the ability to both implement and
+add to the Wine project in such a way it doesn't hinder others from doing 
+the same.  At the same time they want to give other developers the chance
+to port their application without the fear of being bound to a software 
+license that prevents them from doing what they want with their creation.
+
+</p><p>
+
+In the beginning, Wine adopted a BSD-style license.  At
+the end of 1999 discussion began about changing the license.  Richard
+Stallman had pointed out that it was incompatible with the GPL which
+potentially causes problems with any open source project wishing to use
+Wine code.  Most developers didn't see a need to craft a new license and
+the X11 license, a derivative
+of the BSD license, had the most support.  A vote was called for and in 
+January of 2000 Alexandre announced that it would become the new license 
+of Wine.
+
+</p><p>
+
+In March of 2002 a poll was conducted among both the free and commercial
+developers of Wine to see if there was interest in moving to a different
+license.  Most developers did not want their code to be appropriated by a
+commercial entity and there were concerns that might happen.  After much
+debate they chose the Lesser General Public
+License and on March 9th, 2002 the Wine source code became bound to those
+terms.  The LGPL, often referred to as a "copyleft" license, required the
+Wine developers to abide by some guidelines:
+
+<ul>
+  <li>Source code (including all changes from the original Wine sources)
+   must be made available to people who receive a binary of Wine. This
+   also applies if Wine is used as a library, in which case only the
+   source of Wine (including all changes) must be made available.</li>
+  
+  <li>Simply linking with Wine does not mean you need to make the source
+code available for your program.</li>
+
+</ul></p><p>
+
+The immediate effect was the creation of the
+<a href="http://rewind.sourceforge.net">ReWind</a>
+project to further the X11-licensed
+codebase. Many key developers agreed to allow their additions to be 
+used by both the X11 and LGPL Wine code.  Most have decided to focus
+their efforts on synchronizing with the LGPL'ed Wine and the vast
+majority of development and new features appear there first. 
+Picking a favorite software license is left as an exercise for the reader.
+
+</p><p>
+
+Shortly after changing the license development began to pick up at
+a greater pace.  More patches began to appear, Alexandre made more CVS
+commits, and more applications were reported to work.  By the end of 2003
+DLL separation achieved a milestone with the split of the kernel32/ntdll 
+combination.  Most of the architectural changes to support a beta release
+were in place.  Another developer's conference was held in January, 2004
+in St. Paul Minnesota sponsored by
+<a href="http://www.codeweavers.com/">CodeWeavers</a>.
+Once again, a roadmap was laid out for tasks that needed to be completed.  
+
+</p><p>
+
+Wine has grown to over 1.4 million lines of C code over the past
+decade.  Nearly 700 people have contributed in some fashion.  As always,
+you can expect Wine to be released sometime this year; or maybe early
+next year.  Or perhaps we'll just wait for <i>you</i> to become involved
+and finish those important user interfaces and documentation bits.
+
+</p>
+
+<hr>
+<table width="100%" border=0 cellpadding=0 cellspacing=0>
+<tr valign=top>
+  <td width="50%" align=left>
+    <a href="{$root}/about">Previous</a>: About Wine 
+  </td>
+  <td width="50%" align=right>
+    Why Wine is so important :<a href="{$root}/why">Next</a>
+  </td>
+</tr>
+</table>
+
+<p>&nbsp;</p>

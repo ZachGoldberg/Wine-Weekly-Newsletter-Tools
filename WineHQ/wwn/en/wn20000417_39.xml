@@ -1,0 +1,261 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="39" date="17 Apr 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 39th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+Several important announcements have been made this week:
+<ul>
+<li />Corel has started shipping the first WordPerfect suite for Linux
+based on Wine 
+<li />Corel also announced <a 
+href="http://www.zdnet.co.uk/news/2000/14/ns-14764.html">
+CorelDRAW 9 ahead of schedule</a> because of Wine's "sterling
+progress". Good to hear.
+<li />Another company has started shipping a Linux port of a Windows
+application, this time using WineLib (Corel only uses the emulator so
+far): Canvas 7, and they have expressed "tremendous gratitude" towards
+the Wine project. Thank you.
+</ul>
+
+</intro>
+
+<stats posts="105" size="322" contrib="38" multiples="18" lastweek="17">
+<person posts="14" size="65" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="11" size="27" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="11" size="23" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="13" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="17" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="5" size="14" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="4" size="7" who="John R. Sheets &lt;jsheets@codeweavers.com&gt;" />
+<person posts="4" size="6" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="5" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="17" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+</stats>
+
+
+<section 
+  title="Wine in the press: the dark side"
+  subject="osOpinion: Why WINE is a very bad idea"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-137.html"
+>
+
+<p />
+
+The week started with some negative readings on OsOpinion. Someone
+(Mr/Mrs Weston) posted an <a 
+href="http://www.osopinion.com/Opinions/aweston/aweston1.html">
+article</a> explaining how bad an idea Wine is. 
+This, of course, drew a long list of constructed (and un-constructed)
+answers covering a wide scope of feelings: from sarcasm to antipathy,
+from sorrow for the author's under-information to disdain. No need to
+bring up further, any decent reader (does Mr/Mrs Weston read this
+weekly newsletter ?) has already gotten the picture.
+</section>
+
+
+<section 
+  title="Wine in the press: may the force be with you"
+  subject="WordPerfect Office 2000 for Linux Review"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-156.html"
+>
+
+<p />
+
+Since Corel started shipping WordPerfect Office 2000 for Linux (based
+on Wine code), there were a couple of reviews on the Linux community
+web sites. Here are a few:
+<ul>
+   <li /><a href="http://lwn.net/2000/0413/commerce.phtml">LWN</a>
+   <li /><a
+href="http://www.linuxtoday.com/stories/19377.html">LinuxToday</a>
+</ul>
+
+<p />
+
+Later on, Corel also <a
+href="http://www.zdnet.co.uk/news/2000/14/ns-14764.html">announced</a>
+the <quote who="">early release of Draw 9 for Linux, and attributed
+this to "sterling progress of the open source development project,
+Wine."</quote>
+
+<p />
+
+Finally, Michael Cardenas announced that:
+<quote who="Michael Cardenas">
+Canvas7, a commercial graphics suite, has been ported to linux and is
+<a
+href="http://www.deneba.com/dazroot/softlibs/cv7_linux/default.html">
+available for download now.</a>. 
+
+<p />
+
+We want to express tremendous gratitude to all the wine
+developers. With only minor modifications to wine, we were able to
+port our entire application to linux in 6 months.</quote>
+
+</section>
+
+
+<section 
+  title="Some more bits on address space separation"
+  subject="Win4Lin... Re: OS Opinion ... etc"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-149.html"
+  startdate="04/17/2000"
+>
+
+<p />
+
+In the course of arguments regarding the above mentioned OsOpinion
+article, some points arose regarding the support of the core native
+DLLs (GDI and USER) with address separation in place:
+
+<quote who="David Elliot">About a month ago I toyed with the idea of a
+native GDI, and from what I have seen on this list, it should be
+possible simply by implementing a proper display driver. So does
+anyone have any objections if I go ahead and see if I can hack
+something out for a DISPLAY driver? Will more work need to be done to
+get GDI to work right (for instance, does GDI make assumptions about
+kernel or the VxDs loaded that simply cannot be implemented in Wine)? 
+</quote>
+
+
+<p />
+
+Alexandre Julliard answered:
+<quote who="Alexandre Julliard">
+We can probably make native GDI work, but I'm not sure we want
+to. Wine's strength is that it doesn't depend on native dlls and thus
+can do things at an higher abstraction level; this allows us to do
+stuff like -managed mode, which I think everyone will agree is better
+than -desktop. Ultimately I hope that we can also support Qt/GTK for
+even smoother integration in the Linux desktop. 
+
+<p />
+
+While native GDI would of course be optional, I think supporting it
+would add constraints on the rest of the code that would prevent doing
+some more interesting things; the native USER support is already
+imposing unnecessary constraints, and will probably get broken by
+address space separation anyway.</quote>
+
+
+<p />
+
+and later on 
+<quote who="Alexandre Julliard">
+The problem is that the native USER/GDI we could run are the Win95
+ones; but it doesn't make much sense to support 100% compatibility
+with the Win95 kernel, which is an monstrosity full of 16-bit and DOS
+code. It is preferable to do things the NT way, as it is much cleaner
+and maps better to the Unix API. But of course this means we can no
+longer run Win95 GDI/USER, just like they cannot run under NT either.
+</quote>
+
+
+<p />
+
+Alexandre also explained his intention to rewrite the 16 bit task
+support (closer to what NT does).</section>
+
+
+<section 
+  title="Winelib portability and #include"
+  subject="stdlib.h, string.h et al"
+>
+
+<p />
+
+Huw Davies opened a can of worms with a question on Wine's strategy
+for handling the Windows and the Unix include files and of course the
+discrepancies between the two:
+<quote who="Huw Davies">
+Windows has its set of 'standard' includes which differ somewhat from
+glibc. For example wcslen in declared in string.h and wchar.h in a
+Windows environment whereas glibc declares it only in
+wchar.h. Therefore a program that under Windows might include string.h 
+will not cleanly compile as a WineLib program. Other examples of this
+are additions to the standard such as _fullpath which is declared in
+stdlib.h. How are we going to deal with this? 
+
+<p />
+
+Another related question is winsock.h. Some of the standard socket
+functions have different arguments than their unix counterparts
+(eg. getpeername()'s 3rd arg is socklen_t * in unix and int * in
+Windows). At the moment winsock.h includes the unix headers at the top
+which means that these prototypes don't match the Windows ones. Should
+winsock.h be rewritten to not include these headers? </quote>
+
+
+<p />
+
+Patrik Stridvall, who already tried to tackle the issue a while ago,
+fired again. He proposed several strategies, leading to different
+results:
+<quote who="Patrik Stridvall">
+<ol>
+<li />The application can only call Windows API:s and can't easily be
+extended to call Unix API:s as well. 
+<li />The application can, like Wine itself, call both Windows and Unix
+API:s. (requires GNU C extension #include_next)
+<li />The application can, like Wine itself, call both Windows and Unix
+API:s, but can only with some change call special Windows extensions
+like _fullpath. 
+</ol>
+
+<p />
+
+Mode (1) means that the application includes special Wine versions of
+stdio.h, stdlib.h etc. 
+
+<p />
+
+Mode (3) means that the application includes the Unix versions of
+stdio.h, stdlib.h etc, like we do now. 
+
+<p />
+
+Making and application work in mode (2) and (3) will in most cases
+mean that the application must be changed, but we should make as easy
+possible to make the application compile under both Windows and
+WineLib and thus making it possible to have a common code base. 
+</quote>
+
+
+<p />
+
+Patrik went on with some detailed specifications (including some
+tricks like rewriting part of standard header files, using the
+#include_next GNU C extension...) for implementing each one of the
+three approaches.
+
+<p />
+
+However, Alexandre Julliard quite didn't like them:<quote who="Alexandre Julliard">I
+don't see why header tricks would be necessary. If you use the Unix 
+libc you should be able to use the libc includes. The few extensions
+like _fullpath can be put in a separate header, and all you do is add
+a #include in the app; I don't think we need to setup a heavy include
+infrastructure just to ensure that _fullpath is defined in stdlib.h.
+And the places where the Wine and Unix headers are really different
+(fd_set, wchar_t etc.) are the things you cannot use anyway.
+</quote>
+
+<p />
+
+A few persons (like Peter Hunniset, Patrik Stridvall) were in favor of 
+a "out of the box" compilation process for porting an application (you 
+don't need to change a single line), but Alexandre firmly ended the
+thread by balancing the "little gain" of having some prototypes be
+present at the right places with the amount of work and maintenance
+required to achieve the goal.</section>
+
+</kc>

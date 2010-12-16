@@ -1,0 +1,478 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="2" date="06 Dec 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the twentieth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="221" size="661" contrib="41" multiples="33" lastweek="21">
+
+<person posts="29" size="88" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="26" size="89" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="23" size="61" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="14" size="76" who="Gavriel State &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="11" size="31" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="10" size="27" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="9" size="23" who="Ove Kaaven &lt;ovehk@ifi.uio.no&gt;" />
+<person posts="8" size="10" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="7" size="17" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="6" size="15" who="'Dmitry Timoshkov' &lt;dmitry@sloboda.ru&gt;" />
+<person posts="6" size="13" who="Rein Klazes &lt;rklazes@casema.net&gt;" />
+
+</stats>
+
+<section
+  title="Wine's debugger evolution"
+  subject="Wine's debugger evolution"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-381.html"
+>
+
+Eric Pouech fired up a discussion on Wine's internal debugger
+evolution with providing an RFC on this subject. The main point
+(already suggested by Alexandre Julliard) was to use no longer the
+current way of entering the debugger (based on signals) but to rather
+use the generic Windows debugging API for this matter. The reasons for
+this were mainly to:
+
+<ul>
+
+<li />maintain a single debugging API instead of two
+
+<li />ease the port of the debugger to different OS:es
+
+<li />stress and test the Windows debugging API
+
+</ul>
+
+This shall also be the occasion to fix some known bugs and remove some
+limitations in Wine's internal debugger.
+
+<p />
+
+The details of it were discussed between Ulrich Weigand and Alexandre
+Julliard. The outcome is as follows; the new debugger shall have the
+following features:
+<table border="1">
+   <tr>
+      <th>Current behavior</th>
+      <th>New behavior</th>
+   </tr>
+   <tr>
+      <td>Wine-dbg is currently bound to Wine</td>
+      <td>Wine-dbg will be a separate process</td>
+   </tr>
+   <tr>
+      <td>The same tty is used for all processes</td>
+      <td>One debugger instance will get it's own window (xterm) and
+handle a single process</td>
+   </tr>
+   <tr>
+      <td>Only -debug command line option (and crash in program)
+allows to debug an application</td>
+      <td>The attach/detach command will be supported (allowing
+one to debug a Wine program on the fly)</td>
+   </tr>
+   <tr>
+      <td>Wine's internal debugger is fired up on exceptions</td>
+      <td>When an exception occurs in a non debugged process, Wine
+will fire up a debugger (the choice of the debugger can be configured
+in the registry). Native Windows debugger could be used (see below for
+details).</td>
+   </tr>
+</table>
+
+<p />
+
+Ulrich Weigand also described Windows' way to fire up the debugger on
+an exception (even if the application is not currently debugged). This
+mechanism is used, for example, by Dr Watson:
+
+<quote who="Ulrich Weigand">It works by checking the
+  "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\AeDebug"
+registry key, or the [AeDebug] section in the system.ini file if the
+other is not present.  (B.t.w. it checks 'Windows NT' even under Win9x.)
+
+<p />
+
+If there is a subkey "Debugger", this is supposed to contain a command line
+which is used for starting the debugger.  The debugger is started either
+automatically, or after querying the user whether to start the debugger;
+this is determined by the setting of the "Auto" subkey.
+
+<p />
+
+The command line retrieved from the "Debugger" key can contain two
+wsprintf() format directives for integers; the first is filled with
+the process ID of the faulting process, and the second is filled with
+the handle to an (inheritable) manual-reset event that is created here.
+
+<p />
+
+Then, the UnhandledExceptionFilter routine calls CreateProcess() with
+the command line, inheriting the handles, and waits until the event is
+signalled before returning.
+
+<p />
+
+Apparently, the debugger is supposed to read the process ID from
+the command line, attach to the process, and debug it.
+</quote>
+
+<p />
+
+Basic items for crafting the new debugger are currently being done:
+
+<ul>
+
+<li />Alexandre Julliard is currently working on missing
+(Get|Set)ThreadContext APIs which are working but still need some
+polish to be committed.
+
+<li />Ulrich Weigand already sent some fixes to help new debugger
+integration (process creation flags, USER/USER32 use in process startup).
+
+</ul>
+
+We'll keep you posted on the evolution of the new debugger
+development.
+
+<p />
+
+In another thread, Ulrich Weigand gave the status of current supported
+debugging formats in Wine's internal debugger:
+
+<quote who="Ulrich Weigand">Native Win32 executables typically contain one (or more) of the
+following types of debugging information:
+
+<ul>
+
+<li />internal COFF debug info (symbols and linenumbers)
+
+<li />internal CodeView debug info (<b>types</b>, symbols, and linenumbers)
+
+<li />external (in .DBG file) COFF debug info
+
+<li />external (in .DBG file) CodeView debug info
+
+<li />pointer to .PDB file(s)
+
+</ul>
+
+<p />
+
+The COFF format is the best-understood; it's well documented and
+hasn't changed for a long time (AFAIK). Wine will properly support
+both internal and external (.DBG) COFF debug info. The down-side is
+that it doesn't support type information...
+
+<p />
+
+The CodeView format is more problematical. First of all, for some
+reason Wine doesn't currently process internal CodeView debug info;
+this could be easily fixed, however. A bigger problem is that
+somewhere (I think between VC 4 and VC 5) the format of the type and
+symbol info changed drastically, caused by increasing internal
+pointers to type info from 2 to 4 bytes (apparently 64K types were no
+longer enough :-/). While the new format is also documented, it hasn't
+been added to Wine, and hence Wine doesn't understand CodeView info as
+produced by recent compilers.
+
+<p />
+
+The most problematical is the .PDB file info. The core format of a
+.PDB file appears to be nowhere documented. While there is Wine code
+to read .PDB files, this is not perfect; and furthermore, the PDB file
+format <b>also</b> changed in the past, and the new .PDB format is not
+understood by Wine at all.
+</quote>
+
+<p />
+
+So, the best way to let Wine's debugger load Windows native debug
+information is:
+
+<quote who="Ulrich Weigand">Currently, your best bet would be to generate COFF info. This can be
+done using (I think) a /debugtype:coff switch to the linker. Consult
+the VC docs for the exact syntax...
+
+<p />
+
+If you need type info, however, this won't help. You might be able to
+get VC to generate an old-style .PDB (or external old-style CodeView
+info); however I'm not sure whether this works. There used to be a
+/Z7 option to generate old-style CodeView info. If this still works,
+you could use this and then strip off the debug info to a .DBG file
+using (I think) the 'rebase' utility.
+</quote>
+
+<p />
+
+Ulrich also indicated he had been working on a patch to <quote who="Ulrich
+Weigand">support the 32-bit CodeView type indexes and the VC 5 .PDB format,
+but didn't get around to release it (also, I'm missing test cases of .PDB
+files produced by various compilers ...)</quote>
+
+<p />
+
+<p />
+
+</section>
+
+<section
+  title="Wine's license"
+  subject="Wine's license"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-411.html"
+>
+
+Alexandre Julliard proposed an evolution to the Wine license:
+
+<quote who="Alexandre Julliard">To provide you with some distraction from the dry technical subjects,
+I thought we might have a license flamewar ;-)
+
+<p />
+
+Seriously, the issue has been raised that there may be some
+restrictions in the Wine license that make it incompatible with other
+open source licenses like the GPL, and possibly even with the Open
+Source definition. I think this is unfortunate, and I would like to
+try to correct this.
+
+<p />
+
+Richard Stallman has been kind enough to study the Wine license and
+send me his opinion on the matter, which I quote here (with his
+permission):
+
+<p />
+
+<blockquote>
+
+<p />
+
+<code>copyright notice); and (3) agree to indemnify and hold all
+prior authors, copyright holders and licensors of the work harmless
+from and against all damages arising from use of the work. </code>
+
+<p />
+
+<p />
+
+This is incompatible with the GPL, because it is a requirement that
+doesn't appear in the GPL.
+
+Trying to make users indemnify you seems a bit extreme, too.  That
+goes far beyond simply trying to avoid liability, and I have a bad
+feeling about it.
+
+It also probably is legally invalid in a license based on copyright.
+The GPL has other clauses which try to avoid liability, and I believe
+they do the best that can be done in a license based on copyright law.
+Your statement is much stronger.  That makes it incompatible with the
+GPL; I think that can also make it legally invalid.
+
+<p />
+
+<code>that contain any party of the original work, and (c) all source
+files of the derivative work that are necessary to compile, link
+and run the derivative work without unresolved external calls and
+with the same functionality of the original work (``Necessary
+Sources'') carry a prominent notice explaining the nature and date
+of the modification and/or creation. </code>
+
+<p />
+
+This clause seems to require that modified versions support the
+precise functionality of the standard release--although it does not
+say so explicitly.  That would be a very strict restriction.  It is
+much more restrictive than the GPL; in fact, I think it does not
+qualify as free software with this restriction.
+</blockquote>
+
+<p />
+
+I think Richard is right that these are problematic issues, and not
+only with respect to the GPL, but for any use of our code in a free
+software project. Since the intent of our license is to allow such
+use, I would like to propose two options to address this problem:
+<ol>
+
+<li />Remove the offending wordings in the license.
+   I think the clause (3) in the first paragraph can be entirely
+   removed since the warranty statement already contains the important
+   parts of it.
+   The clause (c) is a bit more obscure, but I don't think it really
+   adds anything; clauses (a) and (b) are enough to ensure that the
+   proper credits and history will be maintained in the source code
+   (which by the way isn't what we are doing at the moment, the
+    history is in a separate file ;-)
+
+<li />Switch to another license that has the same goals as ours, but
+   that has been written by lawyers instead of hackers, in order to
+   avoid future problems of the same kind.
+   IMO possible candidates include the X11 and the FreeBSD license.
+
+<p />
+
+   [please let's not talk about switching to the LGPL; we had this
+    debate already, and we are not going to reach a consensus on it]
+</ol>
+
+<p />
+
+Since any kind of change to the license requires the agreement of all
+the developers, I'd like to hear your opinion on this matter.
+
+<p />
+
+Disclaimer: my present employer CodeWeavers has nothing to do with
+the present proposal, which is entirely my own initiative (even though
+they will of course also benefit from a resolution of this issue,
+particularly WRT the Twine product).
+</quote>
+
+<p />
+
+Gavriel State from Corel gave also some indications on how this issue
+regarding the license and R. Stallman started:
+
+<quote who="Gavriel State">If I'm not mistaken, this is all related to discussions I had with
+Richard at LinuxWorld, where I gave him his first ever demo of WINE.
+He'd actually never heard of it before, and was surprised and
+impressed. </quote>
+
+<p />
+
+There were lots of talks regarding legal issues (done by non legal
+people) and directions to be taken. As a global conclusion, it seems
+that:
+
+<ul>
+
+<li />most people would prefer switch to an existing license rather
+than creating a new one
+
+<li />X11 license seems to be the one to drag the more interest
+
+<li />from a process point of view, it shall be asked to all the
+Wine's developers (current and old) what's their position
+
+<li />if in a "fair" amount of time, no one disagrees, then the
+switch to the new license will be effective
+
+<li />if someone disagrees, then his/her code shall be removed from
+the source tree (this can happen before <b>or</b> after previous item)
+
+</ul>
+
+<p />
+
+There were also some discussion about adding some Wine specific header
+to all source files (containing some license and warranty issues), but
+no conclusions have been drawn on that matter; the copyright issues
+have also triggered quite a few posts (who owns a file when multiple
+developers commit patches and the like).
+
+<p />
+
+So, if you tick at least one from the three items below,
+
+<ul>
+
+<li />I'm a Wine developer
+
+<li />I've been a Wine developer
+
+<li />I plan to be a Wine developer
+
+</ul>
+
+then please speak out your mind on the license subject before it's too
+late.
+
+<p />
+
+</section>
+
+<section
+  title="Improving Wine's loader"
+  subject="Improving Wine's loader"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-30.html"
+>
+
+Gavriel State proposed to look at some possible enhancement to Wine's
+PE loader.Gavriel wished to map PE sections using mmap with a load on
+read, instead of actually loading them at module initialization. This
+lazy behavior could speed up the loading of modules (and delay the
+actual loading of some sections until they are needed), and also share
+the pages across several processes, thus reducing overall memory
+consumption. Doing so, Gav' run into some problems:
+
+<quote who="Gavriel State">I've been looking through the comments in loader/pe_image.c about the
+fact that linux's mmap isn't suitable for dealing with loading pe
+sections, due to the fact that the pe sections are aligned on 512 byte
+boundaries in the PE file, but that linux can't deal with an mmap
+where the offset parameter isn't file-system block aligned.
+</quote>
+
+<p />
+
+Ulrich Weigand shed some light on Windows behavior on the topic of
+mapping instead of loading process image:
+
+<quote who="Ulrich Weigand">If we do indeed have to apply relocation, because the intended virtual
+base address is not available, and completely forget about mmap()
+anyway, as applying the relocation offsets would dirty (nearly) each
+page immediately. We could then just as well read the file as we do
+now :-/
+
+<p />
+
+Windows copes with this by performing the relocation *in the page
+fault handler*; each time a page is paged in, the relocations are
+applied by kernel code, and this is <b>not</b> counted as dirtying of the
+page, so when the page is no longer needed, it is simply thrown
+away. (The next time it is accessed, it is read in from the PE file
+again, and the relocs are applied <b>again</b> ...)
+
+<p />
+
+One option would be to at least delay reading an executable page
+(and applying the appropriate relocs) until the page is first
+accessed. This should be relatively simple to do in Wine; we'd just
+need to mark the range no-access initially and install a page fault
+handler that would read in pages as required. As those pages would
+then be considered dirty by the OS and written to swap when memory is
+needed (instead of simply being thrown away), I'm somewhat dubious
+whether this would really bring much of an advantage, however...
+</quote>
+
+<p />
+
+It also seems that latest development tools tend to align PE sections
+on 4k boundaries, which shall alleviate some mmap() issues. Patrik
+Stridval provided some links for tools doing so (some are provided by
+Microsoft), and Ulrich Weigand quickly hacked such a tool.
+
+<p />
+
+As a conclusion, work is underway to first try to mmap() the PE
+sections, and if this fail, to fall back to the current mode of
+actually loading the section. Gav', on preliminary achievement,
+reported a 5 second gain while loading notepad on his laptop.
+
+<p />
+
+</section>
+
+</kc>

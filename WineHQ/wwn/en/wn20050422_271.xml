@@ -1,0 +1,518 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="271" date="04/22/2005" />
+<intro> <p>This is the 271th issue of the Wine Weekly News publication.
+Its main goal is to buy a car. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="115" size="592" contrib="55" multiples="23" lastweek="29">
+
+<person posts="12" size="31" who="Alexandre Julliard" />
+<person posts="6" size="30" who="Mike McCormack" />
+<person posts="5" size="18" who="Robert Shearman" />
+<person posts="5" size="16" who="Wesley Parish" />
+<person posts="4" size="36" who="Dimitrie O. Paun" />
+<person posts="4" size="33" who="Robert Lunnon" />
+<person posts="4" size="15" who="Dustin Navea" />
+<person posts="4" size="13" who="Francois Gouget" />
+<person posts="4" size="12" who="Troy Rollo" />
+<person posts="4" size="11" who="Andreas Mohr" />
+<person posts="3" size="12" who="Michael Jung" />
+<person posts="3" size="9" who="Benjamin Cutler" />
+<person posts="3" size="8" who="Mark Greenbank" />
+<person posts="3" size="7" who="luis lenders" />
+<person posts="3" size="6" who="Phil Krylov" />
+<person posts="2" size="15" who="Dmitry Timoshkov" />
+<person posts="2" size="10" who="Damjan Jovanovic" />
+<person posts="2" size="8" who="Uwe Bonnes" />
+<person posts="2" size="6" who="James Hawkins" />
+<person posts="2" size="6" who="Vincent B&#233;ron" />
+<person posts="2" size="6" who="Marcus Meissner" />
+<person posts="2" size="5" who="Paul Vriens" />
+<person posts="2" size="5" who="Brendan Clark Ribera" />
+<person posts="1" size="61" who="Raphael" />
+<person posts="1" size="55" who="Maarten Lankhorst" />
+<person posts="1" size="39" who="Andrew Neil Ramage" />
+<person posts="1" size="10" who="(marty)" />
+<person posts="1" size="8" who="Richard Cohen" />
+<person posts="1" size="7" who="Jacek Caban" />
+<person posts="1" size="4" who="Alex Woods" />
+<person posts="1" size="4" who="Hiji" />
+<person posts="1" size="4" who="Joachim von Thadden" />
+<person posts="1" size="3" who="Dominik Strasser" />
+<person posts="1" size="3" who="Eric Frias" />
+<person posts="1" size="3" who="Rob Shearman" />
+<person posts="1" size="3" who="Jesse Allen" />
+<person posts="1" size="3" who="Aric Stewart" />
+<person posts="1" size="3" who="David D. Hagood" />
+<person posts="1" size="3" who="Jason Edmeades" />
+<person posts="1" size="3" who="Christian Costa" />
+<person posts="1" size="3" who="Michael Riedel" />
+<person posts="1" size="3" who="Kevin DeKorte" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Ivan Leo Puoti" />
+<person posts="1" size="2" who="Anssi Hannula" />
+<person posts="1" size="2" who="Mike Hearn" />
+<person posts="1" size="2" who="Rein Klazes" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Juan Lang" />
+<person posts="1" size="2" who="Paul van Schayck" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Michael Lin" />
+<person posts="1" size="2" who="Phil Krylov" />
+<person posts="1" size="2" who="Saulius Krasuckas" />
+
+</stats>
+<section 
+	title="News: WineConf" 
+	subject="News"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0400.html" 
+	posts="2"
+	startdate="04/18/2005"
+>
+<topic>News</topic>
+<p>Let's see..
+<ul><li>camera... check</li>
+<li>110V to 220V AC adapter... check</li>
+<li>dinner reservations for 60 people... hopefully checked</li>
+</ul></p>
+
+<p>WineConf 2005 is next weekend in Stuttgart and most of the plans
+are in place.  For those of you
+not attending, there will likely be a bunch of people at the conference
+hanging out in IRC (irc.freenode.net) on #winehackers.  We will not have 
+streaming audio or video this year.  We failed miserably at it
+last year and it really seemed to take up a lot of time at the
+conference.  Of course, if someone shows up at WineConf with a
+killer streaming audio system that's reliable we'll probably use
+it.  For any last minute details like that, keep an eye on wine-devel
+or maybe even WineHQ.</p>
+
+<p>This is also the cue that there probably won't be an issue of WWN
+next week.</p>
+
+</section>
+<section 
+	title="MSHTML &amp; Gecko" 
+	subject="Enabling Gecko in MSHTML"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0382.html" 
+	posts="3"
+	startdate="04/17/2005"
+	enddate="04/18/2005"
+>
+<topic>Integration</topic>
+<p>Jacek Caban announced more details on his work implementing 
+MSHTML.  He had a large 
+<a href="http://www.winehq.com/hypermail/wine-devel/2005/04/0382.html">patch</a>
+included with his email:</p>
+<quote who="Jacek Caban"><p>
+
+Now MSHTML is ready for a patch that enables HTML rendering over
+Gecko API. I attached the patch that makes IE work with Wine's MSHTML.
+Any comments/suggestions are welcome. If you want to see how
+it works, you need to have a working installation of IE and Mozilla
+installed under Wine. Then just set mshtml.dll to be loaded as built in.
+Excluding many not implemented parts of the API, it needs a better algorithm 
+searching for the Mozilla installation (e.g. currently it can't work with only
+Mozilla ActiveX
+Control installed) and better inform user that it needs Mozilla, but
+I'll fix it in next patches.
+</p><p>
+I'm not sure if I should presently send it to wine-patches. I still hope
+we can make it
+work with Linux versions of Mozilla. It would be much better as applications
+could 'just run' for users that have Linux Mozilla installed (and most
+have),
+without any additional installation/downloading . I tried to do it, but
+without success as yet. Problem is that we need to pass a native
+window handle to
+nsIBaseWindow::InitWindow (you may see this call in view.c). In case of
+windows version it's no problem as it
+means passing an HWND, but in case of Linux it is Gtk/GdkWindow
+(well, not always as Mozilla can be built to use xlib or qt, but
+currently in most cases it's not and we can take care of it later).
+To not use gtk/gdk directly in Wine we could patch Mozilla to detect
+XID passed and use gdk_window_foreign_new to create GdkWindow.
+It should work, I believe, but I was not able to do so. It would be
+wonderful if
+anyone could give me any insight on it, e.g. I'm not sure if I have a
+good understanding of how to get the XID for Wine's window. Also I'd
+like to know if using gdk inside Wine's windows needs any
+tricks/is possible. If you think I should give up and stay with the Windows
+version, I'll send this patch to wine-patches.
+</p></quote>
+
+<p>Ivan Leo Puoti wanted to know if it would work with a native
+Linux Gecko (e.g. Mozilla).  Jacek thought it would, but asked if
+anyone could help with it:</p>
+<quote who="Jacek Caban"><p>
+Yes, I believe. Unfortunately I've not succeeded in this as my knowledge
+about
+X and gtk programming is poor. So I need some help on it. A patch that makes
+nonwindow-like stuff to enable UNIX Gecko is attached. To make it
+complete, 'just' one error in view.c has to be fixed.
+</p><p>
+As it's the development version, the path to the Mozilla dir is hardcoded -
+it'll be simple
+to fix, but first I'd like to see it working. To make changes
+clearer, this patch
+depends on my last patch I've sent yesterday. Parts of code that depend on
+version of Gecko used are ifdef-ed by UNIX_GECKO.
+</p><p>
+Any help/suggestions very welcomed.
+</p></quote>
+</section>
+<section 
+	title="Webcams with Wine" 
+	subject="VfwCapture question (and attached a v4l2 patch for msn 6.2 webcam - Attempt 1)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0443.html" 
+	posts="3"
+	startdate="04/17/2005"
+	enddate="04/20/2005"
+>
+<topic>Integration</topic>
+<p>Maarten Lankhorst sent two messages this week with patches
+outlining work he's done to get webcams to work:</p>
+<quote who="Maarten Lankhorst"><p>
+SInce stuff is missing from msvideo (ICSeqCompressFrame{Start,,Stop})
+you have to use native MSVFW32.DLL
+</p><p>
+This will crash when you stop msn webcam (Because of the CreateThread
+continuing to run)
+In general it is very unstable, but at least it proves you can use
+'webcam's under wine.
+</p><p>
+How does it work?
+apply patch
+set quartz, qcap and devenum to builtin (qcap just to be sure..)
+set msvfw32 to native (and make sure you have a native msvfw32)
+regsvr32 quartz.dll
+Run msn messenger (I tested it with MSN 6.2, dutch version, not sure
+whether it will work under 7.0)
+Now you can use the 'webcam'
+</p><p>
+If you want, you can even make some patterns by changing the following
+lines in capture.c ;)
+<ul><code>
+     for (pl0ink = 0;pl0ink &lt; 320*240*3;pl0ink++)
+	<ul><code>	
+        myData[pl0ink] = (BYTE) (rand() % 256);</code></ul></code></ul>
+</p><p>
+This patch is not very stable yet, but it's still a work in progress..
+If anyone got some links to gstreamer tutorials that would help me with
+this, I would happily accept :)
+</p></quote>
+
+<p>The second email described further work:</p>
+<quote who="Maarten Lankhorst"><p>
+Now that I'm pretty much done with cleaning up the stuff, I'm wondering
+on how to separate /dev/video0 from /dev/video1, in the current code I
+don't have the separation, and I'm unsure on how to add it...
+</p><p>
+Anyway, this is my first attempt to get v4l2 to work with msn 6.2, it is
+very unstable but it somehow.. works..
+to transmit images over the web though,
+here's what the patch does:
+<ul>
+<li> add a lot more instability (sad but true)</li>
+<li> adds some routines to avicap32, so capGetDriverDescription works
+(partially.. currently only v4l1)</li>
+<li> makes devenum create videoinputdevices based on the information from
+capGetDriverDescription, native devenum does the same</li>
+<li> add a stub capturegraphbuilder (minimum required for msn -
+capturegraphbuilder.c)</li>
+<li> add a semi-stubbed vfwcapture interface (v4wsource.c and capture.c)</li>
+</ul></p><p>
+Currently it requires a video4linux2 device for the vfwcapture
+interface, but since the bttv driver supports v4l1 too, I'll work on it.
+The code will crash when transmission is halted (because of the testbed
+thread not being stopped), but I thought I would add this so you would
+know I'm still working on it :).
+to compile the code, make sure you have
+/usr/include/linux/videodev{,2}.h and then compile with make CC="gcc
+-DENABLE_V4L"
+Don't expect to much from it.. oh and you need to use the native
+msvfw32.dll to native to transmit images.. you can probably steal it
+from a windows installation or download it from dll-files...
+I made a screenshot of the preview screen at
+<a href="http://vladserver.ath.cx/MSN.jpg">
+http://vladserver.ath.cx/MSN.jpg</a> - It actually transmitted too, frame
+counter was at 7846 until it crashed (Destroying VfwCapture, TestBed
+thread crashed)
+</p><p>
+But if you really want to help, can someone _*PLEASE*_ figure out why it
+crashes if it's started with WINEDEBUG=+quartz and when you go to webcam
+settings screen? you can save me a lot of frustration.. thanks!!!
+</p></quote>
+
+</section>
+<section 
+	title="USB Support (con't)" 
+	subject="USB status ..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0400.html" 
+	posts="2"
+	startdate="04/18/2005"
+>
+<topic>IO</topic>
+<p>Last week (<a href="http://www.winehq.com/wwn/270#USB%20Support">WWN #270</a> 
+we covered a thread concerning USB and Wine.  
+Damjan Jovanovic seems to have put a lot of thought into
+this and he described it:</p>
+<quote who="Damjan Jovanovic"><p>
+I have proposed several possible solutions for using
+USB under Linux. In fact, I have given 4 possible ways
+of doing it, one of which I have hacked up (and gotten
+to work, at least partially).
+</p><p>
+If you're interested in the details, let me know, and
+I'll email you (or look at the "Wine device drivers
+proposal" email in the Wine archives in the past month
+or so).
+</p><p>
+Briefly, Windows apps never use USB directly (there is
+no equivalent of libusb on Windows; well there is
+libusb-win32, but no closed-source projects use it).
+They open a "device file" of the form
+\\Device\Options; so for instance my scanner driver
+opens \\MiiScan0 and \\MiiScan0\0\0\2. This opening is
+done using CreateFile(), which returns a handle.
+</p><p>
+3 other important functions are then used:
+<ul>
+<li>WriteFile() - USB bulk writes</li>
+<li>ReadFile() - USB bulk reads</li>
+<li>DeviceIoControl() - USB control messages</li></ul>
+</p><p>
+Windows 2000 and XP have a set interface for using
+scanners, for example, so the parameters to these
+functions would be well known. For most other hardware
+it is trivial to reverse engineer it if necessary.
+</p><p>
+The problem is, Wine does all I/O (i.e. ReadFile(),
+WriteFile(), DeviceIoControl()) using the @&amp;#$!"*
+wineserver, by querying the wineserver for a file
+descriptor (int obtained by the POSIX open() function
+in Linux), and then doing read() or write(), while
+DeviceIoControl() in wine delegates to
+CDROM_DeviceIoControl() or fails.
+</p><p>
+CreateFile() is reasonably easy to hack - but the
+problem is that you need ways to:
+<ol>
+<li> Associate particular file descriptors to a
+dynamically linked library that would be identified by
+the CreateFile() argument (e.g. for \\MiiScan0\, maybe
+the library would be MiiScan0.so).</li>
+
+<li> Load up the library on CreateFile() with a
+reference count of 1 and unload it when CloseHandle()
+decrements the reference count to 0.</li>
+
+<li> Use the library's functions for reading, writing,
+and ioctl's.</li>
+
+<li> (This is the hardest part) Make ReadFile(),
+WriteFile() and DeviceIoControl() aware of which file
+descriptor identifies which library, and call the
+right library functions. This probably requires
+changes to the wineserver.</li></ol></p><p>
+
+Phew, I thought I'd type a short reply! Interested in
+working on this? I can't do it all alone.
+</p></quote>
+
+<p>Hiji thought between Damjan and Lars Segerlund
+there might be an opportunity to develop something:</p>
+<quote who="Hiji"><p>
+There's not much I can do other than try to encourage
+you and Lars to work together (as I'm not a C
+developer).  Damjan, it sounds like you have already
+covered a lot of the groundwork through your research
+and understanding of the USB infrastructure (from both
+the Windows, Linux and Wine worlds).  Lars, I see you
+have both the motivation and experience with Linux
+device drivers to work on Wine USB.
+</p><p>
+To me, it sounds like a perfect match for you two to
+pair up and work on implementing additional USB
+functionality.
+</p><p>
+I suppose the last piece missing is to consult the
+expert on the wineserver (as far as USB is concerned)
+to see if any changes would truly need to be made
+there.  Who would that be?
+</p></quote>
+
+</section>
+<section 
+	title="DirectX 9 - Merges?" 
+	subject="D3D9 Work?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0486.html" 
+	posts="4"
+	startdate="04/20/2005"
+	enddate="04/21/2005"
+>
+<topic>DirectX</topic>
+<p>So Oliver Stieber's DirectX 9 haven't been merged into WineHQ and
+some folks are a little anxious to get it in.  It seems other DirectX
+work is waiting on that.  It led Benjamin Cutler to ask:</p>
+<quote who="Benjamin Cutler"><p>
+I was discussing this with some others who hang out in the #winehackers
+channel, and I'm curious who else might be working on the D3D9 portion
+of Wine. I was unsure of how ready for inclusion into the main branch
+the unofficial patches are, but I've heard from a couple sources that
+most of the patch isn't. I'd like to get some opinions on what's ready
+and what's not. I'd hate to start submitting pieces of the patch, only
+to find out that person X was already working on that part and had
+something better in mind, or even worse to find out that somebody's been
+maintaining contact with Oliver and I'm just getting overeager to see
+the patches in Wine.
+</p><p>
+Somebody also mentioned that there are others waiting for Oliver's
+patches to be submitted so that they can continue their D3D9 work, so I
+was curious if there were any of you out there that fall into that category.
+</p><p>
+At present, the best I can really do to contribute is help keep the
+branch synced up with the current CVS (migrating the 20050310 patch to
+20050419 resulted in a lot of conflicts that took me most of the night
+to work through), but given some time I could probably learn enough
+about DX9 to get a better handle on how things are supposed to work and
+start making more solid contributions. That will probably have to wait
+until late May, however, once this college year ends.
+</p></quote>
+
+<p>He didn't hear anything back, so the next day he worked on it 
+and reported:</p>
+<quote who="Benjamin Cutler"><p>
+I spent most of the night trying to merge the old 20050310 patch into
+the 20050419 release, and I came up with the diff linked below. Keep in
+mind that I only attempted to get it to compile, I did not attempt to
+make sure it was stable or correct. For what it's worth, I *was* able to
+get my test games to launch and they ran pretty much exactly as they did
+with the old patches, but that's no guarantee of anything.
+</p><p>
+Oliver seems to be MIA. His home page has disappeared and nobody I've
+asked has been able to successfully contact him. If somebody wants to
+clean this up and merge it back into the main WINE tree, please do,
+because I don't know enough about DX9 to even think of attempting such
+an undertaking myself.
+<ul><a href="http://www.cs.colostate.edu/~cutler/d3d9patch.2005-04-19.diff">
+http://www.cs.colostate.edu/~cutler/d3d9patch.2005-04-19.diff</a></ul></p>
+<p>
+Of course, I'll feel rather foolish if Oliver pops up tomorrow and has a
+real patch, but here's what I can offer for now.
+</p></quote>
+
+<p>Jesse Allen thought some work could be done on it,
+<quote who="Jesse Allen">
+Well at minimal, you can submit small bug-fix patches to try to avoid
+duplicate work.  I've been testing D3D9 and I know for sure there are
+bugs out there.  There may be some in Oliver's patch, and I'm sure
+he'd appreciate the help when he gets back.  So in case there is some
+other work going on, just keep testing a little what we got and we can
+make the life easier for someone that knows more and can spend time on
+it.</quote></p>
+
+<p>Jason Edmeades, who started the recent DirectX 9 push, replied as
+well:</p>
+<quote who="Jason Edmeades"><p>
+
+FYI I stopped d3d9/wined3d work when I got to a point I had completed the
+parts I was doing, and Oliver had sped ahead so I was ending up duplicating
+work he was doing - I've put it to one side while waiting on the cvs tree to
+get up to where he was. 
+</p><p>
+The last I heard, Raphael was also willing to look into the shader side of
+things, and had an outstanding patch for hardware vertex buffer objects to
+help performance, but I think again this was waiting on Oliver's commits.
+</p><p>
+However, if there seems to be problems, I don't mind continuing, or helping
+people work through his patch into manageable chunks for submission - I can
+easily give guidance in this area.
+</p><p>
+I have only limited time, and work a patch at a time, until it gets in cvs,
+because as is the case with his current patch, basically it needs reworking
+into submittable chunks! However, I think we should give Oliver a little
+more time (I won't be touching it until after wineconf anyway). 
+</p><p>
+Not knowing anything about d3d8/9 shouldn't hold you back - I knew nothing
+when I started on the d3d8 stuff, and it doesn't take that long to pick up
+the threads.
+</p><p>
+FWIW I tried applying the patch sent on here the other day and it failed to
+compile (WINED3DFORMAT vs D3DFORMAT), but after fixing that, I tried running
+a simple textured demo and it failed (Tutorial 5 from
+<a href="http://www.two-kings.de/tutorials/d3d.html">
+http://www.two-kings.de/tutorials/d3d.html</a>) - Any chance you could see if it
+works for you and if it does send me (offline) a patch for current cvs?
+</p></quote>
+</section>
+<section 
+	title="Wine DLLs on Windows" 
+	subject="Still more fun?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0349.html" 
+	posts="4"
+	startdate="04/16/2005"
+	enddate="04/18/2005"
+>
+<topic>Integration</topic>
+<p>Jakob Eriksson wanted to know if anyone had used Wine's
+DLLs on Windows:</p>
+<quote who="Jakob Eriksson"><p>
+Has anybody else thought of using DLLs (like ReactOS' dlls) as a 
+compatibility layer to different Windows versions?
+
+I.e. when you distribute your Windows app, you also throw in a bunch of DLLs
+that implement lots of functionality you aren't sure exists on your 
+target otherwise.
+
+(Windows 2003 functionality on Windows XP, 2000 and NT for instance.)
+</p><p>
+
+It would be a way to avoid upgrading Windows. This would be good for 
+developers,
+users and the Open Source community. The longer it takes for Microsoft 
+to shove out a new version of their OS, the more time Open Source has to 
+infiltrate. :-)
+</p><p>
+I first had the idea when a program of mine refused to run on Windows 95
+when it was compiled with Visual C++ .NET. It "needed" some XP functionality
+in a DLL not present on Windows 95. Well, I created a dll with the same name
+and distributed it with my program.
+</p></quote>
+
+<p>Steven Edwards explained a way to do it, albeit for a different 
+reason,
+
+<quote who="Steven Edwards">
+
+I think it would be good in testing Wine/ReactOS vs Windows for Winelib applications developers.
+You can make a dummy file in your application directory called application.exe.local to force
+Windows to use the dlls in the local directory. So say you have IEXPLORE.EXE you would create
+IEXPLORE.EXE.LOCAL and drop the Mingw compiled dlls in to the application folder and see how it
+runs.</quote></p>
+
+<p>It led Rolf Kalbermatter to ask:</p>
+<quote who="Rolf Kalbermatter"><p>
+
+Why would you need the .local file? Has anything changed in XP or
+2003 which would
+prefer Windows or system DLLs over local DLLs in the same directory as
+the calling executable?
+</p><p>
+I always was under the impression that the executable directory was the
+first to be searched by LoadLibrary() for a DLL and it has worked that
+way for me in the past, too.
+</p></quote>
+
+<p>Steven explained:</p>
+<quote who="Steven Edwards"><p>
+The behavior of LoadLibrary has changed at least once that I know of for Windows 2003. The default
+search order can be set per application in the registry as well. Microsoft even does the
+programname.exe.local trick with the IE5 setup wizard. Extract the IE5 wizard in to a temp folder
+and launch IE5 setup and you will see the *.exe.local file. iTunes even does it.
+</p></quote>
+
+</section></kc> 

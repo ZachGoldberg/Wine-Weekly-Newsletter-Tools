@@ -1,0 +1,445 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="235" date="08/13/2004" />
+<intro> <p>This is the 235th issue of the Wine Weekly News publication.
+Its main goal is to read Dilbert. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="157" size="562" contrib="57" multiples="32" lastweek="23">
+
+<person posts="26" size="97" who="Mike Hearn" />
+<person posts="15" size="39" who="Alexandre Julliard" />
+<person posts="7" size="19" who="Vincent B&#233;ron" />
+<person posts="7" size="18" who="Dmitry Timoshkov" />
+<person posts="6" size="15" who="Dimitrie O. Paun" />
+<person posts="5" size="14" who="Hans Leidekker" />
+<person posts="5" size="14" who="Tom" />
+<person posts="4" size="13" who="Saulius Krasuckas" />
+<person posts="4" size="10" who="Henning Gerhardt" />
+<person posts="3" size="22" who="James Hawkins" />
+<person posts="3" size="12" who="Adrian Willenbucher" />
+<person posts="3" size="11" who="David D. Hagood" />
+<person posts="3" size="8" who="Mike McCormack" />
+<person posts="3" size="8" who="Lionel Ulmer" />
+<person posts="3" size="6" who="Robert Reif" />
+<person posts="3" size="6" who="Ivan Leo Puoti" />
+<person posts="3" size="6" who="Jacek Caban" />
+<person posts="3" size="5" who="Steven Edwards" />
+<person posts="2" size="15" who="Dr. Uwe Girlich" />
+<person posts="2" size="9" who="Jeremy White" />
+<person posts="2" size="8" who="Veerendra Tippanagoudar" />
+<person posts="2" size="8" who="Green, Shaun E." />
+<person posts="2" size="7" who="Robin KAY" />
+<person posts="2" size="6" who="Boaz Harrosh" />
+<person posts="2" size="6" who="Rick Romero" />
+<person posts="2" size="6" who="Aric Stewart" />
+<person posts="2" size="6" who="Shachar Shemesh" />
+<person posts="2" size="6" who="Marcus Meissner" />
+<person posts="2" size="5" who="Krishna Murthy" />
+<person posts="2" size="4" who="Dan Kegel" />
+<person posts="2" size="3" who="Gerald Pfeifer" />
+<person posts="1" size="28" who="Prupe" />
+<person posts="1" size="23" who="Holly Bostick" />
+<person posts="1" size="10" who="Krishna Murthy" />
+<person posts="1" size="7" who="Patrick C McKelvey" />
+<person posts="1" size="4" who="jack" />
+<person posts="1" size="3" who="Brian Vincent" />
+<person posts="1" size="3" who="Francois Gouget" />
+<person posts="1" size="3" who="Ove Kaaven" />
+<person posts="1" size="3" who="Jens Collin" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="Fabian Cenedese" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="2" who="Joerg Mayer" />
+<person posts="1" size="2" who="(markus.amsler)" />
+<person posts="1" size="2" who="Robert Shearman" />
+<person posts="1" size="2" who="Rein Klazes" />
+<person posts="1" size="2" who="Filip Navara" />
+<person posts="1" size="1" who="Nicolai Kuntze" />
+<person posts="1" size="1" who="Auge Mike" />
+<person posts="1" size="1" who="Ge van Geldorp" />
+
+</stats>
+<section 
+	title="News: iTunes Screenshot" 
+	subject="News"
+	archive="http://www.codeweavers.com/images/appdb_shots/itunes_20040803.png"
+	posts="1"
+	startdate="08/07/2004"
+	enddate="08/13/2004"
+>
+<topic></topic>
+<p>Last week CodeWeavers announced they had parts of iTunes working
+with CrossOver Office but the screenshots were somewhat lacking. The 
+<a href="http://www.codeweavers.com/images/appdb_shots/iTunes_2004020601_shot.jpg">initial iTunes screenshot</a> didn't really show off a Linux desktop.  This
+week Jeremy Newman posted
+<a href="http://www.codeweavers.com/images/appdb_shots/itunes_20040803.png">
+another screenshot</a> that's much prettier.  Keep on reading below for
+some news on work Aric Stewart is doing to get USB devices working to enable
+full iTunes support.
+</p>
+</section>
+<section 
+	title="Doom3 &amp; Wine" 
+	subject="DOOM 3 misses some opengl32 wgl* and Cg functions"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0083.html" 
+	posts="8"
+	startdate="08/06/2004"
+	enddate="08/07/2004"
+>
+<topic>DirectX</topic>
+<p>Pop quiz: what's always the most anticipated game under development?  
+Answer: the next one to be released by id Software.  For those of you
+living in a senseless void, 
+<a href="http://www.idsoftware.com/">id Software</a> happens to be 
+responsible for thousands upon thousands of hours of lost productivity
+in the workplace.  (Or, as I used to like to tell my boss, it was 
+responsible for keeping me at my desk after hours.)  They also happen
+to be ardent supporters of open source software;  many of their games
+have been 
+<a href="http://www.idsoftware.com/business/technology/techlicense.php">
+released</a> under GPL licensing.  They also support open interfaces,
+such as GL rendering rather than DirectX and as such have been able to
+release Linux versions of their games for years.   Last week
+saw the release of <a href="http://www.doom3.com/">Doom 3</a> and
+the eye candy is simply marvelous.  The Linux version isn't available
+yet, but some people have reported it's possible to run the Windows
+version with Wine.  Shachar Shemesh translated a page describing how to
+run Doom3:</p>
+<quote who="Shachar Shemesh"><p>
+<a href="http://linux.israel.net/linuxgames/modules.php?name=News&amp;file=article&amp;sid=55">
+http://linux.israel.net/linuxgames/modules.php?name=News&amp;file=article&amp;sid=55</a>
+</p><p>
+Translated into English:
+<ul><p>
+War games: Yes, it's true, Wine can run the new DOOM3
+</p><p>
+Several days ago I installed Mandrake 9.2 and was very impressed with 
+Wine. This little program really does wonders. So I said to myself "it 
+can run small Windows apps, but there is no way it can run Doom 3".
+</p><p>
+I did this:
+<ul><code>
+cd /mnt/win_f/Doom3<br />
+and wrote "wine Doom3.exe", and what did my eyes see?</code></ul>
+</p><p>
+Yes, it is Doom3 running on my computer!!! And with pretty nice graphics 
+Linux should not be ashamed of, to boost! Only one little detail - the 
+in games movies won't work. It probably has something to do with 
+Windows' Direct X.
+</p><p>
+So there you have it. I hope that it will work for you as it has for me!!!!
+</p>
+</ul></p><p>
+
+There is also a screen shot there.
+</p><p>
+So, if you want me to relay any questions to the user regarding how he 
+did it? :-)
+</p></quote>
+
+<p>I decided to do a bit of research into this, and found some
+related bits (in English) at 
+<a href="http://www.linux-gamers.net/modules/news/article.php?storyid=386">linux-gamers.net</a> and 
+<a href="http://www.linuxgames.com/news/feedback.php?identiferID=6790&amp;action=flatview">Linux 
+Games</a>.  Not too surprisingly, a lot of people have been
+working on getting it going with Cedega (WineX).  However, reports of it
+working with Wine are very encouraging.  Uwe Girlich reported more details
+on what he found: </p>
+<quote who="Uwe Girlich">
+<p>
+
+I just tested out DOOM 3 (no-cd-cracked version) with the current Wine (CVS
+from 1 hour ago) and found the following problems on the game console:
+<ul><code>
+Couldn't find proc address for: wglSwapIntervalEXT<br />
+Couldn't find proc address for: wglGetPixelFormatAttribivARB<br />
+Couldn't find proc address for: wglGetPixelFormatAttribfvARB<br />
+Couldn't find proc address for: wglChoosePixelFormatARB<br />
+Couldn't find proc address for: wglCreatePbufferARB<br />
+Couldn't find proc address for: wglGetPbufferDCARB<br />
+Couldn't find proc address for: wglReleasePbufferDCARB<br />
+Couldn't find proc address for: wglDestroyPbufferARB<br />
+Couldn't find proc address for: wglQueryPbufferARB<br />
+Couldn't find proc address for: wglBindTexImageARB<br />
+Couldn't find proc address for: wglReleaseTexImageARB<br />
+Couldn't find proc address for: wglSetPbufferAttribARB<br />
+GL_ARB_texture_non_power_of_two not found<br />
+GL_ATI_fragment_shader not found	(this is expected, I have a nvidia card)<br />
+Cg not available.
+</code></ul></p><p>
+Are these wgl* function difficult to implement?
+</p><p>
+Almost all computer terminals in the game show static black &amp; white noise 
+(instead of some animated computer screen image).
+I suspect, that this has something to do with the missing 'Cg' support in
+Wine (DOOM3 cannot find cg.dll &amp; cgGL.dll).
+</p><p>
+On the other hand, the rendering paths (r_renderer nv10, nv20, arb, and
+arb2) are all more or less working (besides the noise and the too bright
+lighting in nv10).
+</p>
+</quote>
+
+<p>
+Lionel Ulmer recognized the calls that were failing.  Some of them he
+wasn't sure how to map to GLX extensions, but some he did, 
+<quote who="Lionel Ulmer">
+
+This is part of one of my 'todo' project: adding support for PBuffers in the
+WineHQ tree (I once started to study both the GLX and WGL extension set to
+see how it could be done). Now that I know one 'high profile' application
+that needs them, maybe it will motivate me more :-)</quote></p>
+
+<p>Ove K&#229;ven had 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/08/0086.html">some 
+tips</a> on how to implement the functionality.  Apparently the missing
+stuff is enough to make the gameplay poor since the "computer screens"
+Uwe described are an integral part of the game.
+</p>
+
+
+</section>
+<section 
+	title="USB Support (con't)" 
+	subject="Re: USB?"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0137.html" 
+	posts="3"
+	startdate="08/10/2004"
+	enddate="08/11/2004"
+>
+<topic>IO</topic>
+<topic>Architecture</topic>
+<p>To followup on the USB support mentioned above
+(and discussed last week in 
+<a href="http://www.winehq.com/?issue=234#USB%20Support..%20or%20Lack%20Thereof">WWN 
+#234</a>), Aric Stewart came
+back this week with a description of the work he's doing:</p>
+<quote who="Aric Stewart"><p>
+
+  Sorry for not getting back to you all faster, i was at Linux World and 
+such.
+</p><p>
+Yup i am looking hard at the setupapi device calls and cfgmgr to try to 
+get some usb support targeted toward the iPod. I have made some progress 
+and am beginning to have an understanding of how usb is handled in windows 
+(Win2K is my target version) and how to try to handle it in Wine.
+</p><p>
+I do have some difficulty figuring out how Win2K is translating vendor 
+and product ids into class and interface guids. The documentation 
+reports that they look them up in inf files, however i am finding that 
+not to be true. I am suspecting that some may be hardcoded in the usb 
+support somewhere.
+</p><p>
+I am probably not anywhere close to having anything clean enough to 
+start committing to Wine. But if you really want to help we may be able 
+to work together on some stuff.
+</p></quote>
+
+<p>With regard to finding vendor and product ID's:</p>
+<quote who="Rolf Kalbermatter"><p>
+ Wouldn't that be something which would be put in the registry somehow
+ for the well known IDs and for the rest I really assume the device
+ detection routine does check for all .inf files it finds on the devices
+ currently configured to be searched. If you look at PCI and USB inf
+ files you will notice that the manufacturer and device ID are actually
+ encoded in the key names which are to be added to the registry. That
+ encoding does not always seem to be equally consistent, I've seen at
+ least two different types, but it is obviously there.
+</p><p>
+ One entry for instance for the Logitech PageScanner would be
+<ul><code>
+%USB\VID_046D&amp;PID_040f.DeviceDesc%=Model.PageScan_USB,USB\VID_046D&amp;PID_040f
+ <br />
+USB\VID_046D&amp;PID_040f.DeviceDesc="Storm Technology - Logitech PageScan USB"
+</code></ul></p><p>
+This is partly extracted from a logiscan.inf file on my W2K system.
+</p></quote>
+
+<p>Aric pointed out that even if this was a rule there were definitely
+exceptions,
+<quote who="Aric Stewart">
+Right, that is the theory but something else must be happening also. For 
+example with the iPod (what i am concentrating on) the vendor id is 
+0x05ac which somehow translates to VEN_APPLE and the product id of 
+0x1201 somehow translates to PROD_IPOD however i cannot find any inf 
+file or registry key that would show that transition.</quote></p>
+
+
+</section>
+<section 
+	title="DSound Mixer Speedup" 
+	subject="Re: dsound mixer speedup"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0188.html" 
+	posts="2"
+	startdate="08/11/2004"
+	enddate="08/12/2004"
+>
+<topic>DirectX</topic>
+<topic>Multimedia</topic>
+<p>
+Robert Reif posted a patch to speed up the mixer in the DirectSound
+code.  He noted in his changelog entry there was a tradeoff,
+<quote who="Robert Reif"> 
+Speed up mixing and unmixing by moving sample size and buffer
+wrap tests to outside the loop.  The code is not as compact or pretty
+but it should be faster.
+</quote></p>
+
+<p>Joerg Mayer wondered if moving some lines of code around really
+resulted in an optimization since GCC may automatically do it at
+compile time.  Robert provided some real world statistics to back
+up his claim:</p>
+<quote who="Robert Reif"><p>
+For both 8 and 16 bit samples (no optimization)
+    the new code executes in about 48% of the time of the old code 
+(twice as fast).
+</p><p>
+8 bit -O3
+<ul>
+   75% of old code (1.5 times as fast)</ul></p><p>
+
+16 bit -O3
+<ul>
+  50% of old code (twice as fast)</ul></p><p>
+
+This is with a 32k buffer and a 1k chunk size.
+</p></quote>
+</section>
+<section 
+	title="c:\\windows is not accessible Error (con't)" 
+	subject="config converting problem"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0147.html" 
+	posts="20"
+	startdate="08/11/2004"
+	enddate="08/12/2004"
+>
+<topic>Configuration</topic>
+<p>Last week we described a problem where people couldn't access 
+a fake windows drive (WWN issue 
+<a href="http://www.winehq.com/?issue=234#c:\\windows%20is%20not%20accessible%20Error">#234</a>).  This week Henning Gerhardt wrote in with a pretty clear
+example of it occurring:</p>
+<quote who="Henning Gerhardt"><p>
+a friend of me would update the wine package (20030813) from his SuSE 9.0 
+system to the latest available package for this system (20040716). After the 
+update following error message appears on each start of wine:
+<ul><code>
+Warning: the specified Windows directory L"C:\\Windows" is not accessible.<br />
+
+Warning: the specified System directory L"C:\\Windows\\System" is not accessible.</code></ul>
+
+</p><p>
+
+After my advice to get me the content of his "~/.wine/dosdevices", he send me 
+the following output:
+<ul><code>
+lrwxrwxrwx 1 julian users 28 10. Aug 18:50 c: -> ../%HOME%/.wine/fake_windows
+<br />lrwxrwxrwx 1 julian users  9 10. Aug 18:50 y: -> ../%HOME%<br /></code>
+</ul> 
+</p><p>
+
+I think the problem is the ${HOME} variable which is not parsed / correctly 
+replaced during the conversion process.</p><p>
+
+Has anyone an idea to solve this problem ? Or is it only a problem of the 
+SuSE distribution ?
+</p></quote>
+
+<p>Vincent B&#233;ron then diagnosed the problem and explained:</p>
+<quote who="Vincent Beron">
+<p>
+It's not SuSE specific. It's a problem from upgrading from a (somewhat)
+old to a newer Wine version.
+</p><p>
+Wine used to understand ${HOME}-style vars in config. This was then
+changed to %HOME%-style vars. Current Wine doesn't use config anymore
+for drives but uses dosdevices, which is created on the fly from config
+if it doesn't exist.
+</p><p>
+So the problem comes from 2 changes, with only the latter being acted on
+automatically.
+</p><p>
+If you want to fix it, the simplest way would be to create the following
+symlinks in ~/.wine/dosdevices:
+<ul><tt>
+ln -s ../fake_windows c:<br />
+ln -s /home/julian y:</tt></ul></p></quote>
+
+<p>Mike Hearn expressed concern this was happening,
+<quote who="Mike Hearn">
+
+I'm not sure what to do about this, except maybe to add back in support 
+for ${HOME} style vars. It's clear that people are "using" (at least, 
+installing) much older versions than we anticipated.</quote></p>
+
+<p>Vincent clarified that,
+<quote who="Vincent Beron">
+
+The problem comes when upgrading from an old version (still supporting
+${HOME}) to a newer version (supporting either %HOME% or dosdevices).
+
+The older version, by itself, still works correctly.</quote></p><p>
+Mike also suggested just blowing away ~/.wine and starting over with
+a clean slate.  Of course, the side effect is pretty dramatic - you need
+to reinstall programs.  A lot of discussion ensued about making upgrades
+to wine as transparent as possible.  Not a whole lot was decided, but
+everyone seemed to agree that it was something that needed to be kept 
+in mind.  
+</p><p>
+In a side note, there was another discussion initiated by Adrian Willenbucher
+who didn't want to see Wine lose it's config file.  A plan in the works for
+many years now is to move all the configuration into the registry. 
+Mike Hearn pointed out that Wine's registry is in ASCII format and easily
+edited by your favorite text editor.  The syntax itself 
+isn't a whole lot different than the existing config file.  The huge
+benefit is that Wine's registry reading/writing code is pretty stable
+now and it's worth using one set of functions for handling all that
+stuff.  Since the registry is accessible via Win32 APIs it's possible to
+write graphical configuration tools (such as winecfg) using Winelib.</p>
+</section>
+<section
+        title="Multiple X Session/Display Instances"
+        subject="Different X Displays and Wine"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0139.html"
+        posts="4"
+        startdate="08/10/2004"
+        enddate="08/11/2004"
+>
+<p>Boaz Harrosh ran into a problem with a unique set up:</p>
+<quote who="Boaz Harrosh"><p>
+I'm trying to connect and run a remote X session from 2 different
+machines and I fail to run Wine applications.
+<ul>
+<li> I connect from Machine M1 using ssh -X (or -Y) run a wine app all is
+very well.</li>
+<li> I connect from another Machine M2 using ssh -X using the same user.  
+The second instance fails with:
+<ul><code>
+X Error of failed request:  BadWindow (invalid Window parameter)<br />
+ Major opcode of failed request:  15 (X_QueryTree)<br />
+  Resource id in failed request:  0xa0002b<br />
+  Serial number of failed request:  137<br />
+  Current serial number in output stream:  137
+</code></ul>
+Needless to say that if I exit the Wine application on M1 than M2 will
+run with out any problems.</li></ul></p><p>
+
+[Q] Is it at-all possible to run Wine on 2 different $DISPLAY s, or is
+the X-Server a Wine-Server resource. Will using a different user help?
+Will using desktop mode help? Has any one been successful with letting
+different network users connect and run Windows Apps under wine? How did
+they Setup wine? How does CodeWeavers do it with their Server Product?
+</p></quote>
+
+<p>Alexandre described a couple of different workarounds,
+<quote who="Alexandre Julliard">
+
+That's not supported at the moment. You can run apps on two different
+displays by using a different WINEPREFIX for each, so that they don't
+share the same wineserver. Using different users would work too.</quote></p>
+</section></kc>

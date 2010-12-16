@@ -1,0 +1,365 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="76" date="01 Jan 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 76th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="85" size="450" contrib="26" multiples="17" lastweek="14">
+<person posts="11" size="47" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="11" size="103" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="8" size="23" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="32" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+<person posts="5" size="85" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+<person posts="5" size="17" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="4" size="9" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="10" who="Adam D. Moss &lt;adam@gimp.org&gt;" />
+<person posts="3" size="8" who="Christopher Morgan &lt;cmorgan@WPI.EDU&gt;" />
+<person posts="3" size="65" who="FT Rathore &lt;mawali@news.icns.com&gt;" />
+<person posts="3" size="18" who="Bernhard Rosenkraenzer &lt;bero@redhat.de&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+
+<p />
+
+Well, that's a brand new year, century even millennium opening in front
+of us. I really feel like 2001 will be the year of Wine 1.0, including
+all the great new stuff, like TransGaming is doing (see article
+below), and the great progress on lots of areas:
+<ul>
+<li>font handling has now a proper fix (even if it's not implemented
+yet),</li>
+<li>DLL and process separation is almost done now - only remains the
+cross-process message sending which starts being heavily discussed
+-,</li>
+<li>WineLib starts to run on Solaris...</li>
+</ul>
+
+<p />
+
+So, lots of activities are underway and great progress are being
+made. So, I really feel like 2001 will even more enjoyable than 2000,
+with lots of more of software being ported to Unix using Wine. Corel
+efforts in 2000 were only the first and early stones, which shall
+bring their full power this year.
+
+<p />
+
+Let's meet next year same time, same place and really check what'd
+happened.</section>
+
+
+<section 
+  title="Wine headers and configuration"
+  subject="Fixes for unaligned memory accesses"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0351.html"
+  posts="12"
+  startdate="25 Dec 2000 00:00:00 -0800"
+  enddate="29 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Alexandre Julliard, while considering a patch for commit into Wine CVS 
+tree wrote:
+<quote who="Alexandre Julliard">
+I think I mentioned this a couple of times already: standard Windows
+headers *MUST NOT INCLUDE* config.h.
+
+<p />
+
+There is no guarantee that Winelib apps use the same configure script
+as Wine itself, or that they even use a configure script at all. Any
+#ifdef in the standard headers must be based on available preprocessor
+defines like __sparc__ etc.
+</quote>
+
+
+<p />
+
+The discussion then evolved into what should be generated with the
+configure tool and what shouldn't. Basically, the summary is:
+<ul>
+<li>configure shall be used for questions around the build process (to
+determine headers location, which libraries contain which symbols
+etc.)</li>
+<li>Architecture differences should be defined using
+<code>#define</code>:s and provided by the compilation
+environment.</li>
+</ul>
+
+<p />
+
+This would allow, for example, to keep the same standard headers and
+still be able to cross-compile Wine (think of a Windows-CE like system 
+based on Wine).
+
+<p />
+
+Just for information, the listed patch fixed some alignment issues in
+Wine code, letting WineLib applications to work on Solaris/Sparc. The
+discussion finished in getting around the proper handling for
+<code>winsock.h</code>. Currently, it tries to defines the Winsock
+prototypes from the Unix system ones (like re-using fd_set when
+possible...). However, for this to happen, the <code>winsock.h</code>
+file must know how to include the Unix network headers file (hence the 
+use of the <code>config.h</code> file). To get around this, 
+<code>winsock.h</code> will have to define at its level all the needed 
+bits (structures and macros), and let the WinSock.dll implementation
+take care of the mapping to the networking elements defined by the
+underlying system (like <code>fd_set</code>:s).
+</section>
+
+
+<section 
+  title="TransGaming"
+  subject="TransGaming DirectX Release"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0358.html"
+  posts="4"
+  startdate="27 Dec 2000 00:00:00 -0800"
+  enddate="27 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Gavriel State (from TransGaming) announced:
+<quote who="Gavriel State">
+Several months ago, I promised that wine-devel folks would be among
+the first to know what TransGaming Technologies has been up to. While
+we're not ready to  make a big PR push at this point, we wanted to
+make sure that everyone involved in Wine is up to speed with what
+we're doing. 
+
+<p />
+
+Our goal is nothing less than 100% compatibility for running Windows
+games on Linux through Wine.
+
+<p />
+
+So - we've been working hard on revamping the DirectX code within Wine
+to fully support the Direct3D 7 APIs, as well as substantially
+restructuring the DirectDraw code. So far, we've been able to get most
+of the core Direct3D 7 sample apps up and running, as well as some
+major game titles (Sacrifice), and the 3DMark2000 benchmark. We've
+implemented most of the code D3D features, including multitexturing,
+stencil buffers, alpha blending, fog, etc. We're still working on
+optimizations such as holding D3D Vertex Buffers in video memory for
+quick access to hardware T&amp;L.
+
+<p />
+
+On the DirectDraw side, we've unified the code in the x11 and DGA
+drivers into a new more OO design, separating direct use of xlib from
+the core code. We've added an 'update thread' which should make
+non-DGA use almost as good as DGA, especially when combined with some
+of contextual smarts in the GDI x11 driver Ove submitted a few weeks
+ago to speed up DIBsections. We still have some work to do on this
+front, since DGA support hasn't yet been integrated into our new
+design. 
+
+<p />
+
+Initially, the Direct3D code will be released with limited
+redistribution rights under the Aladdin Free Public License - it will
+not be available under the Wine license. The DirectDraw code will be
+made available under the Wine license, and we should be submitting a
+patch with that code within a couple of days. 
+
+<p />
+
+In 2001, we will be setting up a subscription service that allows
+users to vote on the games they would most like to see working. Users
+who pay will be allowed to vote on what we work on next - essentially
+a variant of the Street Performer Protocol
+(<a href="http://www.firstmonday.dk/issues/issue4_6/kelsey/">
+http://www.firstmonday.dk/issues/issue4_6/kelsey/</a>). 
+
+<p />
+
+Once a set number of users have subscribed to the service we will
+release the code under the Wine license. After the initial code is
+released under the Wine license, so will all subsequent patches,
+assuming we retain a set minimum number of subscriptions.
+
+<p />
+
+You can get the AFPLed code from our web site (
+<a href="http://www.transgaming.com/">http://www.transgaming.com/</a>) 
+now. Once we have some feedback on the 2D side of things, we'll send a 
+patch to wine-patches for release under the Wine license.
+</quote>
+
+
+<p />
+
+Marcus Meissner pointed out to the Slashdot coverage of this
+announcement (
+<a href="http://slashdot.org/article.pl?sid=00/12/30/1427237">
+"WINE gets Direct3D Support"</a>).
+
+<p />
+
+>From the CVS inclusion point of view. The DirectDraw patch has been
+committed to the CVS tree. For all the other folks willing to test
+TransGaming patch, don't forget to run autoconf; ./configure after
+applying the patch.
+</section>
+
+
+<section 
+  title="Setting up Winedbg"
+  subject="Problem with Winedbg"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0366.html"
+  posts="12"
+  startdate="29 Dec 2000 00:00:00 -0800"
+  enddate="30 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Guy Albertekku reported that since a patch from beginning of December, 
+he could no longer get the WineDebugger to start (the patch moved the
+WineDbg executable into a .so library).
+
+<p />
+
+After some investigations, it turned out that Guy had set up the
+debugger with a DOS file name (<code>H:debugger/winedbg</code>),
+whereas current Wine loader code only allowed to start processes
+stored in .so files from a Unix filename (and not a DOS one).
+
+<p />
+
+Later on, Alexandre Julliard posted a patch to the loader code which
+took care of this issue, plus other issues with relative paths.
+
+<p />
+
+Even, if, now, you're able to set up a DOS file name as your debugger
+path, it's highly recommended to set up a full path (and not a
+relative one), because you cannot tell which current directory will be 
+used when launching the debugger. Also, remember, if you use a Unix
+path name to launch any .so file (including Winelib executables), the
+Unix pathname must be mappable to one of the Drive:s defined in your
+<code>~/.wine/config</code> file.</section>
+
+
+<section 
+  title="Keyboard autorepeat"
+  subject="keyboard autorepeat patch"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0373.html"
+  posts="2"
+  startdate="29 Dec 2000 00:00:00 -0800"
+  enddate="30 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Ove Kaaven wrote a patch with the following changelog:
+
+<quote who="Ove Kaaven"> 
+I got tired of certain keyboard autorepeat issues. When I played
+Monkey Island 4 in OpenGL mode a couple of weeks ago, I had to always
+remember to turn autorepeat off (<code>xset r off</code>) or there would be
+trouble. When I play a DirectInput-using game, I don't have to do that
+(because DirectInput does it), but when the game exits, the autorepeat
+is still off so I have to turn it on manually (<code>xset r on</code>).
+
+<p />
+
+Why do we have to put up with that? We know why (because X autorepeat
+isn't detectable). So this patch goes to the root of the problem...
+</quote>
+
+
+<p />
+
+Francois Gouget asked whether the patch was related to a given bug (
+<a href="http://bugs.winehq.org/show_bug.cgi?id=39">
+#39</a>):
+<quote who="Francois Gouget">
+The message sequence that Wine generates when a key is in auto-repeat
+mode is incorrect. 
+
+<p />
+
+In Windows one gets a series of <code>WM_KEYDOWN</code> messages. The
+first one has the 'previous state' bit (30th of <code>LPARAM</code>)
+set to 0, and all those that come after have it set to 1. Then when
+the key is released the application gets a single
+<code>WM_KEYUP</code> message. 
+
+<p />
+
+In Wine the application receives a succession of
+<code>WM_KEYDOWN</code> and <code>WM_KEYUP</code> messages
+instead. Note that this description is valid for a key like the down
+arrow key.
+</quote>
+
+
+<p />
+
+Ove answered:
+<quote who="Ove Kaaven">
+It's the very same thing. For where XKB is available and supports
+detectable autorepeat (certainly at least any PC that runs XFree86),
+you could now close the bug.
+</quote>
+
+
+<p />
+
+However, Ove suggested to use Francois' proposal when XKB autorepeat
+wasn't detectable:
+<quote who="Francois Gouget">
+In most systems you can receive an event saying that such and such key 
+has been pressed/released, but you can also query whether a given key
+is up or down. When we receive the <code>KeyUp</code> event, would it
+be possible to query X to determine if the key is really up or if it
+is pressed? If it is still pressed, then we would ignore the
+<code>KeyUp</code> event, mark the key as pressed internally, and on
+the next <code>KeyDown</code> event we would send a
+<code>VM_KEYDOWN</code> with the bit 30 set to 1.
+</quote>
+
+
+<p />
+
+Ove erased some fears Francois had about the validity of the idea, and
+giving hints on places to grab the correct code for doing what had
+been suggested. 
+
+<p />
+
+However such a patch hasn't been written yet.
+
+<p />
+
+
+<p />
+
+
+<p />
+
+</section>
+
+</kc>

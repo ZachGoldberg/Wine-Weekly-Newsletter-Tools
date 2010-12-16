@@ -1,0 +1,493 @@
+<!--TITLE:[Wine UI Status]-->
+<!--BLURB:[Current Status of the Wine Project]-->
+
+<h1 class="title">Wine Status - User Interface</h1>
+
+<p>&nbsp;</p>
+
+<div align=center>
+<table width="95%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6d6d6d">
+  <tr>
+<td>
+  <table width="100%" border="0" cellspacing="1" cellpadding="3" bgcolor="#ffffff">
+  
+
+    <tr class="hdr">
+      <th>Component</th>
+      <th>Src</th>
+      <th>Audit date</th>
+      <th>Reference</th>
+      <th>Implementation status</th>
+    </tr>
+
+    <tr class="hdr">
+      <td colspan="5"><strong>Fundamentals</strong></td>
+    </tr>
+
+    <tr>
+      <td><strong>Visible Region</strong></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+
+      <td><strong>Window Management</strong></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td class="pct90">90%: Optimization of repainting on window moves, port some hacks from CrossOver tree</td>
+    </tr>
+
+    <tr>
+
+      <td><strong>MDI Support</strong></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/mdi.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/mdi.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct80">80%: Various problems still exist</td>
+    </tr>
+
+    <tr>
+
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms633572.aspx"><strong>DefWndProc</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/defwnd.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/defwnd.c">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms645450.aspx"><strong>DefDlgProc</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/defdlg.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/defdlg.c">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr class="hdr">
+      <td colspan="5"><strong>Standard Controls</strong></td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb775943(VS.85).aspx"><strong>Button</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/button.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/button.c">LXR</a></td>
+	<td>Oct 3, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: WM_CHAR, WM_SETFOCUS, WM_NCCREATE, WM_SYSKEYUP, BCM_*, BCN_*, some BN_*, NM_CUSTOMDRAW</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms753382(VS.85).aspx"><strong>ComboBox</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/combo.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/combo.c">LXR</a></td>
+	<td>Oct 4, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct95">95%: CB_GETCOMBOBOXINFO, CB_[GS]ETMINVISIBLE, CB_LIMITTEXT, CB_SETTOPINDEX</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb775458(VS.85).aspx"><strong>Edit</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/edit.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/edit.c">LXR</a></td>
+	<td>Oct 8, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct85">85%: ES_{NUMBER,OEMCONVERT}, EN_ALIGN_{LTR,RTL}_EC, EM_[GS]ETIMESTATUS, EM_[GS]ETCUEBANNER, EM_{SHOW,HIDE}BALLOONTIP</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb775146(VS.85).aspx"><strong>List Box</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/listbox.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/listbox.c">LXR</a></td>
+	<td>Oct 9, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: LB_GETLISTBOXINFO, LBS_{COMBOBOX,NODATA,STANDARD}, locale and tab stops fixes</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb787529(VS.85).aspx"><strong>Scroll Bar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/scroll.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/scroll.c">LXR</a></td>
+	<td>Mar 10, 2005</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760769(VS.85).aspx"><strong>Static</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/user/static.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/user/static.c">LXR</a></td>
+	<td>Oct 4, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct85">85%: Some SS_* styles, STN_{DISABLE,ENABLE}, IMAGE_CURSOR, IMAGE_ENHMETAFILE</td>
+    </tr>
+
+    <tr class="hdr">
+      <td colspan="5"><strong>Common Controls</strong></td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb761881(VS.85).aspx"><strong>Animation</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/animate.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/animate.c">LXR</a></td>
+	<td>Mar 15, 2005</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct95">95%: support 'rec ' list in AVI files</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb775740(VS.85).aspx"><strong>ComboBoxEx</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/comboex.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/comboex.c">LXR</a></td>
+	<td>Sep 9, 2002</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb761727(VS.85).aspx"><strong>Date and Time Picker</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/datetime.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/datetime.c">LXR</a></td>
+	<td>Oct 20, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: DTS_{APPCANPARSE,SHORTDATECENTURYFORMAT}, DTN_{CLOSEUP,FORMAT,FORMATQUERY,USERSTRING,WMKEYDOWN}, DTM_[GS]ETMCFONT, FORMATCALLBACK</td>
+    </tr>
+
+    <tr>
+
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb761713(VS.85).aspx"><strong>Drag List Box</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/draglist.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/draglist.c">LXR</a></td>
+	<td>Mar 10, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb775429(VS.85).aspx"><strong>Flat Scroll Bar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/flatsb.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/flatsb.c">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct10">10%: Only stubs, forwarding handling to standard scroll bars</td>
+    </tr>
+
+    <tr>
+
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb775239(VS.85).aspx"><strong>Header</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/header.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/header.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct95">95%: filters support</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb775234(VS.85).aspx"><strong>Hot Key</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/hotkey.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/hotkey.c">LXR</a></td>
+	<td>Sep 21, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb761391(VS.85).aspx"><strong>Image List</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/imagelist.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/imagelist.c">LXR</a></td>
+	<td>Sep 12, 2002</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct85">85%: implement the ILD_*, and ILS_* styles</td> 
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb761374(VS.85).aspx"><strong>IP Address</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/ipaddress.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/ipaddress.c">LXR</a></td>
+	<td>Sep 9, 2002</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb774737(VS.85).aspx"><strong>List-View</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/listview.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/listview.c">LXR</a></td>
+	<td>Oct 21, 2002</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct70">70%: Missing support for hotitem, mouse hovering, workareas, tiles, groups, and unicode notifications</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760917(VS.85).aspx"><strong>Month Calendar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/monthcal.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/monthcal.c">LXR</a></td>
+	<td>Mar 10, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: i18n, keyboard handling, some fixmes</td>
+    </tr>
+
+    <tr>
+      <td><strong>Native Font</strong></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/nativefont.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/nativefont.c">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct10">10%: empty stub</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760857(VS.85).aspx"><strong>Pager</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/pager.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/pager.c">LXR</a></td>
+	<td>Sep 18, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: better keyboard handling, size changes, drag &amp; drop</td>
+    </tr>
+
+    <tr>
+
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760818(VS.85).aspx"><strong>Progress Bar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/progress.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/progress.c">LXR</a></td>
+	<td>Aug 6, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb774540(VS.85).aspx"><strong>Property Sheet</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/propsheet.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/propsheet.c">LXR</a></td>
+	<td>Sep 12, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct80">80%: tab order, Unicode property sheets, wizard 97 handling</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb774375(VS.85).aspx"><strong>Rebar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/rebar.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/rebar.c">LXR</a></td>
+	<td>Oct 19, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct70">70%: vertical placement, layout code, some messages, notifications</td>
+    </tr>
+
+    <tr>
+      <td><strong>Smooth Scroll</strong></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/smoothscroll.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/smoothscroll.c">LXR</a></td>
+	<td>N/A</td>
+	<td>N/A</td>
+	<td class="pct10">10%: empty stub that does regular scrolling only,<a target="_blank" href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/commctls/scrollbars/scrollbarreference/scrollbarfunctions/scrollwindowex.asp"><strong>undocumented</strong></a> by MS</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760726(VS.85).aspx"><strong>Status Bar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/status.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/status.c">LXR</a></td>
+	<td>Sep 24, 2002</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Lacks CCS_* styles support</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760704(VS.85).aspx"><strong>SysLink</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/syslink.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/syslink.c">LXR</a></td>
+	<td>Apr 4, 2005</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: problems with focus handling and dumb string parsing </td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760548(VS.85).aspx"><strong>Tab</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/tab.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/tab.c">LXR</a></td>
+	<td>May 20, 2005</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct80">80%: image list support, Unicode support</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760435(VS.85).aspx"><strong>Toolbar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/toolbar.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/toolbar.c">LXR</a></td>
+	<td>Mar 14, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: some messages, some notifications</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760246(VS.85).aspx"><strong>ToolTip</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/tooltip.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/tooltip.c">LXR</a></td>
+	<td>Sep. 08, 2004</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct80">80%: custom draw support</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb760145(VS.85).aspx"><strong>Trackbar</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/trackbar.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/trackbar.c">LXR</a></td>
+	<td>Sep 12, 2002</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb759988(VS.85).aspx"><strong>Tree-View</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/treeview.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/treeview.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct70">70%: some notifications, styles, redraw optimizations</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb759988(VS.85).aspx"><strong>Up-Down</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comctl32/updown.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comctl32/updown.c">LXR</a></td>
+	<td>Sep 9, 2002</td>
+	<td>Comctl32.dll 6.0</td>
+	<td class="pct90">90%: Complete</td>
+    </tr>
+
+    <tr class="hdr">
+      <td colspan="5"><strong>Miscellaneous Controls</strong></td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms710782(VS.85).aspx"><strong>MCIWnd</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/msvfw32/mciwnd.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/msvideo/mciwnd.c">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct75">75%: missing extended styles, notification, some MCI_* and MCIWNDM_* messages</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/bb787605(VS.85).aspx"><strong>Rich Edit</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=tree;f=dlls/riched20">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/richedit/">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct50">50%: most used functionality implemented, but there are plenty of 
+                               messages, notifications and styles that need work.</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/aa752040.aspx"><strong>Web Browser</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=tree;f=dlls/shdocvw">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/shdocvw/">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct70">70%: Complete</td>
+    </tr>
+
+    <tr class="hdr">
+      <td colspan="5"><strong>Common Dialogs</strong></td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms646375.aspx"><strong>Color</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comdlg32/colordlg.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comdlg32/colordlg.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct95">95%: Refresh bugs</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms646956.aspx"><strong>Find/Replace</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comdlg32/finddlg.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comdlg32/finddlg.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct90">90%: missing help and context menu handling</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms646958.aspx"><strong>Font</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comdlg32/fontdlg.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comdlg32/fontdlg.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct90">90%:  missing script selection</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms646960.aspx"><strong>Open/Save As</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comdlg32/filedlg.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comdlg32/filedlg.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct60">60%:  Unicode handling, hook messages, various styles not implemented</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn2.microsoft.com/en-us/library/ms646962.aspx"><strong>Page Setup</strong></a></td>
+	<td></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct50">50%: (We have no UNICODE-Version)
+</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn2.microsoft.com/en-us/library/ms646964.aspx"><strong>Print</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=blob;f=dlls/comdlg32/printdlg.c">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/comdlg32/printdlg.c">LXR</a></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct60">60%: verify how windows handles printer stats, implement printer help</td>
+    </tr>
+
+    <tr>
+      <td><strong>Print Setup</strong></td>
+	<td></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="">Deprecated by Microsoft, use <b>Page Setup</b> instead</td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://msdn2.microsoft.com/en-us/library/ms646966.aspx"><strong>Print Property Sheet (PrintDlgEx)</strong></a></td>
+	<td></td>
+	<td class="needed"></td>
+	<td class="needed"></td>
+	<td class="pct0">0%: nothing done</td>
+    </tr>
+
+    <tr class="hdr">
+      <td colspan="5"><strong>Drivers</strong></td>
+    </tr>
+
+    <tr>
+      <td><a target="_blank" href="http://source.winehq.org/git/?p=wine.git;a=tree;f=dlls/winex11drv"><strong>winex11drv</strong></a></td>
+	<td><a class="srclink" href="http://source.winehq.org/git/?p=wine.git;a=tree;f=dlls/winex11.drv">Git</a>
+	    <a class="srclink" href="http://source.winehq.org/source/dlls/x11drv/">LXR</a></td>
+	<td></td>
+	<td></td>
+	<td class="pct90">90%: some keyboard input problems, integration with window managers</td>
+    </tr>
+
+  </table>
+</td>
+  </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>

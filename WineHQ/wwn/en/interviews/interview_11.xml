@@ -1,0 +1,666 @@
+<kc>
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="11" who="Francois Gouget" date="5 August 2003" />
+ <intro>
+  <p>This week Francois Gouget took some time to discuss his
+   involvement with Wine.  This is our 11th interview with Wine
+   developers. Check out the
+  <a href="http://www.winehq.org/interview">Interviews</a>
+  page for previous ones.
+  </p>
+  <p>
+    Francois grew up in France.  He's spent the last five years
+    living in California but he recently moved back home.  He
+    attended college at
+    <a href="http://www.ec-lyon.fr/presentation/grandecole/index.html.en">
+    Ecole Centrale de Lyon</a> studying engineering sciences.
+    Francois explained that
+    higher education is quite a bit different in France compared
+    to the US (follow the link for more details.)  He wanted to
+    study more computer science and ended up completing a
+    degree in that field at Cambridge.  Besides Wine, Francois
+    enjoys SciFi and comics, the <i>"more varied european ones"</i>.
+ </p>
+ </intro>
+<interview>
+<question><p><i>BV:</i>
+ How did you get involved with Wine? 
+</p></question>
+
+<answer><p><i>Francois:</i>
+I first learnt about Wine in 1995. I was relatively new to Linux and
+felt that it was a shame that one could not run Windows applications on
+Linux. Also, at the time I was porting a Unix application to Windows NT
+for work and it seemed like it would be interesting to compare these two
+aspects.
+</p><p>
+But at the time Wine did not support Win32 very well and I never managed
+to find time to either really use it or contribute to it. Then near
+the end of 1998 I came back to it and tried to compile some Windows
+applications with Winelib.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Wow, in 1995 both Linux and NT were fairly new. I imagine that app didn't
+ run on Linux at the time.  Did you try porting it to Linux at all?
+</p></question>
+
+<answer><p><i>Francois:</i>
+I only had access to the application (Emeraude PCTE) at work, and to
+Linux at home. So I did not get a chance to try porting it to Linux. But
+the application had been ported to many Unix platforms before (SunOS 4,
+Solaris, DEC OSF/1, HP/UX, etc.), so I'm sure it could have been ported
+to Linux as well.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Did you finish porting it to NT?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ I completed the port to Windows NT (3.51 initially) and then to Windows
+ 95. There are different ways to explain what Emeraude PCTE is depending
+ on whether you grab the trunk or the ear of the proverbial elephant. For
+ me PCTE was an extension of Unix, with a very sophisticated, typed,
+ distributed and transacted file system. Others would say it was a
+ repository or an object database and they would be right too. So you
+ could use esh (the equivalent of bash), start a transaction, create
+ 'files' and 'directories' distributed across the nodes that comprised
+ the PCTE system, together with links between them all, and then either
+ commit or abort the transaction. If the transaction was committed then
+ your changes got saved. If it was aborted, they were cancelled so that
+ the 'filesystem' would be unchanged. The distributed aspect relied in
+ part on NFS so the Windows port relied on third party Windows NFS
+ client/server software. What was really cool was the day I could run esh
+ (essentially bash) scripts on Windows NT and it all interoperated just
+ right with the Sun and Alpha stations in the next room.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+Do you remember the first patch you submitted?
+</p></question>
+
+<answer><p><i>Francois:</i>
+I thought my first contribution had to do with the COM interfaces but
+apparently I posted a patch fixing some LPPOINT/LPSIZE mismatches in the
+headers before that (Wine's changelog is really complete).
+</p><p>
+However, by my second patch I must have tried to compile the MFC using
+Winelib. I probably did not go far as at that time the COM interfaces
+were not usable in C++ programs. Mostly I think the header were just
+providing the C interface which is macro-based. So I set to adding the
+definitions needed by the C++ class-based interface. This lead to my
+first significant contribution.
+</p><p>
+So my initial patches all had to do with trying to compile Windows
+applications using Winelib. I think that at that time most of the work
+on Wine had been geared towards getting binary compatibility. The result
+was that the Wine headers were not very usable for Winelib.  Many
+functions and types were declared in the wrong headers, some functions
+were implemented but not declared in the headers, header dependencies
+were incorrect, etc. So I had my work cut out for me getting the headers
+into shape. Now the situation is much better. Not just because of my
+work of course :-) The efforts to use Wine code on ReactOS and to
+compile using the Mingw headers helps keep our own headers straight.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ What areas of Wine do you like to work on?
+</p></question>
+
+<answer><p><i>Francois:</i>
+Well, Winelib is definitely the area I prefer. But I have not had time
+to work on it for a long time. As I became more familiar with Wine I
+found problems here and there and set out to fix them. In time this grew
+to a todo list that I will probably never get through :-(
+</p><p>
+So besides Winelib there is not really a specific area that I like to
+work on. Usually I find something wrong that looks like it should be
+easy to fix. There's bonus points if the problem might be widespread.
+Then I try to fix that issue wherever I find it. For instance there were
+some problems with the way Wine was doing the conversions between the
+argc/argv and command line formats. So I wrote a test program and fixed
+the problem wherever I could find it (which was in 3 or 4 places).
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ You've worked on winemaker and other tools a lot, could you
+ explain what tools exist in Wine to help porting applications
+ with Winelib?
+</p></question>
+
+<answer><p><i>Francois:</i>
+There are two ways to port a Windows application using Winelib.
+</p><p>
+The first one is by using winemaker. winemaker will look through your
+sources and perform two main tasks:
+<ul>
+ <li> tweak your sources to make them more palatable to Unix compilers.
+This mostly involves performing CR/LF conversions, fixing the case of
+#include statements, replace pragma pack statements, etc. This can all
+be done easily by hand but doing so would be pretty tedious for large
+projects.</li>
+ <li> analyze your sources to generate makefiles. I feel that this part is
+very important because most of the time Windows developers don't have
+makefiles at all.</li></ul>
+</p><p>
+Currently winemaker builds the makefile entirely from its analysis of
+the sources. This is nice because it means winemaker works no matter
+what Windows compiler (Microsoft / Borland / Intel / Other) was used for
+the project. It also means a Linux developer can put a C file in a
+directory and get an executable just by typing 'winemaker; ./configure;
+make'. But this is also winemaker's weakness. Because the source won't
+tell you what include path to use, which libraries to link with, etc. So
+in complex projects you may have to tweak the makefiles after the
+initial winemaker run.
+</p><p>
+Since most of the commercial Windows development is performed using
+Visual C++, one way to greatly improve winemaker would be to extend it
+to parse the Visual C++ project files (.dsp). This would give winemaker
+access to the include path, library path, exact list of sources for each
+executable/library, and even compiler options. This has been on my todo
+list for a long time but I never got the time to come back to it.
+</p><p>
+The other winemaker drawback is that it's not up to date with regard to
+all the changes that have taken place in the Winelib build
+process. So you may need to update winemaker first (hint: look at
+how Wine compiles its libraries and see what winemaker's makefiles do
+differently).
+</p><p>
+I am less familiar with the other approach. But basically it consists in
+first getting the application to compile with MinGW, which implies
+writing MinGW compatible makefiles. To ease the pain you might be able
+to generate the makefiles from Visual C++ projects and you should even
+be able to use winemaker to fix your sources (winemaker
+--nogenerated-files). Then a very small change to the makefiles to use
+the winegcc tool developed by Dimitrie O. Paun will give you a Winelib
+application.
+</p><p>
+One advantage of this approach is that you can then use the same
+makefiles to build on Windows using MinGW, and to build a Winelib
+executable on Unix (though that's not very useful if you want to use
+another compiler on Windows). Also the build procedure won't go through
+all the mutations that the normal Wine makefiles went through.
+</p><p>
+The big drawback of this approach is that currently you cannot use it to
+generate dlls so it's quite limiting. But once that limitation is solved
+it would definitely be the best approach for MinGW-based / open-source
+projects. Whether it's the best approach for projects not based on MinGW
+will depend on how much work it is to generate the makefiles...
+</p><p>
+I think that ultimately the best solution is to modify winemaker so it
+generates MinGW compatible makefiles, and so that it supports Visual C++
+project files.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ I've never read through a .dsp file.  Are they very complicated?
+</p></question>
+
+<answer><p><i>Francois:</i>
+Not really. In particular they are regular text files which makes it
+easy to parse them.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+Have you actually ported an application using Winelib?
+</p></question>
+
+<answer><p><i>Francois:</i>
+I worked a lot on sample applications found in the Petzold programming
+books. I used them to develop winemaker and to fix the Wine headers. I
+believe initially only 30% of them would compile and in the end more
+than 90% compiled out-of-the-box after a simple winemaker run.
+</p><p>
+I also got the MFC library to compile but that required some tweaking of
+the MFC itself, mostly to compile out those parts that used
+functionality not implemented in Wine. Then I tested the MFC library
+with some simple applications but I did not get to port any complex MFC
+application.
+</p><p>
+CodeWeavers used Winelib to port MusicMatch Jukebox 5 and was also
+involved in the Kylix development which was a Winelib port too. Kylix
+was pretty interesting because it mixed Winelib and QT components in a
+single application. But I did not get involved very much in these
+projects.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+When did you start working for CodeWeavers?
+</p></question>
+
+<answer><p><i>Francois:</i>
+I started working for CodeWeavers in summer 2000. I'm doing a bit of
+everything. Obviously I do some Wine development, and I have also done a
+lot of work on our CrossOver Plugin.
+</p><p>
+I think one of the main strength of our CrossOver products is that they
+make it easy to run Windows applications, and that they integrate really
+well with the user's KDE/Gnome desktop environment. But there is still
+room for improvement so lately I have mostly been working on these
+aspects: making CrossOver even easier to use, more flexible and
+powerful, and keeping up with the desktop evolution (for instance each
+new Linux distribution changes the way menus work :-( ).
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ There's been rumors of a new CrossOver Plugin being released.  Is this
+ one based on the LGPL'ed version of Wine? 
+</p></question>
+
+<answer><p><i>Francois:</i>
+Yes, there is a new version of CrossOver Plugin in the works.
+When it comes out it may not look like a big revolution but to us
+it's a pretty big deal.
+</p><p>
+Due to historical reasons CrossOver Plugin and CrossOver Office
+currently have completely separate codebases. In particular CrossOver
+Plugin is based on the pre-LGPL Wine which makes it obsolete in Wine's
+fast-evolving world. So the big deal for us is that the new CrossOver
+Plugin uses the same codebase as CrossOver Office, including a Wine tree
+that is less than a month old. Hopefully this will mean less work for us
+and a more stable CrossOver Plugin with more features for our users.
+Once we have rooted out all the regressions that is...
+</p></answer>
+
+
+
+
+
+
+<question><p><i>BV:</i>
+ You mentioned integration with the desktop.  How important do you think
+ that is for Wine?  I think you could easily argue that it's something
+ for the distributions to worry about, after all, they're the ones
+ screwing up the menus.
+</p></question>
+
+<answer><p><i>Francois:</i>
+ I think desktop integration is very important to end-users. End-users
+ want to solve the task at hand and will try to select the best tool for
+ the job. If the fact that some of them are made for Windows makes their
+ behavior so inconsistent with the other tools that they become awkward
+ to use, then users won't use them. In a way Wine will have failed to
+ reach its goal.
+</p><p>
+ But it's also possible that some usability problems are best solved at
+ the distribution level rather than at the Wine level. Integration with
+ the system-tray is a clear case where we must add the required support
+ to Wine. In the case of menus it's not so clear cut. We need mechanisms
+ in Wine -- and we have them, see winemenubuilder and wineshelllink --
+ but part of the problem can also be solved at the distribution level or
+ at the packaging level.
+</p><p>
+ For instance Debian provides a generic menuing system that makes it
+ possible to create menus for whatever window manager the user has
+ installed. A unique menu declaration will create a menu for fvwm,
+ windowmaker, etc. Even Gnome and KDE are supported but the menus end up
+ in an awkward place which makes them relatively worthless. Mandrake uses
+ that system too... but users may bypass it to use the regular KDE menus
+ while RedHat and other distributions don't support this system at all.
+ And Gnome 2 has abandoned the notion of hierarchical menus entirely!
+</p><p>
+ Because with CrossOver we have to offer a polished product with great
+ desktop integration, we have to deal with each menuing system
+ individually. But
+ in my opinion
+ it would not make sense for Wine developers to
+ spend so much time on it. In fact it does not make sense for any Linux
+ developer to have to spend so much time on this mess. It's a case where
+ we (and here I mean the Linux community) clearly need a
+ cross-distribution cross-desktop standard.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+ Is there anything that could be easily done to improve Wine's usability?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ Packaging Wine to minimize how much users have to deal with
+ configuration issues is pretty important. For instance users should not
+ have to manually tell Wine which sound driver (OSS, Alsa, aRts, etc) to
+ use. If that cannot be determined automatically, then the Linux
+ distributions should leave hints that can be used by applications (Wine,
+ xmms, mplayer, etc).
+</p><p>
+
+ But in the long term the best way to improve Wine's usability is to keep
+ improving Wine so applications install and run without trouble. Because
+ as long as Wine cannot run the application a user needs, Wine is not
+ usable to that user.
+</p></answer>
+
+
+
+
+
+
+<question><p><i>BV:</i>
+ Is there anything you wish Wine could do, but can't?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ I wish Wine would take advantage of Xv. Xv is an X extension that makes
+ it possible to offload video scaling and YUV conversion to the graphics
+ card. So Xv support would really help for Windows multimedia player such
+ as QuickTime, Windows Media Player but also DVD/DivX players.
+</p><p>
+ It would also be great if it could provide better multi-user support.
+ The problem currently is that if you have multiple users they must each
+ have their own .wine directory. Otherwise there would be conflicts when
+ trying to access the registry. You would also have permission problems
+ or no access control at all, etc. But solving these issues would
+ require pretty big architectural changes and is very far off. There are
+ more important things to work on right now.
+</p><p>
+I would also like unmanaged windows to work better, desktop mode to work
+like one would expect and better support for Alsa and aRts.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ What area do you think needs the most development right now?
+</p></question>
+
+<answer><p><i>Francois:</i>
+It's hard to say as it really depends on what you want Wine to do.
+</p><p>
+Direct3D was a big hole in Wine's capabilities. I'm not playing games so
+I have not had a chance to test the new code. But from my neophyte's
+point of view, it certainly looks like there is a lot of great work
+being done in that area. I hope it will continue that way.
+</p><p>
+If your goal is to have Wine run more office-style applications, then
+improving COM/DCOM so we depend less on the native ole* dlls is probably
+more important (but certainly much less interesting to most).
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ That's true, there's really two different areas to focus on - the
+ business users versus home users.  On the one hand you've got someone
+ who needs to run MS Office and then there's the guy trying to run
+ KaZaA at home.
+</p></question>
+
+<answer><p><i>Francois:</i>
+ It's more than just office versus home users. A secretary will mostly
+ use Microsoft Office and related applications, a graphics designer will
+ use Phostoshop &amp; co, while an engineer may use AutoCAD. Similarly a
+home
+ user that uses Quicken may not be using the same applications as a
+ gamer. So I think a more useful way to categorise users is by activity /
+ task, with each user drawing applications from two or three categories.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+  Do you think there's any applications Wine needs to focus on
+ supporting?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ If we are to focus on specific applications (and given the distributed
+ nature of open-source development that's somewhat unlikely), then the
+ best targets are the most popular applications, the likes of MS Office,
+ MS Money, CorelDraw, etc. These are the applications that will bring the
+ most users to Wine, and some percentage of them are bound to contribute.
+ These are also the applications that will bring the most respectability
+ to Wine, which leads to people taking Wine more seriously, and
+ eventually either deploy it or be willing to fund its development.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Conversely, are there any areas Wine should just give up on?
+ For instance,
+ there's been talk of integrating a browser into Wine.  Should that idea
+ just be abandoned?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ The only area that I think Wine should avoid is server applications.
+ This is an area where Unix is pretty strong and often has better
+ solutions that Windows. Furthermore I think it does not make sense to
+ run such applications on Wine given its level of development.
+</p><p>
+ Concerning the browser issue, I don't really know. I'm not too keen on
+ integrating a browser in Wine but it's true that many applications
+ depend on Internet Explorer. So I guess it's something we will have to
+ deal with sooner or later.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+ Do you ever wish there were just more developers?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ I think Wine is a very
+ important open-source project, not just for the success of Linux, but
+ also for the greater good. If we rank open-source projects by
+ importance, then Wine is definitely right there with the Linux kernel,
+ KDE, Gnome or Mozilla. Yet Wine has a much smaller developer base.
+ Despite this handicap it has made enormous progress, but it would still
+ be great to have as many developers as some of these other projects.
+</p><p>
+ I have tried to find ways to improve the appeal of Wine. That's the idea
+ behind the 'Why Wine is important page?' and the task lists for new
+ developers. But I am not much of a marketer so I'm probably not the best
+ person for this.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ I don't think many people involved with Wine are good at marketing, but
+ I also think great strides have been made in the past year or so.  Is
+ there anything you think Wine should be doing to promote itself?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ I can't point to anything specific, just throw a couple ideas out
+ there.
+</p><p>
+ The web site is certainly a major aspect of Wine's perception. After all
+ it's most likely the first thing potential Wine users see. From that
+ point of view I think we have made lots of progress.
+</p><p>
+ While Wine is relatively well-known, I think there are still a lot of
+ misconceptions about Wine and many people who don't understand its
+ importance.  So, 'marketing-wise', fighting these misconceptions and
+ explaining the importance of Wine should be our priority. How to do that
+ is a harder issue. As a start we have the following two pages on the web
+ site:
+<ul>
+   <li><a href="http://www.winehq.org/?page=why">
+  Why Wine is so important</a></li>
+
+   <li><a href="http://www.winehq.org/?page=myths">
+  Debunking Wine Myths</a></li></ul>
+</p><p>
+ But it's likely only converts read these pages. Maybe offering to make a
+ presentation about Wine to your local LUG could help. For instance I
+ addressed some of these issues on the presentations I made:
+   <a href="http://www.lugod.org/presentations/crossover/">
+  CrossOver and Wine</a>
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ I think a lot of Wine is pretty daunting.  It takes a fair amount of
+ knowledge of both Unix and Windows tools/concepts in order work on
+ it.  Or is that a complete misconception?  Could a Windows developer
+ sit down with something like KDevelop and hack on notepad?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ I don't know about KDevelop but a developer should be able to take
+Visual C++ and hack on notepad on Windows. That's not true of all of
+Wine of course.
+</p><p>
+It's true that Wine can be pretty daunting. Also, the traditional
+approach -- try to run an application and try to fix the first bug you
+hit -- has its share of flaws. Besides your skill-level and
+perseverance, whether you succeed or abandon in disgust depends a lot on
+how hard the bug happens to be: whether it's an interprocess messaging
+problem or a missing NULL pointer check on the first line of a Windows
+API for instance.
+</p><p>
+But I think that, like any large project, there are both easy and hard
+tasks. The (not so easy) trick is to make it simple for potential
+contributors to find a task they can tackle. We still have not reached
+this nirvana but a lot of progress has been made already, especially
+thanks to the last web site update. Particularly relevant are the
+following pages:
+ <ul>
+   <li><a href="http://www.winehq.org/?page=contributing">
+  Contributing to Wine</a></li>
+
+   <li><a href="http://www.winehq.org/?page=todo_lists">
+  To Do Lists</a></li>
+
+   <li><a href="http://www.winehq.org/?page=fun_projects">
+  Fun Projects</a></li>
+
+   <li><a href="http://www.winehq.org/?page=janitorial">
+  Janitorial Projects</a></li></ul>
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Last year at Wineconf you gave a presentation on regression testing.
+ Since then, the test suite has gotten a lot bigger. Could you explain
+ a little bit about how regression testing works in Wine? 
+</p></question>
+
+<answer><p><i>Francois:</i>
+Since then the regression test suite has been renamed to the conformance
+test suite. That's because the reference is not the buggy behavior of
+old Wine revisions, but the behavior of Windows. That is, its goal is to
+make sure that Wine behaves just like Windows. In other words that
+Wine's behavior conforms to that of Windows.  Of course it also allows
+us to detect when we introduce a bug so it also performs well as a
+regression test suite.
+</p><p>
+Here's how it works. For each dll we create a tests subdirectory and
+start writing C code that tests the APIs exported by that dll. The tests
+are typically split into a few files, with each file testing a specific
+area of the functionality exported by the dll. For each group of tests
+we create a file and an entry point. For instance:
+</p><p>
+<ul><code>
+START_TEST(scanf)<br />
+{<br />
+    int res;<br />
+    sscanf("42", "%d", &amp;res);<br />
+    ok(res==42, "sscanf failed. Got %d instead of 42", res);<br />
+}</code></ul>
+</p><p>
+When placed in a file called 'scanf.c', the above declares a group of
+tests called 'scanf', i.e. really just a function. That function does a
+single test which is to make sure sscanf (e.g. from the msvcrt dll)
+correctly parses the string 42. Of course one can build more complex
+tests by having multiple functions, etc. The Wine build system then
+turns these into a Winelib application, one per dll being tested. 'make
+test' also runs these applications and if any of the tests fails, the
+Winelib application print an error message and causes 'make test' to
+fail.
+</p><p>
+You can also go into a specific test directory and run just a group of
+tests. For instance, for the msvcrt library we have tests for the
+file APIs and scanf. Typing 'make scanf.ok' will run just the scanf
+tests, while 'make file.ok' will run just the file API tests.
+</p><p>
+For more details about writing Conformance tests, see:
+<a href="http://www.winehq.org/docs/wine-devel/testing">
+http://www.winehq.org/docs/wine-devel/testing</a></p>
+</answer>
+
+
+
+
+<question><p><i>BV:</i>
+  Do you think it works well? Are there any changes to it
+ you'd like to see?
+</p></question>
+
+<answer><p><i>Francois:</i>
+ 
+I think the framework is pretty good. It has a couple of weaknesses for
+cases where you have to test file APIs because you have to make sure to
+cleanup after yourselves. Otherwise, if the test fails and leaves a file
+behind, it could cause the next run to fail long after the bug has been
+fixed. It can also be tricky to write networked or multi-process tests.
+But it's really not clear how we could modify the framework to make
+these cases really simpler. At least in its current form, the testing
+framework is simple and thus very easy to grasp which is good.
+</p><p>
+One thing it needs is more testing on Windows. Apparently most of the
+tests a written on Linux using Wine. That's certainly to be expected
+since that's exactly what most Wine contributors are using..
+Unfortunately it means the tests tend to just describe how Wine behaves,
+not how it is supposed to behave. This can be counterproductive if for
+some reason a developer modifies one of the tested API and realises it
+no longer passes the tests. He may then spend a lot of time trying to
+tweak the new algorithm to pass the test while in fact it is the test
+that was wrong and not the new implementation!
+</p><p>
+This is why it is very important to verify the correctness of these
+tests by running them on Windows, and preferably, at least one Win9x and
+one NT, 2000 or XP flavor. Unfortunately that's a bit harder than just
+running them in Wine and is not as well documented. In particular, when
+compiling them on Windows one tends to run into header
+incompatibilities, or even missing APIs on older platforms which
+prevents some tests from running entirely. The fixes are not very
+complex but can take some time. Also it requires actually having access
+to a Windows computer. So I think Wine needs a few dedicated volunteers
+who will regularly make sure the tests written by other Wine developers
+compile, run and are correct.
+</p></answer>
+
+<question><p><i>BV:</i>
+Thanks for the interview! 
+</p></question>
+
+<answer><p><i>Francois:</i>
+ Thanks for interviewing me. It's been an honor :-)</p></answer>
+
+</interview></kc>

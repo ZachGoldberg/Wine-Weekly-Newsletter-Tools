@@ -1,0 +1,584 @@
+<!--TITLE:[Fun Projects]-->
+<!--BLURB:[Please do these projects because they are fun.]-->
+
+  <h1 class="title">Fun Projects</h1>
+
+   <table align=right class=black style="margin: 20px; border: 1px solid black;">
+   <tr class=black><td>
+       <p><b class=inverse>Color Key</b></p>
+   </td></tr>
+   <tr class=white><td>
+       <p class=todo>To Do</p>
+       <p class=inprogress>In Progress</p>
+       <p class=works>Works</p>
+       <p class=done>Done</p>
+       <p class=abandoned>Abandoned</p>
+   </td></tr>
+   </table>
+
+   <p>This page is a collection of Wine related projects that come with
+   a big <strong>Cool!</strong> factor. I will be tracking their status
+   on this page, as they are also quite important from a practical
+   point of view. If you feel like working on any of these, please
+   let me know.</p>
+  
+  <a name="desktop_integration"></a><h2>Desktop Integration</h2>
+  
+  <p>Some of these range from fairly easy to somewhat difficult.  The payoff 
+  on these is high - how users interact with the desktop are some of the most 
+  visible parts of Wine.  Mike Hearn, who suggested most of these ideas, 
+  explained, these <i>"provide a good intro to Wine development for anybody 
+  who has been lurking on the sidelines and wants to get involved.  As usual no 
+  guarantees these patches would be accepted, that's Alexandre's call. 
+  But they probably would be, and you'll learn something while doing them!"</i></p>
+
+  <a name="my_documents"></a><h4 class=done>Create <i>My Documents</i></h4>
+  
+  <p> Map CSIDL_PERSONAL (My Documents) to the $HOME directory if mapped. 
+   See the _SHGetDefaultValue function in dlls/shell32/shellpath.c for an 
+   explanation of how to do this.  It would probably be ok to grab $HOME 
+   using the UNIX getenv() and then using the libwine APIs to map them to a 
+   Win32 path. If the mapping fails (i.e. $HOME is not accessible given the 
+   users dosdevices) then just fail with a WARN().
+  <ul>
+    <li>workers: <i>Juan Lang</i>
+    <li>status: <i><a href="http://www.winehq.org/hypermail/wine-cvs/2005/06/0043.html">committed</a> to the tree.</i>
+    <li>updated: Oct 3, 2005
+  </ul>
+ 
+  
+  <a name="desktop_directory"></a><h4 class=done>Map <i>Desktop</i> Directory</h4>
+  <p>This is similar to above but with some extra work. Map the contents of 
+   the ~/Desktop directory to the Windows virtual Desktop folder. In file 
+   pickers and Explorer, the filesystem root is represented by a magic Desktop 
+   folder. In real Windows this reflects the icons that are on the desktop and 
+   is mapped to a real directory at some arbitrary point in the filing system. 
+   On Linux we have no such virtual root, however it'd be nice if icons that 
+   appeared in the KDE/GNOME desktop were put in their proper place. That way 
+   users won't be confused by the file being on their desktop but unavailable 
+   from their Windows applications file picker.
+  <p>
+   This should not be too hard. The Desktop folder is implemented by a COM 
+   object in dlls/shell32/shfldr_desktop.c. You just need to read the 
+   $HOME/Desktop folder and put the items you find in there inside. Ignore 
+   .desktop files for now, they are a bit tricker to map and aren't especially 
+   useful for us anyway.
+  <p>
+   You also want to map CSIDL_DESKTOP in dlls/shell32/shellpath.c, 
+   _SHGetDefaultValue. See above.
+  <p>
+   Bonus points for fixing the desktop icon while you're at it (an arrow??!) 
+  <ul>
+    <li>workers: <i>Juan Lang</i>
+    <li>status: <i><a href="http://www.winehq.org/hypermail/wine-cvs/2005/06/0043.html">committed</a> to the tree.</i>
+    <li>updated: Oct 3, 2005
+  </ul>
+ 
+  
+  <a name="icon_themes"></a><h4 class=todo>Use Icon Themes</h4>
+  <p> The freedesktop.org icon theme specification shows us how to find icons
+   for many different types of things. Implement support for loading and
+   using the following icons from the icon theme (it should be OK to use
+   native libraries for this like GdkPixbuf, just fall back to the compiled
+   in defaults if it's missing):
+  <ul>
+   <li> folder</li>
+   <li> desktop</li>
+   <li> computer</li>
+   <li> unknown document</li>
+   <li> any others??</li></ul>
+  <p>  
+   Don't do file types, as native icon&lt;-&gt;file type association is done by
+   mime types not extensions, and it'd make our file dialogs even slower than
+   they already are.
+  </p><p>
+   You may be tempted to use e.g., libpng to implement this. Don't! Use
+   GdkPixbuf instead, stock icons are allowed to be in many formats including
+   SVG.
+  </p><p>
+   Actually it's probably easier to use the new GTK+ APIs to implement this,
+   that takes care of not only rendering the image to a raw bitmap you can
+   then convert to an HICON, but it also implements the icon lookup algorithm
+   for you.  In future it'll probably also implement some fancy caching
+   mechanism to reduce memory overhead. Might as well get these benefits
+   easily!
+
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Dec 21, 2004
+  </ul>
+ 
+  
+  <a name="xdg_menu"></a><h4 class=todo>XDG Menu Support</h4>
+  <p>Try updating the menu mapping code to support the new XDG menu
+   specification. Don't bother trying to make this work everywhere, it's a
+   total nightmare. Just try supporting the new standards. Be warned: not
+   every desktop/distro supports this yet!
+  </p><p>
+   This one might be quite hard.
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Dec 21, 2004
+  </ul>
+ 
+  
+  <a name="winebrowser"></a><h4 class=todo>Improve winebrowser Script</h4>
+  <p>Try improving the winebrowser script to take into account the user's
+   preferred applications. At the moment it just tries every browser it
+   knows about in a hard coded order. Hint: in modern GNOME desktops you can
+   use the "gnome-open" program to make this automatic. There is a KDE
+   equivalent (<tt>kfmclient openUrl</tt>).
+
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Dec 21, 2004
+  </ul>
+ 
+  
+  <a name="screensavers"></a><h4 class=todo>Integrate Windows Screensavers</h4>
+  <p>Integrate Wine with XScreensaver, so installing Win32 screensavers makes
+   them automatically appear in the list. You may need to write patches for
+   xscreensaver to make this really slick.
+  </p><p>Bonus points for getting xscreensaver to respect the registry
+   setting <tt>LowPowerActive</tt>.
+
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Dec 21, 2004
+  </ul>
+ 
+  
+  <a name="trash"></a><h4 class=todo>Take Out the Trash</h4>
+  <p> Steven Edwards suggested, <i>"add support to use the draft FreeDesktop 
+   trashcan spec."</i>
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Dec 21, 2004
+  </ul>
+ 
+  
+  <a name="native_configurations"></a><h4 class=todo>Integrate the Registry With Native Configurations</h4>
+  <p> Implement a bridge between the Windows registry and the GNOME/KDE
+   configuration systems. If you set the wallpaper in a Windows app
+   it should reflect on your real desktop. This is useful for programs
+   like the WebShots desktop.  This could be done by extending the 
+   wineexplorer 
+ 
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Dec 21, 2004
+  </ul>
+ 
+  
+  <a name="default_registry"></a><h4 class=todo>Configure Some Default Registry Entries</h4>
+  <p>Stefan D&#246;singer suggested, "probably a bigger task: Look for common 
+   native applications and write entries for them into the registry. For 
+   example, I manually added an entry for KMail in \\Machine\\software\\clients 
+   and now I can select Kmail as the default Mail application in the internet 
+   options control panel (Which is created when Internet Explorer is installed).
+   My registry entries look like this:</p>
+   <ol><code>
+   [Software\\Clients\\Mail\\Kmail] 1100110998<br />
+   @="KMail"
+   <br /><br />
+   [Software\\Clients\\Mail\\Kmail\\Protocols\\MailTo] 1100110998<br />
+   @="URL:MailTo Protocol"<br />
+   "EditFlags"=hex:02,00,00,00<br />
+   "URL Protocol"=""
+   <br /><br />
+   [Software\\Clients\\Mail\\Kmail\\Protocols\\MailTo\\DefaultIcon] 1100110998
+   <br />
+   @="C:\\Program Files\\Opera\\opera.exe,1"
+   <br /><br />
+   [Software\\Clients\\Mail\\Kmail\\Protocols\\MailTo\\shell\\open\\command] 
+   1100110998<br />
+   @="\"Z:\\usr\\kde\\3.3\\bin\\kmail\" \"%1\""
+   <br /><br />
+   With Z: mapped to /
+   </code></ol>
+   <p>I selected KMail as the default Mail application, and when I open an Mail
+   Address in MSIE kmail pops up. The same happens when I enter a mailto: 
+   address in Task Manager->New task.</p>
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Dec 21, 2004
+  </ul>
+ 
+  
+  <a name="virtualization"></a><h2>Virtualization Projects</h2>
+  Virtualization environments tend to stress the host considerably,
+  due to the inherent impedance mismatch between the two. As such,
+  they provide very good (and tough) test cases. Having such
+  virtualization environments run within each other is an important
+  milestone in the lives of said projects, and not without good
+  reason: it is a remarkable technical feat that requires a great
+  deal of maturity.
+
+  <h3>Platforms</h3>
+  <a href="http://www.winehq.org">Wine</a> provides Windows in Linux; 
+  <a href="http://www.cygwin.com">Cygwin</a> provides Linux in Windows. 
+  Why not run one inside the other?
+
+  <p>NB: having them both work would allow us to nest them arbitrarily,
+	 which would be <em>uber</em>cool.
+
+  <a name="cygwin_under_wine"></a><h4 class=inprogress>Cygwin under Wine in Linux</h4>
+  This provides an a good test case for Wine. It is tough, but we do have
+  the Cygwin source code, and we have a good chance to understand why it
+  does not work. 
+  This task is tracked as <a href="http://bugs.winehq.org/show_bug.cgi?id=443">Bug #443</a>
+  <ul>
+    <li>worker: <a href="mailto:spetreolle@yahoo.fr">Sylvain Petreolle</a>
+    <li>status: it seems that all internal commands work
+    <li>updated: Oct 5, 2003
+  </ul>
+ 
+  <a name="wine_under_cygwin"></a><h4 class=inprogress>Wine under Cygwin in Windows</h4>
+  This will provide a good test case for Cygwin, but will help Wine's 
+  portability. Moreover, the ability to run Wine code under Windows
+  without a reboot, can help with testing sometimes.
+  This task is tracked as <a href="http://bugs.winehq.org/show_bug.cgi?id=273">Bug #273</a>
+  <ul>
+    <li>worker: <a href="mailto:davidf@sjsoft.com">David Fraser</a>
+    <li>status: almost compiles
+    <li>updated: Nov 18, 2002
+  </ul>
+
+
+  <a name="runtimes"></a><h2>Runtimes</h2>
+  Over the past 10 years, a number of portable runtimes have been created.
+  Why not use them in a way they weren't meant to be used? That is, compile
+  and run their Windows port on Linux under Wine. For this to happen, they
+  need to have a MinGW port on Windows (that is, they need to support 
+  building under MinGW).
+
+  <a name="jvm"></a><h4 class=todo>Java Virtual Machine</h4>
+  There are three noteworthy Java implementations:
+  <dl>
+    <dt><a href="http://java.sun.com/j2se/">Sun's JVM</a></dt>
+    <dd>Unfortunately, the Windows port requires MSVC to build. How ironic.</dd>
+    <dt><a href="http://www.ibm.com/developerworks/java">IBM's JVM</a></dt>
+    <dd>I can't seem to be able to find the sources for this one. Help!</dd>
+    <dt><a href="http://www.kaffe.org">Kaffe</a></dt>
+    <dd>This one seems to have ports to Cygwin and MinGW. Good candidate for a port.</dd>
+  </dl>
+
+  <a name="perl"></a><h4 class=inprogress>Perl</h4>
+  Any Perl monger up for this?
+  <ul>
+    <li>worker: <a href="mailto:sky@nanisky.com">Arthur Bergman</a>
+    <li>status: in planning stages
+    <li>updated: Feb 16, 2004
+    <li>homepage: <a href="http://aspn.activestate.com/ASPN/Downloads/ActivePerl/Source">ActivePerl</a>
+  </ul>
+  <strong>Update:</strong> The ActivePerl branch support building under both Cygwin and MinGW.
+  This is a very good test for <tt>winegcc</tt>. Unfortunately, the MinGW makefile uses
+  backslashes as fileseparator, so it will take a bit of work to get working under Linux.
+  Why do people use backslash, when the forward slash works on both Windows and Linux?
+
+  <a name="python"></a><h4 class=todo>Python</h4>
+  Not very exciting, but still interesting port. It's a good test for the
+  non graphic APIs, such as threading, files, etc.
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: almost builds
+    <li>updated: Jan 6, 2003
+    <li>homepage: <a href="http://www.python.org">www.python.org</a>
+  </ul>
+  <strong>Update:</strong> Configure the packages like so:
+  <pre>
+  CC=winegcc CXX=wineg++ configure --with-suffix --without-threads
+  </pre>
+  Unfortunately, configure gets confused about the executable extension,
+  and needs to be hacked manually to suppress it. It still determines
+  that an .exe extension is needed, so the definition of the EXE variable
+  in the resulting Makefile must be manually adjusted. Things compile
+  fine, but linking unfortunately fails. <tt>winegcc</tt> needs more work
+  to support the <tt>-Xlinker</tt>, and <tt>-shared</tt> options.
+  <br>
+  <strong>Update:</strong> Here is an
+  <a href="http://uucode.com/texts/python-mingw/python-mingw.html">article</a>
+  containing a log of successful compilation of Python 2.2 using MinGW.
+
+  <a name="toolkits"></a><h2>Toolkits</h2>
+  While some have focused on portable runtimes (see above), others tried
+  to create portable UI toolkits. Due to the large UI component of the
+  Win32 API, these are a perfect test for Wine.
+
+  <a name="qt"></a><h4 class=todo>QT</h4>
+  Imagine we compile QT under Wine, and then we get the entire <a href="http://www.kde.org">KDE</a>
+  compiled and running under Wine! How cool would that be?
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: initial investigation
+    <li>updated: Jan 6, 2003
+    <li>homepage: <a href="http://www.trolltech.com/products/qt/windows.html">www.trolltech.com/products/qt/windows.html</a>
+  </ul>
+  <strong>Update:</strong> It seems that both Qt3 and Qt4 can be compiled with MinGW.
+  This should make a Winelib port feasible.
+
+  <a name="gtk"></a><h4 class=todo>Gtk+</h4>
+  This is maybe a little less interesting than the others, as Gtk+ does not use
+  the native widgets when ported to Windows. Instead, it uses it's very thin
+  abstraction layer (gdk) to do the drawing, all else is build 'in house'.
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Jan 6, 2003
+    <li>homepage: <a href="http://wingtk.sourceforge.net/">wingtk.sourceforge.net</a>
+  </ul>
+
+  <a name="wxwindows"></a><h4 class=done>wxWindows</h4>
+  A perfect test case for Wine's headers, and MinGW emulation! Wouldn't it be cool to have
+  the Windows controls available on Linux too? &lt;duck/&gt; :-)
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: compiles, links, and runs!
+                The <a href="http://www.winehq.org/hypermail/wine-devel/2003/01/0153.html">patch</a>
+		has been accepted in the official wxWindows tree!
+    <li>updated: Jan 7, 2003
+    <li>homepage: <a href="http://www.wxwindows.org">www.wxwindows.org</a>
+  </ul>
+  The first try at porting wxWindows to Wine was attempted by 
+  <a href="mailto:roebling@sun2.ruf.uni-freiburg.de">Robert Roebling</a>. 
+  His work was later on improved by <a href="mailto:julian.smart@btopenworld.com">Julian Smart</a>.
+  Unfortunately, it never seemed to have reached a fully functional stage, and
+  seems to have started bitrotting as a result. Due to numerous bugs in Wine
+  at the time, they were forced to add multiple ugly hacks to the wxWindows code.
+  <p>
+  My current porting effort is a brand new approach, that builds on the MinGW port of wxWindows.
+  In theory, wxWindows should work with just a few lines changed in the makefile. Practice is however
+  a bit different, and a bit more work is required. That being said, I will try to minimize to the 
+  absolute minimum the changes required to wxWindows (unless such changes would correct problems). 
+  Rather than working around Wine bugs, I am fixing them as I go along, and submit them for integration
+  in the Wine tree.
+
+  <a name="fox"></a><h4 class=inprogress>FOX Toolkit</h4>
+  Yet another nice cross-platform UI toolkit.
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: compiles, but does not link.
+    <li>updated: Sep 1, 2003
+    <li>homepage: <a href="http://www.fox-toolkit.org">www.fox-toolkit.org</a>
+  </ul>
+  This one compiled with just a couple of trivial fixes to Wine's headers, a few portability
+  fixes to their source, and just one or two Wine specific tweaks.
+
+  <h2><a name="source"></a>Source portability</h2>
+  We should be able to compile Wine with various C compilers.
+
+  <a name="msvc"></a><h3 class=inprogress>Microsoft's Visual C</h3>
+  The most popular compiler in the Windows Universe. Also known as Visual C++,
+  Visual Studio, or MSVC. You can download a free version of the command line
+  compilers from <a href="http://msdn.microsoft.com/visualc/vctoolkit2003/">msdn.microsoft.com/visualc/vctoolkit2003</a>.
+  The Wine test programs do seem to build with Visual C (see posts by
+  <a href="http://www.kerneltraffic.org/wine/wn20031003_190.html#3">Jakob
+  Eriksson</a> and <a href="http://kt.earth.li/wine/wn20030228_159.html#3">Dan
+  Kegel</a>). Wine itself, does not build under MSVC currently.
+    <ul>
+    <li>worker: <a href="mailto:ps@leissner.se">Patrik Stridvall</a>
+    <li>status: most tests work, DLLs are pretty bad though
+    <li>updated: Nov 29, 2002
+  </ul>
+
+  <a name="bcc"></a><h3 class=todo>Borland's bcc</h3>
+  Borland has released it's C++ Compiler 5.5 as freeware. The compiler is the core of 
+  C++Builder, and is capable of creating fully functional C++ applications from the command line.
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: May 26, 2003
+    <li>homepage: <a href="http://www.borland.com/bcppbuilder/freecompiler/">www.borland.com/bcppbuilder/freecompiler</a>
+  </ul>
+
+  <a name="wcc"></a><h3 class=todo>Watcom's cc</h3>
+  Sybase acquired the compiler from Watcom, and released it as Open Source software.
+  Currently it is being ported to FreeBSD and Linux, and a Windows version is readily
+  available.
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Jan 6, 2003
+    <li>homepage: <a href="http://www.openwatcom.org">www.openwatcom.org</a>
+  </ul>
+
+  <h3 class=abandoned>Sun's cc</h3>
+  <ul>
+    <li>worker: <a href="mailto:ps@leissner.se">Patrik Stridvall</a>
+    <li>status: <i>older version that didn't support stdcall. I abandoned that project years ago...</i> 
+    <li>updated: Dec 1, 2002
+  </ul>
+
+  <a name="others"></a><h2>Others</h2>
+
+  <a name="printer_driver"></a><h4 class=todo>Make a ghostscript driver that uses Wine to print</h4>
+  When we are going to support native Windows printer
+  drivers, this is going to allow ghostscript to use
+  any of the existing gazillion printer drivers out there.
+  This is still a virtualization project, but at the printing
+  subsystem level. The complementary project (use ghostscript
+  to print from Wine) has been implemented, and working just fine.
+
+  <a name="gimp"></a><h4 class=todo>A Wine based GIMP plugin for using  Photoshop plugins</h4>
+  Suggested by <a href="mailto:meissner@suse.de">Marcus Meissner</a>:
+  Investigate if we could make a WINE based GIMP plugin which can handle
+  Photoshop plugins.
+
+  <a name="wgl"></a><h3 class=inprogress>wined3d use wgl</h3>
+  Make wined3d (or d3d8) use wgl (windows opengl) instead of glx. (just search for glx commands and
+  replace then with the wgl equivalents) Doing so would enable wine's d3d to run on windows in place of
+  the windows driver and without the rest of WINE which would greatly help in debugging. It would also 
+  allow wined3d to use the wgl implementation in wine.</p>
+  <ul>
+    <li>workers: <i>Aric Cyr</i>
+    <li>status: <i>debug phase</i>
+    <li>updated: Jan 12, 2006
+  </ul>
+
+  <a name="misc"></a><h2>Miscellaneous Projects</h2>
+  This is a catch-all category for all sort of strange (and sometimes cute) ideas.
+
+
+  <a name="cross"></a><h3 class=inprogress>Cross referencing the Windows executables and libraries</h3>
+  <p>The idea is to write a Perl script that analyzes the Windows dlls and executables of a 
+  regular Windows installation and cross references them. This would generate Web pages 
+  telling you which API is used by which program/library and reciprocally.
+  Analyzing the import/export section of PE executables is quite simple: it's just a matter 
+  of running dumpbin (part of Visual C++) or pedump (open source) on them and then parsing 
+  the resulting text file. This already being done with the wpbtk toolkit.
+  <ul>
+    <li>worker: <a href="mailto:compsol@ptd.net">Dave Miller</a>
+    <li>status: Prototype <a href="http://home.ptd.net/~compsol">ready</a>
+    <li>updated: Apr 23, 2003
+  </ul>
+  <strong>Update:</strong>
+  Currently the script can make HTML maps of the dll imports.  I've been too
+  lazy to integrate the program that processed that into a table so
+  far.  :)  Right now it requires dumpbin (Visual C++)  I plan to add pedump
+  or winedump support so more people are able to use it.  It is also
+  analyzing the Wine .spec files to determine if each API has an entry and
+  reports whether it's a stub, unimplemented (not in spec files), etc.
+
+
+  <a name="check_which"></a><h3 class=inprogress>Check which APIs are missing for a given program</h3>
+  <p>The scripts that scan a Windows environment could be modified to restrict the scan to the dependencies 
+  of a given executable/set of executables. Then these results can be cross-referenced with the results 
+  of the above script to tell you which APIs this program is missing, what percentage they represent, etc. 
+  Reciprocally one can weight each API according to how often they are referenced in a given environment to 
+  produce an approximation of the likely hood that such an API will actually be called. Note that this would 
+  just be an approximation because we would miss all the dynamically loaded APIs and libraries 
+  (since we only scan the statically linked dynamic libraries). This would be an even more approximate 
+  measure of the likely hood that the program will work: even though a program references an API it may never call it, 
+  work even though this API does not work, or really depend on this API or even some undocumented aspect of this API. 
+  Still this may provide a better approximation of the completeness of Wine than just treating all APIs as equivalent.
+  <ul>
+    <li>worker: <a href="mailto:compsol@ptd.net">Dave Miller</a>
+    <li>status: Starting work <a href="http://www.winehq.org/hypermail/wine-devel/2003/04/0324.html">soon</a>.
+    <li>updated: Apr 11, 2003
+  </ul>
+
+  <a name="gdiplus"></a><h3 class=todo>Mono GDI+ Wrapper</h3>
+  <p>Microsoft GDIplus currently works on Wine already, however it might be faster if we can take advantage of the 
+     Mono project's <a href="http://svn.myrealbox.com/viewcvs/trunk/libgdiplus/">libgdiplus</a> implementation as 
+     it can use the Cairo vector graphics library or OpenGL as a backend. There are 4 efforts underway at this time 
+     to make a free gdiplus.dll replacement for Windows and one example is The Gimp for Win32. However they are still 
+     going to suffer from the same problem of being implemented on top of the GDI. And if we can use the Mono 
+     libgdiplus we just might end up with apps that render faster than on Windows.
+  <ul>
+    <li>workers: <i>Steven Edwards</i>
+    <li>status: <i>initial work has just started</i>
+    <li>updated: June 26, 2005
+  </ul>
+
+  <a name="dib"></a><h3 class=todo>GDI DIB Engine</h3>
+  <p>Integrate the GDI engine <a href="http://www.winehq.org/hypermail/wine-patches/2002/09/0250.html">contributed</a> by the 
+  <a href="http://www.transgaming.com">TransGaming</a> folks.
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: June 24, 2005
+  </ul>
+
+  <a name="wineconsole"></a><h3 class=todo>Wineconsole Copy &amp; Paste toolbar support</h3>
+  <p>The standard Windows console has Copy &amp; Paste toolbar icons.
+  Adding them to <tt>wineconsole</tt> would be a very nice project for 
+  someone who knows a bit about windows programming. This task is
+  tracked also in Bugzilla, as 
+  <a href="http://bugs.winehq.org/show_bug.cgi?id=1304">Bug #1304</a>.
+
+  <a name="explorer"></a><h3 class=inprogress>Wine Explorer</h3>
+  <p>A Windows Explorer replacement. People migrating from Windows would love it,
+  and it would provide a great testbed for our <tt>shell32</tt> DLL, as well as
+  some key controls such as the List-View Common Control.
+  <ul>
+    <li>worker: <a href="mailto:martin-fuchs_at_gmx.net">Martin Fuchs</a>
+    <li>status: <a href="http://www.sky.franken.de/explorer/index.html">active development</a>
+    <li>updated: Sep 9, 2003
+  </ul>
+  
+
+  <a name="winetest"></a><h3 class=done>Winetest Shell</h3>
+  <p>Would be nice to have a shell exe (sort of like the one provided by JUnit), 
+  that contains the little exes, extracts them in a temp dir one by one, 
+  runs them, and displays a nice progress bar, together with a list with messages. 
+  <ul>
+    <li>workers: <a href="mailto:jakob@vmlinux.org">Jakob Eriksson</a>,
+		 <a href="mailto:wferi@afavant.elte.hu">Ferenc Wagner</a>.
+    <li>status: <a href="http://www.winehq.org/hypermail/wine-cvs/2003/12/0051.html">committed</a> to the tree.
+    <li>updated: Dec 5, 2003
+  </ul>
+
+  <a name="compressed"></a><h3 class=todo>Compressed or Modified Executables</h3>
+  <p>Many applications are compressed with EXE packers or use other tricks to 
+  thwart those who would try to look inside them.  These applications typically 
+  crash or refuse to run if they think a debugger is being used.  The tests 
+  used generally involve taking advantage of some undocumented quirks in the API.  
+  It turns out that many of these tests fail with Wine.  This is often because 
+  Wine does not implement a feature the exact way the application expects.  There 
+  is some sample code available 
+  <a href="http://www.woodmann.com/crackz/Tutorials/Protect.htm">here</a> and 
+  additional information <a href="http://protools.anticrack.de/">here</a>.  
+  Getting this kind of code to run and give the correct results could help with 
+  other stubborn applications that depend on the same feaures.  
+  <ul>
+    <li>workers: <i>wanted</i>
+    <li>status: <i>to do</i>
+    <li>updated: Oct 22, 2003
+  </ul>
+
+  <a name="jscript"></a><h3 class=todo>JScript engine</h3>
+  <p>Implement jscript.dll.  Use Mozilla's 
+  <a href="http://www.mozilla.org/js/spidermonkey">SpiderMonkey</a>
+  to implement the 
+  <a href="http://msdn.microsoft.com/library/en-us/script56/html/scripting.asp">Windows scripting interfaces</a>
+   for the JScript COM object in 
+   <a href="http://msdn.microsoft.com/library/en-us/script56/html/js56jsoriJScript.asp">jscript.dll</a>. 
+   Figure out a way to deal with the differences between JScript and JavaScript.
+  <ul>
+    <li>workers: <i>wanted<i>
+    <li>status: <i>to do</i>
+    <li>updated: Mar 15, 2004
+  </ul>
+
+  <a name="colour"></a><h3 class=inprogress>Colour Management </h3>
+  <p>Implement mscms.dll, for 
+  <a href="http://msdn.microsoft.com/library/en-us/icm/icmstart_5i91.asp">Image Colour Management</a>,
+  using <a href="http://www.littlecms.com">Little CMS</a>.
+  mscms.dll is necessary to run some photography and desktop publishing software, such as 
+  <a href="http://www.phaseone.com">Phase One's Capture One</a>.
+  The functionality of mscms.dll seems to be defined by the 
+  <a href="http://www.color.org">International Color consortium</a>.
+  <ul>
+    <li>worker: <a href="mailto:hans@it.vu.nl">Hans Leidekker</a>
+    <li>status: about 25% complete
+    <li>updated: Mar 15, 2005
+  </ul>
+
+<p>&nbsp;</p>

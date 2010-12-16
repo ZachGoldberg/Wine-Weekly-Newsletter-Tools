@@ -1,0 +1,496 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="135" date="09/13/2002"/>
+
+<intro><p>This is the 135th release of the Wine's kernel 
+cousin publication. Its main goal is to distribute widely 
+what's going on around Wine (the Un*x Windows emulator).
+</p></intro>
+
+
+
+
+<stats posts="229" size="730" contrib="41" multiples="28" lastweek="21">
+
+<person posts="41" size="117" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="35" size="88" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="29" size="76" who="Dimitrie O. Paun &lt;dpaun@rogers.com&gt;" />
+<person posts="12" size="30" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="10" size="22" who="Andriy Palamarchuk &lt;apa3a@yahoo.com&gt;" />
+<person posts="8" size="23" who="Dimitrie O. Paun &lt;dimi@bigfoot.com&gt;" />
+<person posts="7" size="30" who="Martin Wilck &lt;Martin.Wilck@Fujitsu-Siemens.com&gt;" />
+<person posts="7" size="17" who="Shachar Shemesh &lt;wine-devel@sun.consumer.org.il&gt;" />
+<person posts="6" size="21" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="6" size="20" who="steve.lustbader@philips.com" />
+<person posts="6" size="13" who="Steven Edwards &lt;steven_ed4153@yahoo.com&gt;" />
+<person posts="5" size="11" who="David Laight &lt;david@l8s.co.uk&gt;" />
+<person posts="4" size="17" who="Michael Beach &lt;michaelb@ieee.org&gt;" />
+<person posts="4" size="10" who="Andreas Mohr &lt;andi@rhlx01.fht-esslingen.de&gt;" />
+<person posts="4" size="10" who="Carl Sopchak &lt;carl.sopchak@cegis123.com&gt;" />
+<person posts="4" size="9" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+<person posts="3" size="7" who="Roland &lt;roland@netquant.com.br&gt;" />
+<person posts="3" size="7" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+<person posts="3" size="6" who="Jon Griffiths &lt;jon_p_griffiths@yahoo.com&gt;" />
+<person posts="3" size="6" who="Sylvain Petreolle &lt;spetreolle@yahoo.fr&gt;" />
+<person posts="2" size="100" who="Salatiel-Robson Oliveira &lt;salatiel-robson.oliveira@serpro.gov.br&gt;" />
+<person posts="2" size="7" who="Ann and Jason Edmeades &lt;us@the-edmeades.demon.co.uk&gt;" />
+<person posts="2" size="7" who="Michael Stefaniuc &lt;mstefani@redhat.de&gt;" />
+<person posts="2" size="6" who="Jeff Smith &lt;whydoubt@hotmail.com&gt;" />
+<person posts="2" size="5" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="2" size="4" who="Duane Clark &lt;dclark@akamail.com&gt;" />
+<person posts="2" size="4" who="Igor Izyumin &lt;igor@mlug.missouri.edu&gt;" />
+<person posts="2" size="4" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="1" size="7" who="Stefan Leichter &lt;Stefan.Leichter@camLine.com&gt;" />
+<person posts="1" size="4" who="David Fraser &lt;davidf@sjsoft.com&gt;" />
+<person posts="1" size="4" who="Franky Van Liedekerke &lt;liedekef@pandora.be&gt;" />
+<person posts="1" size="4" who="Boris &lt;boris@thinovations.com&gt;" />
+<person posts="1" size="3" who="Fabian Cenedese &lt;Cenedese@indel.ch&gt;" />
+<person posts="1" size="3" who="Nick Capik &lt;ncapik@patriot.net&gt;" />
+<person posts="1" size="3" who="Vincent Beron &lt;vberon@mecano.gme.usherb.ca&gt;" />
+<person posts="1" size="2" who="Rolf Kalbermatter &lt;rolf.kalbermatter@citeng.com&gt;" />
+<person posts="1" size="2" who="o.b. &lt;ob_ok@gmx.net&gt;" />
+<person posts="2" size="3" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+<person posts="1" size="1" who="Per Nystrom &lt;centaur@netmagic.net&gt;" />
+
+</stats>
+
+<section 
+	title="Patch Submission Tips" 
+	subject="patches policy"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/09/0127.html" 
+	posts="18" 
+	startdate="09/09/2002"
+	enddate="09/10/2002" 
+>
+<topic>Project Management</topic>
+<topic>Patches</topic>
+
+<p>Dimi Paun decided to stir things up a bit
+concerning the patch submission process:
+</p><quote who="Dimitrie Paun"><p>
+There is something concerning submitting patches that bothers me
+to no end: inlining vs. attaching them.
+</p><p>
+I don't know about others, but for me 99/1 rule applies: I at least
+skim over 99% of the patches inlines in the message, whereas
+I bother to read at most 1% of the ones attached/tar.gzed/ziped.
+Maybe I'm an extreme case, but there's got to be more to it than
+my personal quirks.
+</p><p>
+If a patch is sent to wine-patches, it's sent there for peer review.
+If you don't want the review, send it to Alexandre directly, even
+though I suggest this is avoided as much as possible. However,
+it you do send it to wine-patches, please, *please* inline it!
+</p><p>
+What about a nice patch submission policy:
+<ul>
+   <li>unified diff only (required)</li>
+   <li> have a  decent subject (recommended)</li>
+   <li> a long description (optional, if the change warrants it)</li>
+   <li> a meaningful ChangeLog entry (required)</li>
+   <li> new files, if any, included in patch, diffed against /dev/null (required)</li>
+   <li> patch inlined at the end of the message (required)</li>
+   <li> one changeset per message</li>
+</ul></p><p>
+Most of these things are already followed by most people, with the
+exception of the inlining bit. Alexandre, what about you reject patches
+that aren't in this format with a pointer to these rules? All this is a
+matter of habit, and I think we'll all benefit if these rules are followed.
+</p></quote>
+
+<p>Alexandre opposed outright rejecting of patches:
+</p><quote who="Alexandre Julliard"><p>
+ I don't want to make it a strictly enforced rule, because I think
+ there is a risk of discouraging people, especially occasional
+ contributors. After you have spent hours tracking a bug and writing a
+ patch, it's already hard when the patch is rejected because it's
+ wrong, but if it gets rejected without anybody even looking at it
+ because you didn't use the proper format, that's very discouraging.
+ I think we should try to follow the network rule: be conservative in
+ what you send and liberal in what you accept.
+</p><p>
+ I do admit that it would be nice if frequent contributors could get
+ into the habit of making patches that are easier to read and apply.
+ I'll also note that I tend to deal first with patches that don't
+ require me to do MIME gymnastics, so these are less likely to end up
+ getting forgotten. Maybe that could provide some motivation...
+</p></quote>
+
+<p>Dimi pointed out his message applied more to regular contributors 
+and was really more of a <quote who="Dimitrie Paun">strongly desired
+set of rules</quote>.  Some people wondered how to handle the case of
+a new directory, but Alexandre said not to even worry about it,
+<quote who="Alexandre Julliard">
+ Simply diff the new files against /dev/null,
+ patch will create the needed directories automatically.</quote>  
+Patrik Stridvall mentioned he currently attached tar files to deal
+with that case.  Michael Stefaniuc mentioned that tar files were
+particularly inconvenient for him to deal with. </p>
+
+<p>Other people were against inlining patches because their mailers
+tended to wrap lines or change white space characters.  In particular, 
+Andriy Palamarchuk pointed out Yahoo's webmail tended to mess up
+patches.  For that, Jeff Smith suggested adjusting the 
+<quote who="Jeff Smith">
+"Screen Width" settings in "General Preferences"</quote>.  Most people 
+seemed to agree that patches attached as 
+plain text were okay since most mailers tended to inline it
+when viewed.  As far as compressing the text, everyone seemed to
+agree it was bad and the amount of bandwidth saved wasn't worth
+it. </p>
+
+<p>Eric Pouech pointed out a perl script in CVS that could be used as
+a wrapper to <code>cvs diff</code> to automate some of the process,
+<quote who="Eric Pouech">
+ FYI there's the tools/genpatch in the wine tools directory that handles
+ most of the hassle of patch generation (new files...)...
+ I did add a few more options... if someone's interested in them, let me
+ know</quote></p>
+
+<p>WineHQ's <a href="http://www.winehq.org/index.php?page=sending_patches">development
+page</a> outlines most of these procedures.</p>
+
+</section>
+
+
+
+
+
+
+
+<section 
+	title="Direct3D 8 Support" 
+	subject="Direct3D v8"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/09/0158.html" 
+	posts="12" 
+	startdate="09/10/2002"
+	enddate="09/11/2002"
+>
+<topic>Multimedia</topic>
+<p>Jason Edmeades put together some initial Direct3D work and
+wondered if he should submit it to wine-patches.  Thus far, all
+Direct3D support has been done by TransGaming and is available
+in their AFPL-licensed tree.  Jason wrote:</p>
+<quote who="Jason Edmeades"><p>
+What is the current state of affairs regarding DirectX (8) support in wine.
+With TransGaming producing a version which appears to work well from what I
+read on the Internet, what is happening about getting support for it in the
+wine tree - Is the intention to wait and see what TransGaming do?
+</p><p>
+The reason I ask - Not to start a political debate with pros and cons of
+TransGaming, but more because as a learning exercise with regard to 3d
+graphics, I started fiddling with Direct X 8 support and have some sample
+code which runs some simple Direct3D samples and most of a sequence of
+tutorials. (9 out of 11 work reasonably well).
+</p><p>
+I don't have a problem with the code remaining personal to me and probably
+archived, as I have learnt a lot by doing it (which was my original aim),
+but if it is agreed that adding directx 8 support completely different from
+the TransGaming code is ok, then I may try to submit some patches.
+</p><p>
+Note the current code is nowhere near ideal, so don't get your hopes up.
+Specifically, it exports X11DRV_get_client_window from X11DRV as a means of
+getting the X window from the HWND, which is not clean. It does not use a
+HAL (which is where the current ddraw code was starting to head), it calls
+all the opengl calls inline. I have only tested on one machine with one
+level of mesa (tough! that's all I have). It also has all the c parts in the
+d3d8 directory, completely separate (and in some cases duplicating code from
+the ddraw code), which may or may not be desired. I also don't have a clue
+about the configure tests and makefile.in, so I have just a basic structure
+which works enough for me. I'm also relatively certain I haven't necessarily
+used the highest performing code everywhere, I have done the best I could
+with my limited knowledge.
+</p><p>
+The way I look at it would be a starting point for others to work from. I
+could make a drop of the code on a website if anyone wants to see how bad it
+is first :-)
+</p><p>
+Anyway, thoughts please?
+</p></quote>
+
+<p>Alexandre was all for it, 
+<quote who="Alexandre Julliard">
+ We are not waiting for TransGaming code, we need to develop our own,
+ so by all means submit anything you like. Even if it's to hackish to
+ be included in the tree right now, it can serve as a starting point
+ for others.</quote></p>
+
+<p>Jason wrote back with a 
+<a href="http://www.winehq.org/hypermail/wine-devel/2002/09/0176.html">couple 
+questions</a> and ended with:</p>
+<quote who="Jason Edmeades"><p>
+ Finally Can anyone point me at VERY basic, free programs which use directx
+ 8.? - As examples, I was working through:
+<ul>
+ <li><a href="http://www.two-kings.de/tutorials/d3d03/d3d03.html">
+ http://www.two-kings.de/tutorials/d3d03/d3d03.html</a>  Tutorials 3->13, most
+ produce something except 9 and 13 although 7 is wrong</li>
+
+ <li><a href="http://www.codeguru.com/directx/UDirect3D8.html">
+ http://www.codeguru.com/directx/UDirect3D8.html</a> Lighting is wrong but it
+ sort of appears</li>
+
+ <li><a href="http://www.flipcode.com/tutorials/tut_dx8adv2d.shtml">
+ http://www.flipcode.com/tutorials/tut_dx8adv2d.shtml</a> Looks about right
+ Please do this via private email, so as not to clutter the wine-devel forum.</li>
+</ul></p></quote>
+
+<p>Jason submitted <a href="http://www.winehq.org/hypermail/wine-patches/2002/09/0097.html">
+a patch</a> the next day.</p>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<section 
+	title="Wine DLLs under Visual C" 
+	subject="Wine DLLs compiled under Visual C"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/09/0117.html" 
+	posts="4" 
+	startdate="09/09/2002"
+>
+<topic>Build Process</topic>
+
+<p>There's been some work done recently to make Wine DLLs work under 
+Windows.  This could be valuable tool for debugging problems with
+existing built-in functions.  Rolf Kalbermatter inquired about the
+progress:</p>
+<quote who="Rolf Kalbermatter"><p>
+I want to get some comments about how others here try to get the DLLs
+compiled under Visual C. I went ahead and tried to do this for shell32.dll and after
+a little work it went so far fine. However after creating a config.h file for
+Visual C with a few definitions such as for inline, I had to make some minor
+changes to some of the c source files such as adding an #include "config.h"
+and sometimes #include "wine/port.h" to the beginning.
+</p><p>
+Is this the recommended way of doing things or is there a reason that
+"config.h" shouldn't be included in some of the dll source files? I ask because I
+noticed that in a few of the shell32 files it is included but in the several of them
+it wasn't and in a few it doesn't (yet) need to be.
+</p></quote>
+
+<p>Patrik Stridvall gave some tips for getting it to compile out of
+the box:</p>
+<quote who="Patrik Stridvall"><p>
+Use msvcmaker. It generates Visual Studio 6.0 .dsw and .dsp files
+as well as an include/config.h file.
+<ul><code>
+cd wine<br />
+./tools/winapi/msvcmaker</code></ul></p>
+<p>
+ Then open wine.dsw in Visual Studio.
+</p><p>
+ PS. Note that msvcmaker only runs under Unix.
+ I use Samba to export the directory to Windows.
+</p></quote>
+
+<p>Steven Edwards wanted to know exactly what the status was 
+and exactly what would currently build.  Patrik replied,
+<quote who="Patrik Stridvall">
+ The compile status in general is quite good.
+ The link status however is not.
+ A lot more work remains. </quote></p>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<section 
+	title="Menu Handling Problems" 
+	subject="Recent change causes bad QuickBooks behaviour(?)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/09/0084.html" 
+	posts="7" 
+	startdate="09/06/2002"
+	enddate="09/09/2002" 
+>
+<topic>Fixes</topic>
+
+<p>Carl Sopchak reported a problem with QuickBooks:</p>
+<quote who="Carl Sopchak"><p>
+
+ It's been a few weeks since I've run QuickBooks (8/19 was my last transaction 
+ date, so it'd be somewhere around there...).  When I went to run it today 
+ (after several CVS updates on wine, including "moments ago"), after the 
+ company data file is opened, the main menu bar goes away.  This was 
+ definitely NOT a problem the last time I ran QuickBooks, so I surmise that it 
+ is the result of a change committed to CVS within the past two to three weeks  
+ that is causing this behaviour.  It happens in both managed and unmanaged 
+ window mode.
+</p><p>
+ Basically, the main menu bar should be at the top of the window, but the 
+ configurable taskbar / buttonbar is displayed "over" it.  The accelerator 
+ keys for the menu bar are no longer recognised (the program beeps if you try 
+ to use &lt;alt&gt;f [for example] to get to the File menu).
+</p></quote>
+
+<p>Nick Capik added, <quote who="Nick Capik">FWIW, Borland C++ version 5 was 
+also broken in the same way.</quote>  Andreas Mohr stepped up and
+claimed responsibility for the behavior, <quote who="Andreas Mohr">
+ Probably caused by my changes in the menu handling.
+ Win9x seems to have quite some changes in menu behaviour compared to
+ Win 3.x.
+ The patch I'll send now will fix the problems some apps had with my previous
+ patch, but it's far from the real solution: to implement menu behaviour
+ the Win9x way.</quote></p>
+
+<p>Carl reported the new patch didn't fix the problem.  Then after looking
+in the changes Andi mentioned he found a solution:</p>
+<quote who="Carl Sopchak"><p>
+ AH HA!</p><p>
+
+ It seems that the call to SetWindowLongA to unregister menu on owning window 
+ (per the comments; in the patch committed to CVS it's at "@@ -3842,6 +3844,9 
+ @@") is the culprit.  The committed patch had this call done unconditionally.  
+ The patch that you posted a few days ago made the call conditional on  
+ (<code>lppop-&gt;hWnd</code>).  When I commented this out (the condition and call), the menu 
+ "re-appears".  So, I guess for now, I'll leave the call out...
+</p></quote>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<section 
+	title="New Header: winternl.h" 
+	subject="New header winternl.h"
+	archive="http://www.winehq.org/hypermail/wine-patches/2002/09/0046.html" 
+	posts="8" 
+	startdate="09/07/2002"
+	enddate="09/08/2002" 
+>
+<topic>Winelib</topic>
+<p>Patrik Stridvall posted a patch for a new
+ header file.  He explained where it came from:</p>
+<quote who="Patrik Stridvall"><p>
+ As you probably know Microsoft released some information
+ as part of the settlement.
+</p><p>
+ As of Microsoft SDKs August 2002 there is a brand new
+ header called winternl.h that contains a part of the
+ relased information.
+</p><p>
+ While the information in itself isn't very useful it
+ is an official header we should IMHO have in Wine.
+</p><p>
+ Unfortunetly it can't be included at the same time
+ as ntdef.h and ntddk.h because it partly defines the
+ same information.
+</p><p>
+ Now, I have the full Microsoft SDK August 2002 contains
+ over 1000 .h files!!! But ntdef.h and ntddk.h is not
+ among them. They doesn't seem to be official headers or
+ at least not any more.
+</p><p>
+ So I'm a little unsure on how the headers should be organised.
+ winternl.h contains too little information to fully replace
+ ntdef.h/ntddk.h in fact in some cases of the enums in winternl.h
+ is incomplete but the full enum exists in ntddk.h!!!
+</p><p>
+ Futhermore some of the functions and data structures in ntddk.h
+ is defined in no header in the official Microsoft SDKs!!!
+</p><p>
+ While we probably should include winternl.h because its an official
+ header I'm a little unsure on how or whether we should use it
+ ourselves and what we should do with ntdef.h/ntddk.h. 
+</p><p>
+ Any suggestions?
+</p></quote>
+
+<p>Someone replied to Patrik with their thoughts,
+<quote who="Unknown">
+ For me this header looks like they copied some information 
+ from the ntddk in hurry into one file to release it. It's definitely
+ not covering a complete api.
+ We should leave this information in ntddk.h and replace 
+ the winternl.h with a file containing only #include "ntddk.h"
+ if there is some additional information in wintenl.h it shouldn't
+ hurt to merge it into the aprobiate headers.</quote>  But
+Patrik pointed out, <quote who="Patrik Stridvall">
+ The problem is that we don't (and shouldn't) install ntdef.h and
+ ntddk.h but we should do that with wintrnl.h since it is an
+ official header and might be used by a Winelib application.
+
+ Of course since it first appear a few weeks ago not many
+ application are likely to use it yet...</quote></p>
+<p>For that reason, Juergen Schmied suggested not doing
+anything at all.  He pointed out the SDK has lots of 
+headers not in Wine.  Francois Gouget thought some effort
+should be made though:</p>
+<quote who="Francois Gouget"><p>
+ Missing headers are making the lives of Winelib users pretty hard: the
+ first time they try to compile their application they get tons of
+ errors. They first wonder what they are doing wrong, then why Wine does
+ things differently from Windows, is there a hidden reason, and then how
+ the hell they are going to fix the headers and their messy dependencies
+ and whether they should not rather completely give up.
+</p><p>
+ Now, I'm not saying we should spend all our time trying to make sure our
+ headers are perfect rather than improving binary emulation. As with
+ everything this is a question of balance.
+</p><p>
+ Now concerning this header, since it's so new (and quite useless) it
+ certainly isn't going to be a problem soon and as you pointed out we
+ definitely have other header issues to tackle first. Still if we can
+ find an easy nice solution, let's go for it (unfortunately that does
+ not appear to be the case).
+</p></quote>
+<p>Alexandre suggested creating it and using:</p>
+<quote who="Alexandre Julliard"><p>
+if we don't use the header it
+will most likely get broken by something and nobody will notice, and
+then when someone uses it in Winelib we have the same problem.
+</p><p>
+I think we should add the header and use it instead of ntddk.h where
+possible. This probably requires adding/moving definitions to it that
+are currently in ntddk.h, but that's acceptable as long as they are
+exported under Windows anyway. And it's better to follow the SDK than
+the DDK where we can, since this is what apps we want to build with
+Winelib will be using too.
+</p></quote>
+<p>Patrik replied:</p>
+<quote who="Patrik Stridvall"><p>
+ I have already looked into it a little. However I think most of what
+ is in ntddk.h must be moved into wintrnl.h. Possible some stuff
+ should go in some other wine/*.h header.
+</p><p>
+ Do you want things that is only defined in ntddk.h be protected by
+ <code>#ifdef __WINE__</code> so no normal Windows application can't 
+ use them?
+</p></quote>
+<p>Alexandre didn't think it was necessary, <quote who="Alexandre Julliard">
+ No, I don't think there's any reason to prevent applications from
+ using them, as long as the functions are exported under Windows we
+ might as well make them available. This way, when Microsoft finally
+ decides to document them, they can just use our headers ;-)</quote>
+</p>
+
+<p>A few days later Alexandre committed it to CVS.</p>
+
+</section>
+</kc>

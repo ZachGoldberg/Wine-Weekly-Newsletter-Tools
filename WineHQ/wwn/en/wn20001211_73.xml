@@ -1,0 +1,330 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="73" date="11 Dec 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 73rd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="123" size="459" contrib="40" multiples="22" lastweek="19">
+<person posts="14" size="83" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="13" size="59" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="12" size="42" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="8" size="27" who="lawson_whitney@juno.com" />
+<person posts="6" size="22" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="6" size="18" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="5" size="15" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="5" size="14" who="Dennis Bjorklund &lt;db@zigo.dhs.org&gt;" />
+<person posts="4" size="14" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="4" size="11" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="4" size="10" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+</stats>
+
+
+<section 
+  title="crashes at startup"
+  subject="dlopen crashing"
+  posts="18"
+  startdate="01 Dec 2000 00:00:00 -0800"
+  enddate="06 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Uwe Bonnes was the first to report a crash which seemed to be caused
+by the newest DLL handling mechanism (to be more precise, in the calls 
+to dlopen).
+
+<p />
+
+As a remainder, Wine implements the Windows DLL in .so files. Recent
+changes (mostly by Alexandre Julliard) allow to embed a set of DLLs
+(being 16 or 32 bit) into a .so file. This .so file is then
+loaded/unloaded by Wine as the embedded DLLs are needed by the
+program. 
+
+<p />
+
+Firstly, Marcus Meissner noted a nesting of calls to dlopen, and
+dlopen reentrancy was questionned.
+
+<p />
+
+James Abbatiello reported a similar crash on his machine. Both James
+and Uwe were running SMP machines with glibc 2.1. The former turned
+out to be fine (Uwe disabled the SMP feature and the crash didn't
+vanish), the latter was the issue.
+
+<p />
+
+James wrote:
+<quote who="James Abbatiello">
+It seems to be a bug in glibc 2.1.x. If a dlopen() call fails, it sets
+an internal variable to point to a string describing the error (for
+later retrieval with dlerror()). If you then call dlopen() again,
+without calling dlerror() in between to clear the error status,
+dlopen() will free the string. Then it tries to load the library, and
+sets the internal variable again depending on whether the open
+succeeded or failed. However, during the time that its trying to load
+the library, it keeps this internal variable pointing to a now-freed
+block of memory. As we call dlopen() again before the loading of the
+library finishes, it tries to free the same memory twice.
+</quote>
+
+
+<p />
+
+James even quoted the glibc 2.1.x and 2.2 sources, showing that the
+issue has been fixed for the 2.2 release. As a matter of fact, the
+issue only occurred with glibc 2.1.x...
+
+<p />
+
+James and others (including G&#233;rard Patel and Lawson Whitney) put
+together a patch for Wine's loader which shall work around this glibc
+issue. The patch has been applied to the CVS tree.
+</section>
+
+
+<section 
+  title="Of heuristics and algorithms (in the midst of a compilation)"
+  subject=""
+  posts="24"
+  startdate="05 Dec 2000 00:00:00 -0800"
+  enddate="10 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Vedran Rodic reported an error at link stage while compiling Wine
+20001202 with -O6.
+
+<p />
+
+Even if compiling Wine with lots of optimization is a risky job, and
+should be avoided, developers tried to understand what happens.
+
+<p />
+
+Basically, some functions, defined with the <code>
+__attribute__(__unused__)</code> attribute are removed in the
+compilation process. This type of attribute is mainly used in Wine for 
+the DLLs descriptors initialisations: each time Wine implements a 32
+bit Windows module (DLL or EXE), a PE header descriptor is generated,
+and a pair of stubs. These stubs are hooked up into the Unix loading
+mechanism for dynamic module ; hence allowing, these stubs to
+instanciate, from a Wine point of view, those PE headers. (<i>EdNote:
+I tried to keep this article as concise as possible, but a yet to come 
+feature article shall cover the details of the DLL handling in
+Wine</i>).
+
+<p />
+
+This type of code removal rang some bell to Ove Kaaven who reminded
+similar issues raised a while ago (read 
+<kcref issuenum="47" sectionnum="1">this</kcref> for the details). 
+
+<p />
+
+The compiler did optimize away the function code because it has been
+colored with the unused attribute (gcc keeps the code when only -O2 is 
+used).
+
+<p />
+
+Even though Alexandre Julliard provided a fix for this issue, by
+putting all the stubs (are described above) in the .init and .fini
+sections of the compilers (which also work for gcc), Ove and Patrik
+Stridvall started a flame war.
+
+<p />
+
+They basically argued to know whether it was a compiler bug or not, if 
+this behavior was driven by algorithms or heuristics and so on...
+
+<p />
+
+If you're currently writing a thesis on computer idiomatics
+semantics, you may be interested in reading the details. Since the
+editorial team doesn't target those people as their primary audience,
+details will not be covered.</section>
+
+
+<section 
+  title="Registry speed up"
+  subject="registry parsing at startup"
+  posts="3"
+  startdate="06 Dec 2000 00:00:00 -0800"
+  enddate="09 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Martin Pilka announced starting some Wine startup speed up
+effort:
+<quote who="Martin Pilka"> 
+I'm working on speed up the registry parsing at wine startup. What I
+would like to do is to move the whole registry parsing to the server
+side (where *.reg format 2 files already are, for example). Right now
+I bounced to old *.reg format 1 parsing, which is still on client
+side. Should I invest some effort and move it where it belongs (as I
+believe, please correct me if i'm wrong) or some message like "format
+1 no longer supported" is enough?</quote>
+
+
+<p />
+
+Alexandre Julliard slighty changed Martin's first proposal:
+
+<quote who="Alexandre Julliard">
+I don't think you want to move the whole registry parsing to the
+server. What you should do is change the parsing code to dump the
+contents into a temporary text file (in .reg format 2) and then ask
+the server to load this file.</quote>
+
+
+<p />
+
+A few days later, Martin had finished writing the first pass of the
+code and was starting the test phase. No patch has been submitted yet, 
+nor improvments figures have been provided.</section>
+
+
+<section 
+  title="A Wine PPC port"
+  subject="is WINE portable?"
+  posts="15"
+  startdate="06 Dec 2000 00:00:00 -0800"
+  enddate="08 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Michael Cohen wondered if Wine had already been ported: 
+<quote who="Michael Cohen">
+If endianness is accounted for, can WINE be ported to different
+architectures / operating systems? WINE should be configured from the
+ground up with ifdefs in place, but I don't imagine that anyone was
+considering porting it when it was written. I can try and start a
+development team to port it, however. The first steps must come from
+the wine devel teams at large. WINE needs to be prepared to port. I
+would love to see a future with WINE as the sole windows interpreter
+for Win32, Mac OS, LinuxPPC, Linux/Alpha, etc. 
+</quote>
+
+<p />
+
+Jeremy White devoted himself for an answer: 
+<quote who="Jeremy White">
+Wine (the binary loader) doesn't make sense to port to a non intel
+platform, unless you have a really high performance x86 emulator
+(and even then the rationale is a bit dicey).
+
+<p />
+
+Winelib (the Windows implementation and porting library) has been
+ported to PPC once by Gavriel State, and has been again by Josh DuBois
+of CodeWeavers [okay, Josh only has it sorta kinda working, but there
+you go].
+
+<p />
+
+There is still a fair amount of work to do to get the non intel Winelib
+working well, but it's only that - work - nothing really hard left &#60;g&#62;.
+(Okay, that's glib. There are some real issues. For example, you have
+a dilema about whether resources have a MS binary format or a format
+that allows fields to be accessed via fields in a structure).
+
+<p />
+
+With Winelib to PPC in hand, Winelib to most other platforms should be 
+straight forward.
+
+<p />
+
+So, yes, Winelib can be the key instrument to bringing Windows software
+across many platforms. At least it darn well better be &#60;g&#62;.
+</quote>
+
+
+<p />
+
+
+For recent PPC efforts, you can also read 
+<u>this</u>. <editorialize who="Brian Vincent">When Eric Pouech wrote this he 
+referred to a past issue.  However the link was broken and I was unable to
+find what he was referring to.</editorialize>
+
+<p />
+
+Josh DuBois went on: 
+<quote who="Josh DuBois">
+I guess it's time to publicly 'fess up to being someone who is working
+on porting wine to PPC. I'm still a relative wine newbie, but I
+welcome interested parties to contact me about wine ports if they'd
+like as I will be working on it regularly for some time.
+</quote>
+
+
+<p />
+
+Josh then started the hard part by asking a good place to store the
+TEB on PPC ?
+
+<p />
+
+Alexandre Julliard advised to use register <code>%r13</code> as
+Windows does. But, Alexandre said <quote who="Alexandre Julliard">It may be available
+under linux too, that depends on how the system libraries have been
+compiled, since there are several gcc options controlling what %r13 is
+used for.</quote>
+
+<p />
+
+Gavriel State wondered 
+<quote who="Gavriel State">
+Is there really any reason not to just use pthread directly? We're not
+constrained by binary compatibility issues on LinuxPPC (or Mac OS X),
+so there's no need to preserve any special registers.
+
+<p />
+
+Of course, as I'm writing this I'm trying to remember why I didn't try 
+this out at MacHack this year when I tried to update the PPC port. I
+remember going through the same process of trying to find a register
+that I could be sure was preserved across library calls, and even
+consulted Stan Shebs (one of the gcc PPC developers). I couldn't find
+anything that seemed appropriate in time, so I just gave up. I have no
+recollection whether using pthreads' local storage even occurred to me
+then.
+</quote>
+
+
+<p />
+
+Gavriel also offered his old PPC port to Josh, as a reference for some 
+issues he already had fixed.
+
+<p />
+
+Even if using pthreads has been rejected for Linux and Solaris (read 
+<kcref issuenum="46" sectionnum="5">this</kcref>for the details), this
+shouldn't be an issue for PPC (at least at first glance).
+
+<p />
+
+Alexandre Julliard agreed on the feasibility, but proposed another way
+for the Linux PPC port: <quote who="Alexandre Julliard">since we already support
+clone() on i386, using clone() on linuxppc may be easier to do, at
+least for the first version.</quote></section>
+
+</kc>

@@ -1,0 +1,469 @@
+<kc>
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="10" who="Jon Griffiths" date="22 July 2003" />
+ <intro>
+  <p>
+  This is our 10th interview with Wine developers. Check out the
+  <a href="http://www.winehq.org/interview">Interviews</a>
+  page for previous ones.
+  </p>
+  <p>
+ Jon Griffiths gets my vote for having the most interesting life
+ of any Wine developer.  He was born in England but has lived most
+ of his life in Auckland, New Zealand.  He considers himself a
+ Kiwi and his English friends agree.  He left New Zealand six years
+ ago for a working "holiday".  (For the American readers out there,
+ this is an extended vacation many folks from Australia or New
+ Zealand take.  It often lasts somewhere between several months and
+ their entire lives.)  
+ </p>
+ <p>
+ Jon attended Waikato University in Hamilton, New Zealand and earned
+ a degree in psychology and computer science.  For the most part he's
+ been traveling for the past few years.  He does admit to doing some
+ work, including converting
+ a friend's Internet cafe from Windows NT to Linux.  Aside from 
+ programming, his other hobbies include playing guitar and singing.
+ He's also willing to  read any book that happens to be laying around. 
+ </p>
+ </intro>
+<interview>
+<question><p><i>BV:</i>
+How did you get involved with Wine?
+</p></question>
+
+<answer><p><i>Jon:</i>
+I followed Wine's development for a very long time before I really
+got involved, mostly because the scope and complexity of the project
+intrigued me, also because politically I have always wanted a viable
+alternative to Windows to become available.
+</p><p>
+I started contributing code about three years ago, when my
+circumstances allowed, and I saw an area that obviously needed work
+and I could contribute to (the C runtime).
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+Do you remember the first patch you submitted?
+</p></question>
+
+<answer><p><i>Jon:</i>
+Yes, it was an update to crtdll (whose implementation was later
+migrated into msvcrt.dll). I spent a while hacking around on it
+before I decided to actually send it. The peer review process was
+initially quite daunting since at that time it seemed there was only
+a small group of core workers, who all had a lot of experience and
+weren't afraid to be blunt if they didn't like something. But
+eventually I had too much code to just let it bit-rot, and sent it
+off.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+Could you give a little background on MS's C runtime?  A lot
+of people just suggest using the MS implementation for the time
+being.  Is Wine developed enough to worry about that library?
+</p></question>
+
+<answer><p><i>Jon:</i>
+
+The C run time originated with crtdll.dll, which was a relatively
+lightweight, single threaded version of the run time. This migrated
+into msvcrt, which is multithreaded and provides a much bigger range
+of standard C functions, and also support routines for MSVC C++
+applications. This includes RTTI (Run time type information, used to
+dynamically cast objects from one type to another), and exception
+handling. The C compiler and run-time are linked in that using
+certain features of C++ relyies on this support.
+</p><p>
+The dll is a part of every standard Windows install, and it exists in
+many different versions since it is pretty essential that bugs in it
+get fixed.
+</p><p>
+Every application developed with MS tools uses this dll (unless they
+take special care not to, for some reason). This includes all the MFC
+apps in existence, so I'd say it's pretty important for Wine to
+provide a reasonably up to date implementation of it. Although the
+native dll can be redistributed, the native version may not always
+work better than our version, depending on what calls it makes to
+implement a given function. For example, until a few months ago, the
+latest versions of native msvcrt wouldn't even load in Wine, due to
+it getting a too low version number from one of ntdlls version API
+calls. Even now there is a problem with memory management using this
+version of the dll, although I haven't tracked down what it is doing
+with heap allocation that could be the cause.
+</p><p>
+I guess I don't really consider the C run time to be peripheral. Can
+you imagine a linux distribution that didn't come with glibc? ;-)
+</p></answer>
+
+<question><p><i>BV:</i>
+What areas of Wine do you like to work on?
+</p></question>
+
+<answer><p><i>Jon:</i>
+My current preference is anything undocumented. I like discovering
+how a piece of code works, then finding out how best to replicate its
+functionality. I also like to work around the same areas since it's
+satisfying to watch something move towards completion. But
+occasionally I randomly pick something for a change and work on that
+for a while. Just recently I started some OLE work which snowballed
+into enough code that i haven't figured out how to merge it yet!
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Wine needs more masochistic developers working on undocumented
+ stuff.
+</p></question>
+
+<answer><p><i>Jon:</i>
+Agreed! Actually Wine just needs more developers, period. So, any
+lurkers out there, start sending your patches now!. 
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ So what motivated the recent OLE work, were you trying to solve
+ a particular problem?
+</p></question>
+
+<answer><p><i>Jon:</i>
+ No, I just looked around and saw that considering how old the basic
+ OLE framework is, Wine's implementation looked way too incomplete.
+</p></answer>
+
+<question><p><i>BV:</i>
+What kind of development environment do you use?
+</p></question>
+
+<answer><p><i>Jon:</i>
+For Wine hacking I'm basically a command line guy, using vim or kate
+as my editor. I do 99% of my work under Linux. When I'm hacking on
+private projects I usually use KDevelop, it's a great integrated
+environment, and I'd love to see it have more customization for
+Winelib development so it could function as a Visual Studio
+replacement.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ You mean integrate something into KDevelop to build Winelib apps?
+ Something like reading in MSVC projects and building with Wine?
+</p></question>
+
+<answer><p><i>Jon:</i>
+ Exactly that. Being able to generate resource files from QT designer,
+ integrating the API documentation, having appwizards for Winelib
+ projects, that sort of thing. I have to upgrade to gideon (the new
+ source base of KDevelop) before I can look at any of that though. And
+ to upgrade my system I first want to clear my patch queue :-)
+</p></answer>
+
+<question><p><i>BV:</i>
+It seems like a bunch of your recent patches reference building under MSVC.
+ Do you spend a lot of time testing under Windows?
+</p></question>
+
+<answer><p><i>Jon:</i>
+I hardly ever use Windows, but for testing purposes I will boot it up
+if I have to. The recent VC patches came about as a result of my
+writing a script to convert Wine's makefiles (that control the
+building of the various software components by winebuild/gcc etc),
+into makefiles suitable for nmake (used by msvc). This naturally led
+to fixes for the build process under Microsoft's tools. The VC command
+line tools actually run under Wine quite well.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ From time to time you resurface with a ton of patches.  It happened
+ about a year ago and then again this week.  Why do you go so long
+ between syncing up?
+</p></question>
+
+<answer><p><i>Jon:</i>
+I've been travelling in SE Asia (on holiday) for the last 3 years,
+and so it's hard for me to sync up. Often when I come to send my
+patches someone has modified the same files as I did, so I have to
+merge our work together and re-test before I can send. I usually
+manage to get synced every few months (my last set of patches was in
+mid March), but it does depend where I am and what I'm doing.
+</p><p>
+Also my patches tend to be big, and sometimes significant parts don't
+get applied because of a small part of the patch that could be
+cleaner. That's why you occasionally see someone reworking a patch of
+mine and resubmitting part of it while I'm off in cyber-limbo.
+</p><p>
+I have to send my patches from Internet cafes, which is sometimes a
+hassle to set up with limited time. This current merge is being sent
+from Khao San Rd in Bangkok, Thailand, for example. I'm looking for
+work here, so I expect this situation will change when I get a job
+(and an Internet connection), and can send smaller patches more
+regularly.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Three years on holiday seems like more than a "holiday".   What 
+ countries have you gone to?  
+</p></question>
+
+<answer><p><i>Jon:</i>
+You're right, it's fairly gratuitous! I figured most people do their
+travelling later in life, and thought I should travel while still
+young(ish).
+</p><p>
+Since I stopped work I traveled the UK, went to Ireland, Holland,
+Germany, the Czeck Republic, back home to New Zealand, Laos, Cambodia
+and Thailand. Previously I have been through Europe and Africa.
+</p><p>
+I just turned 30, and I will start work again sometime this year,
+where upon I expect I will be hit by the urge to travel again, but
+I'll have to resist.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Are you specifically looking for software development work?  How's
+ the IT industry in Thaliand doing?   
+</p></question>
+
+<answer><p><i>Jon:</i>
+ Yes, I am, preferably in the financial sector, since that's my
+previous experience. The industry here is huge, but the incomes are
+not very high. Luckily, It is cheap to live here (you can rent a
+small apartment for around US$150 a month, for example).
+</p></answer> 
+
+
+<question><p><i>BV:</i>
+  What's been the favorite place you've visited? 
+</p></question>
+
+<answer><p><i>Jon:</i>
+ Thailand as a whole is a great place, with wonderful people and a
+fascinating (although tongue twisting) language. That's why I'd like
+to stay here a bit longer. I also really liked Prague, because it's
+charming and very lively. But given the weather here, Thailand is the
+clear winner!
+</p><p>
+One of the nice things about travelling is the variety of experiences
+and people you get to meet. But there isn't enough time here to
+relate all of that. It's something that's best experienced oneself, I
+think.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ SARS made the news here, but it wasn't too big a deal.  Were you
+ affected by SARS at all?  It seems like businesses may have closed
+ or travel may have been restricted.
+</p></question>
+
+<answer><p><i>Jon:</i>
+ Tourism was badly affected by both SARS and the Bali bombings, but
+ Thailand escaped actually having an epidemic with a pretty good government 
+ response (quarantine, heath screening at airports, etc). A lot of
+ Thais took to wearing surgical masks which was quite funny, but on
+ the whole no-one really seemed to feel that threatened. As far as
+ tourists go the biggest danger here is a Bali style attack, since
+ security here is relatively light at the majority of tourist
+ hangouts.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ I imagine getting Internet access is a challenge.  Have you noticed
+ improvement in the last few years?
+</p></question>
+
+<answer><p><i>Jon:</i>
+ Actually, getting net access is easy, if all you want to do is read
+ mail. Thais are in love with chat and email and are constantly in
+ touch with people from all around the world. So you're never far from
+ an Internet shop. However, finding one that will let you plug your
+ laptop in and start pulling down through CVS is a different story. I
+ use the same place now when I'm in Bangkok, since they know me.
+ Actually, I'll be installing Linux on one of their computers for them
+ when I go back in a few days.</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Alright, back to Wine questions.  
+ You've submitted lots of patches for the Shell Lightweight API DLL,
+ shlwapi. What is this DLL responsible for in Windows?
+</p></question>
+
+<answer><p><i>Jon:</i>
+Basically it's a utility dll. A whole bunch of little functions were
+written to smooth over the differences between the various flavours
+of Windows that Internet Explorer ran on back when it was a standalone 
+application. That way the developers of the application can
+prevent their code getting bogged down with lots of special cases
+every time they make Windows API calls.
+</p><p>
+Of the functions in this category, most relate to providing unicode
+functionality. Very little of the code is Explorer specific, it's just
+that Explorer makes heavy use of it because originally it was part of
+the Explorer application.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ How much of the DLL is undocumented?  Do you have any idea how
+ complete Wine's implementation is?
+</p></question>
+
+<answer><p><i>Jon:</i>
+About half of it is undocumented, which is irritating considering it
+is supposed to be an 'essential operating system component'. With the
+patches I just sent, I would say Wine's version is now about 75-80%
+complete. However the last 20% always requires 80% of the effort :-)
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Are there any significant missing pieces?  Or is it just a matter of
+ fleshing out the existing work?
+</p></question>
+
+<answer><p><i>Jon:</i>
+Implementing IQueryAssociations is one that stands out, as it's
+semi-documented, the framework is in place, but there's no code at
+all. However, the whole dll has to be done eventually, and until you
+investigate what some of these calls do it's hard to know if they are
+related to anything else at all. So it's just chipping through the
+stub functions at present.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ One recent patch enabled Wine's shlwapi to build and be used
+ natively under Windows.  What use could developers get out of that?
+</p></question>
+
+<answer><p><i>Jon:</i>
+The idea of building native versions of Wine's dlls is appealing
+because it allows you to look 'under the hood' of what a dll is
+doing. You could print out all of the arguments to a function, in
+much more detail than something like today's relay/snoop tracing can.
+This can help understand what's happening in a live Windows system. Also
+it means we can create redistributable versions of native dlls,
+potentially usable by (for example) ReactOS or similar projects.
+Finally though, exposing your code to different compilers is a great
+way to show up bugs and assumptions that may not be true on all
+platforms.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Any idea how many of Wine's DLLs can be used in Windows?  
+</p></question>
+
+<answer><p><i>Jon:</i>
+ Based on my first stab at getting them to build, 1: shlwapi ;-)
+</p><p>
+The changes required to the build tools will require a few iterations
+of arguing^H^H^H^H^H^H discussion before we have something that works
+seamlessly. Some of this is just a matter of clarifying how it should
+be done, then there's the mechanics of making it work in a style that
+Alexandre will accept.
+</p><p>
+In theory, many of Wine's dlls should at least partially work under
+Windows. setupx comes to mind as it's a dll I've wanted to hack on for
+a while now.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ One topic that comes up quite a bit is integrating some kind of
+ browser into Wine.  Do you think that's necessary?
+</p></question>
+
+<answer><p><i>Jon:</i>
+ I followed the discussion, and I think it will need to be done,
+ eventually. It's a question of how best to take advantage of all the
+ work that other free projects have been doing in this area, and to
+ integrate it into Wine. But I don't intend to be involved in that!
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+What would you like to see Wine do that it can't right now?
+</p></question>
+
+<answer><p><i>Jon:</i>
+I'd like to see it integrate into the user's environment seamlessly,
+to be transparent. I think that's the only way people will ever
+migrate from Windows, essentially when they don't really see the
+difference, and everything 'just works'. When I finally get my tree
+synced up I may try to do some work in this area.
+</p><p>
+Other than that I would like to see Winelib used more, since Linux is
+such a great development platform (the development tools, and
+stability were the main reasons for me to abandon Windows).
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ It seems like CodeWeavers has done some interesting work in
+ usability and integrating with different distros.  Should it be up
+ to Wine to integrate with the desktop, or is that up to the
+ individual distributions?
+</p></question>
+
+<answer><p><i>Jon:</i>
+ It's clear (and very beneficial for Wine) that CodeWeavers considers
+this important. 
+</p><p>
+I think it's Wine's job, rather than the distributors. Obviously we
+can't follow all the desktops, but integration with KDE and Gnome
+should be a goal for the project.</p></answer>
+
+
+<question><p><i>BV:</i>
+ Do you have any particular ideas
+ about what Wine should be integrating with that it isn't?
+ Is Wine too much of a moving target to work on that right now?
+</p></question>
+
+<answer><p><i>Jon:</i>
+Perhaps Wine changes a little radically at the moment, but after 1.0
+the foundations should be there for some really cool work. Things
+like using rendering GUI elements in the style of the desktop (this
+would fit naturally on top of a uxtheme.dll implementation). Also
+things like integrating with the desktop's print system, configuration
+and setup, etc are important.</p></answer> 
+
+<question><p><i>BV:</i>
+ Thanks for the interview!</p></question>
+
+</interview>
+</kc>

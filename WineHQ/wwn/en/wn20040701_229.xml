@@ -1,0 +1,309 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="229" date="07/01/2004" />
+<intro> <p>This is the 229th issue of the Wine Weekly News publication.
+Its main goal is to light fireworks. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="90" size="290" contrib="38" multiples="18" lastweek="16">
+
+<person posts="11" size="32" who="Mike Hearn" />
+<person posts="9" size="61" who="Uwe Bonnes" />
+<person posts="6" size="12" who="George Marshall" />
+<person posts="5" size="19" who="Dimitrie O. Paun" />
+<person posts="5" size="13" who="Bill Medland" />
+<person posts="5" size="11" who="Alexandre Julliard" />
+<person posts="4" size="16" who="Andrei Barbu" />
+<person posts="4" size="9" who="Dmitry Timoshkov" />
+<person posts="3" size="6" who="Eric Pouech" />
+<person posts="3" size="5" who="Ivan" />
+<person posts="2" size="8" who="Marcelo Duarte" />
+<person posts="2" size="8" who="Danny Hawkins" />
+<person posts="2" size="6" who="Vitaly Lipatov" />
+<person posts="2" size="6" who="Vincent B&#233;ron" />
+<person posts="2" size="5" who="Ferenc Wagner" />
+<person posts="2" size="5" who="Nicolai Kuntze" />
+<person posts="2" size="5" who="=?iso-8859-1?Q?J=FCrgen_Leibner?=" />
+<person posts="2" size="5" who="Marcus Meissner" />
+<person posts="1" size="5" who="James Hawkins" />
+<person posts="1" size="4" who="Michael Stefaniuc" />
+<person posts="1" size="4" who="Mike Kost" />
+<person posts="1" size="3" who="Tobias Burnus" />
+<person posts="1" size="3" who="Adrian Rees" />
+<person posts="1" size="2" who="Mark A Fonnemann" />
+<person posts="1" size="2" who="John O'Donnell" />
+<person posts="1" size="2" who="Santosh Siddheshwar" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Richard Cohen" />
+<person posts="1" size="2" who="Izak Burger" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Gabriele Giorgetti" />
+<person posts="1" size="2" who="Filip Navara" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Fabian Cenedese" />
+<person posts="1" size="1" who="Saulius Krasuckas" />
+<person posts="1" size="1" who="Brian Vincent" />
+
+</stats>
+<section 
+	title="News: Interview with Shachar, Reviews" 
+	subject="News"
+	archive="http://www.winehq.com/interview/16"
+	posts="2"
+	startdate="06/26/2004"
+	enddate="07/01/2004"
+>
+<topic>News</topic>
+<p>
+This past week we discussed Wine's internationalization
+efforts with Shachar Shemesh.  
+<a href="http://www.winehq.com/interview/16">Read the interview.</a></p>
+
+<p>In the as-seen-on-Slashdot category, they posted
+<a href="http://slashdot.org/article.pl?sid=04/07/01/1640217&amp;mode=thread">some
+reviews</a> of both CrossOver Office and TransGaming's Cedega.  
+As always there were many comments from the community about 
+both products, most of which were very positive.  </p>
+
+<p>This issue is getting pushed out the door kicking and screaming.
+I'm headed out for a long weekend and am a bit crunched for time to
+fully complete this.  However, one thread I really wanted to cover
+both last week and this week concerned FreeBSD.  You can find the 
+whole thread 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/06/0164.html">here</a>.
+Basically, there seems to be a problem with FreeBSD right now that's
+preventing it from running Wine and the proper fix seems to be changing
+the FreeBSD kernel.  John Birrell is looking into it, 
+but it's unclear how long it will take to sort things out.</p>
+
+</section>
+<section 
+	title="Fixed Mandrake RPMs" 
+	subject="Mandrake RPMs"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0556.html" 
+	posts="3"
+	startdate="06/29/2004"
+>
+<topic>Build Process</topic>
+
+<p>Mike Hearn found a problem with recent Mandrake RPMs:</p>
+<quote who="Mike Hearn"><p>
+
+Ivans comment that the Mandrake RPMs didn't work on Red Hat/Fedora
+surprised me, so after encountering a stuck Mandrake user for whom the
+RPMs weren't working either on IRC I decided to check them out.
+</p><p>
+It turns out the reason they don't work on Fedora is because they don't
+work at all - wine.inf is in /usr/share/doc/wine-20040615 which is wrong,
+it needs to be in /usr/share/wine. As this file is in the wrong place Wine
+refuses to start on a new user account.
+</p><p>
+Once I manually copied the file to the right place Wine worked just fine.
+</p></quote>
+
+<p>A quick look on the <a href="http://sourceforge.net/project/showfiles.php?group_id=6241">
+SourceForge download page</a> shows that the files haven't been updated.
+However you can perform the simple fix Mike described.</p>
+
+</section>
+<section 
+	title="Making Wine Upgradable" 
+	subject="[RFC] Wine upgrade procedure (spec)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0551.html" 
+	posts="4"
+	startdate="06/29/2004"
+>
+<topic>Configuration</topic>
+<p>Dimi wanted to get everyone's thoughts concerning
+how Wine should support being upgraded:</p>
+<quote who="Dimitrie Paun"><p>
+ It seems that we are getting ever so closer to 0.9. Slow, but steady.
+ Looking at the TODO, it looks like upgrading is one of the big 
+ showstoppers, in that it will affect (1) the end-user experience, and 
+ (2) how we deal with the configuration.
+</p><p>
+ So this seems like a good time to start discussing this topic, as we 
+ need to eventually reach the elusive 0.9. This seems to be a difficult
+ topic, so we need to approach the problem well prepared. That is,
+ we need to first define (and agree) on what we need to solve here.
+ So after a tumultuous discussion on IRC, I decided to get the ball
+ rolling.
+</p><p>
+ Intuitively, upgrading wine is simple to understand: once a new version
+ is installed, we need to get users in a state where they can use it.
+ While simple to state, this problem is complicated by the various corner
+ cases that can appear in Real Life (TM):
+ <ul>
+  <li> native vs. builtin DLLs handling</li>
+  <li> multiple Wine installations on a box</li>
+  <li> updating only some DLLs</li>
+  <li> integrating into the Unix environment</li>
+  <li> dealing with Windows software</li>
+ </ul></p><p>
+ We can also look at some important use-cases that we need to support,
+ but before we do, the following must hold true in all cases:
+ <ul>
+    <li> administrators should be able to install a new Wine on the
+      system easily with "rpm -U" (or equivalent).</li>
+    <li> the upgrade should not erase registry settings that are
+      managed by the user</li>
+ </ul></p><p>
+ Let's look at the use-cases:
+ <dl>
+ <dt>A. Global Install</dt>
+ <dd>
+    In this case, both Wine code, as well as applications are installed
+    globally, for all users to access. This is the most Unix-like setup,
+    but unfortunately the most difficult to support, due to the fact that
+    Win32 apps simply expect a different environment. Since we can't 
+    control application's code, this setup may present some limitations,
+    but it may be sufficient for sites that need a limited set of 
+    applications. For this to work, it is acceptable that we ship special
+    scripts that know about the applications that are supported, so that
+    they can work around inherent limitations in the applications 
+    themselves. Users should transparently be able to use the new version 
+    of wine, the next time they start wine.
+  </dd>
+  <dt>B. Mixed Install</dt>
+  <dd>
+     Here, Wine code is installed globally, but applications are installed
+     in the user's account. In a way is like (A) but with some additional
+     applications installed directly into the user's account. Same 
+     requirements apply to this case as well.
+  </dd>
+  <dt>C. Local Install</dt>
+  <dd>
+     Both Wine code, as well as applications are installed locally, into
+     the user's account. The Wine code is still installed globally by the
+     administrator (as in A &amp; B), but it is copied locally before it's
+     being used. An upgrade in this case may require an explicit action
+     by the user, so the upgrade can happen at a controlled time, when the
+     user desires it.
+  </dd></dl></p><p>
+
+ In all of the above, there is always state in the user directory. Thus,
+ it is imperative that the upgrade process makes sure that after the
+ upgrade, the user-private state is consistent with the new code base.
+ Also, any solution must take into account that the registry must be
+ created on the fly, as it is created when registering the DLLs. 
+</p><p>
+ Before we go any further, I'd like to ask everybody to contribute their
+ thoughts/requirements/desires so that we get a comprehensive view of
+ the problem we are trying to solve. 
+</p></quote>
+
+<p>There wasn't a whole lot of discussion, which probably means a lot
+of people agreed with Dimi's assessment.  The few posts generated 
+seemed to be concerned primarily with if, or how, Wine could support
+being upgraded while actually still running on the box (i.e. keeping
+the Wineserver process intact.)  </p>
+
+</section>
+<section 
+	title="About Converting W-&gt;A Calls" 
+	subject="Cleaning up W-&gt;A calls"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0547.html" 
+	posts="4"
+	startdate="06/29/2004"
+	enddate="06/30/2004"
+>
+<topic>Internationalization</topic>
+<p>Wine's <a href="http://www.winehq.com/janitorial">Janitorial 
+Projects</a> are a great way to get involved.  We actually have a 
+pretty good track record of finishing things, but there's always
+more to do. One big project is to change the way ASCII and Unicode
+functions are called.  Much of the Windows API has provisions for
+two different versions of a function - one is the regular ASCII 
+version and the other handles "Wide" characters.  Many functions
+were originally implemented only as the "A" version.  Howver, with
+the switch to Unicode we now have to support the "W" version as well.
+The simple way that was done was to just call the A version from 
+the W version and be done with it.  But that conversion is lossy,
+so a better way is to implement everything in the W version of the
+function and have the A version call that.  An alternative is to
+implement two complete versions that handle their respective type
+of character.  James Hawkins wanted to
+work on this clean up and asked for what approach would be best:
+</p><quote who="James Hawkins"><p>
+
+ I am currently working on the janitorial task of getting rid of W-&gt;A
+calls and I have a few questions about how I should implement these
+changes.
+</p><p> 
+ I'll start the question with an example:
+<ul><tt> 
+ dlls/advapi32/crypt.c line 255, 482</tt></ul>
+</p><p> 
+ 
+ Initially CryptAcquireContextW converts all of its arguments to ansi
+then calls CryptAcquireContextA (which is intuitively not what we're
+wanting and thus the cleanup.)  
+</p><p> 
+ 
+ The question is, what exactly is the best way to clean this up?
+</p><p> 
+ 
+ It seems to me that there are two main options as to what can be done: 
+</p><ul><p>
+
+ 
+ A) convert the W-&gt;A calls in the wide-char functions to A->W calls in
+the ascii functions and implement the wide-char functions instead, or 
+</p><p> 
+ B) implement both ascii and wide-char functions separately i.e. ascii
+functions only call ascii functions etc.
+ </p></ul><p>
+ If we are to choose plan A, I have seen several different methods of
+converting ascii to wide-char, and I am wondering which method is best. 
+</p><p> 
+
+ I would have to argue that implementing both the ascii functions and
+wide-char functions separately would be the most efficient way to solve
+the W->A problem.  Throughout all the wine libs, many conversion calls
+are being made from W->A and A->W, when most of these calls could be
+left out.  I think performance would improve without all of the
+conversion calls.  Granted the size of the code would increase, but
+speed would also increase.
+</p><p> 
+ 
+ There are a couple snags when it comes to implementing ascii and
+wide-char functions independently, but that can be discussed later.
+</p><p> 
+ 
+ If I'm totally off the mark, let me know, and if there are other jobs I
+could be doing, let me know as well because I would like to contribute,
+but I'm not exactly sure what to do yet.  Thank you for your time.
+</p></quote> 
+
+
+<p>Marcelo Duarte advised:</p>
+<quote who="Marcelo Duarte"><p>
+I did not check your code, but each situation has its reason and you 
+decide which will be better.
+I suggest you to start converting something simple, like:
+<ul><code>
+dlls/shell32/systray.c: shell32: Shell_NotifyIconW: illegal call to 
+Shell_NotifyIconA<br/>
+dlls/version/install.c: version: VerInstallFileW: illegal call to 
+VerInstallFileA</code></ul></p><p>
+When I made one of these conversions, I chose "<tt>dlls/shell32/shlexec.c: 
+shell32: ShellExecuteExW: illegal call to ShellExecuteExAand</tt>" very 
+laborious and was complicated. You can give a look at one I made: 
+<a href="http://cvs.winehq.com/patch.py?id=10692">http://cvs.winehq.com/patch.py?id=10692</a>
+</p></quote>
+
+<p>Steven Edwards also had some suggestions,
+<quote who="Steven Edwards">
+Welcome! I don't think it matters from a performance point of view. From
+my reading of documentation regarding Windows NT it seems they have
+about a 20% performance hit on the ASCII calls vs the Unicode calls. I
+think that they implement both ASCII and Unicode rather than have ASCII
+call the unicode functions. (This is due to the fact that they had a
+semi-share source base with Win9x). Most of Wine just has the A
+function call the W function so I would follow this standard. It will
+reduce code duplication and prob'l lessen bugs.</quote></p>
+
+
+</section></kc>

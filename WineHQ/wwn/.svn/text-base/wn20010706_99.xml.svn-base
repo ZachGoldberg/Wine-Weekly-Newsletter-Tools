@@ -1,0 +1,282 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="99" date="07/06/2001" />
+
+<intro>
+
+<p>This is the 99th release of the Wine's kernel cousin publication. It's
+main goal is to distribute widely what's going on around Wine (the Un*x 
+windows emulator).</p>
+
+<p>Some of the changes committed to CVS in the past few weeks include support
+for /dev/parport for direct port access, support for Traditional Chinese, ole32
+separation was finished, and some changes to x11drv for fixing up some of the
+window management stuff that's come up in the past few weeks.</p>
+
+<p>We also saw wn20010629 unleashed.  The release notes include the following
+changes:
+<ul>	<li>	Better font metrics support in Postscript driver using FreeType.</li>
+	<li>	Major window management redesign (still in progress).	</li>
+	<li> 	Message queues in wineserver to prepare for inter-process messaging.</li>
+	<li>	DDE merged from Corel tree, plus various fixes.</li>
+	<li>	64-bit file size support.</li>
+ 	<li>	Lots of bug fixes.</li>
+</ul></p>
+<p>Check out the changelog for more details:
+<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.48&amp;content-type=text/x-cvsweb-markup">
+http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.48&amp;content-type=text/x-cvsweb-markup</a>
+</p>
+<p>Not sure if any of you follow the stats, but technically these stats end on 7/1.  
+Since there's some ongoing threads we'll wait for those to wrap up for the next issue
+and then do the stats from 7/1 on.  </p>
+
+</intro>
+
+
+<stats posts="65" size="230" contrib="25" multiples="19" lastweek="14">
+
+<person posts="6" size="14" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="19" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="3" size="8" who="Gilroy Billard &lt;gilroy@trakonic.com&gt;" />
+<person posts="4" size="8" who="Heiko Nardmann &lt;h.nardmann@secunet.de&gt;" />
+<person posts="4" size="12" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="3" size="7" who="Ove K&aring;ven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="3" size="5" who="Bill Medland &lt;medbi01@accpac.com&gt;" />
+<person posts="3" size="7" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="3" size="10" who="Bang Jun-Young &lt;bjy@mogua.org&gt;" />
+<person posts="3" size="10" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="4" size="14" who="lawson_whitney@juno.com" />
+
+
+</stats>
+
+
+
+
+
+<section
+  title="Direct Port Access"
+  subject="Initializing Dosvm for direct port access"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/.html"
+  posts=""
+  startdate=""
+  enddate=""
+>
+
+<p>Uwe Bonnes had a program that needed to directly access a dongle
+	in order to verify it's license.  He posted a small patch that worked
+	for him but wasn't sure if it was the proper way to do it.</p>
+
+<p>Ove K&aring;ven replied, 
+ "I meant to reply sooner or later... it doesn't seem right to me to load
+ the entire DOS subsystem for reading out the timer. Direct port access is
+ probably not allowed for win32 apps under NT anyway? Perhaps there should
+ be a fallback there for when the DOS subsystem is not loaded? Then again,
+ I'm not sure how it's supposed to work... it probably can't hook the timer
+ interrupt or set the timer rate or anything without upsetting the OS?"</p>
+
+<p>Alexandre wondered how the app responded under NT since that's the
+	best behavior to imitate.  Uwe replied that
+	it didn't work and it seemed to be looking for some VXD's, however
+	he hadn't installed it using <code>--winver nt40</code>. </p>
+ 
+
+</section>
+
+
+<!-- ############################################################ -- />
+
+
+<section
+  title="Teaching Old Dogs New Tricks"
+  subject="Win16 calls by Win32 functions"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/.html"
+  posts=""
+  startdate=""
+  enddate=""
+>
+
+<p>Patrik Stridvall wrote a response to a patch submitted by
+	Dmitry Timoshkov:</p>
+<quote who="Patrik Stridvall"><p>
+	Noticing that you (Dimitry) have send in a few patch
+	replacing Win16 calls by Win32 ones, I wish to
+	point out that winapi_check can detect "illegal"
+	calls from Win32 to Win16.
+	</p><p>
+	Just do 
+	<code>winapi_check --cross-call-win32-win16</code>
+	</p><p>
+	Unfortunately there is a bug in the CVS version
+	of winapi_check (fixed in my tree) that makes this
+	option output too many messages. However until
+	it is updated just do "grep 'illegal call'" on
+	the output.
+	</p><p>
+	The result this is included below.
+	Note that some of the fixes in your (Dimitry's)
+	patches is not included in the result below
+	because they are Win16 functions calling Win16
+	functions.
+	</p><p>
+	I do not say this is necessarily wrong, but are
+	you (Dimitry) really sure this is how it should be?
+	</p><p>
+	Sure it probably runs a little faster, but then Win16
+	applications on a modern computer are likely to be 
+	_very_ fast, so it is really worth risking potential
+	compatibility errors because of some probably irrelevant
+	speed differences.
+	</p><p>
+	Not that functions like DeleteObject are likely to
+	have such problems but still...
+	</p>
+</quote>
+<p>Dmitry replied:</p>
+<quote who="Dmitry Timoshkov"><p>
+
+		Well, as Alexandre already has pointed out, Win16 should be
+		mostly implemented by using Win32. I agree with him that use
+		of the 16-bit code should be eliminated as much as possible.
+		Moreover, until now I just have replaced only obvious places:
+		16-bit functions which just thunk up to win32 without any
+		argument processing.
+		</p><p>
+		I'm not going to blindly replace 16-bit calls by 32-bit.
+		I look into the code and do think twice before submitting
+		a patch.
+		</p><p>
+		Anyway, thanks for your comments.</p>
+</quote>
+<p>Patrik was concerned there might be a problem just replacing Win16
+	functions with Win32 because there might be undocumented 
+	features in one or the other.  This also goes back to implementing
+	whatever NT would do.  Patrik pointed out quite a few examples
+	that should be looked at.</p>
+
+<p>Alexandre Julliard's opinion was, <quote who="Alexandre Julliard">
+
+	As a rule it is a good idea, but there are of course exceptions.
+	Basically the rule should be that wherever you can choose between a
+	Win16 or Win32 function to do something, you should pick the Win32
+	function. But in the cases where the Win16 and Win32 functions have
+	different semantics, then of course you have to use the correct one,
+	even if in some cases it means calling Win16 functions from Win32
+	(like for the GlobalAlloc stuff).</quote></p>
+	
+</section>
+
+
+<!-- ############################################################ -- />
+
+
+<section
+  title="When You Look Up Redundant in the Dictionary..."
+  subject="Re: configure.in patch"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/.html"
+  posts=""
+  startdate=""
+  enddate=""
+>
+
+<p>...it says see redundant.</p>
+<p>Bang Jung-Young posted a patch that seemingly removed a redundant
+	check for flex when running configure.  Marcus Meissner 
+	said not to apply it because it really wasn't a redundant
+	check.  Marcus explained: </p>
+	<quote who="Marcus Meissner"><p>
+
+	The reason we check for 'flex' again is that the standard check sets LEX
+	to 'lex' even if none is found, which lead to confusion during compile.
+	</p><p>
+	Our check is similar, but it finds out if 'lex' is present and aborts
+	configure if not. 
+	</p><p>
+	This has reduced compiling support queries :)
+	</p>
+	</quote>
+
+<p>Andreas Mohr agreed, but added that the configure output
+	should be less confusing so the issue doesn't come up
+	again.  Bang Jun-Young then went on to post another
+	patch that checked for yacc, byacc, and bison and exited
+	if no suitable parser was found.</p>
+
+
+</section>  
+
+<!-- ############################################################ -- />
+ 
+ 
+<section
+  title="Wine + Symlinks + Halflife"
+  subject="GDI Memory Leak + err:x11drv:X11DRV_SetDeviceClipping Rgn is 0. Please report this."
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/.html"
+  posts=""
+  startdate=""
+  enddate=""
+>
+ 
+<p>A user was having a problem getting Halflife to work 
+	and posted the following message:</p>
+
+<quote who="adoniz@hushmail.com"><p>
+I got these errors while trying to do something a little uncommon:
+</p><p>
+I have been running Halflife from my windows partiton just fine.  But I 
+wanted to remove the huge files and replace them with symlinks to a cdrom,
+ but since I can't do symlinks on fat32 (is there a wine hack for this?? 
+ i think it would be a great idea!!), I figured I copy the basic files of 
+ HL to my linux partition, and symlink the huge pak files.
+ So, I have /mnt/halflife  and under there I have some symlinks.  I went 
+ ahead and added these to my ~/.wine/config </p>
+<p><ul><code>
+		[Drive H]<br />
+		"Path" = "/mnt"<br />
+		"Type" = "hd"<br />
+		"Filesystem" = "vfat"<br />
+</code></ul></p>
+<p>
+ Now, as root try running halflife with:  cd /mnt/halflife ; wine hl.exe 
+ or wine h:\\halflie\hl.exe  (or with all the command line options for opengl,
+ software, etc)</p>
+ <p>
+ I get these errors and a SegFault from wine:
+ </p>
+ <p><ul><code>
+ /mnt/halflife# wine h:\\halflife\\hl.exe -- -console -toconsole -soft -w 640 -win<br />
+ err:local:LOCAL_GetBlock not enough space in GDI heap 0237 for 108 bytes<br />
+ err:region:CombineRgn Invalid rgn=0000<br />
+ err:x11drv:X11DRV_SetDeviceClipping Rgn is 0. Please report this.<br />
+ err:region:CombineRgn Invalid rgn=0000<br />
+ err:region:CombineRgn Invalid rgn=0000<br />
+ err:region:CombineRgn Invalid rgn=0000<br />
+ err:region:CombineRgn Invalid rgn=0000<br />
+ Segmentation fault<br />
+ whatever:/mnt/halflife# err:ntdll:RtlpWaitForCriticalSection Critical section <br />
+ 0x4065da54 wait timed out, retrying (60 sec) fs=0257</code></ul></p>
+
+ <p>
+	 Running notepad.exe from /mnt/ works just fine. So something 
+	 else is happening  here... Email me if you need more info</p>
+ </quote>
+<p>Andreas Mohr replied:</p>
+ <quote who="Andreas Mohr"><p>
+ Hmm, you do know that directory symlinks (*not* file symlinks, though !)
+ are ignored by Wine per default ?  Set</p>
+	<p><ul><code>
+		[wine]<br />
+		"ShowDirSymlinks" = "1"<br /></code></ul></p>
+	<p>
+	 if you *really* (and I mean "really", since it can have bad results)
+	 want to use this.</p></quote>
+
+
+	 
+</section>  
+</kc>

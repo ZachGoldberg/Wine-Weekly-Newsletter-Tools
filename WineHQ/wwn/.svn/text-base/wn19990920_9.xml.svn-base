@@ -1,0 +1,433 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="9" date="20 Sep 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the ninth release of the Wine's kernel cousin publication. Its main
+goal is to distribute widely what's going on around Wine (the Un*x Windows
+emulator).
+
+</intro>
+
+<section
+  title="Winsock (cont'd)"
+  subject="Winsock (cont'd)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-131.html"
+>
+
+The discussion regarding implementation of Winsock continued (see last
+week's WWN article for more information).
+
+<p />
+
+Several issues have been addressed:
+
+<ol>
+
+<li />How to split functions between the wineserver and the client
+side ?
+
+<li />How to handle the asynchronous operations ?
+
+<li />Where to store the data (client side, server side, mixed) ?
+
+<li />How to detect when a socket has been closed ?
+
+</ol>
+
+<p />
+
+Alexandre Julliard proposed to store the handle to the socket in
+the server, but to retrieve the attached Unix fd each time it's needed
+on the client side (mainly because other threads may have changed its
+state, or even deleted it).
+
+<p />
+
+The tricky part lies in how the client side will be notified of the changes
+on the unix sockets fd. A first track was to let the socket handles be
+selectable in WaitFor... functions. Ove K&#229;ven reported that Winsock 2
+doesn't allow it, but Ulrich Weigand said <quote who="Ulrich Weigand">on
+Win95 at least WSOCK32 uses a trick to be able to wait on sockets using
+WaitForMultipleObjects: there's an undocumented KERNEL32 routine
+CreateSocketHandle which returns a handle to a K32OBJ of type K32OBJ_SOCKET
+(== 17).</quote>
+
+<p />
+
+This solution had some drawbacks: bad behavior when several threads
+asynchronously wait on the same socket handle; the client (or the
+service thread) cannot determine when to clean-up the allocated data
+(they are not aware of handle deletion).
+
+<p />
+
+Ove, Alexandre and Ulrich tried some other solutions, and ended with
+this one: the wine-server will be enhanced so that it can associate an
+event to a unix (socket) fd. When, in the select() loop on the
+wine-server, the fd receives an action, it will trigger the event; the
+service thread, on the client side, will then be able to do its
+job. This allows both to solve the issue "can socket handles be
+WaitFor...:ed", and also to clearly define which actions the fd must
+wait on. Is this case, the socket handles will have the same behavior
+as file handles with respect to WaitFor... functions.
+
+<p />
+
+Most of the operations (recv/send...) shall be done on the client
+side, but a new wine server command will be introduced to both
+re-enable the sockets in the select loop, but also to detect which
+ones may have been deleted, so that the correct deallocation can occur.
+
+<p />
+
+Ove estimates that one week is the needed time to get something
+working: you can watch progess on his project page.
+
+<p />
+
+</section>
+
+<section
+  title="Future of Window Manager"
+  subject="Future of Window Manager"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-142.html"
+>
+
+Dennis Bj&#246;rklund sent out some bits reguarding the evolution of X11 Window
+Managers, along with some issues he had with current Wine windows managing
+features:<quote who="Dennis Bj&#246;rklund">Couldn't we tell the window manager
+that we don't want any decorations and paint our own window (look at xmms
+for example). If we run wine without -managed the look is correct, but not
+the behaviour.</quote>"
+
+<p />
+
+Ulrich Weigand said this could be done with <quote who="Ulrich
+Weigand">modifying the unmanaged mode (or maybe add a new mode) so it
+doesn't set override-redirect on top-level windows, but instead lets the WM
+manage those windows just like in managed mode, except it uses some (yet to
+be defined) hints to tell the WM to remove all frame decorations. Except for
+that, all painting would be done exactly like in the unmanaged
+case...</quote> Ulrich was sure that not all window managers would correctly
+support the needed hints, and this would lead to bad behavior: <quote
+who="Ulrich Weigand">of course, we could always rely on the user to select
+that mode only if supported by the WM, but some kind of automatic fall-back
+would still be nice...</quote>
+
+<p />
+
+Dennis then reported the undergoing work for KDE, Gnome and other
+window managers to better specify what the WMs are supposed to provide
+(in other words an improved version of the ICCCM). Undergoing work can
+be found <a
+href="http://developer.gnome.org/doc/standards/extwmhints/book1.html">
+here</a> (<i>some of the links there seem to be broken: but you
+can browse the directory content </i>;-) ). From the
+list of participants (or willing to participate or "being willed" to
+participate), this is something Wine developpers should follow up.
+
+</section>
+
+<section
+  title="Fonts"
+  subject="Fonts"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-174.html"
+>
+
+One of the favourite Wine discussion issues popped up once again:
+<b>Fonts</b> !!
+
+<p />
+
+Gavriel State posted:
+
+<quote who="Gavriel State">We've been looking at the font issue quite
+closely for the last few weeks, and we have explored a couple of
+possibilities.
+
+<p />
+
+First of all, here are the primary problems we see with fonts on WINE:
+
+<p />
+
+<ol>
+
+<li />Can't get at the outline data to support GetGlyphOutline call
+
+<li />Various font sizing and metrics issues
+
+<li />No support for antialiasing
+
+<li />X font system is very confusing and hard to set up for the average user.
+
+</ol>
+
+</quote>
+
+Gav' then introduced several options to tackle the issues he brought
+up:
+
+<quote who="Gavriel State"><b>A/</b> Link directly to FreeType (note that
+FreeType 2.0 supports Type1 fonts in addition to TrueType).
+
+<p />
+
+We've already done some experimentation along these lines and we have
+a preliminary implementation of GetGlyphOutline that works using direct
+calls to FreeType.
+
+<p />
+
+FreeType would solve (1) and (2) quite easily - we would just get the
+info directly from FreeType.  It would introduce another problem though:
+if we use FreeType to get metrics and outlines, but X to render the fonts
+(through something like xfsft), subtle differences crop up between the
+X-rendered font and the numbers we get back from FreeType.
+
+<p />
+
+We could solve this by using FreeType for rendering as well, which would
+also solve issue (3), but at the expense of making remote display much
+slower than it has to be.  If we did that, we would also solve issue
+(4) since all the TT fonts would be in a standard place such as
+/usr/share/fonts/truetype.  If we didn't, the user is still stuck
+with configuring an X server.
+
+<p />
+
+Finally, there's the TrueType patent issue which has yet to be resolved.
+(Please put up your hand if you hate software patents)
+
+<p />
+
+   <b>B/</b> Encourage development of extensions to the X Font Server protocol
+that would enable us to get access to the font outlines.
+
+<p />
+
+This would solve (1) and (2), while leaving (3) and (4) unresolved.
+Note that there was some work done on the 'XAnti' extension for
+XFree 4.0, but I believe that it was abandoned.
+
+<p />
+
+We've actually had some contact with a vendor that has a font
+server that implements these kind of extensions along with an
+SDK for getting at the outlines.  The code would not be free though.
+Their work also solves issue (4) in a different way.
+
+<p />
+
+How do people feel about adding optional support for a non-free
+library that provides this functionality?  Alexandre, if we did
+work to support such a library (ifdefed, of course), would you allow
+that work into CVS, or would we have to keep a separate branch
+ourselves?
+
+<p />
+
+My hope is that the vendor would be willing to release the information
+about the protocol they're using so that XFree and other X server
+developers could support the extension protocol themselves in
+the future....</quote>
+
+<p />
+
+Patrik Stridvall proposed, for option B/, to put all the related
+material inside a driver (instead of using #ifdef), because it makes
+Alexandre Julliard happier (Patrik reported some bad adventures he had
+with patches full of #ifdef:s being rejected by Alexandre), but also
+it's easier to setup (and also enable and disable) and can even allow
+to hook up another driver to support a (specific) protocol to another
+TrueType enabled font server. Later on, Patrik also sent the URL for a <a
+href="http://www.paulandlesley.org/linux/xfree4_tt.html">mini-HOWTO</a>
+dedicated to TrueType server setup for the Debian distribution.
+
+<p />
+
+Douglas Ridgway also commented option B/: <quote who="Douglas Ridgway">As
+far as getting font outlines and doing font management, there's an
+alternative to building the added functionality into an XFS protocol
+extension. You can talk to the font server via a side channel. When I last
+looked at this, I thought there was enough flexibility in an unmodified xfs
+(with tt support) for our purposes, managing fonts by changing the config
+file and directing xfs to reread it, and maintaining a table of font file to
+Windows font correspondances, to allow things like outlines. I never got to
+a proof of concept however. My understanding of the commercial offerings was
+that they use a side channel as well, rather than building an extension to
+the XFS protocol, but I could be wrong. </quote>
+
+</section>
+
+<section
+  title="Clipboard (cont'd)"
+  subject="Clipboard (cont'd)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-181.html"
+>
+
+Noel Borthwick reported he's almost done with the clipboard server and
+
+<p />
+
+1) sent out a quick overview of the server implementation:
+
+<p />
+
+<quote who="Noel Borthwick">The server is a standalone pure XLib
+application. The makefile builds a target called "wineclipsrv". wineclipsrv
+takes one command line argument which is a bit mask of the selection types
+to be acquired. Currently we just support two selections PRIMARY (internal
+mask value 1) and CLIPBOARD (internal mask value 2). If no argument is
+supplied the server acquires all selections. (mask value 3)
+
+<p />
+
+When the server is started it first queries the current selection owner of
+the specified selections for the TARGETS selection target. It then proceeds
+to cache all the formats exposed by TARGETS. If the selection does not
+support the TARGETS target, or if no target formats are exposed, the server
+simply exits. Once the cache has been filled, the server then actually
+acquires ownership of the respective selection and begins fielding selection
+requests. Selection requests are serviced from the cache. If a selection is
+lost the server flushes its internal cache, destroying all data previously
+saved. Once ALL selections have been lost the server terminates.
+
+<p />
+
+Now when Wine terminates, we check if Wine owns any selections. If it does
+we spawn the server with the appropriate selection masks. This captures the
+selection data from Wine and takes over the selection.</quote>
+
+<p />
+
+2) and asked for help in order to integrate his development into the
+Wine tree (especially the needed Makefiles for a good cross platform
+support).
+
+<p />
+
+Patrik Stridvall then discussed some details of the implementation with
+Noel. Patrik main concerns were around the fact that the clipboard server is
+spawn when a Wine process exits: Noel implementation lets the process, when
+running, handle all the X11 and Windows clipboard operations; but, when the
+process exits, if it owns some clipboard selection, it then spawns this very
+server, in order to let this selection being available (either to X11 or to
+Windows clipboard) after the process has exited. Patrik didn't like the idea
+of spawning the server, and would better see a server running all the time;
+Patrik and Noel agreed that, if this proposal had to be implemented, this
+server should hold the selection all the time, which would led the windows
+clipboard implementation to grasp data from it (current implementation
+caches the clipboard content inside the process). In order to provide an
+efficient implementation, shared memory shall be used between the Wine
+processes and this server.
+
+<p />
+
+Both agreed that Noel's work was a very acceptable short term solution, and
+that this discussion was the long term roadmap the clipboard implementation
+shall follow.
+
+</section>
+
+<section
+  title="DGA 2.0 and Wine"
+  subject="DGA 2.0 and Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-250.html"
+>
+
+Lionel Ulmer started integrating DGA 2.0 into Wine. Nevertheless,
+there were some issues to solve:
+
+<quote who="Lionel Ulmer">I started some days ago to add DGA 2.0 support to
+DirectDraw (to use the new possibilities like depth / resolution switching
+and hardware blits with and without transparencies).
+
+<p />
+
+By doing a small test program, I found out that, whatever I do, when I
+start using DGA, all mouse movements reported by XMotionEvents are
+relative movements.
+
+<p />
+
+The game I am testing with (Baldur's Gate) uses DirectDraw for its
+graphics but standard USER calls for its mouse input (to be more
+precise, USER.17 GetCursorPos16).
+
+<p />
+
+When I test the game with DGA, the mouse does not move at all. This is
+because as long as DGA is enabled, XQueryPointer always returns the
+position of the mouse before entering DGA.
+
+<p />
+
+As GetCursorPos16 calls EVENT_QueryPointer, I concluded that I need to
+add a new driver specific to this case that would use all the
+XMotionEvents to compute the absolute mouse position by adding all the
+relative events and clip to the screen size.</quote>
+
+<p />
+
+Ulrich Weigand proposed:
+
+<quote who="Ulrich Weigand">to fix this in our USER itself, instead of
+hacking the driver: on real Windows, USER must cope with whatever it gets
+passed to its mouse_event routine. In particular, USER must cope if the
+mouse_event routine is called only with <b>relative</b> events. In this case
+it is the task of <b>USER</b> to add up the relative events so as to track
+the absolute position!
+
+<p />
+
+So, what would you say to this solution: throw out completely the
+EVENT_QueryPointer routine. Instead, create USER-global variables holding
+the current mouse position; at all places where QueryPointer is currently
+called, use those variables instead. The variables are <b>filled</b> in the
+mouse_event routine, which is furthermore changed to cope with both absolute
+and relative mouse events. In the case of absolute events, it simply sets
+the global variables to the given values, while in the case of relative
+events, it keeps adding them up.
+
+<p />
+
+Next, modify the X11DRV_EVENT driver to send relative mouse events if DGA is
+active (it should know that ...), and absolute mouse events whenever
+possible (just like now).</quote>
+
+<p />
+
+Lionel noted that some remaining points needed to be solved:
+
+<ul>
+
+<li /><quote who="Lionel Ulmer">we will have to do some screen-clipping when
+adding the relative coordinates. And I did not find any solution to change
+the current monitor width / height. What will happen : Wine is started with
+1024x768 (for example), the game calls DDraw::SetDisplayMode() to change the
+resolution to 640x480. There is no way that I can see to let USER know that
+the screen width / height has changed and that it should clip the absolute
+coordinates with other values than the one at start-up.</quote>
+
+<li />how to synchronize at DGA startup between the existing mouse handler and
+the DGA one (there's some race condition about queued X11 events).
+
+</ul>
+
+<p />
+
+Patrik Stridvall and Lionel also discussed some other issues related to
+hot-swap drivers in Wine for keyboard, mouse, screen.
+
+</section>
+
+</kc>

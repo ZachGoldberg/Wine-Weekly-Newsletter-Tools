@@ -1,0 +1,119 @@
+<!--TITLE:[Enviando parches]-->
+<!--BLURB:[Generando y enviando parches]-->
+
+<h1>Generando y enviando parches</h1>
+
+<p><b>Nota</b>: esto es una referencia rápida sobre como enviarnos 
+parches. Para obtener instrucciones detalladas por favor vea el 
+capítulo 
+<a href="{$root}/docs/winedev-guide/codingpractice">Práctica de 
+codificación</a> en nuestra documentación en linea.
+</p>
+
+<p> Por favor envie los parches a la lista de correo de parches de 
+Wine, <a href="mailto:wine-patches@winehq.org"> 
+wine-patches@winehq.org </a>.
+(Tenga en cuenta que si usted no está <a href="{$root}/forums">suscrito</a>
+a la lista de correo, los administradores de la lista de correo 
+deben comprobar primero su envío para asegurarse de que no se trata de spam 
+antes de que se pueda aceptar el parche.
+No habrá ningún intento de aplicar los parches que  no aparezcan en el grupo de noticias
+o en cualquier otro lugar que no sea el árbol Git)
+</p>
+
+<p> Al presentar parches, por favor: </p>
+<ul>
+  <li>Incluya una entrada del fichero de cambios (ChangeLog) con su 
+  	  <b>nombre real</b>, dirección de correo electrónico y
+      una descripción de lo que hace el parche.
+
+  <li>Mantenga el parche pequeño y el punto del cambio claro.
+
+  <li>Envíe un arreglo o grupo de cambios relacionados por parche.
+
+  <li>Genere su parche de nuevo con la versión más reciente de Wine desde el árbol Git WineHQ (véase más adelante).
+
+  <li>Pon a prueba tu parche, y si es posible escribe una prueba que demuestre que es correcto.
+
+  <li>Tenga cuidado de no corromper el parche a través de envolturas de línea.
+
+  <li>Evite innecesariamente cambios de formateo del código.
+
+  <li>No mezcle tabuladores y espacios porque hace que la salida diff sea ilegible, use identación consistente.
+
+  <li>Use C estándar, evite comentarios C++ y declaraciones de variables en línea.
+
+  <li>Lea el diff y asegúrese de que contenga sólo lo que quiere en él.
+</ul>
+
+<p>Los parches aceptados se publicarán en la lista de correo <a href="{$root}/forums">wine-cvs </a>.
+
+<p>Los parches con problemas evidentes pueden recibir una respuesta en wine-devel.
+
+<p>Algunos parches no podrán recibir ninguna respuesta. En ese caso, su parche
+    puede considerarse <i>Obviamente No Correcto</i>, y puede hacer lo siguiente:
+
+<ul>
+  <li> Compruebe el parche usted mismo, y piense en lo que se puede hacer para
+       aclarar el parche (pistas en la lista anterior).
+
+  <li> Escribir un correo electrónico a wine-devel, explicando el parche y solicitud para que sea
+       examinado por cualquier persona encargada de revisar.
+
+  <li> Pida consejo acerca de su parche en #winehackers.
+
+  <li> A menos que ya existe uno, abra un bug en bugzilla describiendo el
+       problema que está tratando de resolver (por ejemplo: ./configure falla en Solaris,
+       etc) y adjuntar su parche.
+</ ul>
+
+<p>
+     Si el parche no ha recibido una respuesta en 3 días del WineHQ Git confirma
+     que tu parche tiene una gran oportunidad de estar en esta categoría.
+     <br/>
+     Tal vez le resulte difícil el solicitar información,
+     a fin de reflexionar cuidadosamente sobre los comentarios que recibe.
+     <br/>
+     ¡Simplemente no se dé por vencido!
+</p>
+
+<hr>
+
+<h2>Generación de un parche para WineHQ con Git</h2>
+
+<p> Es mejor enviar pequeños parches contra el actual árbol utilizando Git.
+En primer lugar, asegúrese de que su árbol es hasta la fecha, tal y como 
+se describe en la página <a href="http://wiki.winehq.org/GitWine">Git</a>.
+ 
+<p>Compruebe sus parches en su árbol Git utilizando 
+<a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">git commit</a>.</p>
+
+<p> Si va a utilizar
+<a href="http://www.kernel.org/pub/software/scm/git/docs/git-imap-send.html">git imap-send</a>
+asegúrese de que ha creado las opciones adecuadas en su fichero de
+configuración de Git, y a continuación, ejecute:</p> 
+
+ <table width="700" border=0 cellpadding=10><tr><td class=black>
+ <span class=inverse>
+  git format-patch --stdout --keep-subject --attach origin | git imap-send<br>
+ </span>
+ </td></tr>
+ </table>
+
+<p>Esto debería subir sus parches en su carpeta de proyectos IMAP, y 
+le permitirá comprobar y enviarlos. En Mozilla Thunderbird, eso es tan 
+simple como hacer clic en "Editar Proyecto..." y luego "Enviar" si 
+tiene configurado el archivo de cabeceras de correo Git correctamente.
+
+<p>Si usted no puede utilizar IMAP, utilice el siguiente comando para generar parches:</p>
+
+ <table width="700" border=0 cellpadding=10><tr><td class=black>
+ <span class=inverse>
+  git format-patch --keep-subject origin<br>
+ </span>
+ </td></tr>
+ </table>
+
+<p>Esto debería generar una serie de archivos txt, que puede enviar manualmente.</p>
+
+<p>&nbsp;</p>

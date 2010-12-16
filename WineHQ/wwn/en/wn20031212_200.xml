@@ -1,0 +1,527 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="200" date="12/12/2003" />
+<intro> <p>This is the 200th issue of the Wine Weekly News publication.
+Its main goal is to be scared of #300. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="155" size="481" contrib="43" multiples="28" lastweek="24">
+
+<person posts="15" size="36" who="Alexandre Julliard" />
+<person posts="14" size="38" who="Dimitrie O. Paun" />
+<person posts="10" size="26" who="Andrew de Quincey" />
+<person posts="10" size="25" who="Mike Hearn" />
+<person posts="9" size="39" who="Shachar Shemesh" />
+<person posts="8" size="47" who="Subhobroto  Sinha" />
+<person posts="6" size="22" who="Gregory M. Turner" />
+<person posts="6" size="21" who="Dan Kegel" />
+<person posts="6" size="13" who="Lionel Ulmer" />
+<person posts="5" size="21" who="Boaz Harrosh" />
+<person posts="5" size="11" who="Sylvain Petreolle" />
+<person posts="5" size="11" who="Steven Edwards" />
+<person posts="4" size="12" who="Uwe Bonnes" />
+<person posts="4" size="9" who="Dmitry Timoshkov" />
+<person posts="4" size="8" who="Eric Pouech" />
+<person posts="3" size="8" who="Marcus Meissner" />
+<person posts="3" size="7" who="Fabian Cenedese" />
+<person posts="3" size="7" who="Rein Klazes" />
+<person posts="3" size="7" who="Gerhard W. Gruber" />
+<person posts="2" size="14" who="Tom" />
+<person posts="2" size="8" who="Dan Timis" />
+<person posts="2" size="6" who="Andreas Mohr" />
+<person posts="2" size="6" who="Marcelo Duarte" />
+<person posts="2" size="6" who="Jon Griffiths" />
+<person posts="2" size="5" who="Jody Goldberg" />
+<person posts="2" size="5" who="Martin Fuchs" />
+<person posts="2" size="5" who="Andreas Rosenberg" />
+<person posts="2" size="4" who="Christian Costa" />
+<person posts="2" size="8" who="Rolf Kalbermatter" />
+<person posts="1" size="3" who="Kevin Cousins" />
+<person posts="1" size="3" who="Nikolas Zimmermann" />
+<person posts="1" size="3" who="Ove Kaaven" />
+<person posts="1" size="3" who="Casper Hornstrup" />
+<person posts="1" size="2" who="Roderick Colenbrander" />
+<person posts="1" size="2" who="Geoff Thorpe" />
+<person posts="1" size="2" who="Nerijus Baliunas" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="2" who="Arthur Bergman" />
+<person posts="1" size="1" who="(carlini)" />
+<person posts="1" size="1" who="Ivan Leo Murray-Smith" />
+
+</stats>
+<section 
+	title="News: Issue #200" 
+	subject="News"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0.html" 
+	posts="1"
+	startdate="12/06/2003"
+	enddate="12/12/2003"
+>
+<topic>News</topic>
+<p>Wow.. 200 issues of this little rag have come out.  Going through the
+archives I see that the first issue came out in June of 1999.  Guess that
+means we've got four and a half years behind us.  Time flies.  George
+Carlin explained it pretty well:</p>
+
+<quote who="George Carlin"> <p>
+
+Do you realize that the only time in our lives when we like to get old is when we're kids? If you're less than 10 years old, you're so excited about aging that you think in fractions." How old are you?" "I'm four and a half!" You're never thirty-six and a half. You're four and a half, going on five!
+</p><p>
+That's the key.
+</p><p>
+You get into your teens, now they can't hold you back. You jump to the next number, or even a few ahead.
+</p><p>
+"How old are you?" "I'm gonna be 16!" You could be 13, but hey, you're gonna be 16!
+</p><p>
+And then the greatest day of your life... you become 21.
+</p><p>
+Even the words sound like a ceremony... YOU BECOME 21... YESSSS!!!
+</p><p>
+But then you turn 30. Oooohh, what happened there? Makes you sound like bad milk. He TURNED; we had to throw him out. There's no fun now, you're just a sour-dumpling. What's wrong? What's changed?
+</p><p>
+You BECOME 21, you TURN 30, then you're PUSHING 40.
+</p><p>
+Whoa! Put on the brakes, it's all slipping away. Before you know it, you REACH 50... and your dreams are gone.
+</p><p>
+But wait!!! You MAKE it to 60. You didn't think you would!
+</p><p>
+So you BECOME 21, TURN 30, PUSH 40, REACH 50 and MAKE it to 60.
+</p><p>
+You've built up so much speed that you HIT 70! After that it's a day-by-day thing; you HIT Wednesday!
+</p><p>
+You get into your 80s and every day is a complete cycle; you HIT lunch; you TURN 4:30; you REACH bedtime.
+</p><p>
+And it doesn't end there. Into the 90s, you start going backwards; "I was JUST 92."
+</p><p>
+Then a strange thing happens. If you make it over 100, you become a little kid again. "I'm 100 and a half!"
+</p><p>
+May you all make it to a healthy 100 and a half!! 
+</p></quote>
+
+<p>Ironically, this was a rather slow news week for Wine.   Grab a cup of coffee and read on..
+</p>
+
+</section>
+<section 
+	title="C++: Where's the Love?" 
+	subject="I made a wish, wrote a letter to Santa..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0.html" 
+	posts="12"
+	startdate="12/09/2003"
+	enddate="12/10/2003"
+>
+<topic>Project Management</topic>
+<p>Time to start putting together a list of everything you want
+for Christmas. Subhobroto Sinha put his together:</p>
+<quote who="Subhobroto Sinha"><p>
+With XMas nearing, I thought it was time I made my yearly wish to Santa - 
+that he would let his elves use C++ in WINE.
+</p><p>
+(Just in case, you did not know Santa's email address, it's 
+'julliard[at]winehq.org', and you can make your wishes at 
+'wine-devel[at]winehq.org'..)
+</p><p>
+You see, Santa was always so good - he answered people's prayers 
+and got together his obedient elves to run Win32 on Non-Windows 
+platforms!
+</p><p>
+However, soon many of his elves found out that technologies like 
+MFC, WTL, ATL, COM, DCOM, COM+ and other MS bloops were getting 
+too complex to be implemented using plain C, and thus developments 
+in those areas were soon in limbo.
+</p><p>
+But that could be solved using yet another language called C++ - 
+if only Santa would let it be.
+</p><p>
+Oh please Santa ! Let us adulterate WINE with C++, please.
+</p><p>
+It's not that we will rewrite everything in C++ once we get the 
+green signal - things like the loader, scheduler, and most of 
+the Win32 SDK does not need C++ at all, but what about MFC, COM, OLE ?
+</p><p>
+Not that I expect to compile native MFC source using WineLib, 
+but at least we can write the runtimes so that native MFC apps 
+can at least run under WINE ?
+</p><p>
+DirectX oozes of classes,inheritance,abstaction and everything C++ 
+as does OLE, COM and already our implementations have structure 
+object pointers running wild, whereas encapsulation would have 
+done away with it !
+</p><p>
+As a simple explanation, we might take our 'This' hack whereas C++ 
+would let have us use it as 'this' without even us worrying about 
+it!  Also, there are many places in shell32, ole and shwlapi 
+(I cannot comment on DirectX source as I do not have a graphics 
+base at all ..) where initializing a few member variables from
+a constructor would have done away with some redundancy.
+</p><p>
+Most of the time we are passing around multilevel pointers when 
+a simple reference would have done:
+</p><p>
+For example a call like
+<ul><code>
+Stream_LoadString( stm, unicode, &amp;This->sString ); [To 'static HRESULT Stream_LoadString( IStream* stm, BOOL unicode,LPWSTR *pstr )']
+</code></ul></p><p>
+can be made to a simple
+<ul><code>
+Stream_LoadString(sString);
+</code></ul></p><p>
+using C++ if we had the prototype rewritten to 
+'<tt>static HRESULT Stream_LoadString(LPWSTR &amp;pstr )</tt>' and making it a 
+member function of IStream (and thus the '<tt>IStream* stm</tt>' and 
+'<tt>BOOL unicode</tt>' would be member variables..)
+</p><p>
+We have code like that all over the place whenever COM etc 
+comes into play and "That's Not A Good Thing(TM)" !
+</p><p>
+Please give us the green card - alternately, a new test branch 
+may also be created just to see if C++ would work. All C++ based 
+modfications would go to that tree.  If that test branch works 
+and delivers, it may be merged into the main WINE tree, otherwise 
+if it fails to deliver just remove it after a stipulated period !
+</p><p>
+If WINE stuck to C only because some platforms do not support 
+C++, then will Win32 apps run on such OS at all ? Things like 
+SPARC do not need MS Apps at all (though SPARC has C++..)
+</p><p>
+For an expert discussion on C++ please see 
+<a href="http://www.research.att.com/~bs/blast.html">http://www.research.att.com/~bs/blast.html</a>
+Microsoft themselves use C++ :
+<ul>
+&lt;quote&gt;
+Microsoft: Literally everything at Microsoft is built using various flavors of Visual C++ - mostly 6.0 and 7.0 but we do have a few holdouts still using 5.0 :-( and some products like Windows XP use more recent builds of the compiler. The list would include major products like:
+<ul>
+<li>Windows XP</li>
+<li>Windows NT (NT4 and 2000) </li>
+<li>Windows 9x (95, 98, </li>
+</ul></ul></p></quote>
+
+<p>Subhobroto certainly isn't the first to ask for this; the topic
+tends to come up about once a year.  In fact, looking back in the
+archives I see it appeared in 
+<a href="http://www.winehq.org/wwn/153#No%20C++%20in%20Wine">issue #153</a>.
+At the time Alexandre certainly wasn't against the idea, he just didn't
+know a compelling reason to allow it.  Surprise.. his view hasn't
+changed as evidenced by his reply:</p>
+<quote who="Alexandre Julliard"><p>
+ You don't need Santa's permission for that, just go ahead and
+ implement DCOM in C++ and show us how easy it is. I suspect you will
+ quickly realize that the complexity of the problem does not come from
+ having to explicitly pass the this pointer around...</p></quote>
+
+<p>Ove K&#229;ven backed that up with his experiences:</p>
+<quote who="Ove Kaaven"><p>
+ Consider that the reason could be that C++ has too many interoperability
+ problems to solve any within an interoperability project like Wine. Just
+ try to compile something like MFC with g++ and see how well the result 
+ would run MSVC++-compiled programs.
+</p><p>
+ Okay, perhaps I should say right away that it won't run, because g++
+ won't generate VC++-compatible code. In any case, I don't see why MFC
+ should be part of Wine, it's not a core Windows component. There's
+ nothing wrong with having a separate FreeMFC project outside Wine using
+ C++ (and compiling their FreeMFC libs with MSVC++ for the benefit of
+ Wine users).
+</p><p>
+ As for COM/DCOM, having implemented big parts of it myself, I'm not so
+ sure C++ would have helped a whole lot in any case. It's a mess and the
+ only thing you'd achieve with C++ is a different style of mess (a more
+ unreadable one, for starters).
+</p></quote>
+
+</section>
+
+<section 
+	title="Using Native DLLs in a Winelib App" 
+	subject="Using a windows dll from a winelib or possibly native linux app."
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0231.html" 
+	posts="6"
+	startdate="12/09/2003"
+	enddate="12/10/2003"
+>
+<topic>Winelib</topic>
+<p>Arthur Bergman ran into some stumbling blocks trying to 
+create a Winelib app, 
+<quote who="Arthur Bergman">
+ I have been trying to develop an application using a vendor provided 
+ dll from an external vendor to work under linux. If we develop the app 
+ on a windows box and move it over to the wine environment it works, but 
+ it would be preferable to have a more native approach. So I tried using 
+ winelib and have progressed to a point where I have an application that 
+ compiles using the vendor supplied header files under gcc, and a  
+ vendor.dll.spec file that describes the DLL. However when I compile 
+ everything, the generated vendor.dll.so file does contain the correct 
+ symbols but they are undefined. Having played around using winemaker 
+ and winedump while trying to read up everything on winelib I am now 
+ stuck and not sure how to proceed forward.
+</quote></p>
+
+<p>Kevin Cousins offered the first bit of help:</p>
+<quote who="Kevin Cousins">
+<p>
+Well done.  It took me a significant amount of effort just to get that
+far in a similar project!</p><p>
+I found a piece of WineLib documentation (sorry: I don't have an
+appropriate cross-reference handy) that advocates that you write a shim
+layer between your Linux code and your vendor's DLL.
+</p><p>
+Basically, regardless of how clever WineLib really is, you still can't
+statically link an ELF object file against a PE COFF DLL.  That's the
+reason you see undefined symbols---they really are undefined!  You can,
+however, achieve what you want through another layer of indirection! :) 
+Basically, you have to define simple statically-linked definitions for
+those symbols which merely call through to the dynamically linked
+versions contained in your vendor's DLL.  It works like this:
+<ul>
+<li> the vendor's DLL exports some function
+    <ul><code>
+    ReturnType FunctionName(ParameterType)
+    </code></ul>
+</li>    
+<li> you've got to write your own module that wraps this:
+    <ul><code>
+    #include &lt;windows.h&gt;<br />
+    #include &lt;vendor_dll.h&gt;<br />
+
+    static ReturnType (*FunctionName_pointer) (ParameterType);<br />
+
+    void InitialiseVendorDLL() { /* BE SURE TO CALL THIS SOMEWHERE EARLY */
+    <ul>	
+	HINSTANCE dll;<br />
+	dll = LoadLibrary("vendor.dll"); /* N.B. ADD YOUR OWN ERROR CHECKING */<br />
+	FunctionName_pointer = GetProcAddress(dll, "FunctionName");
+    </ul>
+    }<br />
+    
+    ReturnType FunctionName(ParameterType p) {
+    <ul>	
+	return FunctionName_pointer(p);
+    </ul>
+    }
+</code></ul></li></ul>
+
+</p><p>
+ Compile and link against /that/ (or similar specialised for your
+ particular situation), and you're undefined symbols will now have a
+ definition, and your code should work as advertised.  At the very least,
+ all this worked for me!
+</p></quote>
+
+<p>Alexandre wrote back with a different (and easier) approach,
+<quote who="Alexandre Julliard">
+You shouldn't compile to a .dll.so since you don't have the dll
+code. What you should do is generate a libvendor.def from the spec
+file (with winebuild --def) and then link your app as a winelib app,
+adding -lvendor to the import list. winebuild will then resolve the
+symbols properly to point to the native dll.</quote></p>
+
+<p>Boaz Harrosh described this approach:</p>
+<quote who="Boaz Harrosh"><p>
+
+See if I understand what you need:
+<ul>
+<li> vendor.dll (windows binary only)</li>
+<li> myapp.exe.so (winelib application that uses vendor.dll API and 
+compiles against "vendor" header files )</li></ul></p><p>
+
+Check that you have done the following
+<ol>
+<li> wrote a vendor.dll.spec (spec syntax for all functions used from 
+"vendor" headers)</li>
+<li> compiled a libvendor.def file from above .spec file using winebuild 
+(put libvendor.def in a directory specified by -L)
+<ul>
+&lt;Makefile&gt;<br /> <code>
+# libvendor.def generation<br />
+libvendor.def: vendor.dll.spec<br />
+    $(LDPATH) $(WINEBUILD) -fPIC -o $@  --def vendor.dll.spec \<br />
+    $(vendor_dll_DLL_PATH) $(WINE_DLL_PATH) $(GLOBAL_DLL_PATH) \<br />
+    $(vendor_dll_DLLS:%=-l%) $(GLOBAL_DLLS:%=-l%)<br /></code>
+&lt;/Makefile&gt;
+</ul>
+</li>
+<li> make a myapp.exe.spec.c using winebuild including "vendor" to the 
+list of needed dlls like kernel32 and advapi32 ...
+    (this was done for you by winemaker Just add vendor at the end of 
+the dlls list)</li>
+<li> link myapp.exe.so with myapp.exe.spec.o (also done by winemaker)</li>
+<li> Have vendor.dll available in runtime</li>
+</ol></p></quote>
+</section>
+
+
+
+<section 
+	title="RPC Info" 
+	subject="rpcrt4 and rpcss with WINE and ReactOS"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0214.html" 
+	posts="6"
+	startdate="12/08/2003"
+	enddate="12/09/2003"
+>
+<topic>RPC / COM / OLE</topic>
+<p>Steven Edwards knew exactly what to expect when he started the
+following thread:</p>
+<quote who="Steven Edwards"><p>
+Ok I know this going to start YALD (Yet Another Long Discussion) that
+won't go anywhere right away but......
+</p><p>
+ReactOS is getting ready to do a major import of the WINE dlls as you
+guys know due to my repeated cross-postings to Wine-devel and
+ros-kernel. When we compile rpcrt and ole32 from WINE with some hacks
+we can make it work under ReactOS but I would like to develop an
+implementation that works properly without dirty hacking. I don't know
+much about WINEs rpcss other than what's in the comments of the code and
+for that matter I don't know much about Windows rpcss. Can we share
+these components? How are we going to break compatibility by doing this?
+</p></quote>
+
+<p>Casper Hornstrup followed up behind that,
+<quote who="Casper Hornstrup">
+ ReactOS can use the relatively fast LPC facility for
+ cross-process communication in rpcrt4. I'm not sure if WINE implements
+ this, but if both WINE and ReactOS implements it in the same
+ way, then I see no reason not to share implementations of this
+ component.</quote></p>
+
+<p>Greg Turner has done a lot of Wine's RPC backend and explained
+some of the mechanisms:</p>
+<quote who="Greg Turner"><p>
+ Wine doesn't have LPC per se.  If ReactOS does, I'd love to see their 
+ implementation and talk to you all about stealing it :)
+</p><p>
+ Rpcss (in wine) is really a nasty kludge at this time.  It only performs a 
+ single function: mapping of endpoints.  Eventually, this is where the Running 
+ Object Table, the OXID Resolver, and maybe some other things should go.  
+ Furthermore, the endpoint mapping is done in completely the wrong way: it 
+ uses an arbitrary protocol over named pipes.  It is supposed to be using RPC 
+ according to a standard interface (maybe there are two standards, though, the 
+ MS ORPC one and the ONC RPC one, which are supposed to coexist).  That's not 
+ particularly important, however, until the wire protocol is fixed.
+</p><p>
+ At the RPC API level, wine appears to support lpc -- but in fact it's using 
+ named pipes.  The actual LPC API's (NT "Ports") are just do-nothing stubs.  
+ Implementing them might be easy; implementing them /well/ would probably 
+ require shared memory and be kinda scary.  I have designs to do this myself 
+ (starting with the poor, easy implementation), but lately I'm not finding the 
+ time I want to dedicate to wine development.
+</p><p>
+ Uhh... so in answer to your question, rpcrt4 and rpcss are designed to work 
+ together, and shouldn't have too many ugly dependencies (except that rpcrt4 
+ has some ole32 deps for its ndr implementation).  For the most part, they 
+ only use high-level Windows-y stuff found in kernel32; there may be a few 
+ unixisms/wineisms, of course, but compared to other dlls these should be 
+ trivial.
+</p><p>
+ My advice: just run the code and see what happens.  So long as ROS has working 
+ named-pipes, and a few other kernel essentials like critical sections, string 
+ atoms, etc, it ought to "just work", deficiencies and all.  Just test with 
+ "/Oi" midl-generated code, and stick to the supported transports (lpc, 
+ ironically, or named pipes), or you will get no love.  AFAIK, the only snag 
+ you may encounter is if your ole diverges from that of wine.. if that 
+ happens, just break the ndr types which require ole32 until you get your  
+ ole32 up to speed.  Furthermore, you only need rpcss for dynamic endpoints!!!  
+ Fixed endpoints will work fine without rpcss.  In real-world situations, due 
+ to the deficiencies of wine's RPC, there is almost never any reason to invoke 
+ rpcss, and it rarely runs.
+</p><p>
+ Sorry to fulfill the prophecy about "YALD (Yet Another Long
+ Discussion) that won't go anywhere right away but......",
+</p></quote>
+
+<p>Steven then gave a pointer to ReactOS' LPC:
+<a href="http://cvs.reactos.com/cvsweb.cgi/reactos/ntoskrnl/lpc/">
+http://cvs.reactos.com/cvsweb.cgi/reactos/ntoskrnl/lpc/</a>
+</p>
+</section>
+
+<section 
+	title="Updated ALSA Support" 
+	subject="Status of winealsa patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0194.html" 
+	posts="10"
+	startdate="12/07/2003"
+	enddate="12/10/2003"
+>
+<topic>Multimedia</topic>
+<p>For a while it seemed ALSA was trying to make a run at Wine to become
+ the oldest open source project without a 1.0 release.  It seems they've 
+ failed miserably and are now on their second release candidate.  Sylvain 
+ Petreolle decided to submit a patch to update Wine's ALSA interface but
+ wondered why it wasn't applied:</p>
+<quote who="Sylvain Petreolle"><p>
+My winalsa patch for alsa 1.0 support wasn't committed and there
+wasn't any feedback fo it. Another winealsa patch was committed after
+that, should I resubmit mine ?
+</p><p>
+References:
+<ul>
+<li><a href="http://www.winehq.org/hypermail/wine-patches/2003/11/0342.html">
+http://www.winehq.org/hypermail/wine-patches/2003/11/0342.html</a></li>
+<li><a href="http://www.winehq.org/hypermail/wine-patches/2003/12/0047.html">
+http://www.winehq.org/hypermail/wine-patches/2003/12/0047.html</a></li>
+</ul></p> </quote>
+
+<p>The other patch in question was from Alexandre:</p>
+<quote who="Alexandre Julliard"><p>
+<ul><code>
++#define ALSA_PCM_OLD_HW_PARAMS_API
++#define ALSA_PCM_OLD_SW_PARAMS_API
+</code></ul></p></quote>
+
+<p>He explained the reasoning behind it,
+<quote who="Alexandre Julliard">
+My understanding of the ALSA_PCM_OLD
+defines is that this shouldn't be the case, the current code should
+work fine on 1.0. Do you still have problems with it?
+</quote></p>
+
+<p>Sylvain thought there was more to it,
+<quote who="Sylvain Petreolle">
+ The current code works with today alsa cvs if I use the ALSA_PCM_OLD*
+ defines, no problem at all.
+ The goal of my patch is to make us use the new API.
+ When the 1.0 state will be reached, the 0.9 API will be considered
+ deprecated (like the already deprecated 0.5 series)
+</quote></p>
+
+<p>Alexandre felt that it might not be appropriate,
+<quote who="Alexandre Julliard">
+Well, I'm not sure that's really necessary at this point. The 0.9 code
+builds just fine, and IMO we can simply wait until supporting 0.9 is
+no longer required and then switch to the 1.0 version, instead of
+having to maintain both with #ifdefs.
+</quote></p>
+
+<p>Sylvain wondered if support for 0.9 could be dropped.  A couple
+people were against that because nearly every ALSA installation is
+based on it right now.</p>
+  
+<p>Mostly unrelated to this, Christian Costa submitted a patch
+adding WaveIn support to the ALSA driver and noted,
+<quote who="Christian Costa">
+ I've successfully done record and playback at the same time.
+</quote></p>
+
+</section>
+
+<section 
+	title="DirectX Status Page" 
+	subject="DirectX Status Section"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0242.html" 
+	posts="1"
+	startdate="12/09/2003"
+>
+<topic>Status Updates</topic>
+<p>Tom Wickline maintains a nice list on WineHQ of the status of various
+components.  He put together a page for DirectX and asked for comments.
+Unfortunately the colorful HTML won't display properly if I try to include
+it here, so instead I'll just refer you to 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/12/0242.html">Tom's
+original post</a> in the archives.  
+</p>
+
+</section>
+</kc>

@@ -1,0 +1,510 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="186" date="09/05/2003" />
+<intro> <p>This is the 186th release of the weekly Wine Weekly News publication.
+Its main goal is to run amok. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="182" size="542" contrib="51" multiples="26" lastweek="28">
+
+<person posts="43" size="113" who="Dimitrie O. Paun" />
+<person posts="16" size="42" who="Jakob Eriksson" />
+<person posts="16" size="41" who="Alexandre Julliard" />
+<person posts="12" size="30" who="Ferenc Wagner" />
+<person posts="9" size="25" who="Vincent B&#233;ron" />
+<person posts="8" size="49" who="Eric Pouech" />
+<person posts="7" size="22" who="Dustin Navea" />
+<person posts="4" size="9" who="Francois Gouget" />
+<person posts="3" size="8" who="Ove Kaaven" />
+<person posts="3" size="7" who="Todd Vierling" />
+<person posts="3" size="7" who="Jakob Eriksson" />
+<person posts="3" size="7" who="Mike McCormack" />
+<person posts="3" size="6" who="Steven Edwards" />
+<person posts="3" size="6" who="Jeremy Newman" />
+<person posts="3" size="6" who="Ivan Leo Murray-Smith" />
+<person posts="3" size="5" who=" &lt;puoti@inwind.it&gt;" />
+<person posts="2" size="18" who="Klaus Gerlicher" />
+<person posts="2" size="6" who="Gerhard W. Gruber" />
+<person posts="2" size="5" who="Igor Grahek" />
+<person posts="2" size="5" who="Rein Klazes" />
+<person posts="2" size="4" who="Oleg Prokhorov" />
+<person posts="2" size="4" who="Sylvain Petreolle" />
+<person posts="2" size="4" who="Mike Hearn" />
+<person posts="2" size="4" who="Marcus Meissner" />
+<person posts="2" size="3" who="Tom" />
+<person posts="1" size="32" who="Shachar Shemesh" />
+<person posts="1" size="8" who="Subhobroto Sinha" />
+<person posts="1" size="4" who="Martin Fuchs" />
+<person posts="1" size="3" who="Michael Schluter" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="George Marshall" />
+<person posts="1" size="2" who="(dmiller)" />
+<person posts="1" size="2" who="James E. LaBarre" />
+<person posts="1" size="2" who="Sukumar .S" />
+<person posts="1" size="2" who="Paul McNett" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Dave Miller" />
+<person posts="1" size="2" who="(jonwil)" />
+<person posts="1" size="2" who="Phil Krylov" />
+<person posts="1" size="2" who="Martin Fuchs" />
+<person posts="1" size="2" who="Christian Costa" />
+<person posts="1" size="2" who="Geoff Thorpe" />
+<person posts="1" size="1" who="Dave Miller" />
+<person posts="1" size="1" who="Jukka Heinonen" />
+<person posts="1" size="1" who="flyker" />
+<person posts="1" size="1" who="Troy Rollo" />
+<person posts="1" size="1" who="hatky" />
+<person posts="1" size="1" who="Moreno" />
+
+</stats>
+<section 
+	title="News: Slashdotted" 
+	subject="News"
+	archive="http://slashdot.org/article.pl?sid=03/09/01/1245218&amp;mode=thread&amp;tid=125&amp;tid=185"
+	posts="1"
+	startdate="08/30/2003"
+	enddate="09/05/2003"
+>
+<topic>News</topic>
+<p>We got <a href="http://slashdot.org/article.pl?sid=03/09/01/1245218&amp;mode=thread&amp;tid=125&amp;tid=185">Slashdotted</a>
+ for news we reported last week.  Nothing else to see here folks.. move along,
+ move along.
+
+</p>
+</section>
+<section 
+	title="Wineproc: A New Utility" 
+	subject="wineproc: a new wine utility"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/09/0029.html" 
+	posts="2"
+	startdate="09/03/2003"
+	enddate="09/04/2003"
+>
+<topic>Utilities</topic>
+<p>Eric Pouech created a new utility and announced it on wine-patches
+with the code:</p>
+<quote who="Eric Pouech">
+<p>
+this tool allows to do a few basic operations on a Wine session:
+<ul>
+
+<li> list all running processes</li>
+<li> kill a given process</li>
+<li> list all threads from a process</li>
+<li> suspend/resume a thread</li>
+<li> list all (loaded) modules from a process</li>
+<li> list all debug channel from a process</li>
+<li> change any debug channel from a (running process)</li></ul></p><p>
+
+it comes in two flavors:
+<ul>
+<li> command line (run wineproc help to get an idea of the options)</li>
+<li> visual (requires a graphical driver in wine, like X11), with (I hope) 
+an understandable UI</li></ul></p><p>
+
+help is required to:
+<ul>
+<li> get some decent icons for toolbar (I don't feel like a graphic designer)</li>
+<li> &lt;put here what you want&gt;</li></ul></p><p>
+
+downside: the get_symbol function in system.c is really ugly. I wouldn't 
+be surprised if Alexandre doesn't like it (I don't like it myself). A 
+cleaner solution would be to implement dbghelp.dll for this kind of 
+behavior (easier said than done).</p><p>
+
+any comment welcomed!!
+</p><p>
+(thanks to Dimi for his quick fixes on the listview control BTW)
+
+</p></quote>
+<p>Cool stuff!  It will be interesting to see how this progresses.</p> 
+</section>
+<section 
+	title="Winecfg Revisited" 
+	subject="Re: [winecfg 1.1] Implement saveConfigValue(), style changes, code cleanup, UI alignment"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/08/0685.html" 
+	posts="18"
+	startdate="08/28/2003"
+	enddate="08/30/2003"
+>
+<topic>Configuration</topic>
+<p>After stagnating for many months, work on winecfg has started
+again.  Winecfg aims to be the graphical interface for configuring
+Wine.  Eventually all of Wine's configuration will be moved into
+the registry and programs like winecfg and regedit can be used to
+tweak the setup.  This system will supplant the current config file
+method.  All in all, the project needs a lot of help and volunteers
+are welcome.</p>
+<p>
+ <a href="http://www.winehq.org/site?issue=185#Wine%200.9%20Progress">
+ Last week</a> we mentioned 
+ Mike Hearn had gotten a hold of a bunch of winecfg work from Mark
+ Westcott and needed
+ to start merging it.  That process began this week.  After a few
+ patches Mike described the process he envisioned for going live
+ with it:</p>
+<quote who="Mike Hearn"><p>
+
+I should probably detail The Plan here. It's simple:
+<ol>
+<li> Merge in Marks work, submit a patch that disables all controls (grays
+them out) that don't actually do anything, ie all of them.</li>
+
+<li> Introduce some kind of global flag, maybe a config.h switch, maybe an
+exported variable (which is best?) that controls whether the
+configuration is read from the registry or config file. As patches are
+submitted to make Wine read the registry as well as the config file, the
+controls in winecfg would be re-enabled so people can test it. Once all
+the settings have been dual-purposed in this way, we can write a bit of
+migration code so people upgrading have their configurations copied into
+the registry, then throw the switch.</li>
+
+<li> Profit!!! (sorry, couldn't resist....)</li>
+</ol>
+</p><p>Does that sound OK Alexandre, or did you have different ideas?</p>
+</quote>
+
+<p>Dimi had an issue with point #2:</p>
+<quote who="Dimitrie Paun"><p>
+I really don't understand why we need the dual-purpose stuff. All we need
+to do is:
+<ul>
+    <li> make sure we have a GUI element for all settings in ~/.wine/config
+       (how far are we from having this?)</li>
+    <li> have loadConfig() initialize all these elements properly</li>
+    <li> have saveConfig() do the saving, being a mirror image of loadConfig()
+       (can't we unify them somehow so we have only one place to
+        modify to add new values?)</li>
+    <li> when all this is done, just remove the code from
+       server/registry.c:1475:init_registry()</li>
+</ul></p></quote>
+
+<p>Mike thought that view was a little simplistic and pointed out
+some areas that needed consideration:</p>
+<quote who="Mike Hearn"><p>
+A quick glance at my local winecfg and my local config file
+(which probably doesn't have every setting possible in it) shows we're
+missing:
+<ul>
+<li> A sane way to deal with appdefaults</li>
+<li> Some general settings like ShowDirSymlinks</li>
+<li> DllOverrides (we have basic UI but it doesn't let you add new dlls,
+nor does it list any system dlls).</li>
+<li> Not all the X11DRV options are in the UI</li>
+<li> Fonts</li>
+<li> Parallel/serial ports/printing stuff</li>
+<li> Debugging (should this even be in the ui?)</li>
+<li> Registry control</li>
+<li> Console control</li>
+<li> Clipboard settings</li>
+<li> Multimedia - WinMM, DirectSound</li>
+<li> Network (only one setting here though).</li>
+</ul></p><p>
+Coding for Win32 takes ages (too bad we can't use something sane like
+gtk and be done with it *sigh), so I might not be able to get them all
+functional in the time I have.
+</p><p>
+Another problem we might have is that this is going to be a pretty
+cluttered and confusing UI if we cram everything possible into it. Do we
+really have to scrap the config file completely?
+</p></quote>
+
+<p>Dimi remarked,
+<quote who="Dimitrie Paun">
+Man, oh man, quite a bit of stuff. maybe we can get rid of some of them. :)
+Or maybe we don't need UI stuff for all of them. Even on Windows users
+have to use regedit from time to time, let's not try to be more catholic
+than the Pope. Alexandre, what's your minimal set of things for winecfg
+before we can do the switch?</quote></p>
+
+<p>Alexandre felt some prudence should be taken when switching over:</p>
+<quote who="Alexandre Julliard"><p>
+Well, we need everything that normal users will want to use. But I
+don't think the priority should be on switching to winecfg as soon as
+possible; on the contrary we should take the time to review the
+config, and use that opportunity to clean things up before we make the
+switch. So for instance if some parameters are too obscure to justify
+implementing them in winecfg, we should ask whether we really need
+them in the config at all, or whether we could handle them somehow
+automatically.
+</p><p>
+Also we need to fix the code that uses config parameters to try to
+take into account dynamic changes as much as possible, so that you can
+make a change from winecfg and see it take effect at once, without
+having to restart your Wine session.
+</p></quote>
+
+<p>Dimi described a process to facilitate this that could be done
+in parallel with other work:</p>
+<quote who="Dimitrie Paun"><p>
+All of which are good things to do, but I'm afraid we're bundling
+things together unnecessarily. And this is no good -- we already
+have velocity problems :)
+</p><p>
+Removing obsolete parameters is helpful with winecfg, because
+it can save a lot of work in building the GUI. But to separate the
+tasks a bit more, I'd say we need a list of the parameters that
+we want to be able to control through winecfg. The rest will
+become part of a janitorial cleanup task.
+</p><p>
+Dealing with dynamic changes in the configuration is orthogonal
+to the winecfg work. For some performance critical areas is not
+necessarily feasible, but I suspect most of them can be made
+dynamic. I can keep this as a separate janitorial task -- I
+can maintain a list of options with their current status, and
+whether or not we need to change it from static -> dynamic, etc.
+</p><p>
+Keeping these 3 tasks separate does not mean they will be lost
+and forgotten -- I volunteer to keep track of them independently.
+In fact, we'll get more work done this way, because different
+people enjoy working on different bits. Defining exactly what
+we want winecfg to do will help Mike get the job done faster.
+Defining explicitly and granularly the parameter cleanup tasks
+will allow others (not interested in winecfg work) pick up
+pieces and run with them.
+</p><p>
+This is good -- a big problem with contributing to Wine is
+simply that people don't know what needs to be done. Defining
+such tasks is a good step forward. I am sure there are a lot
+of people interested in a 0.9 release that are willing to help
+to reach that goal faster, if only they could pick up small,
+well-defined tasks.</p></quote>
+
+<p>Alexandre cautioned against using winecfg too soon and
+described two other tasks that needed to be completed first:</p>
+<quote who="Alexandre Julliard"><p>
+
+Sure, they are separate tasks, it's more an issue of in which order we
+do things. If we are going to change things in the config tree, then
+it's a lot easier to do before winecfg is used, otherwise we need to
+add a lot of backwards compatibility code in there; so I think
+throwing the switch for winecfg should be one of the last things we
+do, once the rest is at least well under way. That doesn't prevent
+working on winecfg, we can do at least 95% of it without having to
+make it edit the primary config tree.
+</p><p>
+Also once the config is in the registry it becomes inconvenient to
+modify by hand, so it implies we first need write support in regedit,
+and a working default configuration so that regedit/winecfg can
+actually start without requiring config changes.
+</p></quote>
+
+<p>From there discussion delved into several different areas.  Francois
+Gouget was concerned that switching to a registry-only format made
+it difficult to describe what each setting did.  Currently comments
+in the config file serve that purpose.  Other folks brought up
+ideas for which
+settings to just drop from the configuration.  Finally,
+specifics of winecfg behavior, such as applying only a subset of
+changes, were discussed.</p>
+
+</section>
+<section 
+	title="Collecting Test Statistics" 
+	subject="[ANN] Conformance testing campaign"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/08/0767.html" 
+	posts="35"
+	startdate="08/29/2003"
+	enddate="09/03/2003"
+>
+<topic>Testing</topic>
+<p>Wine's test suite has steadily grown over the past year and now
+it's time to start putting it to use.  One person running tests once
+in a while is no match for collecting statistics from multiple sites
+and configurations.  This topic spanned a few different threads and was
+<a href="http://www.winehq.org/site?issue=185#Wine%200.9%20Progress">alluded
+to</a> last week.  A few different folks have stepped up to the plate.
+First, Ferenc Wagner announced:</p>
+<quote who="Ferenc Wagner"><p>
+ Hereby I ask people who have access to real Windows machines
+to help me gather information about the behaviour of cross-
+compiled conformance tests on the different platforms.
+</p><p>
+Please go to 
+<a href="http://afavant.elte.hu/~wferi/wine">http://afavant.elte.hu/~wferi/wine</a> for details.
+</p><p>
+If you can build the tests in the Wine tree by MSVC, then
+packaging the compiled binaries would also mean a valuable
+addition.  You will also find a packaging script on the page.
+</p></quote>
+
+<p>Ferenc's site details the test results from various Windows
+versions.  The tests also show problems with the existing test
+programs and things that need to be fixed.  (Do we have some volunteers?
+Bueller? Bueller?)  </p>
+
+<p>That post was followed the next day by Jakob Eriksson announcing a
+<a href="http://vmlinux.org/jakov/Wine/regrtest.exe">package
+of tests</a>.  In addition to running the tests it packages up
+the results to mail back to WineHQ.  The two efforts are very
+complementary but overlap slightly on the reporting format.  Ferenc
+preferred his format simply because he already had a parser to
+examine the results.  Jakob then asked,
+<quote who="Jakob Eriksson">
+So, is there a mailing list I can direct the test results to?</quote>
+</p>
+
+<p>Jeremy Newman promptly responded:</p>
+<quote who="Jeremy Newman"><p>
+<a href="http://www.winehq.org/mailman/listinfo/wine-tests-results">
+http://www.winehq.org/mailman/listinfo/wine-tests-results</a>
+</p><p>
+wine-tests-results <i>at</i> winehq.org
+</p><p>
+I'll update the Forums page on the site about this in a little bit.
+I have to do my "paid" work first. ;)
+</p></quote>
+
+<p>Jakob then began mail bombing the list as he tested his utility.
+</p>
+
+</section>
+<section 
+	title="NetBSD mmap Improvements" 
+	subject="Re: [resend] Allow use of MAP_TRYFIXED for better mmap()"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/08/0621.html" 
+	posts="24"
+	startdate="08/26/2003"
+	enddate="08/30/2003"
+>
+<topic>Ports</topic>
+<topic>Memory Management</topic>
+<p>Todd Vierling submitted a patch for improving mmap behavior 
+on NetBSD:</p>
+<quote who="Todd Vierling"><p>
+On NetBSD (upcoming 1.6.2, and 1.7/2.0-current), there is a new extension
+flag MAP_TRYFIXED that essentially simulates current Linux mmap behavior:
+try the mmap() hint first, without clobbering mapped pages, even if the hint
+falls within traditionally "protected" malloc heap space.  If the fixed
+mapping fails, the block is still mapped at a relocated address, as if mmap
+were called with no flags set.
+</p><p>
+With this patch, mmapping PE files on NetBSD becomes an order of magnitude
+faster, as the vfork()-and-mincore() silly walk is avoided altogether.
+</p><p>
+I've implemented the patch as forward-looking, allowing other platforms to
+add MAP_TRYFIXED to gain the same benefit.  (This mmap flag name does not
+appear to be used in any divergent fashion on any other platform, per my
+research when picking the flag's name.)
+</p></quote>
+<p>Alexandre suggested a change,
+<quote who="Alexandre Julliard">
+If you want to keep compatibility with older kernels, you'll need to
+check if MAP_TRYFIXED is available at runtime, you can't test for that
+at compile time. Or if you don't need to maintain compatibility then
+you should get rid of the NetBSD ifdefs completely. 
+</quote></p>
+
+<p>Todd didn't that that was necessary for NetBSD:</p>
+<quote who="Todd Vierling"><p>
+NetBSD isn't like Linux.  In NetBSD, the kernel, includes, and libc are not
+bidirectionally interchangeable; they are unidirectionally upgraded.  A
+binary compiled with newer libc and kernel is documented not to work on
+older kernels and libc.  This is a little less true for release branches,
+but features do still appear between minor releases, with this same caveat.
+</p><p>
+In general, this holds true with other applications on NetBSD.  If a feature
+appears in the C headers, it is assumed to exist.  The patch is in line with
+NetBSD's compatibility principles.
+</p><p>
+Adding runtime detection code is IMHO just introducing an unnecessary OS
+dependency garbage code block, and I'd rather avoid that pollution.
+</p><p>
+For now, I'd like to keep try_mmap_fixed() around for with systems that have
+not upgraded to kernels capable of MAP_TRYFIXED.  The try_mmap_fixed()
+method works fine on newer NetBSD systems, so binaries compiled with older
+headers still work even if the kernel supports MAP_TRYFIXED.  (They'll just
+be slower.  8-)
+</p></quote>
+
+<p>Alexandre felt it was limitation,
+<quote who="Alexandre Julliard">
+ Of course this implies that everybody builds all their apps from
+ source. But if that's what NetBSD people expect then it's OK with me.
+</quote> and then added in another post,
+<quote who="Alexandre Julliard">
+if you want to ship a
+binary that works for everybody, with your method you have to stick to
+the lowest common denominator. With run-time checks you can have a
+binary that takes advantage of new kernel features, while still
+running everywhere. Obviously it's a bit more complex to implement, so
+you only want to do that where there's a real gain in using the new
+features; still I think the concept applies for all platforms.
+</quote></p>
+
+<p>Everyone seemed to agree that for this specific instance, both
+because the platform was NetBSD and that creating a run-time check
+would be difficult, not having a run-time check would be acceptable.
+Todd didn't feel it would be very limiting,
+<quote who="Todd Vierling">
+ This is not a problem, as 99% of Wine users on NetBSD
+ are building from source.  The very small remainder of prebuilt-binary users
+ can easily be told to ensure that the OS version is up-to-date (since there
+ are security fixes that necessitate this anyway).
+</quote></p>
+
+<p>Alexandre did end up committing the patch.  From there the focus
+delved into the maintainability of run-time
+checks and the sanity of checking run-time features with #ifdef at
+compile time.  Gradually everything degenerated into mini-flamewar which
+is quite ironic considering this seems to be a corner-case for
+usage.  vi rules.</p>
+
+
+</section>
+<section 
+	title="Exception Handling" 
+	subject="Exceptions"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/08/0627.html" 
+	posts="7"
+	startdate="08/27/2003"
+	enddate="08/28/2003"
+>
+<p>Someone wrote in and described a problem with 
+ structured exception handling:</p>
+<quote who="flyker"><p>
+Using MSVC i can write
+<ul><code>
+ __try {
+     <ul>...</ul>
+ }<br />
+ __except( EXCEPTION_EXECUTE_HANDLER )<br />
+ {
+    <ul>...</ul>
+ }
+</code></ul></p><p>
+using Winelib i can write
+<ul><code>
+
+ __TRY {
+    <ul>...</ul>
+ }<br />
+ __EXCEPT( ??? )<br />
+ {
+    <ul>...</ul>
+ }
+</code></ul></p><p>
+what can i use how EXCEPTION_EXECUTE_HANDLER ?
+</p></quote>
+
+<p>Alexandre gave some pointers:
+<quote who="Alexandre Julliard">
+ In general you need to create a function that returns a filter value
+ (EXCEPTION_EXECUTE_HANDLER or EXCEPTION_CONTINUE_SEARCH), and pass
+ that function name in __EXCEPT(). There are many examples of that in
+ the Wine source. As a simplification, if you want to execute the
+ handler in all cases (i.e. your filter function always returns
+ EXCEPTION_EXECUTE_HANDLER) then you can use NULL instead of a function
+ name.
+</quote></p>
+
+<p>Greg Turner mentioned a caveat,
+<quote who="Greg Turner">
+ There are limitations.  You must exit the try block using "normal" flow 
+ control.  That is, using return, goto, break, or continue to leave a __TRY 
+ block will cause disaster.  Otherwise they work OK.
+</quote></p>
+</section></kc>

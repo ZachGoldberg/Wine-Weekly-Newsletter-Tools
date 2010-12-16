@@ -1,0 +1,315 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="261" date="02/11/2005" />
+<intro> <p>This is the 261st issue of the Wine Weekly News publication.
+Its main goal is to float. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="114" size="477" contrib="49" multiples="23" lastweek="25">
+
+<person posts="15" size="35" who="Alexandre Julliard" />
+<person posts="9" size="26" who="Mike Hearn" />
+<person posts="9" size="22" who="Paul Vriens" />
+<person posts="5" size="38" who="Alex Woods" />
+<person posts="4" size="42" who="Jonathan Ernst" />
+<person posts="4" size="13" who="Huw D M Davies" />
+<person posts="4" size="11" who="Tom" />
+<person posts="4" size="10" who="George Ginden" />
+<person posts="3" size="11" who="Michael Stefaniuc" />
+<person posts="3" size="10" who="Robert Reif" />
+<person posts="3" size="9" who="Paul Millar" />
+<person posts="3" size="8" who="Ivan Leo Puoti" />
+<person posts="2" size="20" who="Paul R Streitman" />
+<person posts="2" size="17" who="Ulrich Czekalla" />
+<person posts="3" size="9" who="Robert Shearman" />
+<person posts="2" size="7" who="M-Rick" />
+<person posts="2" size="6" who="Eric Frias" />
+<person posts="2" size="6" who="Duane Clark" />
+<person posts="2" size="6" who="Dmitry Timoshkov" />
+<person posts="2" size="5" who="Ferenc Wagner" />
+<person posts="2" size="5" who="Vincent B&#233;ron" />
+<person posts="2" size="5" who="Chris Morgan" />
+<person posts="2" size="4" who="luis lenders" />
+<person posts="1" size="46" who="Holly Bostick" />
+<person posts="1" size="10" who="Michael Jung" />
+<person posts="1" size="9" who="Ulrich Czekalla" />
+<person posts="1" size="6" who="Robert North" />
+<person posts="1" size="4" who="Igor Shmukler" />
+<person posts="1" size="4" who="Carl Sopchak" />
+<person posts="1" size="4" who="Stefan Leichter" />
+<person posts="1" size="3" who="David Lee Lambert" />
+<person posts="1" size="3" who="Martin Sternevald" />
+<person posts="1" size="3" who="Rein Klazes" />
+<person posts="1" size="3" who="James Hawkins" />
+<person posts="1" size="3" who="Carlos Lozano" />
+<person posts="1" size="3" who="Nick Hornback" />
+<person posts="1" size="3" who="Steven Edwards" />
+<person posts="1" size="3" who="Shachar Shemesh" />
+<person posts="1" size="3" who="Jakob Eriksson" />
+<person posts="1" size="2" who="seut" />
+<person posts="1" size="2" who="Dietrich Teickner" />
+<person posts="1" size="2" who="Jason Edmeades" />
+<person posts="1" size="2" who="Oliver Stieber" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Dimitrie O. Paun" />
+<person posts="1" size="2" who="Jeremy White" />
+
+</stats>
+<section 
+	title="Wintab Status" 
+	subject="The status of the wintab dll"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/02/0261.html" 
+	posts="1"
+	startdate="02/10/2005"
+>
+<topic>Status Updates</topic>
+<p> Robert North posted a bunch of patches a few weeks ago to improve
+Wine's tablet support.  This week he wrote to give and update about
+what works, what doesn't, and what areas people could work on:</p>
+
+<quote who="Robert North"><p>
+I think after the 10 or more patches to the Wintab dll that I submitted
+last month, I should say something about it's status...
+And of course thank Alexandre for applying those patches.
+</p><p>
+<u>Applications: Current status</u></p><p>
+</p><p>
+<ul>
+<li>In Painter 5
+<ul>
+<li>Cursor pressure works. (Therefore is usable by most)</li>
+<li>Cursor orientation is a little odd: The orientation maths needs to be
+re-done.</li>
+<li>No eraser. Haven't yet cracked what enables the eraser.</li>
+<li>Doesn't work in desktop mode: Need to map to desktop coordinates.</li>
+<li>Repeats windows bugs where cursor looses pressure/orientation info
+almost bug for bug (Is this a feature? ;-)</li>
+<li>Cannot detect pressure/orientation int the "Brush Tracking" window: The
+tablet context is attached to the main window, so no events get to the
+popup, even if they overlap.
+This is not how windows wintab functions.</li></ul>
+</li>
+<li>In Photoshop 6
+<ul>
+<li>Can only get tablet data in desktop mode: This is because the tablet
+context is attached to the desktop. Which generates/receives no wine
+events outside desktop mode.</li>
+<li> Eraser and pen pressure working. *But* to get them working, you must
+have 3 XInput devices listed in your XF86Config file, They need to be
+the last entries in the "ServerLayout" section and the following order:
+eraser, tablet mouse. This is a far from ideal way of specifying the
+devices Wintab should use :-/
+I'll document this if someone can point me to a good place to put the docs.
+</li></ul></li></ul>
+</p><p>
+<u>To Do</u>
+</p><p>
+<ol>
+<li> Look at X11 errors. There appear to be some errors that deny some
+users the
+ability to access Wintab enabled apps. (I think I know how to fix this)</li>
+<li> Improve orientation data. Orientation comes in as X-Y coords
+(Implicit Z), and has to leave as spherical coords. This calculation
+needs to be re-done.</li>
+<li> When tablet context is on top, let it read XInput events from all the
+app's top-level windows. (This simulates the fact that the context is
+usually designed to cover the whole screen)</li>
+<li> When tablet context is attached to desktop, read XInput events from
+all the app's top-level windows.</li>
+<li> Tests<br />
+    --My current philosophy on tests is...
+    Use Photoshop &amp; Painter, any formal tests
+    can be written if anyone else gets involved in patching Wintab, to
+avoid regressions, and conflict.</li></ol>
+</p><p>
+<u>Long term to do</u> (Anyone interested?)
+</p><p>There's a lot of work that could be done here, but what gets done
+and who does it probably depends upon whether anyone finds an app that
+needs these features. I'd love to implement these, but realistically, I
+don't foresee doing this unless someone hires me to do so ;)
+<ol>
+<li> Improve configuration of wintab.<br />
+	Wintab could probably do with some information entered into the
+	config file, to avoid the user having to
+	hack their Xfree86cfg file.</li>
+<li> Handle Z-Order of context properly.
+	This entails
+	<ul>
+		<li>sharing Z-Order between apps.</li>
+		<li>Working out exactly what role windows have in
+		 determining tablet context z-orders.</li>
+		<li>Allow tablet contexts that don't cover the whole
+		 screen/tablet.</li>
+		<li>Handle inter-application clipping of tablet contexts</li>
+		<li>Allow all application's windows to receive tablet events 
+                   when tablet context is on top</li></ul>
+</li>
+<li> Implement non-system tablet contexts (Where system cursor not moved
+by pen or mouse)</li>
+<li> Unicodify</li>
+<li> Implement various wintab extensions.</li>
+<li> Implement wintab manager functions.</li>
+<li> Tests.</li></ol>
+</p><p>
+<u>Unknowns</u>
+</p><p><ol>
+<li> How are wintab contexts are raised lowered?
+Contexts have their own z-order independent of windows, and their own
+viewport concept, based upon the tablet's coordinate system, not that of
+the OS.
+It appears that entering, or clicking on the window the tablet context
+is attached to will raise/lower the context.
+But I haven't done much testing on this.
+In particular, what happens if more than one app request their tablet
+context is attached to the desktop?
+</li>
+
+<li> How Painter detects the eraser.
+Have 3 possibilities
+<ol>
+	<li> Windows can detect an eraser, and sends specific messages.
+		(I'm sure I've seen this, but can't work out where!)</li>
+	<li> Only works if tablet and cursors are named correctly.
+		(Probably linked to wacom tablets only).</li>
+	<li> I've missed something</li></ol> 
+</li>
+<li> Requirements of other applications</li>
+</ol> 
+</p></quote>
+</section>
+<section 
+	title="Configuring TrueType Fonts" 
+	subject="Question about TrueType rendering"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/02/0168.html" 
+	posts="3"
+	startdate="02/07/2005"
+>
+<topic>Fonts</topic>
+<p>Eric Frias wanted to know exactly how FreeType and Wine interact to 
+use TrueType Fonts:</p>
+
+<quote who="Eric Frias"><p>
+I'm trying to get winelib working on a platform whose X server doesn't 
+have native support for TrueType fonts.  I've configured wine with 
+freetype, but it never seems to display the TrueType fonts.  I don't 
+have xfsft or xfstt installed.
+</p><p>
+Should I expect this to work?  I don't understand whether Wine uses the 
+freetype library to render TrueType fonts, or if it just uses it for 
+some other purpose (like getting metrics) and still depends on the font 
+server to render the fonts.
+</p><p>
+I see messages like this when wine starts, so it looks like wine is 
+finding my fonts, but when I Call CreateFont("Arial"), it never maps to 
+a TrueType font:
+<ul><code>
+trace:font:ReadFontDir Found "arial.ttf" in 
+"/devel/syncad/.SynaptiCAD/mnt/c/windows/Fonts"
+trace:font:AddFontFileToList Loading font file 
+"/devel/syncad/.SynaptiCAD/mnt/c/windows/Fonts/arial.ttf" index 0<br />
+trace:font:AddFontFileToList fsCsb = 400001ff ffff0000/00007a87 80000000 
+00000008 00000000<br />
+trace:font:AddFontFileToList Added font L"Arial" L"Regular"
+</code></ul></p><p>
+Is it still necessary to run xfsft to use these fonts, or should wine be 
+able to use them on its own?</p></quote>
+
+<p>Huw Davies explained what the trace message meant and what was going on:</p>
+<quote who="Huw Davies"><p>
+If you've got this, then it means Wine is happily using FreeType.  In
+this case Wine will (by default) render the fonts itself and display
+them via the X RENDER extension.  This means that it'll not use X11
+font mechanisms at all.  If Wine can't use the RENDER extension then
+it will fallback to using X requests such as XPutImage which again
+won't use the X11 font mechanism.
+</p><p>
+In fact Wine will only use X11 fonts if either:
+<ul>
+a. You tell Wine to do so in the config file<br />
+b. Wine can't find any TrueType fonts<br />
+or<br />
+c. Wine can't find, or wasn't compiled with, a working version of
+   FreeType.</ul></p></quote>
+
+
+</section>
+<section 
+	title="Recycle Bin Needs Implementing" 
+	subject="Re: [Discuss] Recycle Bin problem with Preclick image editing software"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/02/0227.html" 
+	posts="3"
+	startdate="02/09/2005"
+>
+<topic>Integration</topic>
+<p>Mike Hearn forwarded an email to wine-devel about an application
+that needed some special functionality to be implemented:</p>
+<quote who="Mike Hearn">
+<p>
+Context is: app has a "send to recycle bin" option to delete photos.
+Doesn't work. Native shell32/shfolder fixes it. If anybody is up for
+what is probably an easy task, figure out why and fix it so c:\Recycled
+is used.
+</p><p>
+For bonus points we should bridge it to KDE/GNOME so if an app recycles
+something it appears in your actual trash can </p></quote>
+
+<p>David Lee Lambert looked into it and reported some more details:</p>
+
+<quote who="David Lee Lambert"><p>
+
+comment in dlls/shell32/shlfileop.c says: "unimplemented and break if any
+other flag set: FOF_ALLOWUNDO, FOF_WANTMAPPINGHANDLE".  FOF_ALLOWUNDO = 
+0x40 is the flag that says to use the Recycle Bin,  if available.  Note 
+that Windows itself doesn't use the recycle bin on network drives or 
+removable disks.
+</p><p>
+Probably some extra logic could be added around line 1085 to issue a 
+'rename' (or MoveFileEx) call in either of the following situations:
+<ol>
+<li>  The file is under the user's home directory;  move it to 
+~/Desktop/Trash or ~/.gnome-desktop/Trash</li>
+
+<li>  The file is on a VFAT partition;  move it to $(MOUNT_POINT)/Recycled</li>
+</ol>
+</p><p>
+However,  the app in question is probably upset about something else,  and 
+there are still some stub functions in that file,  so I doubt that a 
+"correct Recycle Bin" is first-priority for the Wine team.
+</p></quote>
+
+
+</section>
+<section 
+	title="Bi-arch Support on AMD64" 
+	subject="Re: bi-arch on an amd64"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/02/0153.html" 
+	posts="4"
+	startdate="02/07/2005"
+	enddate="02/08/2005"
+>
+<topic>Ports</topic>
+<p>Alex Woods described the steps he needed to perform in order to get
+a bi-arch build of Wine on an AMD64:</p>
+<quote who="Alex Woods"><p>
+It turns out, it's actually a problem with kernel 2.6.10 that I was
+encountering, and the multilib build is a success.  With kernel 2.6.9
+wine runs perfectly.
+</p><p>
+To round things up, here are the steps I took to achieve this:
+<ol>
+<li> Apply patch below (will be submitting to wine-patches)</li>
+<li> Move your /usr/include out of the way and replace with one from an
+   ix86 box (might not be necessary if your distro has multilib
+   includes)</li>
+<li> autoconf</li>
+<li> ./configure --x-libraries=&lt;path_to_your_multilib_x_libs&gt;</li>
+<li> make depend &amp;&amp; make</li>
+<li> make install</li>
+<li> Don't forget to put your /usr/include back ;)</li></ol>
+</p><p>
+I suppose I should see what's up with kernel 2.6.10 now.</p></quote>
+
+</section></kc>

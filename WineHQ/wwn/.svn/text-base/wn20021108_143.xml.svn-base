@@ -1,0 +1,984 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="143" date="11/08/2002" />
+
+<intro>
+<p>This is the 143rd release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+
+<stats posts="541" size="1596" contrib="96" multiples="55" lastweek="53">
+
+<person posts="118" size="324" who="Dimitrie O. Paun" /> 
+<person posts="29" size="91" who="Andreas Mohr" /> 
+<person posts="25" size="66" who="Dustin Navea" /> 
+<person posts="24" size="56" who="Alexandre Julliard" /> 
+<person posts="22" size="70" who="Francois Gouget" /> 
+<person posts="20" size="83" who="Greg Turner" /> 
+<person posts="19" size="80" who="Carlos Lozano" /> 
+<person posts="16" size="53" who="Igor Izyumin" /> 
+<person posts="14" size="34" who="Ove Kaaven" /> 
+<person posts="13" size="39" who="Jeremy White" /> 
+<person posts="12" size="35" who="Joerg Mayer" /> 
+<person posts="12" size="25" who="Sylvain Petreolle" />
+<person posts="10" size="30" who="Shachar Shemesh" />
+<person posts="10" size="26" who="Martin Wilck" />
+<person posts="10" size="25" who="Jeremy Newman" />
+<person posts="9" size="22" who="Jaco Greeff" />
+<person posts="8" size="31" who="Matthew Bloch" />
+<person posts="8" size="22" who="Thomas Wickline" />
+<person posts="8" size="18" who="Lionel Ulmer" />
+<person posts="8" size="18" who="Jaco Greeff" />
+<person posts="7" size="17" who="Eric Pouech" />
+<person posts="6" size="15" who="Mark Hannessen" />
+<person posts="6" size="13" who="Chris Morgan" />
+<person posts="5" size="11" who="Robert Amstadt" />
+<person posts="4" size="13" who="Marcus Meissner" />
+<person posts="4" size="12" who="Uwe Bonnes" />
+<person posts="4" size="10" who="Dmitry Timoshko" />v 
+<person posts="3" size="40" who="Zsolt Rizsanyi" />
+<person posts="3" size="15" who="Geoff Thorpe" />
+<person posts="3" size="9" who="DanteAliegri" />
+<person posts="3" size="8" who="Enrico Horn" />
+<person posts="3" size="8" who="Rick Romero" />
+<person posts="3" size="8" who="Ender" />
+<person posts="3" size="8" who="David Fraser" />
+<person posts="3" size="7" who="John K. Hohm" />
+<person posts="3" size="7" who="Patrik Stridvall" />
+<person posts="3" size="7" who="Z_God " />
+<person posts="3" size="7" who="steve.lustbader@philips.com" />
+<person posts="3" size="6" who="Steven Edwards" />
+<person posts="2" size="10" who="Matts" />
+<person posts="2" size="6" who="Jukka Heinonen" />
+<person posts="2" size="6" who="Mike Hearn" />
+<person posts="2" size="6" who="Kye Lewis" />
+<person posts="2" size="5" who="Rolf Kalbermatter" />
+<person posts="2" size="5" who="Gregory Hicks" />
+<person posts="2" size="5" who="Medland, Bill" />
+<person posts="2" size="5" who="Ulrich Weigand" />
+<person posts="2" size="4" who="Gyorgy Jeney" />
+<person posts="4" size="8" who="Marcus Meissner" />
+<person posts="2" size="4" who="Michael Wetherell" />
+<person posts="2" size="4" who="Sam" />
+<person posts="2" size="4" who="Gerald Pfeifer" />
+<person posts="1" size="9" who="Dan Kegel" />
+<person posts="1" size="7" who="Matthew Bloch" />
+<person posts="1" size="5" who="nagyzoli@drotposta.hu" />
+<person posts="1" size="4" who="Jakob Eriksson" />
+<person posts="1" size="3" who="Tony Lambregts" />
+<person posts="1" size="3" who="Justin" />
+<person posts="1" size="3" who="Shachar Shemesh" />
+<person posts="1" size="3" who="Francois Gouget" />
+<person posts="1" size="3" who="Alberto Massari" />
+<person posts="1" size="3" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="JCasad@cmp.com" />
+<person posts="1" size="2" who="Hannu Kotipalo" />
+<person posts="1" size="2" who="Ryan Cumming" />
+<person posts="1" size="2" who="Gavriel State" />
+<person posts="1" size="2" who="Christian Neumair" />
+<person posts="6" size="17" who="Vincent Beron" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Johan Gill" />
+<person posts="1" size="2" who="Urivan Saaib" />
+<person posts="1" size="2" who="David D. Hagood" />
+<person posts="1" size="2" who="Huw Davies" />
+<person posts="3" size="5" who="Greg Turner" />
+<person posts="2" size="3" who="Brian Vincent" />
+<person posts="1" size="2" who="Kye Lewis" />
+<person posts="1" size="2" who="Hetz Ben Hamo" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Adam Ernst" />
+<person posts="1" size="2" who="Fabian Cenedese" />
+<person posts="1" size="2" who="Matt" />
+<person posts="1" size="1" who="Steve Langasek" />
+<person posts="1" size="1" who="Gustavo Junior Alves" />
+<person posts="1" size="1" who="Ulf Dambacher" />
+<person posts="1" size="1" who="kevin" />
+<person posts="1" size="1" who="David.Goodenough@DGA.co.uk" />
+<person posts="1" size="1" who="yf" />
+<person posts="1" size="1" who="Christoph Frick" />
+
+</stats>
+
+
+<section 
+	title="News: Wine-20021031 and Commercial Devel"
+	subject="News"
+	archive="http://cvs.winehq.org/cvsweb/wine/ANNOUNCE?rev=1.68&amp;content-type=text/x-cvsweb-markup" 
+	posts="4" 
+	startdate="11/02/2002"
+	enddate="11/08/2002"
+>
+<topic>News</topic>
+<p>Oops.  As I as doing last minute additions to last weeks'
+issue I missed announcing wine-20021031.  Alexandre broke
+from his usual one month cycle and released this a mere
+24 days since the last one.  No doubt in part to the
+recent flurry of activity.  From the
+announcement:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20021031: (see 
+<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.64&amp;content-type=text/x-cvsweb-markup">ChangeLog</a> 
+for details)
+<ul>
+        <li> Complete listview overhaul.</li>
+        <li> Beginnings of real RPC support.</li>
+        <li> Most dlls now build properly in STRICT mode.</li>
+        <li> Inter-process window activation and focus handling.</li>
+        <li> Many improvements to AVI support.</li>
+	<li> Lots of bug fixes.</li>
+</ul></p></quote>
+
+<p>CodeWeavers released CrossOver Office 1.3.1 on Monday.  This is
+basically a bugfix release as noted by the minor version number.
+Check out the 
+<a href="http://www.codeweavers.com/about/press_releases/?id=20021104">release notes</a> 
+to find out what's new.  One thing I found interesting was this 
+note, <quote who="CodeWeavers">
+Warns user if they are about to run an executable attachment from the 
+/tmp directory. This protects users against viruses such as KLEZ.</quote>
+</p>
+
+<p>Gavriel State updated 
+<a href="http://www.transgaming.com/gavstates.php">his
+column</a> over at TransGaming.  In it he discusses some of the more
+intangible aspects of selecting development work.  
+<a href="http://www.transgaming.com/presmsg.php">Viktas Gupta</a> also
+updated his column.  In it he discusses he discusses how cool TransGaming
+is.</p>
+
+<p><a href="http://www.xandros.com">Xandros</a> revamped their web
+site.  Things seem a lot smoother than a few weeks ago.  And if
+you order now you get free fedex shipping.</p>
+</section>
+
+
+
+
+
+
+<section 
+	title="Wine 0.9 To Do" 
+	subject="Wine 0.9 TODO v0.2"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0469.html" 
+	posts="19" 
+	startdate="11/07/2002"
+	enddate="11/08/2002"
+>
+<topic>Project Management</topic>
+<p>Dimi Paun posted a link to the (official?) Wine 0.9 To Do
+list: <a href="http://www.winehq.org/index.php?page=todo_lists">
+http://www.winehq.org/index.php?page=todo_lists</a>.  Most likely you'll 
+find that page the most up to date,
+however I'll reproduce some of it below for reference.  Dimi
+seems to be adding/updating/changing things on a daily basis
+as he gets more feedback. </p>
+
+<p>I should also point out, if you've wanted to get involved
+with Wine this is an excellent opportunity.  Many of the
+tasks don't require any coding ability.  Wanna make some 
+screenshots?  Send them to <a href="mailto:vinn@theshell.com?subject=Wine screenshot">me</a>.  
+Don't even worry about thumbnails or resolution, I can take care of
+that.  (I'd prefer if they were in a compressed format though.)
+Other tasks, such as nailing down the default Wine 
+configuration, provide an excellent chance at getting your
+feet wet with minimal knowledge of Wine or C needed. </p>
+
+<quote who="Dimitrie Paun"><p>
+
+<h1>Wine 0.9 TODO</h1></p><p>
+
+<u>Introduction</u>
+</p><p>
+  Before I start, a quick reminder for the 0.9 criteria:
+  <ul>
+    <li> Users can start using Wine</li>
+      <ul>
+        <li> works well for a fair number of apps</li>
+        <li> no MS DLLs required (from real Windows)</li>
+      </ul>
+    <li> User facing stuff (website, docs, etc.) are in a decent state</li>
+  </ul>
+</p><p>
+  What is not in 0.9:
+  <ul>
+    <li> stable server protocol (no binary compatibility)</li>
+    <li> DLL separation (phase 2)</li>
+  </ul>
+</p><p>
+  Please review it, and let me know if:
+  <ul>
+	  <li> I've left something out</li>
+    <li> Something is in, and it doesn't belong in here (for 0.9 that is)</li>
+    <li> I have put your name on a task you are not working on</li>
+    <li> I have NOT put your name on a task you are working on</li>
+    <li> You have a status update (if you're working on something)</li>
+    <li> You want to start working on some of these.</li>
+  </ul>
+</p><p>
+  Please send all comments, flames, and suggestions to
+     <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>.
+</p><p>
+  <u>Resources</u>
+  <ul>
+    <li><a href="http://bugs.winehq.org/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;product=Wine&amp;target_milestone=0.9.0&amp;order=bugs.bug_severity">0.9 tasks</a></li>
+    <li><a href="http://www.winehq.org/about/index.php?contrib#devel">other tasks</a></li>
+  </ul>
+</p><p>
+  <u>ChangeLog</u>
+</p><p>
+  <ul>
+    <li> 0.3: in progress</li>
+    <li> 0.2 (Nov 7, 2002): updated, and transformed to HTML</li>
+    <li> 0.1 (Nov 6, 2002): released to <a href="mailto:wine-devel@winehq.org">wine-devel</a></li>
+  </ul>
+</p><p>
+  <u>TODO</u>
+</p><p>A. WineHQ work<br />
+  Beta available <a href="http://lostwages.winehq.org">here</a>
+      <ol>
+	<li> Website redesign [IN PROGRESS]</li>
+	  <ul>
+	    <li> worker: Jeremy Newman</li>
+	    <li> status: backend is getting finalized</li>
+	    <li> updated: Nov 7, 2002</li>
+	  </ul>
+	<li> Reorganize the navigational menu [DONE]</li>
+	  <ul>
+	    <li> worker: Francois Gouget &amp; al.</li>
+	    <li> status: merged into new site</li>
+	    <li> updated: Nov 5, 2002</li>
+	  </ul>
+	<li> Create some really sexy screenshots [IN PROGRESS]</li>
+	  <ul>
+	    <li> worker: ?</li>
+	    <li> status: just starting</li>
+	    <li> updated: Nov 7, 2002</li>
+	    <li> criteria: one app per screenshot, avoid cluttered desktop</li>
+	  </ul>
+	<li> Rework the FAQ interface [IN PROGRESS]</li>
+	  <ul>
+	    <li> workers: Dimitrie O. Paun, 
+			  Keith Matthews, 
+			  Thomas Wickline</li>
+	    <li> status: close to first public release</li>
+	    <li> updated: Nov 7, 2002</li>
+	  </ul>
+	<li> Enlist some 'official' distribution maintainers [DONE]</li>
+	  <ul>
+	    <li> RedHat: Vincent Beron</li>
+	    <li> SuSE: Marcus Meissner</li>
+	    <li> Mandrake: Kye Lewis</li>
+	    <li> Debian: Michael Wetherell</li>
+	    <li> FreeBSD: Gerald Pfeifer</li>
+	    <li> status: completed</li>
+	    <li> updated: Nov 7, 2002</li>
+	  </ul>
+	<li> Create nice page with apps that run virtually flawless [IN PROGRESS]</li>
+	  <ul>
+	    <li> workers:Carlos Lozano, 
+			 Dustin Navea</li>
+	    <li> status: ?</li>
+	    <li> updated: Nov 7, 2002</li>
+	    <li> criteria: not MS dlls required, no tricks, etc.</li>
+	  </ul>
+     </ol>
+</p><p>
+  B. Documentation work
+     <ol>
+	<li> We need to first figure <em>what</em> is out of date. [TODO]</li>
+	  <ul>
+	    <li> worker: Dustin Navea</li>
+	    <li> status: ?</li>
+	  </ul>
+	<li> Move CVS docu from User Guide to Devel Guide [IN PROGRESS]</li>
+	  <ul>
+	    <li> worker: Bill Medland</li>
+	    <li> status: just started</li>
+	    <li> updated: Nov 7, 2002</li>
+	  </ul>
+     </ol>
+</p><p>
+Wine configuration
+     <ol>
+	<li> Merge configuration into the registry [TODO]</li>
+	<li> Write control panel applets for editing it [TODO]</li>
+	<li> Have decent defaults so we can start control panel without prior configuration [TODO]</li>
+	<li> Have wizard like app to autoconfigure wine [TODO]</li>
+	  <ul>
+	    <li> proposal: WineSetupTk by Jeremy White</li>
+	  </ul>
+	<li> Make Wine's DLLs register themselves to avoid manual merging of the <tt>winedefault.reg</tt> [TODO]</li>
+	<li> Write <tt>wine.inf</tt> script to setup a new Wine installation [TODO]</li>
+	<li> Have a wineboot script for RunOnce stuff [IN PROGRESS]</li>
+	  <ul>
+	    <li> workers: Andreas Mohr,
+			  Shachar Shemesh</li>
+	    <li> status: 50%</li>
+	    <li> updated: Nov 7, 2002</li>
+	  </ul>
+     </ol>
+</p><p>
+  Stabilize utilities 
+     <ol>
+	<li> Get rid of the init directive from .spec files [DONE]</li>
+	  <ul>
+	    <li> worker: Alexandre Julliard</li>
+	    <li> status: implemented by <a href="http://cvs.winehq.org/patch.py?id=6180">this</a></li>
+	    <li> updated: Nov 7, 2002</li>
+	  </ul>
+	<li> Make sure the .spec file format is fairly stable [IN PROGRESS]</li>
+	  <ul>
+	    <li> worker:Dimitrie O. Paun</li>
+	    <li> status: investigating</li>
+	    <li> updated: Nov 7, 2002</li>
+	    <li> what: can we get rid of the <tt>rsrc</tt> directive?</li>
+	  </ul>
+	<li> Ensure the various utilities' options are stable [IN PROGRESS]</li>
+	  <ul>
+	    <li> status: Alexandre fixed winebuild options</li>
+	    <li> updated: Nov 7, 2002</li>
+	    <li> what: audit the other utilites</li>
+	  </ul>
+	<li> Get rid of the Perl testing framework [TODO]</li>
+	  <ul>
+	    <li> worker: ?</li>
+	    <li> status: ?</li>
+	  </ul>
+     </ol>
+</p><p>
+   Important fixes
+     <ol>
+	<li> Window management rewrite, so we can install apps in managed mode. [TODO]</li>
+	  <ul>
+	    <li> worker: Alexandre Julliard</li>
+	    <li> status: not started</li>
+	  </ul>
+	<li> Finish DLL separation Phase 1 [IN PROGRESS]</li>
+	  <ul>
+	    <li> worker: ?</li>
+	    <li> status: ntdll, and kernel not done</li>
+	    <li> updated: Nov 7, 2002</li>
+	    <li> criteria:  DLLs should use only functions exported through .spec file.</li>
+	  </ul>
+	<li> Detect printing system at runtime [TODO]</li>
+	  <ul>
+	    <li> worker: Huw Davies</li>
+	    <li> status: <i>Yup, I'm going to do this in the near future.</i></li>
+	    <li> updated: Nov 7, 2002</li>
+	  </ul>
+	<li> Detect OpenGL system at runtime [TODO]</li>
+	  <ul>
+	    <li> worker: ?</li>
+	  </ul>
+     </ol>
+</p></quote>
+
+</section>
+
+
+
+
+
+
+
+
+<section 
+	title="Testing Apps: Tucows' Top 20 Apps" 
+	subject="Today wine's compatibility with 20 popular apps from tucows"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0138.html" 
+	posts="14" 
+	startdate="11/02/2002"
+	enddate="11/03/2002"
+>
+<topic>Testing</topic>
+<p>Carlos Lozano announced:</p>
+<quote who="Carlos Lozano"><p>
+I have taken the 20 first entries of the top 100 tucows list,
+except that some entries has been removed, mainly antivirus
+and programs what need other different program to work.
+(URL: <a href="http://tucows.uam.es/toppicks.html">http://tucows.uam.es/toppicks.html</a>)
+</p><p>
+<u>Every application was tested with:</u>
+<ul>
+ <li> A clean fake_windows. (only windows/system and windows/system32)</li>
+ <li> Winedefault.reg registry.</li>
+ <li> Managed = yes</li>
+ <li> Desktop = no</li>
+ <li> Extra hacks, native dlls (except the installed by the own program) = none</li>
+</ul>
+</p><p>
+<u>Results:</u>
+<br />
+ Total apps tested:      21 (*)
+<ul>
+  Apps install:        15/21<br />
+  Apps run:             4/21
+</ul>
+(*) Really 20, but two different Internet Explorer versions was tested.
+</p><p>
+<u>Applications:</u>
+<ol>
+<li> Irfan View - This feature-rich image viewer and converter supports many 
+   formats.<br /><br />
+
+   VERSION 3.75.<ul>
+   * Install: No, Required mfc42.dll. (with mfc42.dll native works) 
+   * Run: No (with mfc42.dll native works, but some options likeA
+     thumbnails crashes)</ul>
+</li>
+<li> Winace - If you need to compress and archive, try out this tool.<br /><br />
+
+   VERSION 2.20.<ul>
+   * Install: No, crashes.
+   * Run: Unknown</ul>
+</li>
+<li> Internet Explorer - This listing includes 5.01, 5.01 High Encryption Pack,
+   5.5, 6.0 Beta and the long awaited, official release of 6.0.<br /><br />
+
+   VERSION 5.5. (from cdrom)<ul>
+   * Install: No, with native urlmon stops a bit later.
+   * Run: Unknown.</ul>
+ <br /><br />
+   VERSION 6.0. (from cdrom)<ul>
+   * Install: No, with urlmon native stops in crypt. With crypt32+msoss native
+     stops with a CRC error.        
+   * Run: Unknown.</ul>
+</li>
+<li> WinZip - The most popular compression utility for Windows just got better.<br /><br />
+
+   VERSION 8.1.<ul>
+   * Install: Yes. (Dlls installed none)
+   * Run: No, it needs riched20.dll to shown the text in zipped files what
+      includes a message, zipped files without messages works fine.</ul>
+</li>
+<li> ICQ for Windows - The new and improved ICQ is here with all the great 
+   features you've come to expect -- plus a whole new set!<br /><br />
+
+   VERSION 2002a.<ul>
+   * Install: Yes, but it need "touch /c/windows/system/setupapi.dll"
+     (Dlls installed atl.dll,msvcrt.dll)
+   * Run: No, required comctl32 and riched32 native. (it wasn't able to
+     add users to contact list even with this native dlls, i don't know
+     if it was a different problem, or wine related)</ul>
+</li>
+<li> Acrobat Reader - This is the solution to your PDF troubles.<br /><br />
+
+   VERSION 5.0.5.<ul>
+   * Install: Yes. (Dlls installed by the program: advpack.dll, msvcrt.dll,
+       shfolder.dll, w95inf32.dll, msvcp60.dll, oleaut32.dll, w95inf16.dll).
+   * Run: Yes.</ul>
+</li>
+<li> VCDEasy - This is a VCD authoring freeware.<br /><br />
+
+   VERSION 1.1.1.<ul>
+   * Install: Yes. (License and more info is not visible - riched32) (Dlls
+      installed none)
+   * Run: No, crashes.</ul>
+</li>
+<li> Go!Zilla - Let this program do all the work of downloading and 
+   disconnecting.<br /><br />
+
+   VERSION 4.11.39.<ul>
+   * Install: Yes. (License is not visible - riched32) (Dlls installed none)
+   * Run: No, crashes.</ul>
+</li>
+<li> WS-FTP LE - WS-FTP LE is a great application that allows remote file   
+   edits, chmods on UNIX boxes and file moves.<br /><br />
+
+   VERSION 5.08.<ul>
+   * Install: Yes. (Dlls installed none)
+   * Run: Yes.</ul>
+</li>
+<li> Winamp - This program has so many possibilities and offers such a wide 
+    range of interfaces, you'll need no other player.<br /><br />
+
+    VERSION 3.0:<ul>
+    * Install: Yes. (Dlls installed none)
+    * Run: No. (Need native msvcrt.dll then works)</ul>
+</li>
+<li> WinRAR - This is a version of the popular RAR compression format, offering 
+    significantly improved compression ratios.<br /><br />
+
+    VERSION 3.00:<ul>
+    * Install: Yes. (It will install winrar in the directory what you are
+      when run the installer, it is a buggy because you must stop the 
+      installation with ctrl+c when it will ask by "overwrite files", but
+      it works).
+    * Run: Yes. (minnor glitches in bugzilla)</ul>
+</li>
+<li> Fruityloops - Make your own MIDIs, WAVs and MP3s in minutes.<br /><br />
+
+    VERSION 3.56:<ul>
+    * Install: Yes. (It will install fruitloops in the directory what you are
+      when run the installer, it is a buggy because you must stop the 
+      installation with ctrl+c when it will ask by "overwrite files", but
+      it works).
+    * Run: No. (Need hhctrl.ocx native, with it the program runs, but i haven't
+      used it before :/)</ul>
+</li>
+<li> Download Accelerator Plus - Automatically manage your downloads while 
+    accelerating them with multiple server connections.<br /><br />
+
+    VERSION 5.3:<ul>
+    * Install: Yes. (Dlls installed AniGIF.ocx,atl.dll)
+    * Run: No. (the program starts, but when you press in some option 
+      it will stops)</ul>
+</li>
+<li> QuickTime Player - View almost any movie out there with the added benefits 
+    of Apple's exclusive formats. QuickTime Player is one of the best around.<br /><br />
+
+    VERSION 6.<ul>
+    * Install: Yes. (Dlls installed Indeo4.qtx,QuickTimeMusicalInstruments.qtx,
+      IR41_QC.dll,QTPlugin.ocx,QuickTimeCheck.ocx,QuickTime.qts,IR41_QCX.dll,
+      QuickTime.cpl,QuickTimeVR.qtx)
+    * Run: No. (the program runs with massive gfx problems)</ul>
+</li>
+<li> Easy CD-DA Extractor - This program rips CDs, converts audio files between 
+    different formats, and creates audio CDs from WAV and MP3 files.<br /><br />
+
+    VERSION 5.0.<ul>
+    * Install: Yes. (Dlls installed advpack.dll, drmv2clt.dll,msdmo.dll,
+       w95inf16.dll,wmnetmgr.dll,asfsipc.dll,l3codeca.acm,msnetobj.dll,
+       w95inf32.dll,wmstream.dll,blackbox.dll,laprxy.dll,msvcrt.dll,wmadmoe.dll,
+       wmvcore.dll,drmclien.dll,npwmsdrm.dll,WMASF.dll, drmstor.dll,msaud32.acm,
+       sl_anet.acm,wmidx.ocx)
+    * Run: No, crashes. (sysparams.c:1646 - user.dll.so)</ul>
+</li>
+<li> WordWeb - An extremely popular dictionary and thesaurus in one.<br /><br />
+
+    VERSION 2.0a.<ul>
+    * Install: Yes. (It will install wordweb in the directory what you are
+      when run the installer, it is a buggy because you must stop the
+      installation with ctrl+c when it will ask by "overwrite files", but
+      it works).
+    * Run: No. Freeze, it will not show any window.</ul>
+</li>
+<li> mIRC - This is a popular IRC client. (www.mirc.co.uk)<br /><br />
+
+    VERSION 6.03.<ul>
+    * Install: Yes. (Dlls installed)
+    * Run: Yes.</ul>
+</li>
+<li> CD Mate - This is a powerful CD backup utility.<br /><br />
+
+    VERSION 2.2.8.1.<ul>
+    * Install: Yes. (License and more info is not visible - riched32) (Dlls
+      installed none)
+    * Run: No, crashes. (sysparams.c:1646 - user.dll.so) (the audioplayer 
+      included with the program works)</ul>
+</li>
+<li> ACDSee - This is a picture viewer, graphics converter and image management 
+    program.<br /><br />
+
+    VERSION 4.02.<ul>
+    * Install: No. (wininet dll problem)
+    * Run: Unknown</ul>
+</li>
+<li> Putty - This simple Telnet application could hang with the big boys.<br /><br />
+    
+    VERSION 0.52.<ul>
+    * Install: No needed install.
+    * Run: No. (it doesn't show the right part of the window, regression????)</ul>
+</li></ol>
+</p></quote>
+
+<p>A couple people wondered why bother testing many of the applications
+since there were clear Linux alternatives.  Carl replied,
+<quote who="Carl Lozano">
+ It is the same that when you are doing a videogame console 
+ emulator. You don't start testing the comercial games first,
+ you start with simple demos, when you will get the basic
+ working, then start with more complex one, and so.
+ The important is not run this applications, the important is
+ that sure that the authors of this applications have used 
+ features what are the base of other more complex. So if this
+ features are working correctly, it will be easier run more
+ complex software in the future :)
+</quote></p>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<section 
+	title="Testing Apps: Mozilla and Multimedia Players" 
+	subject="Mozilla 1.0.1 Win32 works almost flawlessly"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0329.html" 
+	posts="6" 
+	startdate="11/03/2002"
+	enddate="11/05/2002"
+>
+<topic>Testing</topic>
+
+<p>Jakob Eriksson reported success running a Win32 version
+of Mozilla.  His note was pretty short,
+<quote who="Jakob Eriksson">
+ Works mostly fine. Resizing works, I think it didn't a couple
+ of months ago.</quote></p>
+
+
+<p>In addition to the Tucows apps listed above, 
+Dimi Paun decided to try out some multimedia apps and see how 
+well they ran.  He reported the following results:
+<dl>
+
+<dt><a href="http://www.a2mediaplayer.com/">A2 Media Player</a></dt>
+<dd>"A2 Media Player allows you to play MP3, MIDI and WAV files. 
+ The interface has retractable playlists, mixers, equalizers, visual 
+ displays and an ID3 tag editor. The GUI engine is capable of pop-up 
+ animated interface architecture, and Karaoke emulation provides 
+ synchronized lyrics and image display."<br /> 
+ <quote who="Dimitrie Paun">
+ Installs OK, runs almost fine.
+ This one is special in that the main window is supposed to be round,
+ but we also create a rectangular window behind it. I think we should
+ try to get this one to Gold.</quote></dd>
+
+<dt><a href="http://solair.eunet.yu/~muaddib/">Maximus 3.4 CD Player</a></dt>
+<dd>"Maximus is a CD player for Windows 95, 98, NT and 2000. It is freeware, 
+ which means that you don't need to pay any money for it but you mustn't be 
+ payed to distribute or give it to anyone."<br />
+ <quote who="Dimitrie Paun">
+ Seems to install &amp; run just fine
+ </quote></dd>
+
+<dt><a href="http://www.accelware.com/axelcd/">AxelCD</a></dt>
+<dd>"AxelCD is an attractive, free replacement for the default CD player that 
+comes loaded with the Windows9x/Me/NT/2000 Operating System."<br />
+ <quote who="Dimitrie Paun">
+ This one installs OK, and runs OK. And it's cool.
+ I haven't tried playing CDs, but I think we should
+ try to include it on the list.</quote></dd>
+
+<dt><a href="http://www.quinnware.com/news.html">QCD</a></dt>
+<dd>"QCD has a fully skinnable interface that covers a powerful plug-in architecture. 
+ QCD's flexibility allows it to be as simple or as feature rich as you like. 
+ QCD has full support for many audio formats and includes crossfading and gapless 
+ CD Audio playback."<br /><quote who="Dimitrie Paun">
+ Another success story</quote></dd>
+
+</dl></p>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section 
+	title="RPCSS.exe Replacement" 
+	subject="RFC: rpcss skeleton prototype #2"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0267.html" 
+	posts="14" 
+	startdate="11/04/2002"
+	enddate="11/05/2002"
+>
+<topic>Status Updates</topic>
+<p>Greg Turner has been working on a standalone equivalent to
+NT4/2000's rpcss.exe.  That executable is responsble for lots
+of remote procedure call stuff, a lot of which still isn't
+fully understood.  One functionality it provides is endpoint
+mapping.  Distributed applications like SQL server and Exchange
+assign RPC services dynamically to TCP and UDP ports.  The
+endpoint mapper is responsible for mapping the RPC services
+to their currently assigned ports.  So when a client requires
+access to a service using RPC first it must request a port
+mapping.  After that it can communicate directly with the
+service.  Greg explained part of the problem with that:</p>
+<quote who="Greg Turner"><p>
+There's a chicken-and-egg problem.  We're trying to implement RPC, but, 
+to do the full implementation, we're supposed to provide endpoint 
+mapping API's, and these API's are, themselves, supposed to use RPC to 
+accomplish their task... that puts us in a catch-22.
+</p><p>
+This is where the pipes hack comes into play; instead of implementing 
+the endpoint mapping API's using RPC, like we're supposed to, I plan to 
+use pipes to do the IPC between the endpoint mapper (rpcss) and the 
+processes calling these API's.  
+</p><p>
+This is what the unmerged server parts do, as well.  Once the rest of 
+the RPC implementation works, we'll be in a position to reimplement the 
+endpoint mapping API's the right way (using RPC), and get rid of the 
+pipes hack.
+</p></quote>
+<p>
+Greg set about building the app using named pipes for communication. 
+ His latest 
+<a href="">version, #2</a> added more functionality:</p>
+<quote who="Greg Turner"><p>
+ This one implements "pseudo-fork" behavior, a main workhorse loop,
+ pseudo-debug log emitter, and command-line interpretation.  In
+ particular I'm looking for comments/criticism/flames/etc for:
+</p><p><ul>
+ <li> my handling of NO_NAMELESS_STRUCT... works for me, but
+   how correct will this be, say, under MSVC with Microsoft
+   headers?</li>
+
+ <li> I differentiate between "server mode" and "lazy mode"...
+   In lazy mode I assume that I'll have at least one incoming
+   connection (if not I time out after 20 minutes); after that,
+   once all endpoints are unmapped (all RPC-specific code
+   is unimplemented, but this is what RPCSS_empty() is supposed
+   to detect) I time out after a short delay (20 sec.)
+   In server mode, I just wait around forever until I'm told to
+   terminate (unimplemented, will be a command-line arg in the
+   tradition of "wineserver -k", processed via the pipe)... 
+   reasonable?</li>
+
+ <li> Pseudo-debug log emitter: should I be using stderr?  is this
+   basically an OK approach?  What is the hex number that 
+   most real wine debug logs begin with?  I'd like to look the
+   same.</li>
+
+ <li> Make/autoconf BS</li>
+
+ <li> the pseudo-fork crud (RPCSS_spork() and the /^ cmd-line arg.)
+   should I be worried about accidentally invoking the real
+   rpcss.exe?  is this an unacceptably stupid approach in general?</li>
+</ul></p></quote>
+
+<p>Alexandre didn't think it was worth having the fork stuff
+in there since it would only be invoked from within Wine.  Greg
+felt otherwise:</p><quote who="Greg Turner"><p>
+that's largely correct, except it should also support a "daemon" 
+mode ("/s" command-line argument).  For local RPC's, the "lazy" (from 
+rpcrt4.dll) invocation method will be enough.  But -- to be a "real," 
+fully functional RPC server, we will need it running in "server" mode. 
+Otherwise, networked RPC's, from without, will always fail, finding no 
+endpoint mapper or name service to converse with at the local host.
+</p><p>
+This is why you will always find rpcss.exe running on W2K, even when 
+nobody's logged in.  Turn off the Remote Procedure Call service 
+(rpcss), and your W2K host is basically dead, or, at best, incapable of 
+networked communications, like domain browsing, mmc administration 
+(even local), filesharing, etc.
+</p><p>
+So, to sum up my point... supporting some kind of daemon-like mode will 
+become increasingly important as the implementation progresses, and at 
+least marginally useful in the relatively near future (i.e., to test 
+basic networked RPC's, I'll need this).
+</p></quote>
+<p>Alexandre still felt that the approach was wrong for now and
+the problem was best solved later.  Ove pointed out another
+potential problem, 
+<quote who="Ove Kaaven">
+ Note that to be a "real, fully functional RPC server", it would have to
+ bind to a privileged port and such, providing all the DCE RPC daemon
+ services that should live on that port. I'm not sure I would trust a
+ complex Winelib app to run as root, listening on an open network port.
+ It'd probably be much better to let the user run a real DCE RPC daemon
+ (like freedce's) as root, and just have Wine's rpcss communicate with it
+ as necessary to update this real daemon's registrations. Then several
+ (Unix) users could run RPC services on the same host, too.</quote></p>
+
+<p>Greg kept working on it, saving some of that as things to worry
+about later.</p>
+
+</section>
+
+
+
+
+
+
+
+<section 
+	title="Avoiding ASCII/Unicode Function Duplication" 
+	subject="Avoiding FunctionA/W Duplication"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0351.html" 
+	posts="8" 
+	startdate="11/05/2002"	
+>
+<p>Jaco Greeff wanted some input on how to best avoid
+code duplication when implementing a function that had
+both an ASCII and Unicode version:</p>
+<quote who="Jaco Greeff"><p>
+I would like some comments on somthing that has been bugging me quite a bit.
+Implementing parts of the API can lead to duplication of code inside the
+same file. In my example, let's take two functions, one operating on a ASCII
+string and one one a Unicode string, let's call them "funcA" and "funcW". 
+</p><p>
+Upon implementation, the only real difference between these are the
+parameters, "funcA(const char *p)" and "funcW(const WCHAR *p)". What is the
+best way to keep the code maintainable and making sure that we don't have to
+fix a single bug in two places in the same file? I see 3 (maybe more)
+approaches:
+<ol>
+<li> Implement funcA, making funcW and exact copy with the relevant parameters
+and local variables changed;</li>
+
+<li> Implement a generic solution as a macro and get both funcA and funcW to
+call it will specific parameters;</li>
+
+<li> Do some preprosessor magic as implemented in dlls/msvcrt/scanf.[hc]</li>
+</ol></p><p>
+What is the general feeling as to the right way to approach this? What is
+the preferred approach? (And maybe it is something I haven't listed here.) 
+</p></quote>
+
+<p>Dimi Paun didn't like the macro idea at all.  Vincent Beron suggested,
+<quote who="Vincent Beron">
+>From what I saw in a couple of places: from funcA, do some magic on the
+parameters (convert to Unicode), then call funcW, then reconvert the
+result from Unicode to ASCII. Yes you have to convert twice, but you use
+the same function.</quote></p>
+
+<p>Eric Pouech had another approach,
+<quote who="Eric Pouech">
+ duplicating the code (in that case) is one solution
+ (in your example, you could use a shared function between A &amp; W familly,
+ using as parameters
+<ol>
+ <li> a pointer to a memory zone to write from</li>
+ <li> the length to be written</li>
+</ol></quote></p>
+
+<p>And Dimi Paun suggested yet another,
+<quote who="Dimitrie Paun">
+     Implement the meat in a funcT that takes a boolean as an argument
+     telling it if the input is A or W, and just have the func[AW]
+     forward the call to funcT
+  This works only within one module, and there are other problems.
+</quote></p>
+
+<p>Alexandre really didn't like that though because of the casts 
+required and the compiler not being able to do type checking.</p>
+
+</section>
+
+
+<section 
+	title="Thanks from Bob" 
+	subject="Forgive the intrusion"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0412.html" 
+	posts="6" 
+	startdate="11/06/2002"
+>
+<topic>Project Management</topic>
+<p>If you've ever dug around through Wine docs you might have
+noticed references such as "..Wine was started in 1993 by Bob
+Amstadt.."  And probably the next thing you'll notice is no
+other mention of his name in recent history.   Bob's early
+involvement was crucial toward developing the goals of the
+project.  Anyway, this message appeared on the list this week:</p>
+<quote who="Bob Amstadt"><p>
+
+Please don't let me distract you from your important work, but Thomas 
+Wickline asked me to stop in and say hello to all of you.  I understand 
+that we are approaching the 10 year anniversary of Wine.  That is a 
+remarkable feat.  All of you should be proud to be contributing to this 
+effort.  It is an amazing piece of software.
+</p><p>
+Though many of the names I see on the WineHQ web site are new to me.  I 
+continue to see Alexandre Julliard's name on this work.  I had the pleasure 
+of meeting Alexandre many years ago and I am so glad to see that he 
+continues the work after so many years.  Alexandre, if you read this, thank 
+you very much for all that you have done for free software.
+</p><p>
+Thank you to the rest of you as well.  Wine has been a team effort from the 
+start and is so successful because it is a team effort.  When I stepped 
+down from leading this project, I knew it would continue due to the efforts 
+of all the people that have helped along the way.  It not only has 
+continued, but it clearly thrives.  I'm amazed at the number of people that 
+know what Wine is.
+</p><p>
+Congratulations to all of you Wine developers.  You are amazing people.
+</p></quote>
+
+
+
+<p>Someone inquired further about the early days of Wine, and
+Bob explained, <quote who="Bob Amstadt">
+
+ As far as the very beginning, it started from a discussion on USENET.
+ Some people said it couldn't be done which inspired me to begin
+ writing a loader.  Another person (unfortunately I don't remember who)
+ started to do the same thing at the same time.  I don't remember the
+ details, but my work became the base system that everyone adopted.
+ Eric Youngdale contributed a substantial amount of code in the early
+ days.  Someone else took the lead on developing the windowing code.  I
+ don't remember who.  Was that you, Alexandre or did you join in after
+ that?</quote></p>
+
+<p>Alexandre said it was him,
+<quote who="Alexandre Julliard">
+ Yes that was me. I remember the first patch I did was a hack to tie
+ together the loader you had written with the tcl/tk menu stuff written
+ by Peter MacDonald so that the menudemo program worked. After that I
+ set out to implement GDI to replace tcl/tk...</quote></p>
+
+</section>
+
+
+
+
+
+
+
+<section 
+	title="Author Needed for Winelib Article" 
+	subject="C/C++ Users Journal is looking for a WINE author"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0336.html" 
+	posts="1" 
+	startdate="11/01/2002"
+>
+<topic>Documentation</topic>
+<p>A request was posted to wine-devel for someone to
+write an article:</p>
+<quote who="Joe Casad"><p>
+Is anyone interested in writing an article on the winelib development toolkit
+for the C/C++ Users Journal? This article would be a great way to bring some
+practical information about winelib to advanced C/C++ programmers who may not be
+familiar with it (plus you get paid).
+</p><p>
+We're looking for an article that will give some background on winelib and also
+provide a practical example of how to use winelib to port a Windows app to
+Linux. Our focus is on the code. We'd be looking for a very detailed description
+of how to use winelib in a specific, real-world situation.
+</p><p>
+Let me know if you, or someone you know, would be interested in helping us.
+</p><p>
+You can contact me at: jcasad -at- cmp.com
+</p><p>
+-Joe Casad<br />
+Editor-in-Chief<br />
+C/C++ Users Journal
+</p></quote>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+</kc>
+

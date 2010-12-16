@@ -1,0 +1,281 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="17" date="15 Nov 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the sixteenth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine 991114 has been released. The major improvements are:
+
+<ul>
+
+<li />ICMP DLL support.
+
+<li />Many fixes for better portability.
+
+<li />Debug APIs now based on ptrace.
+
+<li />Still more features in common controls.
+
+<li />Lots of bug fixes.
+
+</ul>
+
+</intro>
+
+<stats posts="116" size="500" contrib="31" multiples="19" lastweek="18">
+
+<person posts="15" size="32" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="12" size="52" who="Moshe Vainer &lt;moshev@easybase.com&gt;" />
+<person posts="12" size="35" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="11" size="87" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="6" size="21" who="lawson_whitney@juno.com" />
+<person posts="6" size="19" who="Ian Schmidt &lt;ischmidt@cfl.rr.com&gt;" />
+<person posts="6" size="12" who="Ove Kaaven &lt;ovek@arcticnet.no&gt;" />
+<person posts="5" size="55" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="19" who="'Peter Hunnisett' &lt;hunnise@nortelnetworks.com&gt;" />
+
+</stats>
+
+<section
+  title="Portability"
+  subject="Portability"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-84.html"
+>
+
+Patrik Stridval kept enhancing his winapi_check tool (which is Wine
+home grown tool for checking coherency in various files - .spec / .h /
+.c) and came into some problems with portability issues and the
+<code>HAVE_xxx macros</code>. Wine (like many other Unix programs)
+uses configure to determine, before compiling, which include files,
+functions... are available on the target platform.
+
+<p />
+
+When a function (say <code>gethostbyname</code>) is to be used, it is
+tested by configure, and if found, a <code>HAVE_GETHOSTBYNAME</code>
+macro is defined.
+
+<p />
+
+Latest version of wineapi_check reports some incoherence between the
+known <code>HAVE_XXX</code> macros and the effectively used
+functions.
+
+<p />
+
+A discussion ensued between Patrik and Alexandre Julliard. The
+output, and the general rule of thumb for handling this type of
+function, is to:
+
+<ul>
+
+<li />check for the existence of the file with configure
+
+<li /><b>do not</b> use the <code>HAVE_XXX</code> macros for functions
+in the main code, but just add a stub (possibly returning error
+condition) in misc/port.c when the <code>HAVE_XXX</code> macro is not
+defined (this could also be added to another .c file if the function
+is only used in this place)
+
+<li />if needed, missing structures shall be added to
+include/wine/port.h.
+
+</ul>
+
+<p />
+
+With those rules, the code will not be encumbered with <code>#ifdef /
+#endif</code> pairs all over the place, which degrades both
+readability and maintenability.
+
+</section>
+
+<section
+  title="Process creation"
+  subject="Process creation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-86.html"
+>
+
+Peter Hunnisett while toying with WineLib, reported two issues.
+
+<p />
+
+The first one was that CreateProcess implementation didn't use the
+<code>CREATE_SUSPENDED</code> flag, and thus made some
+trouble. Alexandre Julliard and Ulrich Weigand discussed a bit the
+implementation of such a feature and Alexandre provided the patch.
+
+<p />
+
+Basically, when a new process is created, several things have to be
+taken into account:
+
+<ul>
+
+<li />let the process calling CreateProcess wait until the new process
+is created (so that a correct error code can be returned)
+
+<li />have the newly created process do some initialization (part of
+this can be done a the context of process calling CreateProcess, but
+most of it must be done in the context of the new process).
+
+</ul>
+
+<p />
+
+Therefore, some synchronization is needed. Most of it was already in
+place. There is an event created at each process creation, used by the
+created process to signal its creator that it's initialization is done
+and it can return from CreateProcess. What has been done is that the
+server now handles this event signalling (so that the created process
+can be suspended by the server).
+
+<p />
+
+Peter's second issue was a bit more tricky. Peter wanted to have a
+WineLib program be launched by the Wine emulator (this is supported
+and works fine) but also be integrated with the Wine emulator (e.g use
+the same thread/process ids...).
+
+<p />
+
+Unfortunately, this is not supported yet and would require the
+(in)famous address space separation in place. The best solution right
+now is to create a PE (or NE) executable and run it in the
+emulator. Peter then asked for a list of tools to be used to create it
+under Linux (in other words: a cross compilation chain running under
+Linux generating Windows executable).
+
+<p />
+
+Several tools are known:
+
+<ul>
+
+<li />Uwe Bonnes proposed to <quote who="Uwe Bonnes">have a look at <a href=
+"http://sourceforge.net/projects/mingw/">
+http://sourceforge.net/projects/mingw/</a> for mingw (find pointer to
+it on the http page above); it uses Windows crtdll and supports
+threading.</quote>
+
+<li />and also <quote who="Uwe Bonnes">If you want a
+light weighted tool and don't need c++ support, look for
+lcc-win32:<a href="http://www.cs.virginia.edu/~lcc-win32/">
+http://www.cs.virginia.edu/~lcc-win32/</a>. For some old version of lcc I
+have a linux port available, but the command line tools then run under wine
+too. I don't know the present status.</quote>
+
+<li />Ove K&#229;ven proposed to <quote who="Ove K&#229;ven">to install the Cygnus
+GNU-Win32 stuff and configure gcc to cross-compile with that</quote>
+(<a
+href="http://www.wxwindows.org/technote/crosscmp.htm">
+http://www.wxwindows.org/technote/crosscmp.htm</a>).
+
+<li />and of course, you can check <a
+href="http://www.winehq.org/tools.html">
+http://www.winehq.org/tools.html</a>
+
+</ul>
+
+</section>
+
+<section
+  title="Overlapped I/O"
+  subject="Overlapped I/O"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-76.html"
+>
+
+Moshe Vainer, while trying to let CodeBase 6.x work under Wine,
+pointed out that Wine doesn't correctly support overlapped I/O.
+
+<p />
+
+Ove K&#229;ven (at Moshe's request) gave some more information on this:
+
+<quote who="Ove K&#229;ven">Overlapped I/O is simply asynchronous I/O. The ReadFile call requests
+that data be read (asynchronously, in the background), then returns
+and lets the app do other stuff until the request is
+satisfied/completed. When that is the case, the OS can signal an event
+object specified in the overlapped buffer, if the app so desires. When
+that happens, it can call GetOverlappedResult and process the data now
+in the data buffer...
+
+<p />
+
+I'm not sure why such a mechanism would exist in Windows, since normal
+multi-threading can accomplish the same thing. It certainly wouldn't
+make the kernel less bloated, nor application programming much
+simpler, so I can only assume it's for performance reasons (cut down
+number of threads, perhaps since windows has limited resources and is
+a lousy multitasker or something).</quote>
+
+<p />
+
+So far, Wine does not support overlapped I/O. Several ways of
+implementing it have been discussed. The easiest one is simply not to
+handle the request in the background (but to do it inside ReadFile or
+WriteFile), signal the caller within ReadFile/WriteFile and have
+GetOverlappedResult always return TRUE.
+
+<p />
+
+Some more complicated implementation would require threading (or
+service thread support). Anyway, it also turns out that Windows 9x
+only supports overlapped I/O for the serial line or socket, but not on
+disk files. Win NT also supports overlapped I/O for disk files. So the
+first and easy implementation shall do for a first round.
+
+<p />
+
+Patches for this implementation circulated, but it just helped
+CodeBase crash a little farther. No success story yet.
+
+</section>
+
+<section
+  title="Bleem!"
+  subject="Bleem!"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-159.html"
+>
+
+Ian Schmidt, while trying to make Bleem! work under Wine, needed to
+emulate some more calls to the virtual memory manager VxD (which are
+by the way also needed by Internet Explorer).
+
+<p />
+
+After some fights with Microsoft documentation, some fixes on
+VirtualAlloc, things went better (read: it ran further before crashing) until some
+explanation from Ulrich Weigand boiled the thing down to bad news:
+some tricky Bleem! code calls MapLS/UnMapLS in a certain way to get
+back the LDT base address, and then modify it for getting access to
+ring-0, and then create its own threads inside the VMM. This is
+certainly a very bad way of writing applications, and a sign of
+Windows 9x not being protected (as an OS).
+
+<p />
+
+The conclusion is that it will be nearly impossible to let Bleem! (and
+other badly written applications) run under Wine.
+
+<p />
+
+This type of behavior will not be permitted under NT, and some
+discussion went on for implementation of type of direct LDT access
+under Wine, but did not go very far.
+
+</section>
+
+</kc>

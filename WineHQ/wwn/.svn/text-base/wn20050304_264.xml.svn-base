@@ -1,0 +1,712 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="264" date="03/04/2005" />
+<intro> <p>This is the 264th issue of the Wine Weekly News publication.
+Its main goal is to edit, rewrite, edit, and rewrite. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="294" size="1737" contrib="86" multiples="53" lastweek="40">
+
+<person posts="20" size="67" who="Mike Hearn" />
+<person posts="20" size="46" who="Alexandre Julliard" />
+<person posts="19" size="69" who="Dmitry Timoshkov" />
+<person posts="12" size="35" who="Andreas Mohr" />
+<person posts="12" size="44" who="Robert Shearman" />
+<person posts="11" size="28" who="Oliver Stieber" />
+<person posts="10" size="59" who="Ivan Leo Puoti" />
+<person posts="8" size="452" who="Dimitrie O. Paun" />
+<person posts="8" size="32" who="Uwe Bonnes" />
+<person posts="8" size="29" who="Jesse Allen" />
+<person posts="7" size="18" who="Paul Vriens" />
+<person posts="6" size="18" who="Mike McCormack" />
+<person posts="5" size="18" who="Robert Reif" />
+<person posts="5" size="17" who="Boaz Harrosh" />
+<person posts="5" size="13" who="Juan Lang" />
+<person posts="4" size="150" who="Jonathan Ernst" />
+<person posts="4" size="65" who="Maxime Bellenge" />
+<person posts="4" size="25" who="Ron Jensen" />
+<person posts="4" size="15" who="Ferenc Wagner" />
+<person posts="4" size="13" who="Alex Woods" />
+<person posts="4" size="11" who="James Hawkins" />
+<person posts="4" size="9" who="Troy Rollo" />
+<person posts="4" size="9" who="Krzysztof Foltman" />
+<person posts="3" size="12" who="Eric Pouech" />
+<person posts="3" size="11" who="Jeremy White" />
+<person posts="3" size="11" who="Bill Medland" />
+<person posts="3" size="11" who="Holly Bostick" />
+<person posts="3" size="10" who="Francois Gouget" />
+<person posts="3" size="9" who="Jakob Eriksson" />
+<person posts="3" size="9" who="Paul van Schayck" />
+<person posts="3" size="9" who="(wino)" />
+<person posts="3" size="8" who="Steven Edwards" />
+<person posts="3" size="8" who="Rob D" />
+<person posts="3" size="8" who="Jon Griffiths" />
+<person posts="3" size="8" who="Jeremy Newman" />
+<person posts="3" size="7" who="Tom" />
+<person posts="3" size="6" who="Thomas Weidenmueller" />
+<person posts="2" size="11" who="Gianluigi Tiesi" />
+<person posts="2" size="9" who="Tony Lambregts" />
+<person posts="2" size="8" who="Jacek Caban" />
+<person posts="4" size="14" who="Marcus Meissner" />
+<person posts="2" size="6" who="Ove Kaaven" />
+<person posts="2" size="6" who="Ira Krakow" />
+<person posts="2" size="6" who="Dan W." />
+<person posts="2" size="6" who="Thomas Zeeman" />
+<person posts="2" size="6" who="Hiji" />
+<person posts="2" size="6" who="Michael Stefaniuc" />
+<person posts="2" size="5" who="Kuba Ober" />
+<person posts="2" size="5" who="Brian Vincent" />
+<person posts="2" size="5" who="Shachar Shemesh" />
+<person posts="2" size="4" who="Krzysztof Foltman" />
+<person posts="2" size="4" who="Vitaly Lipatov" />
+<person posts="1" size="81" who="Rizwan Kassim" />
+<person posts="1" size="31" who="Francois Gouget" />
+<person posts="1" size="22" who="Wine-devel" />
+<person posts="1" size="18" who="Thomas Kho" />
+<person posts="1" size="5" who="Adrian Harvey" />
+<person posts="1" size="4" who="Joris Huizer" />
+<person posts="1" size="4" who="Jason Edmeades" />
+<person posts="1" size="4" who="Matthew Mastracci" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="Justin Chevrier" />
+<person posts="1" size="3" who="Vincent B&#233;ron" />
+<person posts="1" size="3" who="Anssi Hannula" />
+<person posts="1" size="3" who="Fabian Cenedese" />
+<person posts="1" size="3" who="Dan Kegel" />
+<person posts="1" size="3" who="Juergen Hammelmann" />
+<person posts="1" size="3" who="Brian Vincent" />
+<person posts="1" size="3" who="Sijmen Mulder" />
+<person posts="1" size="3" who="Paul Millar" />
+<person posts="1" size="2" who="Michael Jung" />
+<person posts="1" size="2" who="Guido Draheim" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Daniel Kegel" />
+<person posts="1" size="2" who="Rein Klazes" />
+<person posts="1" size="2" who="Tobias Burnus" />
+<person posts="1" size="2" who="David D. Hagood" />
+<person posts="1" size="2" who="Adam Babcock" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Adam Connell" />
+<person posts="1" size="2" who="Andrew Neil Ramage" />
+<person posts="1" size="2" who="Scott Ritchie" />
+<person posts="1" size="2" who="Grant Williamson" />
+
+</stats>
+<section 
+	title="News: WGA Update" 
+	subject="News"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/02/0.html" 
+	posts="2"
+	startdate="02/26/2005"
+	enddate="03/04/2005"
+>
+<topic>News</topic>
+<p>Shortly after last week's WWN,
+Microsoft decided to comment on the Wine check added to the
+WGA software.  Keep in mind, this check will be necessary for anyone
+downloading applications from 
+<a href="http://download.microsoft.com">download.microsoft.com</a> 
+in the future.  
+<a href="http://news.zdnet.co.uk/0,39020330,39189180,00.htm">ZDNet</a>
+carried the story and included this quote from a Microsoft spokesperson:</p>
+<quote who="ZDNet"><p>
+"As the most popular third-party translation technology in use, Wine was the 
+first emulator to be specifically tested for via WGA," said the spokesperson.
+ "Microsoft does not knowingly provide copyrighted Microsoft Windows OS files 
+to users of third-party emulators or cross-platform API translation 
+technologies such as Wine."
+</p><p>
+The spokesperson said users who are not running Windows XP or Windows 2000 
+natively can still download updates for Microsoft Office from the 
+Office Update Web site. 
+</p></quote>
+
+<p>The story was picked up almost immediately by 
+<a href="http://linuxtoday.com/it_management/2005022501426NWMSSW">Linux 
+Today</a> and 
+<a href="http://linux.slashdot.org/article.pl?sid=05/02/25/1718214&amp;tid=125&amp;tid=106">Slashdot</a>.
+</p>
+
+<p><i>Feel the love.</i></p>
+
+
+<p>Lately it seems pundits like to attack Linux on the grounds that it
+really isn't cost effective.  Now, any sys admin can tell you that's 
+not true - just the time and effort involved in managing licenses can
+require a dedicated person on staff in a large business.  However, the
+open source community doesn't seem to have much empirical data to back
+up their claims.  I thought it was interesting this week to see something
+come out discussing a 
+<a href="http://spidertools.com/win4lin_review.php">Linux + LTSP + 
+Win4Lin installation</a>:</p>
+
+<quote who="spidertools.com"><p>
+The goal of the project was to create a fully functional lab for about $200 a 
+computer which had to factor in the cost of a server, software and a GB 
+switch. A Windows based lab with XP was priced at $1748.30 per computer 
+(includes server, software and switch) while the actual Linux solution cost 
+only $216.30 per workstation. The cost savings was substantial and allowed 
+the district to view the project as a long term solution based on price.
+</p></quote>
+
+<p>That's pretty significant!  The article explains the installation 
+encompassed 125 workstations served by 3 LTSP servers.  Rather than use
+Wine, the school system decided to use Win4Lin for Windows emulation.
+They already owned Windows licenses, so that wasn't a concern.  In 
+addition, it sounds like they had some older CD-ROM media they needed
+to access.  It sounds like the cost savings would have been even greater
+if they used Wine since the Win4Lin licenses wouldn't need to be purchased.
+(I'm sure it was considered, but for whatever reason wouldn't work for them.)
+Extrapolating the cost for the 125 workstations and 3 servers, the grand
+total comes to $27,686 - a modest amount for any IT project of this size.</p>
+ 
+</section>
+<section 
+	title="RichEdit Work" 
+	subject="riched20 and test app"
+	archive="http://www.winehq.com/hypermail/wine-patches/2005/02/0628.html"
+	posts="2"
+	startdate="02/28/2005"
+	enddate="03/03/2005"
+>
+<topic>Status Updates</topic>
+<p>Krzysztof Foltman began submitting the new RichEdit 
+work.  His first patch described a bit of where he was
+headed:</p>
+<quote who="Krzysztof Foltman"><p>
+This is an attempt at starting a RichEdit 2.0 clone, plus a test app for 
+it (which I, for some reason, decided to call Wine WordPad).
+</p><p>
+It lacks most essential functionality, and source formatting is not 
+exactly standard, but it has enough functionality to make a couple of 
+Wine developers convince me to release it now. Or weeks ago.
+</p><p>
+The test app uses the Mike McCormack's test snippet to fill the control 
+with some fancy formatted text.
+</p><p>
+Hope the patch is OK. Adding new DLLs and EXEs isn't an easy process.
+</p></quote>
+
+<p>Wordpad on Windows is a wrapper around the RichEdit control, so
+it's logical Wine's app is named similarly.  Mike McCormack looked
+over the patch and had some comments:</p>
+<quote who="Mike McCormack"><p>
+Cool.  Looks like you've done a lot of good work.
+
+</p><p>
+I like that you've used lots of small functions, rather than 
+monolithic 200 line globs.  I like the asserts too.</p>
+<p>
+OK, now some suggestions:
+<ul>
+<li> submitting riched20 and the new wordpad program separately would be a 
+good idea.  The bigger the patch, the longer it tends to hang round 
+before it's committed.</li>
+
+<li> instead of #ifndef __WINESRC__ ... printf ... #endif, how about using 
+wine's debug macros TRACE, ERR, etc?  Then you can just #define TRACE to 
+printf when __WINESRC__ isn't defined</li>
+
+<li> instead of XXXFK how about FIXME?</li>
+
+<li> you probably should get rid of the _int3 macro in wrap.c, and replace 
+it with DebugBreak()</li>
+
+<li> ME_DumpParaStyle isn't used... maybe change it to use MESSAGE() rather 
+than a message box.  You can dump stuff by checking the condition 
+WINE_TRACE_ON(richedit).  You'll need to declare a 
+WINE_DEFAULT_DEBUG_CHANNEL for that..</li>
+
+<li> maybe you want to add LGPL licenses on your header files?</li>
+
+<li> keep the formatting in your Makefile.in the same as the other dlls. 
+Julliard's a bit fussy about that, so he's probably going to change it 
+anyway.  Might as well save him the time.</li>
+</ul></p></quote>
+
+</section>
+<section 
+	title="Wine Status" 
+	subject="Wine Status"
+	archive="http://www.winehq.org/" 
+	posts="1"
+	startdate="03/04/2005"
+>
+<topic>Status Updates</topic>
+<p>I've neglected to update the news on WineHQ to mention we've
+updated 
+<a href="http://www.winehq.com/site/status">status of key areas of 
+Wine</a>.  Tom Wickline went through each area a few weeks ago.
+I asked Tom if he'd give a status update on the status updates
+so I could get a feel for the changes.  There's a lot of things
+that go on with Wine development that don't get included in
+the Wine Weekly News.  Some of the best patches are so well done
+they don't generate any discussion.  Tom put together a really 
+nice summary of the state of Wine development and some of 
+changes we've seen recently:</p>
+<quote who="Tom Wickline">
+
+<p><u>Wine's fundamental architecture</u></p><p>
+<dl>
+The DOS drive devices stick out as a huge change, that was about 8 
+months ago.
+Here is Eric's first mail on the subject.<br />
+<a href="http://www.winehq.org/hypermail/wine-devel/2004/01/0220.html">
+http://www.winehq.org/hypermail/wine-devel/2004/01/0220.html</a>
+
+<dt>Window management</dt>
+<dd>AJ has done a huge amount of work here :-)</dd>
+<br />&#160;
+<dt>DLL separation</dt>
+<dd>Eric and AJ keep chugging along at this..</dd>
+<br />&#160;
+<dt>Unicode support</dt>
+<dd>There has been hundreds of patches to convert to unicode support.</dd>
+<br />&#160;
+<dt>Wine Conformance Test Suite</dt>
+<dd>Francois tells me the infrastructure for the conformance tests is now 
+finished.</dd>
+<br />&#160;
+<dt>Wine IDL compiler (widl)</dt>
+<dd>Huw is on patch #38<br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2005/02/0149.html">
+http://www.winehq.org/hypermail/wine-patches/2005/02/0149.html</a></dd>
+
+<dd>Steven Edwards sent a patch to sync with ReactOS, the work was done by 
+Eric Kohl.<br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2005/02/0496.html">
+http://www.winehq.org/hypermail/wine-patches/2005/02/0496.html</a></dd>
+</dl></p>
+
+
+
+<p><u>Dlls Status</u></p><p>
+<dl>
+<dt>advapi32.dll &amp; rsaenh.dll</dt>
+<dd><a href="http://www.winehq.org/hypermail/wine-devel/2005/02/0552.html">
+http://www.winehq.org/hypermail/wine-devel/2005/02/0552.html</a></dd>
+<br />&#160;
+<dt>dbghelp.dll</dt>
+<dd>Eric has sent a lot of dbghelp fixes</dd>
+<br />&#160;
+<dt>itss.dll</dt>
+<dd>This little dll goes a long way toward getting html help working in apps.<br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2004/08/0435.html">
+http://www.winehq.org/hypermail/wine-patches/2004/08/0435.html</a></dd>
+<br />&#160;
+<dt>mscms.dll</dt>
+<dd>The color management DLL is about 25% complete now.  The fun projects
+status needs to be updated. <br />
+<a href="http://www.winehq.org/site/fun_projects">http://www.winehq.org/site/fun_projects</a></dd>
+<br />&#160;
+<dt>msi.dll</dt>
+<dd>Mike and Aric have done a lot of work here...</dd>
+<br />&#160;
+<dt>oleaut32.dll</dt>
+<dt>ole32.dll</dt>
+<dt>rpcrt4.dll</dt>
+<dd>As of today Robert &amp; Mike are on patch #76 of ole work. In the end this
+will help installshield work better and get us away from the MS 
+dcom9x.exe dependency.</dd>
+<br />&#160;
+<dt>stdole32.tlb</dt>
+<dd>Huw implemented stdole32.tlb :-) one <i>huge</i> step toward not needing any 
+part of dcom9x.exe....</dd></dl></p>
+
+<p><u>DirectX Status</u></p><p>
+<dl>
+<dt>d3d9.dll</dt>
+<dd>Here is Jason's last d3d9 patch, #22, he is waiting on Oliver to sync
+his changes and then he can move forward.<br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2005/01/0484.html">
+http://www.winehq.org/hypermail/wine-patches/2005/01/0484.html</a></dd>
+<br />&#160;
+<dt>wined3d.dll</dt>
+<dd>Was part of the d3d9 work from Jason.
+Raphael has done a lot of work here as well:<br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2005/01/0508.html">
+http://www.winehq.org/hypermail/wine-patches/2005/01/0508.html</a></dd>
+<br />&#160;
+<dt>DirectMusic  (as a group)</dt>
+<dd>Raphael &amp; Christian have sent a couple nice patches in the 
+last couple of months to bump the status on a couple of DirectMusic dlls</dd>
+<br />&#160;
+<dt>dsound.dll</dt>
+<dd>What can I say; Robert Reif has sent hundreds of DirectSound patches alone!
+Jeremy White is trying to track down the mmtimer bug and has sent some 
+patches as well.</dd>
+<br />&#160;
+<dt>quartz.dll</dt>
+<dd>Christian  has sent over 30 quartz.dll patches in the past six months.</dd>
+</dl></p>
+<p><u>Multimedia Status</u></p><p>
+<dl>
+<dt>Eric has done a lot of unicode work on the multimedia codecs</dt>
+<dd><a href="http://www.winehq.org/hypermail/wine-patches/2005/02/0092.html">
+http://www.winehq.org/hypermail/wine-patches/2005/02/0092.html</a></dd>
+
+<dd>Here is the big patch: <br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2004/12/0052.html">
+http://www.winehq.org/hypermail/wine-patches/2004/12/0052.html</a></dd>
+<br />&#160;
+<dt>opengl32.dll</dt>
+<dd>I sent the patch to sync to latest OpenGL specifications.<br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2005/02/0214.html">
+http://www.winehq.org/hypermail/wine-patches/2005/02/0214.html</a></dd>
+<br />&#160;
+<dd>Raphael, sent his patch to implement partial PBuffer support for wgl
+and minimal pixel format support for wgl<br />
+<a href="http://www.winehq.org/hypermail/wine-patches/2005/02/0535.html">
+http://www.winehq.org/hypermail/wine-patches/2005/02/0535.html</a></dd>
+</dl></p></quote>
+
+<p>Tom also mentioned that we're seeing a lot of development right now.
+Some new folks have recently started working on different areas of Wine.
+We've also seen a large increase in the number of patches coming in
+each month.  
+</p>
+</section>
+<section
+        title="Running Visual C++ With Wine"
+        subject="Visual C++ 6.0 as a Winelib IDE?"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/03/0047.html"
+        posts="7"
+        startdate="03/02/2005"
+	enddate="03/03/2005"
+>
+
+<p>Ira Krakow reported on using Visual C++ with
+CrossOver Office:</p>
+<quote who="Ira Krakow"><p>
+
+I have Visual C++ 6.0 running under CrossOver Office
+4.1, which of course means it's running under Wine. 
+For one of the examples in the Wine/Winelib book, I
+decided to take the code produced by the VC++ Win32
+"Hello World" wizard and see how to port it to Wine.
+</p><p>
+Turns out, it's almost trivial.  Create an empty
+directory, copy the *.c, *.rc, *.h, and *.ico files to
+it.  VC++ produces tons of other files, but they're
+either used to maintain the Visual Studio environment,
+or are intermediate compilation files that aren't
+needed.  Then run:
+<ul><code>
+$ winemaker .</code></ul>
+</p><p>
+The Makefile that Winemaker generates _almost_ works. 
+You need to delete the references to the mfc library
+and mfc.dll.  After doing that, running make generates
+the .so file.  Wine runs it flawlessly.
+</p><p>
+I got to thinking - can I convert the code from the
+MFC application as easily?  Seems like it's doable,
+because the generated code runs in VC++/CrossOver
+Office 4.1.  I tried the same steps as before, with
+Winemaker, but I couldn't figure out what Makefile
+modifications were needed.
+</p><p>
+All of this got me to thinking - could Wine running
+Visual C++ be a viable IDE for porting?  Maybe just
+linking VC++ with the Winelib libraries would do it. 
+Maybe after tweaking Winemaker and publishing a HOWTO
+we could show that this is a viable path?  It's
+certainly easier than for Visual Studio developers and
+could help attract them to Wine.
+</p><p>
+Another benefit - we could use the Visual C++ sample
+programs as tests for Wine.  The programs might
+exercise areas that haven't been tested thoroughly.
+</p></quote>
+
+<p>Dimi Paun answered the last few questions succinctly,
+<quote who="Dimitrie Paun">
+This can't be done, we don't have VC++ sources. And besides,
+you don't get any additional benefits as compared to just
+running the native PE.</quote></p>
+
+<p>Rather than use winemaker, Boaz Harrosh suggested:</p>
+<quote who="Boaz Harrosh"><p>
+There are 2 easier ways that I know of to do this.
+<ol>
+<li> Use dev-c++ from 
+<a href="http://www.bloodshed.net/devcpp.html">www.bloodshed.net/devcpp.html</a>. 
+It will Just open your DSP file and make a very good, very simple MinGW 
+makefile for you.  It will add all your -D and -I and all this nightmare
+in big projects.  Both the result makefile and dev-c++ itself can be used
+with wine. It has a native Linux port has well.
+One thing to try is debugging. It uses gdb for windows. Does gdb for 
+windows runs under wine??</li>
+
+<li> Grab the DSW2MAKE util from MinGW. Written in Perl. The output 
+makefile is very good for Winelib. Also keeps your -D(s), -I(s), and 
+-l(s) and tries to convert other switchs as well. Better for very big 
+projects.</li></ol></p></quote>
+
+<p>Ira described a bit about using the debugger and a 
+few of the problems he ran into with it.</p>
+
+</section>
+
+<section 
+	title="Tests for cabinet.dll" 
+	subject="Wine cabinet.dll FDI Conformace Test Patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/02/0842.html" 
+	posts="4"
+	startdate="02/27/2005"
+	enddate="03/01/2005"
+>
+<topic>Testing</topic>
+<p>Rizwan Kassim submitted an almost 4000 line patch to wine-devel
+to get some feedback:</p>
+<quote who="Rizwan Kassim"><p>
+Aleksandr Liber and I have put together a set of tests for
+cabinet.dll. Before we submit them to wine-patches, can anyone offer
+any critiques/input? We plan to submit in a day or two.
+</p><p>
+We're 4th+ year undergraduate students at the UCLA Computer Science
+program. We're among a group of students doing conformance tests as
+part of a software engineering course - more info can be found at
+<ul><a href="http://www.geekymedia.com/wine">
+http://www.geekymedia.com/wine</a></ul>
+</p><p>
+Any advice you can offer will be greatly appreciated!
+</p><p>
+ Wine cabinet.dll FDI Conformace Test Patch (gzipped)
+</p><p>
+Raw files available at :
+<ul><a href="http://www.geekymedia.com/viewcvs/cgi/viewcvs.cgi/group3/wine/">
+http://www.geekymedia.com/viewcvs/cgi/viewcvs.cgi/group3/wine/</a></ul>
+</p><p>
+
+This patch adds tests for the cabinet dll, specifically testing the
+functions FDICreate, FDIDestroy, FDICopy and FDIIsCabinet. As the
+FCI functions are still marked TODO in wine, they haven't been tested.
+</p><p>
+The package is self containing, allowing additional cabinet
+features to be tested by preparing other cabinets in the same manner
+that ours were.  A patch of -p1 will be needed.
+</p><p>
+Changelog:
+<ul>
+ <li> configure.ac<br />
+   added dlls/cabinet/tests/Makefile to be generated</li>
+ <li> dlls/cabinet/Makefile.in<br />
+   added subdirectory reference</li>
+ <li> dlls/cabinet/tests/Makefile.in<br />
+   standard Makefile.in for tests</li>
+ <li> dlls/cabinet/tests/cabinet_fdi.c<br />
+   actual test code for FDICreate, FDIDestroy, FDIIsCabinet, FDICopy</li>
+ <li> dlls/cabinet/tests/data.h<br />
+   contains hex representations of the two test cabinets</li>
+ <li> dlls/cabinet/tests/tvfs.h</li>
+ <li> dlls/cabinet/tests/tvfs.c<br />
+   Trivial Virtual File System emulating _read, _write, _open, _lseek
+and _close</li>
+ <li> dlls/cabinet/tests/genfiles.sh<br />
+   Cabinet/data.h creation script used for simple.cab and
+complex.cab- current tests</li>
+ <li> tools/chexify.pl<br />
+   converts input files to C style arrays</li>
+</ul>
+</p></quote>
+
+<p>Andi Mohr pointed out some minor issues with it.  The
+patch was modified and submitted to wine-patches a few
+days later.  We haven't mentioned Wine's testing infrastructure
+in a while.  A few years ago it was a hot development topic
+as it was getting off the ground.  These days it's quite
+stable and tests are a regular part of the development 
+process.</p>
+
+</section>
+<section 
+	title="Google's Picasa2"
+	subject="[SOLVED] Re: Picasa2- works great, one font issue"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/02/0.html" 
+	posts="2"
+	startdate="02/27/2005"
+	enddate="02/28/2005"
+>
+<topic>Fixes</topic>
+<p>Apparently Google's new 
+<a href="http://www.picasa.com/index.php?tid=Y2NpZD0zNjcy">Picasa</a>
+image software works with Wine.  Matthew Mastracci reported that a
+recent patch from Tanabe Hiroshi fixed some problems with it.  
+He added:</p>
+<quote who="Matthew Mastracci"><p>
+Here's some screenshots from the program while running:
+<ul>
+<a href="http://www.grack.com/news/Picasa2underWine.html">
+http://www.grack.com/news/Picasa2underWine.html</a></ul>
+</p><p>
+Note that clicking the "email" button in Picasa will crash it - probably
+the MAPI stubs that cause it:
+<ul><code>
+err:mapi:MAPILogon Stub<br />
+fixme:seh:EXC_RtlRaiseException call (from 0x53e297) to unimplemented<br />
+function mapi32.dll.MAPISendMail</code></ul></p></quote>
+
+<p>Troy Rollo mentioned the same patch fixed other issues,
+<quote who="Troy Rollo">
+Many DirectX games also had font problems
+fixed by that patch. In fact any application where the fonts looked like
+random noise is likely to have been fixed to that extent by that patch.
+</quote></p>
+
+</section>
+<section
+        title="Dragon Naturally Speaking Working"
+        subject="Dragon Naturally Speaking - working."
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/03/0083.html"
+        posts="3"
+        startdate="03/02/2005"
+	enddate="03/03/2005"
+>
+<topic>Multimedia</topic>
+<p>Someone figured out how to get Dragon Naturally Speaking
+working with Wine.  They described the process:</p>
+<quote who="Anonymous">
+<p>
+Good news and what looks like a first.
+</p><p>
+Dragon Naturally Speaking 4 working under Wine.
+<ul>
+<li>reqd riched32 and comdlg32 native from 98SE</li>
+
+<li>Gentoo Linux , 2.6.10-nitro4 kernel</li>
+<li>wine-20050111</li>
+
+<li>Fresh Wine installation</li>
+<li>installed IE6 using sidenet</li></ul>
+</p><p>
+<ol>
+<li>Install Dragon from CD no major issues.</li>
+<li>copy missing dlls</li>
+<li>ran up Dragon , enter user name , setup sticks at setting mike level but  
+exits cleanly.</li>
+
+<li><code>#wine gentrain.exe</code> picks up user name, dictated training text.
+It saves the vocab/voix profiles then drops out with 3 repeat errors but  
+the profile is safe</li>
+
+<li><code>#wine natspeak.exe</code></li></ol></p><p>
+
+Can now dictate in stand-alone mode as in windoze.
+</p><p>
+I now need some help with the guts of Wine to see if I can capture the  
+keystrokes output by Dragon and pipe it to another Linux thread.
+</p><p>
+Any suggestions on that?
+</p></quote>
+
+<p>Mike Hearn suggested,
+<quote who="Mike Hearn">
+Look at the XTest or Xevie X protocol extensions, they might be useful
+</quote></p>
+
+</section>
+
+<section
+        title="World of Warcraft (con'td) &amp; Sound"
+        subject="World of Warcraft - crash in game"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/03/0750.html"
+        posts="7"
+        startdate="02/24/2005"
+	enddate="03/03/2005"
+>
+<topic>Multimedia</topic>
+
+<p>After last weeks news about getting World of Warcraft to
+run (see WWN <a href="http://www.winehq.com/?issue=263#World%20of%20Warcraft%20&amp;%20PBuffers">#263</a>), Alex Woods ran into another
+problem:</p>
+<quote who="Alex Woods"><p>
+World of Warcraft is working beautifully now apart from a crash that
+occurs seemingly randomly.  The application is catching the crash, and
+giving a message like this:
+<ul><code>
+This application has encountered a critical error:<br /><br />
+
+ERROR #132 (0x85100084)<br />
+Program:        C:\Program Files\World of Warcraft\WoW.exe<br />
+Exception:      0xC0000005 (ACCESS_VIOLATION) at 0023:557102CD<br /><br />
+
+EAX=00000000  EBX=55BDFCA8  ECX=00000000  EDX=55BDFBB8  ESI=5E320308<br />
+EDI=00000000  EBP=55BDFC08  ESP=55BDFB9C  EIP=557102CD  FLG=00010212<br />
+CS =0023      DS =002B      ES =002B      SS =002B      FS =005B      GS=0063
+</code></ul></p>
+</quote>
+
+<p>A few days later, Alex stumbled on what seemed to be the
+source of the problem:</p>
+<quote who="Alex Woods"><p>
+ Whilst playing around trying to get some kind of lead, the sound cut out
+ on me whilst playing the game.  I decided to keep going, and the game
+ played for a surprisingly long time.  The next day I booted the game
+ with wine's sound drivers disabled and played for about 10 hours total
+ without a crash (for purely stress-test reasons you understand ;)).
+ I've had a chance to give it a go with the wineoss.drv.so now and that
+ also seems stable, so I guess the problem is in winealsa.drv.so which I
+ had been using.
+</p><p>
+ I haven't had a chance to try to get some debug logs just for the sound
+ yet, but when I get the time I will.
+</p></quote>
+
+<p>Paul van Schayck also reported sound problems of a similar nature.
+Francois Gouget explained some of the problems with sound in Wine
+and how to go about troubleshooting issues:</p>
+<quote who="Francois Gouget"><p>
+
+Sound depends a lot on the sound card. Some sound cards support only
+specific sampling rates while others are more accommodating. And that's
+just one issue, at least on the wineoss side there are a lot of other
+issues such as mmap support, full duplex support and DSP_GETOSPACE
+support that vary from one sound card to the next (and to some extent
+from one Alsa configuration / OSS emulation version to the next) and
+which all cause trouble.
+</p><p>
+&lt;rant&gt;
+</p><p>
+And Wine is way too sensible to these issues, even more so if the
+application uses DirectSound. Part of this is because the Windows API is
+painful to emulate, but part of it is lack of debugging of basic sound.
+Unfortunately, debugging supposes one has a sound configuration that
+does not work which makes it even trickier.
+</p><p>
+What this means is that each Wine developer who has sound problems can
+essentially only count on himself to debug them. To do so I would
+recommend first checking that winmm works fine:
+<ul><code>
+cd dlls/winmm/tests
+make test</code></ul>
+</p><p>
+and if the above works, do:
+<ul><code>
+WINETEST_INTERACTIVE=1 ../../../tools/runtest -P wine -M winmm.dll -T
+../../.. -p winmm_test.exe.so wave.c</code></ul>
+</p><p>
+And if the winmm tests worked fine, then do the DirectSound tests:
+<ul><code>
+cd dlls/dsound/tests
+make test</code></ul>
+</p><p>
+already you may have to manually edit the Wine configuration file to set
+HardwareAcceleration = Emulation. That's an heresy, it should be
+automatic. Anyway once you get the above test going, do:
+<ul><code>
+WINETEST_INTERACTIVE=1 ../../../tools/runtest -P wine -M dsound.dll -T
+../../.. -p dsound_test.exe.so dsound.c</code></ul>
+</p><p>
+I know for a fact that many Wine users are having problems with basic
+not-low-latency stereo sound and unfortunately I have not seen any
+progress on this in the past couple of years (i.e. there are still about
+has many users having problems now as two years ago).
+</p><p>
+&lt;/rant&gt;
+</p></quote>
+
+</section>
+</kc>

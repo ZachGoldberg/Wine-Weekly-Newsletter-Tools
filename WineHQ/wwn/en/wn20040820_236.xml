@@ -1,0 +1,433 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="236" date="08/20/2004" />
+<intro> <p>This is the 236th issue of the Wine Weekly News publication.
+Its main goal is to have surgery. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="180" size="578" contrib="49" multiples="34" lastweek="22">
+
+<person posts="17" size="43" who="Alexandre Julliard" />
+<person posts="11" size="30" who="Saulius Krasuckas" />
+<person posts="20" size="60" who="Mike Hearn" />
+<person posts="9" size="25" who="Andreas Mohr" />
+<person posts="8" size="16" who="Ivan Leo Puoti" />
+<person posts="7" size="32" who="Tom" />
+<person posts="7" size="19" who="Shachar Shemesh" />
+<person posts="7" size="19" who="Eric Pouech" />
+<person posts="7" size="18" who="Scott Snell" />
+<person posts="6" size="26" who="Robert Shearman" />
+<person posts="6" size="17" who="Ferenc Wagner" />
+<person posts="5" size="49" who="Jacek Caban" />
+<person posts="4" size="16" who="Robert Reif" />
+<person posts="4" size="13" who="Izak Burger" />
+<person posts="4" size="12" who="James Hawkins" />
+<person posts="4" size="11" who="Boaz Harrosh" />
+<person posts="4" size="7" who="Steven Edwards" />
+<person posts="3" size="9" who="Vincent B&#233;ron" />
+<person posts="3" size="8" who="(michael)" />
+<person posts="3" size="7" who="Dimitrie O. Paun" />
+<person posts="3" size="7" who="Francois Gouget" />
+<person posts="3" size="5" who="Juan Lang" />
+<person posts="2" size="12" who="Zach Gorman" />
+<person posts="2" size="9" who="Michael H. Warfield" />
+<person posts="2" size="9" who="Simon Kitching" />
+<person posts="2" size="6" who="Fergal Daly" />
+<person posts="2" size="6" who="Eric Frias" />
+<person posts="2" size="6" who="David Lee Lambert" />
+<person posts="2" size="5" who="Dan Kegel" />
+<person posts="2" size="5" who="Christian Costa" />
+<person posts="2" size="4" who="Mike McCormack" />
+<person posts="3" size="6" who="Dmitry Timoshkov" />
+<person posts="2" size="4" who="Marcelo Duarte" />
+<person posts="1" size="11" who="=?ISO-8859-1?Q?Alex_Villac=ED=ADs_Lasso?=" />
+<person posts="1" size="4" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="Tobias Burnus" />
+<person posts="1" size="3" who="Huw D M Davies" />
+<person posts="1" size="2" who="Alexander Yaworsky" />
+<person posts="1" size="2" who="Rein Klazes" />
+<person posts="1" size="2" who="Tashlan" />
+<person posts="1" size="1" who="Adam Petaccia" />
+<person posts="1" size="1" who="Marcus Meissner" />
+<person posts="1" size="1" who="Gerald Pfeifer" />
+<person posts="1" size="1" who="Lionel Ulmer" />
+
+</stats>
+<section 
+	title="News: Wine-20040813, Website Updates" 
+	subject="News"
+	archive="http://www.winehq.com/announce/20040813"
+	posts="2"
+	startdate="08/14/2004"
+	enddate="08/20/2004"
+>
+<topic>News</topic>
+<p>Just after last week's WWN came out, Alexandre released Wine-20040813:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20040813: (see 
+ <a href="http://cvs.winehq.com/cvsweb/wine/ChangeLog?rev=1.86&amp;content-type=text/x-cvsweb-markup">ChangeLog</a>
+ for details)<ul>
+        <li> New msiexec application.</li>
+        <li> Support for alpha blending.</li>
+        <li> More sound support improvements.</li>
+        <li> Various code cleanups.</li>
+        <li> Lots of bug fixes.</li></ul></p></quote>
+
+<p>As noted on Wednesday, the WineHQ website has seen some recent updates:</p>
+<quote who="WineHQ"><p>
+Tom Wickline updated the 
+<a href="http://www.winehq.com/status">status pages</a>, including the
+addition of builtin versions of atl.dll, d3dxof.dll, dbghelp.dll, and mlang.dll.
+Our <a href="http://www.winehq.com/janitorial">janitorial projects</a>
+received a bit of their own janitorial clean up courtesy of Dimi Paun. 
+They also saw  the addition of -Wsign-compare as a useful gcc warning to 
+turn on (suggested by Mike McCormack.)
+Finally, over on the 
+<a href="http://www.winehq.com/download">downloads</a> page we've 
+added Fedora Core 2 and White Box Enterprise Linux targets as part of the 
+Red Hat packages maintained by Vincent B&#233;ron.  
+</p></quote>
+
+<p>Also on Wednesday, NewsForge put out 
+<a href="http://software.newsforge.com/software/04/08/18/068255.shtml">a 
+review</a> of CrossOver Office 3.0.1.  The author, Jem Matzan, did an 
+excellent job describing how Wine works and even going so far as to add
+a nice sidebar about the project.  I thought he was a bit too critical of
+CodeWeavers' licensing, but otherwise it was a great review.  You can
+find another 
+<a href="http://www.eweek.com/article2/0,1759,1631278,00.asp">blurb</a>
+about CrossOver Office on eWeek from August 9th.</p>
+
+</section>
+<section 
+	title="Generating Backtraces"
+	subject="Backtrace Dumps"
+	archive="http://www.winehq.org/hypermail/wine-patches/2004/08/0289.html" 
+	posts="13"
+	startdate="08/17/2004"
+	enddate="08/20/2004"
+>
+<topic>Debugging</topic>
+<p>Rob Shearman put together a new way to debug programs and submitted
+a patch with the following description:</p>
+<quote who="Robert Shearman"><p>
+I propose the addition of this new debug tool that will allow developers 
+to output backtraces to the console, without having to interact with a 
+debugger. It can give a useful indication of how functions are being 
+called in situations where a break point is not appropriate.
+To use it, simply include "wine/backtrace.h" somewhere and then call 
+dump_backtrace(), which will generate an output similar to the following:
+</p><p>
+Backtrace:
+<ul>
+0xffffe40e<br />
+NTDLL_wait_for_multiple_objects+0x103<br />
+NtWaitForMultipleObjects+0x50<br />
+WaitForMultipleObjectsEx+0xa3<br />
+WaitForSingleObject+0x36<br />
+dump_backtrace+0x4c<br />
+InternetConnectW+0xf9<br />
+InternetConnectA+0x115<br />
+winapi_test+0x12f<br />
+func_http+0x1a<br />
+run_test+0x62<br />
+__wine_exe_main+0x163<br />
+start_process+0xc3<br />
+wine_switch_to_stack+0x11</ul></p></quote>
+
+<p>Alexandre didn't think that was the best approach,
+<quote who="Alexandre Julliard">
+
+I think it's better to let the debugger take care of that. If you
+don't want a real breakpoint you could define a custom exception to
+tell winedbg to just dump the backtrace and continue.
+</quote></p>
+
+<p>Several people, however, liked the idea of just getting a simple
+backtrace.  Dimi Paun explained:</p>
+<quote who="Dimitrie Paun">
+<p>I am not 100% sure how the patch that Robert's proposing would work in
+practice, but I can tell you (from working with Java for a long
+time now) that having readily available backtraces is invaluable.
+</p><p>
+I for one love backtraces, but on the other hand I don't much
+care for debuggers. Having access to them without being forced
+to go through the debugger would be much appreciated.</p></quote>
+
+<p>Andi Mohr echoed those sentiments:</p>
+<quote who="Andreas Mohr"><p>
+Ditto.</p><p>
+Wine has always had massive problems with getting easily accessible
+debugging/diag support (doing debugging stuff IS hard, no question here...).
+Thus I think we generally want not less, but more support, as long as it
+helps (and as long as it doesn't cause a maintenance headache
+or ill-maintained subsystems due to too much "choice" in debugging options...).
+Since I'd think that that backtrace code should be fairly small and
+self-maintaining, I'd vote for including it.
+</p></quote> 
+
+<p>Mike Hearn expressed concern about using the debugger:</p>
+<quote who="Mike Hearn"><p>
+In Java you can say this:
+<ul><code>
+new Exception().printBackTrace();</code></ul></p><p>
+
+or some equivalent to get a printout of where you are, and it's very 
+convenient.
+</p><p>
+I can see the reasoning behind keeping the code in the debugger then 
+triggering it using a custom exception though, as that way we only have 
+one piece of backtracing code.
+</p><p>
+My problem with this approach is that it relies on the exception 
+actually getting through to the debugger instead of being trapped by the 
+program code and swallowed. I guess we could install a vectored handler 
+to boot the debugger and such but now the code is a lot more complex and 
+confusing for newbies than just having some inline functions in the 
+headers. As if the SEH code wasn't already confusing enough!
+</p></quote>
+
+<p>Andi agreed:</p>
+<quote who="Andreas Mohr"><p>
+I'm sure every semi-involved Wine developer can imagine dozens of
+"reasons of the day" why winedbg doesn't launch properly on error again...
+Failure in wine exception handling code, failure to look up winedbg
+(both registry and disk), failure to pass winedbg cmdline parameters properly,
+failure to get winedbg started up properly, failure to get winedbg to
+parse the current modules and stack frame properly, ...
+</p><p>
+That's why a "no frills" debugging mechanism is a good idea IMHO.
+</p><p>
+
+P.S.: no offense to Eric. He's done TONS of very useful things to winedbg,
+and when considering how many fatal architecture changes winedbg had
+to go through, it's amazing that it still works pretty well. :-)
+</p></quote>
+
+<p> Alexandre still wasn't
+convinced and felt the right approach was to go with the full debugger 
+on the backend,  
+<quote who="Alexandre Julliard">
+
+Well, I can also imagine a lot of cases where the in-process backtrace
+won't work right, the main one being that since the code will never be
+used unless you want a backtrace, when you try to use it you'll
+realize that it no longer works, or doesn't even compile anymore. If
+we call the debugger instead, it will use the standard backtrace code
+which is always compiled in, and regularly used by a lot of people.</quote></p>
+
+<p>Rob offered to write a unit test to make sure the code stays up to 
+date, but Alexandre reiterated that the debugger was the way to go.  
+He thought a custom exception could be generated to get the debugger to
+generate a backtrace.  Mike pointed out a potential problem,
+<quote who="Mike Hearn">
+
+This isn't reliable though, what about apps that swallow all exceptions
+with a try/except block? Ideally you want this sort of thing to just
+work and not have to figure out why your backtrace is never happening.
+</quote></p>
+
+<p>Alexandre wasn't swayed,
+<quote who="Alexandre Julliard">
+In that case you have to start the debugger first. Of course there
+will be cases where it won't work as well as you'd like, you'll have
+the same with the in-process solution, there are many cases where it
+won't work. And actually the debugger solution has more chances to
+work reliably since being in a separate process it interferes much
+less with the running application.</quote></p>
+
+</section>
+<section 
+	title="Fun Project: Port Allegiance" 
+	subject="New Fun Project - Winelib port of Allegiance"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0365.html" 
+	posts="1"
+	startdate="08/18/2004"
+>
+<topic>Winelib</topic>
+<p>Steven Edwards came up with a project for anyone wanting to tackle porting
+a large codebase:</p>
+<quote who="Steven Edwards"><p>
+Microsoft Research has released a Shared Source version of the game
+Allegiance. This is a hefty 512 meg download and of course the license
+that it is under would prevent anyone from sharing the changes but this
+would really allow us to improve Winelib by porting such a massive
+game.
+<ul>
+<a href="http://research.microsoft.com/research/allegiance/">
+http://research.microsoft.com/research/allegiance/</a></ul></p><p>
+
+Grab your copy quick before they pull it down.</p></quote>
+
+<p>This could be an interesting project for a CS student if you can figure 
+out a way to get credit for it.. independent study, perhaps?</p>
+</section>
+<section
+        title="poll vs. epoll"
+        subject="poll vs. epoll"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0385.html"
+        posts="5"
+        startdate="08/19/2004"
+        enddate="08/20/2004"
+>
+<topic>IO</topic>
+<topic>Architecture</topic>
+<p>Sitting around waiting for a program to do something shouldn't be a
+very intensive task for an operating system.  Yet, some programs are
+designed in such a way that it is a problem.  Linux Weekly News described
+an example a few years ago:</p>
+<quote who="Linux Weekly News"><p>
+ The classic Unix way to wait for I/O events on multiple file descriptors is 
+with the select() and poll() system calls. When a process invokes one of those 
+calls, the kernel goes through the list of interesting file descriptors, 
+checks to see if non-blocking I/O is available on any of them, and adds the 
+calling process to a wait queue for each file descriptor that would block. 
+This implementation works reasonably well when the number of file descriptors 
+is small. But if a process is managing thousands of file descriptors, the 
+select() and poll() calls must check every single one of them, and add the 
+calling process to thousands of wait queues. For every single call. 
+Needless to say, this approach does not scale very well.</p></quote>
+
+<p>Their <a href="http://lwn.net/Articles/14168/">solution</a> involved
+switching over to a new set of system calls, <tt>epoll()</tt>.
+Shachar Shemesh wanted to get thoughts on improving Wine's performance in
+this area:</p>
+<quote who="Shachar Shemesh"><p>
+I have a program (a server) that has a very large number of 
+synchronization constructs. Even when everything is idle there, 
+wineserver is taking 60% of the CPU, raising load average to 2.4. When 
+load is applied, response time occasionally jumps from tenths of a 
+second to two minutes.
+</p><p>
+I noticed that in server/fd.c, the wineserver is using "poll" to select 
+between file descriptors. The application is going through this code 
+over 2000 times a second, with over 380 file descriptors each time. I am 
+wondering whether this can be the cause of the slowdown.
+</p><p>
+One of the possible solutions to this would be to use epoll instead. 
+This, of course, would have to be backed by a configure check, as not 
+all systems for which wine is intended support epoll. Another, arguably 
+better, solution would be to use libevent for this purpose. Libevent has 
+the distinct advantage that it automatically chooses the best tool for 
+the job (epoll, poll, /dev/poll, or if all else fails, select). However, 
+if there is another, independent use of poll, porting the semantics to 
+libevent may prove non-trivial.
+</p><p>
+So what does the forum think?
+</p><p>
+One last question. What are the "users"? What constructs cause a new 
+file descriptor to be allocated in the wineserver?
+</p></quote>
+
+
+<p>Mike Hearn replied first with answers to Shachar's last few questions,
+<quote who="Mike Hearn">
+Every thread in every client has 3 fds: command, reply, wait. Other fds
+are allocated as well I think for things like open files, but I'm not sure
+of the details. I know that when I hit these sorts of problems it was due
+to the large number of threads blowing the fd limit (there were lots of
+sockets as well).</quote></p>
+
+<p>Dan Kegel liked Shachar's idea and offered some advice:</p>
+<quote who="Dan Kegel"><p>
+By all means, let's try epoll.</p><p>
+FWIW, I wrote a wrapper layer that illustrates how to detect
+whether epoll etc. are available.  I'm convinced that <i>runtime</i>
+detection is the only way to go.  Compile time detection is insufficient.
+My code is at <a href="http://kegel.com/rn">http://kegel.com/rn</a>
+If you actually try to use it, let me know.  I expect it might
+be useful mostly as a guide.  It's edge-trigger oriented, but
+you can trivially add the flag (or remove the flag) needed to
+get level-triggered behavior again if you really need it.
+I highly recommend using edge-triggered behavior, though.</p></quote>
+
+<p>Shachar wondered how well that would work,
+<quote who="Shachar Shemesh">
+
+I'm sure that edge trigger yields better performance. The problem, 
+however, what with all the potential races edge trigger introduces, and 
+the fact I'm not sufficiently familiar with the wineserver semantics, 
+that going edge trigger in a bug free way right now is beyond me.</quote></p>
+
+<p>Dan explained:</p>
+<quote who="Dan Kegel"><p>
+"potential race conditions" is the wrong way to think about
+it, really.</p><p>
+Switching to edge triggered epoll from select() or poll() is
+always an interesting intellectual challenge; you're
+fundamentally switching to an idiom where the app has
+to remember more than it did before.
+Once you've done it a few times, it gets easier.
+</p><p>
+If I have time, I'll have a look at the state machine
+inside wineserver and see how tricky it'd be.
+</p></quote>
+</section>
+ 
+<section
+        title="Threading Issues?"
+        subject="Threading issues? [ck-request@vds.kolivas.org: ck Digest, Vol 3, Issue 16]"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0306.html"
+        posts="2"
+        startdate="08/17/2004"
+        enddate="08/20/2004"
+>
+<topic>Architecture</topic>
+<p>Andi Mohr forwarded a thread from another mailing and wondered if Wine
+suffered from the same problem:</p>
+<quote who="Andreas Mohr"><p>
+this is a nice little posting from the Con Kolivas Linux interactivity
+patches list. Note that it is about Cedega, not Wine, but it might easily affect 
+Wine, too.
+</p><p>
+Are we doing some big no-nos in the threading area here?
+(or maybe it's just done the way it is because we cannot do it a
+different, better way?)
+</p><p>
+For the whole discussion, please see
+<ul><a href="http://bhhdoa.org.au/pipermail/ck/2004-August/000428.html">
+http://bhhdoa.org.au/pipermail/ck/2004-August/000428.html</a></ul>
+</p></quote>
+
+<p>I didn't dig into the details too much, but the problem seemed to arise
+when Wiktor Grebla couldn't get threads to synchronize properly.  
+Con hypothesized,
+<quote who="Con Kolivas">
+See if it's a priority issue on the part of wine*. Be absolutely certain 
+that wineserver, wine and the game are all run the _same_ priority and 
+not a better priority than X. Send me the output of 'top -b -n 1' during 
+the sound being choppy. Then try running _all_ the wine things at nice 
++19. This is a simple sanity check to see where the problem lies.
+</quote></p>
+
+<p>Wiktor tried that and reported:</p>
+<quote who="Wiktor Grebla"><p>
+It's in fact as you say, all parts of wine have different priorities, and
+ some of them are higher than X</p><p>
+ After renicing all of them there is no problem with choppy sound in all of time 
+ wasting programs I've on my disk :>, and overall (subjective) performance is 
+ better of course.</p></quote>
+
+<p>Con then alluded to a problem on the part of Wine (or, perhaps just Cedega),
+<quote who="Con Kolivas">
+Thanks for details. You do not have different nice levels; that is PRI 
+that is different, which is the "dynamic" priority that constantly 
+changes by the scheduler. It is as I suspected, though - if you renice 
+everything +19 and the problem goes away it is bad programming on the 
+wine developers' part that use what's called sched_yield instead of 
+proper locking between their threads. Don't concern yourself over the 
+details, but at least you have a simple workaround... sigh
+</quote></p>
+
+<p>Mike Hearn seems to have discussed this with Alexandre, and neither of
+them could diagnose the problem based on what was described,
+<quote who="Mike Hearn">
+ Well, apparently we don't use sched_yield, so the problem must
+ lie somewhere else. Maybe Con can help us out here? Alexandre says he
+ doesn't know what the issue is either and somebody needs to investigate. I
+ guess we do need to concern ourselves over the details :)</quote></p>
+ 
+</section>
+</kc>

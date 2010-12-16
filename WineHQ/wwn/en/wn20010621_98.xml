@@ -1,0 +1,332 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="98" date="06/21/2001" />
+
+<intro>
+
+<p>This is the 98th release of the Wine's kernel cousin publication. It's
+main goal is to distribute widely what's going on around Wine (the Un*x 
+windows emulator).</p>
+
+<p>There was an article over at osOpinion about Wine this week. I
+wouldn't exactly call it an in depth review, but there are a few
+interesting (if rehashed) points it brings up.  Check it out at: 
+   <a href="http://www.osopinion.com/perl/story/11297.html">
+	   http://www.osopinion.com/perl/story/11297.html</a>.</p>
+
+</intro>
+
+
+<stats posts="94" size="389" contrib="36" multiples="15" lastweek="18">
+<person posts="13" size="35" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="9" size="29" who="Lawson Whitney &lt;lawson_whitney@juno.com&gt;" />
+<person posts="8" size="19" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="6" size="20" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="130" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+<person posts="5" size="14" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="4" size="9" who="Ove K&aring;ven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="11" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="3" size="11" who="Malte Starostik &lt;malte.starostik@t-online.de&gt;" />
+<person posts="2" size="5" who="Ian Pilcher &lt;ian.pilcher@home.com&gt;" />
+</stats>
+
+
+
+
+
+<section
+  title="Update: Application Database"
+  subject="Apps DB round 2"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0108.html"
+  posts="12"
+  startdate="06/12/2001"
+  enddate="06/14/2001"
+>
+
+<p>Jeremy Newman from CodeWeavers has been doing a lot of work revamping
+	the application database.  He asked for feedback concerning
+	the site and for help adding programs.  A lot of ideas went
+	back and forth concerning changes that should be made.  
+	Jeremy wrote:</p>
+
+<quote who="Jeremy Newman">
+
+<p>The new Application DB (
+<a href="http://appdb.winehq.org/">
+http://appdb.winehq.org/</a>
+) is starting to
+fill up. But, we still need your help before we totally unleash it on the
+Wine community. We need as much feedback, comments, and flames [:-)] as
+possible this week. We need volunteers to take responsibility for updating
+Apps in the DB. If you would like to help, email the appDB team at
+appdb@codeweavers.com.</p>
+
+<p>Areas we need help on:</p>
+<p><ul>
+	<li> Add Apps and App Versions.</li>
+	<li> Comments on Apps</li>
+	<li> Application Owners
+          (the app db has a privilege system where you can be
+	  owner of an app.)</li>
+        <li> Screenshots (lots of 'em)</li>
+</ul></p>
+
+</quote>
+
+<p>The new application database is much easier to read compared to
+	the old one.  It makes finding information on various versions
+	of software quite easy and the screenshots are pretty nice.
+	(including, among others, one of Diablo II.)</p>
+</section>
+
+
+
+
+ 
+ 
+ 
+<section
+  title="Using Naturally Speaking"
+  subject="Missing functionality in mmaux"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0092.html"
+  posts="4"
+  startdate="06/11/2001"
+  enddate="06/12/2001"
+>
+
+<p>Florian Bauer was having a problem using Naturally Speaking with
+	Wine and inquired about some of the issues he discovered:</p>
+
+<quote who="Florian Bauer"><p>
+
+I tried to run Naturally Speaking, a speech recognition software under wine 
+without a real windows installation.
+It installs just fine, but when I try to run it, it tries to adapt the audio 
+settings. That fails, and I get the following fixme's from wine:</p>
+
+<p><code>fixme:mmaux:MIX_GetLineInfo Unhandled component type (00000007)<br />
+    fixme:mmaux:MIX_GetLineInfo Unhandled component type (00000008)</code></p>
+
+<p>I looked at the sources, and it seems that this is due to missing case 
+clauses in the function MIX_GetLineInfo in mixer.c .
+Unfortunately, I don't know enough about C programming and the Windows and 
+OSS API's involved to add the missing parts myself.
+Is it likely that this will be fixed soon?</p>
+
+<p>I would love to use NatSpeak under linux, because then I could delete my 
+	Windows 98 Partition...  Anyway, keep up the good work</p></quote>
+
+<p>Eric Pouech replied with a possible quick fix,</p> 
+<quote who="Eric Pouech"><p>
+	it just misses the wavein component types</p>
+	<p>as a quick fix, you can try to duplicate the case 
+	<code>MIXERLINE_COMPONENTTYPE_MIC</code> with 
+	<code>MIXERLINE_COMPONENTTYPE_WAVEIN</code>, 
+	but I'm not sure it'll fix all your issues, 
+	and let the program fully run.
+	I'll have a closer look at it this week-end, if I have some time</p>
+	</quote>
+
+<p>Florian didn't reply whether it worked or not.</p>
+
+</section>
+
+
+
+
+
+<section
+  title="Licensing Concerns"
+  subject="Use the libreadline in Winedbg, if available"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0163.html"
+  posts="13"
+  startdate="06/12/2001"
+  enddate="06/19/2001"
+>
+
+<p>A couple of different threads appeared this week concerning
+	licensing.  Last year Wine switched from a BSD-style license
+	to the X11 one.  The first thing that came up was just a simple 
+	question posted by Daniel Walker:</p>
+
+<quote who="Daniel Walker"><p>
+ If Microsoft picked up some of the code in Wine , wouldn't they need
+ to include the copyright, permissions notice, and the authors list? It
+ looks like the license isn't clear as to where the Copyright needs to be
+ displayed? Could anyone clear this up?</p></quote>
+
+<p>Marcus Meissner<quote who="Marcus Meissner"></quote> replied
+	that no, it's not required that it be displayed.  Ove K&aring;ven
+	further explained:</p>
+ <quote who="Ove Kaaven"><p>
+ I don't remember whether the Wine license was identical to
+ the BSD license (it may not have been), but the big reason was that it was
+ incompatible with the GPL. The BSD license doesn't prohibit a company from
+ using the code (if they give credit where credit is due, which they do
+ with any licensed technologies anyway), rather its "advertising clause" is
+ a restriction that the GPL does not have, so Wine could not be linked with
+ GPL-ed software if it used the BSD license, which would be too bad...
+ </p></quote>
+
+ <p>A few days later Uwe Bonnes<quote who="Uwe Bonnes"></quote> submitted
+	 a patch that uses libreadline in the debugger if its available
+	 rather than the built-in one.  Uwe wanted to be able to use the
+	 arrow keys while debugging and libreadline would allow him to
+	 trap the vt100 codes. Marcus Meissner 
+	 <quote who="Marcus Meissner"></quote> pointed out that libreadline
+	 couldn't be linked against non-GPL code.  But Patrik Stridvall
+	 <quote who="Patrik Stridvall"></quote> quickly replied that it
+	 was enough for the code to be GPL-compatible, which Wine's 
+	 license is.   Even in this instance Alexandre Julliard didn't 
+	 think it was worth the trouble and wrote:</p>
+ <quote who="Alexandre Julliard"><p>
+	 But then the code can no longer be distributed under a non GPL
+	 compatible license, while this is allowed by the Wine license.</p>
+
+        <p> I think the benefit of using readline in the debugger is much too
+	 small to justify the potential license issues this would cause.
+ </p></quote>
+
+<p>Patrik Stridvall replied with:</p>	 	 
+
+
+<quote who="Patrik Stridvall"><p><code>
+ &gt; But then the code can no longer be distributed under a non GPL<br />
+ &gt; compatible license, while this is allowed by the Wine license.<br />
+</code></p>
+<p>
+winedbg _binaries_ compiled with <code>--enable-readline</code> quite possibly.
+</p>
+<p>As far as the source code to winedbg is concerned 
+maybe but probably not. It might depend on whether 
+<code>--enable-readline</code> or <code>--disable-readline</code> 
+is the default,
+but that remains to be tested in court, but it is not 
+certain it matters at all. The court might quite reasonably
+rule that no linking to readline has taken place yet and
+thus no derived work can have been created and even if they
+hold that some sort of linking has taken place it might not
+consider it a derived work.</p>
+
+<p>In short linking, especially potential linking, do not
+always imply a derived work which is all that matters
+as far as the law is concerned.</p>
+
+<p>Also note that I'm not convinced that any court will hold
+that the GPL is different from the LGPL in any relevant
+way with the possible exception of in bad faith trying
+to circumvent the requirements by trying to be "clever".</p>
+
+<p>Of course it is a little unclear that you really can
+do unlawful circumvention of license requirements.
+This is a like claiming that somebody circumvented
+trespassing your land by moving around it. Either
+you trespass or you do not. Either you violate
+the license or you do not.</p>
+
+<p>The analogy is quite good even in other areas:
+Even if you are on somebody's land you do not necessarily
+trespass either because of copyright like "fair use"
+requirements in the law of most countries.</p>
+
+<p>As a sidenote:
+In Sweden "fair use" concerning trespass is so extensive
+that I never heard about _any_ case concerning it.</p>
+
+<p><code>
+ &gt; I think the benefit of using readline in the debugger is much too<br />
+ &gt; small to justify the potential license issues this would cause.<br />
+</code></p>
+
+<p>Only the debugger (winedbg) links with readline =>
+only the debugger can be effected.</p>
+
+<p>Trying to claim, even though you didn't, that Winelib is 
+effected is absurd since it is independent of the debugger.
+Distributing the debugger with WineLib is merly an aggregation
+nothing more.</p></quote>
+
+<p>Alexandre wrote back with:</p>
+	<quote who="Alexandre Julliard"><p>
+	In theory any library that the debugger uses will also fall under the
+	GPL. And someone shipping Wine binaries may not be aware that parts of
+	it need to be GPLed, and they will get flamed to death on Slashdot.</p>
+	<p>
+	I mostly agree with you that the FSF stance on dynamic linking has no
+	basis in copyright law, but I'm not interested in providing the test
+	case. So if you want to use readline you can patch your local copy,
+	but I won't ship this in the main distribution.</p></quote>
+
+			
+</section>
+
+
+
+
+
+<section
+  title="Virtual Memory Problems"
+  subject="Re: virtual memory problems with Linux 2.4.5"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0094.html"
+  posts="17"
+  startdate="06/11/2001"
+  enddate="06/14/2001"
+>
+
+  <p>Mike McCormack wrote, </p>
+ <quote who="Mike McCormack"><p>
+ I have found a problem with Wine and the Linux 2.4.5 Kernel.
+ The Kernel no longer return EINVAL when offsets are not page
+ aligned... it simply does the mapping ignoring the lower bits of the
+ offset. This small patch fixes that problem.</p></quote>
+
+ <p>Lawson Whitney thought he saw the same problem and did a little
+	 experimenting.  He found: </p>
+ 
+ <quote who="Lawson Whitney"><p>
+ Not only does it look like it could easily be a misaligned mmap, Mike's
+ little patch makes the crash go away.  Using mmap instead of mmap64 or
+ using kernel 2.2.14 instead of 2.4.5 also takes away the crash.
+ Sorry the config test doesn't seem to catch it - it looks as if it
+ should.  I will take a better look at some debugmsgs and straces after
+ supper.</p></quote>
+
+ <p>Alexandre zeroed in on what looked like the problem and discovered
+ it was a problem with glibc 2.1.3:</p>
+ 
+ <quote who="Alexandre Julliard"><p>
+
+ That's a bug in glibc 2.1.3. This is from the mmap64 source:</p>
+ <p><ul><code>
+ [offset is in ecx:edx]<br />
+ testl $0x3ff, %edx<br />
+ jne L(einval)<br />
+ shrdl $12, %ecx, %edx
+       &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+       /* mmap2 takes the offset in pages.  */<br />
+ shrl $12, %ecx<br />
+ </code></ul></p>
+ <p>But of course 0x3ff only tests 10 bits, not 12, so if bits 10 or 11
+ are set they will be silently dropped. This has been fixed in
+ glibc-2.2.</p>
+
+ <p>Another related problem is that even without this bug, mmap64 will
+ always refuse to do an unaligned mmap, even if the kernel might have
+ accepted it (with kernel 2.2.x for instance). Maybe the best solution
+ would be to directly call the mmap syscall instead of mmap2 when
+ mapping executables, this would fix both problems.</p></quote>
+
+ <p>The next day Alexandre posted a patch that did just that - it
+	 implemented a direct system call with 64-bit file support.
+	 It seemed to solve the problem with many people reporting success.</p>
+</section>
+	 
+
+
+ 
+</kc>

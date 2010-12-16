@@ -1,0 +1,614 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="83" date="19 Feb 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 83rd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="116" size="453" contrib="41" multiples="22" lastweek="24">
+<person posts="16" size="54" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="11" size="36" who="Jon Griffiths &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="9" size="34" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="6" size="36" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="6" size="34" who="Ian Pilcher &lt;pilcher@concentric.net&gt;" />
+<person posts="6" size="29" who="Gavriel State &lt;gav@transgaming.com&gt;" />
+<person posts="4" size="14" who="Simeon Pilgrim &lt;simeon.pilgrim@alliedtelesyn.co.nz&gt;" />
+<person posts="4" size="13" who="James Hatheway &lt;james@macadamian.com&gt;" />
+<person posts="3" size="9" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+<person posts="3" size="9" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="3" size="8" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="3" size="7" who="christian richter &lt;christian.richter@onsoft.de&gt;" />
+<person posts="3" size="25" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="3" size="15" who="davep &lt;davep@cyw.uklinux.net&gt;" />
+<person posts="3" size="10" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+Wine 20010216 has been released. Main changes include:
+<ul>
+        <li>Several PostScript driver improvements.</li>
+        <li>Improved enhanced metafiles support</li>
+        <li>Beginnings of PowerPC support</li>
+        <li>Lots of bug fixes</li>
+</ul>
+
+<p />
+
+The mail server at WineHQ (sendmail) ran into lots of issues during
+this week-end. Lots of incoming emails have been bounced out. This
+turned out to be issues related to some non-answering MTA, which
+filled to opened connections pool, hence starving the server network
+resources. Anyway, it has been decided to move to exim, which shall be 
+more robust in this area. Sorry for the inconvenience, and don't
+hesitate to repost your mails if they don't appear on the
+mailing-lists.
+</section>
+
+
+<section 
+  title="Novell and Wine"
+  subject="Novell filesystem support"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0121.html"
+  posts="7"
+  startdate="12 Feb 2001 00:00:00 -0800"
+  enddate="12 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Simeon Pilgrim started some hacking of Wine to help using the Novell
+networks (for previous discussions on issues raised by integrating a
+remote filesystem you can read <kcref issuenum="37" sectionnum="0">this 
+</kcref> regarding Samba). Simeon main goal is to let the Pegasus
+mail reader work in a configuration well the user's mailbox sits on a
+remote (Novell mounted) filesystem.
+
+<p />
+
+Simeon started by fixing the bindery stuff (by rewriting some DLLs),
+but ran into issues with file permissions:
+
+<quote who="Simeon Pilgrim">
+It's the file create/read/write that's not working. I put a bit of code
+into file.c:CreateFileA so the UNC files that are on our server get
+remaped to <code>w:/</code> files ( where <code>w:/</code> is a
+ncpmounted novell directory on my linux box ) so that the normal dos
+functions should work. Most things work, ie I can see my mail folders
+but not new mail, ( pegasus email uses single files per new mail, and
+a index/data pair of files for mail folders ). Also when I try send
+email to locate users the mail does not get sent for read/write
+errors. This is because local mail delivery is done by the client
+program, by writing into the users maildir. How this is done is under
+novel you can Create files in directories that you cannot see (if that 
+permission is granted to you). But you can't do this under unix. So the
+need to implement file i/o for novell files arises.</quote>
+
+
+<p />
+
+However, the read/write operations explained by Simeon are really the
+core of the problem as G&#233;rard Patel reported that: <quote who="G&#233;rard Patel">
+I have my news messages with a reader working under Wine stored on a
+4.10 file server since years. It's not exactly fast but I have yet to
+lose data.</quote>
+
+<p />
+
+G&#233;rard also suggested to <quote who="G&#233;rard Patel">give the Scan file right to
+the user. Certainly more simple, and this is not a very serious
+security breakage IMO.</quote>
+
+<p />
+
+Simeon answered <quote who="Simeon Pilgrim">I've just asked for this
+on my user acc. so i'll see how it works. I still would like the other
+method, as a general idea the admin was not keen for everybody to be
+able to scan the mail directory.</quote>
+
+<p />
+
+Really sounds like Wine will need in a near future to really tackle
+this issue about filesystems, when the underlying layer is not rich
+enough to provide all the required semantics. But this is another
+large project.</section>
+
+
+<section 
+  title="Various Configurations for various applications "
+  subject="various config files for various applications"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0119.html"
+  posts="4"
+  startdate="11 Feb 2001 00:00:00 -0800"
+  enddate="18 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Martin Pilka asked:
+<quote who="Martin Pilka">
+I know it was already at least mentioned here - how to provide config
+file that works without change for more than one application. What do
+you think about this concept? 
+
+<p />
+
+The changes to config file are relevant to some sections only. I think 
+these are important:
+<ul>
+	<li><code>[DllDefaults]</code>, <code>[DllOverrides]</code></li>
+	<li><code>[wine]</code> - because of path variable, some
+programs want to have something specific there</li>
+	<li><code>[x11drv]</code> - for example something runs better
+in managed mode, something not</li>
+	<li>I'm not quite sure about [fonts], [spooler]</li>
+</ul>
+
+<p />
+
+So probably we need to make these sections application dependent. when 
+we parse the config file we don't have a lot information about the
+application we're going to run - in fact the file name only. Anyway
+that's probably enough. So maybe we could add the new optional sections
+like <code>[x11drv-homesite*.exe]</code>. The string after "-" sign
+could be a case insensitive regular expression. When some of this
+x11drv optional sections match the condition about its filename, it's
+taken and no more x11drv sections are considered. If not, the default
+non-optional x11drv section is taken.
+
+<p />
+
+I think we shouldn't follow some "inherit" concept because it could
+dim things a lot. Simple "this and only this section is valid" should
+be enough. 
+</quote>
+
+
+<p />
+
+Jon Griffiths raised some potential issues regarding the current code:
+
+<quote who="Jonathonm Griffiths">
+The problem here is the server. I notice that if you start one
+application with --managed, all applications started afterwards also
+get this set, if the server is still active when they start.
+
+<p />
+
+I think the server should store its preferences in a process specific
+area that can be set per-process (but by default would use the
+<code>.wine/config</code> setup). Everything else should be overridable
+on the command line, perhaps?
+
+<p />
+
+One nice thing about this would be the ability for a (gui?) wine
+utility to read and change those defaults for a process using server
+calls. Debug messages could be turned on/off, for example, while the
+server is still running. Being able to browse the servers
+process/thread tree, attach a debugger externally etc could also useful.
+
+<p />
+
+This would require a small set of 'server browser' calls to be made
+available, and the current global preferences such as tweak_winelook
+to be held by the server. However, its a fair bit of work, and
+unlikely to happen in the immediate future AFAICS.
+</quote>
+
+
+<p />
+
+Martin liked Jon ideas but felt they went far beyond what he intended
+to do. After some more thinking, Martin made another proposal:
+
+<quote who="Martin Pilka">
+After discussion we discovered quite big lack of this (<i>EdNote:
+first</i>) model: maintenance. The config file could easily exceed any
+reasonable size, and that is something we probably don't want
+(wine-users: send your config file...).
+
+<p />
+
+So here is the revision: Application specific config information could
+be stored in separate directory (let's say
+<code>~/.wine/app-config</code>), one configuration per file. Each
+file will contain an entry which determines its validity,
+e.g. "Filename" = "homesite*.exe". Then there will be the 
+<code>[DllOverrides]</code> section and maybe some others.
+
+<p />
+
+This breaks wine configuration into two pieces: application
+independent part (stored in <code>~/.wine/config</code>, contains
+drives, paths and all other independent stuff) and application
+dependent part (stored in <code>~/.wine/app-config</code>, contains
+things like <code>[DllOverrides]</code>).
+
+<p />
+
+On startup wine will load <code>~/.wine/config</code> and pass through
+files stored in <code>~/.wine/app-config</code> directory. The first
+match against regular expression defined in these files (Filename=...)
+causes to overwrite some sections from <code>~/.wine/config</code>.
+
+<p />
+
+The advantage is much easier maintenance. The disadvantage could be that
+you can't see the whole configuration in <code>~/.wine/config</code>
+file anymore - some settings could be overwritten by optional file in
+<code>~/.wine/app-config</code>.
+</quote>
+
+
+<p />
+
+Anyway, all the details haven't yet settled down, so don't hold your
+breath for this feature...</section>
+
+
+<section 
+  title="alloca() or not"
+  subject="Eyes requested"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0134.html"
+  posts="2"
+  startdate="11 Feb 2001 00:00:00 -0800"
+  enddate="12 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+While reviewing a patch posted by Ian Pilcher, Jon Griffiths opened
+another can of worms:
+<quote who="Jonathonm Griffiths">
+I don't know anything about the Win32 print API, but style wise I tend to 
+stay away from <code>alloca()</code>. It screws up exception handling
+because it messes with the stack, and is machine dependent. Maybe
+<code>LocalAlloc()</code> would be a better choice?
+</quote>
+
+
+<p />
+
+Patrik Stridval (in <a href="http://www.winehq.org/hypermail/wine-devel/2001/02/0146.html">this
+mail</a>) made the discussion a bit deeper:<quote who="Patrik Stridvall">
+The general problem with using <code>alloca</code> is that not all
+platforms supports <code>alloca</code>, however I think all reasonable
+platforms that has enough power to support Wine is likely to have it
+so I don't see any real reason not to use it.
+
+<p />
+
+Currently Wine uses it indirectly since the files generated by
+<code>flex/bison</code> uses it.
+
+<p />
+
+That said Alexandre has at least once rejected patches from me that
+used <code>alloca</code>, so he doesn't seem to like it. I don't
+remember him saying why though.
+</quote>
+
+<p />
+
+Jon put up a list of down-sides of <code>alloca()</code> use. Patrik
+discusses them a bit, mainly arguing around the links between 
+<code>alloca</code> and the guard page at the end of the stack (which
+is used to grow the stack when read/write is done to it). However, 
+most stack manipulation is done in an increment by one machine-word
+way, whereas <code>alloca()</code> may go a bit faster, like in
+<pre>
+void foo(void)
+{
+	char buffer[10*PAGE_SIZE];
+	buffer[siezof(buffer) - 1] = '\0';
+}
+</pre>
+which would mean using several guard pages...
+
+<p />
+
+Alexandre Julliard expressed his disregard about
+<code>alloca()</code>: <quote who="Alexandre Julliard">
+If you know that the allocation will be small you don't need 
+<code>alloca()</code>, you can use a constant-size buffer. And if you
+don't know the allocation maximum size you cannot use
+<code>alloca()</code> either because it may crash. So it doesn't buy
+anything and introduces potential portability problems.
+</quote> and also gave some indications on the stack usage (on Linux) 
+<quote who="Alexandre Julliard">the stack space is limited to 1Mb per thread (unless
+the application changed the defaults); it's not very tight, but it
+still means we cannot allocate arbitrary-sized data.</quote>
+
+<p />
+
+So, the final words are: thou shalt not use <code>alloca()</code>.
+</section>
+
+
+<section 
+  title="Headers' copyright"
+  subject="process.h patch"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0153.html"
+  posts="10"
+  startdate="12 Feb 2001 00:00:00 -0800"
+  enddate="15 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Jon Griffiths did post a while ago a patch to enhance the msvcrt
+headers. However, he didn't get any news from it, so he asked from
+feedback.
+
+<p />
+
+The issues with mixing standard C libraries headers (from the Unix
+world) with the Windows' ones is a favorite wine-devel's discussion
+topics. See <kcref issuenum="79" sectionnum="2">issue 79</kcref>, 
+<kcref issuenum="67" sectionnum="3">issue 67</kcref>,
+<kcref issuenum="38" sectionnum="0">issue 38</kcref> and
+<kcref issuenum="16" sectionnum="2">issue 16</kcref>.
+
+<p />
+
+Alexandre Julliard replied <quote who="Alexandre Julliard">I was hoping to get some
+feedback from the winelib experts out there on whether this is better
+than the approach with macros suggested by David.</quote>
+
+<p />
+
+David Elliot gave some more explanations on the impact of the
+<code>MSVCRT_</code> prefix:<quote who="David Elliot">
+I had thrown in the idea of being able to prefix the msvcrt functions
+with something like <code>MSVCRT_</code> and then linking against a
+library which forwarded the <code>MSVCRT_function</code> to
+<code>MSVCRT.DLL.function</code>. Thus using
+<code>MSVCRT_function</code> in the program would use the
+<code>MSVCRT</code> implementation, and using just
+<code>function</code> in the program would use the normal libc
+function. The idea behind this was the some source files could include
+header files which <code>#defined function MSVCRT_function</code>,
+other source files could include normal libc headers. Thus the
+references are set during compile time and not link time and also
+would allow you to essentially link to an MSVCRT and a libc within the
+same program if desired. 
+</quote>
+
+<p />
+
+Jon also pointed out that <quote who="Jonathonm Griffiths">with the @ignore directive
+in your .spec, it is now possible to link with msvcrt and optionally
+have individual functions resolved to libc</quote> even this has to be 
+set for a whole DLL and not on a per function call basis like David's
+solution allows.
+
+<p />
+
+Jon and Alexandre Julliard also discussed on how Wine core file
+(starting with MSVCRT DLL) should use those macros. Unlike Jon,
+Alexandre was really in favor of using the new headers, so that 
+<quote who="Alexandre Julliard"> they will then automatically get tested by anybody
+compiling Wine; while with the other approach they only get tested by
+people compiling Winelib apps, i.e. just about nobody
+&lt;grin&gt;</quote> 
+
+<p />
+
+Francois Gouget also got a look at the patch:<quote who="Francois Gouget">
+The headers look pretty good and as they are an important part of
+Winelib I would really like to see them get into CVS. But there's one
+thing to absolutely do first.
+
+<p />
+
+In your email you say "I took the rsxnt headers as a base since they
+are very uncluttered, and also released without copyright". Well,
+that's a big problem because if there's no copyright and no license
+information then we cannot use them, at least under US law. So you/we
+need to find the author(s) of these headers and get their
+authorization to use their headers and to release them under a license 
+compatible with the X11 license. I see that a google search on rsxnt
+seems to give good results so at least contacting the authors should
+be quite feasible.
+</quote>
+
+<p />
+
+Jon later on replied that the project which created the headers had
+given away their copyright (there's a notice in the header
+files). However, Jon admitted <quote who="Jonathonm Griffiths">it would be good to
+acknowledge their contribution and let them know their modified code is
+being used.</quote> 
+
+<p />
+
+Gavriel State jumped into the discussion with some legal arguments:
+<quote who="Gavriel State">While Jon has addressed this issue in regards to the
+MSVCRT headers, this might be a good time to point out that the
+legality of enforcing copyright on header files through licensing
+restrictions is questionable. 
+
+<p />
+
+I'll preface this with the usual mention of the fact that I am not a
+lawyer, nor do I play one on TV. Please consult a qualified
+professional before taking action on anything I've written.
+
+<p />
+
+Copyright law does not protect idea, just the expression of
+them. Several court decisions have been rendered which suggest that
+the 'purely functional' elements of a computer program are not
+copyrightable. There are several cases that explicitly deal with the
+issue of copyright and header files. The most relevant one for Wine
+development is probably the 1992 decision in Sega v. Accolade, where
+Accolade reverse engineered the headers for Sega's ROM libraries in
+order to develop games compatible with Sega's hardware without paying
+Sega's royalties.
+(<a
+href="http://www.eff.org/pub/Legal/Cases/sega_v_accolade_977f2d1510_decision.html">
+http://www.eff.org/pub/Legal/Cases/sega_v_accolade_977f2d1510_decision.html"</a>)
+  
+The court in that case said:
+<i><ul>  
+    Computer programs pose unique problems for the application of the 
+    "idea/expression distinction" that determines the extent of copyright
+    protection. To the extent that there are many possible ways of 
+    accomplishing a given task or fulfilling a particular market demand, 
+    the programmer's choice of program structure and design may be highly
+    creative and idiosyncratic. However, computer programs are, in essence, 
+    utilitarian articles -- articles that accomplish tasks. As such, they
+    contain many logical, structural, and visual display elements that are
+    dictated by external factors such as compatibility requirements
+    and industry demands... In some circumstances, even the exact set of
+    commands used by the programmer is deemed functional rather than 
+    creative for the purposes of copyright. When specific instructions, 
+    even though previously copyrighted, are the only and essential means
+    of accomplishing a given task, their later use by another will not 
+    amount to infringement.
+</ul></i>
+
+<p />
+
+Since Wine absolutely requires the specific header file layout, structure
+and function names, etc to be the way the Windows headers express them, 
+there is good cause to believe that the header files are unprotected by 
+copyright.
+
+<p />
+
+In fact, development tool licenses that attempt to restrict usage of 
+these headers may even constitute anti-trust copyright misuse. Early 
+versions of MS Visual C++ contained a shrinkwrap license that forbade
+the use of the product to create software for platforms other than 
+Windows. Later revisions (ie: SP3) removed that restriction, so perhaps
+MS realized that this was not protectable.
+
+<p />
+
+One fly in the legal ointment is that while the headers may not be
+copyrightable, the shrinkwrap license may still be legal as a contract.
+There's a case where a court suggested that someone who buys a copy
+of a product that contains a shrinkwrap license agreement and unwraps
+it is legally bound to follow it, while the person who later finds the
+unwrapped CD 'on the street' with no such license is allowed to copy 
+the portions that are unprotected by copyright. It's unclear where
+the anti-trust issue fits in there.  
+</quote>
+
+<p />
+
+Some further arguments went further (like on applicability of those
+issues in Europe and so), but the final word seems to be that it seems 
+rather safe to reuse native headers contents, at least on a pure
+interface point of view, hence removing all the attached comments.</section>
+
+
+<section 
+  title="Wine speedup"
+  subject="Speeding up wineserver synchronization objects with shared memory"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0211.html"
+  posts="5"
+  startdate="15 Feb 2001 00:00:00 -0800"
+  enddate="18 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Gavriel State opened up an optimization workshop:
+<quote who="Gavriel State">
+We've recently been working on getting American McGee's Alice (a
+visually stunning game, if you haven't seen it before) running well
+under Wine, and we've run into a serious speed issue with
+synchronization objects like Mutexes.
+
+<p />
+
+Currently, Alice runs at about 50% the framerate it gets in Windows
+with the same graphics driver (NVidia). When we started investigating,
+it turned out that the reason for this is that it's spending half of
+it's time in the WineServer. At first we assumed that this was due to
+the fact that the GL thunks need to grab the X11 lock. We realized
+that this wasn't necessary for most GL calls if we're using a direct
+rendering GL implementation, and turned off the locks. There was no
+effect - because there really wasn't much contention for the x11
+lock.
+
+<p />
+
+After going through a number of similar Wine internal possibilities
+and getting nowhere, we finally realized that the problem was the app
+itself. It's grabbing and releasing a mutex of it's own bazillions of
+times each frame. Since there's nothing much we can do about that we
+started thinking about the proposed linux kernel module (<i>EdNote:
+<kcref issuenum="60" sectionnum="0">read about it</kcref></i>)
+approach. After re-reading the thread and looking over the prototype,
+I have to concur with Alexandre's judgement - the prototype that
+exists is trying to do too much work.
+</quote>
+
+
+<p />
+
+Gavriel and Ove Kaaven then proposed, instead of letting the Wine
+server do all the job (and getting invoked for each operation on the
+mutex), to cope with the easy part on the application side. This would 
+use a shared memory section across all the processes (because a handle 
+can be shared across processes, hence in different address spaces),
+and try the lock operation on the server side. If the lock fails (some 
+one already has the lock), then the wait operation shall be done in
+the server.
+
+<p />
+
+However, Alexandre Julliard didn't like the approach: 
+<quote who="Alexandre Julliard">
+I don't see how you are going to make this work reliably. A basic
+design principle of the server is that no matter what a client process 
+does, it cannot break either the server or other clients; given the
+number of bugs Windows apps contain, I feel this is very important. 
+
+<p />
+
+As soon as you introduce a shared memory area, you need the
+collaboration of all clients to ensure the stability of the whole
+system, since any client can corrupt system data structures. This is
+very bad. Also since the server is single-threaded its data structures 
+don't need to be protected; but as soon as you manipulate them from
+multiple threads you need locking mechanisms, which will probably cost 
+a lot in performance too.
+</quote>
+
+
+<p />
+
+Gavriel tried to minimize the impact of such a modification, and
+thought that a real kernel module would be the only solution to
+provide both reliability and speed. However, this sounds beyond the
+current scope what Gav wanted to achieve, and this looked for an
+acceptable solution in user-space.
+
+<p />
+
+But nothing seemed to come out, at least in a way that satisfies
+Alexandre's requirements. However, the TransGaming folks may provide a 
+solution on their own which is sufficiently available to run at full
+speed some games.</section>
+
+</kc>

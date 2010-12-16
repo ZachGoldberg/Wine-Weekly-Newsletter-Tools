@@ -1,0 +1,357 @@
+
+<section 
+	title="News via Wine Review: Microsoft Office, Bordeaux"
+	subject="News"
+	archive="http://wine-review.blogspot.com/"
+	posts="0"
+>
+<topic>Wine</topic>
+<p>
+Tom Wickline over at Wine Review has been busy lately working on showing Microsoft Office <a href="http://wine-review.blogspot.com/2008/01/running-ms-office-2003-under-linux-with.html">2003</a> and even <a href="http://wine-review.blogspot.com/2007/12/microsoft-office-2007-on-linux-with.html">Office 2007</a> running under wine.  
+</p>
+<p>
+Tom provides a full install guide for Office 2003; which from my first read through looks pretty darn simple and straight-forward.  Office 2007 on the other hand provides a pretty good challenge to get working, Tom writes:
+</p>
+<quote>
+<p>
+I installed Microsoft Office 2007 on a computer with Windows XP and then moved everything over to this box that has Linux on it. After moving Office 2007 over to the Linux box I had the joys of importing the registry settings from the XP install into Wine. After a week of working on this and tweaking Wine with dll overrides and registry settings I finally got most of Office 2007 to run in Wine.
+</p>
+</quote>
+<p>
+Tom also highlights a new bit of wine software, <a href="http://wine-review.blogspot.com/2008/01/bordeaux-wine-configuration-manager.html">Bordeaux</a>.  Bordeaux is a new wine-package manager (for apps running under wine).  I havn't yet had a chance to use it, however many of the wwn's readers may find this interesting and useful.
+</p>
+<quote>
+<p>
+Someone sent me a small Wine Configuration Manager that has a GUI for native Wine applications. This is a 0.1 release so it's still a work in progress, proof of concept. I ask if I could post it here and they said sure... So here it is!
+<br /><br />
+The app is built with GTK and should run on any system that has GTK
+installed.
+<br /><br />
+Quit has not been implemented yet so you will have to X to quit the program. I placed it in my home directory and executed it from there, the features that are currently implemented seem to work fine.
+</p>
+</quote></section>
+<section 
+	title="Number of commits per year"
+	subject="Wine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061548.html"
+	posts="3"
+>
+<topic></topic>
+<p>
+Hans Leidekker has found an interesting way of keeping track of the rate of progress of wine; tallying the number of commits per year:
+</p>
+<quote>
+<p>
+<pre>
+$ for y in {2002..2007}; do \
+  n=$( git log | grep ^Date: | grep $y | wc -l ); \
+  echo "Number of commits in $y: $n"; \
+  done
+Number of commits in 2002: 3094
+Number of commits in 2003: 3283
+Number of commits in 2004: 3851
+Number of commits in 2005: 6006
+Number of commits in 2006: 8431
+Number of commits in 2007: 9513
+
+ -Hans
+</pre>
+</p>
+</quote></section>
+<section 
+	title="Recent BugZilla changes"
+	subject="BugZilla"
+	archive="http://bugs.winehq.org/"
+	posts="10"
+>
+<topic>BugZilla</topic>
+<p>
+There have been a couple threads in recent weeks regarding changing of some categories within bugzilla.  Vitaliy Margolen has been on the ball pushing for these changes.
+</p>
+<quote>
+<p><pre>
+Ok we talked and talked and talked and where did it all go? Where are the
+agreed upon changes?
+
+If we can't agree on everything, then lets do parts that everyone is ok
+with. Then decide on more changes.
+
+
+So far this what everyone was happy with:
+
+wine-misc -> unknown (default selection)
+
+test -> test (change description to "Conformance tests")
+wine-advapi32 -> advapi32
+wine-atl -> atl
+wine-comctl32 -> comctl32
+wine-console -> console
+wine-crypt32 -> crypt32
+wine-dbghelp -> dbghelp
+wine-debug -> winedbg
+wine-directx* -> directx*
+wine-documentation -> documentation
+wine-dos -> dos
+wine-gdi-(printing) -> gdi32
+wine-gdiplus -> gdiplus
+wine-help -> hhctrl - Help viewer implementation
+wine-kernel -> kernel32
+wine-loader ->loader
+wine-msi -> msi
+wine-msvcrt -> msvcrt
+wine-msxml -> msxml3
+wine-ole -> ole
+wine-opengl -> opengl
+wine-quartz -> quartz
+wine-richedit -> richedit
+wine-setupapi -> setupapi
+wine-shdocvw -> shdocvw
+wine-shell32 -> shell32
+wine-urlmon -> urlmon
+wine-user -> user32
+wine-usp10.dll -> usp10
+wine-winelib -> winelib
+wine-x11driver -> x11driver
+
+Add new components:
+-> wininet - Internet connectivity and Layer-7 protocols
+-> wintrust - Cryptography and trust verifications
+-> advpack - INF file based installation engine
+-> imagehlp - PE binary file manipulations, signed file handling
+-> shlwapi - Various shell helper functions
+-> vdm - Wine 16-bit compatibility layer
+-> comdlg32 - Common dialogs such as open/save/print/font
+
+Remove:
+Wine-Rebar
+</pre>
+</p>
+</quote>
+<p>
+Jan Zerebecki, a bugzilla admin, writes in confirming that these changes look good and they will go through soon.
+</p>
+
+
+<quote>
+<p>
+I think I will be able to do the changes next weekend.
+<br /><br />
+If no one objects until Friday, I'll assume that everyone is fine
+with the changes as proposed in this thread.
+<br /><br />
+I'll furthermore assume that I can modify the descriptions of
+categories as I see fit (I explained in a previous mail on this
+topic on how those could be made to convey more exactly which
+parts of wine they cover).
+<br /><br />
+I just saw that there still are overlaping categories in at least
+one case, but that can be fixed in another step.
+</p>
+</quote>
+
+
+<p>In other bugzilla news: Dan Kegel points out that bugzilla is capable of creating some pretty cool graphs</p>
+<p>
+<center><a href="http://bugs.winehq.org/reports.cgi?product=Wine&amp;datasets=NEW%3A&amp;datasets=UNCONFIRMED%3A&amp;datasets=CLOSED%3A&amp;datasets=FIXED%3A"><img border="0" src="http://bugs.winehq.org/graphs/Wine_NEW_UNCONFIRMED_CLOSED_FIXED.png" /></a></center>
+</p></section>
+<section 
+	title="Wineconf Videos released"
+	subject="Wineconf"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061612.html"
+	posts="2"
+>
+<topic>Wineconf</topic>
+<p>
+Six videos from wineconf have finally made it from the editing studio the realm of the internet (youtube).  Thanks to Lei Zhang for putting these videos together and making them available on the web.  The six videos:
+</p>
+<quote>
+<p><pre>
+<center>
+Alexandre's Keynote
+<a href="http://www.youtube.com/watch?v=GqEp8psjv5s">http://www.youtube.com/watch?v=GqEp8psjv5s</a>
+
+Detlef Riekenberg - Printing in Wine
+<a href="http://www.youtube.com/watch?v=1-n6mClDdBQ">http://www.youtube.com/watch?v=1-n6mClDdBQ</a>
+
+Kai Blin - Wine and Samba
+<a href="http://www.youtube.com/watch?v=ToKeJbQ87c0">http://www.youtube.com/watch?v=ToKeJbQ87c0</a>
+
+Martin Pilka - CxTest
+<a href="http://www.youtube.com/watch?v=VBZNOTngyeo">http://www.youtube.com/watch?v=VBZNOTngyeo</a>
+
+Maarten Lankhorst - Wine and Sound
+<a href="http://www.youtube.com/watch?v=qKaYqsm4I_Q">http://www.youtube.com/watch?v=qKaYqsm4I_Q</a>
+
+Stefan D&#246;singer - Wine and Direct3D
+<a href="http://www.youtube.com/watch?v=eJ-zyKR1N2A">http://www.youtube.com/watch?v=eJ-zyKR1N2A</a>
+</center>
+</pre></p>
+</quote>
+<p>
+Most of the videos are actually quite long and worth watching.  I watched most of them, but only took notes on the keynote.  Here is my summary of the keynote:
+</p>
+<p>
+<pre>
+WINE Conference 2007
+
+Keynote by Alexandre Julliard
+After about 2 and a half minutes audio gets MUCH better
+
+Lots of 1.0 jokes
+
+Last year's focus: getting games to work (mostly success)
+This year's focus:
+ -getting copy protection to work (many will never work)
+ -Window management
+ -sound support
+ -crypto etc.
+
+This year saw the Big switch to git which has 
+proved a good one with tools like git-bisect being
+extremely helpful.
+
+
+Update to Software Freedom Law Center (Slow progress)
+Author-tracking website almost done
+
+Release 1.0 official info
+-Running out of excuses!
+--Fixing bugs is one of the biggest things left
+
+Bug Stats
+--Lots more bugs being fixed but even more new ones coming in
+--Lots of old bugs being fixed too
+
+Post 1.0 List
+(64-bit), DIB Engine, Quartz Driver, D3D 10, .Net
+</pre>
+</p></section>
+<section 
+	title="Setting windows version automatically"
+	subject="Wine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2007-December/061444.html"
+	posts="14"
+>
+<topic>Wine</topic>
+<p>
+Robert Millan expressed some interesting in writing an application to automatically set the windows version for certain applications which are known to require such a change.  However, in the interest of not duplicating information or code he wanted to move some functions:
+</p>
+<quote>
+<p>
+Hi
+<br /><br />
+I'm writing a small application to automate the process of setting Windows
+version for executables that are known to require a specific one.  I'd like
+it to use the knowledge about defining Windows versions contained in
+winecfg/appdefaults.c instead of duplicating/forking code from it.
+<br /><br />
+Would it be ok to move on_winver_change() and some of its friends like
+win_versions[] and set_reg_key() to libwine.so.1 for this purpose ?
+<br /><br />
+-- <br />
+Robert Millan
+</p>
+</quote>
+<p>
+Steve Edwards thinks it can be more simply done
+</p>
+<quote>
+<p>
+How about rather than writing another application to do this, you make
+winecfg take arguments on the command line so you could set something
+like
+<code>
+winecfg foo.exe --winver win98 --dll=gdiplus.dll=n
+</code>
+Then all you need is a script for your known bad applications....
+<br /><br />
+Thanks
+Steven
+
+[Continued]
+
+Actually, another way you could do it is to use inf files and store
+them in a database. We discussed something like this for the appdb.
+Using inf's would be a cleaner method than hacking winecfg to automate
+importing this data in to the registry and then everyone can use it.
+I'd suggest if you know of an application thats buggy, needs the
+version and dll information hard set, you try the inf route and submit
+it to appdb if its an application listed there.
+
+</p>
+</quote>
+<p>
+Alexandre Julliard thinks that this can all be done with regedit.exe and such changes are not necessary:
+</p>
+
+<quote>
+<p>
+It's only a matter of setting a registry key, that can be done easily by
+calling regedit, there's no need to involve winecfg.
+</p>
+</quote>
+<p>
+Steven Edwards agrees with AJ but points out a problem:
+</p>
+<quote>
+<p>
+<pre>
+I think the solution to have multiple appdefaults with
+programs having generic names like setup.exe and install.exe is to
+enhance the support in wine and winecfg application/dlloverrides to
+use md5sum/sha hashes. I don't know how julliard really feels about
+this but this is similar to what was discussed with having a custom
+Wine shim engine for application compatibly. If you were going to
+change some code and he approves I think this is the route to go.....
+
+So say rather than having
+
+HKCU\Software\Wine\AppDefaults\setup.exe\Version win98
+
+you would have something like
+
+HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\Version win98
+HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\filename
+setup.exe
+</pre>
+</p>
+</quote>
+<p>
+Roderick Colenbrander writes with an alternative to MD5
+</p>
+<quote>
+<p>
+The system on windows doesn't use the md5sum (I think it has one) but it looks for the product ID which is burried into most executables first. It also checks for other things but in a hackier way. As there are a lot of different versions of a program but which all need the same override.
+<br /><br />
+Roderick
+</p>
+</quote>
+<p>
+Robert Millan doesn't think product ID's are such a good idea though
+</p>
+<quote>
+<p>
+<pre>
+I think it's a bad idea to do that:
+
+ - Product IDs may not necessarily be unique identifiers for every
+ given program.  Hashes are.
+
+ - It's easier for users to submit information about their apps if they
+ can use tools they're familiar with such as md5sum / sha1sum.
+</pre>
+</p>
+</quote>
+<p>
+Unfortunatly, before Robert could find a decisive "correct" way to proceed, the conversation finished with Steven's last comment:
+</p>
+<quote>
+<p>
+I'd like to hear Alexandre's comments for my suggestions. The current
+application override system bothers me but maybe he has other ideas or
+I am missing something. The entire system seems to depend too much on
+the applications name which seems limited to me but maybe he has ideas
+for a more robust way of tracking dlloverrides and version settings
+when the application name conflicts.
+</p>
+</quote></section>

@@ -1,0 +1,45 @@
+<!--TITLE:[Wine for Debian Lenny]-->
+<!--BLURB:[Wine for Debian Lenny]-->
+
+<h1 class="title"><a href="http://www.debian.org/" target="_new"><img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></a>
+Wine for Debian Lenny, Squeeze and Sid
+<a href="http://www.debian.org/" target="_new"><img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></a></h1>
+
+<p>Debian-based distributions utilize a special tool for managing packages known as APT.  APT is able to automagically install all of the needed dependencies for a software package, as well as keep the package up to date, by scanning what are known as APT repositories. Debian-based distributions have their own repositories of software that include Wine, however we keep our own repository of the latest available beta packages here for download.</p>
+
+<p><b>Warning: These are beta packages</b><br>
+<i>This means they will periodically suffer from <a href="http://wiki.winehq.org/Regression">regressions</a>, and as a result an update may break functionality in Wine.  If the latest stable release of Wine (currently Wine 1.0.1) works for you, then you may not want to use these beta packages.</i></p>
+
+<p>This repository contains packages for i386 and amd64 architecture.</p>
+
+<p>To install wine packages you can use two methods: add the repository or download a .deb package and manually install it, but first of all you have to remove older wine version. If you use the first method you'll have wine automatically upgraded by apt, otherwise you'll need to manually download and install every new version.</p>
+
+<h2>Remove old version</h2>
+<div style="position:relative;left:20px">Open a terminal</div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#to log as root</font></div>
+<div style="position:relative;left:20px"><i>apt-get remove libwine wine</i> <font color="gray">#to remove outdated version of wine</font></div><p></p>
+<h2>Method 1: Add the repository</h2>
+<div style="position:relative;left:20px">Open a terminal</div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#to log as root</font></div>
+<div style="position:relative;left:20px"><i>gedit /etc/apt/sources.list</i> <font color="gray">#to open repository file with a text editor (you can use gedit or another)</font></div>
+<div style="position:relative;left:20px">Add this line for Lenny: <i>deb http://www.lamaresh.net/apt lenny main</i></div>
+<div style="position:relative;left:20px">Add this line for Squeeze: <i>deb http://www.lamaresh.net/apt squeeze main</i></div>
+<div style="position:relative;left:20px">Add this line for Sid: <i>deb http://www.lamaresh.net/apt sid main</i></div>
+<div style="position:relative;left:20px">Save and close sources.list</div>
+<div style="position:relative;left:20px"><i>wget -O - http://www.lamaresh.net/apt/key.gpg | apt-key add - </i> <font color="gray">#to add gpg key</font></div>
+<div style="position:relative;left:20px"><i>apt-get update</i> <font color="gray">#to update package list</font></div>
+<div style="position:relative;left:20px"><i>apt-get install wine</i> <font color="gray">#to install latest wine version</font></div><p></p>
+<h2>Method 2: Download .deb and manually install it</h2>
+<div style="position:relative;left:20px">Chose a .deb package from <a href="http://www.lamaresh.net/binary.php" target="_blank">binary list</a> and save it in your home directory</div>
+<div style="position:relative;left:20px">Open a terminal</div>
+<div style="position:relative;left:20px"><i>cd ~</i> <font color="gray">#to go to your home directory</font></div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#to log as root</font></div>
+<div style="position:relative;left:20px"><i>dpkg -i wine_1.1.xxx.deb</i> <font color="gray">#change xxx with your chosen package, this will install wine</font></div>
+
+<br><br><p style="font-size:12px;text-align:left;font-style: italic;">
+Homepage: <a href="http://www.lamaresh.net" target="_blank">http://www.lamaresh.net/</a><br>
+Repository maintainer:  <a href="mailto:repository@lamaresh.net">Maurilio Genovese</a><br>
+Package builder:  <a href="mailto:ben.klein@lamaresh.net">Ben Klein</a>
+</p>
+
+

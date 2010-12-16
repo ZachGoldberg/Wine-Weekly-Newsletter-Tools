@@ -1,0 +1,339 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="53" date="2000/07/24" />
+
+<intro>
+
+<p />
+
+This is the 53rd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="139" size="550" contrib="49" multiples="27" lastweek="22">
+<person posts="16" size="53" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="13" size="30" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="11" size="23" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="10" size="32" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="6" size="125" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="4" size="9" who="David Howells &lt;David.Howells@nexor.co.uk&gt;" />
+<person posts="4" size="8" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="7" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="4" size="16" who="Stephane Lussier &lt;stephane@macadamian.com&gt;" />
+<person posts="4" size="10" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="10" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+</stats>
+
+
+<section 
+  title="OpenGL/Mesa compilation woes"
+  subject="Compilation problem with dlls/ddraw/d3ddevice/mesa.c"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-190.html"
+  posts="6"
+  startdate="2000-07-17"
+  enddate="2000-07-18"
+>
+
+<p />
+
+David Elliott reported compilations errors while rebuilding the latest 
+CVS tree (<code>`PFNGLCOLORTABLEEXTPROC'</code> wasn't declared in 
+dlls/ddraw/d3ddevice/mesa.c).
+
+<p />
+
+Lionel Ulmer was quite puzzled by the misbehavior:
+<quote who="Lionel Ulmer">Could you tell me where you did get your 'glext.h'
+file ? The OpenGL ABI (now finalized, in its 1.0 version) says that
+the 'glext.h' file MUST provide, for each extension, the corresponding
+typedef (as PFNGLCOLORTABLEEXTPROC here). The one from XFree 4.x
+definitely does.</quote>
+
+<p />
+
+After some investigations, it turned out that XFree 4.0.0 wasn't fully 
+compliant to the stabilized ABI, whereas XFree 4.0.1 is.
+Lionel provided later on a patch to detect compliant header file, but
+also to cope with the issues raised by XFree 4.0.0. This compilation
+error should be history by now.
+
+<p />
+
+</section>
+
+
+<section 
+  title="Winsock status"
+  subject="What's required for 'Winsock' to be 100% complete?"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-159.html"
+  posts="5"
+  startdate="2000-07-13"
+  enddate="2000-07-17"
+>
+
+<p />
+
+Warren Young wrote:
+<quote who="Warren Young">As maintainer of the 
+Winsock Programmer's FAQ, I have a few interests in WINE's
+implementation of Winsock: 
+<ol>
+   <li />You state that your Winsock 1.1 implementation is at 90%
+completion. What has to be done before you call it 100%?
+   <li />The Wine <a href="http://www.winehq.org/News/status.html">
+status page</a> says that the documentation for Winsock in WINE is
+somewhere between outdated and nonexistent. What do you need? I ask
+because the freely-available Winsock 2 spec should be enough -- WINE
+shouldn't need its own docs unless the WINE implementation differs
+from the spec. (For those who haven't read the Winsock spec, it's more
+like a reference manual than many specs I've seen; pretty easy
+reading.) 
+   <li />What does your Winsock 2 provider support today, and what does
+it need in the near future?  I.e., Is there any lack in the Winsock 2
+provider stopping you from getting to WINE 1.0?
+   <li />What about Winsock 2 support beyond 1.0?  I imagine that this
+includes things like overlapped I/O, I/O completion ports, and the
+Service Provider Interface. Am I close? 
+
+<p />
+
+For what it's worth, in the Winsock programming community it's pretty
+much understood that if you use Winsock 2 features you're almost
+certainly tying your application to Windows. If WINE can run Winsock 2 
+programs, that's nice, but I wouldn't ding it too badly in the FAQ if
+it couldn't. The WINE people should take that to mean that I think
+their efforts are much better spent elsewhere. Winsock 2 mainly
+appeals to high-end server app writers and people with major
+transport/namespace compatibility issues. The former shouldn't be
+running under WINE, ever, and the latter is a minority of
+applications.
+</ol>
+</quote>
+
+
+<p />
+
+Ove K&#229;ven gave a point to point answer:
+<quote who="Ove Kaaven">
+<ol>
+   <li /><i>Winsock 1.1 implementation</i>: Well, to implement any
+routines that remain, and fix remaining bugs... for example, I have
+strong doubts that OOB data is handled in all cases. Also the blocking
+behavior could be improved a bit, I'm not sure that it does it
+correctly in every case either (especially not if OOB data is involved).
+   <li /><i>Winsock documentation</i>: That docs don't exist doesn't mean
+that we need it, since there isn't much the user really needs to know
+about Winsock. But since you ask, to document how the winsock is
+implemented in Wine (the interaction between the wineserver and the
+client, what is done where, how it keeps track of socket state, and
+things like that) could be useful, to unconfuse potential new
+developers and bughunters in the area. 
+   <li /><i>Winsock 2.0 provider</i>: Right now Wine's Winsock2 does
+exactly the same as Winsock1 (except that WSAEventSelect is also
+implemented and available, that is). And other Winsock 2 functionality
+would definitely not be a release-critical component.
+   <li /><i>Winsock 2.0 support beyong 1.0</i>: There are no specific
+plans. People just implement what they want to have. And there are no
+current efforts on Winsock functionality.
+</ol>
+</quote>
+
+
+<p />
+
+St&#233;phane Lussier (from Macadamiam) just added Macadamiam folks have
+been working on a patch for WsControl()/WSAIoctl() to discover the
+name and characteristics of the current interface.
+ 
+Anyway, you should be able to read, sooner or later, from Wine on the
+<a href="http://tangentsoft.net/wskfaq/">
+Winsock FAQ</a>
+</section>
+
+
+<section 
+  title="CD-ROMs information (serial number and label)"
+  subject="CDrom - serial failed"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-199.html"
+  posts="11"
+  startdate="2000-07-17"
+  enddate="2000-17-18"
+>
+
+<p />
+
+Arnaud Atoch, while comparing the 'dir' output (on NT) with the 'dir'
+output of wcmd (the wine replacement for the command.com command line
+interpreter) found some interesting but strange behaviors:
+<ul>
+   <li />the label was in upper-case in Wine (FRANCE), while in
+lower-case under Windows (France)
+   <li />the serial number was inversed (F156-6DCC instead of CC6D-56F1)
+</ul>
+
+<p />
+
+Andreas Mohr investigated this further.
+
+<p />
+
+On the first point, the issue was quite easily solved: 
+<quote who="Andreas Mohr">Many CD-ROMs contain <b>several</b> "volume descriptor"
+sectors. E.g. one ASCII volume descriptor, one Unicode, one Joliet
+etc. And NT4 reads the Unicode voldesc (which contains 
+<code>"F\0r\0a\0n\0c\0e\0\0"</code>), whereas Wine read the ASCII
+voldesc (<code>"FRANCE\0"</code>).</quote>
+
+<p />
+
+Reading from the right descriptor solved the issue.
+
+<p />
+
+The second point triggered more thoughts, but Rein Klazes reported: 
+<quote who="Rein Klazes">Tried some CD's on Windows '98, NT4, 2000 and
+Wine. GetVolInformation() in Windows 2000 and NT4 return serial
+numbers with the bytes reversed as that on Win'98 and wine.
+
+<p />
+
+Strange that we never noticed.</quote>
+
+<p />
+
+Andreas Mohr wrote a patch for all of this (and he also fixed another
+bug, which, he said, could help some installers go further).
+
+<p />
+
+</section>
+
+
+<section 
+  title="Link files"
+  subject="linux linking"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-286.html"
+  posts="6"
+  startdate="2000-07-21"
+  enddate="2000-07-22"
+>
+
+<p />
+
+Brian With-No-Last-Name posted a patch for review. This patch allows
+to create link files to be added to the menus of KDE or Gnome windows
+managers. This greatly enhance the integration of Wine into existing
+desktops: Windows icon files would be directly seen from the desktop.
+
+<p />
+
+However, the patch, on his conception, received quite a few
+comments. Among them:
+<ul>
+   <li />J&#252;rgen Schmied didn't like the non optional part of the patch
+(a link for both Gnome and KDE was always created)
+   <li />David Elliot proposed another integration scheme:
+
+<quote who="David Elliot">Actually, why not just write .lnk files only
+(exactly like Windows NT does). Have a "Start Menu\Programs" directory
+for each user (in the .wine directory would probably make the most
+sense) and also a global "Start Menu\Programs) maybe in something like 
+/usr/share/wine. Of course this does mean that ~/.wine and
+/usr/share/wine will have to be available as Windows drive letters.
+
+<p />
+
+Integration with GNOME, KDE, and [insert your desktop environment or
+bloated WM of choice here] could be provided by parsing the .lnk
+files. GNOME already has AnotherLevel, KDE, and Debian support. IIRC,
+KDE can read GNOME's menus. I would envision a "WINE programs" item.
+
+<p />
+
+I assume we could provide a generic way of reading the .lnk files and
+provide it in an .so that could be used by the different desktops.
+The .so should be able to parse the .lnk and return the icon, the name
+of the menu, and the tooltip (Noticed that win2k has these). It should
+also have a function that will execute the program. It should simply
+run wine giving it the command line from the .lnk file. </quote>
+
+</ul>
+
+<p />
+
+However, no replies have been made to the proposals, so don't hold
+your breath for an implementation.</section>
+
+
+<section 
+  title="Registry implementation details"
+  subject="Missing copy of HKEY_USERS\.Default -&gt; HKEY_CURRENT_USER"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-276.html"
+  posts="23"
+  startdate="2000-07-21"
+  enddate="2000-07-22"
+>
+
+<p />
+
+Marcus Meissner requested some information on modification done on the 
+registry code:
+<quote who="Marcus Meissner">
+Some weeks/months ago the copy of the HKEY_USERS\.Default\ registry
+subkeys to HKEY_CURRENT_USER was dropped, so that changes in the
+default are no longer used for the current user.
+
+<p />
+
+Was this intentional?</quote>
+
+
+<p />
+
+J&#252;rgen Schmied explained what has been done, and gave some further
+explanations on .Default versus HCU (HKEY_CURRENT_USER) behavior:
+<ul>
+	<li />first of all, .Default is not really the default keys for
+any user, but rather a template that shall be used when a new user is
+created. Once a user has been created in the registry, modifications
+to the .Default key, are not automatically reported to his HKU 
+(HKEY_USERS) hive.
+	<li />Wine does not provide yet a good mechanism to create a new 
+user...
+	<li />Currently, Wine only uses the HKCU (HKEY_CURRENT_USER),
+meaning that every user has its own user.reg file (normally in
+~/.wine/user.reg) containing his own settings.
+</ul>
+
+<p />
+
+J&#252;rgen confirmed that the change Marcus thought about had been
+intentionally made to closer mimic Windows behavior. But in Marcus'
+case, Diablo 2 is looking for some folders entries in the HKCU which
+should have been initialized by explorer.exe (or copied from .Default
+when the user's account has been created).
+
+<p />
+
+The discussion then evolved into the details of administrating Wine in a 
+multiuser environment, which had already been mainly covered by a
+<a href="http://www.winehq.org/News/2000-25.html#FTR">feature article</a>.
+
+<p />
+
+As a conclusion, it turned out that some points related to default
+folders location would need to be worked upon ; this includes:
+<ul>
+	<li />enhance the Wine installation script for creating the
+correct folders locations in HKLM (HKEY_LOCAL_MACHINE)
+	<li />fix the SHELL32.DLL to take care of that
+	<li />add also some tools to add new users accounts
+</ul>
+</section>
+
+</kc>

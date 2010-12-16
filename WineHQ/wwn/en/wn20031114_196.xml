@@ -1,0 +1,315 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="196" date="11/14/2003" />
+<intro> <p>This is the 196th issue of the Wine Weekly News publication.
+Its main goal is to ski. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="171" size="540" contrib="61" multiples="35" lastweek="31">
+
+<person posts="13" size="35" who="Mike Hearn" />
+<person posts="11" size="28" who="Alexandre Julliard" />
+<person posts="8" size="22" who="Shachar Shemesh" />
+<person posts="7" size="18" who="Dimitrie O. Paun" />
+<person posts="6" size="17" who="Steven Edwards" />
+<person posts="6" size="17" who="Robert Shearman" />
+<person posts="6" size="16" who="Thomas Brix Larsen" />
+<person posts="6" size="15" who="Marcus Meissner" />
+<person posts="5" size="28" who="Francois Gouget" />
+<person posts="5" size="25" who="Parzival Herzog" />
+<person posts="5" size="23" who="Rein Klazes" />
+<person posts="5" size="14" who="Vincent B&#233;ron" />
+<person posts="5" size="13" who="Eric Pouech" />
+<person posts="4" size="20" who="Ferenc Wagner" />
+<person posts="4" size="11" who="Dmitry Timoshkov" />
+<person posts="4" size="8" who="Gerald Pfeifer" />
+<person posts="4" size="7" who="Jonathan Wilson" />
+<person posts="3" size="34" who="Sylvain Petreolle" />
+<person posts="3" size="9" who="KJK::Hyperion" />
+<person posts="3" size="9" who="Dan Kegel" />
+<person posts="3" size="9" who="Uwe Bonnes" />
+<person posts="3" size="6" who="Sami Aario" />
+<person posts="3" size="6" who="flyker" />
+<person posts="2" size="7" who="Jan Kratochvil" />
+<person posts="2" size="6" who="Carlos Lozano" />
+<person posts="2" size="6" who="Jukka Heinonen" />
+<person posts="2" size="6" who="Roderick Colenbrander" />
+<person posts="2" size="6" who="Jean-Claude Gervais" />
+<person posts="2" size="4" who="Jeremy Newman" />
+<person posts="2" size="4" who="Jerome Bouat" />
+<person posts="2" size="4" who="Troy Rollo" />
+<person posts="2" size="4" who="Duane Clark" />
+<person posts="2" size="4" who="Jeremy White" />
+<person posts="2" size="3" who="David Martinez Prado" />
+<person posts="1" size="10" who="Marcelo Duarte" />
+<person posts="1" size="5" who="Gregory M. Turner" />
+<person posts="1" size="4" who="Robert North" />
+<person posts="1" size="3" who="Marcelo Duarte" />
+<person posts="1" size="3" who="Jeremy Shaw" />
+<person posts="1" size="3" who="Paul Millar" />
+<person posts="1" size="3" who="Jeremy Shaw" />
+<person posts="1" size="3" who="Philip Staiger" />
+<person posts="1" size="2" who="Andr&#233; Johansen" />
+<person posts="3" size="9" who="Raphael Junqueira" />
+<person posts="1" size="2" who="aewine" />
+<person posts="1" size="2" who="flyker" />
+<person posts="1" size="2" who="Ivan Leo Murray-Smith" />
+<person posts="1" size="2" who="Geoff Thorpe" />
+<person posts="1" size="2" who="Leonardo Luiz Padovani da Mata" />
+<person posts="1" size="2" who="Jon Griffiths" />
+<person posts="1" size="2" who="Jakob Eriksson" />
+<person posts="1" size="2" who="Jakob Eriksson" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="BiGgUn" />
+<person posts="1" size="2" who="(johnc)" />
+<person posts="1" size="1" who="Martin Fuchs" />
+<person posts="1" size="1" who="Lionel Ulmer" />
+<person posts="1" size="1" who="Rand Batchelder" />
+
+</stats>
+<section 
+	title="More Games Reviewed" 
+	subject="5 games tested in wine..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/11/0169.html" 
+	posts="1"
+	startdate="11/09/2003"
+>
+<topic>DirectX</topic>
+
+<p>Last week Carlos Lozano reported some success with games.
+Thomas Brix Larsen decided to do a test of his own:</p>
+
+<quote who="Thomas Brix Larsen"><p>
+Motivated by my previous mail to the list,
+I have tried some more of my games with wine, and 2 out of 5 works
+perfect, but has some minor problems.
+Hmm, I guess a trace could be needed on some of them?
+But anyway here it goes:
+<ul>
+    <li> Risk II: <br />
+    The "loading screen" displays, but:
+      <ul><code>
+      wine: Unhandled exception (thread 0009), starting debugger...</code></ul></li>
+
+    <li> Empire Earth:
+      <ul><code>
+      winevdm: can't exec 'G:\Empire Earth\Empire Earth.exe': error=21</code></ul></li>
+
+    <li> Europa Universalis 2:<br />
+
+      Is a bit slow but works perfectly. :D
+      But can only be started from the konsole. If I try to start it from
+      konqueror it says it can't find its data files.
+      Something to do with konqueror not setting cwd? (or whatever it's called)
+      The konsole is full of:
+      <ul><code>     
+	err:ddraw:Main_DirectDrawSurface_GetSurfaceDesc Impossible/Strange
+	struct size 0.</code></ul></li>
+
+     <li> BattleField 1942:<br />
+	A lot of <tt>KEYFOUND: ... </tt> happens.
+	But there is never displayed any graphic.
+	Could this be something to do with the no-cd crack?</li>
+
+     <li> Master of Orion 3:<br />
+	Game works perfect, some menu graphic missing, and mouse cursor ugly.
+	I found something VERY interesting with this game and wine,
+	the nebulas in game is different in wine and surely looks way better :D.
+     </li></ul></p></quote>
+</section>
+<section 
+	title="Wine Lecture in Tel Aviv" 
+	subject="Wine lecture"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/10/0179.html" 
+	posts="1"
+	startdate="11/10/2003"
+	enddate="11/10/2003"
+>
+<topic></topic>
+<p>Shachar Shemesh is giving another lecture about Wine.  If you
+happen to be in Israel you might want to check it out:</p>
+<quote who="Shachar Shemesh"><p>
+Last time the subject came up, someone suggested I make the date 
+available so it can be published on the winehq.org site.
+</p><p>
+I'm going to give a lecture about Wine in a club called "Telux". The web 
+site is at 
+<a href="http://www.cs.tau.ac.il/telux/"> http://www.cs.tau.ac.il/telux/</a> 
+(supposedly in Hebrew, but if 
+you click the "Advanced lectures" english link at the left, you will get 
+a pretty readable schedule even for non-Hebrew speaking).
+</p><p>
+The lecture will be on Nov 30th, at the Tel Aviv University. The lecture 
+will be given in Hebrew. It will start 18:30 in the math building at the 
+university. No advance registration is required, and no fee.
+</p></quote>
+
+
+</section>
+<section 
+	title="Top 30 on SourceForge" 
+	subject="Top 30 on SF"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/11/0213.html" 
+	posts="1"
+	startdate="11/10/2003"
+>
+<topic>Project Management</topic>
+
+<p>Dimi Paun looked at some SourceForge stats and reported:</p>
+<quote who="Dimi Paun"><p>
+
+I've just checked and we're in Top 30 downloads over the last
+7 days at SourceForge. More exactly, we're 28th most downloaded 
+project, with over 20000 downloads. Not bad. 
+</p><p>
+We'll need over 30000 d/l for Top 20, and over 50000 for Top 10.
+We'll get there sooner or later. :)
+</p></quote>
+
+
+</section>
+<section 
+	title="ALSA 1.0 Support" 
+	subject="Winealsa: Add alsa 1.0 support"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/11/0166.html" 
+	posts="1"
+	startdate="11/09/2003"
+>
+<topic>Multimedia</topic>
+<p>Sylvain Petreolle posted <a href="http://www.winehq.org/hypermail/wine-devel/2003/11/0166.html">two
+patches</a> for ALSA 1.0 support and put a call out for testers:</p>
+<quote who="Sylvain Petreolle"><p>
+This patch is almost complete, one macro hasn't been rewritten yet.
+</p><p>
+alsa09.diff must be applied to allow compilation with alsa 0.9.
+</p><p>
+Please test it with alsa 0.9 or 1.0 and give me the result.
+</p></quote>
+
+<p>Sylvain provided the patch for ALSA 0.9 support and then another for 1.0.</p>
+
+
+</section>
+<section 
+	title="Exec-Shield Problems" 
+	subject="Windows programs no more running with the new wine-glibc"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/11/0301.html" 
+	posts="4"
+	startdate="10/13/2003"
+>
+<topic>Fixes</topic>
+<p>Sylvain Petreolle reported a problem with some threading changes
+Alexandre made:</p>
+<quote who="Sylvain Petreolle"><p>
+
+With yesterday cvs update, whch adds a glibc-threading detection,
+wine doesn't load a _Windows_ program anymore.
+</p><p>
+Using the RedHat rpm Yarrow kernel, I get :
+<ul><code>
+err:virtual:map_image Standard load address for a Win32 program<br />
+(0x00400000) not available - security-patched kernel ?<br />
+wine: could not load L"C:\\arakas.exe" as Win32 binary</code></ul></p><p>
+
+Funny thing :
+If I set up a symlink to the wine-glibc in another directory, it works
+without problems.
+</p></quote>
+
+<p>Mike Hearn asked, <quote who="Mike Hearn">
+
+Well, are you sure you have disabled exec-shield for the actual wine
+binaries being used?
+</quote> Sylvain reported that he had never activated exec-shield
+and that things worked fine a week ago.  Vincent B&#233;ron felt that
+was the problem too and explained a possible scenario like Sylvain 
+described:</p>
+<quote who="Vincent Beron"><p>
+Exec-shield is activated by default, as well as prelinking. Read the
+release notes of Yarrow if you want to disable them.
+</p><p>
+What probably happened is you were lucky the first week, in that the
+random addresses assigned to the various libraries left 0x400000 (the
+default loading address for Win32 binaries) available, and with enough
+place to load what you loaded.
+</p><p>
+The loading addresses for system libraries are changed once per week (or
+2 weeks, don't remember). System libraries added after the last complete
+assignation are assigned a random address at each load, so is you try to
+execute 10 times in a row the same program, it'll fail some of the time
+and succeed the remaining times.
+</p><p>
+I haven't been able to see that message with winelib applications
+(probably not in a codepath used for winelib apps, didn't checked yet).
+But it's pretty easy to hit if using Win32 apps.
+</p><p>
+Disabling exec-shield (either via setarch i386 or with the proc thing)
+works sometimes, depending on the loading addresses assigned to
+libraries. If something (libc, libm, libdl, etc.) uses that address,
+nothing Win32 will be usable. When exec-shield is disabled, new
+libraries will be assigned loading addresses starting at the lower value
+possible, but already assigned ones (via prelinking) will still keep
+theirs, hence possibly blocking execution.
+</p></quote>
+
+
+<p>Vincent replied a few days later with more information on the problem:</p>
+<quote who="Vincent Beron"><p>
+Sorry, forgot to come back to say how testing went.
+</p><p>
+The best workaround I found (from
+<a href="http://www.codeweavers.com/support/tickets/browse/?ticket_id=34072">
+http://www.codeweavers.com/support/tickets/browse/?ticket_id=34072</a>)
+is to change the default prelinking options, so that the required
+address is still free for Win32 apps.
+</p><p>
+If you're hit by this, in file /etc/sysconfig/prelink, change
+<ul><tt>
+PRELINK_OPTS=-mR</tt></ul></p><p>
+to
+<ul><tt>
+PRELINK_OPTS="-mR --no-exec-shield"</tt></ul></p><p>
+The loading addresses chosen will be from 0x40000000, the default value
+on Linux systems, rather than trying to put the maximum of libraries
+before 0x01000000 (so that the first byte is always 0x00, rendering
+string buffer overflows mor difficult to exploit), hence crowding the
+area we want to keep free (0x00400000).
+</p><p>
+So far (little testing only, but still), I haven't had a problem with
+those settings, either running Wine or Linux apps.
+</p><p>
+Further reading in the referenced page shows Alexandre is in contact
+with some RedHat people, so hopefully they can come to a solution. RHEL
+3 is affected as well, not only Fedora.</p></quote>
+
+</section>
+<section 
+	title="Volunteers Needed For LinuxWorld Booth" 
+	subject="LinuxWorld Expo NY"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/11/0306.html" 
+	posts="2"
+	startdate="11/13/2003"
+>
+<topic>Project Management</topic>
+<p>Jeremy White put out a call for volunteers to help with a booth
+at LinuxWorld:
+</p><quote who="Jeremy White"><p>
+I somewhat impetuously requested a table for the Wine Project
+at the LinuxWorld New York expo, without really thinking
+if anyone could man the table.
+</p><p>
+We'll have a CodeWeavers specific area in another part
+of the expo, so we won't really be able to provide
+a lot of help (and won't need any extra promotion).
+</p><p>
+So, I was wondering if anyone wanted to go to New York 
+and represent the Wine Project.
+</p><p>
+If so, let me know privately.  If I don't hear anything,
+I'll quietly tell IDG <small> nevermind </small>.</p></quote>
+<p>LinuxWorld will be at the Javitz Center in New York City
+on January 21-23, 2004.
+</p>
+</section></kc>

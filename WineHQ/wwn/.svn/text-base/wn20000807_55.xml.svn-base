@@ -1,0 +1,212 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="55" date="07 Aug 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 55th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine 20000801 has been released. The main changes are:
+<ul>
+   <li />OS binary support should work again.
+   <li />Addition of a kernel message table for FormatMessage.
+   <li />The usual assortment of common controls improvements.
+   <li />A lot of stuff moved around for proper dll separation.
+   <li />Lots of bug fixes.
+</ul>
+</intro>
+
+<stats posts="95" size="515" contrib="40" multiples="21" lastweek="20">
+<person posts="10" size="20" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="8" size="27" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="7" size="15" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="6" size="13" who="Veksler Michael &lt;mveksler@techunix.technion.ac.il&gt;" />
+<person posts="5" size="9" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="31" who="Deven T. Corzine &lt;deven@ties.org&gt;" />
+<person posts="4" size="203" who="Peter Ganten &lt;peter@ganten.org&gt;" />
+<person posts="3" size="6" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="3" size="6" who="Matthias Bleyl &lt;mbleyl@gwdg.de&gt;" />
+<person posts="3" size="5" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="3" size="5" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+</stats>
+
+
+<section 
+  title="Wine and MFC"
+  subject="RFC - Winelib constructor init problem"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-438.html"
+  posts="4"
+  startdate="29 Jul 2000 00:00:00 -0800"
+  enddate="31 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+Following <kcref issuenum="44" sectionnum="1">a recent discussion</kcref>,
+Jeremy White finally had MFC compile and run under Wine. This required 
+some modification in Wine startup code.
+
+<p />
+
+As already explained, MFC, as a C++ library is allowed to, has global
+objects, whose constructor is called before the WineLib init sequence
+is called, leading to some crashes.
+
+<p />
+
+Jeremy gave the current outlook of the possible solutions:
+
+<quote who="Jeremy White">
+<u>The problem</u>:  MFC (and other C++ code) calls Windows APIs from
+C++ constructors. A Winelib port of MFC then breaks because Wine is
+not able to provide Windows APIs until after main() has been called,
+because Wine is not initialized until then, and the C++ constructors
+are invoked (on Linux) during the processing of the ctors list, which
+occurs on library load.
+
+<p />
+
+<u>The solutions:</u>
+<ol>
+<li />Make all Winelib apps into DLLs. This approach works today, and (I
+think?) is preferred by Alexandre. Instead of foo.cpp building into a
+Linux executable foo, it builds into foo.so. Then, foo.spec is built
+into an executable foo, which gains control when main() is invoked,
+does a LoadLibrary() on foo, a GetProcAddress of WinMain, and then
+invokes it. I am not aware of any significant flaws with this approach
+(but I'd love to hear anyone who can think of any, because I find it
+strangely unsatisfying &lt;g&gt;). 
+<li />Make Wine constructors initialize Wine during the ctors processing 
+This approach is what I'm proposing and am a proponent of. The key
+known flaw is that during ctors processing, we don't have access to
+argc/argv, so Wine initialization cannot use command line arguments
+(i.e.  no -display, no -window, for startup purposes).
+<li />Intercept ctors processing. In this case, best demonstrated by
+Berthos, I believe, you intercept the ctors process of your target
+library (say, MFC). You stash a pointer to the ctors chain somewhere,
+and then force the glibc processing code to return immediately. Later,
+during 'normal' library initialization (invoked after main()), you
+walk the rest of the ctors chain.
+</ol>
+</quote>
+
+
+<p />
+
+Bertho explained in more details his solution, but no choice has been
+made on the option to be implemented.</section>
+
+
+<section 
+  title="Wine HOWTO"
+  subject="Wine-HOWTO second location"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-451.html"
+  posts="1"
+  startdate="31 Jul 2000 00:00:00 -0800"
+  enddate="31 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+Because her main site (Westfalen.de) had been down for a couple of
+weeks, Jutta Wrage announced that the Wine HOWTO is now mirrored at
+<a href="http://www.la-sorciere.de">http://www.la-sorciere.de</a>.
+
+<p />
+
+Please update your bookmarks if needed.</section>
+
+
+<section 
+  title="Shared heaps"
+  subject="HeapCreate flags and shared heaps"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-439.html"
+  posts="7"
+  startdate="30 Jul 2000 00:00:00 -0800"
+  enddate="01 Aug 2000 00:00:00 -0800"
+>
+
+<p />
+
+Peter Ganten, while implementing PE DLLs shared sections (a piece of
+memory shared by all processes loading the same DLL with this
+feature), found out an interesting issue:
+<quote who="Peter Ganten">
+During my PE shared sections experiments I have found the following
+behavior of most native system dlls like for example commdlg32:
+<ul>
+<li />When the library is loaded the first time, it creates a global
+heap using CreateHeap and the undocumented flag 0x4000000.
+<li />On win95 this flag has the effect, that the resulting heap is
+visible and usable in the address spaces of <b>all</b> processes immediately.
+<li />If another application load the dll, it retrieves a pointer to
+that shared heap from a shared section of the dll and starts using
+that heap. This is also the explanation of the crashes, I described in
+a previous mail. 
+</ul>
+
+<p />
+
+Now the question is, if we want to support that 0x4000000 flag in WINE
+and if yes, how this can be done. I am not sure and would like to
+know, if this flag is supported under NT/2000, maybe somebody can
+enlighten me here? 
+</quote>
+
+
+<p />
+
+Alexandre Julliard tested this behavior was not supported under
+Windows NT, and thus accepted Peter's proposal to use the system heap
+when a native DLL requests a shared heap.
+
+<p />
+
+Later on, Peter also reported some nasty results of anonymous
+mapping with some specific options. When (at least) two processes open
+the same mapping, after the first process commits some pages, those
+are automatically committed into the second process address space.
+
+<p />
+
+This has been successfully tested on Win95 and on Win NT, but Wine
+doesn't provide such a mechanism (Peter reported that MS Office 97 was 
+using such a mechanism).
+
+<p />
+
+So, some more work will be required on the memory management issues.</section>
+
+
+<section 
+  title="Wine in the press"
+  subject="Press: ZDNET: A toast to wine for running windows apps"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-08/Subject/article-12.html"
+  posts="1"
+  startdate="02 Aug 2000 00:00:00 -0800"
+  enddate="02 Aug 2000 00:00:00 -0800"
+>
+
+<p />
+
+Marcus Meissner pointed out to some Wine related article:
+<quote who="Marcus Meissner">
+ZDNet eWeek has a brief article on us, mostly talking about the Lotus
+Notes client:
+<a
+href="http://www.zdnet.com/eweek/stories/general/0,11011,2607357,00.html">
+href="http://www.zdnet.com/eweek/stories/general/0,11011,2607357,00.html
+</a>
+</quote>
+</section>
+
+</kc>

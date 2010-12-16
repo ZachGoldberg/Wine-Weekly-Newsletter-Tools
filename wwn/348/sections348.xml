@@ -1,0 +1,708 @@
+
+<section 
+	title="News: Wine 1.0!"
+	subject="Wine"
+	archive="#"
+	posts="lots"
+>
+<topic>Wine 1.0</topic>
+
+
+<p>
+The official announcement:
+</p>
+<quote>
+<p>
+     The Wine team is proud to announce that Wine 1.0 is now available. This is the first stable release of Wine after 15 years of development and beta testing. Many thanks to everybody who helped us along that long road!
+</p><p>
+    While compatibility is not perfect yet, thousands of applications have been reported to work very well. Check <a href="http://appdb.winehq.org">http://appdb.winehq.org</a> to see the details for your favorite applications.
+</p><p>
+    The source is available now. Binary packages are in the process of being built, and will appear soon at their respective download locations.
+</p>
+</quote>
+<p>
+The release caused an inevitable inundation of web surfers hitting winehq.org and downloading the big release.  So much so that <a href="http://www.winehq.org">http://www.winehq.org</a> was offline for an hour or two during the worst of the storm.  You can browse winehq.org's <a href="http://winehq.org/webalizer/">web stats</a> if your interested in checking out the curve.  
+</p>
+<p>
+The day after 1.0 Alexandre Julliard began committing patches at a normal rate.  As of the time of this writing there have already been more than 150 patches sent into the mailing list. 
+</p></section>
+<section 
+	title="WWN Wine 1.0 Interview Series!  Interview: Alexandre Julliard"
+	subject="Wine 1.0"
+	archive="#"
+	posts="0"
+>
+<topic>Wine 1.0</topic>
+<p>
+<i>Brian Vincent and I have been conspiring to bring the Wine community some insights from some of the more well known and established members of the Wine Development community!  We're going to try and have at least one interview posted each week up until the 1.0 release!  We asked our targets the same set of 10 questions designed to try and get at some of their key thought processes and we present to you their responses each week.
+</i>
+</p>
+
+<p>
+1.  It's been a pretty long road to 1.0.  Do you think Wine should
+have tried to have a release based on any of the older versions over
+the years?  If so, at what point or points do you think Wine should
+have tried to have a release?  Why?  Do you think the actual 1.0
+release is at an appropriate time?
+</p>
+<quote who="Alexandre Julliard">
+<p>
+Initially Wine only supported Win16 since it started in the Windows 3.1
+days, and we could probably have made a release with pretty good Win16
+support sometime in 1998 or so. But of course at that point everybody
+wanted to run 32-bit apps, so to concentrate on Win16 support to bring
+it to release would probably have caused many developers to lose
+interest. Instead we started re-architecting things to support Win32,
+which in the long run was the right choice, but meant that we couldn't
+release anything decent for a long time.
+</p>
+</quote>
+<p>
+2.  What highlights do you think we should point out about 1.0?  I
+mean, now that we're here, shouldn't we be standing on the rooftops
+shouting, "We can do [this]!".  What is [this]?  If someone wanted to
+go take Wine for a spin, are there any Windows programs out there
+you'd recommend they try out?  There's still a ton of Windows apps
+with no comparable Linux version, are there any in particular you find
+useful that you'd suggest someone try?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+Photoshop CS2 is clearly the flagship application here, but I think the
+message is to try anything they can, that's why we put all that effort
+into getting installers to work. At this point there's a good chance
+that just about any application will install and at least do something
+interesting.
+
+</p>
+</quote>
+<p>
+3a.  Looking ahead, what technical changes do you see Wine needing?
+Are there any large patch sets that are already sitting out there that
+haven't been merged because of the code freeze?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+The DIB engine is the major missing feature, I'm hoping to see this in
+1.2. Some other interesting patches sitting out there are the iPod
+support (and more general USB devices support), and the animated
+cursors.
+</p><p>
+In the longer run, 64-bit support will clearly require some deep
+technical changes; it's fortunately not as bad as the 16->32 transition,
+but it's still a lot of work.
+</p>
+</quote>
+<p>
+3b. We've had a few different groups driving Wine development for a Wine,
+namely Google and CodeWeavers.  What do you guys have planned for
+areas of focus? Over the years we've seen quite a few large changes that
+have moved Wine in very different directions - for example, D3D8
+development really ushered in a new era of gaming support for Wine,
+the port to OS X has really opened the door on portability, is there
+anything like that on the horizon?  Do you ever think someone will have
+ntoskrnl loading Windows drivers or hooking into the kernel or something
+like that?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+I don't think Windows drivers are all that interesting for Wine, except
+in a few specialized areas like USB devices or printers. General driver
+support would really have to go into the Linux kernel to be useful, and
+while that's certainly feasible it would be a separate project.
+</p><p>
+On the Mac OS front we clearly need a quartz graphics driver, it would
+make the user experience a lot nicer. Doing it right is a pretty major
+task though, so I don't know when it's going to happen.
+
+</p>
+</quote>
+<p>
+4.  What don't we want to do?  What technical things shouldn't we
+worry about?  Are there any parts of Windows that aren't worth trying
+to support?  For example, Win31 support hangs on tenuously at this
+point, is there ever a point where it's not worth supporting?  Or does
+Wine fill a valuable role in that it allows legacy applications to be
+usable?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+I think there will come a point where the current Win31 support will
+have to be killed; it could be replaced by a cleaner architecture that
+is really independent from the 32-bit codebase instead of being
+intermingled with it, so that it doesn't get in the way of 32-bit
+changes and doesn't get broken all the time. The difficulty will be to
+find someone to do the work, working on new features is a lot more
+interesting...
+
+</p>
+</quote>
+<p>
+5.  Is Wine too ambitious?  Are we trying to tackle something too big?
+Will there ever be a point where the
+complexity of the project combined with the regression rate isn't
+manageable by the size of our developer community?  At one point about
+a decade ago it seemed like Microsoft was releasing new technologies
+and new API's every week.  Things seemed to have really slowed down,
+but do you think that that trend will continue? Do you think we'll be able
+to keep up with future APIs with Vista, Windows 7 etc?
+</p>
+<quote who="Alexandre Julliard">
+<p>
+So far we have been able to keep up, and I don't expect that to
+change. We are of course always lagging a bit behind, but I don't see
+the gap increasing, on the contrary. Besides, all the complexity is a
+major headache for Microsoft too, they are finding it increasingly
+difficult to make significant changes.
+</p>
+</quote>
+
+<p>
+6a.  If you could wave your magic wand and change one thing about
+Wine, what would it be?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+More regression tests...
+</p>
+</quote>
+<p>
+6b.  If you could wave your magic wand and change one thing about
+Linux [or OS X], what would it be?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+I'd like to have proper desktop standards, implemented correctly by the
+various desktop environments. We are slowly getting there, but it's
+taking much longer than it should.
+</p>
+</quote>
+<p>
+6c.  If you could wave your magic wand and change one thing about
+Windows, what would it be?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+I wouldn't know where to start, there are so many things that would have
+to be fixed...
+</p>
+</quote>
+<p>
+7.  Now that Wine has hit 1.0, do you think the major distros will
+bundle Wine?  If not, why?  Are they scared of lawsuits?  If so,
+should they be?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+I doubt that they will bundle Wine, since they are all scared of
+Microsoft. It's all FUD, there's no rational reason to be afraid, but
+even if the likelihood of a lawsuit is very small, the infinite
+resources that Microsoft could put into it is enough to discourage them.
+</p>
+</quote>
+<p>
+8.  We should ask this only because there's no better way to incite
+violence than to start a flamewar on licensing, but do you see any
+need to switch to LGPL3?  Most developers seem to be pretty happy with
+version 2.  Then again, most people seemed happy with the X11 license
+before we rather quickly changed our minds.  Is there anything within
+the LGPL3 license that would particularly be a problem for Wine?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+I don't think there's any problem for Wine either in LGPL2 or LGPL3, so
+there's not a lot of motivation for switching. I imagine that the switch
+will happen eventually when the need arises to share code with LGPL3
+projects.
+</p>
+</quote>
+<p>
+9.  With 1.0 out, do you see the need for any process changes?  Will
+patches still enter the Wine tree the way they have been?  Do you
+think anything will change after 1.0 with regards to development
+style?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+I'm hoping we can make stable releases a bit more frequently than once
+every 15 years...
+</p><p>
+Also we'll hopefully be able to put in place the system for keeping
+track of contributions that we've been working on with the SFLC; but
+that's mostly a paperwork issue, it won't change fundamentally our way
+of working.
+</p>
+</quote>
+<p>
+10.  If we could magically add all the developers in the world
+and have a Wine 2.0 this time next year, what would you want
+to be included?
+</p>
+
+<quote who="Alexandre Julliard">
+<p>
+Some of the obvious major features are the DIB engine, Win64, .NET
+support, the quartz driver, etc.  But what really takes time is to track
+down and fix all the nasty little incompatibilities that break
+applications that would otherwise be quite happy with our existing
+feature set. That's where magically adding developers would really help.
+</p>
+</quote></section>
+<section 
+	title="Wine's popularity"
+	subject="Popularity Contest"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-May/066064.html"
+	posts="4"
+>
+<topic>Popularity Contest</topic>
+<p>
+Scott Ritchie did some analysis using Ubuntu's popcorn package of Wine usage statistics:
+</p>
+<quote>
+<p>
+The Ubuntu "popcon" package is installed when a user opts to share
+anonymous usage data during the install process (or within the synaptic
+package manager).
+</p><p>
+Analyzing the data ( <a href="http://popcon.ubuntu.com/">http://popcon.ubuntu.com/</a> ), we can see the following
+for Wine:
+</p><p>
+wine 215262 installed 41731 use regularly 156710 don't use
+</p><p>
+compare this with dpkg, which every Ubuntu system has:
+</p><p>
+dpkg 576989 installed 151098 use regularly 411213 don't use
+</p><p>
+Doing some division, this means that a rather high 37% of Ubuntu users
+have Wine installed, and 10% of all Ubuntu users actually make use of
+Wine. 7% use Wine "frequently", however popcon defines that.
+</p><p>
+Combine this with other estimates of Ubuntu's user base (about 8 million
+last I heard), and you have approximately 800,000 Wine users.
+</p><p>
+This data is slightly biased - it doesn't include most Wubi users who
+installed Ubuntu from within Windows, since they aren't given any
+installation questions.  I believe, though can't prove, that this means
+we are under-representing Wine users, as it seems reasonable that Wubi
+installs would be more likely to have Windows applications to run and
+thus need Wine.
+</p><p>
+Thanks,
+Scott Ritchie
+</p>
+</quote>
+<p>
+Scott also takes a gander at some overall usage numbers:
+</p>
+<quote>
+<p>
+Indeed.  If Ubuntu still represents the ~30% marketshare it had in 2007
+when they did the dekstoplinux.com survey
+( <a href="http://www.desktoplinux.com/cgi-bin/survey/survey.cgi?view=archive&amp;id=0813200712407">http://www.desktoplinux.com/cgi-bin/survey/survey.cgi?view=archive&amp;id=0813200712407</a> ),
+and if users of other distributions are just as likely to use Wine as
+Ubuntu users, then we can estimate there are about 2.6 million Wine
+users out there.
+</p><p>
+Wow!  Of course, this estimate is too high if Ubuntu has grown
+substantially in marketshare since the 2007 survey, but even if Ubuntu
+has climbed to 40% that's still 2 million Wine users out there.
+</p>
+</quote></section>
+<section 
+	title="Length of time to compile Wine"
+	subject="Compilation and Regression Testing"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-June/066115.html"
+	posts="15"
+>
+<topic>Compilation and Regression Testing</topic>
+<p>
+Dan Kegel began an interesting thread on how long it takes to compile wine with a comparison to times years ago.  A slew of benchmarks from a number of users followed.
+</p>
+<quote>
+<p>Way back five years ago, we all compared notes on how
+long it took to build Wine on our systems.
+ <a href="http://www.winehq.org/site/?issue=149#Compile%20Time%20Comparisons%20/%20Tips">http://www.winehq.org/site/?issue=149#Compile%20Time%20Comparisons%20/%20Tips</a> 
+</p><p>
+Today I measured it on a new computer (with a spiffy
+new Intel dual core e7200 processor with 2GB of RAM,
+ <a href="http://kegel.com/new-computer-2008.html">http://kegel.com/new-computer-2008.html</a> ).
+</p><p>
+Result: ... it takes me a bit longer today on this machine (11 minutes)
+to build as it did then on a dual cpu hot rod (8 minutes).
+I guess Moore's Law isn't quite keeping up with Wine's code growth :-)
+</p><p>
+[Make] Details are on buried that page, but it's "-j3" for the dual core /
+dual CPU systems.
+</p><p>
+I found a nice graph of Wine's codebase size over time:
+ <a href="http://www.ohloh.net/projects/wine/analyses/latest">http://www.ohloh.net/projects/wine/analyses/latest</a> 
+Looks like it's just about exactly doubled since that
+last measurement in late 2002.
+</p><p>
+I suppose my e7200 is a budget performance system; a dual Xeon back then
+was pretty special.  Probably have to compare it to something
+heftier today?
+</p>
+</quote>
+<p>
+Vit Hrachovy
+</p>
+<quote>
+<p>
+Hi Dan,
+it's 31 minutes on  AMD Athlon(tm) 64 Processor 3700+, 2GB RAM.
+Cheers
+Vit
+</p>
+</quote>
+<p>
+Eric Pouech
+</p>
+<quote>
+<p>
+I used to compiled it over 30minutes...
+now I barely wait... 6mn26s
+</p><p>
+make -j5, Q6600 @ 2.4GHz
+gcc version also matters (4.2.3 for me)
+A+
+</p>
+</quote>
+<p>
+Hans Leidekker
+</p>
+<quote>
+<p>
+It's 4m55s on a 2 way dual core Xeon machine (4 cores, 2 Ghz, 4MB cache each).
+This is on a hot disk cache, i.e. I ran
+</p><code>
+$ make distclean &amp;&amp; ./configure &amp;&amp; time make -j5
+</code><p>
+twice and took the second measurement. Compiler is gcc 4.3.0.
+</p>
+</quote>
+<p>
+Steven Edwards
+</p>
+<quote>
+<p>
+for comparison I have an older 2.4 ghz quad CPU single core build box
+with gcc 4.1.x and Fiesty. make -j4
+</p><p>
+real    16m34.006s<br />
+user    56m54.569s<br />
+sys     3m26.561s
+</p>
+</quote>
+<p>
+Evil Jay
+</p>
+<quote>
+<p>
+real    5m22.625s<br />
+user    17m16.993s<br />
+sys     1m1.336s
+</p><p>
+This is on Kubuntu 8.04 w/GCC 4.2.3.  The system uses a Q6600
+overclocked to 2.9Ghz, 4GB of DDR2 RAM@1066Mhz, and a 9600GT video
+card.  I had Amarok and some other stuff going in the background, but
+nothing that would make a huge diff.
+</p>
+</quote>
+<p>
+Francois Gouget
+</p>
+<quote>
+<p>
+He he, I think I hold the record.
+<pre>
+Wall clock  | CPU              | RAM   | gcc   | Machine
+------------+------------------+-------+-------+--------------------
+145m38.115s | P3 600MHz        | 192MB | 4.2.4 | Debian Laptop
+------------+------------------+-------+-------+--------------------
+ 39m30.058s | Pentium M 1.5GHz | 768MB | 4.2.3 | Ubuntu Laptop (1)
+------------+------------------+-------+-------+--------------------
+ 53m12.450s | Athlon XP 2600+  |   1GB | 4.2.4 | Debian Desktop (2)
+            | (2.1GHz)         |       |       |
+ 12m34.218s |                  |       |       | 100% ccache hitrate
+------------+------------------+-------+-------+--------------------
+ 50m58.424s | Athlon XP 1800+  |   1GB | 4.2.4 | Debian Desktop
+            | (1.53GHz)        |       |       |
+------------+------------------+-------+-------+--------------------
+ 29m30.277s | Distcc           |       |       | (3)
+------------+------------------+-------+-------+--------------------
+</pre>
+</p><p>
+(1) This one is missing Esd, NAS, Jack and Valgrind (memcheck.h)
+support. However in other tests this does not seem to make much
+difference. It's also the only one with a different distribution and gcc
+version which makes comparisons tricky.
+</p><p>
+(2) This is actually my main development machine. And damn, it's slow! I
+hope to retire it soon but it still hurts. I guess part of the reason
+for it being so slow is that it's never really idle. There's always half
+a dozen Firefox windows around, gkrellm, xmms, a bunch of background
+processes like MythTV, MySQL, software RAID 1, 90% full disks, etc.
+</p><p>
+(3) This is with 1 job on the Athlon 2600+ and 2 on the Athlon 1800+.
+</p><p>
+I tried getting Wine 2002 to compile but even in my Debian 3.1 chroot
+and with gcc 2.95 it wouldn't. So we don't have a good point of
+comparison.
+</p>
+</quote></section>
+<section 
+	title="Linux Tag 2008"
+	subject="Linux Tag"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-June/066178.html"
+	posts="2"
+>
+<topic>Linux Tag</topic>
+<p>
+Marcus Meissner took a trip to Linux Tag 2008 and wrote in with his experience.
+</p>
+<quote>
+<p>
+Hi,
+</p><p>
+I was at LinuxTag 2008, which is the largest Linux User fair in Germany.
+</p><p>
+The fair was from Wednesday to Saturday, however I was only there
+Saturday. Saturday was openSUSE day and we (openSUSE) had a conference
+track over the whole day.
+</p><p>
+One of those talks in this track was my talk on "Wine - applications
+and games on Linux". My talk was well received, the lecture hall was
+about 80% full with around 180-200 people.
+</p><p>
+My german slides are at:<br />
+       <a href="http://files.opensuse.org/opensuse/en/0/08/Lt2008-wine.pdf">http://files.opensuse.org/opensuse/en/0/08/Lt2008-wine.pdf</a> <br />
+       <a href="http://files.opensuse.org/opensuse/en/6/66/Lt2008-wine.odp">http://files.opensuse.org/opensuse/en/6/66/Lt2008-wine.odp</a> <br />
+2 smaller german online journals commented on it, mostly regarding
+the 1.0 release part: <br />
+       <a href="http://www.golem.de/0806/60100.html">http://www.golem.de/0806/60100.html</a> <br />
+       <a href="http://www.oszine.de/node/9141">http://www.oszine.de/node/9141</a> <br />
+(There might even be a Video recording later on.)
+</p><p>
+I received totally unexpected applause on announcing that after 15 years
+we finally come to 1.0 release (after over 200 alphas, and 60 betas).
+After the talk I had 10 people around me asking questions, and one
+specific problem with Adobe InDesign FileOpen Dialog on a laptop
+brought to the openSUSE booth.
+</p><p>
+Interesting Wine related points:
+</p><p>
+- Kai Tietz of mingw64 told me that they have a GCC patch ready for
+ gcc 4.4 which will support the Win64 calling convention attribute
+ just like __attribute__(stdcall).
+</p><p>
+ Was committed to GCC TRUNK:
+         <a href="http://gcc.gnu.org/viewcvs?view=rev&amp;sortby=date&amp;revision=136311">http://gcc.gnu.org/viewcvs?view=rev&amp;sortby=date&amp;revision=136311</a> <br />
+ __attribute__(ms_abi)
+</p><p>
+ If we have more GCC requirements for Win64, he is willing to help.
+</p><p>
+ In general he would like to have Wine as a testbed for mingw64
+ development (and we could use it as testbed the other way round).
+<br />
+ <a href="http://mingw-w64.sf.net/">http://mingw-w64.sf.net/</a> 
+
+</p><p>
+- Avira (Antivirus vendor)
+</p><p>
+ They use Wine in house to at least get some info on Windows DLLs,
+ using version.dll.GetFileVersionInformation.
+</p><p>
+ While this works for Win32 DLLs, it stopped working/currently does not work
+ for Win64 DLLs.
+
+</p><p>
+- scan.coverity.com
+</p><p>
+ Talked to Coverity folks, and also to David Maxell.
+ The application will receive an update from Coverity 2.9 to 3.2 in
+ the next days/weeks. Not sure if it brings new features.
+</p><p>
+ Also process issue: We have a large backlog of UNINSPECTED features.
+ They suggested that in those cases we could just say "lets not look
+ at this old cruft" and mark them somehow "PENDING" or similar. Not
+ sure it helps us, but at least we could use "PENDING" for partially
+ inspected issues.
+
+</p><p>
+- Booth or no Booth
+</p><p>
+ (We had no booth this year.)
+</p><p>
+ Since the question will likelay appear again, I thought about whether to
+ have a Wine booth itself next year... Well, if we dont have at least 2
+ people there over the whole 4 days it does not make sense and finding
+ those 2+ people likely is difficult.
+</p><p>
+ I might be able to spare the time, but this year it was not possible due
+ to overlapping schedule. Perhaps its also easier to have a demo-point on
+ another larger booth (could ask openSUSE if they would have Wine there).
+</p><p>
+ At least the Saturday visitors got their knowledge on Wine increased
+ by my talk at least.
+
+</p><p>
+I got the feeling that people are still quite unsure what works and what
+not and expect clear and definitive statements from us.
+I pointed to the AppDB several times in those cases and tried not to make
+overly positive statements.
+</p><p>
+People are expectant on 1.0 and I think they are willing to be suprised.
+</p><p>
+Ciao, Marcus
+</p>
+</quote></section>
+<section 
+	title="A Wine 1.0 overview and summary by Steven Edwards"
+	subject="Wine 1.0"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-June/066421.html"
+	posts="1"
+>
+<topic>Wine 1.0 and Bordeaux</topic>
+<p>
+As many of you know Steven Edwards has been a member of both the Wine and ReactOS communities for quiet a while now.  He writes in with his thoughts on the Wine 1.0 process most of which are very valid points worth reading.  Towards the end he also mentions a new Free Software company, Bordeaux, that he has begun which combines technologies from Wine, ReactOS, IES4Linux, Winetricks and others.
+</p>
+<quote>
+<p>
+Hello All,
+I mentioned the other day in the noise about the upcoming 1.0 and the
+short comings I felt it had. Others have commented quite a bit on the
+subject already and so I'll be pretty brief. I think the 1.0 process
+while its been slow has been a good even with its shortcomings. Like
+with everything its a learning process and hopefully we will be able
+to tweak the process further for 1.x releases.
+</p><p>
+On the positive side, I think that Dan has done a great job as release
+manager, maintaining the bug lists, working on winetest, staying on
+top of all the tips and tricks needed to make Valgrind really useful
+and maintaining winetricks. I'm also really glad that Alexandre did a
+lot of refinement to the winetest infrastructure, everything he has
+done with the Wine infrastructure leading up to this point and frankly
+for everything he's done for Wine for the past 15 years has been
+awesome. Though I will be glad when the freeze is over so we can get
+back to having our patches just silently ignored when he does not like
+something rather than him having an excuse of the code freeze. =)
+</p><p>
+One of the shortcomings I see as I stated in my email the other day, I
+think we really missed the target on. I think some Office versions
+should have been a core requirement of 1.0. Even if it was Office 97
+and 2000 working in 98 mode I think we should have been able to
+provide a nearly perfect experience out of the box. Or nearly out of
+the box as it were, with a little version tweaking. Office is a core
+pillar of Microsoft's monopoly and not making this a priority I feel
+misses the point of Wine for a lot of users.
+</p><p>
+Also I think the process can be refined a bit more for subsequent
+releases. Some of the developers I spoke with offline were unhappy
+about not having a public experimental branch that was blessed to
+continue development in. While they could privately do development and
+push and pull changes with git, not having a sanctioned experimental
+branch, I think slowed the overall processes of development down and
+did not really help with bug fixes enough to be warranted. Perhaps in
+the future we can maintain parallel lines of development before major
+releases. A good example is the Samba guys, they've been working on
+Samba 4 for ever, but the stable branch is still being constantly
+improved, better, newer stuff is being back ported and development
+continues on both tracks.
+</p><p>
+Finally I am still not really happy with the results of Winetest. I
+think we should have had dozens of people that could pass all of the
+tests months or even years before 1.0 shipped rather than just
+Alexandre's system being the only one that could do a perfect test
+run. Maybe we should have just asked him to mirror his setup and
+provide a list of every package and configuration option he uses so we
+could base target systems on that. Also I think we should have done
+something to insure new Wine tests always passed on a fixed version of
+Windows a lot sooner. James has done a lot of work to make all of the
+tests pass on Windows 2003 but I think we should have done this back
+in 2003 and said "every new test has to pass on Windows 2003" as well
+as Alexandre's box before it gets merged.
+</p><p>
+As far as 1.0 goes, its not perfect but its not horrible and I think
+we've learned quite a bit and Wine is better now than its ever been. I expect
+1.1 or 1.2 whatever number Alexandre wants to call it, will be an
+exponential improvement given the experience we've gained.
+</p><p>
+And lastly I'd like to announce I am starting a new Free Software
+company with a long term goal of providing Products and Services
+around Wine and ReactOS. The Bordeaux Group has today released
+Bordeaux for Linux which builds on the infrastructure laid out in Wine
+1.0, Winetricks, IES4Linux and other tools and tries to wrap them all
+together in a kind of CrossOver Lite type of environment. The ultimate
+goal is to help refine Wine more and aide in ReactOS development to
+create a platform that is generic so that users wanting to migrate
+away from Windows will have a more broad range of choices, be it Wine
+on Linux and the Mac, ReactOS, or even CrossOver,
+PlayOnLinux,WineDoors or some other Wine package.
+</p><p>
+Some of the (limited) work we've already done we hope to be able to
+fold back in to Winehq. If your interested check it out
+ <a href="http://www.bordeauxgroup.com">http://www.bordeauxgroup.com</a> 
+</p><p>
+Thanks
+</p><p>
+--
+Steven Edwards
+</p>
+</quote></section>
+<section 
+	title="Post 1.0 Development"
+	subject="Post Wine 1.0"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-June/066460.html"
+	posts="3"
+>
+<topic>Development</topic>
+<p>
+Alexandre Julliard, Wine's maintainer, has posted a brief summary of how future Wine development will work.
+</p>
+<quote>
+<p>
+Hi folks,
+</p><p>
+Again, congrats to everybody for the 1.0 release!
+</p><p>
+Now that I'm starting to recover from the shock of having actually
+shipped 1.0, here are a few notes on future development:
+</p><p>
+1) Code freeze is over, patches are accepted again. If you sent patches
+and they didn't get applied during code freeze, please rebase them
+against 1.0 and resend them.
+</p><p>
+2) Development will continue as usual in the git "master" branch. The
+1.1.x development releases will be made from that branch every other
+Friday.
+</p><p>
+3) There is now a git "stable" branch, where only important bug fixes
+will be committed. The 1.0.x maintenance releases will be made from that
+branch whenever enough changes have accumulated to justify a release.
+</p><p>
+The process I suggest for the 1.0.1 release is as follows:
+</p><p>
+- all bugs should be fixed in the master branch first<br />
+- once a bug fix has been committed to master, the corresponding bug<br />
+ report should be marked fixed, with the sha1 of the commit fixing it
+- the bug report should then be put into the 1.0.1 milestone.<br />
+</p><p>
+This will allow me to periodically query for 1.0.1 bugs that are fixed
+in master and cherry-pick the corresponding commits into the stable
+branch.
+</p><p>
+--<br />
+Alexandre Julliard
+</p>
+</quote></section>

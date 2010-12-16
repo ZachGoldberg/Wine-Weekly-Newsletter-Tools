@@ -1,0 +1,421 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="225" date="06/04/2004" />
+<intro> <p>This is the 225th issue of the Wine Weekly News publication.
+Its main goal is to keep from getting sunburned. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="160" size="582" contrib="47" multiples="24" lastweek="20">
+
+<person posts="20" size="54" who="Mike Hearn" />
+<person posts="15" size="47" who="Dimitrie O. Paun" />
+<person posts="12" size="33" who="Eric Pouech" />
+<person posts="11" size="37" who="Luca Capello" />
+<person posts="9" size="71" who="James Courtier-Dutton" />
+<person posts="9" size="22" who="Alexandre Julliard" />
+<person posts="8" size="34" who="Dmitry Timoshkov" />
+<person posts="7" size="25" who="Shachar Shemesh" />
+<person posts="6" size="16" who="Rein Klazes" />
+<person posts="5" size="20" who="Robert Shearman" />
+<person posts="5" size="12" who="Christian Costa" />
+<person posts="4" size="20" who="Raphael" />
+<person posts="4" size="9" who=" (Morten Welinder)" />
+<person posts="3" size="9" who="Paul R Streitman" />
+<person posts="3" size="9" who="Samuel Audet" />
+<person posts="2" size="29" who="Lionel Ulmer" />
+<person posts="2" size="23" who="Maurizio Monge" />
+<person posts="2" size="8" who="Huw D M Davies" />
+<person posts="2" size="7" who="Rajeev Bansal" />
+<person posts="2" size="6" who="Bill Medland" />
+<person posts="2" size="5" who="Ferenc Wagner" />
+<person posts="2" size="4" who="Jon Griffiths" />
+<person posts="2" size="3" who="Robert van Herk" />
+<person posts="1" size="7" who="Izak Burger" />
+<person posts="1" size="6" who="Florian Goth" />
+<person posts="1" size="5" who="Ewert, Mark" />
+<person posts="1" size="4" who="Raul Dias" />
+<person posts="1" size="3" who="Hans Leidekker" />
+<person posts="1" size="3" who="=?iso-8859-1?q?Simon=20Harvey?=" />
+<person posts="1" size="3" who="Boaz Harrosh" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="Ahmed Abdel Aal" />
+<person posts="1" size="3" who="Saulius Krasuckas" />
+<person posts="1" size="2" who="Chris Morgan" />
+<person posts="1" size="2" who="mguyard" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Tim Hentenaar" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="2" who="=?iso-8859-1?q?saneh=20gupta?=" />
+<person posts="1" size="1" who="=?iso-8859-1?q?Lu=EDs_Marques?=" />
+<person posts="1" size="1" who="Troy Rollo" />
+<person posts="1" size="1" who="Mike" />
+<person posts="1" size="1" who="Steven Edwards" />
+<person posts="1" size="1" who="Andreas Mohr" />
+
+</stats>
+<section 
+	title="News: SpecOpsLabs Response" 
+	subject="News"
+	archive="http://www.osviews.com/modules.php?op=modload&amp;name=News&amp;file=article&amp;sid=1454" 
+	posts="1"
+	startdate="05/29/2004"
+	enddate="06/4/2004"
+>
+<topic>News</topic>
+
+<p>SpecOps <a href="http://www.osviews.com/modules.php?op=modload&amp;name=News&amp;file=article&amp;sid=1454">responded</a>
+to WWN <a href="http://www.winehq.com/?issue=222#Project%20David%20Uses%20CodeWeavers%20CrossOver%20Office">issue #222</a>.
+I'd summarize it here, but it's worth reading in full.  They make some
+valid points, but it still remains to be seen if they have actually developed
+anything.  It's perfectly legal for them to keep everything under wraps 
+until they distribute a product, the LGPL specifically allows for that. 
+There were some threads in various forums that may have hinted otherwise,
+but I was pretty careful not to include them in this newsletter.  Of course
+like any company that does development behind closed doors, 
+it's unknown whether any of their design
+decisions will ever be beneficial to Wine.  Also unknown is whether 
+there is a duplication of effort in progress and to what extent.  
+<a href="http://slashdot.org/article.pl?sid=04/05/31/1040259&amp;mode=thread">
+Slashdot's</a> link to the article drew mixed responses.  
+</p>
+
+</section>
+<section 
+	title="Winedbg Issue and New Changes" 
+	subject="Help with winedbg"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/05/0424.html" 
+	posts="9"
+	startdate="05/26/2004"
+	enddate="05/30/2004"
+>
+<topic>Debugging</topic>
+
+<p>Much of this thread occurred last week, but it wasn't
+resolved until this week.
+Shachar Shemesh wanted to use Wine's debugger, Winedbg, but couldn't
+get it to run:</p>
+<quote who="Shachar Shemesh"><p>
+I'm trying to get a Visual C compiled program to run on Wine. I have the 
+sources and full debug info for the PE part of the program. Obviously, 
+however, it was not compiled on the same machine on which it is running.
+</p><p>
+To make things even more interesting, I would rather use some GUI 
+frontend for the debugger.
+</p><p>
+As far as I can tell, I have two options to go about this:
+<ol>
+<li>Use Visual Studio's remote debugging</li>
+<li> Use winedbg as a gdb backend for ddd</li></ol></p><p>
+
+Option 1 fails miserably. I suspect the project is just too complex for 
+Visual Studio to handle over the wire. When I try to do that, the Visual 
+Studio front end (the one running on a Windows machine) crashes. This 
+leaves me with just option 2.
+</p><p>
+When I try to run it like that (<tt>winedbg --gdb --no-start</tt>), winedbg 
+starts ok. When I hook ddd to it, however, winedbg complains about a 
+missing source file (one that is not in the Windows source, btw). In the 
+meanwhile, ddd claims to time out on the connection, and closes down.
+</p></quote>
+
+<p>Eric Pouech asked Shachar to try running just winedbg and not
+bring ddd into the picture.  Shachar got a chance to try it and
+eventually was able to produce an error log that ended with this
+line:</p>
+<quote who="Shachar Shemesh"><p>
+<tt>err:wineconsole:WINECON_Fatal Couldn't find a decent font, aborting</tt>
+</p></quote>
+
+<p>Eric quickly diagnosed the problem,
+<quote who="Eric Pouech">
+ You don't have fixed font installed that matches wineconsole's needs.
+ Usually, it means you don't have a fixed font installed.</quote></p>
+
+<p>Shachar wondered why a font would stop Winedbg from running at
+all.  Eric explained that it was really a problem launching the 
+console window for Winedbg.  
+To make things more interesting, Eric made some large changes
+to Winedbg last week.  These actually came about after Shachar's
+problem report.  From the changelog:</p>
+<quote who="Eric Pouech"><p>
+it's time to make winedbg use dbghelp for its internal working
+This is the full patch (quite big), that's why it's been gzip:ed.
+</p><p>
+Among the biggest changes:
+<ul>
+<li> all symbol information storage is now module relative, so we can 
+unload a module (and its debugging information), and a process without pain</li>
+<li> portabiblity to another CPU should be easier now (CPU dependent backend)</li>
+<li> speed up memory allocation</li>
+<li> stabs related fixes:
+	<ul>
+      <li> now correctly handling symbol's size</li>
+      <li> blocks {} in functions are now correctly recognized and stored
+        (also applies to local variables scoping)</li>
+      <li> better basic types management (less wild guesses in the code)</li>
+      <li> full support of inline functions (source stepping now shows the
+        code in .h files for example)</li>
+	</ul>
+</li>
+<li> removal of external debugger (attaching with gdb is just fine to debug
+   winedbg)</li>
+<li> fixed a couple of issues for symbol address handling (address
+   lookup, incorrect type binding)</li>
+<li> winedbg now has a man page</li></ul>
+</p><p>
+The biggest changes since from the end user point of view:
+<ul>
+<li> the $regs variable has disappeared</li>
+<li> all the 'walk' commands have now been merged into the 'info' ones. 
+'walk' is no longer a valid command</li>
+<li> module identification in symbol name now has the form of 
+ &lt;module&gt;!&lt;symbol&gt; which is the dbghelp/windbg way (instead of 
+ &lt;module&gt;:&lt;symbol&gt; or &lt;module&gt;.&lt;symbol&gt;)</li></ul>
+</p></quote>
+
+</section>
+<section 
+	title="Winedbg &amp; DDD" 
+	subject="debugger symbols and NPTL on RedHat 9"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0049.html" 
+	posts="10"
+	startdate="06/02/2004"
+	enddate="06/03/2004"
+>
+<topic>Debugging</topic>
+<p>Following on the heels of that thread, Shachar ran
+into another debugging problem that was tougher to solve.
+Being able to use a graphical debugger is very important
+for Shachar's work:</p>
+<quote who="Shachar Shemesh"><p>
+ I figured that going through the 
+ process of getting the program compiled as winelib was unnecessary, so I 
+ am still compiling it on Windows using Visual Studio. This, naturally, 
+ means that it's a PE. After resolving the font problems, I can finally 
+ get the program running through winedbg. While I'm doing ok at working 
+ like that, the client really prefers working with a GUI. When I try to 
+ run the program using the <tt>--gdb</tt> switch (with or without <tt>--no-start</tt>), 
+ debug symbols for the PE part are not shown. I get all the symbols for 
+ the ELF dlls (wine's DLLs), but not for the PE program.
+</p><p>
+ Is this a solvable problem? The program is using PDBs for debug 
+ symbols, they are not compiled into the PEs. I can change that, I guess, 
+ but I would really rather not. Will changing that solve anything?
+</p></quote>
+
+<p>
+ Eric Pouech thought the first thing to try would be to change 
+ the debugging options in Visual C++:</p>
+<quote who="Eric Pouech"><p>
+ I assumed you compiled your program with a recent version of msvc. 
+winedbg doesn't support the latest version of msvc symbolic information. 
+There are IIRC some options to turn on the eldest options (which may end 
+up in putting the info inside the EXE, but that's not mandatory. but 
+since I don't recall all the msvc switches YMMV).
+</p><p>
+BTW, I still looking for a decent documentation on latest MSVC symbolic 
+info to enhance your debugging support. If someone has some info, I'm 
+interested.
+</p></quote>
+
+<p>Eric then explained the problem with using gdb,
+<quote who="Eric Pouech">
+ when run with gdb, the PE symbol lookup doesn't work, gdb 
+ doesn't know anything about PE. You need to use winedbg without the gdb 
+ proxy. But you will lose the GUI debugging part (a la DDD, or kdbg...).
+</quote></p>
+
+<p>Shachar really needed a graphical debugging tool and 
+wondered if it might be possible to simply bypass gdb:</p>
+<quote who="Shachar Shemesh"><p>
+Damn, I was afraid of that answer.
+</p><p>
+I really wanted to think that the symbol interpretation was done by the 
+backend (winedbg) rather than the frontend.
+</p><p>
+How possible is it to run "winedbg" as the backend to ddd/kdevelop 
+instead of gdb? Are they even remotely close enough in command line? 
+</p></quote>
+
+<p>Eric thought it might be possible since part of the support
+was already there:</p>
+<quote who="Eric Pouech"><p>
+I never tested that. As far as I can tell, both ddd and kdbg are using the regular gdb 
+command line (not the MI* extensions from gdb). While rewriting winedbg 
+I tried to make the commands as close as possible (from a syntax point 
+of view) to the gdb ones. However, I didn't check yet format of 
+answers and output. The idea anyway was to make winedbg look (command 
+input, but we could do output too) as close as possible to gdb to ease 
+up the migration of users from gdb to winedbg).
+</p><p>
+But it's likely we'll have some discrepencies in the output (and also 
+the I/O control from the graphical front-end on winedbg which may play 
+some tricks on us).
+Anyway, it won't be a five minute fix (and Alexandre needs to commit 
+first the "small" pending winedbg part for me to go further).
+</p></quote>
+
+<p>Alexandre committed Eric's 
+ <a href="http://www.winehq.com/hypermail/wine-cvs/2004/06/0051.html">patch</a> 
+later in the week.  (Which happens to be one of the largest single
+patches I can recall being committed in a while.)</p>
+
+</section>
+<section 
+	title="MSVCRT Headers" 
+	subject="Re: [MSVCRT] Cross build fix"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0009.html" 
+	posts="8"
+	startdate="06/01/2004"
+	enddate="06/03/2004"
+>
+<topic>Ports</topic>
+<p>MSVCRT.DLL is a tricky library to deal with.  MSVCRT is the
+Microsoft Visual C++ Runtime.  Now, for Winelib apps this is what
+they expect to use when invoking common C functions such as 
+scanf(), strcpy(), etc.  However, Wine itself uses the native
+C library, which on Linux would be glibc.  Hans Leidekker
+ran into a problem trying to compile on MinGW:</p>
+<quote who="Hans Leidekker"><p>
+ This patch:
+   <ul><a href="http://www.winehq.org/hypermail/wine-cvs/2004/04/0357.html">
+   http://www.winehq.org/hypermail/wine-cvs/2004/04/0357.html</a></ul>
+</p><p>
+ broke the MinGW build of msvcrt. The changelog says it's a compatibility
+ fix. Dimi: what compatibility were you aiming at with this patch?
+</p></quote>
+
+<p>Dimi explained the problem had to do with Winelib app
+requirements:</p>
+<quote who="Dimitrie Paun"><p>
+ Compatibility with other headers. _WCTYPE_T_DEFINED is in a way
+ part of the public interface, and when we use the headers in
+ Winelib apps, we need to define it so we don't end up with
+ duplicate declarations for wint_t/wctype_t. When we build
+ msvcrt it's a different story of course, and we seem to need
+ the exact opposite. Which is why I find the entire MSVCRT()
+ thing not only ugly, but a bit problematic also.
+</p><p>
+ Alexandre, why don't we just remove all those MSVCRT() macros,
+ use the headers in Winelib apps, and duplicate what we need
+ with a MSVCRT_ prefix in an internal header that we use just
+ for building? These things are quite stable, so the risk of
+ diverging is small, and for thinks like structures we can
+ write tests to make sure we have the same sizes/layouts.
+</p></quote>
+
+<p>Alexandre didn't think it was quite that easy,
+<quote who="Alexandre Julliard">
+
+ No I don't think we want that. The headers are not that stable, we are
+ still making changes to them. We also need the MSVCRT definitions in
+ multiple dlls so there would be a lot of duplication.
+</quote></p>
+
+<p>Although the headers themselves aren't stable, Dimi thought
+the interfaces were.  Boaz Harrosh then jumped into describe
+another method of using one header to redefine parts of another:</p>
+<quote who="Boaz Harrosh"><p>
+  When compiling with STLPort I saw a method that can eliminate the need 
+ for the MSVCRT macro and yet produce MSVCRT_xxx for those who need it 
+ and an xxx for those how don't.
+  Basically you have your Regular cleanroom headers-set for wine-lib and 
+ external dlls. And you have another set of headers for msvcrt 
+ compilation. In The second set:<ul>
+ <li> each header does some magic like #define stat_t MSVCRT_stat_t</li>
+ <li> then #include &lt;original/header.h&gt;</li></ul>
+</p><p>
+Now compilation units that need the MSVCRT_xxx use an extra <tt>-I 
+"$wine_include/internal_msvcrt"</tt> switch in the make files.
+</p><p>
+should I random pick an header and demonstrate the Technique?
+</p><p>
+ From what I understand, the need for these differences are so the 
+msvcrt.dll.so could define it's own set of functions and in place use 
+gcc-glibc for implementation. This way steering away from both 
+duplicates in Linking and conflicts with gcc-glibc headers.
+[Q] Why don't we avoid glibc all together. Take what ever code we are 
+missing  and have a complete self contained implementation?
+Just like MinGW's <tt>-nocygwin</tt>
+</p><p>
+(Now if we where using C++ the problems would be solved in 2 seconds 
+flat: "namespace". Was not "namespace" back ported to C )
+</p></quote>
+
+<p>Dimi seemed to like the idea,
+<quote who="Dimitrie Paun">
+ This can work, one problem is that if we go this way, we'll have to 
+ 'shadow' all symbols, or else we'll get conflict with the C library. 
+ In any event, it's a tricky method that can result in some strange
+ bugs if we don't redefine all symbols, so Alexandre will have to 
+ comment on it if we are to try it out.</quote></p>
+
+<p>Alexandre went back to the original problem that Hans pointed
+out to show Boaz's method wouldn't work in that particular instance.
+Dimi went back to the idea of duplicating parts of the headers:</p>
+<quote who="Dimitrie Paun"><p>
+Right, it will not solve problems like this (for Boaz: _WCTYPE_T_DEFINED
+is a sentry for not defining a type twice, check out pretty much any header
+under include/msvcrt/ to see how it's used).
+</p><p>
+However, I did grep the source, and it seems that we're using the
+MSVCRT_ prefix only in dlls/msvcrt/*.c. And so it's not clear to
+me that duplicating part of the headers is going to be that bad.
+I mean, we will need duplication only for the stuff that we use
+internally across files. That doesn't include math functions for
+example, and a bunch of other stuff.
+</p><p>
+If you're positive this is not a good idea, I'll drop it, but if
+there is a chance it would be acceptable, I might give it a try...
+</p></quote>
+
+<p>Alexandre felt it might be worth trying as long as
+regression tests were added to make sure the definitions
+all remained in sync.</p>
+
+</section>
+<section 
+	title="AMD64 Issues" 
+	subject="(Still) problem on AMD64 with wine CVS"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0097.html" 
+	posts="2"
+	startdate="06/03/2004"
+	enddate="06/04/2004"
+>
+<topic>Ports</topic>
+<p>
+There's been some reports lately of people trying Wine on
+AMD64.  It doesn't sound like there's anyone who's been
+successful.  Maurizio Monge tried compiling for a 32-bit
+environment and reported the following memory allocation problem:
+</p><quote who="Maurizio Monge"><p>
+Hello, i have retried to compile wine CVS on amd64 (gcc 3.4 with -m32, etc + 
+kernel 2.6.4-rc2), where i was thinking the 0xc0000000 problem was solved. 
+but i get:
+<ul><code>
+wine: failed to initialize: /opt/wine/lib/wine/ntdll.dll.so: failed to map 
+segment from shared object: Cannot allocate memory</code></ul></p><p>
+
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/06/att-0087/01-strace">attached</a>
+ to this mail the output of "strace32 wine"
+</p><p>
+one of the last lines is (i have 512Mb of ram)
+<ul><code>
+old_mmap(NULL, 482376, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = -1 ENOMEM                 
+                                                 (Cannot allocate memory)
+</code></ul></p><p>
+It looks like my kernel absolutely wants to allocate memory &gt; 0xc0000000 :-)
+Any idea?</p></quote>
+
+<p>Alexandre didn't have an immediate solution, but asked for
+some help narrowing down the problem,
+<quote who="Alexandre Julliard">
+ Does it make a difference if you bypass the preloader and run
+ wine-kthread directly?</quote></p>
+
+<p>Maurizio tried it and ran into the same problem.</p>
+
+</section></kc>

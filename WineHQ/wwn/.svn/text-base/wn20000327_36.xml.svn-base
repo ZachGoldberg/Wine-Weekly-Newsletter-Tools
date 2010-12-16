@@ -1,0 +1,417 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="36" date="27 Mar 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 36th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+Wine 20000326 has been released. Announce reads:
+<ul>
+   <li />More DLLs separated from the Wine core.
+   <li />Debugger rewritten to use Win32 debugging API.
+   <li />Many improvements to WINASPI support.
+   <li />New WineMine application.
+   <li />Lots of bug fixes.
+</ul>
+
+</intro>
+
+<stats posts="129" size="650" contrib="39" multiples="24" lastweek="21">
+<person posts="10" size="204" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="8" size="22" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="8" size="22" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="16" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="14" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="6" size="29" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="6" size="13" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="6" size="13" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="6" size="10" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="5" size="20" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="5" size="12" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="10" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+</stats>
+
+
+<section 
+  title="Wine's resource compiler"
+  subject="PrgWin95: Extern and #pragma/#line/#error support"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-237.html"
+>
+
+<p />
+
+While continuing his effort to test the Petzold's Windows Programming
+samples (see <a href="wn20000313_34.html#0">this issue</a>),
+Francois Gouget sent a patch to correct a few issues in wrc - the
+Wine's resource compiler -. Those fixes mainly dealt with some
+uncorrectly supported preprocessor directives (like <code>#error,
+#line or #pragma</code>)
+
+<p />
+
+Bertho Stultiens (the author of wrc) explained: 
+<quote who="Bertho Stultiens">
+The problem is that wrc has a semantical preprocessor instead of a
+lexical preprocessor. There are quite a few other constructs that also 
+fail in wrc. I have been working on a new preprocessor for the past two
+months (and it is working), but it is not yet completely done. Main
+problem is that I need to rewrite the macro-expansion code for nested
+macros (to prevent functional recursion) and definitely speed it up
+because it takes 3.5 seconds to compile some files (oh well, it does
+20000 lines per second though; almost as fast as gcc:-). My coming
+changes also correct the other 2 major issues: filenames and usertype
+resources.</quote>
+
+
+<p />
+
+Dimi Paun started then a long thread by asking whether if it was worth 
+creating Wine's own preprocessor embedded inside wrc, instead of using 
+gcc as a preprocessor.
+
+<p />
+
+Marcus Meissner and Patrik Stridvall pointed out that gcc's
+preprocessor wasn't available on all platforms, but that configure
+could look at any decent preprocessor, like plain cpp. Uwe Bonnes and
+Patrik Stridvall also noted some discrepancies between gcc's
+preprocessor and cpp - like some different command line options
+handling, but also, a different handling of the "\r\n" sequence as a
+resource file terminator -, but Patrik was confident that those
+"features" could be circumvented. He demonstrated it by sending a
+patch which allowed to compile resource files on Solaris (which was 
+working with both cpp and gcc as preprocessors).
+
+<p />
+
+Some people (like Uwe Bonnes and Patrik Stridvall) remarked that using
+plumbing (feeding wrc's input with a preprocessor output) ended up
+with poor error reporting to the end user.
+
+<p />
+
+But Dimi went further: <quote who="Dimitrie Paun">the point is that rewriting and 
+reinvention of the wheel for the single purpose that it is more 
+convenient to have it included in wine is a bit silly. We require a C
+compiler (for now we require gcc with is OK IMO), we require a make
+program (don't know if gmake is required though), perl, yacc, lex,
+etc. It would be simply silly to reimplement all this programs simply
+because some systems don't have them. They are free on the net,
+download them.</quote>, and asked Bertho if he agreed to strip the
+preprocessor part from wrc.
+
+<p />
+
+Bertho had a rather different opinion:
+<quote who="Bertho Stultiens">
+Well, a good question. Stripping the preprocessor could be an advantage
+if it was solely used with wine. But, this is not the case. There have
+been other uses of wrc which require the preprocessor built in.
+
+<p />
+
+--
+
+<p />
+
+To make it short [ahum;-];
+
+<p />
+
+I intended wrc to be versatile enough to be used both within wine
+(because we lacked a real resource-compiler back then) and powerful
+enough to be used within other projects which have nothing to do with
+wine, but want to use windows-resources (for whatever reason). The
+wine-license made this a perfect option and I kinda liked it too. 
+
+<p />
+
+So, keeping that in mind, the whole discussion is a bit artificial and
+not changing my work nor my attitude in putting a real preprocessor into
+wrc's frontend. This will be entirely optional for use and a
+command-line option can be used to bypass it.
+
+<p />
+
+Even if Alexandre would want to reject the upcoming patches (which I do
+not think he will), then it would still not change my attitude because
+the changes will be published by other means. Solely because I feel that
+wrc should be capable of compiling resources in a stand-alone manner and
+no one should be required more than wrc to get resources compiled.
+</quote>
+
+
+<p />
+
+and he went on explaining with more details the changes underway
+
+<quote who="Bertho Stultiens">
+Yes, wrc will be faster. That is actually the primary technical reason
+for me to split wrc into a preprocessor/compiler combination. The
+current mix (a bad hack) was there to help out for the time being. The
+extra rules in the scanner and parser make it awfully complex to
+change anything of substance in any part. This is why user-resources
+and filenames are wrong. I could not get this put into the current
+design without making an even worse hack.
+
+<p />
+
+Wrc's backend will be cleaned up so it will understand enough C and C++
+constructs so that they can be filtered out and for the rest it will be
+a 'clean' and 'compatible' compiler. All lexical substitutions (i.e. the
+preprocessor) will be done in the frontend. Whether you choose to use it
+is not my primary concern.
+
+<p />
+
+Then for reinventing the wheel. Yes, many have done it before. But, do
+you know a full-working preprocessor in the public domain that can be
+put into wrc without problems? I don't. The rest I know is GPL.
+</quote>
+
+
+<p />
+
+A good bunch of posters approved Bertho's approach, and Francois
+Gouget shed some more light
+<quote who="Francois Gouget">
+I would like to point out that even if you use gcc as the
+pre-processor, as I did, wrc must still be aware of some directives 
+like '# &#60;line&#62; &#60;file&#62; and '#pragma'. I seemed to me that this was not
+always clear in the messages.
+
+<p />
+
+We need to handle '# &#60;line&#62; &#60;file&#62;
+<ul>
+   <li />because it's generated by the preprocessor and thus obviously
+present in the pre-processor's output although this can be disabled
+(with -P)
+   <li />because if we don't then we have no idea about the line/file
+the error occurred in and the messages are thus hard to understand (hint:
+preprocess to a file and then run wrc on that file)
+</ul>
+
+<p />
+
+We need to support the '#pragma'
+<ul>
+   <li />because since they are intended to be used by the compiler they will
+always be there. Foretunately all we have to do is ignore them
+</ul>
+</quote>
+
+
+<p />
+
+As a conclusion, wrc will keep its integrated preprocessor (keep
+posted for the day where Bertho releases the new wrc version).
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Wine and XFree 4.0"
+  subject="Wine problem with XFree 4.0"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-241.html"
+>
+
+<p />
+
+Following post from <a href="wn20000320_35.html#0">last week</a>
+regarding the incompatibilities between Wine and XFree 4.0, Jeremy
+White reopened an old discussion on pthread support in Wine:
+
+<quote who="Jeremy White">
+I tried to understand exactly what the problem was if we linked Wine
+with X 4.0, libpthread, and OpenGL. Really, the core issue is why we
+can't link in libpthread.
+
+<p />
+
+To rehash what is already known:
+
+<p />
+
+After a scan of the glibc 2.1 source code (and no experimental
+evidence whatsoever), I found only the following two problems:
+<ol>
+   <li /><b>malloc and free will fail badly</b>: I see two
+issues. First, the code for malloc tests to see if
+__pthread_initialize is available. If so, it invokes it. I believe
+that __pthread_initialize will actually run correctly, and start the
+pthread_manager. I have no proof of this. Second, as malloc and free
+manipulate internal structures, they rely on macros from
+malloc-t.h. The ones I inspected were mutex_init, mutex_lock,
+et. all. Basically, if libpthread is linked in, and the weak symbols
+for __pthread_mutex_xxx are available, then malloc will use them,
+otherwise they turn into NOPs (and malloc is presumably running in a
+single thread environment). 
+
+<p />
+
+   However, in our case, the code for pthread_mutex_lock will be
+invoked. That code, in turn, grabs the pthread_self descriptor from
+the GS register. Of course, we're not really a pthread and <b>boom</b> down
+she goes.
+   <li /><b>errno will fail</b>: Again, same basic issue.
+</ol>
+
+<p />
+
+However, I found no further instances where glibc examines the weak
+aliasing on the pthread functions. Of course, I did not look at the
+source code for X 4.0 or any other library to see in what ways it
+depends on the weak aliasing of pthreads.
+
+<p />
+
+As I understand Ove's pthread patch, his patch resolves this problem.
+I don't have his patch in front of me, but I believe he did this by
+registering Wine threads with libpthread (setting up the GS register),
+and by correspondingly trapping the creation of threads from
+libpthread and registering them with Wine.
+</quote>
+
+
+<p />
+
+Jeremy also asked why Ove's patch never made its way inside the Wine's 
+CVS tree.
+
+<p />
+
+Ove K&#229;ven gave some more indication on his work:
+<quote who="Ove Kaaven">
+My original pthread patch defined only the __pthread_xxx routines that 
+glibc used, so that libc would use them instead of assuming a
+single-thread environment, since wine IS multithreaded. 
+
+<p />
+
+pthread was normally never linked in before XFree86 4.0 appeared, so when
+it did, I had to update the patch to also define standard pthread symbols
+to override pthread's own (libwine is before pthread-using X11 libs on the
+link command line...)
+
+<p />
+
+The OpenGL and MT parts of XFree86 4.0 uses pthreads directly, without
+going through any weak aliases. In other words, they explicitly link
+it in.
+
+<p />
+
+I just implemented the pthread primitives on top of Win32 synchronization
+primitives. For example, pthread_mutex_init() is a wrapper for
+InitializeCriticalSection(), pthread_mutex_lock() is a wrapper for
+EnterCriticalSection(), etc...
+</quote>
+
+and regarding the rejection cause:<quote who="Ove Kaaven">it is currently
+quite glibc-specific (Alexandre calls in un-portable, although I
+wouldn't myself consider it impossible to port to other systems, like
+FreeBSD), and Alexandre really wants to see a portable fix for libc
+threadsafety before slipping in system-specific workarounds that ~90%
+of the developers would consider "good enough" (and the rest wouldn't
+know how to fix).</quote>
+
+<p />
+
+Alexandre Julliard jumped in:<quote who="Alexandre Julliard">
+the theory is that if it's broken for everybody, it's more likely to
+get fixed than if it only breaks on "exotic" platforms. Since it still
+hasn't been fixed it seems I'll have to revise my theory... 
+
+<p />
+
+I think at this point we have two possibilities: one is to provide our
+own complete libpthread implementation to override the libc one,
+i.e. the extended version of Ove's patch.
+
+<p />
+
+The other solution is to try to use the existing libpthread to create
+our threads; if we can work around the %gs register problem, this
+would have the advantage of better integrating with the native
+libraries (for instance gdb would then be able to understand what's
+going on with threads). This is IMO a more elegant solution, but the
+big question is: can it be made to work?
+</quote>
+
+<p />
+
+Ulrich Weigand raised some more problematic points:<quote who="Ulrich Weigand">
+<ul>
+   <li />libpthread sets up its own segments and stores selectors to
+them in %gs 
+   <li />libpthread uses the current stack pointer to determine the
+current thread
+</ul>
+
+<p />
+
+Actually, I'm not sure whether any version of libpthread uses <b>both</b> of
+those constructs at the same time (as both are used to determine the
+current thread), but I've seen (different) versions that use either one.
+</quote>
+
+<p />
+
+The first item fools Wine's manipulation of the LDT (Wine as
+libpthread thinks he's the only one tweaking the LDT entries), and
+puts a hard constraint (%gs register shall not be touched, which is
+something emulated Windows's program don't ensure).
+
+<p />
+
+One possible solution to directly use pthreads would be to:<quote who="Ulrich Weigand">
+One possible solution to remove the restrictions on Win32 apps would be
+to treat Win32 apps the same way as Win16 apps, using explicit transition
+thunks.  That way, we could switch from the pthreads stack to the Wine
+stack, and could save/restore %gs as well ...   Furthermore, this approach
+would also allow to use compilers that don't support stdcall, and it might
+simplify a processor emulator version of Wine.  On the other hand, there's
+quite a bit of overhead on every transition :-/
+</quote>
+
+<p />
+
+Alex Korobka also pointed out that pthread was missing the
+suspend/resume feature needed to implement the ThreadSuspend(),
+ThreadResume() API calls.
+
+<p />
+
+Andrew Lewycky reported: <quote who="Andrew Lewycky">I have a patch that runs wine
+on pthreads in glibc 2.1, that works for 32-bit programs at least. I
+didn't bother with the LDT or %gs stuff since linuxthreads-0.8 does
+not use it, due to bugs in the 2.0 kernels. (So it may come back some day.)
+</quote>, which gave some good hope on being able to use pthread, but
+also brings lots of issues, as Ulrich already pointed out: the
+different libpthread version use different mechanisms to identify a
+thread (%gs, stack...), opening various concerns from all the
+versions.
+
+<p />
+
+Ulrich and Andrew then discussed some other concerns with libpthread
+while executing the exception handlers (which also have issues with
+identifying the current thread).
+
+<p />
+
+As of today, no global solution has been reached so far.</section>
+
+</kc>

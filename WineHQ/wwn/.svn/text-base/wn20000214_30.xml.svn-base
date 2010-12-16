@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="30" date="14 Feb 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 30th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+
+</intro>
+
+<stats posts="89" size="323" contrib="34" multiples="20" lastweek="24">
+<person posts="7" size="21" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="7" size="12" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="104" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="6" size="29" who="Philippe Moutarlier &lt;philippe@kscable.com&gt;" />
+<person posts="5" size="10" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="9" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="4" size="9" who="Dave Pickles &lt;davep@nugate.demon.co.uk&gt;" />
+<person posts="4" size="12" who="Steven Elliott &lt;elliotsl@mindspring.com&gt;" />
+<person posts="4" size="10" who="Marcus Meissner &lt;Marcus.Meissner@caldera.de&gt;" />
+<person posts="3" size="7" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="3" size="6" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="3" size="5" who="Matthew Cline &lt;matt@nightrealms.com&gt;" />
+<person posts="3" size="5" who="Frank J. Ramsay &lt;fjr@marsdome.penguinpowered.com&gt;" />
+<person posts="3" size="11" who="Gavriel State &lt;oponvybl@umail.corel.com&gt;" />
+</stats>
+
+
+<section 
+  title="FormatMessage and message tables"
+  subject="FormatMessage"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-120.html"
+>
+
+<p />
+
+Dave Pickles asked for some support on the implementation of
+FormatMessage, with the FORMAT_MESSAGE_FROM_SYSTEM option. This allows 
+error codes (for example) to be presented in a more human readable
+fashion.
+
+<p />
+
+One issue raised was the way to create the message tables (there are
+resources  anyway, so can be added to any module). Bertho Stultiens
+pointed out that <quote who="Bertho Stultiens">they are not implemented at all. MS
+has a separate message compiler and I did not want to implement that
+yet.</quote>
+
+<p />
+
+However Uwe Bonnes (and Dave later with some code) proposed to store
+(at least for the system message table - the one containing the
+textual representation of system error codes - to use some arrays
+(two indexes are used: message ID and language ID). However, all
+agreed that providing a message table compiler would be a neat thing
+to have.</section>
+
+
+<section 
+  title="Dialog and property sheets"
+  subject="propsheet weirdness"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-103.html"
+>
+
+<p />
+
+Andreas Mohr, while toying with a code example from Petzold's Windows
+Programming book, ran into some bad behavior in Wine.
+
+<p />
+
+After some investigations (from Corel's Serge Ivanov and Thuy NGuyen), 
+it turned out that the program had the same behavior under Windows...
+
+<p />
+
+Anyway, Andreas posted a patch to enhance EndDialog() behavior
+regarding bad window handles.</section>
+
+
+<section 
+  title="Bad rumors and good news"
+  subject="Applix FUDs Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-107.html"
+>
+
+<p />
+
+Ian Schmidt reported two bad Wine quotes from the News:
+
+<quote who="Ian Schmidt">The added layer of Wine code--an open source
+implementation of Windows 95/Microsoft Windows NT application
+programming interfaces--causes native Windows applications to run more
+slowly and with less stability on Linux, says Richard Manly, director
+of product marketing for Applix.</quote>
+
+
+<p />
+
+You can find a full article from <a
+ref="http://www.pcworld.com/pcwtoday/article/0,1510,15139,00.html">
+PC World</a>.
+
+<p />
+
+Later on, Linux Today posted also <quote who="Ian Schmidt">it appears Corel has
+switched gears and will now ship PE binaries as their final product.
+That's pretty discouraging for WineLib - could we get a post-mortem
+from someone at Corel?</quote>
+
+<p />
+
+Applix, and some of its products, can see in Wine a competitor. So
+spreading FUD (Fear, Uncertainty, Doubt) about it is an usual
+marketing practice. However, that's rather a good thing that
+commercial entities start being negative at Wine: it's a sign Wine is
+getting better and better !!
+
+<p />
+
+Alex Korobka reminded with an old issue (#6) with a reference to
+WinTach running on Wine <quote who="Ove Kaaven">that indicated that drawing
+functions were more or less on par with Windows but window
+manipulation was a lot slower.</quote>
+
+<p />
+
+Jeremy White from CodeWeavers put up a $2.500 CoSource 
+request to run properly WinBench 99 under Wine: <quote who="Jutta Wrage">It
+would be nice to have some real data to counter the FUD (or at least
+some real data to indicate what work we have to do).</quote>
+
+<p />
+
+Corel's Gavriel State gave the last word <quote who="Gavriel State">Just watch
+our tree - we're putting lots of guns on optimization
+now. 8-)</quote>, and regarding the future of WineLib (versus running
+Windows code, aka PE loader):<quote who="Gavriel State">Purely a matter of timing
+- several things we wanted to see weren't coming together in time, so
+for the initial release we're using the PE loader. It really makes no
+difference whatsoever from a performance perspective, it's purely a
+user perception issue. It's doubtful that users of our suite will even
+know they're running it under WINE unless they run a 'ps'...</quote></section>
+
+</kc>

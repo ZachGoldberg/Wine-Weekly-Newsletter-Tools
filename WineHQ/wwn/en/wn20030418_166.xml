@@ -1,0 +1,588 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+
+<issue num="166" date="04/18/2003" />
+
+<intro>
+<p>This is the 166th release of the Wine's kernel cousin publication. 
+ Its main goal is to somehow escape the confines of a hard drive
+ going bad and be thankful for ancient boot floppies that still
+ work.
+ It also serves to inform you of what's going on around Wine (the Un*x 
+ Windows emulator).</p>
+</intro>
+
+
+
+
+<stats posts="231" size="803" contrib="55" multiples="32" lastweek="33">
+
+<person posts="42" size="106" who="Alexandre Julliard" />
+<person posts="33" size="116" who="Dimitrie O. Paun" />
+<person posts="18" size="58" who="Uwe Bonnes" />
+<person posts="14" size="49" who="Mike Hearn" />
+<person posts="10" size="28" who="Vincent Beron" />
+<person posts="9" size="28" who="Sylvain Petreolle" />
+<person posts="7" size="31" who="Bill Medland" />
+<person posts="7" size="25" who="Dan Kegel" />
+<person posts="6" size="92" who="Gregory M. Turner" />
+<person posts="6" size="14" who="Hans Leidekker" />
+<person posts="5" size="14" who="Andreas Mohr" />
+<person posts="4" size="43" who="Michal Janusz Miroslaw" />
+<person posts="4" size="12" who="Alex Pasadyn" />
+<person posts="4" size="10" who="Stefan Leichter" />
+<person posts="4" size="10" who="Gerald Pfeifer" />
+<person posts="3" size="11" who="Joerg Wunsch" />
+<person posts="3" size="9" who="Lionel Ulmer" />
+<person posts="3" size="8" who="Roderick Colenbrander" />
+<person posts="3" size="8" who="Steven Edwards" />
+<person posts="3" size="7" who="Dmitry Timoshkov" />
+<person posts="3" size="7" who="David Laight" />
+<person posts="3" size="6" who="Jeremy Newman" />
+<person posts="2" size="6" who="Eloy A. Paris" />
+<person posts="2" size="6" who="Ann and Jason Edmeades" />
+<person posts="2" size="5" who="Marcus Meissner" />
+<person posts="2" size="5" who="Steven Edwards" />
+<person posts="2" size="4" who="Rein Klazes" />
+<person posts="2" size="4" who="Christopher Thielen" />
+<person posts="2" size="3" who="BiGgUn" />
+<person posts="1" size="5" who="Kevin Cousins" />
+<person posts="1" size="3" who="Gabriele" />
+<person posts="1" size="3" who="(whitnl73)" />
+<person posts="1" size="3" who="Patrik Stridvall" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="Mike McCormack" />
+<person posts="1" size="3" who="Jukka Heinonen" />
+<person posts="1" size="2" who="Tim Ruehsen" />
+<person posts="1" size="2" who="Robert Shearman" />
+<person posts="1" size="2" who="Eric Pouech" />
+<person posts="1" size="2" who="Shachar Shemesh" />
+<person posts="1" size="2" who="Brad Campbell" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="Thomas Mertes" />
+<person posts="1" size="2" who="Johan Gill" />
+<person posts="1" size="2" who="Eric Pouech" />
+<person posts="1" size="2" who="Darren Cook" />
+<person posts="1" size="2" who="David Miller" />
+<person posts="1" size="2" who="Fabian Cenedese" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="1" who="Martin Fuchs" />
+
+</stats>
+
+
+
+
+
+
+<section 
+	title="News: WineX 3.0, TransGaming Updates, Interview with Marcus Meissner" 
+	subject="News"
+	archive="http://www.winehq.org/interview/3" 
+	posts="6"
+	startdate="04/12/2003"
+	enddate="04/18/2003"
+>
+<topic>News</topic>
+<p>TransGaming made some big announcements this week.  
+First off, we have the release of WineX 3.0!  Noted
+changes include:</p>
+<quote who="TransGaming"><p>
+<ul>
+<li>Point2Play graphical frontend is now available to help TransGamers manage multiple WineX versions, store configuration options and stop using arcane command line options and syntax. 
+</li><li>Hardware accelerated Vertex Shaders have been implemented. These are only supported on OpenGL drivers which implement the NV_vertex_program extension. The ARB extension will be supported in future releases. 
+</li><li>Copy protection support for newer, and several older, SafeDisc&#174; versions. Additionally SecuRom copy protection speed has been enhanced for some hardware configurations. 
+</li><li>Many installer-related issues have been resolved; starting installs with autorun.exe should now work in many cases, multi-disc installs should now have fewer issues with disc changing, and large installers are now supported. Additionally, significant effort has gone into making InstallShield 6 graphics update correctly and InstallShield 7 work. 
+</li><li>Render to Texture and Cube Mapping support implemented for cool texturing effects. 
+</li><li>The core threading model has moved to pthreads to decouple WineX from the continuing changes to certain core system libraries. 
+</li><li>Better handling of X11 Window Manager idiosyncrasies - WineX 3.0 does a much better job of going into 'full-screen' mode. 
+</li><li>Many texturing robustness fixes. 
+</li><li>A combination of optimizations should provide faster game play for some games. 
+</li><li>A new ALSA sound driver backend has been provided although it is untested at this point. 
+</li><li>Force feedback joysticks are now supported, but untested, on newer versions of the Linux kernel (2.5 series at this time or get the patch yourself at <a href="http://user.it.uu.se/~johannd/projects/ff/">http://user.it.uu.se/~johannd/projects/ff/</a>). Thanks to David Engle who kindly contributed this functionality. Unfortunately, TransGaming has not had enough time to do extensive testing on this new feature. 
+</li></ul></p><p>
+The detailed notes for the WineX 3.0 release are available 
+<a href="http://downloads.transgaming.com/files/winex-3_0_releasenotes.txt">here</a>. 
+</p></quote>
+
+<p>TransGaming's April 
+<a href="http://www.transgaming.com/showthread.php?news=66">Voting Report
+and Development Status</a> came out on Thursday.  It discusses more 
+of the technology found in WineX 3.0, including the new
+<a href="http://downloads.transgaming.com/files/Point2Play_beginners_guide-1.01.txt">Point2Play</a>
+management tool.  The games receiving the most votes to concentrate
+development on were Battlefield 1942, Morrowind, Command and 
+Conquer: Generals, Any racing game, Unreal II: The Awakening, and 
+SimCity 4.</p>
+
+<p>And finally, we've got a slew of other TransGaming news.  
+Gav State wrote about nice
+<a href="http://www.transgaming.com/gavstates.php">behind the scenes</a> 
+article discussing WineX and glibc threading issues, support
+for new copy protection and better graphics support.  TransGaming's
+Vikas Gupta wrote a 
+<a href="http://www.transgaming.com/presmsg.php">boring update</a>
+about how great TransGaming is.  It's probably justified
+though, TransGaming made the 
+<a href="http://www.branhamgroup.com/branham300/2002/index.php">Top 25 
+Up and Comers</a> of the Branham300 - a list covering the Canadian
+IT industry.  If you happen to be going to the 
+<a href="http://www.realworldlinux.com/jsp/ts/100454/index.jsp">Real
+World Linux</a> show in Toronto in a few weeks you might want to
+check out The Linux Gaming Zone hosted by TransGaming.</p> 
+<p>
+Don't forget to check out this week's
+<a href="http://www.winehq.org/interview/3">interview with Marcus
+Meissner</a>.</p>
+
+
+</section><section 
+	title="Updated To Do List" 
+	subject="Wine 0.9 TODO v0.8"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0351.html" 
+	posts="3"
+	startdate="04/12/2003"
+>
+<topic>Project Management</topic>
+<p>Dimi posted a revised version of his to do list.  A lot of 
+changes were, we now have Green (at 16) losing to a combined Red (14)
+and Yellow (13) total:</p>
+<quote who="Dimitrie Paun"><p>
+
+The next version of the 0.9 TODO is way past due (again!), 
+and today is as good as any other day for a brand new release:
+<ul><a href="http://63.138.153.104/wine/Wine-0.9-TODO-0.8.html">
+    http://63.138.153.104/wine/Wine-0.9-TODO-0.8.html</a></ul></p><p>
+
+ChangeLog
+<ul>
+  <li> Jer finished the WineHQ redesign (A1)</li>
+  <li> Brian completed the screenshot galery (A4)</li>
+  <li> Adam is our new Slackware maintainer (A6)</li>
+  <li> Andreas updated the User &amp; Development Guide (B1,B3)</li>
+  <li> I took on the Packaging Guide and Winelib docu (B2,B4,B8)</li>
+  <li> New task: more modular doc building (B12)</li>
+  <li> I've updated and integrated Jaco's winecfg into the tree (C2)</li>
+  <li> John did more work on the DLL registration (C5)</li>
+  <li> Shachar got a working version of wineboot into the tree (C7)</li>
+  <li> I finished messing with wrc (D5)</li>
+  <li> I got winegcc to a working state (D6)</li>
+  <li> Marcus made the printing system detection dynamic (E3)</li>
+  <li> Eric improved WinHelp some more (E6)</li></ul>
+</p><p>
+Please note that this version has been in the making for almost
+4 month! Lot's of stuff changed, feedback is much appreciated.
+</p><p>
+The good news is, several of the items marked
+as to do (Red) are just a shuffling of documentation.  Right now one
+of the biggest blockers is creating an app to configure and manage Wine,
+commonly referred to as control panel applets.  
+</p></quote>
+
+
+
+</section><section 
+	title="Updated Starcraft Patch" 
+	subject="Starcraft Patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0302.html" 
+	posts="1"
+	startdate="04/10/2003"
+>
+<topic>Fixes</topic>
+<p><a href="http://www.blizzard.com/starcraft/">StarCraft</a> used to
+be a popular game to play under Wine.  Some patches to improve gameplay
+have been around, but they've languished over the past year or so.  John
+Spiegel announced an update:</p>
+<quote who="John Spiegel"><p>
+I've done some work getting the patches from
+<a href="http://starcraft-wine.sourceforge.net/">http://starcraft-wine.sourceforge.net/</a>
+working with CVS wine.  Using the
+patch I'm including, starcraft works perfectly on my machine, run as
+root using DGA on a 640x480 XF86 layout.
+</p><p>
+In particular the changes to event.c enable the mouse and keyboard with
+DGA.  The changes to input.c make the mouse acceleration work the same
+in all directions.  The changes to mouse.c enable mouse scrolling around
+the map.
+</p><p>
+I'm using redhat 9, so the patch also has a change to wineinstall so
+that the configure is set up for rh9.  You'll probably need to drop that
+if you aren't running rh9.
+</p><p>
+Now, it would be great to get these changes merged into mainline wine. 
+However, I imagine they break other stuff somewhere.  I don't really
+know exactly what the changes mean, as I've mostly been converting an
+old patch over.  I believe that the patch to input.c is simple and
+straightforward enough to be merged in, even if the others aren't.
+</p><p>
+Any comments as to what needs to happen to get these into wine are
+greatly appreciated.
+</p></quote>
+
+<p>The <a href="http://www.winehq.org/hypermail/wine-devel/2003/04/0302.html">complete
+patch</a> can be found in John's email.</p>
+
+</section>
+
+<section 
+	title="Making Windres Similar to WRC" 
+	subject="windres: -J -I (take 4)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0499.html" 
+	posts="10"
+	startdate="03/18/2003"
+	enddate="04/15/2003"
+>
+<topic>Winelib</topic>
+<topic>Build Process</topic>
+<p>Dimi posted a cc:ed wine-devel last month about something
+ that went hand in hand with some changes he made to the Wine
+ resource compiler:</p>
+<quote who="Dimitrie Paun"><p>
+ For the past few month, I've been working on having better
+ interoperability between MinGW, and Wine (http://www.winehq.org).
+ By this I mean the ability to maintain a single build system
+ capable of building apps for either environment. Needless to say,
+ this is a worthy goal, as it allows Windows-only apps to seamlessly
+ build as Linux-native apps. This is a complex problem, but for
+ the purpose of this email I will only focus on windres.
+</p><p>
+ As you probably already know, the Wine project has it's own
+ resource compiler (wrc). For obvious reasons, it is quite
+ desirable to have wrc and windres be command line compatible.
+ To this end, I've modified wrc to the point where we support
+ all but *one* of windres' options: -I.
+</p><p>
+ This option is used in windres to specify the input format,
+ while in wrc it's used to specify include directories. The
+ wrc semantics has a lot on it's side: it is the de-facto
+ standard in the Unix world for specifying include dirs, and 
+ it is even compatible with MS's rc. Given the overwhelming
+ inclination to use -I as an include dir specifier, I think
+ it would be better if we could align windres to this standard.
+</p><p>
+ My proposal is simple: rename -I to something else (I suggest -J),
+ and introduce -I as a synonym for --include-dir.  
+</p><p>
+ Now, I realize this is a controversial change -- what about
+ backwards compatibility? Luckily, the situation is not as bad
+ as it might seem. Firstly, this option does not seem to be used
+ all that often in practice. Second, the nature of the option allows
+ for a simple scheme. That is, with -I now used for include directories,
+ we can try to match the 3 possible old values (res, rc, coff).
+ If they match, we consider it an input format specifier, issue a
+ deprecation warning, and behave in the old fashion. Otherwise, 
+ consider the input an include directory. But what if one want to
+ specify 'res' or 'coff' as an include dir? Well, apart from the
+ fact that this is _very_ unlikely, all they have to do is to
+ prefix those values with './': that is ./res or ./coff.
+</p><p>
+ But I guess this is already too much talk and too little action.
+ Here is a patch that implements the above, and updates the 
+ documentation.
+</p></quote>
+
+<p>This week he announced he finally received a necessary copyright
+assignment notification that will allow his patch to be accepted.</p>
+
+
+</section>
+
+
+
+
+
+<section 
+	title="Patch Submission and Acceptance Issues" 
+	subject="Re: OLE storage SetFilePointer fix"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0370.html" 
+	posts="11"
+	startdate="04/12/2003"
+	enddate="04/14/2003"
+>
+<topic>Project Management</topic>
+<p>A few months ago (<a href="http://www.winehq.org/index.phpwwn/158#Patch%20Manager">issue #158</a>)
+Fabian Cenedese asked whether it was time Wine implemented a patch management system.
+At the time there were only a few responses and they were mostly against such a
+system.  Keep in mind the number of patches appearing on wine-patches has more
+than doubled over the past year.  That doesn't even take into the account the
+number of patches sent directly to Alexandre or that he's pulling from CodeWeavers
+development.  For long time Wine developers it doesn't seem like much of a problem
+because they understand what's likely to be accepted and what's not.  Newer developers
+often get confused when their patches just disappear.  Andi Mohr started the latest
+discussion when he posted a patch and made a comment:</p>
+<quote who="Andreas Mohr"><p>
+
+ Alexandre, I'd REALLY like you to finally put a patch status
+ tracking system in place. The number of people submitting patches
+ for the second, third, bazillionth time is astonishing (I speak
+ from my very own experience, too!). I really don't know how many very
+ valuable Wine patches got lost due to not getting applied without any
+ status reply whatsoever...
+ (particularly the ones from "foreigners")
+ Someone recently said (in WWN) that patch management was perfect or
+ something to that extent. I better don't comment on that statement,
+ you know my hot temper ;)
+ OK, it's definitely not awful, but I guess it could be better.</p></quote>
+
+<p>Alexandre wasn't against the idea and suggested,
+<quote who="Alexandre Julliard">
+ You know, nobody prevents you from implementing a better patch
+ tracking system, and if it makes my life easier I'll be more than
+ happy to use it. Or if you don't want to write code, you could
+ volunteer to manually keep track of all submitted patches and resubmit
+ the lost ones. But of course that's a lot more work than simply
+ complaining about it...</quote></p>
+
+<p>A lot of patches get dropped with no explanation of why, and
+Mike Hearn thought that could be handled better:</p>
+<quote who="Mike Hearn"><p>
+ The main problem as far as I'm concerned isn't so much the lack of a
+ patch "tracker", I'm usually capable of keeping track of whether my
+ patches have been applied or not by watching wine-cvs (though i've found
+ once or twice i've missed the commit), it's more an issue of if a patch
+ is rejected, you have to ask why.
+</p><p>
+ That means I'm often left thinking, is my patch simply in the queue, or
+ is something wrong with it? Or, like my last pkgconfig patch, is there
+ another reason it didn't go in?
+</p></quote>
+
+<p>Dimi felt rejected patches were usually for obvious reasons and it
+wasn't much of a problem:</p>
+<quote who="Dimitrie Paun"><p>
+First off, I don't think the current system is bad. Second, I was the
+one this in the WWN (so sue me :P). Any system that we would put in
+place would have to work with email just like the current one. Other
+suck big time, see the SF one. Once you notice that, you realize that
+the problem is not the system, but rather that Alexandre needs to reply
+to patches he rejects, whether through email/web based form/what have you.
+</p><p>
+Don't get me wrong -- I've been multiple times at the rejecting end of
+this, and it's frustrating. But in retrospective, it's all for a better
+Wine, and I'd be hard pressed to produce a patch which got rejected by
+Alexandre, and which I still think should be applied.
+</p><p>
+Also, your assesment that 'very many valuable Wine patches got lost'
+is a gross exageration. In fact, please produce 3 such patches that
+got lost in the last year (heck, in the last 3 years for that matter).
+I think you'll have a hard time finding a single such patch in the
+last X years (choose X as you may) that match your description.
+</p><p>
+There is good reason for this: people put work into their patches, and
+if they don't get apply, they ask why. This is where I don't understand
+Alexandre: he will eventually have to reply to such questions, why not
+do it proactively, it's the same amount of work, me thinks. But I'm not
+the one putting in the time and effort to sort through the patches, so
+I may be missing many things.
+</p></quote>
+
+<p>Alexandre then explained the patch process he goes through and offered
+some insight on how to get patches in:</p>
+<quote who="Alexandre Julliard"><p>
+There are multiple factors here, I'll try to explain the process a bit
+more:
+</p><p>
+First, if a patch is obviously wrong, I send a reply right away; if
+it's obviously correct I apply it right away. But some patches are in
+between; they need some more thought or investigations to determine if
+they are OK or not. So in that case I put them aside and move on to
+the next patch; the idea is to provide quick turn around on the
+obvious patches. And hopefully it encourages people to submit easier
+patches, or provide better explanations...
+</p><p>
+Then when I'm through with the obvious things I come back to the
+pending patches; and when doing that I give a higher priority to the
+more recent patches. The idea is that older patches are more likely to
+no longer apply, or to have been superseded by a more recent one, or
+to have had someone else comment on them. Again the idea is to spend
+time first on things that are more likely to be applied. The result
+here is that after being pending for a week or two, a patch becomes
+very low in priority; this is where I expect the submitter to look
+into the issue, make sure that their patch is still relevant, and if
+it is, to resubmit to put it back at the top of the list.
+</p><p>
+Yet another factor is that I don't always bother to send an
+explanation if I think someone will be able to figure out for
+themselves why their patch was rejected. This can be because they are
+an experienced developer, or because they started the mail with "I
+know this is an ugly hack", or because of some obvious problem like
+not in diff -u format. In such cases, if people can't figure it out
+they should ask and then I will gladly provide the explanation; but if
+they can figure it out by themselves then I've saved the time that it
+would have taken to write the explanation.
+</p><p>
+And of course sometimes I hit 'd' on the wrong line and a patch
+disappears without a trace...
+</p><p>
+The real problem I think is that there is no external way to determine
+the pending/rejected/dropped status of a patch, and I understand this
+can be frustrating. This is where a tracking system could help; but
+IMO it will be quite a bit of work to implement something transparent
+enough that I don't have to spend more time on each patch that I do
+now.
+</p></quote>
+
+<p>In a different thread Alexandre gave some tips for resubmitting
+other people's patches:</p>
+<quote who="Alexandre Julliard"><p>
+ If you really want to do manual patch tracking, the right way is *not*
+ to post URLs to wine-devel. What you can do if people don't resubmit
+ their patches in a reasonable time frame is to do it for them,
+ regenerating the patch against latest CVS, and of course making sure
+ to preserve all the information from the original mail.
+</p></quote>
+
+
+<p>One thing no one is complaining about is only Alexandre making
+CVS commits.  Everyone seems to trust his judgement and the detail he
+puts into it.  But the arguments sound similar to ones a few years
+ago about "Linus doesn't scale" and led the Linux kernel team to adopt
+BitKeeper.  For details on that discussion see Kernel Traffic issues
+<a href="http://kt.zork.net/kernel-traffic/kt20011224_147.html#4">#147</a>,
+<a href="http://kt.zork.net/kernel-traffic/kt20020107_149.html#2">#149</a>,
+and <a href="http://kt.zork.net/kernel-traffic/kt20020211_153.html#9">#153</a>.
+</p>
+
+
+
+
+
+</section><section 
+	title="What It Would Take To Just Link With -lwine" 
+	subject="Re: Support for pkgconfig"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0357.html" 
+	posts="44"
+	startdate="04/04/2003"
+	enddate="04/15/2003"
+>
+<topic>Winelib</topic>
+<p>We sort of covered this a few weeks ago
+(<a href="http://www.winehq.org/index.phpwwn/164#How%20to%20Just%20Access%20a%20Windows%20DLL">issue #164</a>).
+This week Alexandre remarked to a patch and said,
+<quote who="Alexandre Julliard">
+ You can't use wine by simply adding <tt>-lwine</tt> anyway</quote>.  Dimi wondered
+if it would ever be possible.  After all the current situation is rather tough
+for some folks to figure out and they expect to just link against Winelib and have
+it work.  Somehow all the features of a Windows PE-style shared library have to
+be made available to be linked against.  Alexandre mentioned that the
+cleanest solution might be to do it at the linker/ld.so layer.  Dimi thought
+another way to do it would be to just export stuff into an ELF .so library.  But
+Alexandre pointed out some problems with that:</p>
+<quote who="Alexandre Julliard"><p>
+ you'll need to redo the resource 
+ functions to deal with that. Other problems include at least ordinal
+ exports, separate dll namespaces, and initialization order. Then of
+ course you have all the binary compatibility problems with module
+ handles that don't point to the right structures etc.
+</p><p>
+ If you really want to provide a seamless Unix source environment, you
+ pretty much need to give up on full binary compatibility, and do
+ something more like what TWIN was doing. But I don't think that's
+ where we want to go.
+</p></quote>
+
+<p>Dimi thought about it and wrote:</p>
+<quote who="Dimitre Paun"><p>
+ Of course, the ultimate goal would be
+ to be able to use Wine by doing -lwine. Now, an intermediate step
+ toward this goal would be to allow the program to remain a Unix
+ app (rather than a Winelib app), and require a more complex linking
+ process. Which is fairly close to what winebuild is doing currently.
+</p><p>
+ So what's bothering me? I guess asking people to transform
+their apps to a Winelib app if they want to use Winelib.
+</p><p>
+For CUI apps, there is no difference between the current winebuild
+process, and what I'm proposing (a Unix app with a non-standard link).
+I think (please correct me if I'm wrong).
+</p><p>
+However, for GUI apps, people need to provide the WinMain entry
+point instead of main. Maybe we can export some sort of init function,
+so that they can keep their main(), and simply call a wine_init().
+Doing so, we maintain the appearance of a Unix app. Of course, the
+limitation would be that no Wine-related functionality can be called
+before the wine_init() call. So no more static C++ initializers, etc.
+Would this be doable?</p></quote>
+
+<p>Alexandre remarked,
+<quote who="Alexandre Julliard">
+The only real problem is that Winelib apps are shared libraries and
+not executables; but this could probably be fixed with a good amount
+of linker magic. The rest is just a matter of wrapping the winebuild
+incantations into an easier to use front end, which is basically what
+you started doing with winewrap.</quote></p>
+
+<p>Then he added, 
+<quote who="Alexandre Julliard">
+ I think this should wait for dll separation. It will be a lot easier
+ to play with the linking process once all dlls get linked the same
+ way.</quote></p>
+
+<p>Mike Hearn thought a lot of things could benefit by just exporting
+LoadLibrary and GetProcAddress.  Codecs have few entry points and
+could just be quickly loaded.  Alexandre didn't like that idea:</p>
+<quote who="Alexandre Julliard"><p>
+ for the common case
+of things like codecs, you don't want to drag Wine into it. Even if
+the dll is calling a bunch of API functions, you want to stub these to
+do whatever makes sense for your app; you don't want to have to
+provide a config file, DOS drives, registry files, the wineserver, the
+X11 driver, etc. etc.
+</p><p>
+If the dll does require a lot of Windows features then yes you should
+use Wine, but then I think it's reasonable to build a Winelib
+app. Even if we somehow change the linking process so that you can
+simply add -lwine, you will still end up with a Winelib app, and have
+to deal with everything this implies. And frankly at that point the
+exact command line you have to use to link is a minor detail.
+</p><p>
+The problem with saying that one should be able to use Wine simply by
+adding -lwine is that "use Wine" means something different for each
+case. And what people really want is that -lwine should allow them to
+use the APIs their specific case needs, and not bother them with any
+other part of Wine; so there's simply no way to offer a general
+solution for that.
+</p>
+</quote>
+
+<p>From there the discussion delved off into just how much integration
+was necessary for Wine.  Dimi felt creating an entire desktop environment
+around Wine was not only feasible, but could end up being better than
+the current favorites (GNOME and KDE).  Of course one advantage is how
+widely known the Win32 API is.  In some ways its more mature than both
+Qt and Gtk.  Dimi also felt the license lent itself well towards
+development.  Alexandre didn't like the idea at all:</p>
+<quote who="Alexandre Julliard"><p>
+ I strongly disagree. The Win32 API may not be so bad in the abstract
+ (though I'd dispute that too), but it's a very poor choice for a Unix
+ toolkit. It exposes way too many low-level details that don't have an
+ equivalent on Unix. If you want a cross platform toolkit you should
+ use a higher level one that abstracts a lot more of the platform
+ details; and if you don't care about other platforms then you should
+ use a Unix native toolkit. I don't think we would be doing anybody a
+ favor by encouraging the use of Wine for new Linux developments.
+</p></quote>
+
+<p>and later:</p>
+<quote who="Alexandre Julliard"><p>
+ Apart from the obvious technical problems with that, and the overall
+ ugliness of the result, the major drawback is that you are essentially
+ putting Microsoft in control of the direction of the Unix desktop.
+</p><p>
+ The Windows API is not something we have freedom to change, and that
+ is a very problematic restriction. Even if most desktop environments
+ today are quite similar to Windows, I hope we can move beyond that
+ someday, and leave Microsoft in the dust. This can't happen if we let
+ them define the core APIs.</p></quote>
+
+<p>So will we see this after DLL separation?  I guess that implies we'll
+see the end of DLL separation.. (hey, we're gettin' closer!)  This is
+definitely more of a long term goal though.</p>
+
+</section></kc>
+

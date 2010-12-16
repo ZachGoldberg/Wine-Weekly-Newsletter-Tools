@@ -1,0 +1,337 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="252" date="12/10/2004" />
+<intro> <p>This is the 252nd issue of the Wine Weekly News publication.
+Its main goal is to wear a tux and go to a wedding. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="198" size="840" contrib="69" multiples="33" lastweek="35">
+
+<person posts="20" size="98" who="Mike Hearn" />
+<person posts="16" size="71" who="Robert Shearman" />
+<person posts="15" size="39" who="Alexandre Julliard" />
+<person posts="14" size="42" who="Dmitry Timoshkov" />
+<person posts="9" size="28" who="Vincent B&#233;ron" />
+<person posts="8" size="16" who="Christian Britz" />
+<person posts="7" size="21" who="Juan Lang" />
+<person posts="6" size="27" who="Jeremy White" />
+<person posts="6" size="19" who="Jon Griffiths" />
+<person posts="5" size="145" who="Eric Pouech" />
+<person posts="4" size="19" who="Rein Klazes" />
+<person posts="4" size="9" who="Dimitrie O. Paun" />
+<person posts="3" size="19" who="Walt Ogburn" />
+<person posts="3" size="13" who="Christian Costa" />
+<person posts="3" size="12" who="Ivan Leo Puoti" />
+<person posts="3" size="11" who="Scott Ritchie" />
+<person posts="3" size="10" who="Vitaly Lipatov" />
+<person posts="3" size="10" who="Ferenc Wagner" />
+<person posts="3" size="9" who="Francois Gouget" />
+<person posts="3" size="8" who="Huw D M Davies" />
+<person posts="3" size="6" who="Andreas Mohr" />
+<person posts="2" size="10" who="Robert Reif" />
+<person posts="2" size="8" who="Jean-Michel Dault" />
+<person posts="2" size="8" who="Bodo Thiesen" />
+<person posts="2" size="7" who="James Hawkins" />
+<person posts="2" size="7" who="Florian Goth" />
+<person posts="2" size="6" who="Tony Lambregts" />
+<person posts="2" size="6" who="Jesse Allen" />
+<person posts="2" size="5" who="Stefan Munz" />
+<person posts="2" size="5" who="Paul van Schayck" />
+<person posts="2" size="4" who="Oliver Stieber" />
+<person posts="2" size="4" who="Steven Edwards" />
+<person posts="1" size="12" who="Tony Lambregts" />
+<person posts="1" size="9" who="(pvriens)" />
+<person posts="1" size="6" who="Jean-Michel Dault" />
+<person posts="1" size="5" who="Glenn Wurster" />
+<person posts="1" size="4" who="Michael Lin" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="M-Halo" />
+<person posts="1" size="3" who="Jakob Eriksson" />
+<person posts="1" size="3" who="Tero Tamminen" />
+<person posts="1" size="3" who="Erich Hoover" />
+<person posts="1" size="3" who="Igor Shmukler" />
+<person posts="1" size="3" who="=?ISO-8859-1?Q?R=E9mi_Assailly?=" />
+<person posts="1" size="3" who="Marcus Meissner" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="Nick Hornback" />
+<person posts="1" size="3" who="Tobias Grosser" />
+<person posts="1" size="3" who="David =?iso-8859-15?q?G=FCmbel?=" />
+<person posts="1" size="3" who="Jason Edmeades" />
+<person posts="1" size="2" who="Diego 'Flameeyes' =?utf-8?q?Petten=C3=B2?=" />
+<person posts="1" size="2" who="Robert van Herk" />
+<person posts="1" size="2" who="Ross Boylan" />
+<person posts="1" size="2" who="Filip Navara" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Aric Stewart" />
+<person posts="1" size="2" who="Sam Lauber" />
+<person posts="1" size="2" who="Jose Alberto Reguero" />
+<person posts="1" size="2" who="Jacek Caban" />
+<person posts="1" size="2" who="Shachar Shemesh" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Grant Williamson" />
+<person posts="1" size="2" who="Kenneth Porter" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="1" who="MyComputer Store" />
+<person posts="1" size="1" who="Joris Huizer" />
+
+</stats>
+<section
+        title="Window Region Handling"
+        subject="Re: wine/ windows/win.c windows/painting.c server/ ..."
+        archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0217.html"
+        posts="4"
+        startdate="12/07/2004"
+	enddate="12/08/2004"
+>
+<topic>Architecture</topic>
+
+<p>One big item on the Wine
+<a href="http://www.winehq.com/todo_lists">to do list</a>
+involves window management and how visible regions are managed.
+Last year at Wineconf there was some discussion of it, but
+everyone pretty much agreed it was a project only Alexandre
+could tackle.  Over the past few weeks he's put quite a lot
+of work into it and this week committed a patch that simply
+said,
+<quote who="Alexandre Julliard">
+Moved update region handling to the server.</quote></p>
+
+<p>A couple people immediately expressed their enthusiasm 
+on wine-devel.  Dimi Paun took it out for a test ride and
+reported:</p>
+
+<quote who="Dimitrie Paun"><p>
+
+OK, here are the first impressions after testing this patch:
+<ol>
+ <li>Good news: <a href="http://bugs.winehq.org/show_bug.cgi?id=1091">bug 
+     1091</a> seems to have been fixed</li>
+ <li>Bad news: it is *very* slow now. The repaint on
+    <tt>wine List\ View.exe</tt>
+    from the MS Control Spy is painful.
+    Similarly, menus are slow, dialog boxes, etc.
+    I have a fast machine (3GHz, 1GB RAM), and it takes
+    2-3 seconds to open the File Open dialog.
+    Is this expected?</li></ol></p><p>
+
+Buttom line: painting looks great, somehow it seems a bit
+better than before (in terms of correctness, but I can't
+quite put my finger on it). If we can solve the speed issue,
+we have a winner.</p></quote>
+
+<p>Alexandre posted a preview a few weeks ago and noted
+that performance could definitely be improved.  This week
+he again reiterated that,
+<quote who="Alexandre Julliard"> 
+Part of it is probably because the window moves are not optimized at
+all, there is currently no attempt to take into account valid bits so
+any window show/move/resize operation forces a repaint of the whole
+window. This will be fixed in a subsequent patch.</quote>
+</p>
+
+</section>
+<section 
+	title="Systray Support Revisited" 
+	subject="Re: Another systray patch"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/12/0182.html" 
+	posts="7"
+	startdate="12/06/2004"
+	enddate="12/09/2004"
+>
+<topic>Integration</topic>
+<p>Mike Hearn has revisited his patch to add system tray support
+to help integrate Wine with the underlying desktop.  This could be 
+a really useful patch for many users.  In the past, Alexandre
+has rejected it because of how it worked.  Mike went back to the
+drawing board and a couple weeks ago sent in the patch:</p>
+<quote who="Mike Hearn"><p>
+Here it is, at last, just what the doctor ordered. All in a separate
+wineshell process, and with cleaner code to boot. No thread safety
+needed. Hopefully this is now satisfactory and can go in.
+</p><p>
+The intention is that wineshell becomes a generic explorer-alike process
+in terms of responsibility. For now, I have it being started
+automatically by shell32 (to avoid the startup penalty), and shutting
+down a few seconds after the last icon is gone like the wineserver. If
+we start putting more stuff in there like a DDE server, we may have to
+rethink that strategy.
+</p><p>
+ChangeLog:
+<ul>
+<li> Add a new wineshell process, and put system tray handling in there</li>
+<li> Rewrite the shell32 systray handling to be out of process</li>
+<li> Support the freedesktop.org XEMBED protocol</li></ul>
+</p></quote> 
+
+<p>This week he wondered why it hadn't been committed yet since it seemed
+to have met all of Alexandre's previous requirements.  Alexandre went
+through and picked out a couple of technical problems but also added, 
+<quote who="Alexandre Julliard">    
+It would be nice to do the XEMBED stuff as a separate patch. Also I
+was hoping you would get rid of WS_EX_TRAYWINDOW instead of adding
+even more uses of it.</quote></p>
+
+<p>They went back and forth a bit, then Mike agreed to make the changes.</p>
+</section>
+<section
+        title="Header Cleanup"
+        subject="Re: Includes [1] ntdll"
+        archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0208.html"
+        posts="16"
+        startdate="12/07/2004"
+ 	enddate="12/10/2004"
+>
+<topic>Build Process</topic>
+
+<p>Jon Griffiths often goes weeks or months without posting
+patches and then pops up with something new.  This week he
+started a series of patches to clean up header inclusion
+and announced:</p>
+<quote who="Jon Griffiths"><p>
+On the suspicion that my hacking on header files was causing too many
+files to be rebuilt, I whipped up a quick perl script to identify
+unneeded header files. This series of patches is the result.
+</p><p>
+There are a large number of unneeded includes, so these patches should
+reduce your build time for those trying to stay current with cvs.
+</p><p>
+I have split the patches up on a per-dll basis to avoid merge
+conflicts. Don't forget to re-run 'make depend' after applying.
+</p></quote>
+
+<p>Andi Mohr asked Jon to supply a copy of the script and
+then cautioned,
+<quote who="Andreas Mohr">
+Note that some removed include files might be needed for different systems,
+so some breakage might/may/will follow this patch.
+(Gerald Pfeifer will *love* your "nice" work, I'm sure ;-)
+But I'd still vote strongly for including it, since it will remove lots of
+cruft.</quote></p>
+
+<p>Gerald is the resident FreeBSD guru who fixes a lot of patches
+that break portability.  Jon took that into account and described
+what his changes were limited to:</p>
+<quote who="Jon Griffiths"><p>
+I deliberately made my script remove only Wine's own headers for this
+reason. It will not remove system header files. I also manually
+checked that nothing within an #ifdef block was deleted. So this
+shouldn't cause any problems for other *nices.
+</p><p>
+If there is an issue it will be with mingw or VC++. But that would
+point out an incompatibility in our headers with theirs, and that
+would be a good thing, IMHO. 
+</p><p>
+Yes, it's a little crufty as-is. My reasoning is that anything that
+reduces my compile times after updates is good, and my laptop takes
+quite a while to rebuild Wine, Minimising dependencies helps that.
+</p><p>
+On a related note, would anyone object to a patch that auto-split
+config.h into multiple files during the build process, and changing
+makedep to generate dependencies only on the generated config-value
+file?
+</p><p>
+This would be a big win whenever config.h changes. Currently when
+config.h changes, 980 files are rebuilt. Using a smarter method would
+only rebuild the files that depend on the HAVE_ option that was
+changed (which is bound to be a significantly smaller number).
+</p><p>
+The Linux kernel process does this already, check out
+/usr/src/linux/Documentation/smart-config.txt for details.
+</p></quote>
+
+<p>Andi thought another good approach for speeding up 
+compiles would be to implement gcc 3.4 support for
+precompiled headers.  Juan Lang thought one of the patches
+looked suspicious, so Jon explained a bit more about what
+he did, 
+<quote who="Jon Griffiths">
+The script I wrote basically comments out the
+includes one at a time, and restores any that caused a compile
+failure when missing. The worst that could happen is that a new
+warning could be generated, but I rebuilt all the files, check the
+build logs and believe I got them all.</quote></p>
+
+<p>Alexandre looked things over and realized there was a problem
+with this approach:</p>
+<quote who="Alexandre Julliard"><p>
+The problem with that approach is that you remove a lot of headers
+that are included anyway so it doesn't make any difference in build
+time, and many of them will have to be added again once we finish the
+header cleanup. For instance you remove winuser.h everywhere win.h is
+included because win.h brings it in already, but once we get rid of
+win.h we'll have to go back and re-add winuser.h.
+</p><p>
+What you should do is limit the changes to the cases where it makes an
+actual difference in the dependency tree. You'll get the same
+performance gain with a much smaller set of changes.</p></quote>
+
+<p>Jon said he would update his script to get that result:</p>
+<quote who="Jon Griffiths"><p>
+It might be better to clean up the headers first then. By clean up I
+take it you mean removing any header that aren't part of the platform
+SDK? If that is the long term plan then it could be handled in 2
+steps a) remove all #includes from non-sdk headers and add them to
+the files that need them, then b) start removing the non-standard
+headers (possibly much later).
+</p><p>
+If so, that's probably a worthwhile project.</p></quote>
+
+<p>Alexandre explained a problem with that too,
+<quote who="Alexandre Julliard">
+No, I don't think we want to do that in two steps, since we don't want
+to add headers that are only needed to build a private header. For
+instance many private headers still contain 16-bit stuff, and we
+definitely don't want to start including Win16 headers all over the
+place.</quote></p>
+
+<p>Jon corrected what he meant earlier:</p>
+<quote who="Jon Griffiths"><p>
+Right, but the 16 bit header are non SDK headers. what I'm talking
+about as the first step is removing SDK headers included from the non
+SDK headers in include/. With your example of not removing winuser.h
+since it will need to be added in again to the files that use the
+private headers, I am suggesting removing the inclusion of winuser.h
+from e.g. winpos.h and win.h, and including them in the files that
+need them directly. If we hide the source file dependencies in
+header files it's impossible to remove any unneeded dependencies from
+them. 
+</p><p>
+I'll post the script I'm using to clean up the headers and as the
+private headers are removed (or periodically) it can be run to weed
+out any unneeded dependencies remaining.
+</p><p>
+In the meantime, I've updated my script to only remove headers that
+reduce a file's dependencies and will be posting the revised patches
+shortly.</p></quote>
+
+</section>
+<section 
+	title="AppDB Integration with Bugzilla" 
+	subject="[AppDB] First step to integrating the AppDB with Bugzilla"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/12/0308.html" 
+	posts="1"
+	startdate="12/10/2004"
+	enddate="12/10/2004"
+>
+<topic></topic>
+<p>Lots of work has been done on the 
+<a href="http://appdb.winehq.org">AppDB</a> lately by 
+Tony Lambregts, Chris Morgan, and a newcomer, Jonathan Ernst.  
+It's actually picked up even more steam now that Chris has CVS access to 
+WineHQ.  This week Tony posted another patch and asked for comments:</p>
+<quote who="Tony Lambregts"><p>
+Over two years ago this was discussed and the consensus at the time was that
+integrating the AppDB and Bugzilla would be a Good Idea (TM). This patch is my
+attempt to get it started.
+</p><p>
+I am submitting this to wine devel first because I KNOW this patch can be
+controversial. I have tried to make this patch as small as possible but it still
+covers quite a few files. I am using Globals and that should be improved. And I
+am sure there are other things that are wrong with it. ;^) Also the code in
+preferences.php does not do anything except show that this works.
+</p><p>
+Please try it out and get back to me...
+</p></quote>
+</section></kc>

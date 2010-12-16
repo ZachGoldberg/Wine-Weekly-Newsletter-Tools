@@ -1,0 +1,541 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="101" date="08/02/2001" />
+
+<intro>
+
+<p>This is the 101st release of the Wine's kernel cousin publication. It's
+main goal is to distribute widely what's going on around Wine (the Un*x
+windows emulator).</p>
+
+
+<p>We saw Wine-20010731 escape this week.  Alexandre noted the following
+changes:</p>
+<p><ul><li>16-bit comm routines reimplemented properly.</li>
+	<li>More improvements to the Postscript driver.</li>
+	<li>A few more steps towards dll separation.</li>
+	<li>Lots of bug fixes.</li>
+</ul></p>  
+
+
+
+</intro>
+
+
+<stats posts="173" size="530" contrib="41" multiples="23" lastweek="18">
+
+<person posts="26" size="61" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="10" size="29" who="Ian Pilcher &lt;ian.pilcher@home.com&gt;" />
+<person posts="6" size="13" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="12" size="31" who="Bill Medland &lt;medbi01@accpac.com&gt;" />
+<person posts="15" size="51" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="5" size="19" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="22" size="80" who="Patrick Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="7" size="16" who="lawson_whitney@juno.com" />
+<person posts="8" size="30" who="Travis Michielsen &lt;tjmichielsen@yahoo.com&gt;" />
+<person posts="5" size="14" who="Brandon Kilgore &lt;bkilgore@numa-inc.com&gt;" />
+<person posts="7" size="16" who="Daniel Walker &lt;diwalker@earthlink.net&gt;" />
+
+</stats>
+
+
+
+
+
+
+
+<section
+  title="Using Native DLLs"
+  subject="native dlls"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/07/0207.html"
+  posts="4"
+  startdate="07/25/2001"
+  enddate="07/27/2001"
+>
+
+<p>Jose Soriano Diaz wondered how to go about using a native DLL:</p>
+
+<quote who="Jose Soriano Diaz"><p>
+
+        Hi there, I'm working in a telerobotics project and I need to link a
+	windows dll in order to use a Cybernet Joystick.
+        First I tried to use the winAPI functions LoadLibrary,FreeLibrary and
+	GetProcAddress as I was working on Windows, and I recompiled my program
+	with winelib:</p>
+	<p><ul>
+			<li> winemaker /my_path/</li>
+			<li>./configure</li>
+			<li>make all</li></ul></p>
+	<p>
+        but it didn't create any executable, what I obtained was a lib*.so, 
+	because winemaker thought I was trying to compile a dll, not to use one.
+	After that I tried to compile my program without winemaker, and I 
+	obtained a HEAP_PTR error when executing what I copiled. And If I tried to link the
+	lib*.so and load the main symbol I obtained the same error.</p>
+	<p>
+	So my question is quite simple How can I link a native dll in a Unix project? 
+	I've read somewhere that I have to use a parser, Is there anybody
+	who can give me some code?</p></quote>
+
+<p>Francois Gouget thought LoadLibrary / GetProcessAddress / FreeLibrary was the
+	simplest approach if it worked.  Then he explained:</p>
+<quote who="Francois Gouget"><p>
+		   To force winemaker to generate an executable simply use it as
+		   follows:<br /><ul>
+			<li>type <code>"winemaker --cuiexe /my_path"</code> to 
+				indicate a console executable</li>
+		   	<li>type <code>"winemaker --guiexe /my_path"</code> to 
+				indicate a graphical executable</li></ul></p>
+
+	<p>You can also use "winemaker -?" to get a list of options supported by
+		winemaker.</p></quote>
+
+</section>
+
+
+
+
+
+<section
+  title="Adding 16-bit Headers"
+  subject="Re: more misc fixes"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/07/0151.html"
+  posts="5"
+  startdate="07/19/2001"
+  enddate="07/20/2001"
+>
+
+<p>Patrik Stridvall posted a patch to <code>wine/include/wine/obj_base.h</code>
+	that had a line: <code>#include "wine/windef16.h"</code>.  Alexandre
+	Julliard replied:</p>
+
+<quote who="Alexandre Julliard"><p>
+
+		This is wrong; Win32 header files must not include 16-bit ones.</p>
+
+		<p>Also please avoid adding more 16-bit headers in include/wine, there
+		are already too many of them. These headers (when they are really
+		necessary) belong in their respective dll directory. And BTW your new
+		lzexpand16.h is an example of a header file that is *not* necessary.</p>
+</quote>
+
+<p>Patrik wasn't sure exactly where to add it though.  Alexandre said to add it to
+	the DLL directories and if possible to the .c file where they're needed.
+	Patrik thought,
+	<quote who="Patrik Stridvall">
+		However IMO all exported functions whether they are 16-bit or 32-bit
+		and whether they are actually uses by other files or not should have
+		declarations in some header file.</quote>   Because of Winelib this
+		is necessary for 32-bit functions, however Patrik felt there were 
+		several advantages for 16-bit ones too.  </p>
+		<p>Alexandre disagreed and
+		explained, <quote who="Alexandre Julliard">
+
+			All 16-bit API functions must be treated as if they were static. They
+			cannot be because of the spec file reference, but ideally no code
+			should ever call a 16-bit API, it should use the corresponding 32-bit
+			API. Adding prototypes and a header file is only going to encourage
+			using these functions which is not what we want.</quote></p>
+
+<p>Patrik wondered, <quote who="Patrik Stridvall">
+
+		You want all 16-bit exported function prototypes moved from the .h
+		files to the implementing .c file in all cases that is possible (ie Wine
+		compiles without errors or warnings)?</quote>
+
+Alexandre said that was exactly what he wanted, <quote who="Alexandre Julliard">
+		but note that in most cases the prototype is not even needed
+		at all. I don't want all 16-bit C files to start with a bunch of
+		prototypes either, this would just be unnecessary duplication; only
+		the functions that are actually called from elsewhere in the file
+		should be prototyped IMO.</quote></p>
+
+<p>Brandon Kilgore thought this last point didn't make much sense.  Namely, when 
+	would there ever be a function that isn't called from anywhere?  Francois
+	Gouget explained that for 16-bit functions they might be called by Windows
+	programs.</p>
+
+	
+
+</section>
+
+
+
+
+
+<section
+  title="Shared Source a Danger?"
+  subject="Microsoft source code releases - a danger to Wine?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/07/0171.html"
+  posts="11"
+  startdate="07/21/2001"
+  enddate="07/24/2001"
+>
+
+<p>Ian Pilcher wondered what the potential legal ramifications are with the
+	"shared source" licenses being bandied about by Microsoft:</p>
+
+<quote who="Ian Pilcher"><p>
+
+		According to Slashdot, Microsoft has released the Windows CE source code
+		under one of their "shared source" licenses.  Needless to say, it would
+		be an *extremely* bad idea for anyone associated with the Wine project
+		to look at it.</p>
+
+		<p>This leads me to wonder if anyone's ever thought of taking steps to
+		protect Wine from "contamination" by Microsoft IP (legally, not tech-
+		nically :-).  As the number of programmers who have been exposed to MS
+		source code grows the chances of this happening will increase.  I
+		believe that the FSF uses some type of form/statement before they will
+		accept code, and it seems like the nature of this project would make it
+		particularly beneficial.</p></quote>
+
+<p>Gavriel State posted some thoughts on this that generated several replies:</p>
+
+<quote who="Gavriel State"><p>
+		
+		While I agree that it is probably not a great idea to look at the CE code
+		at this point, Microsoft's 'Shared Source' license is *very* interesting 
+		in a number of respects.  First and foremost, the license is by far the
+		most simple and straightforward software copyright license that I have 
+		ever seen.  There is barely a hint of legalese about it.  </p>
+		<p>
+		As such, it appears to me that there may be some interesting ways in 
+		which the license can be exploited to benefit Wine.  8-)</p>
+		<p>
+		Note that I'm not suggesting that anyone go out and do this without 
+		spending a fair bit of time (and money, unfortunately) with a lawyer.
+		Certainly, no one at TransGaming is going to be downloading or looking
+		at those sources.</p>
+		<p>
+		So - on to some analysis of the license.  Everything below is based 
+		only on my own personal understanding of the legal issues involved, 
+		nothing more.  </p>
+	<p><ul><i>
+		This License governs use of the accompanying Software.</i></ul></p>
+		<p>
+	     	Well, first off, copyright law generally governs copying, not use.  
+	     	Attempts to overreach the provisions of copyright law through additional
+	     	clauses in shrink-wrap/click-wrap and other contracts have been turned
+	     	aside in some court cases.  In the US, federal copyright law trumps state
+	     	contract law, from what I've read.  Thus, the license starts off on shaky 
+	     	ground.</p>
+	<p><ul><i>
+	       You can use this Software for any non-commercial purpose, including 
+	       distributing derivatives. Running your business operations would not 
+	       be considered non-commercial.</i></ul></p>
+		<p>
+	    	Again, the use issue rears its head.  Another interesting question here is 
+	    	the one of derivatives.  It is possible that knowledge gained by study of
+	    	the source code, which is then applied to Wine, would not in and of itself
+	    	cause Wine to become a 'derived' work, assuming that no actual source code
+	    	was used.  It is a somewhat grey area that I don't know very well, but 
+	    	it may be worth investigating.</p>
+	<p><ul><i>
+	    	For commercial purposes, you can reference this software solely to 
+	    	assist in developing and testing your own software and hardware for
+		the Windows CE platform.</i></ul></p>
+		<p>
+	   	Here again, we have the usage issue, as well as the platform-restrictive
+	   	clause for commercial users.  The platform restrictions may constitute 
+	   	anti-competitive 'copyright misuse', and thus be unenforceable.  The
+	   	language used here is also interesting - they say 'reference', rather 
+	   	than 'use'.  I suspect that they are trying to explicitly restrict
+	   	efforts like Wine from even studying their code - an apparent violation 
+	   	of 'fair use' provisions of copyright law.  </p>
+		<p>
+	   	The rest of the license is pretty straightforward with nothing that's
+	   	too objectionable that I can see immediately.  I won't bother going 
+	   	through it in detail.</p>
+		<p>
+	   	That said, nothing I can see appears to restrict someone who has accepted 
+	   	their license from answering explicit questions we might have, so long as 
+	   	they are not doing so for hire (thus 'commercially'), and so long as they 
+	   	don't distribute source code.  A fair bit of useful knowledge might be 
+	   	gained in that way, albeit slowly.</p>
+		<p>
+   
+	   	Anyhow, a useful link for anyone interested in more background on some 
+	   	of the legal issues is: 
+	   	<a href="http://www.pcworld.com/news/article/0,aid,111479,00.asp">
+		   http://www.pcworld.com/news/article/0,aid,111479,00.asp</a></p>
+	</quote>
+
+<p>The discussion turned to what problems might be caused by someone coincidentally
+	submitting code that was similar to Microsoft's.  Even if no one had actually
+	looked at their source code it might be difficult to prove that.  Patrik 
+	Stridvall pointed out that:</p>
+
+<quote who="Patrik Stridvall"><p>
+
+		In short, while IANAL, if Microsoft (or somebody) feels that some
+		code in the CVS is copyrighted by them we should simple require that.</p>
+	<p><ol>
+	   <li>Prove it to us, without any risk of taint, or to some independent
+		   3rd party at their expense.</li>
+	   <li>Provide a patch against the current CVS that removes the offending
+		   code preferable made by the same 3rd party as above at their expense.</li>
+	   <li>Require that the 3rd party sign a statement under perjury that the
+		   patch removes the offending code and only the offending code.</li>
+	</ol></p></quote>
+	
+</section>
+
+
+
+
+
+<section
+	title="CallWindowProc Syntax"
+	subject="CallWindowProc syntax"
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/07/0203.html"
+  	posts="2"
+  	startdate="07/25/2001"
+  	enddate="07/25/2001"
+>
+<p>
+	Marco Bizzarri was digging through some documentation and had a question:</p>
+<quote who="Marco Bizzarri"><p>
+
+
+		While looking at the source code of wine, I looked into the synopsys of 
+		the CallWindowProc function. According to winproc.c, the hWnd parameter 
+		should be the handle to the window which has to receive the message.</p>
+
+		<p>OTOH, if you look at MSDN, at</p>
+
+		<p><a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/hh/winui/winprocs_53xf.asp">
+		http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/hh/winui/winprocs_53xf.asp</a></p>
+
+		<p>it looks like the hWnd is the windows procedure which should receive the 
+		message.</p>
+
+		<p>Can anyone help?</p></quote>
+
+<p>To which Alexandre Julliard replied, <quote who="Alexandre Julliard">
+
+		hWnd is clearly a window handle, not a window procedure. As a rule,
+		any resemblance between what MSDN says and what the code actually does
+		is purely fortuitous.</quote></p>
+	
+
+</section>
+
+
+
+
+
+<section
+	title="Documenting Functions"
+	subject="Documenting functions"
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/07/.html"
+  	posts="10"
+  	startdate="07/31/2001"
+  	enddate="08/02/2001"
+>
+
+Bill Medland wanted to know how to go about adding documentation to the
+Wine source:
+<quote who="Bill Medland"><p>
+ Suppose I am looking at a low-level function that I believe is only
+ 75%-complete (the most  important 75% of course and no disrespect meant to
+ those who have got it that far).</p>
+
+ <p>One of the problems with it is it is not totally clear EXACTLY what the
+ function should do in some of its more esoteric modes.</p> 
+
+ <p>To me the first task is to define what it should do and that should be part
+ of the documentation of the function.</p> 
+
+ <p>The particular function currently does not have any true documentation
+ within the code; the best documentation of what it does is the code itself,
+ and the best documentation of what it should do is the MSDN description of
+ the function.</p></quote>
+
+<p>Andreas Mohr replied:</p>
+<quote who="Andreas Mohr">
+ <p>IMNSHO full documentation should *not* be included in the Wine tree.
+ Instead, we should rely on MSDN documented stuff wherever possible
+ and only explain quirks/undocumented behaviour/whatever isn't documented.</p>
+
+ <p>Having full docu inside the source tree simply bloats it too much IMHO.</p>
+
+ <p>Not to mention that none, zero, zilch of the planned undertakings
+ in that direction have actually taken off so far.
+ Docu in general is fine, but duplicated function docu in source tree ?
+ Avoid as much as possible, I think.</p>
+
+ <p>If there's no additional "Wine" information about this function,
+ then this is perfectly reasonable IMHO (see above).</p>
+
+ <p>I'd like to see at most:
+ function header with comment above with short description of i/o,
+ additional statements about undocumented/special behaviour.</p>
+
+</quote>
+
+<p>Francois Gouget disagreed and posted a lengthy explanation:</p>
+<quote who="Francois Gouget">
+
+<p>Well, let me offer a different opinion.</p>
+
+<p>   Wine is an open-source reimplementation of the Win32 API. You can use
+it to run existing Windows applications and to recompile or develop
+Win32 applications using Winelib.</p>
+
+<p>   Now, for me an open-source project that implements an API for which
+there is no open-source documentation is not complete. Especially for
+Winelib where the API is part of what we provide to the user, i.e. to
+programmers using Winelib.</p>
+
+<p>   And currently the only documentation of the Win32 API is available
+from Microsoft as part of the MSDN. I see many problems with that:</p>
+
+<p><ul>
+ <li>it's not open-source (of course). This means we cannot distribute it
+with Winelib, we cannot generate man pages from it, you cannot generate
+a winelib-doc package that would contain the man pages of all the
+Winelib API.</li>
+ <li>MSDN documentation comes... and goes. Find me the documentation of
+16bit functions. The current MSDN versions have eradicated the
+documentation of all 16 bit APIs. There are tons of aspects of the Win16
+environment for which we no longer have any documentation. Then when
+someone comes to modify some piece of code which is shared between Win16
+and Win32 you have no idea if the fix you made for Win32 is not going to
+break Win16. If Wine had had good independent documentation of the API
+from the start developpers could refer to this documentation to know
+whether a change is going to break Win16 or not.</li>
+ <li>MSDN documentation is often incomplete / slightly incorrect (though
+people working on Wine should maybe look at it a bit more). So what you
+propose is that this be *the* documentation for the Win32 API. I
+think Wine developpers and Winelib users deserve better. And no one
+using Winelib as a development platform would want to have to go to two
+places to find documentation.</li>
+ <li>The MSDN documentation is currently freely available on the Web.
+Tomorrow it could very well not be the case anymore. Or Microsoft could
+come up with some sort of click-through license agreement that would
+make it unsuitable for us. Then Wine and Winelib will be left without
+any usable documentation.</li></ul>
+</p>
+
+<p>   So I think the functions implemented in Wine should be fully
+documented. And the only place to do that is in the code source because
+this is the only place where they have a remote chance of staying up to
+date (and also where it's most practical to have it).</p>
+
+
+<p>   Of course developpers are very well-known for hating to document
+stuff so it's going to be pretty hard to get proper documentation. But
+we should encourage all Wine developpers to write good documentation for
+the functions they implement/fix, not dissuade them to do so.</p>
+
+<p>   Also I agree with you that the strict minimum is to at least document
+all the undocumented/weird behaviors. Especially since without some sort
+of documentation the next developper may be tempted to remove what looks
+like unnecessarily convoluted/obviously wrong code.</p>
+
+
+<p>   Then come the open questions:</p>
+
+<ul>
+
+<li>
+<p>How do we get people motivated to write documentation?</p>
+
+   <p>Maybe people writing tests (as in using programs/winetest)  
+should/could write documentation. After all to write proper tests you
+have to understand the API well enough to know what are the corner
+cases. So you might as well document the functions you test while you're
+at it. Then people doing the first non-stub implementation of an API
+would be in a good position to document it. After all if you implement
+an API aren't you supposed to know how it works?</p>
+
+   <p>I certainly don't think we should bar code (implementation or tests)
+that comes with no documentation from getting into CVS. But maybe we
+could gently ask as a reminder if the submitter could write some doc
+too.</p>
+</li>
+
+<li>
+<p>Is the current format the most appropriate one?</p>
+
+   <p>Well, it's just that I'm a fan of JavaDoc-like formats and that I've
+always been a bit skeptical of the current system (c2man). Does it still
+work btw? Is 
+<a href="http://www.winehq.org/WineAPI/">http://www.winehq.org/WineAPI/</a> up to date?</p>
+
+   <p>Also it seems we should have documentation on what messages do,
+especially for things like LVM_XXX. Maybe these could be documented with
+ListView_XXX macros so that searching for either will return the right
+page. </p>
+
+   <p>Similarly there should be a policy wrt. documenting xxxA and/or xxxW.
+It seems like they should end up being documented on the same (man) page
+and that obviously we don't want to duplicate the documentation in the
+source. But there does not seem to be anything in place currently. It
+would probably be a good idea to also have a general way to group
+related functions together (e.g. all the MSVCRT execXXX variants).</p>
+</li>
+</ul>
+
+<p>Did I say yet that I think a testing framework with many tests would
+be a great boon for Wine? No! Well, I'm going to stop there anyway.
+Lucky you :-)</p>
+</quote>
+
+<p>After several people had posted their thoughts Alexandre posted a few
+shorter replies that summed up several points:</p>
+<quote who="Alexandre Julliard"><p>
+Yes it would be nice to have a free Win API
+documentation, but it definitely doesn't belong inside the Wine
+source. First it would be a huge bloat in the source; and more
+importantly the Wine source doesn't define the Windows API, it is
+defined by Microsoft.</p>
+
+<p>
+I'd much rather have developers spend their time writing code. Making
+them duplicate the whole MSDN documentation would be a huge waste of
+their time. Our resources are not infinite, and it's much more useful
+to have 100% API coverage with no docs at all than 50% coverage and
+tons of docs.</p>
+
+<p>I think you misunderstand my position; I'm not opposed to having a
+comment at the start of the function explaining the general goal and
+the non-obvious things going on. But if you need more than a couple of
+paragraphs to do this, then either there are too many non-obvious
+things going on in your function, or you are wasting space explaining
+the obvious.</p>
+
+<p>I do strongly think that the goal should be to write code that doesn't
+require documentation in order to be understood. Of course adding a
+small amount of comments is a good idea; but when you start having
+more lines of documentation than lines of code, something is very
+wrong IMO.</p>
+
+<p>But this is mainly a matter of personal taste, and except in extreme
+cases I'm not going to reject code because it has too much (or not
+enough) documentation. </p></quote>
+
+<p>Almost everyone agreed though that it is important to document
+the obscurities of the Windows API where it differs from
+the MSDN documentation.</p>
+
+<p>Uwe Bonnes went on to posted some related information,
+<quote who="Uwe Bonnes">
+
+while this doesn't answer many question, I think it is worth knowing:
+
+Javob Navia has achieved the explicit right to distribute the win32 help
+files with his lcc-win32. You can download lcc-win32 and win32help for free
+at <a href="http://www.cs.virginia.edu/~lcc-win32/">http://www.cs.virginia.edu/~lcc-win32/</a>
+</quote></p>
+
+
+</section>
+
+</kc>

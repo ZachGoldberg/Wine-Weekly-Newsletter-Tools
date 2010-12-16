@@ -1,0 +1,543 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="151" date="01/03/2003" />
+
+<intro>
+<p>This is the 151th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+<stats posts="196" size="796" contrib="48" multiples="26" lastweek="15">
+
+<person posts="41" size="110" who="Dimitrie O. Paun" />
+<person posts="24" size="72" who="Dan Kegel" />
+<person posts="13" size="31" who="Alexandre Julliard" />
+<person posts="11" size="25" who="Sylvain Petreolle" />
+<person posts="8" size="22" who="Francois Gouget" />
+<person posts="8" size="21" who="Duane Clark" />
+<person posts="7" size="15" who="Shachar Shemesh" />
+<person posts="6" size="26" who="Eric Pouech" />
+<person posts="5" size="30" who="Patrik Stridvall" />
+<person posts="5" size="12" who="Tom Wickline" />
+<person posts="4" size="12" who="Hans Christian Studt" />
+<person posts="4" size="11" who="Stephen Mollett" />
+<person posts="4" size="11" who="Gerald Pfeifer" />
+<person posts="4" size="10" who="Lionel Ulmer" />
+<person posts="4" size="10" who="Jeff Smith" />
+<person posts="3" size="13" who="Matthew Mastracci" />
+<person posts="3" size="12" who="Manu" />
+<person posts="3" size="10" who="Greg Turner" />
+<person posts="3" size="7" who="Dmitry Timoshkov" />
+<person posts="2" size="105" who="Kye Lewis" />
+<person posts="2" size="37" who="Mathew McBride" />
+<person posts="2" size="6" who="Marcus Meissner" />
+<person posts="2" size="5" who="Mike Robinson" />
+<person posts="2" size="5" who="Drew Ogle" />
+<person posts="2" size="4" who="Mark Knecht" />
+<person posts="2" size="4" who="Mehmet YASAR" />
+<person posts="1" size="67" who="Dave Miller" />
+<person posts="1" size="20" who="Kevin" />
+<person posts="1" size="12" who="Dave Miller" />
+<person posts="1" size="7" who="Stefan Leichter" />
+<person posts="1" size="4" who="Bill Medland" />
+<person posts="1" size="4" who="Christoph Frick" />
+<person posts="1" size="4" who="Francois Gouget" />
+<person posts="1" size="3" who="Derek Broughton" />
+<person posts="1" size="3" who="Matt Chapman" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="Jeremy White" />
+<person posts="1" size="3" who="Ove Kaaven" />
+<person posts="1" size="3" who="Glen" />
+<person posts="1" size="2" who="Uwe Bonnes" />
+<person posts="1" size="2" who="Tony Lambregts" />
+<person posts="1" size="2" who="Alberto Massari" />
+<person posts="1" size="2" who="Joerg Mayer" />
+<person posts="1" size="2" who="Gyorgy Jeney" />
+<person posts="1" size="2" who="David Miller" />
+<person posts="1" size="1" who="Tom Potts" />
+<person posts="1" size="1" who="Enrico Horn" />
+
+</stats>
+
+
+<section 
+	title="Visual-MinGW Under Winelib" 
+	subject="Visual-MinGW: Winelib patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/12/1001.html" 
+	posts="7" 
+	startdate="12/31/2002"
+	enddate="01/02/2002"
+>
+<topic>Status Updates</topic>
+<p>Dimi collected some various changes necessary to compile Visual-MinGW
+under Wine and submitted them to the maintainer, Manu.  If you're not 
+familiar with Visual-MinGW, here's the description from their web
+page:</p>
+<quote who="Visual-MinGW"><p>
+The aim of this project is to provide an Integrated Development Environment for MinGW compiler.
+(Minimalist GNU for Windows)
+</p><p>
+Development started during July 2001 with following goals : 
+<ol>
+<li>Provide a "Minimalist" Open Source IDE, developed with nothing more than itself and built with MinGW compiler. </li>
+<li>Make it as small and fast as possible, using only Windows APIs. </li>
+<li>Make it easy to use for beginners and as powerful as possible for advanced users. </li>
+<li>Specialize one module of its code for simple and reusable C++ objects that will provide ready to use application skeletons. A quickly way to create a dialog box, SDI or MDI based project. </li>
+<li>Provide simple, but original features like creating archives, copying these to a floppy disk or uploading to a server in a few mouse clicks. Make use and promote Open Source command line tools.</li> 
+</ol></p></quote>
+
+<p>Dimi described his modifications necessary to work under Winelib:</p>
+<quote who="Dimitrie Paun"><p>
+I got around getting Visual-MinGW to compile under Winelib.
+This patch touches only your makefile, and I hope the changes
+are not controversial:<ul>
+<li> Use forward slash instead of backslash</li>
+<li> Explicitly list the DLLs you link against (shell32, comdlg32, advapi32)</li>
+<li> It make sense to specify -mno-cygwin 
+     For some reason, the code seems to require it. Please check
+     that it works under Windows as well. If it does, if makes
+     sense to have it as Visual-MinGW should not have a dependency
+     on Cygwin, as far as I can tell.</li>
+<li> Do not use -pedantic, the code does not compile with gcc 3.2
+     on Linux with that flag.</li>
+<li> Do not use -fvtable-thunks, it is deprecated in gcc 3.2</li>
+</ul></p><p>
+Please apply this patch with 'patch -p1 &lt; winelib.diff'.</p>
+<p>
+Note that I still need to get some changes integrated into the
+official Wine tree before you can actually compile Visual-MinGW
+under Winelib. The changes are not controversial, and I hope to
+get them in real soon. I will let you know when that happens.
+</p><p>
+Regardless, I think the changes I'm proposing are logical in and
+of themselves, so I figured they can be integrated regardless.
+</p></quote>
+
+<p>The two discussed the specifics of the changes, most of which
+weren't too controversial.  However Manu wanted the changes to
+reside in a different file:</p>
+<quote who="Manu"><p>
+makefiles are generated by Visual-MinGW, so I
+suggest to add dedicated makefiles for Winelib.
+eg: "makefile.wine".
+</p><p>
+That way, makefiles for Winelib won't be overwritten by
+Visual-MinGW, and it will be more convenient to do some
+changes in these.
+</p></quote>
+<p>Dimi really didn't like that idea though,
+<quote who="Dimitrie Paun">
+As for "cvs add Makefile.wine", it's clearly not the way to go. Since the
+makefiles are generated, we need to support things in the code that generates
+them, so that _all_ projects benefit from it. I will not track all the rapid
+changes manually to a Makefile.wine file, that's for sure.</quote></p>
+
+<p>As of press time that hasn't been resolved, but it's more of a
+semantics issue than a technical one.</p>
+
+</section>
+
+
+
+
+<section 
+	title="Separating NTDLL and Kernel32" 
+	subject="ntdll / kernel32"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/01/0013.html" 
+	posts="1"
+	startdate="01/02/2002"
+>
+<topic>Patches</topic>
+<p>I really hate covering messages sent to wine-patches.  It
+sets a dangerous precedent for not commenting on someone's
+interesting patch.  Fortunately a lot of the time a patch
+will generate discussion on wine-devel and it makes for something
+interesting to read.  This week Eric Pouech sent a large patch
+with the note below.  This gets at the core architecture of
+Wine and is the start of something that's been needed for 
+quite some time:</p>
+<quote who="Eric Pouech"><p>
+
+this patch starts splitting code between ntdll and kernel32:
+<ul>
+<li> it uses a module description structure closer to what NT does (our 
+WINE_MODREF makes heavy use of it, even if all of it isn't done 
+(filenames, list management for example))</li>
+<li> it cleans a bit calls between ntdll/kernel32 when possible</li>
+</ul>
+</p><p>
+however, it doesn't move the code to kernel32 (there are still quite a 
+few pending dependencies)
+</p><p>
+since I'm not sure Alexandre will apply it right away (it seems his 
+mailbox is ready to explode ;-)), please give it a try (I've been using 
+it for a few days without noticeable glitches, but since it tackles wine 
+at heart, heavy testing would be better)
+</p><p>
+for the ones of you who would like to go further with it, I put #define 
+(_NTSYSTEM_ and _KERNEL32_ to mark where the functions belong to)
+The final scheme should be (even if it's not achievable today):
+<ul>
+in ntdll
+<ul>
+	loader/elf.c<br />
+	loader/loadorder.c<br />
+	loader/module.c (the part marked _NTSYSTEM_)<br />
+	loader/pe_image.c<br />
+	loader/pe_resource.c
+</ul>
+in kernel32
+<ul>
+	loader/module.c (the part marked _KERNEL32_)<br />
+	loader/ne/convert.c<br />
+	loader/ne/module.c<br />
+	loader/ne/resource.c<br />
+	loader/ne/segment.c<br />
+	loader/resource.c<br />
+	loader/task.c
+</ul></ul></p><p>
+what's still missing:
+<ul>
+<li> process &amp; thread management (esp. creation) needs to be properly separated</li>
+<li> some ntdll internal calls (GetModuleFileName for example) needs to be 
+rewritten</li>
+<li> include/module.h should go,
+<ul>
+	<li> for the Ldr* (and all ntdll related stuff) to include/ldr.h (BTW, I'm 
+not sure of this, could someone with a recent NT DDK check this)</li>
+	<li> for the NE/16 bit part to include/wine (we could even make it cleaner 
+by implementing a real VDM support in wine, but that's another story)
+</li></ul></li>
+<li> separation of loader/pe_resource &amp; implementation of resource 
+enumeration in ntdll</li>
+<li> proper fixes for a zillion of regressions</li></ul></p></quote>
+</section>
+
+
+
+
+
+
+<section 
+	title="Best Win32 API Spy Tool?" 
+	subject="FAQ: best win32 api spy tool?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0018.html" 
+	posts="8" 
+	startdate="01/01/2002"
+	enddate="01/02/2002"
+>
+<topic>Debugging</topic>
+<p>Dan Kegel wanted some help finding a tool to help with
+debugging:</p>
+<quote who="Dan Kegel"><p>
+I'm trying to figure out why an app works on Windows but not Wine,
+and it'd sure be nice to be able to log all the api calls the
+app makes under each of the two environments; then perhaps
+I could compare the logs to see where Wine differed from Windows.
+</p><p>
+Does anyone else do stuff like that?  If so, what tools do you use?
+</p><p><a href="http://www.wheaty.net/FAQ.htm#APISPY32">
+http://www.wheaty.net/FAQ.htm#APISPY32</a> says that the best tool out there is
+<a href="http://www.internals.com/utilities_main.htm">
+http://www.internals.com/utilities_main.htm</a>
+(Supposedly the author will send source to you on request, too.)
+That program requires a text file containing the prototype for
+each API you want to spy on, though, and it only comes with 3 APIs
+as an example.  Does anyone have a full version of that file, or
+a perl script to create it from the wine tree?
+</p><p>
+I suppose I could write my own, too, if that's the only way
+to get a tool that works well in both environments.
+<a href="http://help.madshi.net/ApiHookingMethods.htm">
+http://help.madshi.net/ApiHookingMethods.htm</a>
+seems to have lots of info on that.
+</p></quote>
+
+<p>Duane Clark replied first and suggested,
+<quote who="Duane Clark">
+You had previously mentioned having a copy of msvc. Did you check in it 
+for SPY++? I would have to say that it seems to work quite well under Wine.
+</quote>  Dan didn't think that would work since it only seemed
+to log window messages rather than actual API calls.
+</p>
+<p>Jeremy White felt it was an interesting subject and gave his views
+on it:</p>
+<quote who="Jeremy White"><p>
+We've looked into this extensively; looking at both flavors
+of apispy (yes, there are two of them, with very similar names),
+and a lot of other variations.
+</p><p>
+However, I've got a half baked W2K based solution similar to
+the Detours library from Microsoft.  The advantage to my approach
+is that it generates a relay log identical to that of Wine,
+which then allows for diffing the log files.
+</p><p>
+*I* think it would be wicked cool.  Sadly, most of the Wine gurus
+I work with just shake their head and smile whenever I suggest
+it deserves priority.
+</p></quote>
+<p>Dmitry Timoshkov had a similar idea:</p>
+<quote who="Dmitry Timoshkov"><p>
+Debugging Tools for Windows 
+<a href="http://www.microsoft.com/ddk/debugging">
+http://www.microsoft.com/ddk/debugging</a>
+has logger.exe/logviewer.exe which help a lot in investigating what
+actually windows applications do. Logger creates binary log files
+which logviewer is able to parse/view. Even there is a mechanism
+to extend the logging facility by simply editing a .h like files.
+</p><p>
+Logviewer is able to show all the API arguments, various data structures,
+API results and more. It can export log into the plain text file, which
+could be diffed against another one. I would say that log file is *very*
+similar to the Wine relay log. Just give it a try.
+</p></quote>
+
+<p>Tom Wickline had some suggestions too:</p>
+<quote who="Thomas Wickline"><p>
+You could look at : <a href="http://www.dxspy.com/">http://www.dxspy.com/</a>
+</p><p>
+For hooks : 
+<a href="http://www.codeproject.com/system/hooksys.asp">
+http://www.codeproject.com/system/hooksys.asp</a>
+</p></quote>
+
+</section>
+
+
+
+
+
+
+
+
+<section 
+	title="File Locking in Wine" 
+	subject="File locking ... need info"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/12/0951.html" 
+	posts="4"
+	startdate="12/28/2002"
+	enddate="12/31/2002"
+>
+<topic>Filesystems</topic>
+<p>Mike Robinson asked for help with file locking:</p>
+<quote who="Mike Robinson"><p>
+I am interested in support for file-locking and locking of specified regions 
+of a file, in order to support databases such as MS-Access and Paradox.
+</p><p>
+But as I ponder the various likely-looking segments of the source-code, I 
+really do not know where to begin ... nor what has been done in this area 
+before.
+</p><p>
+It is clear that an implementation of locking must work on SMB-shares and that 
+it should "actually lock things" in that other Windows users should see the 
+locks as they are placed and removed.  It's also clear that implementing 
+timeouts on these locks could be "problematic," since the Unix impl. of file 
+locking is not quite the same as Windows expects.
+</p><p>
+Pointers?  Comments?  War-stories?  Advice?  "Someone already did that"s?
+</p></quote>
+
+<p>Bill Medland shed a little light on the subject:</p>
+<quote who="Bill Medland"><p>
+
+Basically much of it has been done before but hasn't made it to the CVS.
+Way back, Alexandre Julliard implemented it in the Corel source tree.
+Back in November 2001 I tried reworking the code to fit into the current tree 
+and submitted it (with a few bugs I am sure) but it was not accepted.  
+Alexandre had it on his list of things to do but I don't know where it stands 
+currently.
+</p><p>
+If you do intend working on it then you are going to have to address some of 
+the following issues:<ol>
+<li> Windows region locking has different behaviour with regard to merging 
+regions etc. than Unix.</li>
+<li> Remember that fcntl locks are on the actual file, not on the handle; and 
+closing one handle drops all the locks on all other handles to the same file.  
+(I am being almost criminally lax with my wording here but it will do for 
+now).</li>
+<li> The timeouts are going to be an interesting task.  However the structure of 
+the wine server should help immensely</li>
+<li> To the best of my knowledge SMB file systems don't handle it.  No one has 
+yet told me differenly on the several occasions I have tried to ask.  (I know 
+that Samba serves out locks to Windows machines successfully but if you put 
+an fcntl lock on a file on a SMB share to the best of my knowledge it doesn't 
+translate to an SMB lock request).</li>
+<li> The whole issue of advisory and mandatory locking.</li>
+</ol>
+</p><p>
+Our software depends quite significantly on region locking but we don't need 
+the full semantics and we can make guarantees such as only one handle open on 
+a file by a process so what we have done is to use winelib and create builtin 
+dlls for our own ones but that use the native fcntl locking.
+</p></quote>
+
+<p>Dan Kegel had some experience on with the subject too and
+replied:</p>
+<quote who="Dan Kegel"><p>
+Ah, yes, file locking.   I was one of the folks who advised Sun
+as they were bringing file locking to Java (in "JSR-51"), and
+we had some fun discussions about how to define file locking
+in Java so it would map properly onto either Windows or Unix.
+</p><p>
+One thing I recall is that W. Richard Stevens has a nice
+discussion of Unix locking in chapter 12 of "Advanced Programming
+in the Unix environment", published 1993.  It aged fairly well, I think,
+and provides a bit of insight into how locking evolved -- and
+some problems with mandatory locking (e.g. mandatory locking
+didn't prevent ed from editing a file!)   Note that mandatory
+locking is not part of Posix (
+<a href="http://www.opengroup.org/onlinepubs/007904975/toc.htm">
+http://www.opengroup.org/onlinepubs/007904975/toc.htm</a>).
+</p><p>
+JSR-51 decided to map Java file locks to mandatory locks on Windows,
+and advisory locks on Unix.  I'm afraid that's about the only
+real option.
+</p></quote>
+<p>Mike thought it was interesting, but still wanted a solution
+to the problem:</p>
+<quote who="Mike Robinson"><p>
+It sounds to me like the file-locking code I am looking for has "already been 
+done" and/or "was rejected" at some time in the past.
+</p><p>
+I'm probably not the best qualified to do this if it has already been done.
+</p><p>
+But in order to run databases on Wine, I need it.
+</p></quote>
+
+</section>
+
+
+
+
+
+<section 
+	title="Winemaker Problems (and Solutions)" 
+	subject="winemaker problem"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0014.html" 
+	posts="9" 
+	startdate="01/01/2003"
+	enddate="01/02/2003"
+
+>
+<topic>Winelib</topic>
+<p>
+Hans Christian Studt ran into some problems using winemaker.
+The first problem was with the Wine resource compiler:</p>
+<quote who="Hans Christian Studt"><p>
+I am trying to follow this discription on how to compile win32 
+source code with the winelib (
+<a href="http://www.winehq.org/site/docs/winelib-guide/winelib-toolkit#WINEMAKER">
+http://www.winehq.org/site/docs/winelib-guide/winelib-toolkit#WINEMAKER</a>
+ )
+</p><p>
+The process generates a Makefile that is supposed to complie a
+ressource file e.g. winemine.rc with the wrc compiler, but 
+winemaker adds a '-L' option to the wrc compilwr that is does 
+not recognize.
+</p><p>
+I am using wine-20021219 on RedHat 8.0.
+</p><p>
+It seems like a bug in winemaker.
+</p><p>
+I have changed this line in the Makefile
+<ul><code>
+## WRCFLAGS  = -r -L<br />
+WRCFLAGS  = -r</code></ul></p><p>
+and it compiles.
+</p></quote>
+
+<p>Sylvain Petreolle recommended trying with the latest
+CVS version that fixes this. The second problem Hans ran
+into involved the naming of the Winelib executable:
+</p><quote who="Hans Christian Studt"><p>
+<code>
+(/user/usr/local/wine/programs/winemine-hcs) #./winemine-hcs<br />
+/usr/local/bin/wine: cannot find 'winemine-hcs.exe'
+</code></p><p>
+
+It still cannot find 'winemine-hcs.exe'.
+What seems to comes nearest is
+<ul><code>
+-rwxr-xr-x        969 jan  1 21:00 winemine-hcs<br />
+-rwxrwxr-x     793446 jan  1 21:00 winemine-hcs.so<br />
+-rw-rw-r--      44160 jan  1 21:00 winemine-hcs.spec.c<br />
+-rw-rw-r--      92648 jan  1 21:00 winemine-hcs.spec.o<br />
+-rw-rw-r--        173 jan  1 20:59 winemine.exe.dbg.c<br />
+-rw-rw-r--       2040 jan  1 21:00 winemine.exe.dbg.o<br />
+-rw-rw-r--      43665 jan  1 15:39 winemine.exe.spec.c</code></ul></p>
+
+<p>
+I sure hope someone can help out - because I plan to try to 
+see if I can make some of those 7.000 win32 applications over
+at sourceforge.net compile under winelib.
+</p></quote>
+
+<p>Jeff Smith confirmed this was a known bug that he was
+working on:</p>
+<quote who="Jeff Smith"><p>
+Currently execname.so is being created rather than
+execname.exe.so.  The patch I submitted a few hours ago (don't know
+if it has made it through yet) includes a fix for this.
+</p><p>
+Copying the file is actually what I did for several weeks, rather than
+dig in to winemaker to fix the problem.  But I get fed up and started
+putting together a patch for this several days ago.  So now it is ready
+to roll.  Good timing, yes?
+</p></quote>
+<p>Jeff's patch appeared on wine-patches a few hours later.</p>
+</section>
+
+
+
+
+
+
+<section 
+	title="Special Characters in Resource Names" 
+	subject="RFH: ICON statement"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0048.html" 
+	posts="5" 
+	startdate="01/02/2003"
+>
+<topic>Patches</topic>
+<p>Dimi wanted to know how Windows handled resource names:</p>
+<quote who="Dimitrie Paun"><p>
+Visual-MinGW uses the following:
+<ul><tt>
+  visual-mingw ICON Mainicon.ico</tt></ul></p><p>
+
+which apparently windres accepts, but fails with wrc
+because of the '-' in 'visual-mingw'. Can someone
+please check if it works with the MS tools, to determine
+if we need to fix wrc? Tnx.
+</p></quote>
+
+Mehmet Yasar said it should work,
+<quote who="Mehmet Yasar">
+I'm developing a small app with MS tools and I know that MS accepts '-' 
+and '!' for ressources (icon, bitmap, accels, menus ...).</quote>
+Dimi wanted to know if that meant the special characters could
+appear anywhere in the name, including the beginning.  Mehmet
+checked and found:<quote who="Mehmet Yasar">
+<p>
+
+I knew that strings like "x-x!xx" were accepted.
+</p><p>
+I just tested icon ressource beginning with weird characters like 
+"!icon" or "-icon" and that works (tested under VC++/sp5).
+</p></quote>
+
+<p>Dimi sent in a patch then to change wrc.</p>
+
+</section>
+
+
+
+</kc>
+

@@ -1,0 +1,199 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="104" date="09/25/2001" />
+
+<intro>
+
+<p>This is the 104th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x
+Windows emulator).</p>
+
+<p>We saw a report come out this week that Wine has succeeded in
+replicating even more Windows functionality - namely the ability
+to run viruses.  The Sir Cam virus running under Wine is pretty
+innocuous though as a
+<a href="http://www.vnunet.com/News/1125594">vnunet.com article</a>
+points out.  This does bring up an interesting point though.  Wine
+has always strived for "bug for bug" compatibility and viruses are
+part of that legacy.  But keep in mind that a Wine process running as a
+non-root user will have a neglible impact.  By the way, does anyone else
+find it strange that the press always uses the term "computer virus" when
+they mean "Windows virus"?
+</p>
+</intro>
+
+<stats posts="63" size="238" contrib="33" multiples="13" lastweek="24">
+<person posts="8" size="29" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;"/>
+<person posts="6" size="13" who="Alexandre Julliard&lt;julliard@winehq.org&gt;" />
+<person posts="4" size="16" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="4" size="14" who="Huw D M Davies&lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="3" size="33" who="Steven Walter &lt;srwalter@yahoo.com&gt;"/>
+<person posts="3" size="10" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="3" size="7" who="Gerard Patel &lt;gerard.patel@nerim.net&gt;"/>
+<person posts="2" size="33" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="2" size="7" who="Dmitry Timoshkov &lt;dmitry@baikal.ru&gt;"/>
+<person posts="2" size="5" who="Travis Michielsen&lt;tjmichielsen@yahoo.com&gt;" />
+<person posts="2" size="5" who="Dan Kegel &lt;dank@kegel.com&gt;" />
+<person posts="2" size="4" who="Marcus Meissner&lt;marcus@jet.franken.de&gt;" />
+<person posts="2" size="4" who="Jeremy White &lt;jwhite@codeweavers.com&gt;"/>
+<person posts="1" size="3" who="Guy L. Albertelli&lt;galberte@neo.lrun.com&gt;" />
+<person posts="1" size="3" who="Bill Medland &lt;medbi01_1@accpac.com&gt;"/>
+<person posts="1" size="3" who="Robert Lunnon &lt;bob@yarrabee.net.au&gt;"/>
+<person posts="1" size="3" who="Gavriel State &lt;gav@transgaming.com&gt;"/>
+<person posts="1" size="3" who="Niclas Karlsson MATE&lt;nkarlsso@ra.abo.fi&gt;" />
+<person posts="1" size="3" who="Eric Pouech&lt;eric.pouech@voila.fr&gt;" />
+<person posts="1" size="3" who="Vladimir Vukicevic&lt;vladimir@ximian.com&gt;" />
+<person posts="1" size="3" who="Nerijus Baliunas&lt;nerijus@users.sourceforge.net&gt;" />
+<person posts="1" size="2" who="John Alvord &lt;jalvo@mbay.net&gt;" />
+<person posts="1" size="2" who="Matthias Dahl &lt;matthew2k@web.de&gt;" />
+<person posts="1" size="2" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="1" size="2" who="Uwe Bonnes&lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="1" size="2" who="Mike McCormack&lt;mike_mccormack@start.com.au&gt;" />
+<person posts="1" size="2" who="Aric Stewart &lt;aric@codeweavers.com&gt;"/>
+<person posts="1" size="2" who="Lucien LaCroix&lt;lacroixlucien@hotmail.com&gt;" />
+<person posts="1" size="2" who="Andriy Palamarchuk &lt;apa3a@yahoo.com&gt;"/>
+<person posts="1" size="2" who="Johan Gill &lt;johane@lysator.liu.se&gt;" />
+<person posts="1" size="1" who="Bobby Bingham &lt;uhmmmm@ameritech.net&gt;"/>
+<person posts="1" size="1" who="Nick Hudson &lt;nhudson@hiwaay.net&gt;" />
+
+</stats>
+
+<section
+  title="To Document.. Or Not To Document"
+  subject="Re: wsprintf"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/09/0109.html"
+  posts="7"
+  startdate="09/20/2001"
+  enddate="09/21/2001"
+>
+
+<p>Aric Stewart submitted a patch that fixed a function (wsprintfA)
+that was slightly different than its cousin (wsprintf16).  Andreas
+Mohr asked, <quote who="Andreas Mohr">
+Hmm, can't you add a small comment inside the code that actually
+mentions this remarkable difference ?
+I think we should make every effort possible to ensure that important
+differences between architectures are being preserved as well as possible.
+</quote></p>.
+
+<p>As Bill Medland describes it, Alexandre likes to keep the code
+"tidy".  And this is not the first time this issue has come up.
+Alexandre did end up adding a comment noting the differences, but
+Jeremy White felt it was important to address more general cases:</p>
+
+<quote who="Jeremy White">
+<p>Okay, so it's a slow news day, and I feel like stirring up trouble.</p>
+
+<p>I would argue that it is, in fact, counterintuitive, to have this
+sort of comment solely in the change log.  The only time I ever think
+to look at a diff (or even the change log) is when something has broken
+recently.</p>
+
+<p>IMO, it is appropriate to comment in the code,
+whenever something useful about Wine/Windows behavior is learned,
+especially when the knowledge is something non intuitive
+like the fact that the 16 bit version and 32 bit version
+behave differently.</p>
+</quote>
+
+<p>Bill Medland replied, <quote who="Bill Medland">
+The change log and cvs diff should explain why a change was made (and in an
+ideal world should refer to the supporting documentation e.g. bug numbers
+etc.).  In this particular case it should mention, as it does, that the
+difference has been detected.</quote></p>
+
+<p>Alexandre noted:</p>
+<quote who="Alexandre Julliard">
+	<p>Well, because *you* don't look at it doesn't mean it's not the right
+	place, does it? &lt;g&gt;  I look at the CVS history quite often, and I
+	find that in many cases it's the best way to find out why things are
+	done a certain way.
+	</p>
+	
+	<p>I don't see any reason to duplicate this info inside the code itself;
+	since we are using a source control system we might as well take
+	advantage of it. Plus it guarantees the info is stored permanently,
+	unlike a comment that may get moved or lost next time the code is
+	changed.</p>
+
+	<p>I'd like to add that browsing the CVS repository on the web can be
+	a great way to see changes to code.  For instance, in this case here's
+	the diff between the changes Aric made and the previous version:
+	<a href="http://cvs.winehq.org/cvsweb/wine/dlls/user/wsprintf.c">
+	http://cvs.winehq.org/cvsweb/wine/dlls/user/wsprintf.c</a>.
+	Also what stands out is the CVS tag leading to it.  While it's not
+	always the quickest way to see revisions it does tend to make the
+	differences jump out.  You can even get good ol' unidiffs from it.</p>
+</quote>
+
+</section>
+
+
+
+
+
+<section
+  title="InstallShield 6"
+  subject="InstallShield 6 again (debuggers requested)"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/09/0129.html"
+  posts="1"
+  startdate="09/24/2001"
+  enddate="09/24/2001"
+>
+
+<p>The latest InstallShield-based installers have been an on-going
+nightmare.  People have suggested writing everything from basic
+interprocess communication to a full blown COM implementation.
+Ove K&aring;ven has stepped up and worked on this and his latest
+report asks for help debugging:</p>
+<quote who="Ove Kaaven"><p>
+Here are some kludgy patches (against the current WineHQ CVS) that's
+supposed to make InstallShield 6 with its stupid interprocess COM sort of
+work, but it doesn't for some reason, probably because of something else
+in Wine that's broken... and because of a lack of time, I think I really
+need some debugging assistance.
+</p><p>
+Most of these patches are too ugly to be submitted to the official wine
+as-is, I'll clean these parts up later, but probably not before
+InstallShield has been debugged and actually works with these hacks.
+</p><p>
+To make this run, you need to copy stdole32.tlb from a real windows and
+put into c:\windows\system. Then run your favorite InstallShield 6
+setup.exe and wait for it to crash. --debugmsg +ole is recommended. It
+crashes for me after about 25 remote method calls. If you find out why,
+let me know. Please.</p>
+</quote>
+
+<p>Click on the subject link above to get to the patch.</p>
+
+</section>
+
+
+
+<section
+  title="Installing IE 5.01"
+  subject="IE 5.01"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/09/0080.html"
+  posts="2"
+  startdate="09/14/2001"
+  enddate="09/14/2001"
+>
+
+<p>Nick Hudson asked, <quote who="Nick Hudson">
+        Well i know i'll get flamed for this but has anyone got IE 5.01
+installed on wine?  Everytime I try it gives me an error that "Some
+program hasn't finished and that I need to let it finish and restart
+my computer"  Then it closes.  So any idea on getting any version of
+IE installed? </quote></p>
+<p>Uwe Bonnes suggested, <quote who="Uwe Bonnes">
+Delete the files mentioned in the wininit.ini file (in the windows
+directory) and then remove wininit.ini.</quote></p>
+
+</section>
+
+</kc>

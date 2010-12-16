@@ -1,0 +1,39 @@
+WineHQ (lostwages) Website Template Engine
+ver 3.0
+by Jeremy Newman <jnewman@codeweavers.com>
+-----------------------------------------------------------------------
+
+Installation Requirements:
+ * Apache 2.0 or higher
+    * mod_rewrite enabled in Apache config
+ * PHP 5.0 or higher
+
+Setting Up.
+--------------
+1. cp include/htaccess.sample .htaccess
+2. edit .htaccess
+ * change Rewritebase to the subdir path from the root of your website.
+    iow, if you have the site as http://www.example.com/winehq_org/
+    then Rewritebase /winehq_org/
+    otherwise if this site is the root, leave Rewritebase /
+3. cp include/winehq.conf.sample include/winehq.conf
+4. edit include/winehq.conf
+
+Templates.
+--------------
+For any path in your website, create a .template file in templates/en/
+For example, http://www.example.com/winehq_org/new_page
+ is templates/en/new_page.template
+You can nest templates into subdirs.
+
+The following varables can be used in templates.
+
+{$root}         : relative path back to root of website
+{$base_url}     : full URL of main website, as defined in winehq.conf
+{$self}         : same as $_SERVER['PHP_SELF'] in PHP
+{$request_uri}  : same as $_SERVER['REQUEST_URI'] in PHP
+
+You can also add global vars to include/globals.conf and they will be availbe as 
+{$config_[key]} where [key] is the name you defined in globals.conf
+
+

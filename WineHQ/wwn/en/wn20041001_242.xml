@@ -1,0 +1,774 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="242" date="10/01/2004" />
+<intro> <p>This is the 242nd issue of the Wine Weekly News publication.
+Its main goal is to to go shopping. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="146" size="3274" contrib="43" multiples="26" lastweek="17">
+
+<person posts="23" size="2772" who="James Hawkins" />
+<person posts="24" size="103" who="Mike Hearn" />
+<person posts="11" size="30" who="Alexandre Julliard" />
+<person posts="8" size="24" who="Robert Shearman" />
+<person posts="6" size="21" who="Joaquin Fernandez" />
+<person posts="5" size="93" who="J. Grant" />
+<person posts="5" size="14" who="Dmitry Timoshkov" />
+<person posts="4" size="17" who="Boaz Harrosh" />
+<person posts="4" size="11" who="Andreas Mohr" />
+<person posts="4" size="10" who="Hans Leidekker" />
+<person posts="3" size="25" who="Mike McCormack" />
+<person posts="3" size="10" who="Francois Gouget" />
+<person posts="3" size="8" who="Jon Griffiths" />
+<person posts="3" size="7" who="Dan Kegel" />
+<person posts="3" size="6" who="Filip Navara" />
+<person posts="2" size="13" who="Richard Cohen" />
+<person posts="2" size="9" who="Michael Stefaniuc" />
+<person posts="2" size="8" who="Shachar Shemesh" />
+<person posts="2" size="7" who="Stefan Leichter" />
+<person posts="2" size="7" who="(Warren_Baird/CSI)" />
+<person posts="2" size="5" who="Dimitrie O. Paun" />
+<person posts="2" size="5" who="Alexander Yaworsky" />
+<person posts="2" size="5" who="Rein Klazes" />
+<person posts="2" size="4" who="Marcus Meissner" />
+<person posts="2" size="3" who="Steven Edwards" />
+<person posts="1" size="4" who="Arda Ataerkil" />
+<person posts="1" size="3" who="Brian Vincent" />
+<person posts="1" size="3" who="James Pellow" />
+<person posts="1" size="3" who="Attila Csosz" />
+<person posts="1" size="3" who="Ben A L Jemmett" />
+<person posts="1" size="3" who="MIKEL CARRASCO" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Rok" />
+<person posts="1" size="2" who="Adam Schreiber" />
+<person posts="1" size="2" who="James Courtier-Dutton" />
+<person posts="1" size="2" who="Uwe Bonnes" />
+<person posts="1" size="2" who="Robbert Xerox" />
+<person posts="1" size="2" who="Saulius Krasuckas" />
+<person posts="1" size="2" who="Jia L Wu" />
+<person posts="1" size="2" who="Eric Pouech" />
+
+</stats>
+<section 
+	title="News: Desktop Linux" 
+	subject="News"
+	archive="http://www.pcadvisor.co.uk/index.cfm?go=news.view&amp;news=4151"
+	posts="1"
+	startdate="09/25/2004"
+	enddate="10/01/2004"
+>
+<topic>News</topic>
+<p>Sort of a slow news week, so we'll scrape the bottom of the
+news bin for something vaguely related to Wine.  Over at PC
+Advisor you can find an article about 
+<a href="http://www.pcadvisor.co.uk/index.cfm?go=news.view&amp;news=4151">desktop
+Linux migration</a> and the catch-22 posed by not having native applications.
+Namely, how can you get new users to use Linux without having a lot of 
+applications available; and likewise, how can you get a lot of applications
+without a large userbase?  The article sums up some of Linux's strengths
+and areas that do migrate easily.  Some quotes from CodeWeavers' Jeremy White
+are included in the discussion.
+
+</p>
+</section>
+<section
+        title="WineCfg Status Update"
+        subject="Updated winecfg to do list"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0786.html"
+        posts="1"
+        startdate="09/29/2004"
+>
+<topic>Configuration</topic>
+<topic>Status Updates</topic>
+<p>Winecfg, the graphical Wine configuration tool, went through
+quite a few months with no changes.  On the backend, a lot of 
+subtle changes have improved Wine and made it almost capable
+of automatically configuring itself to the point that Winecfg
+can be run to make tweaks that would otherwise be done in the
+hopefully-soon-to-be-removed config file.  Ironically, a couple of 
+people expressed interest in working
+on Winecfg recently just as Mike Hearn mentioned he had some work
+laying around that needed to be committed.  Well, Mike was
+able to find some time this week to put those patches
+together and Alexandre committed most of them shortly after.  With
+those in, it paves the way for anyone else wanting to make
+changes and hopefully improve it even more.  </p><p>
+
+When we last
+discussed Winecfg (WWN issue 
+<a href="http://www.winehq.com/wwn/234#More%20Winecfg%20To%20Do's">#234</a>)
+a list of to-do items was presented.  Those were the items
+Mike tackled and he gave a status update on a point-by-point
+basis:</p>
+<quote who="Mike Hearn"><p>
+<i> You probably want to increase the size of the drive mappings list so it
+ fills the tab, currently there is just a lot of empty space at the top of
+ the pane now you removed the old stuff.</i>
+<ul>
+If AJ commits the last two patches, this is done. In fact, the editing 
+has been moved into the main tab, as there isn't much reason to have a 
+separate window for this and it simplifies the UI and code somewhat.</ul></p><p>
+
+<i> Also we should kill the autodetect button. This is done by
+ wineprefixcreate these days, or should be.</i><ul>
+
+Getting there ... drive autodetection is implemented. The heuristics 
+could perhaps be improved but they'll do for now. But, we need to call 
+it from wineprefixcreate. This means adding code like so to main():
+<ul><code>
+if (argv[0] is "--drive-detect")<br />
+{<ul>
+     gui_mode = FALSE;<br />
+     auto_detect_drives();<br />
+     return apply_drive_changes();</ul>
+}</code></ul>
+</ul></p><p>
+ <i> Drive editing seems broken. The list box only updates the second time I
+ hit edit. err:winecfg:applyDriveChanges unable to set volume label for
+ devicename of 'H:\', label of ''</i><ul>
+
+With my last two patches, this works for me.</ul></p><p>
+
+ <i> Browse in the "Add/Edit drive" dialog is a WRITEME</i><ul>
+
+Oh hum, good point. I suspect this still does nothing, I don't remember.
+<br /><br />
+We need to make sure / is mapped (there is a function to do this in 
+drivedetect.c), trigger the shell directory select dialog, then if we 
+had to map / automatically, unmap it again. Not too hard to implement. 
+We can probably slide this for 0.9, it's not essential.</ul></p><p>
+
+ <i> Build system isn't right: I did a cvs update but the res files weren't
+ recreated properly. I had to do a make clean to get the gui updates.</i><ul>
+
+Probably my [ab]uses of make depend, can be ignored.</ul></p><p>
+
+ <i> "Add Application" has poor usability: we always use a file browser
+ dialog box even though the most common use case is just "foo.exe", ie
+ the user knows the name and doesn't care about the location. Worse we
+ start in the c:\windows\desktop folder for some reason, meaning users
+ might accidentally select a .lnk file!</i><ul>
+
+Well, we still use a file open dialog but at least it starts in c:\ now 
+and is filtered on EXE files. If somebody wants to implement a natty 
+dialog like the GNOME run window, go for it! This would be a nice 
+usability improvement, especially if you implemented then used listview 
+tile mode.</ul></p><p>
+
+ <i> The Add/Remove application buttons are *way* too big!</i><ul>
+
+Fixed</ul></p><p>
+
+ <i> Obviously, once audio autodetection has been moved into the drivers we
+ need to kill the audio tab.</i><ul>
+
+Still needs to be done. Not all that hard.</ul></p><p>
+
+ <i> Libraries tab just has generally poor usability, actually. The first
+ item in the radio group is "Builtin" meaning that's the one users are
+ most likely to select, it should be "builtin, native" followed by "native,
+ builtin"</i><ul>
+
+Lots of tweaks to this tab, I find it a lot more convenient to work with 
+now. The main remaining problem is that enter always triggers OK in the 
+applet itself, and when you're typing in a new DLL you want to add, you 
+want enter to add it not close the window! Not sure how to fix this 
+without messing up the property sheet API.</ul></p><p>
+
+ <i> We ask the user to understand a magic * symbol to set the default - what
+ is up with that?</i><ul>
+
+Fixed.</ul></p><p>
+
+ <i> There are no helpful default entries in the drop down box for setting a
+ DLL override, and when you add one the tree does not expand so to actually
+ *set* it you have to expand the tree then select the new override.</i><ul>
+
+It doesn't use a treeview anymore, but the combo box could definitely 
+use some of the most common entries to give people a hint.</ul></p><p>
+
+ <i> We have way too many (eg, more than zero) tree controls in this app.</i><ul>
+
+Fixed. This simplifies the code enormously. I don't think there's really 
+any problem with selecting the app you want to edit on the first tab and 
+it means there aren't any weird states anymore where you can have a 
+selection in the treeview that doesn't actually mean anything. The 
+titlebar now reflects the app you're editing.</ul></p><p>
+
+ <i> Drive mappings list is really unclear, there's no separation between the
+ "Drive X:" label and the unix path its mapped to.</i><ul>
+
+This is improved a bit now too but really I'd like to see us use the 
+listview control with a header control here.</ul></p><p>
+</p><p>
+So in summary the BIG things we need to do before we can consider 
+winecfg good enough for 0.9 are:
+<ul>
+<li> Delete the audio tab and use autodetection at wine startup instead</li>
+<li> Add a <tt>--drive-detect</tt> switch and use it from wineprefixcreate</li>
+<li> Update the docs to reflect usage of the new tool (Brian is on this)</li></ul>
+</p><p>
+After 0.9 we can look at more UI improvements, importing some artwork to 
+make it prettier, maybe eliminating the property sheet as that's a big 
+pain to work with (though, it may be also that our control is buggy :), 
+and so on. Probably adding more prefs as well, for things like printing 
+and fonts maybe.
+</p><p>
+I'd like to see us get winecfg to some kind of finished, releasable 1.0 
+state before the end of the year though and then we can mark that task 
+as done on the TODO list.
+</p></quote>
+
+
+<p>Mike also mentioned he probably wouldn't be working on Winecfg
+for a while.  James Hawkins expressed interest in adding autodetection
+to the audio drivers but he didn't know how to go about doing it.
+Each driver needs to be fixed but James didn't know what exactly
+needed to be changed.  With regard to the docs, see the next thread..</p>
+
+</section>
+<section
+        title="Wine User Guide Changes"
+        subject="Wine User Guide changes (RFC)"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0716.html"
+        posts="3"
+        startdate="09/26/2004"
+        enddate="09/27/2004"
+>
+<topic>Documentation</topic>
+<p>Can I cover threads I start myself?  Sure.. why not?  
+This topic actually goes back to last winter when Winecfg
+was under development.  We noticed the docs about configuring
+Wine were out of date and the situation would only get worse
+if we started using Winecfg.  So we added an item to the 
+<a href="http://www.winehq.com/todo_lists">to-do list</a>
+to change the docs about configuration
+and also go through and remove extraneous info.  I started on
+that a few weeks ago and when Mike Hearn submitted those 
+Winecfg patches I decided it would be a good idea to put up a 
+preview of work I did on the documentation side:</p>
+<quote who="Brian Vincent"><p>
+With Mike's recent Winecfg patches and the renewed hope we'll cut over
+to using Winecfg some day, I went through and began updating the Wine User
+Guide.  The focus of the changes thus far was to remove references to the
+config file and discuss Winecfg instead.  Without actually being able to
+use Winecfg these changes are useless, but it's probably worth looking
+this over to see whether these docs are headed in the right direction.
+For now, the biggest changes can be found in configuring.sgml  (which
+translates into the "Configuring Wine" part of the guide.) 
+
+</p><p>
+
+(Not having looked at Mike's recent patches, I'm sure this will soon be out
+of date.  Things like drive detection are missing.  There's also parts that
+I left undone: such as the printing config, an appendix listing reg keys would
+be nice once we know what they all are.  Other parts probably need a
+better explanation, such as font configuration.  Anything you notice missing
+is probably worth telling me about, though it won't be hard to find lots of
+mistakes.)
+</p><p>
+One of the big goals of all this is to reduce the amount of documentation
+and outdated stuff.  Therefore, registry.sgml, printing.sgml, and fonts.sgml
+have been somewhat merged into configuring.sgml.  fonts.sgml contained a
+lot of outdated info in it that probably caused more confusion than helped.
+</p><p>
+Going forward, we have a lot of documentation in the User Guide about
+downloading Wine, compiling Wine, CVS, etc; mostly stuff that's already
+duplicated in some form or another on the web site.  I'd like to see as
+much stuff like that removed from the User Guide as possible, we can
+simply refer people to WineHQ for more info.  (I think the reason for the
+duplication is that the website docs simply didn't exist when the User 
+Guide was written, now the website has superseded the User Guide.)
+When it's all said and done we should be left with the following sections:
+<ul> 
+ <li> Introduction</li>
+ <li> Configuration</li>
+ <li> Running</li>
+ <li> Troubleshooting</li></ul>
+</p><p>
+At least, that's the direction I think it should go and at some point
+I could begin making those changes.  Anyone disagree?  Any thoughts,
+comments, concerns, criticisms?
+</p></quote>
+
+<p>Mike pointed out that I really needed to apply his patches
+and then reevaluate Winecfg.  With that in mind, there's still
+quite a bit of work to do on the Wine User Guide.  If anyone is
+interested in helping out, I could provide some pointers and
+a list of things to work on (email <i>vinn -at- theshell.com</i> 
+or <i>wine-devel -at- winehq.com</i>).
+ </p>
+
+
+</section>
+
+<section
+        title="Upgrade Management"
+        subject="Upgrade management"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0762.html"
+        posts="10"
+        startdate="09/28/2004"
+        enddate="09/29/2004"
+>
+<topic></topic>
+<p>The title of this sort of says it all: upgrade management.  Well, if
+you've been using Wine for a while you probably fall into one of two 
+categories: something worked a long time ago so you didn't bother to
+upgrade or you continuously download Wine in hopes your favorite app
+now works.  Either way, you'll probably eventually try to get
+a new version of Wine and figure out that something doesn't work the
+way it used to.  (Of course, most of
+you reading this probably fall into the masochist category who actually
+enjoy deleting their entire configuration and recompiling from scratch.)
+Being able to install a new version and have things automagically work
+is important to many people.  Mike Hearn brought this topic up and I
+have a hunch it's not the last time we'll hear about it:</p>
+
+<quote who="Mike Hearn"><p>
+There are a bunch of different ways we may want to upgrade the user's
+configuration:
+<ul>
+<li> Changes to $WINEPREFIX (~/.wine), for example:
+  <ul>
+   <li> Introducing faked DLL headers</li>
+   <li> Improved drive detection</li>
+   <li> Changing the way the registry is stored</li>
+   <li> Adding stuff to the virtual Windows drive</li>
+</ul></li>
+<li> Modifying the registry
+<ul>
+   <li> Adding new keys</li>
+   <li> Adding new appdefaults (default config options should be in the
+     code itself). While we have a policy of not having app-specific
+     hacks in Wine, some situations are very hard to resolve without
+     custom overrides. The Internet Explorer installer does a bunch of
+     things we really don't want it to do. The DCOM
+     installer needs custom overrides to convince it to install. And so
+     on.</li>
+   <li> Registering new COM DLLs<br /><br />
+
+   (these all boil down to rerunning wine.inf)</li></ul></li>
+
+<li> Adding new binaries such as fonts, PE DLLs (think Moz AX control),
+  and so on. These may be placed somewhere in the Wine install directory
+  and then symlinked or copied (presumably linked) into drive C.</li>
+</ul></p><p>
+This leads to the following questions:
+<ul>
+<li> How do we know when to upgrade the user's wineprefix?</li>
+<li> How do we avoid disturbing the user's configuration?</li>
+<li> What implementation do we use to upgrade it?</li></ul>
+</p><p>
+One potential implementation for knowing when to upgrade the wineprefix
+is to version it in a similar manner to how we version the wineserver
+protocol: with a simple incrementing integer. This could be stored in
+the registry, and Wine's initialization sequence changed to be:
+<ul>
+    <li> Does $WINEPREFIX exist?
+    <ul><li>  No, call wineprefixcreate. Continue with startup</li>
+        <li>  Yes? Check the wineprefix version key, if it is &lt; the
+    version compiled into the source run
+    <tt>"wineprefixcreate --upgrade $oldversion $newversion"</tt>, which then
+    performs the upgrade. If it exits with a zero exit code, the
+    version key is set to the number compiled into the source.
+    Then continue with startup</li></ul></li></ul>
+
+If registry access is too difficult here, a simpler implementation could
+be used: just store the number in a .version file.
+</p><p>
+How do we avoid disturbing the user's configuration? Alexandre already
+laid out the plan for this, which is to have HKLM (HKEY_LOCAL_MACHINE)
+devoted to the defaults we cunningly choose for maximum kewlness, and
+HKCU (HKEY_CURRENT_USER) is where the user's settings are stored. These
+override the defaults, meaning we can change the default settings by
+altering wine.inf, then bumping the wineprefix version so triggering a
+remerge of the default registry contents.
+</p><p>
+This means modifying each piece of code where we read the registry to
+figure out a user-configurable option. The algorithm becomes:
+<ol>
+<li> Check the relevant key in HKCU, if it exists use it</li>
+<li> Otherwise, if it's an appdefault, check the same key in HKLM</li>
+<li> Otherwise, use the hardcoded default</li>
+</ol></p><p>
+In most cases, there's no point in duplicating the points at which we
+can control the defaults, doing it in the code is fine. So, it basically
+means grepping the source to find out where we read settings from, and
+changing them to use HKCU instead of HKLM, perhaps also reading HKLM
+depending on the context of the setting (settings that can be used in
+appdefaults should check both).
+</p><p>
+I don't know how common these settings are but it might be worth having
+a utility function either in a DLL or inline in a header to do this.
+Registry code isn't complicated but it is tedious and easy to mess up,
+so we might as well reduce code duplication at the same time.
+</p><p>
+I think the best implementation is to keep the code responsible for
+managing WINEPREFIX in wineprefixcreate, and simply extend this program
+to handle upgrades as well. OK, so the name will be a bit inaccurate but
+let's not change it - users are already discovering the new program and
+getting used to it, no need to modify it now especially as it's mostly
+an internal program.
+</p><p>
+In the above example the old version and new version numbers were passed
+to wineprefixcreate but most of the time that information wouldn't be
+needed, for instance if we were to introduce fake DLL headers we could
+simply check if they already existed and skip that part if so. I think
+there's no harm in running wine.inf multiple times, so we could just do
+that every time for both creation and upgrade.
+</p><p>
+I <i>think</i> this addresses most of the issues with upgrades, though I'm
+sure Alexandre can think of more :) Potential unresolved problems:
+<ul>
+<li> [How] do we lock wineprefix during upgrade so other processes
+  that are run hang about until it's done?</li>
+
+<li> Currently moving registry keys about is done actually
+  in the code itself: we copy it across then print a message
+  telling the user to delete the old setting manually. There's
+  a fair bit of evidence that some users simply don't spot/understand
+  these warnings. Also, we want to allow people to upgrade Wine with
+  quite long intervals in between yet eventually this code gets deleted.
+ <br /><br />
+  Maybe a better solution is just to have wineprefixcreate understand
+  how to move registry keys around in response to bumping the version.
+  If the script gets too unwieldy, we could split particular upgrades
+  into separate scripts in $prefix/share/wine.</li>
+
+<li> Are there any weird setups where parts of wineprefix are shared
+  between different users/systems that we need to take into account?</li>
+</ul></p><p>
+Thoughts? Comments?
+</p></quote>
+
+<p>Well, the immediate thought is, "Why bother?"  Marcus Meissner 
+brought forth that view:</p>
+<quote who="Marcus Meissner"><p>
+I was always a fan of upgrades, but in the meantime I am more a follower of:
+</p><p>
+"If you upgrade to this new version, please re-setup your whole wine configuration
+and merge over your data."
+</p><p>
+This should only very seldom be the case anyway.
+</p><p>
+This causes less work for us and less work for the user due to us breaking his update.
+</p></quote>
+
+<p>Marcus wasn't the only person with that view, so Mike
+explained why he thought seamless upgrades were important:</p>
+<quote who="Mike Hearn"><p>
+Well, there are a couple of good reasons why automatic upgrades are good
+for us developers:
+<ol>
+<li> If we don't, we'll just get bug reports due to people not having full
+   upgrades: we already get plenty of bizarre bug reports due to broken
+   packaging, last thing we need is for people to fill bugzilla with
+   even more. And yes some developers do tech support :)</li>
+
+<li> We already do a ton of stuff automatically, and nobody ever
+   notices. This strongly implies that automatic setup and configuration
+   does benefit people: I can assure you they noticed when we didn't
+   set up the wine config upstream! We want Wine to have a good
+   reputation for reliability, but currently it doesn't - people run
+   random Foo app, it crashes and burns maybe due to incorrect
+   configuration and walk away saying "Oh well, Wine is crap,
+   what did I expect?". This happens quite a bit. Ensuring the user
+   is cleanly and transparently upgraded makes things Just Work to
+   a greater extent, which is good for everybody.</li>
+</ol></p><p>
+I'm still not hugely convinced about the backup thing: if you want to
+back up your configuration before upgrading Wine it's very easy:
+<ul>
+   <tt>cp -rv ~/.wine ~/.wine.old</tt></ul></p><p>
+
+... we could even do that as part of the upgrade process.
+</p><p>
+Possibly we should back up the registry, but not the virtual drive C.
+The C drive is going to change a lot less than the registry will: a Wine
+upgrade typically means new DLLs and maybe new registry contents. It
+rarely means changes to the drive layout.</p></quote>
+
+<p>Boaz Harrosh brought up some other points that need to be
+considered.  For example, what happens if you have two versions
+of Wine running side by side?  Silently making changes to the
+configuration could be considered quite rude.  The thread ended
+here and seemed to be more of a food-for-thought exercise.  
+However, given the complexity of Wine and the
+likelihood some parts of the configuration will need to change
+during an upgrade, this seems like a topic that will come up
+in the future.</p>
+</section>
+ 
+<section
+        title="Analyzing Debug Traces"
+        subject="ez-cdda sleep"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0738.html"
+        posts="11"
+        startdate="09/27/2004"
+        enddate="09/30/2004"
+>
+<topic>Debugging</topic>
+
+<p>Finding out why a particular program doesn't work can
+be a tough exercise.  Sometimes it's obvious when an API
+isn't implemented at all; at other times it's next to
+impossible to figure out when one isn't working correctly.
+This week James Hawkins posted 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/09/att-0738/01-log">a 
+trace</a> of trying to get EZ-CDDA Extractor to run.  Mike
+Hearn took the time to dig through it and help explain what
+James was seeing.  It's interesting to see this kind of
+detective work and it also serves as a good introduction to
+deciphering different Win32 calls:</p>
+<quote who="Mike Hearn"><p>
+I think Marcus is right, this looks like copy protection.
+</p><p>
+Let's engage on a little log analysis shall we? This is something that 
+just comes with practice ...
+</p><p>
+Just after the program starts, it does a CreateProcess:
+<ul><code>
+ 0023:Call kernel32.CreateProcessA(406cd2f0 "C:\\Program Files\\Easy CD-DA Extractor 7\\ezcddax.exe", 403810d8 "ezcddax.exe", 00000000, 00000000, 00000001, 00000004, 00000000, 00000000, 406cd2ac, 406cd61c) ret=00750ec9</code></ul></p><p>
+
+ezcddax is the real program and what you launched is just a stub.
+</p><p>
+Note the 6th parameter: it's 4, which is CREATE_SUSPENDED. So, the new 
+process isn't supposed to start.
+
+<ul><code>
+[ snip lots of traces from CreateProcess ]<br />
+ 0023:Ret  kernel32.CreateProcessA() retval=00000001 ret=00750ec9</code></ul></p><p>
+
+Here we are at the end.
+
+<ul><code>
+ 0023:Call kernel32.GetModuleHandleA(00000000) ret=00750fdb<br />
+ 0023:Ret  kernel32.GetModuleHandleA() retval=00400000 ret=00750fdb<br />
+ 0023:Call kernel32.GetModuleHandleA(00000000) ret=00750ffe<br />
+ 0023:Ret  kernel32.GetModuleHandleA() retval=00400000 ret=00750ffe<br />
+ 0023:Call kernel32.GetModuleHandleA(00000000) ret=00751012<br />
+ 0023:Ret  kernel32.GetModuleHandleA() retval=00400000 ret=00751012</code></ul></p><p>
+
+Interesting. GetModuleHandle(NULL) returns the HMODULE of the current 
+process. An HMODULE is simply a pointer to the base of the file which is 
+mapped in: in the case of an EXE it'll be the headers.
+</p><p>
+So, it looks like this program is walking its own headers in memory - 
+probably inspecting them for signs of tampering. More and more likely 
+that this is copy protection.
+
+<ul><code>
+ 0023:Call kernel32.ReadProcessMemory(00000058,00761060,0078c96c,00000002,406cbc0c) ret=007556bd</code></ul></p><p>
+
+It then reads the memory of the newly created process, 2 bytes from 
+0x761060. I wonder what is at that address?
+</p><p>
+Grep the log for it and bingo!
+
+<ul><code>
+ 0025:Starting process L"C:\\Program Files\\Easy CD-DA Extractor 7\\ezcddax.exe" (entryproc=0x761060)</code></ul></p><p>
+
+So it's reading the first two bytes of the entry point. Checking for a 
+breakpoint perhaps?
+
+<ul><code>
+ 0023:Call ntdll.NtReadVirtualMemory(00000058,00761060,0078c96c,00000002,406cbc0c) ret=404fab7a<br />
+ 0023:Ret  ntdll.NtReadVirtualMemory() retval=00000000 ret=404fab7a<br />
+ 0023:Ret  kernel32.ReadProcessMemory() retval=00000001 ret=007556bd<br />
+ 0023:Call kernel32.WriteProcessMemory(00000058,00761060,406cbc08,00000002,406cbc0c) ret=00755723</code></ul></p><p>
+
+Then it writes back 2 bytes to the same address. Maybe this is the bit 
+that lets ezcddax know it was started by the launcher program and not 
+directly by the user. I suspect if you suppress this WPM call, the 
+program will pop up an error asking you to run the launcher app 
+directly. It's probably writing a jump opcode.
+
+<ul><code>
+ 0023:Call ntdll.NtWriteVirtualMemory(00000058,00761060,406cbc08,00000002,406cbc0c) ret=404fabea<br />
+ 0023:Ret  ntdll.NtWriteVirtualMemory() retval=00000000 ret=404fabea<br />
+ 0023:Ret  kernel32.WriteProcessMemory() retval=00000001 ret=00755723<br />
+ 0023:Call kernel32.GetExitCodeProcess(00000058,0078ca58) ret=0074f235</code></ul></p><p>
+
+Now it goes into a loop, attempting to get the exit code of the process.
+
+<ul><code>
+ 0023:Call ntdll.NtQueryInformationProcess(00000058,00000000,406cb86c,00000018,00000000) ret=404f5dfa<br />
+ 0023:Ret  ntdll.NtQueryInformationProcess() retval=00000000 ret=404f5dfa<br />
+ 0023:Ret  kernel32.GetExitCodeProcess() retval=00000001 ret=0074f235</code></ul></p><p>
+
+It's trying to find out what the exit code of the process was. 
+Unfortunately, we don't know what the answer is because the return code 
+is a success/failure bool, not the actual exit code. You'd have to whack 
+an ERR in here or something to find out.
+
+<ul><code>
+ 0023:Call kernel32.ResumeThread(0000005c) ret=007557c5<br />
+ 0023:Call ntdll.NtResumeThread(0000005c,406cb8a0) ret=4050e85e<br />
+ 0023:Ret  ntdll.NtResumeThread() retval=00000000 ret=4050e85e<br />
+ 0023:Ret  kernel32.ResumeThread() retval=00000001 ret=007557c5<br />
+ 0023:Call kernel32.Sleep(00000064) ret=007557cd</code></ul></p><p>
+
+Then it tries to wake it up (remember, the remote process was started 
+suspended) and sleeps for a moment.
+
+<ul><code>
+ 0023:Call ntdll.NtDelayExecution(00000000,406cb888) ret=40507cff<br />
+ trace:relay:RELAY_InitDebugLists RelayExclude = L"RtlEnterCriticalSection; RtlLeaveCriticalSection; _EnterSysLevel; _LeaveSysLevel; LOCAL_Lock; LOCAL_Unlock; TlsGetValue; kernel32.GetLastError; kernel32.SetLastError"<br />
+ 0025:Call PE DLL (proc=0x401d3bb4,module=0x401c0000 L"ntdll.dll",reason=PROCESS_ATTACH,res=0x1)</code></ul></p><p>
+
+At this point the kernel does a context switch into the new process, and 
+it begins initializing. Note that CREATE_SUSPENDED doesn't mean nothing 
+runs in the new process. It still gets the ATTACH notifications (at 
+least, it does in Wine ... maybe not in real windows). So there's a lot 
+of stuff we can ignore here generated by the startup sequence.
+</p><p>
+Let's find out what the first process is doing:
+
+<ul><code>
+ 0025:Ret  ntdll.RtlAllocateHeap() retval=40393550 ret=4083acae<br />
+ 0023:Ret  ntdll.NtDelayExecution() retval=00000000 ret=40507cff<br />
+ 0023:Ret  kernel32.Sleep() retval=00000000 ret=007557cd<br />
+ 0023:Call kernel32.SuspendThread(0000005c) ret=007557da<br />
+ 0023:Call ntdll.NtSuspendThread(0000005c,406cb8a0) ret=4050e80e<br />
+ 0023:Ret  ntdll.NtSuspendThread() retval=00000000 ret=4050e80e<br />
+ 0023:Ret  kernel32.SuspendThread() retval=00000000 ret=007557da<br />
+ 0023:Call kernel32.GetThreadContext(0000005c,406cb948) ret=0075580e<br />
+ 0023:Call ntdll.NtGetContextThread(0000005c,406cb948) ret=4050e7ae<br />
+ 0023:Ret  ntdll.NtGetContextThread() retval=00000000 ret=4050e7ae<br />
+ 0023:Ret  kernel32.GetThreadContext() retval=00000001 ret=0075580e</code></ul></p><p>
+
+Context switch after the first line, and it awakens from its sleep.
+</p><p>
+It then suspends the thread, and grabs its context. Why does it suspend? 
+Reading MSDN reveals that the target thread has to be suspended for 
+GetThreadContext to work. The CONTEXT structure holds the register state 
+of the thread. I wonder what it's looking for in this structure?
+
+<ul><code>
+ 0023:Call kernel32.GetExitCodeProcess(00000058,0078ca58) ret=0074f235<br />
+ 0023:Call ntdll.NtQueryInformationProcess(00000058,00000000,406cb86c,00000018,00000000) ret=404f5dfa<br />
+ 0023:Ret  ntdll.NtQueryInformationProcess() retval=00000000 ret=404f5dfa<br />
+ 0023:Ret  kernel32.GetExitCodeProcess() retval=00000001 ret=0074f235<br />
+ 0023:Call kernel32.ResumeThread(0000005c) ret=007557c5<br />
+ 0023:Call ntdll.NtResumeThread(0000005c,406cb8a0) ret=4050e85e<br />
+ 0023:Ret  ntdll.NtResumeThread() retval=00000000 ret=4050e85e<br />
+ 0023:Ret  kernel32.ResumeThread() retval=00000001 ret=007557c5<br />
+ 0023:Call kernel32.Sleep(00000064) ret=007557cd</code></ul></p><p>
+
+OK, and we go back into a loop. In fact, this is an infinite loop.
+</p><p>
+Probably it looks like this:
+
+<ul><code>
+while (1)<br />
+{<ul>
+     int code;<br />
+     CONTEXT86 context;<br />
+
+     GetExitCodeProcess(process, &amp;code);<br />
+
+     if (code == ???) do something;<br />
+
+     ResumeThread(thread);<br />
+
+     Sleep(64);<br />
+
+     SuspendThread(thread);<br />
+     GetThreadContext(thread, &amp;context);<br />
+
+     // do something with context here<br />
+     if (context.???) break ???</ul>
+}</code></ul></p><p>
+
+So the question is, what condition will make it break out of the loop, 
+and why isn't it getting it in Wine?
+</p><p>
+It looks like it's waiting for some condition to become true in the 
+remote process. This will never happen because ResumeThread here doesn't 
+seem to be waking it up! We just loop over and over, resuming it, 
+sleeping for a while, grabbing its context to check something which 
+never changes, and starting over.
+</p><p>
+So, I guess the problem is that ResumeThread isn't actually waking up 
+the suspended process. Question is, why not?
+</p><p>
+Here's an idea. Hack the <tt>Sleep()</tt> call like this:
+<ul><code>
+if (delay == 64) delay = 3000;</code></ul></p><p>
+
+I.e., rule out the possibility that the delay between resume and suspend 
+is so short Wine can't react in time. Then continue your investigation 
+from there.
+</p><p>
+Good luck!
+</p></quote>
+
+<p>Mike suspected that the interaction between the expected Windows
+scheduling and the actual Linux scheduling was causing a problem.
+James made the change to sleep() longer, but it didn't have any
+effect.  Mike suggested some more changes, but nothing conclusive
+turned up.  Nonetheless, it was neat to see the log analyzed.</p>
+
+</section>
+
+<section
+        title="Progress Bar Changes"
+        subject="Re: Progress Bar: Fix Class Style &amp; Repainting (resend2)"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0775.html"
+        posts="6"
+        startdate="09/28/2004"
+	enddate="09/29/2004"
+>
+<topic>Controls</topic>
+<p>Controls can be tricky things.  Rob Shearman has been
+doing a lot of work on Wine's controls over the past
+month and one patch he submitted changed the way progress bars
+are displayed.  Now, this begins to get into a tricky 
+area that many people have stumbled across before:  Wine
+needs to be able to display things just like Windows 
+when none of the underlying device drivers or windowing
+behaves the same.  Rob's patch included this changelog:
+</p><quote who="Robert Shearman"><p>
+<ul>
+ <li> Fix class style to include the hbrBackground member.</li>
+ <li> Fix repainting issues introduced by this change.</li>
+ <li> Add WM_ERASEBKGND handler and remove background drawing code from
+ the WM_PAINT handler.</li></ul></p></quote>
+ 
+<p>Alexandre thought this might cause problems,
+<quote who="Alexandre Julliard">
+
+Isn't that going to cause a lot of flicker?  This was the reason for
+the existing code, because otherwise it looks really bad with apps
+that update the progress bar a lot.</quote></p>
+
+<p>Dimi Paun agreed:</p>
+<quote who="Dimitrie Paun"><p>
+Indeed, IIRC I've tried to have as optimum background drawing code
+as possible (in terms of overwriting areas, etc), as flicker in the
+progress bar would look rather ugly.
+</p><p>
+We have to be careful with these sort of changes, in that there are
+some controls that work real hard to avoid flicker as much as possible.
+Yes, the code is bigger, more complicated, and maybe sometimes not
+100% the way MS does it. But if it doesn't cause any problems, having
+a good looking control is important IMO.
+</p></quote>
+
+<p>Dmitry Timoshkov was more specific,
+<quote who="Dmitry Timoshkov">
+The problem with Rob's patch is that it causes the entire background of
+the progress bar to be repainted. Some time ago (3 years or like that)
+I wrote tests for progress bar and found that it invalidates background
+only when (oldPos &lt; newPos) and it really has a separate WM_ERASEBKGND
+handler. Since then my code has been removed and rewritten (by you
+Alexandre) for no obvious reason IMO.</quote></p>
+
+<p>Alexandre thought he had rewritten it precisely to avoid flicker
+and thought it was related to the MS Office install.  In the end
+Alexandre didn't commit the patch.  However, Rob did rework it a
+bit and perhaps another version will make it in.  </p>
+</section></kc>

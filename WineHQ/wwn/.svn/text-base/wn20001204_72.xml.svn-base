@@ -1,0 +1,233 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="72" date="04 Dec 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 72nd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="105" size="299" contrib="33" multiples="17" lastweek="14">
+<person posts="15" size="44" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="10" size="25" who="Dennis Bjorklund &lt;db@zigo.dhs.org&gt;" />
+<person posts="9" size="24" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="7" size="16" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="20" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="16" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="5" size="15" who="lawson_whitney@juno.com" />
+<person posts="5" size="13" who="Jon &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="5" size="11" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+Wine-20001202 has been released. Major changes include:
+<ul>
+   <li>New 'winemaker' script to automate source porting.</li>
+   <li>New dll import mechanism to replace ELF linking of .so files.</li>
+   <li>Many internationalization fixes.</li>
+   <li>A lot of portability fixes.</li>
+   <li>Builtin crtdll much improved.</li>
+   <li>Lots of bug fixes.</li>
+</ul>
+
+<p />
+
+MusicMatch also announced the availability of a JukeBox program of its 
+own, ported to Linux using Wine. You can check out the beta version 
+<a href="http://www.pctip.ch/downloads/dl/15950.asp">
+here</a>.
+
+<p />
+
+WineHQ new design (which was announced a
+while ago) has been promoted to the official skin level. We
+hope you'll enjoy the new surf on WineHQ and find it more readable and 
+easy to browse to get all the relevant information, even if everything 
+is not finished (&lt;fresh painting marks still float around&gt;).</section>
+
+
+<section 
+  title="Exporting variables from DLLs"
+  subject=".spec file &quot;extern&quot; entries"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0329.html"
+  posts="10"
+  startdate="26 Nov 2000 00:00:00 -0800"
+  enddate="29 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Ove K&#229;ven asked Alexandre Julliard for some more information on the
+newly introduced DLLs in .so file mechanism. Ove found that access to
+most global variable exported from another DLL failed with the new
+mechanism (<kcref issuenum="69" sectionnum="6">read the details here</kcref>):
+
+<quote who="Ove Kaaven">
+In some DLLs, like CRTDLL, not only functions are exported, but also
+variables, for example:
+
+<p />
+
+<code><pre>
+crtdll/crtdll.spec:@ extern __argc_dll CRTDLL_argc_dll
+crtdll/crtdll.spec:@ extern __argv_dll CRTDLL_argv_dll
+crtdll/crtdll.spec:@ extern _ctype CRTDLL_ctype
+crtdll/crtdll.spec:@ extern _environ_dll CRTDLL_environ_dll
+</pre></code>
+
+<p />
+
+But winebuild doesn't cope with these. It can either generate "jmp" import
+stubs, which is broken, or not generate anything at all, which fails
+linking. We're having some problems with this around here... how does
+Alexandre plan to solve this?
+</quote>
+
+
+<p />
+
+Alexandre answered:
+<quote who="Alexandre Julliard">
+I'm not planning to solve it at the moment, and given that there are
+very few such variables, I doubt solving it at all is worth the
+effort. If you need these variables you should declare pointers to
+them and use GetProcAddress (or for argc/argv/environ you can declare
+your own variables and use _GetMainArgs to fill them).
+</quote>
+
+
+<p />
+
+After some investigation, Ove reported that <quote who="Ove Kaaven">the
+unlinkable variables are GUIDs, like those defined in ddraw.h</quote>
+and wondered if winebuild should be extended to allow the definition
+of GUIDs from a given header file (like ddraw.h) ?
+
+<p />
+
+Francois Gouget replied:<quote who="Francois Gouget"> On Windows you are supposed
+to link with static libraries to get these GUIDs. I found three such
+libraries: uuid.lib (the main one), ciuuid.lib and daouuid.lib.
+</quote>
+
+<p />
+
+Francois then proposed to fix this in Wine by providing static
+libraries (or even .o files) like Windows do, meaning that nor an
+extension to the .spec file, nor dynamic linking (and symbol
+exportation) is required.
+</section>
+
+
+<section 
+  title="Wine debugger and a DOS driver"
+  subject="debugger on DOW drive?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0011.html"
+  posts="2"
+  startdate="02 Dec 2000 00:00:00 -0800"
+  enddate="02 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Dennis Bjorklund had tried to set the debugger as indicated in the
+doc-file using a UNIX style path name (like
+<code>/usr/local/bin/winedbg</code>), and reported failure to get the
+debugger started on a crash.
+
+<p />
+
+Dennis asked <quote who="Dennis Bj&#246;rklund">does this mean that winedbg can't live in
+the normal path but have to be in a windows partition (these strange
+things with letters like H:). It sort of makes sense since it's used
+from the windowsworld (ie registry) but in that case the documentation
+doesn't make sense any more.</quote>
+
+<p />
+
+Ove K&#229;ven explained:
+<quote who="Ove Kaaven">(it) is probably that many
+developers have catch-all drives, like below - and Wine is easily able
+to change a Unix path to a Windows path (and back) if such a
+definition exists in the <code>~/.winerc</code> file.
+<code><pre>
+[Drive Z]
+Path=/
+</pre></code>
+</quote>
+
+</section>
+
+
+<section 
+  title="Wine developers still have time to play"
+  subject="civ2"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0012.html"
+  posts="12"
+  startdate="02 Dec 2000 00:00:00 -0800"
+  enddate="03 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Dennis Bjorklund reported: <quote who="Dennis Bj&#246;rklund">civ2 (<i>EdNote:
+Civilization II</i>) is really slow in Wine. When I move a unit one
+square the move takes something like 5 seconds. Also the blinking that
+the units do when they are selected is very slow. And CPU usage are at
+100% all the time, but that might be true in windows also.. It looks
+good at least. 
+</quote>
+
+<p />
+
+Francois Gouget reported some other type of slowness (in an sample for 
+a Programming Windows book) which faded away if the user actively
+wiggles the mouse (Andreas Mohr reported the same bad behavior for
+WinAmp about box). None of them gave a clear explanation about what
+may fail, but this issue really need some fix.
+
+<p />
+
+But, the "mad mouse" approach didn't solve Dennis' issue.
+
+<p />
+
+Ove K&#229;ven went into with some thoughts:
+<quote who="Ove Kaaven">
+Civilization II uses WinG, which is implemented in Wine in terms of
+DIB sections (which was introduced in Win95 as the successor to WinG
+anyway).
+
+<p />
+
+Lately I've been working on DIB sections in x11drv - they are handled
+in quite some involved ways in x11drv, and I've been working on
+improving the flexibility, threadsafety, and the possibility of
+reducing the overhead. Maybe I'll submit what I have done sometime
+next week.
+
+<p />
+
+It may not help Civ2 directly, since the experimental
+DIBsection-&gt;screen blt optimization I did currently only handles
+16bpp and above, while WinG operates on 8bpp, but it should be very
+obvious where the extra work needs to be done...
+</quote>
+
+
+<p />
+
+</section>
+
+</kc>

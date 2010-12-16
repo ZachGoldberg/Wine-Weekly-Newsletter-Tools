@@ -1,0 +1,702 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="272" date="05/03/2005" />
+<intro> <p>This is the 272nd issue of the Wine Weekly News publication.  This
+special edition summarizes WineConf 2005 and all the presentations made.
+By the end of the week we should have some pictures gathered and other good
+stuff.  For now, grab a cup of coffee and read.
+</p><p>
+For those of you just tuning in, 
+Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+
+<section
+        title="WineConf 2005 Summary"
+        subject="News"
+        archive="http://www.winehq.org/site/wineconf"
+        posts="1"
+        startdate="04/30/2005"
+        enddate="05/01/2005"
+>
+<topic>WineConf 2005</topic>
+
+
+<p>
+The clock says it's 12:05am, probably already past the time I should have
+went to bed.  WineConf ended earlier in the evening.  
+I guess I can take solace in the fact ten Wine developers are
+still sitting downstairs and will probably be a lot more tired than me
+in the morning.  I surely won't finish writing this summary tonight,
+but it's nice to look back and reflect on what a great three days it has been.
+</p><p>
+Some of you might be looking for the short summary version, so it's
+worth recapping some major highlights.  First, Alexandre has imposed some
+deadlines for Wine.  Second, having some of the core Samba team members 
+show up was great and it may be possible to work together on some common 
+items.  Finally, the event itself was quite large with about 50 people
+attending from over a dozen countries meeting at the University of
+Stuttgart.  
+</p><p>
+WineConf 2005 unofficially kicked off Friday night  at the Deutsche Telekom
+Tangungshotel Stuttgart.  There was a really nice outside
+patio at the hotel and a bar inside.  We spent a little while discussing
+going out somewhere, but we were having too good of a time to be bothered
+trying to leave.  Before we knew it we'd somehow consumed a bunch
+of pizzas Andi Mohr ordered and the bar began shutting down.
+</p><p>
+Saturday morning we kicked off WineConf with a short presentation from
+one of our sponsors, WRS.  The layman's translation of the name is 
+something like <i>Stuttgart economic development corporation</i>.  It
+sounds like they've been successful promoting open source within the
+region.  
+</p><p>
+--
+</p><p>
+That led into Alexandre's keynote presentation.  His running joke had
+been he would reuse last year's slides (which themselves were joked
+about being a copy of the slides from 2002.)  However, that clearly
+wasn't the case.  Wine has seen a lot of development over the past
+year and it was fantastic to look at all the progress that's been 
+made.  The big projects are done: new filesystem handling code has
+been merged, interprocess window management works, all of the
+old options have been removed from the commandline, and winegcc 
+is now used to build Wine.  Other highlights include extensive
+regression tests, adding a Wine 'preloader' to solve glibc and
+memory management problems, work on MSI and Direct3D, a new
+RichEdit control, and real fonts.  
+</p><p>
+Alexandre then moved on to the big items that must be worked on.
+DLL separation is still on the plate.  Yes, we've been trying to 
+do that for years,
+but now we're just down to separation of kernel32, ntdll, user32,
+and gdi32.  Not much work is actively being done since those DLLs
+can never be replaced with native components.  So it remains on
+the to-do list, but not as a priority.
+The config has to go into the registry and the config file must
+be removed.  No one seems concerned we'll run into any difficulties
+with that, but the idea of transition code to help seems to have
+been abandoned.  Installers remain a hugely troubling area, but the
+OLE/COM work will take care of that.  All in all, there's some
+items left, but each of them has already been worked on.
+</p><p>
+So where are we at with the code?  Alexandre has cleaned up a
+lot of the old cruft and very little is left of the old Wine
+directory layout.  We're up to about 1,400,000 lines of code
+now and we're adding about 250,000 a year (that averages out
+to nearly 700 lines a day.)  Those numbers were extrapolated
+from graphs Alexandre showed, so there may be some errors in
+there.
+</p><p>
+So where does that leave us?  Well, the idea remains to put
+out a 0.9 release.  Alexandre put his foot down and decided
+to take a new approach - <i>deadlines</i>.  As he stated,
+"First time ever there will be a deadline in the Wine project."
+There are two main goals and he set target dates for them:
+<ul>
+<li>Remove the config file by June 30th.
+</li><li>Release 0.9 by September 30th.</li></ul>
+</p><p>
+Alexandre then turned it over to a question and answer period.
+Regression testing was mentioned and Alexandre told everyone, 
+"Everyone should be able to run the tests.  They work fine on
+my machine."  The source tracking system was raised again,
+but everyone seems happy with CVS and Alexandre as the sole
+committer.  Alexandre encouraged everyone to send in small
+patches though since it helps with stability as well.  Juan
+Lang asked about the window management and Alexandre ticked
+off a list of things that need to be done.  We need to check
+we're following freedesktop.org specs, make windows managed
+on the fly, and finish some interaction issues with the
+window manager.  Finally, Marcus Meissner asked if we have
+plans for 64-bit support. Alexandre said there's no reason 
+not to but it would take someone motivated to do it.	
+</p><p>
+Overall, this is much more remarkable than last year.  I think 
+after last year's presentation everyone was left with a sense there
+was a lot more work that needed to be done and it hadn't been
+thought about.  Even worse, only Alexandre could do it.  
+This year there seems to be much less work or large projects and 
+the few left are quite manageable.  What will happen with the
+deadlines?  Well, I suspect we're really going to take them
+seriously.  That'll ruin my joke that Wine has been 6 to
+12 months away from a release for twelve years.
+</p><p>
+--
+</p><p>
+Dimi Paun was up next to discuss the to-do list and 
+elaborate a bit about Wine's status.  He started out with
+a quick synopsis of why it's so important we kick out a 
+release.  First, it's important to dispel the myth about
+Wine being a cool hack but nothing that can be used in
+real life.  This is a good time to capture developer
+interest and user mindshare.  It will also allow 3rd
+party packages to use and require Wine.  
+</p><p>
+To that end, users just care about getting applications
+to run.  They really could care less about Wine or
+what it does.  Dimi proposed resurrecting the idea of
+the 'Gold List' of applications that are known to work,
+even if we start with just one application.  The idea
+would be users could leverage that as a way to put
+pressure on distros to not break things (like we went
+through all of last year with the glibc and exec shield
+changes.)  Discussion later about the practicality of
+having a gold list didn't reach a consensus.  The target
+for that would be sometime after 0.9 but before 1.0.  
+</p><p>
+Dimi then outlined the key focus of the to do list is
+to standardize on interfaces: UI within Wine, WineHQ
+as an information conduit, file formats and exported
+API's for developers, etc.  As far as that goes, we're
+in great shape.  There's really nothing left to be
+done except move the config into the registry.  
+</p><p>
+--
+</p><p>
+We then opened up the floor for discussion and a lot of
+different topics were brought up.  Copy protection
+remains an annoying problem, though Ivan Leo Puoti has
+been looking at it.  Exception handlers within GCC
+aren't supported, and that remains an issue.  Some
+off hand comments were made about an apparent shift 
+with ISV's concerning Wine; whereas we used to get
+totally blown off, now people are at least willing to
+listen.  
+</p><p>
+Finally, some discussion about WineHQ came up.  Jeremy
+Newman announced we would soon be hosted by a new ISP 
+with a brand new server.  At the same time we're going
+to move from Red Hat 9 to Debian and from Hypermail to
+Mailman.  There will be downtime, but we don't have an
+exact date (near future sounds about right.)  Having
+realized we'll never get Newman to support a wiki on
+WineHQ, Dimi proposed putting together a separate offsite
+wiki.  In fact, look for an announcement later this 
+week about that work.
+</p><p>
+--
+</p><p>
+Next up, the CTO of Gupta Technologies, Charles Stevenson,
+presented a real world case of using CrossOver and Wine.
+They've created a developer tool and database product
+and ported parts of it to Linux with the help of CrossOver.
+He went through a series of statistics about Linux
+growth that were interesting (IT services are growing at
+a rate of 57% per year.)  The 'ecosystem' to support
+Linux has grown with the driving force being cost and
+maintainability.  Interestingly, sales of their Windows
+product went up as soon as they announced they had a
+Linux port.  
+</p><p>
+He then described Wine and its appearance to the outside
+world (that means probably none of you reading this.)  
+First, no matter how well you run or port your application,
+as soon as you mention Wine there seems to be a general
+shrug of, "Oh Wine?  Then you're not a real Linux 
+application."  Of course, Win32 apps are just a different
+toolkit compared to Qt or Gtk and Wine's goal is to make
+them first class citizens on Linux.  Some things he
+mentioned are inevitable and affect every open source
+project.  We don't have a CEO and we're not a company.
+However, it's important we point out we use professional
+development tools, perform testing, and track regressions.
+Furthermore, for customers who want the safety and
+comfort of commercial support we need to make it clear
+that a few different companies exist to help with that.
+</p><p>
+He concluded with some general comments that seem to
+point toward the direction the industry is heading
+(keep in mind, he's a CTO of an independent software
+vendor.)  Namely, Linux will be part of any solution
+delivered in the next five years; at least it will
+be assessed.  Cross-platform strategies offer the
+highest productivity and payback.  All in all it's
+interesting to see how industry is evaluating Linux
+and Wine.
+</p><p>
+--
+</p><p>
+Then it was time for lunch!  WRS and FEI arranged for a 
+caterer to provide a nice meal.  It was quite a bit
+better than the pizza we were planning on.
+</p><p>
+--
+</p><p>
+The afternoon shifted into discussions with Samba.  Many
+of the core Samba developers were in attendance, including
+Andrew Tridgell, Jeremy Allison, Andrew Bartlett, Jerry
+Carter, Jelmer Vernooji, and Volker Lendecke.  One of the
+major Samba conferences, SambaXP, was being held following
+WineConf.  As such, they rearranged their travel to pass
+through Stuttgart.  It may be the only time we'll ever
+have the opportunity to meet with such a large group and
+it proved to be really interesting.  We share a lot of 
+common ground though the areas Samba covers are obviously
+much more mature. 
+</p><p>
+First up, we heard from Juan Lang with Wine.  In the past
+he's worked on Wine's RPC code and had quite a few ideas
+for ways to integrate with Samba.  He made it clear the
+goal isn't to merge large parts of code or perform
+invasive changes.  Instead, there are some obvious places
+that could use integration and we should pursue them.
+</p><p>
+For example, Wine could use Samba to set up the "Network
+Neighborhood".  Using Samba NetBIOS code might be another
+idea, though less and less people use NetBIOS these days.
+On the transport side, RPC and NT named pipe code might
+benefit from Samba.  Finally, a whole set of security
+details such as authentication and Windows' file 
+attributes could come from Samba.  
+</p><p>
+Juan pointed out that the Network Neighborhood is actually
+possible today.  You can parse the output of from smbclient
+for a browse list and mount things on ~/dosdevices/unc.
+It's pretty ugly, but definitely doable by most people.
+There's almost certainly a better way to do it.
+</p><p>
+I won't go into details on authentication or file
+attributes.  Andrew Bartlett's and Tridge's
+presentations covered both extensively, but Juan touched
+on the topic from a Wine perspective.  
+</p><p>
+Where it got interesting was concerning RPC code.  Wine's
+marshaling isn't wire-compatible, but it's getting closer.
+If we had real NT named pipes we could layer on top of
+that, however we start to run into what appear to be some
+fundamental problems.  Since named pipes can be shared
+between processes, we'd have to implement them in
+wineserver.  IO requires roundtrips to the wineserver to
+complete and it becomes an issue of how well wineserver,
+an intentionally single-threaded process, can scale.  
+This could be a potentially devastating performance issue
+when you consider just how many messages have to get
+passed back and forth.
+</p><p>
+Juan took the extra step of figuring out what would
+happen.  He implemented a new wineserver request to test
+reading from a file.  He benchmarked wineserver with a 
+100MB file and various buffer sizes.  He then went
+through and compared this performance with open, 
+CreateFile, and CreateFile on a mounted SMB share.  
+He further compared it with the number of clients
+within wineserver to see how well it scaled.  The
+results looked extremely promising.  With regard
+to clients, we take a performance hit when the second
+one is added, however it remains constant after that.
+Juan's theory is the disk begins efficiently serializing 
+requests at that point.  Overall we're bound by the
+speed of the disk, not the wineserver IO (unless you
+get into really small buffers that cause a lot of
+wineserver roundtrips.)  That's extremely promising
+and might open the door to using Samba's named pipes.
+</p><p>
+--
+</p><p>
+Andrew Tridgell, or Tridge as everyone calls him, 
+came up next to present some stuff on what Samba's
+doing and where it can lead Wine.  As Tridge said,
+"Because we have a smaller task we've been able to 
+fill in some of the details."  Samba's recent development
+on version 4 has led to implementing some of the very
+newest features of Windows.  
+</p><p>
+He opened with some questions, such as what could/should we
+cooperate on, whether or not we should aim for
+Samba and Wine interoperability, and if we 
+cooperate how we should go about doing it.  Samba
+doesn't care about API compatibility but Wine does.
+Samba doesn't have to worry about object level 
+compatibility, just wire level.  However, both 
+of us need to get the same things right.  We 
+both have DCE/RPC technologies and IDL to represent 
+them.  We both have a need to figure 
+out how to do NTFS filesystem features on POSIX.
+Further, we might want to look into doing file 
+locking between Wine and Samba.  Those items seem
+to be most common areas we could look at in the
+near-term, with the possible exception of the
+talk Andrew Bartlett presented next.
+</p><p>
+The RPC world could present some interesting
+areas for working with Samba.
+Looking at IDL compilers, it's apparent Wine's widl
+compiler and Samba's pidl compiler were built for
+different purposes.  However, it could be possible 
+to share IDL files.  Samba's license on it's IDL 
+files specifically targets interoperability with
+other projects - we won't run into any problems with
+the fact Samba is GPL and Wine is LGPL.  Samba also
+maintains an extensive test suite that could be used
+to torture test our RPC implementation.  
+</p><p>
+Looking at getting NTFS features on a POSIX filesystem
+gets much more difficult.  Tridge rattled off a list 
+of all the things that need to be supported: streams, 
+timestamps, attributes, case-insensitivity, NT ACL's,
+8.3 names, and then a load of just little bizarre
+things that Samba has discovered over the years.  Samba
+4 is being built with all this in mind with much more 
+clearly defined interfaces.  Samba 4 uses xattrs to
+store all this info and seems to be a nice solution. 
+All the data stays with the file and it does exist on
+most modern filesystems, though it's not always enabled.
+Further, an LSM module could be created to give transparency
+to NTFS attributes on Linux.  As far as file locking goes,
+he first raised the question of whether Wine really cares
+about exact locking semantics.  If so, it appears we could
+do it but we'd probably need a special daemon for
+communication.  
+</p><p>
+Finally, one problem that's been discussed on wine-devel
+with Samba guys recently is handling case insensitivity.
+The current solutions scan directories a lot and can 
+lead to horrible performance.  The hardest problem is just
+proving a file doesn't exist.  Getting support in the 
+kernel seems difficult.  Tridge proposed a few different
+ways, none of which seemed to be a great solution.  He
+pointed out the irony that, "Linux users hate mixed case
+names, yet Linux supports it.  Windows users love mixed
+case names, but Windows doesn't support it."  
+</p><p>
+--
+</p><p>
+Andrew Bartlett of Samba had the last presentation of the day.
+He discussed an area very few Wine developers know anything
+about: Windows authentication.  This is an area Wine is apparently
+beginning to run into.  As we get more and more into network
+applications, even Internet Explorer, we may not be able to
+get away with the almost stubbed implementations we have.  
+On Windows everything is about a single sign-on and transparency.
+There's now little distinction between local and network methods,
+and various protocols now begin hitting it (even HTTP.)  The
+holy grail for both Wine and Samba would be a method for logging
+in via something like GDM/KDM and have that work for all SMB
+and Wine authentication methods.  
+</p><p>
+What's revolutionizing all this is Andrew's work on Samba 4.
+The new Samba will contain an interface similar to Microsoft's
+SSPI and can be called from everywhere.  It can sit both on
+the client and server side and handle blob passing.  The 
+library behind this is Andrew's GENSEC.  He thought it might
+be possible to wrap GENSEC into the SSPI APIs Wine has to
+implement.  At the very least GENSEC can provide a way to
+learn about SSPI and would help us build it properly.  
+</p><p>
+At the end of the day, the challenge for Wine will be a way 
+to get user credentials.  The goal should be to keep a single 
+sign-on interface.  There's probably a couple of different
+ways it could be done, such as using a PAM module to stash
+information that could be retrieved later.  Of course, since
+the whole point of authentication is security, whatever system
+gets designed will have to take that into account.
+</p><p>
+-- 
+</p><p>
+After that we wrapped up and meandered back to the hotel to
+get ready for the night.  We headed downtown to the Rosenau for
+a dinner put on by CodeWeavers.  We had a fantastic time.
+I had an interesting conversation with Jerry Carter and Ira 
+Krakow about the dynamics of open source projects as well
+as other random stuff.  We stayed at the restaurant fairly
+late before heading back to the hotel.  Dimi and I probably
+were the last ones to get to bed.
+</p><p>
+--
+</p><p>
+Breakfast came really early.  To start out the agenda we
+had Steven Edwards and Hyperion from the ReactOS project
+show off their latest work.  Things really seem to have
+improved from last year.  Rather than running it in VMware, 
+Steven actually booted his laptop into ROS.  The running
+joke seemed to be something like Samba is hard, Wine is
+daunting, and the ROS guys are just crazy.  They aim to
+provide complete Windows compatibility within their operating
+system, including support for devices and drivers.  That
+always raises the question of why bother, but I like to
+think back to something Steven mentioned a few years ago:
+Linux was just trying to be a free replacement for Unix,
+so ROS is just trying to be a free replacement for Windows.
+</p><p>
+A lot of things work this year and many areas are progressing.  
+Thanks to Wine they can
+run applications like OpenOffice, AbiWord, and PuTTY.  They
+have driver support now for nvidia and ATI.  Under development
+they have more networking support, OpenGL/DirectX, and 
+plug 'n play support.  The kernel is getting more stable,
+but they need to do a better job at things like syscall and return value
+checking in order to get more stable.  Many large projects
+haven't been started yet though, including a printing 
+subsystem, security subsystem, NTFS support, etc.  
+</p><p>
+As far as working with Wine goes, things are ok.  ROS now
+shares over 45 libraries with Wine, 5 tools, and other
+miscellaneous code.  Further abstracting wineserver and
+x11drv might allow parts of user32 and gdi32 to be shared
+as well.  Even parts of kernel32 could be shared with a
+little reorganization.  Steven would like to get the point 
+of using Wine's regression tests.  Steven thought Wine
+and ROS could improve working together.  Syncing patches
+remains a problem and it would be nice to develop a better
+method.  
+</p><p>
+Getting into the crazy ideas side of things, Steven brought
+up a few things that in theory could be done.  A user mode
+ROS would help a lot with debugging.  Running ROS on XEN
+might be a way to do process migration of Win32 programs
+between different systems.  Support for 64-bit Windows and
+other architectures was also being looked at.  
+</p><p>
+We wrapped up with some questions and answers.  The Samba
+guys mentioned they need a way to do "raw" Windows printing -
+rasterizing raw GDI calls.  ROS might have some code that
+could help with that.  In return, Samba has spooler code
+that could be useful.  
+</p><p>
+--
+</p><p>
+Jason Edmeades got up next to discuss DirectX8/9 and the
+new wined3d library he wrote.  Just a few days before the 
+conference Jason experienced a meltdown of his laptop.  He 
+scrambled to get a new distro installed on it and rebuild Wine.
+It all paid off with some stunning 3D demos.  He ran quite
+a few games and showed the state of Wine's DirectX implementation.
+</p><p>
+Before all that, he went through an outline of DirectX and
+exactly how it all fits together.  Jason originally got involved
+with Wine's DirectX code to learn 3D programming.  Instead, he
+learned how to hook Microsoft's Direct3D into OpenGL.  The 
+mapping between the semantics of the two differ to a degree
+to cause some problems.  For example, DirectX 
+advertises the features it supports whereas OpenGL just supports
+them with software rendering if hardware acceleration isn't
+available.  To make things difficult, different video cards 
+provide different OpenGL extensions and Wine has to write
+multiple implementations to support that.
+</p><p>
+Jason then put up a massive graphic that outlined the entire
+DirectX pipeline.  He pointed out that Wine's DirectX 
+implementation differs radically from Microsoft's.  Whereas
+Wine calls OpenGL in response to API calls, Microsoft seems
+to package up calls and maybe pass them through to the driver.
+</p><p>
+So where are we at?  Wine's Direct3D 8 code is relatively 
+complete.  D3D9 won't be a massive change and centers around 
+adding shader support.  Things aren't in that good of a shape at
+the moment though.  The new wined3d library was implemented
+for combining D3D8 and D3D9 code.  However, only part of the
+code has been moved into the library.  Its goal right now is
+to implement D3D9 on top of it and then switch D3D8 over to it.
+But that process remains to be done.  Oliver Stieber's work
+has been written with wined3d in mind, but it needs to get
+merged.  Apparently until recently Oliver was working more
+or less full time on the code, so there's been a substantial
+amount of work that's been done.  
+</p><p>
+There remains more disparate work to be done though.  Installer
+support and copy protection are problems.  Jeremy White 
+reiterated that he plans on locking Rob Shearman in a room
+until every installer works out of the box.  Right now most
+of the D3D code places emphasis on quality rather than speed.
+Jason mentioned part of the reason for that was based on how
+he developed the code.  Finally, other problematic areas include
+various Wine regressions, Quartz (DirectShow), sound, and
+the lack graphical test suites.  
+</p><p>
+After that Jason started some demos.  The first showed off
+drawing a square and triangle.  Completely unimpressive, but
+Jason pointed out that at the point you can get them to
+display with DirectX, you have most of the underlying code
+you need to do really impressive stuff.  Moving on, he showed
+a demo of the game <i>Mafia</i> with all kinds of cool D3D
+effects.  Equally impressive were some of the demos with
+3DMark.  Jason pointed out that due to rebuilding his system
+the demos were actually running on CVS code rather than
+his development tree.
+</p><p>
+--
+</p><p>
+We moved on to discussing the new Microsoft Installer code
+mostly written by Aric Stewart and Mike McCormack.  MSI
+encompasses a vast amount of code that sounds like complete 
+overkill.  As Aric explained, Microsoft must have went
+through, thought of every single little feature any
+installer would ever need, and then implemented them.  Many
+things are now using it, including the latest InstallShield
+installers that wrap around MSI.  As Windows98/Me (and even
+Windows 2000) support fades we'll see more and more need for
+MSI.  
+</p><p>
+Aric and Mike outlined all the work they did figuring out
+exactly how MSI works.  An MSI install file is actually
+a complete database, or more appropriately as Shachar
+Shemesh pointed out, it's a read-only data store.  The
+database provides tables and an API similar to SQL to
+query those tables to figure out what needs to be done.
+For example, the names of all the files that need to get
+installed might be stored in one table and referenced
+from others.  Besides the file format support, Wine's MSI
+requires an install engine, a user interface and a registry
+interface.  To make things more interesting, most of it
+can be rolled back if the installation fails.  
+</p><p>
+The components of the install engine are particularly
+interesting.  Wine's implementation has been done completely
+in Unicode.  It can check for installed components and
+features.  Where all the work gets done are with <i>actions</i>.
+Microsoft defines a ton (over a hundred?) different actions
+like installing files, writing registry values, reading
+registry values, etc.  In addition, custom actions can be
+defined.  Aric mentioned that's where a lot of work remains
+to be done.  His hopes are people will see an action fail
+and then look at MSI to figure how to implement it.  One
+good area someone could look at would be the "remove" actions,
+which are a counterpart of the "add" actions that are already
+known.  
+</p><p>
+--
+</p><p>
+Then we broke for lunch.  Shachar organized a PGP key
+signing party so we broke off for a minute to do that.
+We also took <a href="/images/wineconf05_grp.jpg">a
+group photo</a> [1.2MB].  Everyone seemed to be getting
+pretty weary at this point.  The Samba guys announced
+they would have to leave early to head up to Goettingen
+for SambaXP.  
+</p><p>
+--
+</p><p>
+Convening after lunch, 
+Marcus Meissner presented reverse engineering techniques.  Mostly
+it was a lesson in what various x86 assembly looks like and how to
+recognize certain constructs.  For example, gcc and MSVC will write completely
+different constructs with different calling conventions.  Marcus
+opened up one of the digital camera drivers he wrote for gphoto and showed what
+it did and various constructs it used.  He moved on to discussing the
+implementation of stub DLLs.  The high-level needs of Wine can get more info on
+what needs to be done by implementing stubs and fleshing them out.
+</p><p>
+--
+</p><p>
+Next up, we focused on testing.  Paul Millar and Jeremy
+White combined two testing topics.  
+<a href="http://www.cxtest.org">CXTest</a> had come up a
+few times throughout the conference, so it was nice to get
+a first hand glimpse of it.  
+</p><p>
+Paul went up first and presented some ideas concerning 
+automatic testing.  He has a web interface he's maintained
+for quite a few years to do automatic builds and run the
+Wine test.  Called Wine Regression Testing (WRT), it does 
+async builds based on
+CVS emails.  It puts a web page with all the results in
+an easy to read format.  It also has the capability to send
+email based on the results of the build and tests.  Paul 
+pointed out the number of tests have really increased.  A 
+graph he displayed looked like we're at about 7500 tests now.
+If you're interested in more info on it, check out past
+issues of WWN - we've covered it at different points and 
+have the URL in there.
+</p><p>
+Moving on, we had Jeremy White come up to discuss CXTest. 
+For a couple of years Wine, or at least CodeWeavers, has been trying to
+develop an automated testing suite that tests graphical apps.  Right now
+the Wine test suite is great for testing API's, but it doesn't do any
+good for actually testing a real world application and finding regressions.
+The idea is to somehow run a graphical program, make it do things, and
+then test to make sure those things were done correctly.  If someone
+fails, then you can begin looking at patches to figure out which one 
+caused the regression.
+A package will always have an install script.
+Then you build tests that automatically control graphical elements.  You can
+specify different types of reporting.
+</p><p>
+If that sounds difficult, it's because it is.  Jeremy mentioned they had 
+spent a year just looking for a solution before deciding on the elements of
+CXTest.  Now it appears 
+<a href="http://www.cxtest.org">CXTest</a> is ready for widespread use.
+Besides just testing different programs and Wine, it lets us test things
+against different distros and kernels.  It's completely possible a new
+kernel could break things.  If you're interested in the technical details 
+of CXTest and how to go about running it, check out the CXTest 
+<a href="http://www.cxtest.org/docs/readme">README file</a>.
+</p><p>
+Jeremy has a script that checks out Wine every night, builds it, and then
+tests different apps.  You can build tests that automatically do things like
+capture a picture, send key strokes, capture clicks, etc.  Basically it's
+an automated way to control graphical elements you'd normally never have
+control over.  The components involved include scripts and some custom
+Winelib stuff (part of the package and GPL'ed.)  
+to click on different things.  The reporting side can send test 
+results to a central website and get formatted nicely.  
+</p><p>
+A large discussion ensued about how useful it would be for Wine.  What
+we seem to have learned is we're decent at collecting bug reports and
+finding which patch caused a regression.  However, we're not that great
+at responding to such reports.  Whether or not we need a lot more data
+is debatable.  In the end it seems running the tests is easy, so maybe
+we just need to do it.
+</p><p>
+--
+</p><p>
+For the final presentation, Dimi wanted to put together a bit
+about what future work could be done.  As he mentioned, each idea 
+could almost fill a presentation on its own, but it's worth 
+mentioning things to float ideas.
+</p><p>
+It would be great to get some other people from other projects interested
+in integration.  There's an opportunity for better kernel integration,
+such as case-insensitive lookups.  That would actually help Samba a lot
+as well and an idea to do it has been floated by Linus and Ingo Molnar.
+The idea of a kernel module isn't dead and it was another topic that came
+up again as something might be useful.  We need to at least document what
+kind of interfaces would help in that area and then we could actually
+consider implementing them.
+</p><p>
+Another area we could improve upon are just various UI issues.  Some
+window manager extensions would help, but we also know things we could
+do.  For example, a DIB renderer is needed and theming support integrated
+with the desktop would be nice as well.  Dimi also brought up his
+(healthy) obsession with DLLs.  All this is important just because it's
+what the user ends up seeing - it can easily project a bad image.
+</p><p>
+Better desktop integration could also be done.  For instance, mapping 
+the Desktop/ folder or maybe configuring registry settings based on things
+in the user's environment (Eric Pouech specifically mentioned proxy servers
+could be automatically configured for IE.)  Going further, file manager
+integration could be done with Nautilus or Konqueror.  
+</p><p>
+Finally, Dimi presented some miscellaneous issues that are being kicked
+around.  It sounds like authentication cooperation with Samba really might
+be possible.  Current work on MSHTML working with Mozilla seems to be
+progressing and various reasons were presented for why that's important.
+We don't really have an upgrade strategy (heck, we just figured out the
+release strategy.)  
+</p><p>
+Things wrapped up quickly.  I sat down with Eric Pouech and Ira Krakow
+to go over some book chapters.  Eric graciously lent nearly three hours
+and went through a lot of things.  I changed my travel plans and 
+decided to stay in Stuttgart an extra night rather than travel to
+Frankfurt.  In fact, a lot of people stayed over in Stuttgart so CodeWeavers
+canceled their dinner and invited everyone out with them to a steakhouse
+downtown.  
+</p><p>
+--
+</p><p>
+As I finish writing this, my plane is flying over Indiana.  I've been
+awake for the better part of 24 hours traveling through four airports
+and a few train stations before that.  WineConf 2005 was a great
+time.  It was wonderful seeing everyone and meeting new folks.  I
+can't thank everyone enough who pulled this off.  Mr. Ulrich Gemkow
+and the University of Stuttgart for organizing the venue and the
+FEI student organization for staffing all the behind the scenes
+action.  WRS and CodeWeavers kicked in a lot of $$$ to make this
+a free event for developers.  On the ground we had David G&#252;mbel
+and Michael Stefaniuc running around helping us get things done.
+We couldn't have done it without any of them.  Now it's time to
+see if I can get a few hours of sleep before landing.
+</p></section>
+</kc>

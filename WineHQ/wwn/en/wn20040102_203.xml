@@ -1,0 +1,362 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="203" date="01/02/2004" />
+<intro> <p>This is the 203rd issue of the Wine Weekly News publication.
+Its main goal is to write the wrong year on checks. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="206" size="637" contrib="42" multiples="27" lastweek="20">
+
+<person posts="27" size="67" who="Dimitrie O. Paun" />
+<person posts="17" size="40" who="Mike Hearn" />
+<person posts="14" size="55" who="Boaz Harrosh" />
+<person posts="14" size="35" who="Alexandre Julliard" />
+<person posts="11" size="48" who="Tom" />
+<person posts="10" size="33" who="Dmitry Timoshkov" />
+<person posts="10" size="33" who="Chris Morgan" />
+<person posts="10" size="24" who="Joshua Walker" />
+<person posts="10" size="23" who="Robert van Herk" />
+<person posts="9" size="31" who="Zimler Attila" />
+<person posts="9" size="24" who="Dan Kegel" />
+<person posts="6" size="10" who="Ivan Leo Murray-Smith" />
+<person posts="5" size="18" who="Gregory M. Turner" />
+<person posts="4" size="15" who="Robert Shearman" />
+<person posts="4" size="12" who="Shachar Shemesh" />
+<person posts="4" size="8" who="Lionel Ulmer" />
+<person posts="4" size="8" who="Steven Edwards" />
+<person posts="3" size="49" who="Subhobroto  Sinha" />
+<person posts="3" size="7" who="Stefan Leichter" />
+<person posts="3" size="6" who="Rein Klazes" />
+<person posts="2" size="8" who="Kevin Atkinson" />
+<person posts="2" size="6" who="Dan Timis" />
+<person posts="2" size="6" who="Vik" />
+<person posts="2" size="5" who="Phil Krylov" />
+<person posts="2" size="4" who="Ove Kaaven" />
+<person posts="2" size="4" who="Eric Pouech" />
+<person posts="2" size="3" who="Saulius Krasuckas" />
+<person posts="1" size="4" who="Gerald Pfeifer" />
+<person posts="1" size="4" who="Jeremy Shaw" />
+<person posts="1" size="4" who="David Lee Lambert" />
+<person posts="1" size="3" who="(thomas.1037)" />
+<person posts="1" size="2" who="Andreas Mohr" />
+<person posts="1" size="2" who="tom alderweireldt" />
+<person posts="1" size="2" who="Robert Bihlmeyer" />
+<person posts="1" size="2" who="P. Christeas" />
+<person posts="1" size="2" who="Ralf Juengling" />
+<person posts="1" size="2" who="Peter Oberndorfer" />
+<person posts="1" size="2" who="Brett I. Holcomb" />
+<person posts="1" size="2" who="Troy Rollo" />
+<person posts="1" size="2" who="Gerhard W. Gruber" />
+<person posts="1" size="2" who="Juan Lang" />
+
+</stats>
+<section
+        title="News: Steam Howto"
+        subject="News"
+        archive="http://www.linux-gamers.net/modules/wfsection/article.php?articleid=17"
+        posts="1"
+        startdate="12/27/2003"
+        enddate="01/02/2004"
+>
+<topic></topic>
+<p>Once again.. here I am just a few minutes from putting out an issue
+of WWN and I realize I have no news.  Well, that just isn't
+acceptable.  It's usually possible to scrounge <i>something</i> up.  
+This week <a href="http://www.frankscorner.org">Frank's Corner</a>
+came through with 
+<a href="http://www.linux-gamers.net/modules/wfsection/article.php?articleid=17">instructions
+from linux-gamers.net</a>
+on how to install Steam under Linux.  
+</p>
+
+<p>I found it interesting they advocated using Wine rather
+than TransGaming's WineX.  </p>
+
+</section>
+<section
+        title="DirectMusic Update"
+        subject="DMUSIC: my latest work"
+        archive="http://www.winehq.org/hypermail/wine-patches/2004/01/0007.html"
+        posts="1"
+        startdate="01/01/2004"
+        enddate="01/01/2004"
+>
+<topic>Status Updates</topic>
+<p>Rok Mandeljc did some work on DMusic and gave an update
+with his patch:</p>
+<quote who="Rok Mandeljc"><p>
+
+I finally found some time to organise my dmusic work of last two months
+in useful patch. Dmusic is now DX9 compatible, we have almost fully
+implemented (but not working :( )
+IDirectMusicCollection / IDirectMusicInstrument, fully implemented
+IDirectMusicContainer and almost completely (but fully working I believe
+IDirectMusicLoader)...
+</p><p>
+Short, but not complete ChangeLog:
+<ul>
+<li> updated resources to DX9</li>
+<li> completely rewritten headers (DX9 compat.; look much nicer now ;=)</li>
+<li> removed IDirectMusicSong and IDirectMusicMelodyFormulationTrack
+(which are removed from DX9; weren't implemented in DX8 anyway)</li>
+<li> combined/simplified
+IDirectMusicSomething/IDirectMusicObject/IPersistStream for objects that
+support loading</li>
+<li> implemented IDirectMusicObject on all such objects; via generic
+functions</li>
+<li> combined IDirectMusicTrack(8)/IPersistStream on all tracks</li>
+<li> fully implemented IDirectMusicContainer (at least 90% if there are no
+private interfaces)</li>
+<li> implemented IDirectMusicCollection (99% work &amp; MS compliant
+behaviour; except for instruments)</li>
+<li> tried to implement IDirectMusicInstrument (unfortunately uses some
+dirty private interfaces... :(</li>
+<li> added dswave.dll; DirectMusic Wave</li>
+<li> some changes in style</li>
+<li> many, many more ;)</li>
+</ul></p><p>
+ oh and if somebody is interested in test programs I wrote &amp; used and
+ some docs on dark sides of dmusic (written by myself ;)), mail me and
+ you'll get them in 24 hours ;)
+
+</p><p>any feedback, suggestions or whatever are welcome
+
+</p><p> and happy New Year everyone!</p></quote>
+
+</section>
+<section
+        title="Winelib Porting Report"
+        subject="Congradulations :-}"
+        archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0734.html"
+        posts="14"
+        startdate="12/29/2003"
+        enddate="01/01/2004"
+>
+<topic>Winelib</topic>
+<p>You can port an app from Windows to Linux using Winelib.  
+This shouldn't come as a surprise to anyone - after all, that's
+one of the goals of the project.  In practice it's a lot harder
+than that.  Boaz Harrosh let everyone know he just completed
+a major project:</p>
+<quote who="Boaz Harrosh"><p>
+   Just wanted to let people know. And share this happy moment with my 
+fellow workman
+</p><p>
+    I have successfully Beta released a WinLib port of a, 1 million 
+lines of code, windows program. QA will Install a first Linux Machine 
+and will start to bang on it tomorrow. (Well more like an advanced alpha 
+I guess)
+</p><p>
+    Technologies successfully compiled and running in the Project:
+<ul>
+<li> Windows GUI &amp; API (wrapped in an Old C++ lib, ZAFF).</li>
+
+<li> ODBC under CRecordSet from MFC - I use the MSSQL drivers, SQLing data 
+from a neighboring WinXP-SQL Server. I used an mdac.exe installation 
+application from Microsoft. With ODBC32 native DLL.</li>
+
+<li> General MFC contains, Strings, OleDispatch OleVariant OleBSTR... and 
+even some GUI. - Actually to manage that I had an MSVC++ wizard 
+generated MFC MDI Application with ODBC access and forms. Which helped 
+me debug the MFC library. So MFC is pretty much covered.</li>
+
+<li> ATL/WTL OCX hosting and General ATL use for anything COM. - Here too a 
+WTL app-wizard generated MDI application with IE and other OCXes on 
+Forms help me verify the ATL subsystem. Including support for "uuidof", 
+"#pragma property" and more. Hosting and Events work fine.
+( actually ActiveX controls compile too, but TLB problem must be resolved.)
+</li>
+<li> A solution for Linking with C++ shared libraries that in-turn also use 
+windows API.
+(I call them C++ fake DLLs.)</li>
+
+<li> C++ STL from STLPort ported to Wine to compile using msvcrt (and MFC)</li>
+</ul>
+</p><p>
+And more stuff I cannot remember now.
+</p><p>
+By far the biggest problem was  the msvcrt vs STL. and other native C++. 
+This caused a big Linking problem where STL would bypass msvcrt but 
+other application code would not. This proved to be fatal. From circular 
+linking to allocators not matching to Libraries not able to load. Since 
+MFC and ATL would not even think to compile without msvcrt Headers and 
+lib the issue had to be resolved. The only way I managed to solve it all 
+is by directly linking msvcrt GCC style into STLPort and into every 
+module there of. Now that would make some conflicts with OCX's like IE6 
+that can only run with native msvcrt.dll, so I also had to change it's name.
+</p><p>
+    One of the thing I would like to eventually do is Make a static 
+msvcrt library using same source code but having different make files to 
+be used in such situations where it has to be directly linked.
+</p><p>
+Tomorrow I will start synchronization with wine current tree. Once I 
+have it synced (2 days max). I will need someone to help me and guide me 
+on how to send it all in. Dimi, will that be you?
+</p><p>
+So I guess the scores are:
+<ul>
+<li>Wine vs Windows 1:1</li>
+<li>World vs Microsoft 3:10 (we are making progress, wait for the last round)</li>
+<li>Boaz vs GCC 7:4</li>
+<li>Good vs Evil (I better not say)</li></ul>
+</p></quote>
+
+<p>Then Boaz posted his first patch that added a new header to account
+for some problems he ran into.  Although the definitions aren't part of
+any Microsoft has, he felt it was necessary to have them.  Alexandre
+asked why the ones in winegcc didn't work.  Boaz hadn't replied by the
+time this issue came out.
+
+</p>
+</section>
+<section
+        title="IE Installer"
+        subject="IE installer has moved"
+        archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0760.html"
+        posts="1"
+        startdate="12/30/2003"
+>
+<topic>Integration</topic>
+<p>Mike Hearn wrote a script to install Internet Explorer for you. 
+Lots of programs these days depend on IE to be installed in order
+for them to work.  So to simplify that process Mike automated it
+and made the script available at, 
+ <quote who="Mike Hearn">
+ <a href="http://bylands.dur.ac.uk/~mh/wine-ie/">http://bylands.dur.ac.uk/~mh/wine-ie/</a>
+ </quote>.  Mike put the following notes on that web page:</p>
+ <quote who="Mike Hearn"><p>
+Just download and run it. The install should be entirely 
+automatic, no options will be presented to you. It is 
+designed to install on a clean WineHQ setup - I can't 
+say whether it'll work if you use a pre-existing wine 
+install full of cruft, or if you use random distro package 
+X. I am a Wine developer so I only test this with WineHQ 
+CVS. Do not try this script on WineX.
+</p><p>
+Afterwards you can run "iexplore" to launch it whenever you 
+want. There should also be an icon in the menus if you use 
+a standards compliant desktop (gnome 2.x+, kde 3.2+, probably 
+others).
+</p><p>
+WARNING: This version of IE is not stable on Wine! This 
+script is here to allow programs that depend on IE to 
+function better, not to give you a new web browser. Expect 
+frequent crashes and hangs if you use IE as a web browser.
+</p><p>
+Please do not report IE crashes to me. I am perfectly capable 
+of reproducing them myself thanks :) If IE fails to install 
+correctly on your machine however I want to know about it.
+</p></quote>
+
+</section>
+<section
+        title="Bein' A Playa In Da Hood"
+        subject="shell32: implement network neighborhood"
+        archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0234.html"
+        posts="3"
+        startdate="12/22/2003"
+>
+<topic>Integration</topic>
+<p>This topic has personally interested me since I ran into
+a problem last year with Wine's shortcomings when it comes
+to handling other Windows clients.  Getting Windows' Network
+Neighborhood to work is a major undertaking in Wine and Juan
+Lang has recently done a lot of work in that area.  There
+hasn't been a lot of discussion on the lists about it, but
+last week Juan posted some large patches.  I'll just cover
+the links to the patches and his changelog notes:
+<ul>
+
+<li><a href="http://www.winehq.org/hypermail/wine-patches/2003/12/0231.html">SMB 
+    changes</a>
+
+  <quote who="Juan Lang">
+    <ul>
+    <li> implement both raw-mode (port 445) SMB and
+   SMB-over-NetBIOS</li>
+    <li> separate file functions from SMB functions</li>
+    <li> remove fd_ops and (unused) dialect from wineserver SMB</li>
+    <li> general SMB fixes</li>
+  </ul></quote>
+</li>
+
+<li><a href="http://www.winehq.org/hypermail/wine-patches/2003/12/0232.html">implement 
+    NetServerEnum and NetShareEnum</a>
+  <quote who="Juan Lang">
+
+  <ul>
+    <li>partially implement NetServerEnum and
+        NetShareEnum using RAP over SMB
+    </li>
+  </ul></quote>
+</li>
+
+<li><a href="http://www.winehq.org/hypermail/wine-patches/2003/12/0234.html">implement network neighborhood</a>
+
+  <quote who="Juan Lang">
+
+  <ul>
+    <li>add the Network Neighborhood to the shell</li>
+    <li>Actually opening files doesn't work, but that's
+        somewhere else</li>
+  </ul></quote>
+</li>
+</ul></p>
+
+<p>Thus far the patches haven't been committed.</p>
+
+</section>
+<section
+        title="Launching Native Browsers"
+        subject="default wine browser"
+        archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0681.html"
+        posts="16"
+        startdate="12/27/2003"
+        enddate="12/30/2003"
+>
+<topic>Integration</topic>
+<p>Chris Morgan ran into a problem and thought of an easy way to 
+fix it:</p>
+<quote who="Chris Morgan"><p>
+In trying to install the United Devices application the installer prompts me 
+to go to a website to get the msi installer.  Wine doesn't have a 
+HKEY_LOCAL_MACHINE\software\classes\http\shell\open\command key in the 
+registery.  I was thinking about making a shell script something along the 
+lines of:
+<ul><code>
+if browserX exists
+ <ul>  browserX $1</ul>
+else if browserY exists
+ <ul> browserY $1</ul>
+...</code></ul>
+</p><p>
+
+I would imagine most people have mozilla installed on their machines and we 
+can check for konqueror, opera and other browsers.  I've created a simple 
+'winebrowser' script, placed it in /usr/local/bin manually thus far, set the 
+value for the above key to 'winebrowser %1' and symlinked /c/windows/system/
+winebrowser.exe to /usr/local/bin/winebrowser.  
+</p></quote>
+
+<p>Ivan Leo Murray-Smith suggested adding galeon and netscape to the list.
+A bit of debate went back and forth on how to integrate with KDE.  It's
+possible to run kfmclient and exec the page directly, but some people 
+pointed out the potential security problems with doing that.  A few days later Chris
+posted <a href="http://www.winehq.org/hypermail/wine-patches/2003/12/0288.html">a
+patch</a>:</p>
+<quote who="Chris Morgan"><p>
+ Has Rein's fix for mozilla and Ivan's additional browsers.  Tried to clean the 
+ script up a little bit, could probably still use some work but I'm no script 
+ guru.
+<ul>
+ * tools/winebrowser, tools/wineinstall, tools/Makefile.in, winedefault.reg<br />
+ Chris Morgan <br />
+ Add  <tt>HKEY_LOCAL_MACHINE\software\classes\http\shell\open\command</tt> key and 
+ value.  Winebrowser script.  Makefile changes to install/remove script.  
+ Wineinstall should create a symlink from windows/winebrowser.exe to the 
+ location of winebrowser on the machine.</ul></p></quote>
+
+
+</section></kc>

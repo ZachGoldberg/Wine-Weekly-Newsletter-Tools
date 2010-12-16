@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="34" date="13 Mar 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 34th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+
+</intro>
+
+<stats posts="65" size="250" contrib="30" multiples="14" lastweek="20">
+<person posts="8" size="37" who="David Elliott &lt;dfe@netnitco.net&gt;" />
+<person posts="7" size="16" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="4" size="9" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="4" size="21" who="Juergen Lock &lt;nox@jelal.kn-bremen.de&gt;" />
+<person posts="4" size="12" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="3" size="3" who="&lt;wine@cr753963-a.glph1.on.wave.home.com&gt;" />
+<person posts="3" size="27" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="3" size="2" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="2" size="56" who="Moshe Vainer &lt;moshev@easybase.com&gt;" />
+<person posts="2" size="5" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="2" size="4" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="2" size="3" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="2" size="3" who="Shigefumi Takeda &lt;takes@yamato.ibm.co.jp&gt;" />
+</stats>
+
+<section 
+  title="Testing Wine"
+  subject="Testing Wine with Programming Windows 95"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-118.html"
+  posts="1"
+  startdate="08 Mar 2000 00:00:00 -0800"
+  enddate="08 Mar 2000 00:00:00 -0800"
+>
+
+Francois Gouget started a wide Windows API testing:
+<quote who="Francois Gouget">
+I have been testing Wine and Winelib using the examples contained in
+the book "Programming Windows 95" by Charles Petzold (a classic). 
+
+<p />
+
+I think this can be a nice way of testing Wine:
+<ul>
+   <li />the source is available... to whoever owns the book or can get
+it at a library
+   <li />the programs are simple and very well documented
+   <li />they do exhibit problems in Wine (at execution time) and in
+Winelib (mostly at compile time)
+   <li />they cover relatively diverse subjects (graphics, keyboard,
+message handling, try the API cross-reference...) 
+</ul>
+
+<p />
+
+The detailed results of these tests are available at:
+<a href="http://www.multimania.com/fgouget/wine/PrgWin95/">
+http://www.multimania.com/fgouget/wine/PrgWin95/</a>
+
+<p />
+
+Some statistics:
+<ul>
+   <li />there's 102 C files, 4 C++ ones, 66 C files compiled fine, none
+of the C++ files compiled correctly
+   <li />the first 5 chapters contain 20 examples, 8 show some anomaly
+and 6 exhibit a behavior which I'm not sure is correct
+</ul>
+
+<p />
+
+I used a perl script to help in generating/updating the web pages,
+generating Makefiles for Winelib, cross-referencing the API calls
+(hence my recent interest in dumpbin/pedump), generating a tar file
+ready for download, etc. 
+
+<p />
+
+Now what?
+<ul>
+   <li />I have not fully tested all the examples in the book. I'm 
+currently at chapter 11. Nine more to go.
+   <li />I have not yet updated the Makefiles since the Winelib
+compilation procedure changed. I shall update this.
+   <li />I have two other books to test:
+   <ul>
+      <li />Programming MFC which I will test with Wine only (unless
+someone can tell me how to compile the MFC with Winelib)
+      <li />The developer's guide to the Win32 API for Windows NT and
+Windows 95 
+   </ul>
+   <li />There's various enhancements to do to the perl script I use
+</ul>
+
+<p />
+
+and the most important:
+<ul>
+   <li />Fixing the problems uncovered by these tests
+</ul>
+</quote>
+
+<p />
+
+Concerning this last point, Francois proposed several ways of sending
+back the issues he found like using Wine bug tracking system, posting
+the detailed bug reports to the developers-list...
+It's likely some of those will show up real soon.
+</section>
+
+<section 
+  title="Wine evolution vs porting Wine to different OSes"
+  subject="I'm afraid you broke Wine on FreeBSD 3.3"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-138.html"
+  posts="4"
+  startdate="10 Mar 2000 00:00:00 -0800"
+  enddate="13 Mar 2000 00:00:00 -0800"
+>
+
+There was a bit of a discussion after David Elliot's patches to
+enhance have been applied to the CVS tree. Gerald Pfeifer complained
+
+<quote who="Gerald Pfeifer">One should never just copy code from system
+headers and I really think Alexandre never should have approved something
+like that.
+
+<p />
+
+As a matter of fact I have been disappointed several times lately when
+Alexandre applied patches that broke Wine on non-Linux platforms due to
+typos or "there's nothing apart from Linux" coding. :-(
+
+<p />
+
+What's the purpose of an extremely strict development model if even the
+simplest such issues are not caught during patch review?</quote>
+
+<p />
+
+David's agreed that his patch has been only tested on linux boxen and
+needed some more work (which he already started, with feedback from
+J&#252;rgend Lock).
+
+<p />
+
+Alexandre Julliard gave some explanation on his review process:
+
+<quote who="Alexandre Julliard">Like it or not, in some cases copying system
+headers is the sensible thing to do, and we are already doing it at several
+places. In this specific case I don't know if it's really necessary, but the
+code has been like that for a long time anyway.</quote>
+
+and regarding the development model:
+
+<p />
+
+<quote who="Alexandre Julliard">I'm not gcc, I review the code for logical
+correctness, not syntax errors. I know it can be frustrating when the code
+doesn't compile, which is why I discourage #ifdef usage, but in some cases
+there is no choice. If you are not using the same system as the majority of
+the developers, you have to live with the occasional glitch (frankly, how
+hard was it to fix it?)
+
+<p />
+
+Personally I prefer to have a WINASPI that works on Linux and may need a
+couple of #ifdefs to compile on FreeBSD, than one that compiles everywhere
+but doesn't work. And I'm not going to reject code improvements on the
+off-chance that they may not always compile on every system out there,
+especially when neither me nor the original developer have any way to check
+it.</quote>
+
+</section>
+
+</kc>

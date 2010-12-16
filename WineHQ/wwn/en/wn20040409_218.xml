@@ -1,0 +1,655 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="218" date="04/09/2004" />
+<intro> <p>This is the 218th issue of the Wine Weekly News publication.
+Its main goal is to get ready to go on vacation. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="115" size="523" contrib="47" multiples="27" lastweek="26">
+
+<person posts="14" size="37" who="Mike Hearn" />
+<person posts="6" size="14" who="Dimitrie O. Paun" />
+<person posts="6" size="16" who="Tim Hentenaar" />
+<person posts="5" size="86" who="Ivan Leo Murray-Smith" />
+<person posts="5" size="13" who="Henk Poley" />
+<person posts="4" size="35" who="Mike McCormack" />
+<person posts="4" size="13" who="Lionel Ulmer" />
+<person posts="4" size="12" who="Peter Riocreux" />
+<person posts="4" size="11" who="James Perry" />
+<person posts="4" size="10" who="Alexandre Julliard" />
+<person posts="4" size="9" who="Francois Gouget" />
+<person posts="4" size="9" who="Eric Pouech" />
+<person posts="4" size="8" who="Juan Lang" />
+<person posts="3" size="110" who="Steven Edwards" />
+<person posts="3" size="7" who="Tony Lambregts" />
+<person posts="3" size="7" who="Dmitry Timoshkov" />
+<person posts="2" size="12" who="Andre Johansen" />
+<person posts="2" size="9" who="Andreas Rosenberg" />
+<person posts="2" size="7" who="Shachar Shemesh" />
+<person posts="2" size="5" who="Dan Kegel" />
+<person posts="2" size="5" who="Hans Leidekker" />
+<person posts="2" size="4" who="Rein Klazes" />
+<person posts="2" size="4" who="hatky" />
+<person posts="2" size="4" who="Geoff Thorpe" />
+<person posts="2" size="3" who="Jonathan Wilson" />
+<person posts="1" size="11" who="Boaz Harrosh" />
+<person posts="1" size="5" who="TN" />
+<person posts="1" size="4" who="Brian Vincent" />
+<person posts="1" size="3" who="Marcus Meissner" />
+<person posts="1" size="3" who="Paul Davis" />
+<person posts="1" size="2" who="Uwe Bonnes" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Santosh Siddheshwar" />
+<person posts="1" size="2" who="Robert Reif" />
+<person posts="1" size="2" who="Vincent B&#233;ron" />
+<person posts="1" size="2" who="Robert Shearman" />
+<person posts="1" size="2" who="Paul Ortyl" />
+<person posts="1" size="2" who="Arne Gellhaus" />
+<person posts="1" size="2" who="Robert van Herk" />
+<person posts="1" size="1" who="Jacek Chaupka" />
+<person posts="1" size="1" who="Rolf Kalbermatter" />
+<person posts="1" size="1" who="Jeremy Newman" />
+<person posts="1" size="1" who="Robert Lunnon" />
+<person posts="1" size="1" who="Daniel Skorka" />
+
+</stats>
+<section
+	title="News: Wine-20040408, developerWorks Article, WiX" 
+	subject="Mews"
+	archive="http://www-106.ibm.com/developerworks/linux/library/l-wine/?ca=dgr-lnxw04FineWine" 
+	posts="4"
+	startdate="04/03/2004"
+	enddate="04/09/2004"
+>
+<topic>News</topic>
+<p>Just after I thought I'd finished this week's issue, Alexandre 
+came out with Wine-20040408:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20040408: (see 
+<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.82&amp;content-type=text/x-cvsweb-markup">ChangeLog</a> for details)
+<ul>
+        <li> DOS devices and drives are now configured through symlinks.</li>
+        <li> Many shell32 improvements.</li>
+        <li> New task manager merged from ReactOS.</li>
+        <li> First version of wineprefixcreate tool for initial setup.</li>
+         <li> Lots of bug fixes.</li>
+</ul></p></quote>
+
+<p>The first of those, configuring drives and ports with symbolic links,
+is the result of the new filesystem changes.  There's definitely
+some interesting stuff in there.  It might take a few
+days for all the builds to be available, but you can grab them from
+<a href="http://www.winehq.org/download">our download page.</a></p>
+
+<p>IBM's developerWorks put together an article titled 
+"<i><a href="http://www-106.ibm.com/developerworks/linux/library/l-wine/?ca=dgr-lnxw04FineWine">A
+taste of Wine: Transition from Windows to Linux</a></i>".  It provides
+a great overview of Wine and even digs into Winelib by providing a
+sample app.  The authors offer some interesting tips,
+<quote who="developerWorks">In debugging Wine installs, 
+it is very useful if you have a Windows system available as well. 
+That way, you can use a tracer on a Windows installation to 
+find out exactly which files are copied, which registry 
+entries are added or updated, which INI files are altered, 
+and so on. Noting the order of the install steps and comparing 
+with a failed Wine install is a good guide for troubleshooting. 
+</quote></p>
+
+<p>
+An item that 
+<a href="http://www.eweek.com/article2/0,1759,1562330,00.asp">made the news</a>
+early in the week concerned Microsoft putting a project on SourceForge.  
+There was a bit of confusion concerning exactly what 
+<a href="http://sourceforge.net/cvs/?group_id=105970">WiX</a> is.  One
+of the reasons I'm even mentioning it here is because some people
+theorized it would help Wine with Microsoft installation programs.  I
+think the best summary comes from <a href="http://blogs.msdn.com/robmen">the
+blog</a> of it's creator, Rob Mensching:
+</p>
+<quote who="Rob Mensching"><p>
+ Before everyone gets sidetracked by the Open Source implications, let.s 
+ talk about exactly what WiX is.  WiX is a toolset composed of a compiler, 
+ a linker, a lib tool and a decompiler.  The compiler, called candle, is 
+ used to compile XML source code into object files that contain symbols 
+ and references to symbols.  The linker, called light, is fed one or more 
+ object files and links the references in the object files to the appropriate 
+ symbols in other object files.  Light is also responsible for collecting all 
+ of the binaries, packaging them appropriately, and generating the final MSI 
+ or MSM file.  The lib tool, called lit, is an optional tool that can be used 
+ to combine multiple object files into libraries that can be consumed by light.
+ Finally, the decompiler, called dark, can take existing MSI and MSM files 
+ and generate XML source code that represents the package.
+</p></quote>
+
+<p>So no, WiX is not an implementation of Microsoft's Installer.  
+Nonetheless, this is an interesting foray for Microsoft.  The eWeek
+article linked above theorizes on some ulterior motives they may have
+for allowing this.</p>
+
+<p>LinuxToday began posting 
+<a href="http://linuxtoday.com/developer/2004040501326NWCYDV">community news</a>
+again after taking several months off.  Thanks goes out the Brian Proffitt,
+LinuxToday Editor, for that.</p>
+</section>
+
+<section
+        title="Managing Windows" 
+	subject="Window management thoughts"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/04/0104.html" 
+	posts="7"
+	startdate="04/06/2004"
+	enddate="04/07/2004"
+>
+<topic>Architecture</topic>
+<p>One of the big items on the to-do list is to change the
+way Wine handles windowing.  Mike Hearn started a thread
+this week about window management:</p>
+<quote who="Mike Hearn"><p>
+So, me and Mike have been discussing some ideas for window management in
+Wine. Currently it hasn't turned into code, but I thought I'd write up
+what our thoughts were so others could comment and maybe be inspired to
+write patches.
+</p><p>
+The problem:
+</p><p>
+Currently Wine decides whether to make a window managed or not based on a
+series of heuristics, in is_window_toplevel in dlls/x11drv/window.c
+</p><p>
+Unfortunately these heuristics are frequently wrong, as they have only
+limited information to work with (window styles, mostly). In CrossOver,
+is_window_toplevel is easily the most hacked function in the entire
+codebase. This manifests itself in a variety of ways:
+<ul>
+<li> Windows are marked unmanaged when they shouldn't be. For instance, see
+WinAmp, Trillian, the Counter-Strike CD Key screen etc: there are tons of
+examples of this problem. This at best means the window is "nailed" to the
+screen, at worst it makes the program unusable.</li>
+
+<li> The classic "my game starts but I can't type" problem where keyboard
+input goes to the terminal instead of the window, due to the lack of focus
+management in unmanaged windows.</li>
+
+<li> Some programs display splash screens and then pop up errors or question
+dialogs underneath them. Unmanaged windows are always-on-top -> you cannot
+get to the underlying managed window and the app appears to hang.</li>
+
+<li> Fullscreen windows are really hard to do properly because they must be
+managed to work correctly in KDE/GNOME.</li>
+</ul></p><p>
+We currently make certain windows unmanaged typically because we need to
+control their position or rendering with a high degree of accuracy.
+Unfortunately some X window managers ignore positioning hints, even when
+we ask them not to. There is no way to make things like menus and tooltips
+work correctly with these WMs, so we take the window out of the usual
+window management mechanism entirely.
+</p><p>
+Unfortunately due to the design of the win32 API there is no simple way to
+tell the difference between a large menu and the Trillian main window. We
+could mark our own menus specially to make them unmanaged and have
+everything else be managed, but we then run into problems with programs
+that draw their own menus and tooltips, of which there are a truly
+shocking number.
+</p><p>
+So what is a possible solution?
+</p><p>
+Well, one way forward is to implement another mode, in which Wine makes
+all windows managed and uses a variety of WM hints to get the desired
+behaviour. For instance, the PPosition flag asks the WM to place the
+window where the application requests it to. Some WMs respect this, others
+do not, in yet others it's a toggleable option. For people with WMs that
+meet the requirements of Wine all windows could be made managed, and for
+people that don't use such WMs the old way can still be used.
+</p><p>
+IIRC it's possible to ask the WM for identification which means this
+setting could be largely autodetected by having blacklists of WMs to use
+the old mode for (or vice-versa). 
+</p><p>
+Unfortunately there's no way to know how well this approach would work, or
+even if it would work at all, short of trying it.
+</p></quote>
+
+<p>Dimi Paun thought the plans were to abandon that way of managing
+windows:</p>
+<quote who="Dimitrie Paun"><p>
+I personally think we should not care about non-compliant WMs. You use
+one of those, you suffer the consequences. We can't operate in a vacuum,
+there are standards, and we must be able to rely on something. 
+</p><p>
+But this, I'm afraid, besides the point. This entire discussion assumes
+that the Win32 windows are mapped to X windows. If IIRC, Alexandre was
+saying that we need to switch back to the old ways, where we handle most
+of the windowing code. In which case I guess a lot of this will go away.
+</p></quote>
+
+<p>Mike then clarified his original idea,
+<quote who="Mike Hearn">as far as I know the WM rewrite is
+about using X windows only for toplevel win32 windows, and not using X
+child windows for win32 child windows. The managed/unmanaged thing is only
+relevant to toplevel windows. So I think they are separate though it'd be
+nice for Alexandre to clarify exactly what the WM rewrite will affect and
+entail.
+</quote></p>
+
+<p>Alexandre then explained some of the work he planned to do:</p>
+<quote who="Alexandre Julliard"><p>
+Well, it's not really a rewrite, more the continuation of the address
+space separation work, to make all of the window management instead of
+just half of it behave properly across processes.
+</p><p>
+The managed/unmanaged thing is really a different issue, but the
+inter-process stuff will change a lot of things in x11drv, that
+hopefully will then make it easier to deal with the managed stuff (for
+instance by making it easier to recreate a window on the fly to switch
+to managed mode); so that's why I think the inter-process support
+should be finished before we start making big changes in the X11 WM
+support.</p></quote>
+
+<p>In case you missed it, those two paragraphs probably constitute
+our roadmap for the next few months.</p>
+
+</section>
+
+<section 
+	title="AbiWord on ReactOS" 
+	subject="AbiWord on ReactOS"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/04/0123.html" 
+	posts="1"
+	startdate="04/06/2004"
+	enddate="04/06/2004"
+>
+<topic>Ports</topic>
+<p>From time to time we mention <a href="http://www.reactos.org">ReactOS</a>.
+Those guys are basically making a clone of Windows NT including binary
+compatibility for Windows drivers.  For their Win32 subsystem they've
+adopted Wine.  It's been a win-win situation for both projects and
+this year they've really started to make a lot of progress on their
+user interfaces.   This week Steven Edwards forwarded a message from
+their mailing list,
+<quote who="Steven Edwards">Run abiword lately after those recent 
+changes?  simply amazing...the first REAL app to run on ROS...</quote></p>
+
+<p>Like they say, a picture is worth a thousand words:
+<a href="http://www.winehq.org/hypermail/wine-devel/2004/04/att-0123/02-amazing.PNG">AbiWord
+screenshot</a>.
+</p>
+
+</section>
+
+
+<section 
+	title="CryptoAPI Needs Help" 
+	subject="CryptoAPI"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/04/0084.html" 
+	posts="5"
+	startdate="04/05/2004"
+	enddate="04/06/2004"
+>
+<p>Getting crypto and security related API's has come up more
+and more recently.  Jacek Chaupka wanted to know what was going on:</p>
+<quote who="Jacek Chaupka"><p>
+Has anybody started implementing CryptoApi in WINE?? If no maybe someone 
+can give me some clues how to start... I am not bad in C++ I think, but I 
+have never make thing like that. I don't promise I will do that, but I 
+can try... :)
+</p></quote>
+
+<p>Juan Lang offered a starting point:</p>
+<quote who="Juan Lang"><p>
+Hi Jacek, take a look at Wine's rsabase.dll, that DLL
+doesn't do very much yet.  All its functions
+(CPAcquireContext, etc) are described here:
+<ul><a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/security/security/cryptography_functions.asp">
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/security/security/cryptography_functions.asp</a></ul>
+</p><p>
+If you have access to a Windows box it's easier: you
+can load the DLL itself and call all the functions and
+try to reproduce what it's doing.
+</p></quote>
+
+<p>Rob Shearman also had some ideas:</p>
+<quote who="Robert Shearman"><p>
+It depends on which part you are trying to implement.
+For the Certificate Store functions I would recommend implementing the "OID
+support functions" first, as it is indicated by
+[ <i>same link Juan had above</i> ]
+ that a number of other functions depend on
+them. The OID's are looked up from a set of builtin types (see CertOpenStore
+reference) and from the registry key:
+HKLM\Software\Microsoft\Cryptography\OID.
+Some other tips: MSDN is a good resource for information. Try to implement
+functions using other Win32 functions. Write test programs to run against
+the Wine and Microsoft versions of the DLLs.
+</p></quote>
+
+<p>Juan wasn't sure if that was necessary or not though,
+<quote who="Juan Lang">
+I was taking a look at implementing the certificate
+store functions, and I was thinking (hoping?) I could
+avoid the OID stuff.  Maybe I'm missing something, but
+a cert will be stored in the registry in some
+well-known format, and as long as Wine handles the
+registry I/O bit, OpenSSL ought to be able to read the
+certs, right?  So CertOpenStore/CertEnumStore et al
+wouldn't need to do any asn.1 decoding, at least not
+from the get-go.</quote></p>
+
+<p>Mike McCormack actually added an item to the 
+<a href="http://www.winehq.org/fun_projects">Fun
+Projects</a> page a few weeks ago and thought 
+it could be implementing using
+<a href="http://www.openssl.org">OpenSSL's</a>
+libcrypto.so.</p>
+
+</section>
+
+
+<section 
+	title="Execshield/Prelinking (con't)" 
+	subject="inheriting exec-shield avoidance"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/04/0154.html" 
+	posts="8"
+	startdate="04/08/2004"
+>
+<topic>Architecture</topic>
+<p>Peter Riocreux brought up execshield/prelinking again this
+week (see <a href="http://www.winehq.org/wwn/217">last week's</a>
+issue for more about that.)   This time it involved Fedora Core 1:
+</p><quote who="Peter Riocreux"><p>
+I am intermittently trying to get Wine to play nicely with a big EDA
+tool, and it is doing not too badly today with the 20040309 snapshot
+on Fedora Core 1.
+</p><p>
+The thing that I think is stopping it working is that whatever is done
+to stack-shield by the prepending "setarch i386" on invocation is not
+inherited by the .exe that the program calls. Net result is that I get
+the "..... security-patched kernel ?" error message from the child
+process instead of the parent. Progress of a sort.
+</p><p>
+Is there anything, short of turning off exec-shield entirely, that can
+be done about this?
+</p></quote>
+
+<p>Mike Hearn suggested turning off prelinking too.  Then Mike
+McCormack jumped in and mentioned he had been working on things
+a bit:</p>
+<quote who="Mike McCormack"><p>
+I'm not familiar with the using "setarch i386" to solve the problem...
+</p><p>
+I've also been working on the exec-shield problem over the last couple 
+of days.  My solution is similar to Mike Hearn's approach, but faster 
+and more compact, since it doesn't require loading of libc twice or 
+static linking with glibc.  The idea is to use a statically linked ELF 
+object, reserve memory and then load the target dynamically linked object.
+</p><p>
+It seems to do what I want, but will require a patch or two to wine to 
+use MAP_FIXED when mapping the first megabyte of address space, and to 
+make sure newly forked processes are forked with it as the (pre)loader.
+</p><p>
+I've 
+<a href="http://www.winehq.org/hypermail/wine-devel/2004/04/0160.html">attached</a>
+the source code.  The idea is to run it like this:
+<ul><code>
+wld /home/mike/wine/loader/wine-pthread my.exe</code></ul></p>
+</quote>
+
+
+<p>Peter tried it out and reported:</p>
+<quote who="Peter Riocreux"><p>
+First up, I get two instances of the following:
+<ul><code>
+unknown header type 6474E551</code></ul></p><p>
+It makes the first load work, - giving the same result as the setarch
+idea (I know (or at least I *think* I know) it is by a different
+means), but it doesn't solve the inheritance/forking problem. I assume
+that is what the patches you mention would do.
+</p><p>
+To make this a bit clearer, A creates children B then C. With setarch
+or wld when exec-shield is ON, A loads, but B doesn't. With
+exec-shield OFF, B loads, but C doesn't! I don't understand the
+latter at all.
+</p><p>
+In case it is relevant, I suspect that the child processes are created
+by a built-in scripting language engine.
+</p></quote>
+
+<p>Mike recognized the problem, 
+<quote who="Mike McCormack">
+Yeah, I'm aware of the problem with inheritance... there might be a 
+tricky way to fix it by setting WINELOADER to the name of a script that 
+runs "wld $winebinary"... otherwise wine will need to be modified.
+</quote></p>
+
+<p>Peter had some ideas for other fixes:</p>
+<quote who="Peter Riocreux"><p>
+If wld knew (hardcoded or from an environment variable) where to find
+wine (the binary), no script would be necessary and it would be even
+simpler. At configure/compile time Wine could know/detect/be told
+whether the default loader had to be wine (the binary) or wld.
+</p><p>
+Thinking further, why not, if wld is needed, call what is now wine
+something else (e.g. winefoo for this discussion) and wld be called
+wine. Then no source modification is needed to existing wine code and
+invocation using wine rahter than wld is possible, maintaining users'
+mental compatibility and script compatibility (IYSWIM).</p></quote>
+
+<p>Mike Hearn felt that the work he had done could be merged with
+Mike M.'s to get a reasonably efficient and working solution.</p>
+
+</section>
+
+<section 
+	title="Some Development Stats" 
+	subject="Project Management"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/04/0102.html" 
+	posts="6"
+	startdate="04/06/2004"
+	enddate="04/07/2004"
+>
+<topic>News</topic>
+<p>
+It might not be obvious from reading this weekly newsletter,
+but development has picked up a bit over the past few months.
+Mike Hearn pointed out an interesting statistic:</p>
+<quote who="Mike Hearn"><p>
+Hey guys,
+<ul><a href="http://www.winehq.org/hypermail/wine-patches/">
+http://www.winehq.org/hypermail/wine-patches/</a></ul></p><p>
+</p><p>
+Check that out - 5mb of patches for the last 3 months running. A meg of
+patches just 6 days into the new month already! 
+</p><p>
+It seems Wine is moving faster than ever before. 
+</p></quote>
+
+<p>Then there was a bit of discussion about the size of Wine,
+and Mike summarized:</p>
+<quote who="Mike Hearn"><p><ul><code>
+$ find wine -type f|xargs cat |wc -lc<br />
+1611362 55483397</code></ul></p><p>
+
+Yes, about 1.6 million lines. This includes the autofoo build magic
+though, sloccount gives a lower number (a bit less than a million).
+</p></quote>
+
+<p>I then posted the following:</p>
+<quote who="Brian Vincent"><p>
+The website stats are interesting too:
+</p><p><table>
+<tr><td colspan="5">Daily Avg</td><td colspan="6">Monthly Totals</td></tr>
+<tr><td> </td><td> </td><td>Hits</td><td>   Pages</td><td> Visits</td><td>Sites</td><td>KBytes</td><td>Visits</td><td>Pages</td><td>Files</td><td>Hits</td></tr> 
+<tr><td>Mar</td><td>2004</td><td>267733</td><td> 75495</td><td>16582&#160;&#160;</td><td>268931</td><td>157346721</td><td>514060</td><td>2340347</td><td>7064537</td><td>8299737</td></tr>
+<tr><td>Feb</td><td>2004</td><td>278180</td><td> 79217</td><td>17199&#160;&#160;
+</td><td>279399</td><td>203400907</td><td>498774</td><td>2297305</td><td>6994822</td><td>8067232</td></tr>
+
+<tr><td>Jan</td><td>2004</td><td>135477</td><td>44930</td><td>8341&#160;&#160;
+</td><td>154109</td><td>90054340</td><td>258586</td><td>1392848</td><td>3591136</td><td>4199791</td></tr>
+<tr><td>Dec</td><td>2003</td><td>213993</td><td>71246</td><td>14408&#160;&#160;
+</td><td>243882</td><td> 138401056</td><td>446653</td><td>2208643</td><td>5725553</td><td> 6633804</td></tr>
+<tr><td>Nov</td><td>2003</td><td>244427</td><td>85277</td><td>15766&#160;&#160;
+</td><td>254363</td><td> 153748583</td><td>472983</td><td>2558310</td><td>6268477</td><td> 7332826</td></tr>
+<tr><td>Oct</td><td>2003</td><td>275663</td><td>111913</td><td>17352&#160;&#160;
+</td><td>260400</td><td> 161803798</td><td>537913</td><td>3469326</td><td>7430846</td><td> 8545582</td></tr>
+<tr><td>Sep</td><td>2003</td><td>156860</td><td>50508</td><td>10393&#160;&#160;
+</td><td>173365</td><td>  93441224</td><td>311790</td><td>1515269</td><td>4048260</td><td> 4705814</td></tr>
+<tr><td>Aug</td><td>2003</td><td>209530</td><td>69084</td><td>12812&#160;&#160;
+</td><td>218040</td><td> 124270932</td><td>397177</td><td>2141613</td><td>5612004</td><td> 6495449</td></tr> 
+<tr><td>Jul</td><td>2003</td><td>243646</td><td>105136</td><td>12253&#160;&#160;
+</td><td>197296</td><td> 123038700</td><td>379853</td><td>3259216</td><td>6704428</td><td> 7553047</td></tr>
+<tr><td>Jun</td><td>2003</td><td>253998</td><td>109167</td><td>12250&#160;&#160;
+</td><td>160468</td><td>  91985851</td><td>306270</td><td>2729185</td><td>5642823</td><td> 6349961</td></tr> 
+<tr><td>May</td><td>2003</td><td>262218</td><td>111683</td><td>13764&#160;&#160;
+</td><td>207954</td><td> 105320483</td><td>399181</td><td>3238809</td><td>6336486</td><td> 7604349</td></tr>
+</table></p><p>
+Skipping to the KBytes and Hits columns, things are up.  Even more
+interesting is in Feburary we got Slashdotted and in March we didn't.
+So it appears people are interested.  
+</p></quote>
+</section>
+
+
+
+<section 
+	title="W95inf32 DLL Implementation" 
+	subject="W95INF32 implementation, in case it's useful to anybody"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/04/0051.html" 
+	posts="1"
+	startdate="04/02/2004"
+>
+<topic></topic>
+<p>Mike McCormack did a bit of work on a DLL and posted
+it to wine-devel rather than just throwing it away:</p>
+
+<quote who="Mike McCormack"><p>
+ In the process of understanding another bug, I did a little work to 
+ implement w95inf32, which appears to be a small IE/win9x only DLL and 
+ which is probably of not much use to Wine. It appears to be a thin
+ wrapper 32bit around 4 functions in SETUPX.
+</p><p>
+ So this is just for documentation purposes, and in case anybody is 
+ curious or finds a real need for this DLL.
+</p></quote>
+
+<p>You can find 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/04/0051.html">that
+implementation</a> in the archives.</p>
+
+</section>
+
+
+<section 
+	title="Arch Utility: genpatch" 
+	subject="arch tip #1"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/04/0132.html" 
+	posts="1"
+	startdate="04/07/2004"
+>
+<topic>Project Management</topic>
+<p>Not sure if anyone out there is using the arch 
+gateway (see <a href="http://www.winehq.com/wwn/217">issue #217</a>
+for more details), but Mike Hearn added a new tool this week:</p>
+<quote who="Mike Hearn"><p>
+At Dimi's request, I've added a new script to the root of the gateway tree.
+</p><p>
+The genpatch program takes a series of patch ids as parameters and can
+generate and send an email to wine-patches with the combined diff of all
+the given commits.
+</p><p>
+For example: let's say you are working on a feature. You do 3 commits, to
+keep the changes physically separate, however you decide the commits are
+too fine grained to submit all at once, so you want to submit them
+together.
+</p><p>
+Genpatch makes that easy. Say you commit patch-4, patch-5 and patch-6:
+<ul><code>
+./genpatch -m 4 5 6</code></ul></p><p>
+
+will compute the combined differential of all those commits, take the
+commit log and summary of the first and generate an email from them. The
+patch will include and new files that were added.
+</p></quote>
+</section>
+<section 
+	title="How To Set Up BiDi Support" 
+	subject="Compiling Wine with BiDi support - instructions"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/04/0111.html" 
+	posts="1"
+	startdate="04/06/2004"
+>
+<topic>Internationalization</topic>
+<p>Thanks to Shachar Shemesh, Wine has support for bi-directional
+text.  Shachar has been pretty busy lately, but this week he 
+reappeared with patches and some new info about setting everything
+up:</p>
+
+<quote who="Shachar Shemesh"><p>
+ Here are the formal instructions for compiling Wine with bidi support. 
+ When doing so, it is recommended that you use a fairly recent version of 
+ ICU (2.6 and up), or else there is going to be a runtime soft dependency 
+ on some ICU files in the resulting Wine. No big deal - if these files 
+ are not there, Wine will work just fine, only without BiDi support. 
+ Still, this is not necessary.
+</p><p>
+Instructions:
+<ol>
+   <li> If you use a precompiled package (relatively rare for ICU,
+      unfortunately), make sure it has the static libraries as well. ICU
+      does not have these by default. If they are there, you may skip to
+      step 8. Please note, however, that this will add about 7MB to the
+      size of the resulting gdi.dll.so.</li>
+   <li> Grab ICU from the web <a href="http://oss.software.ibm.com/icu">
+	http://oss.software.ibm.com/icu</a>.</li>
+   <li> Extract the sources file.</li>
+   <li> CD into the ICU directory, and then into the "source" subdirectory.
+      </li>
+   <li> Delete all files with the "mk" extension under icu/source/data.
+      e.g. run "find data -name \*.mk -exec rm \{\} \;". Please trust me
+      on this one, it's ok to do it. This step saves the aforementioned 7MB.
+   </li>
+   <li> ./runConfigureICU LinuxRedHat --enable-static. If you are only
+      building this for use with Wine, you can also add
+      "--enable-shared=no --enable-64bit-libs=no --prefix=~/icuinstall".
+      If not, you may wish to skip the previous step as well.</li>
+   <li> run "make" and "make install". Grab a lunch. Just one will do.</li>
+   <li> If your ICU library files are installed in /usr/lib and
+      /usr/include, compile wine as usual. If they are installed
+      anywhere else, you will need to set the "ICU_LIB_DIR" environment
+      variable to wherever it was that they are installed. You will also
+      have to add the include path. For example, if you compiled and
+      installed icu according to my example above, you will need to set
+      ICU_LIB_DIR to "~/icuinstall/lib", and also CPPFLAGS to
+      "-I~/icuinstall/include".</li>
+   <li> Make sure that including "ubidi.h" and the following linking step
+      passes in "configure". Also check whether include/config.h has
+      "HAVE_ICU" set.</li>
+   <li> To be really sure that your wine supports BiDi, run the program
+      given in this email.</li>
+</ol>
+</p><p>
+A few things to note:
+<ul>
+    <li> The above assumes that your Wine already has
+      <a href="http://www.winehq.org/hypermail/wine-patches/2004/04/0088.html">
+      http://www.winehq.org/hypermail/wine-patches/2004/04/0088.html</a>
+      integrated.</li>
+    <li> If you are compiling Wine on Debian, and want to use the Debian
+      supplied ICU library for whatever reason (for example - because
+      the packaging system pretty much requires you to), the above
+      procedure needs to be slightly altered. ICU changed their static
+      library naming scheme over some recent version. The Debian
+      packaged ICU (2.1) still uses the old scheme. Either use Wine
+      without the aforementioned patch, or set ICUUC_LIB and ICUDATA_LIB
+      to the full path to libicuuc.a and libicudata.a respectively (they
+      are called "libsicuuc.a" and "libsicudata.a" in newer version of
+      ICU). Please note that this means there is a runtime dependency on
+      some ICU files for BiDi to work, as explained above.</li>
+</ul>
+</p><p>
+Instead of reposting the program for testing whether Win32 supports 
+reordering, the link to the file in the list's archive is at 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/08/att-0175/01-biditest.c">
+http://www.winehq.org/hypermail/wine-devel/2003/08/att-0175/01-biditest.c</a>.
+</p></quote>
+</section>
+</kc>

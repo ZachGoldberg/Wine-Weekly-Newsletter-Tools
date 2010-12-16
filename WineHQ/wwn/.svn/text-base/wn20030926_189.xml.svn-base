@@ -1,0 +1,448 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="189" date="09/26/2003" />
+<intro> <p>This is the 189th issue of the Wine Weekly News publication.
+Its main goal is to walk carefully on thin ledges. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="261" size="964" contrib="61" multiples="35" lastweek="32">
+
+<person posts="46" size="222" who="Dimitrie O. Paun" />
+<person posts="25" size="59" who="Alexandre Julliard" />
+<person posts="21" size="151" who="Dimitrie O. Paun" />
+<person posts="19" size="114" who="Eric Pouech" />
+<person posts="16" size="39" who="Mike Hearn" />
+<person posts="15" size="43" who="Jakob Eriksson" />
+<person posts="13" size="61" who="Steven Edwards" />
+<person posts="8" size="36" who="Michael G&#252;nnewig" />
+<person posts="8" size="33" who="Pavel Roskin" />
+<person posts="7" size="18" who="Shachar Shemesh" />
+<person posts="7" size="17" who="Dmitry Timoshkov" />
+<person posts="6" size="21" who="Vincent B&#233;ron" />
+<person posts="5" size="11" who="Jerry Jenkins" />
+<person posts="5" size="10" who="Ivan Leo Murray-Smith" />
+<person posts="4" size="37" who="hatky" />
+<person posts="4" size="12" who="Ove Kaaven" />
+<person posts="4" size="11" who="Francois Gouget" />
+<person posts="4" size="7" who="Jon Griffiths" />
+<person posts="3" size="12" who="Michael Stefaniuc" />
+<person posts="3" size="9" who="Sylvain Petreolle" />
+<person posts="3" size="9" who="Boaz Harrosh" />
+<person posts="3" size="9" who="Doug Herbert" />
+<person posts="3" size="7" who="Marcelo Duarte" />
+<person posts="3" size="5" who="Oleg Prokhorov" />
+<person posts="2" size="17" who="jerry jenkins" />
+<person posts="2" size="7" who="Richard Cohen" />
+<person posts="2" size="6" who="Robert Shearman" />
+<person posts="2" size="6" who="Gregory M. Turner" />
+<person posts="2" size="4" who="Andreas Mohr" />
+<person posts="2" size="4" who="Alex Pasadyn" />
+<person posts="2" size="4" who="Nerijus Baliunas" />
+<person posts="2" size="4" who="flyker" />
+<person posts="2" size="4" who="Michael Ost" />
+<person posts="2" size="3" who="Jonathan Wilson" />
+<person posts="2" size="3" who="Tom" />
+<person posts="1" size="17" who="Salmela" />
+<person posts="1" size="4" who="Christian Costa" />
+<person posts="1" size="4" who="Dieter =?ISO-8859-1?Q?B=FCrgie?=" />
+<person posts="1" size="4" who="Huw D M Davies" />
+<person posts="1" size="4" who="Hengga" />
+<person posts="1" size="3" who="Tony Lambregts" />
+<person posts="1" size="3" who="Rick Langschultz" />
+<person posts="1" size="3" who="Eric Pouech" />
+<person posts="1" size="3" who="George Ginden" />
+<person posts="1" size="3" who="Robert Reif" />
+<person posts="1" size="3" who="Ferenc Wagner" />
+<person posts="1" size="2" who="Rok Mandeljc" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="(wine)" />
+<person posts="1" size="2" who="Michal Janusz Miroslaw" />
+<person posts="1" size="2" who="Philipp Wollermann" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="Matthew Davison" />
+<person posts="1" size="2" who="flyker" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="1" who="Mike McCormack" />
+<person posts="1" size="1" who="Lionel Ulmer" />
+<person posts="1" size="1" who="Andrew Patrikalakis" />
+<person posts="1" size="1" who="Jarkko Lavinen" />
+
+</stats>
+<section 
+	title="Filesystem Roadmap" 
+	subject="update on ntdll/kernel32 separation"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0686.html" 
+	posts="1"
+	startdate="09/18/2003"
+>
+<topic>Status Updates</topic>
+<topic>Filesystems</topic>
+<p>Alexandre's work on NTDLL/Kernel32 DLL separation was kicked
+into high gear a few weeks ago.  Much work has been done.  Eric
+Pouech has been relatively quiet through in this latest round.
+He wrote in to give an update on what he's concentrating on:</p>
+
+<quote who="Eric Pouech"><p>
+ I've been quite quiet recently on ntdll separation.
+ I was working on the NtCreateFile implementation.
+</p><p>
+Even, if it's not ready for prime time, I've been running lots of apps 
+since one week without issues (which doesn't mean that none are left).
+You'll find attached the patch for review.
+(Since Alexandre has been busy lately, better to share some info)
+</p><p>
+However, it's not ready for prime time yet. Among things that remain to 
+be done:
+<ul>
+<li> review some internal namings (that's easy) and file naming</li>
+<li> get Alexandre review (that's harder... I mean to get a positive review)</li>
+<li> cleanup the initialisation code</li>
+</ul>
+</p><p>
+There are some parts I don't like. The current server scheme doesn't fit 
+well with the device manipulation we need.
+</p><p>
+Currently, I set, at a given point in NT pathnames (say \??\C:) a link 
+to a Unix pathname (say /opt/windows).
+This fits well with path conversions. It doesn't work for real device 
+configuration, in particular CDROMs, where we need both the unix path 
+for data access (/mnt/cdrom) and the unix path of the associated unix 
+device (/dev/cdrom).
+</p><p>
+I'm still thinking of either:
+<ul>
+<li> stick to current device structures, and store every bit of information 
+(server-side) in the 'pathgate' object.</li>
+<li> beef up the device server object to store this information (unix 
+device name, fake label, fake serial number).</li>
+</ul></p><p>
+The latter is in fact more suited for an evolution of the current server 
+device object.
+</p><p>
+My final question is more on which order we go on:
+</p><p>
+Solution 1:
+<ol>
+<li> get the NtCreateFile ready and include it in the tree</li>
+<li> <ol>
+    <li> fix the introduces bugs</li>
+    <li> convert the file/paths related functions</li></ol></li>
+<li> finish the server side objects (devices...)</li></ol>
+</p><p>
+Solution 2:
+<ul>
+ 3. <br />
+ 1  <br />
+ 2.a<br />
+ 2.b</ul></p></quote>
+
+<p>Thus far there hasn't been many responses.  Alexandre hasn't
+committed the patch.</p>
+
+</section>
+<section 
+	title="The --dll Option Goes Away" 
+	subject="RE: wine/ tools/runtest misc/options.c include/mod ..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0933.html" 
+	posts="3"
+	startdate="09/25/2003"
+>
+<topic>Configuration</topic>
+<p>This will likely produce some email to the devel list over
+the next few months.  Alexandre committed a patch with the following
+note in the changelog:</p>
+<quote who="Alexandre Julliard"><p>
+ 	Removed the --dll option and replaced it by the WINEDLLOVERRIDES
+ 	environment variable.</p></quote>
+
+<p>Now, if you've ever followed Wine development you'll know Alexandre's
+patches don't go up for review.  His work gets committed directly to CVS
+and you can comment after the fact.  A testament to his ability is that
+very few folks object.  This one is a little different though since it's
+an option in userspace.  Rob Shearman wondered, 
+<quote who="Robert Shearman">
+ This will break a lot of HOWTOs on various sites that describe how to get
+ apps working with Wine.
+ Can we not have some period of time where we can use both methods and maybe
+ remove the <tt>--dll</tt> option later (say when winecfg is ready)?
+</quote></p>
+
+<p>Alexandre felt the behavior was already deprecated,
+<quote who="Alexandre Julliard">
+ I don't see why, the HOWTOs should explain how to set dll overrides in
+ the config file, that has been the standard way for a long time now.
+</quote></p>
+
+<p>Mike Hearn explained some uses:</p>
+<quote who="Mike Hearn"><p>
+For doing things like InstallShields etc, it's common practice for
+people to be given canned command lines, such as 
+<ul><code>
+wine --dll ole32,oleaut32,rpcrt4=n myprog.exe
+</code></ul></p><p>
+basically because this is more convenient than altering the config file
+for each combination. I guess
+<ul><code>
+WINEDLLOVERRIDES="ole32,oleaut32,rpcrt4=n" wine myprog.exe
+</code></ul></p><p>
+is only slightly longer. 
+</p><p>
+Why must wine's command line options be removed though? They are often
+handy for testing things out.
+</p></quote>
+
+
+
+</section>
+<section 
+	title="Wine Developer's Guide Update" 
+	subject="docs: wine-devel [0/16]"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0288.html" 
+	posts="1"
+	startdate="09/21/2003"
+>
+<topic>Documentation</topic>
+<p>Dimi Paun submitted a bunch of patches to update the
+Wine Developer's Guide.  There was a big push early this year
+to update documentation when the new website was rolled
+out but since then there's just been sporadic FAQ updates.
+Dimi proposed some ideas to help keep the docs up to date:</p>
+<quote who="Dimitrie Paun"><p>
+
+I've been doing some work on the Wine Developer's Guide. It's in
+better shape now, but I'd still rate it at 2.5 stars. It still
+needs some work until it's production quality, but the end is in
+sight. In fact, if Lionel can look at the OpenGL section (lots
+of things changed in there lately), and Eric at the Multimedia
+section (lots of things out of date), we'd be so much closer.
+</p><p>
+Instead of sending all the updates as one big patch, I've tried
+to split them up, for all the known reasons. But before I start
+sending patches, I have a few comments about this documentation
+business.
+</p><p>
+First, we have to resist the temptation to add a lot of
+redundant information. Like what is cvs, how it functions, etc.
+There are better resources available on the web, and we simply
+don't have the manpower to maintain, translate, etc. all this
+information. Having a lot of documentation may give us a warm
+and fuzzy feeling, but in fact it just shows how we have failed
+to make Wine transparent, and/or we haven't refined the docs. 
+Nobody likes to read documentation, so let's keep it short,
+sweet, and interesting.
+</p><p>
+Second, we have to avoid at all cost including information that
+can change often. We get an update for these docs only once every
+few years, and having obsolete information in there is way worse
+than having no information at all. There are better places to
+put such info: man pages, web pages (WineHQ), etc. Having it
+duplicated somewhere in the depths of these manuals serves no 
+purpose than to create more (and useless) work for us.
+</p><p>
+Third, we have to try to make these things look as books, and
+less likely a motley collection of files, interlaced with
+TODOs/FIXMEs/etc.
+</p></quote>
+</section><section 
+	title="Winelib: Advantages and Disadvantages"
+	subject="How to run program without wine ?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0899.html" 
+	posts="8"
+	startdate="09/25/2003"
+>
+<topic>Winelib</topic>
+<p>This thread comes up from time to time.  I'm sure I've covered
+it before; multiple times most likely.  It's probably in the FAQ too.
+I imagine most of the documentation guides.  But, hey, it's always
+fun to rehash this stuff because who knows how many folks are just
+tuning in.  Simple question:
+</p><quote who="flyker">
+<p>Can i compile my program to an executable file that can be run without wine ?
+
+</p></quote>
+
+<p>Dimi's simple answer:</p>
+<quote who="Dimitrie Paun"><p>No.</p></quote>
+
+<p>That prompted the original person to reach an epiphany:</p>
+<quote who="flyker"><p>
+Hmmm.... Then i don't see any reason to compile program using winelib.
+What is the difference between
+<ul><code>
+wine program.exe</code></ul>
+</p><p>
+and
+<ul><code>
+wine program.exe.so</code></ul>
+
+</p><p>
+I think the goal of winelib is to make independent executable.
+And i don't see any other goal.
+</p></quote>
+
+<p>Which would seemingly make sense.. why bother at all?  Is the
+pain worth it?  Dimi explained some reasons why you might want to
+port it and the difference between a native winelib app and a normal
+Win32 program:</p>
+<quote who="Dimitrie Paun"><p>
+True, there's not much reason to do so other than:
+<ol>
+  <li> being able to call Unix functions from your Win32 program</li>
+  <li> a warm and fuzzy feeling that you've "ported" the app to Linux :)</li>
+</ol></p><p>
+
+Right now, not much <i>[difference]</i>, other than one is in the PE format,
+ the other
+in the ELF format. So the second one is in the native Linux binary
+format, which a lot a people seem to like (at an emotional level).
+The second one allows you do interact with the Unix environment,
+so it's not a complete waste of time.</p></quote>
+
+<p>Shachar Shemesh explained that it would be very difficult to remove
+Wine from the equation:</p>
+<quote who="Shachar Shemesh"><p>
+
+A Win32 program needs a Win32 environment. Be that a registry, the Win32 
+APIs, or a forest directory structure and "My Documents" and "Program 
+Files". While you may theoretically get the APIs by statically linking 
+the DLLs into the executable, all of the rest are only available if Wine 
+is installed on the machine. As such, I don't think a Winelib app will 
+be able to ever live without a wine environment.
+</p><p>
+It is true that we can let go of the PE loader (in principle), but that 
+is such a minor part of the grand scheme of things, that I don't see any 
+reason to even attempt it.
+</p><p>
+As things stand, and it's certainly what I'm recommending to people - if 
+all you want is to have your program function on an i386 Linux - just 
+make sure the same PE works on Wine.</p></quote>
+
+<p>Mike Hearn explained a bit about the advantages to the porting process:
+</p><quote who="Mike Hearn"><p>
+An app that is
+slowly being ported to be "native" may well need to be done in chunks.
+You can remove the registry requirements, teach it the FHS and so on,
+while still using HeapAlloc.
+</p><p>
+It's true there's little point just recompiling the app and saying
+"that's it", but obviously the value of winelib is not in allowing us to
+use ld.so instead of wine, it's in the ability to take a port slowly but
+surely, maybe never being completed but along the way getting sufficient
+integration for it not to matter.</p></quote>
+
+<p>Michael Stefaniuc mentioned that an app ported with Winelib is also
+capable of running on non-x86 machines.  (At least in theory.)  That's
+a pretty good summary of this topic.  No one mentioned speed as a reason
+for using Winelib, the reason being is that there really isn't any 
+difference.  So the short answer is... Winelib has it's 
+advantages but it's probably not for the reasons you think.  
+</p>
+</section>
+<section 
+	title="Script to Help Translators" 
+	subject="tools/translations_status"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0712.html" 
+	posts="10"
+	startdate="09/20/2003"
+	enddate="09/22/2003"
+>
+<topic>Internationalization</topic>
+<p>Dimi posted a little script, 
+<quote who="Dimitrie Paun">
+Here is a little script that can help translators
+to keep their languages up to date. It already
+helped get the French translation updated :)))
+
+</quote></p><p>
+You can 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/09/0712.html">find 
+it attached</a> to his original email in the archives.  Vincent B&#233;ron
+then took a stab at creating a 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/09/0765.html">similar
+program</a>.</p>
+
+</section>
+<section 
+	title="Don't Translate Winecfg.. Yet" 
+	subject="winecfg translations"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0688.html" 
+	posts="1"
+	startdate="09/19/2003"
+>
+<topic>Internationalization</topic>
+<p>Some new patches appeared for translations of Winecfg to other
+languages.  Mike Hearn had some advice for anyone wanting to write
+translations:</p>
+<quote who="Mike Hearn"><p>
+
+Basically, please don't do them. 
+</p><p>
+For starters, the GUI resources are constantly changing. Keeping the
+other versions in sync would be a full time job. 
+</p><p>
+Secondly, it causes problems with getting a clean diff against CVS
+because of the way I'm doing it..
+</p><p>
+Right now I don't think winecfg is stable enough to be doing translation
+work, especially considering the total lack of support in the win32
+windowing system for non-sucky i18n.
+</p></quote>
+</section>
+<section 
+	title="New Tests For Windows" 
+	subject="New winetests.exe"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0845.html" 
+	posts="1"
+	startdate="09/23/2003"
+>
+<topic>Testing</topic>
+<p>Jakob Eriksson announced a new version of his conformance tests for
+Windows:</p>
+<quote who="Jakob Eriksson"><p>
+Ok people, new version. This time the tests (but not timetests.exe)
+are compiled with MSVC 7 instead of crosscompiled.
+</p><p>
+(No agenda behind that decision - it's just that current CVS
+ is broken when it comes to crosstest.)
+</p><p>
+<a href="http://vmlinux.org/jakov/Wine/">
+http://vmlinux.org/jakov/Wine/</a>
+</p></quote>
+
+<p>If you had fun with it the first time be sure to download it for 
+another thrilling ride.
+Jakob then began working on making it compile with native MSVC headers.
+Thus far about 17 of the 20 tests compile.  Alexandre suggested making
+sure he had the latest ones.  </p>
+</section>
+<section 
+	title="Lecture Slides Available" 
+	subject="Wine lecture slides"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/09/0718.html" 
+	posts="16"
+	startdate="09/20/2003"
+	enddate="09/23/2003"
+>
+<topic>Documentation</topic>
+<p>Shachar Shemesh posted a link to a presentation he put together:</p>
+<quote who="Shachar Shemesh"><p> 
+
+I have placed on my site the slides for a presentation I gave at a local 
+LUG about Wine. The slides are in English, in PDF format. You can get 
+them at <a href="http://shemesh.biz/lectures.html">
+http://shemesh.biz/lectures.html</a>
+</p><p>
+The lecture was given several months ago, but I'm going to repeat it in 
+about a month. If you have any comments, please send them over for 
+inclusion for next time.
+
+</p></quote>
+<p>
+Several people pointed out inaccuracies or misleading comments.  They
+do serve as a good outline for a presentation on Wine.  Shachar mentioned
+it took two hours to go through this material. 
+</p>
+</section></kc>

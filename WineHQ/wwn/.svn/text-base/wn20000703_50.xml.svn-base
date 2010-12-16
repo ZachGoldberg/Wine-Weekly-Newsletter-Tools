@@ -1,0 +1,484 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="50" date="03 Jul 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 50th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+As Thomas Viehmann pointed out, the address for the Wine's status page
+was wrong. This is the correct one 
+<a href="http://www.winehq.org/News/status.html">
+http://www.winehq.org/News/status.html</a>.
+Thanks for reporting this error.  
+
+</intro>
+
+<stats posts="59" size="183" contrib="32" multiples="14" lastweek="19">
+<person posts="5" size="19" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="5" size="11" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="8" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="16" who="admiral coeyman &lt;admiral@corner.net&gt;" />
+<person posts="3" size="6" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="2" size="9" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="2" size="7" who="Stephane Lussier &lt;stephane@macadamian.com&gt;" />
+<person posts="2" size="6" who="TAKESHIMA Hidenori &lt;hidenori@a2.ctktv.ne.jp&gt;" />
+<person posts="2" size="5" who="Wilbur N. Dale &lt;wilbur.dale@lumin.nl&gt;" />
+<person posts="2" size="4" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="2" size="3" who="Petr Tomasek &lt;tomasek@etf.cuni.cz&gt;" />
+<person posts="2" size="21" who="Francois Jacques &lt;francoisj@macadamian.com&gt;" />
+<person posts="2" size="11" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="1" size="6" who="Joerg Mayer &lt;jmayer@telesun2.telemation.de&gt;" />
+<person posts="1" size="4" who="Ed Snow &lt;ed_snow@ttmengineering.com&gt;" />
+<person posts="1" size="3" who="James Juran &lt;juran@cse.psu.edu&gt;" />
+<person posts="1" size="3" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="1" size="2" who="Vassilis Virvilis &lt;vasvir@iit.demokritos.gr&gt;" />
+<person posts="1" size="2" who="Ken Coleman &lt;ken_coleman@iname.com&gt;" />
+<person posts="1" size="2" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="1" size="2" who="Gilroy Billard &lt;gilroy@trakonic.com&gt;" />
+<person posts="1" size="16" who="admiral Coeyman &lt;admiral@corner.net&gt;" />
+<person posts="1" size="1" who="Rein Klazes &lt;rklazes@casema.net&gt;" />
+<person posts="1" size="1" who="Peter Wayner &lt;pcw@flyzone.com&gt;" />
+<person posts="1" size="1" who="Frank Ramsay &lt;fjr@marsdome.penguinpowered.com&gt;" />
+<person posts="1" size="1" who="Dwayne Dilbeck  &lt;ddilbeck@quickturn.com&gt;" />
+<person posts="1" size="1" who="Duane Clark &lt;dclark@akamail.com&gt;" />
+<person posts="1" size="1" who="Douglas Ridgway &lt;ridgway@winehq.org&gt;" />
+<person posts="1" size="1" who="Alex Korobka &lt;korobka@galaxy.ams.sunysb.edu&gt;" />
+<person posts="1" size="1" who="Simon Harrison &lt;smh@sophos.com&gt;" />
+<person posts="1" size="1" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+</stats>
+
+
+<section 
+  title="NT drivers"
+  subject="RFC: Windows NT VDD"
+  archive=""
+  posts="14"
+  startdate="27 Jun 2000 00:00:00 -0800"
+  enddate="30 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+David Elliot wrote:
+<quote who="David Elliot">
+Lately there has been a lot of discussion about the way DOS interrupts
+and ports should be implemented. In my opinion, the best solution
+would be compatible with an existing Windows API.
+
+<p />
+
+It seems that it would be fairly trivial to implement many of the
+functions for the Windows NT Virtual Device Driver interface. In fact,
+most of the functions already have an equivalent Wine counterpart.
+
+<p />
+
+The advantage of using the Windows NT interface is that it has already
+been defined, is fairly well documented on MS's website, and is
+already designed with modularity in mind. The interface would allow us
+to separate all of the DOS crap into one or many DLLs that could be
+loaded when required, instead of taking up space in the core libwine.
+
+<p />
+
+It has been expressed several times (especially by Alexandre) that we
+need to be moving towards doing things like Windows NT instead of like
+Windows 9x. This is one more step towards that goal. Furthermore, it
+would seem necessary to have this stuff working before a version 1.0
+release.</quote>
+
+
+<p />
+
+Ove K&#229;ven turned out to be the most interested in David's proposal and 
+proposed also to share on going work he had made on re-enabling the
+DOS support in Wine (which has been disabled temporary by address
+space separation).
+
+<p />
+
+David appreciated the help and asked to be able to get a look at the
+patch before it goes into CVS. Some other people asked how this
+evolution shall take place (since it may remove lots of 16 bit and DOS 
+code out of the core/monolithic part of Wine, this must be handled
+with care). David proposed a step by step mechanism: 
+
+<quote who="David Elliot">
+I am not planning on all of a sudden writing this whole thing in a day
+and releasing it. The plan is to gradually move to this interface. Any
+functions that we don't need to implement won't be implemented until
+someone needs the functionality either to write a VDD module
+specifically for Wine, or to use a native one.
+
+<p />
+
+Like I said though, I am not looking to support native VDDs, just to
+fix the DOS support the right way.</quote>
+
+
+<p />
+
+Another part of the road to 1.0 is being worked on.
+
+<p />
+
+The discussion finished in the dims of the details of direct disk
+access implementation thru the old BIOS interrupts.
+
+<p />
+
+</section>
+
+
+<section 
+  title="LinuxTag"
+  subject="Summary LinuxTag Stuttgart 2000"
+>
+
+<p />
+
+Marcus Meissner wrote a report on WINE presence at LinuxTag:
+
+<quote who="Marcus Meissner">
+
+<p />
+
+We were invited by the LinuxTag organizers to have a demopoint on the 
+"largest european linux congress" ("where .com meets .org"), the german
+LinuxTag 2000 (www.linuxtag.de) and we gladly accepted :)
+
+<p />
+
+Overall it had more than 17.000 visitors (hard to believe) and had more
+floorspace then the Linux Business Expo at the Comdex last Fall.
+
+<p />
+
+Visitors were mostly of the Linux knowledgeable types, ranging from
+interested users to hackers to only a small number of business people.
+
+<p />
+
+Present were all major (european) players and some of the US ones, including
+SuSE (largest booth), Mandrake, IBM, TrollTech, HP, SGI, Corel, several
+german Linux VARs and several booths for OpenSource projects.
+
+<p />
+
+The WINE demopoint was inside the large OpenSource pavillon, right besides
+the XFree86 booth and the demopoints for Blender and VRML.
+
+<p />
+
+It was one of the well, worst places to have, since the demopoint was not on
+the corridor side. But this did not matter much, we had traffic all the
+time. It was also very hot due to the position and the black foil on the 
+top of the booth to avoid sunglare on the monitors.
+
+<p />
+
+Our demopoint was maintained by three people, Peter Ganten, Uwe Bonnes and me,
+and we had other WINE developers visit, namely Andreas Mohr, Juergen Schmied
+and Ulrich Weigand).
+
+<p />
+
+Peter held a talk on WINE on thursday at 6pm, were I guess 100-150 people
+attended. He focused on migration from Windows to Linux and a WINE
+introduction. The talk was well received, we would have had some more people
+if we hadn't been set up against Illiad of UserFriendly and if the organizers
+left out "WINE" from the conference guide. :/ Peter held the same talk the
+next day too, at the smaller booth presentation area of ID-Pro right across
+from our booth.
+
+<p />
+
+We did have visitors nearly all the time. When I was at the booth I barely
+stopped talking ;)
+
+<p />
+
+We demoed:
+        WinWord 97, Internet Explorer 5, Xing DVD Player, Wing Commander
+        Prophecy, the StarCraft Demo and the Moorhuhn Game (the latter
+        only known in Germany).
+
+<p />
+
+Most of the people were impressed :)
+
+<p />
+
+We had a lot of questions:
+<ul>
+	<li />Does Word / the Microsoft Office suite run and how well?
+          Can I use it in my office?
+          80% of all visitors asked that. Yes. 80%. It gets annoying after
+          a day ;)
+        <li />How good does WINE work? How much applications do run? When will 
+          it be finished?
+	<li />Do I need to have a Windows Installation / use Microsoft DLLs?
+</ul>
+
+<p />
+
+We had a lot of fun ;) The other WINE developers (who did not meet Ulrich
+previously like I did) now believe he is just a single person ;)
+[He is working for IBM on the S/390 port right now in case you missed him.]
+
+<p />
+
+Corel demoed WordPerfect Office 2000 and Corel Draw 9 (?) which was released
+at the LinuxTag.
+
+<p />
+
+Overall ... Success, as in we showed people we are alive and we have stuff
+running now. :)
+</quote>
+</section>
+
+
+<section 
+  title="Feature: Wine Architecture by Ove K&#229;ven"
+>
+
+<p />
+
+With the fundamental architecture of Wine stabilizing, and people starting to
+think that we might soon be ready to actually release this thing, it may be
+time to take a look at how Wine actually works and operates.
+
+<p />
+
+<h3>Wine Overview</h3>
+Wine is often used as a recursive acronym, standing for
+"Wine Is Not an Emulator". Sometimes it is also known to be used for
+"Windows Emulator". In a way, both meanings are correct, only seen
+from different perspectives. The first meaning says that Wine is
+not a virtual machine, it does not emulate a CPU, and you are not
+supposed to install neither Windows nor any Windows device drivers
+on top of it; rather, Wine is an implementation of the Windows API,
+and can be used as a library to port Windows applications to Unix.
+The second meaning, obviously, is that to Windows binaries
+(.exe files), Wine does look like Windows, and emulates
+its behaviour and quirks rather closely.
+
+<p />
+
+Note: The "Emulator" perspective should not be thought of as if Wine
+is a typical inefficient emulation layer that means Wine can't be
+anything but slow - the faithfulness to the badly designed Windows
+API may of course impose a minor overhead in some cases, but this
+is both balanced out by the higher efficiency of the Unix platforms
+Wine runs on, and that other possible abstraction libraries (like
+Motif, GTK+, CORBA, etc) has a runtime overhead typically comparable
+to Wine's.
+
+<p />
+
+<h3>Win16 and Win32</h3>
+Win16 and Win32 applications have different requirements; for example,
+Win16 apps expect cooperative multitasking among themselves, and to
+exist in the same address space, while Win32 apps except the complete
+opposite, i.e. preemptive multitasking, and separate address spaces.
+
+<p />
+
+Wine now deals with this issue by launching a separate Wine process
+for each Win32 process, but not for Win16 tasks. Win16 tasks are now
+run as different intersynchronized threads in the same Wine process;
+this Wine process is commonly known as a WOW process, referring to
+a similar mechanism used by Windows NT. Synchronization between the
+Win16 tasks running in the WOW process is normally done through the
+Win16 mutex - whenever one of them is running, it holds the Win16
+mutex, keeping the others from running. When the task wishes to let
+the other tasks run, the thread releases the Win16 mutex, and one of
+the waiting threads will then acquire it and let its task run.
+
+<p />
+
+<h3>The Wineserver</h3>
+The Wineserver is among the most confusing concepts in Wine. What
+is its function in Wine? Well, to be brief, it provides Inter-Process
+Communication (IPC), synchronization, and process/thread management.
+When the wineserver launches, it creates a Unix socket for the
+current host in your home directory's .wine subdirectory (or wherever
+the WINEPREFIX environment variable points) - all Wine processes launched
+later connects to the wineserver using this socket. (If a wineserver
+was not already running, the first Wine process will start up
+the wineserver in auto-terminate mode (i.e. the wineserver will then
+terminate itself once the last Wine process has terminated).)
+
+<p />
+
+Every thread in each Wine process has its own request buffer, which
+is shared with the wineserver. When a thread needs to synchronize
+or communicate with any other thread or process, it fills out its
+request buffer, then writes a command code through the socket. The
+wineserver handles the command as appropriate, while the client
+thread waits for a reply. In some cases, like with the various
+WaitFor synchronization primitives, the server handles it by marking
+the client thread as waiting and does not send it a reply before
+the wait condition has been satisfied.
+
+<p />
+
+The wineserver itself is a single and separate process and do not
+have its own threading - instead, it is built on top of a large
+poll() loop, that alerts the wineserver whenever anything happens,
+such that a client has sent a command, or a wait condition has been
+satisfied. There is thus no danger of race conditions inside the
+wineserver itself - it is often called upon to do operations that
+look completely atomic to its clients.
+
+<p />
+
+Because the wineserver needs to manage processes, threads,
+shared handles, synchronization, and any related issues, all the
+client's Win32 objects are also managed by the wineserver, and the
+clients must send requests to the wineserver whenever they need to
+know any Win32 object handle's associated Unix file descriptor
+(in which case the wineserver duplicates the file descriptor,
+transmits it to the client, and leaves to the client to close the
+duplicate when it's done with it).
+
+<p />
+
+<h3>The Service Thread</h3>
+The Wineserver cannot do everything that needs to be done behind
+the application's back, considering that it's not threaded
+(so cannot do anything that would block or take any significant
+amount of time), nor does it share the address space of its
+client threads. Thus, a special event loop also exists in each
+Win32 process' own address space, but handled like one of the
+process' own threads. This special thread is called the
+"service thread", and does things that it wouldn't be appropriate
+for the wineserver to do. For example, it can call the application's
+asynchronous system timer callbacks every time a timer event
+is signalled (the wineserver handles the signalling, of course).
+
+<p />
+
+One important function of the service thread is to support the
+X11 driver's event loop. Whenever an event arrives from the X
+server, the service thread wakes up and sees the event, processes
+it, and posts messages into the application's message queues as
+appropriate. But this function is not unique - any number of
+Wine core components can install their own handlers into the
+service thread as necessary, whenever they need to do something
+independent of the application's own event loop. (At the moment,
+this includes, but is not limited to, multimedia timers,
+serial comms, and winsock async selects.)
+
+<p />
+
+The implementation of the service thread is in scheduler/services.c.
+
+<p />
+
+<h3>Relays, Thunks, and DLL descriptors</h3>
+Loading a Windows binary into memory isn't that hard by itself,
+the hard part is all those various DLLs and entry points it
+imports and expects to be there and function as expected; this
+is, obviously, what the entire Wine implementation is all about.
+Wine contains a range of DLL implementations. Each of the
+implemented (or half-implemented) DLLs (which can be found
+in the dlls/ directory) need to make themselves known to the
+Wine core through a DLL descriptor. These descriptors point to
+such things as the DLL's resources and the entry point table.
+
+<p />
+
+The DLL descriptor and entry point table is generated by the
+"winebuild" tool (previously just named "build"), taking
+DLL specification files with the extension .spec as input.
+The output file contains a global constructor that
+automatically registers the DLL's descriptor with the Wine
+core at runtime.
+
+<p />
+
+Once an application module wants to import a DLL, Wine will
+look through its list of registered DLLs (if it's not registered,
+it will look for it on disk). (Failing that, it will look for
+a real Windows .DLL file to use, and look through its imports,
+etc.) To resolve the module's imports, Wine looks through the
+entry point table and find if it's defined there. (If not,
+it'll emit the error "No handler for ...", which, if the
+application called the entry point, is a fatal error.)
+
+<p />
+
+Since Wine is 32-bit code itself, and if the compiler supports
+Windows' calling convention, stdcall (gcc does), Wine can resolve
+imports into Win32 code by substituting the addresses of the Wine
+handlers directly without any thunking layer in between. This
+eliminates the overhead most people associate with "emulation",
+and is what the applications expect anyway.
+
+<p />
+
+However, if the user specified --debugmsg +relay, a thunk layer
+is inserted between the application imports and the Wine handlers;
+this layer is known as "relay" because all it does is print out
+the arguments/return values (by using the argument lists in the
+DLL descriptor's entry point table), then pass the call on, but
+it's invaluable for debugging misbehaving calls into Wine code.
+A similar mechanism also exists between Windows DLLs - Wine can
+optionally insert thunk layers between them, by using
+--debugmsg +snoop, but since no DLL descriptor information exists
+for non-Wine DLLs, this is less reliable and may lead to crashes.
+
+<p />
+
+For Win16 code, there is no way around thunking - Wine needs to
+relay between 16-bit and 32-bit code. These thunks switch between
+the app's 16-bit stack and Wine's 32-bit stack, copies and converts
+arguments as appropriate, and handles the Win16 mutex. Suffice to
+say that the kind of intricate stack content juggling this results
+in, is not exactly suitable study material for beginners.
+
+<p />
+
+<h3>Core and non-core DLLs</h3>
+This slide (by Marcus Meissner of Caldera Systems, shown at the
+<a href="http://www.winehq.org/Talks/comdex99/img0.htm">Comdex 99</a>) shows how Wine
+is meant to fit into the Windows DLL model.
+
+<p />
+
+<blockquote>
+<i>The following link was removed because it was found to be
+broken: http://www.winehq.org/Talks/comdex99/img8.jpg</i>  
+</blockquote>
+<p />
+
+Wine must at least completely replace the "Big Three" DLLs
+(KERNEL/KERNEL32, GDI/GDI32, and USER/USER32), which all other
+DLLs are layered on top on. But since Wine is (for various reasons)
+leaning towards the NT way of implementing things, the NTDLL is
+another core DLL to be implemented in Wine, and many KERNEL32
+and ADVAPI32 features will be implemented through the NTDLL. The
+wineserver and the service thread provide the backbone for the
+implementation of these core DLLs, and integration with the X11
+driver (which provides GDI/GDI32 and USER/USER32 functionality
+along with the Windows standard controls). All non-core DLLs,
+on the other hand, are expected to only use routines exported
+by other DLLs (and none of these backbone services directly),
+to keep the code base as tidy as possible. An example of this
+is COMCTL32 (Common Controls), which should only use standard
+GDI32- and USER32-exported routines.
+</section>
+
+</kc>

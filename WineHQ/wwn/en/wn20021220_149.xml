@@ -1,0 +1,504 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="149" date="12/20/2002" />
+
+<intro>
+<p>This is the 149th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+
+
+<stats posts="267" size="940" contrib="67" multiples="41" lastweek="36">
+
+<person posts="45" size="127" who="Dimitrie O. Paun" />
+<person posts="21" size="53" who="Francois Gouget" />
+<person posts="13" size="29" who="Alexandre Julliard" />
+<person posts="13" size="36" who="Dan Kegel" />
+<person posts="11" size="29" who="Dmitry Timoshkov" />
+<person posts="10" size="165" who="Uwe Bonnes" />
+<person posts="10" size="29" who="Tony Lambregts" />
+<person posts="9" size="26" who="Sylvain Petreolle" />
+<person posts="7" size="20" who="Ove Kaaven" />
+<person posts="7" size="17" who="Shachar Shemesh" />
+<person posts="6" size="25" who="Duane Clark" />
+<person posts="6" size="15" who="Fabian Cenedese" />
+<person posts="6" size="15" who="Steven Edwards" />
+<person posts="6" size="14" who="Steven Edwards" />
+<person posts="4" size="18" who="Eric Pouech" />
+<person posts="4" size="13" who="Joerg Mayer" />
+<person posts="4" size="13" who="Chris Morgan" />
+<person posts="4" size="10" who="Jeff Smith" />
+<person posts="4" size="9" who="Greg Turner" />
+<person posts="4" size="8" who="Ben Clewett" />
+<person posts="4" size="8" who="Lionel Ulmer" />
+<person posts="3" size="7" who="Alberto Massari" />
+<person posts="3" size="7" who="Paul Millar" />
+<person posts="3" size="7" who="Tom Wickline" />
+<person posts="3" size="6" who="Bill Medland" />
+<person posts="2" size="30" who="Acke Carlsson" />
+<person posts="2" size="13" who="Martin Fuchs" />
+<person posts="2" size="7" who="Rolf Kalbermatter" />
+<person posts="2" size="6" who="Robert North" />
+<person posts="2" size="5" who="Chris Morgan" />
+<person posts="2" size="5" who="Andreas Mohr" />
+<person posts="2" size="5" who="Marcus Meissner" />
+<person posts="2" size="5" who="David Fraser" />
+<person posts="3" size="37" who="Raphael Junqueira" />
+<person posts="2" size="4" who="Zsolt Rizsanyi" />
+<person posts="2" size="4" who="David Laight" />
+<person posts="2" size="4" who="Rein Klazes" />
+<person posts="2" size="4" who="Ender" />
+<person posts="2" size="4" who="Robert Lunnon" />
+<person posts="2" size="3" who="(us)" />
+<person posts="2" size="3" who="Vincent Beron" />
+<person posts="1" size="10" who="Kevin" />
+<person posts="1" size="6" who="Stefan Leichter" />
+<person posts="1" size="4" who="Kye Lewis" />
+<person posts="1" size="4" who="Mehmet Yasar" />
+<person posts="1" size="4" who="Matthew Davison" />
+<person posts="1" size="4" who="Mauro Carvalho Chehab" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="Casper Hornstrup" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="2" who="Waldek Hebisch" />
+<person posts="1" size="2" who="Boris" />
+<person posts="1" size="2" who="Martin Wilck" />
+<person posts="1" size="2" who="Siegfried Haas" />
+<person posts="1" size="2" who="Matthew Bloch" />
+<person posts="1" size="2" who="Jon Griffiths" />
+<person posts="1" size="2" who="Enrico Horn" />
+<person posts="1" size="2" who="Drew Ogle" />
+<person posts="1" size="1" who="Ryan Cumming" />
+<person posts="1" size="1" who="winedevel" />
+<person posts="1" size="1" who="Martin Pieschel" />
+<person posts="1" size="1" who="Ben Clewett" />
+<person posts="1" size="1" who="Kjetil S. Matheussen" />
+<person posts="1" size="1" who="P. Christeas" />
+
+</stats>
+
+
+
+<section 
+	title="News: Wine-20021219" 
+	subject="News"
+	archive="http://cvs.winehq.org/cvsweb/wine/ANNOUNCE?rev=1.70&amp;content-type=text/x-cvsweb-markupl" 
+	posts="1" 
+	startdate="12/14/2002"
+	enddate="12/22/2002"
+>
+<topic>News</topic>
+<p>Appearing now on a ftp server near you - Wine-20021219.  Looks like
+with the flurry of activity lately the release cycle is about 3 weeks
+instead of 4.  Alexandre noted the following:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20021219: (see 
+	<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.66&amp;content-type=text/x-cvsweb-markup">ChangeLog</a> 
+	   for details)
+	<ul>
+	<li> DLL linking now done through import libraries.</li>
+	<li> A couple of new tools to make Winelib easier to use.</li>
+	<li> Many Direct3D improvements.</li>
+	<li> Improved Windows compatibility of the regression tests.</li>
+	<li> Lots of bug fixes.</li></ul></p></quote>
+
+<p>Sorry for the slightly thinner issue this week.  The reason is twofold, for
+one I found a lot of the threads boring and I figured you would too.  The
+other reason is that I've just been busy at work.  (At least I did get out
+skiing a little though.)  Development is rolling along nicely though.  Lots of 
+Direct3D work is pouring in from Lionel Ulmer, Ove K&#229;ven is having fun 
+creating IDL and getting rid of headers, and bugfixes appear daily.  Interesting 
+factoid - more patches (in MB) have been submitted over the last 4 months than 
+the previous year before that.</p>
+
+
+</section>
+
+
+<section 
+	title="Implementation of wineboot" 
+	subject="Re: wineboot - Andy's version"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/12/0785.html" 
+	posts="7" 
+	startdate="12/17/2002"
+	enddate="12/22/2002"
+>
+<topic>Patches</topic>
+<topic>Utilities</topic>
+
+<p>Shachar Shemesh posted an initial implementation of "wineboot".
+He explained that Andi Mohr did the actual implementation:</p>
+<quote who="Shachar Shemesh"><p>
+
+ If anyone did not understand, my previous post was with Andy's 
+ implementation of wineboot. This post is with the changes to the rest of 
+ Wine to make wineboot fit in better.
+</p></quote>
+
+<p>Explained within the patch, wineboot 
+<quote who="Andreas Mohr">
+ is a Winelib application that's executed by Wine on startup of the
+ first wine process of a particular user.</quote>  In particular
+it handles things like:</p>
+<quote who="Andreas Mohr"><p>
+<ul>
+ <li> wininit.ini processing</li>
+ <li> registry RenameFiles entries</li>
+ <li> RunServices* / RunOnce* / Run registry keys</li>
+ <li> win.ini Load= / Run= entries</li>
+ <li> StartUp folder processing</li>
+</ul></p></quote>
+
+<p>Matthew Davison had some stuff to add too,
+<quote who="Matthew Davison">
+ I have some work to the RunOnceEx section of wineboot, once (and if)
+ Andy's version is committed will send a patch.</quote></p>
+
+<p>A few days later the patch still hadn't been committed and
+Shachar asked what exactly was wrong with it.  Alexandre 
+explained, 
+<quote who="Alexandre Julliard">
+ I was hoping you would clean it up, not simply resubmit Andi's
+ stuff. As discussed with Andi already, this thing is much too complex
+ and over-engineered. It has to be a simple application that doesn't
+ require user interaction or a dozen configuration parameters.
+</quote></p>
+
+<p>Shachar felt if that was the case then perhaps a redesign was
+needed:</p>
+<quote who="Shachar Shemesh"><p>
+As this is the way you feel about the current wineboot, I think I'll go 
+a completely new route. Please let me know your thoughts about the new 
+proposed process.
+<p></p>
+In windows, some of the boot operations are done by the core "windows". 
+These include wininit processing, win.ini, rename registry keys, and the 
+services (can probably wait with these, however). Other things are 
+performed by explorer when it first starts. These include the run and 
+runonce keys.
+<p></p>
+What I'm thinking is incorporating the first group into the wine code 
+itself (I'm thinking the server startup, synchroniously done). For the 
+second group, create a wineboot program, and have a single option saying 
+whether the wineserver should run it on startup or not.
+</p></quote>
+
+<p>Francois Gouget didn't like that idea though and thought the 
+existing concept of a standalone app was the correct approach:</p>
+<quote who="Francois Gouget"><p>
+
+It is my understanding that if you put these in the wine server you will
+not be able to use the Windows APIs. This will make it unnecessarily
+complex to handle the move and renames since the paths will be windows
+paths.
+<p></p>
+Putting this code in a standalone utility will allow you to use the
+Windows API and then calling it from the Wine server (if that is the way
+we go) is just a fork away. It also makes the 'when is it called' more
+flexible which can come in handy.
+</p></quote>
+
+
+</section>
+
+
+<section 
+	title="Compile Time Comparisons / Tips" 
+	subject="How long does it take *you* to build wine?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/12/0621.html" 
+	posts="11" 
+	startdate="12/16/2002"
+	enddate="12/19/2002"
+>
+<topic>Build Process</topic>
+<p>Dan Kegel (probably while waiting on a compile) wrote to wine-devel:</p>
+<quote who="Dan Kegel"><p>
+I got tired of waiting for wine to build, and started looking
+for ways to speed it up.
+</p><p>
+I have three systems handy: a dual 650MHz PIII, a 750MHz PIII laptop,
+and a 1.1 GHz Celeron with shared memory video (i.e. dog slow).
+To see if a parallel compile would help, I installed Red Hat 8.0
+on all systems, and installed the RPM for distcc from 
+<a href="http://distcc.samba.org">http://distcc.samba.org</a>.
+</p><p>
+I then timed how long it took to do a 'make' after 'make clean' in
+a recent copy of the wine tree.
+</p><p>
+It does look like distributing the load helps a tiny
+bit, but it's not clear it's a big win over just building
+on the dual 650MHz machine.
+The fastest build I've seen so far is 19 minutes.  I'm pretty
+sure I'm not doing things optimally yet.
+</p><p>
+So how long does it take *you* to do a clean build
+(just the 'make' part after 'make depend', say) of
+Wine-20021125?
+</p></quote>
+
+<p>I'll save you the time of reading the various reports
+and summarize it like this:</p>
+<p><table border="1"><tr><th>who</th>
+		<th>time</th>
+		<th>machine specs</th></tr>
+<tr><td>Drew Ogle</td>
+	<td>6min 50sec</td>
+	<td>dual 1800+ MP</td></tr>
+
+<tr><td>Dan Kegel</td>
+	<td>8 min</td>
+	<td>dual 1.2GHz P4 Xeon, make -j2</td></tr>
+
+<tr><td>Dan Kegel</td>
+	<td>17min 21sec</td>
+	<td>dual 650MHz PIII, 7200RPM disks, make -j2</td></tr>
+
+<tr><td>Martin Fuchs</td>
+	<td>18min 2sec</td>
+	<td>1.8 GHz P4</td></tr>
+
+
+<tr><td>P. Christeas</td>
+	<td>18min 30sec</td>
+	<td>Athlon XP 1800, 256 MB DDR RAM</td></tr>
+
+
+<tr><td>Dan Kegel</td>
+	<td>30 min</td>
+	<td>750MHz PIII laptop</td></tr>
+
+<tr><td>Michael Stefaniuc</td>	
+	<td>about 30 min</td>
+	<td>athlon 900, 512 MB RAM</td></tr>
+
+<tr><td>Alberto Massari</td>
+	<td>41 min 32 sec</td>
+	<td>Pentium III-M 600MHz, 256MB RAM, Mandrake 9, gcc 3.2</td></tr>
+
+<tr><td>Joerg Mayer</td>
+	<td>47min 41sec</td>
+	<td>athlon 550, 192MB RAM, gcc 3.2</td></tr>
+
+<tr><td>Bill Medland</td>
+	<td>47 min</td>
+	<td>Celeron 450, 128MB, RedHat 7.3</td></tr>
+
+<tr><td>Tony Lambregts</td>
+	<td>under 3 hours</td>
+	<td>300mhz Pentium, 96MB RAM</td></tr>
+
+<tr><td>Alberto Massari</td>
+	<td>4+ hours</td>
+	<td>Pentium 133, 64 MB</td></tr>
+
+</table></p>
+
+<p>Some folks had suggestions for speeding up the process.  First,
+Dan Kegel tried using <a href="http://distcc.samba.org/">distcc</a>
+to distribute the compilation across a couple machines.  He noted
+some speed ups, but nothing too astounding.  Michael Stefaniuc
+highly recommended using <a href="http://ccache.samba.org/">ccache</a>.
+While it would speed up the initial compilation, it made subsequent
+ones dramatically faster:</p>
+<quote who="Michael Stefaniuc"><p>
+On a athlon 900 with 512 MB RAM it takes about 30 minutes for a full
+build, but only for the first run. On the second run it takes about 3-4
+minutes :). Ok, i'm using ccache and it really paid out during my
+-DSTRICT work. The cache hit rate had varied between 30% and 80%,
+depending what i've done. You get 30% - 40% hitrate for normal updates
+from cvs without doing a "make clean".</p></quote>
+
+</section>
+
+
+
+
+
+
+
+
+
+<section 
+	title="To Do List Updated" 
+	subject="Wine 0.9 TODO v0.7"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/12/0730.html" 
+	posts="6" 
+	startdate="12/19/2002"
+	enddate="12/20/2002"
+>
+<topic>Status Updates</topic>
+<p>Dimi Paun announced more revisions to the to-do list he
+created:</p>
+<quote who="Dimitrie Paun"><p>
+The next version of the 0.9 TODO is way past due, so I've
+decided to release it today:
+<ul>
+	<a href="http://63.138.153.104/wine/Wine-0.9-TODO-0.7.html">
+           http://63.138.153.104/wine/Wine-0.9-TODO-0.7.html</a></ul></p><p>
+
+ChangeLog
+<ul>
+  <li> Bill finished moving CVS docu from User Guide to Devel Guide (B3)</li>
+  <li> Alexandre implemented import libraries (D3), finished winebuild (D4)</li>
+  <li> I fixed header location (mostly done by Alexandre :)) (E9)</li>
+  <li> Status update from Jaco (C2), and Ender (E7)</li>
+  <li> Brand new Introduction</li>
+  <li> New tasks added (D5, D6, D7)</li>
+</ul></p><p>
+Check it out, it's fun! :)
+</p></quote>
+
+<p>The new tasks added were:</p>
+<ul>
+	
+	<li>Stabilize <tt>wrc</tt>'s options [IN PROGRESS]
+	  <ul>
+	    <li> worker: Dimitrie O. Paun</li>
+	    <li> status: <tt>wrc</tt> is now <tt>windres</tt> pseudo-compatible, looking into sanitizing options</li>
+	    <li> updated: Dec 19, 2002</li>
+	  </ul></li>
+	<li>Complete the <tt>mingwrap</tt> tool [IN PROGRESS]
+	  <ul>
+	    <li> worker: Dimitrie O. Paun</li>
+	    <li> status: mostly works, needs refinement, documentation, and a new name</li>
+	    <li> updated: Dec 19, 2002</li>
+	  </ul></li>
+	<li>Complete the <tt>winewrap</tt> tool [IN PROGRESS]
+	  <ul>
+	    <li> worker: Dimitrie O. Paun</li>
+	    <li> status: mostly works, needs portability work (depends on gcc), maybe merge into <tt>winebuild</tt></li>
+	    <li> updated: Dec 19, 2002</li>
+	  </ul></li>
+</ul>
+
+
+
+</section>
+
+
+
+
+
+
+<section 
+	title="COM Conformance Test Suite" 
+	subject="COM conformance test suite?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/12/0687.html" 
+	posts="1" 
+	startdate="12/18/2002"
+>
+<topic>Testing</topic>
+<p>Dan Kegel had an idea that generated no replies, at least none
+to the list:</p>
+<quote who="Dan Kegel"><p>
+
+Now that the Wine regression tests are starting to
+shape up, and people are starting to be able to run
+Visual Basic apps, maybe it's time for us to start
+thinking about getting ahold of the COM conformance
+test suite the Open Group did as a companion for their
+ActiveX standard definition.
+</p><p>
+The Open Group was willing to discuss this, but
+last time I checked, they wanted to know what
+was in it for them.  (Well, they're not the Free Group,
+after all.)  In particular, they thought it might take
+them a bit of work to separate the conformance test
+suite out from their "reference implementation" of ActiveX
+for Unix.
+</p><p>
+For those who haven't seen it yet, the Open Group's
+ActiveX spec (<a href="http://www.opengroup.org/onlinepubs/009899899/">
+	http://www.opengroup.org/onlinepubs/009899899/</a> )
+is perhaps the only document defining Win32 API calls
+in a standards-body-like-way.   (The Tru64 Unix doc,
+<a href="http://h30097.www3.hp.com/docs/">
+http://h30097.www3.hp.com/docs/</a>
+contains some related material.  Might be worth archiving
+this before it goes offline as HP discontinues Tru64 Unix.)
+</p><p>
+The Open Group spec only covers a little bit of
+Win32, but it sure looks like a useful bit.
+The #include files it seems to define are:
+<ul>
+#include &lt;comcat.h&gt; <br />
+#include &lt;oaidl.h&gt;<br />
+#include &lt;objbase.h&gt;<br />
+#include &lt;objidl.h&gt;<br />
+#include &lt;ocidl.h&gt;<br />
+#include &lt;ole2.h&gt;<br />
+#include &lt;oleauto.h&gt;<br />
+#include &lt;olectl.h&gt;<br />
+#include &lt;oleidl.h&gt;<br />
+#include &lt;unknwn.h&gt;<br />
+#include &lt;urlmon.h&gt;<br />
+#include &lt;winerror.h&gt;<br />
+#include &lt;winnls.h&gt;<br />
+#include &lt;winreg.h&gt;</ul>
+</p><p>
+which is a fair chunk.
+</p></quote>
+
+
+
+</section>
+
+
+
+
+
+
+<section 
+	title="Running Cygwin Apps Under Wine" 
+	subject="running cygwin apps(gcc etc.) under wine"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/12/0669.html" 
+	posts="6" 
+	startdate="12/17/2002"
+	enddate="12/18/2002"
+>
+
+<p>
+Chris Morgan ran into a problem running apps compiled under Cygwin with Wine:</p>
+<quote who="Chris Morgan"><p>
+Trying to run my work related code build process under wine results in some failures with 
+cygwin's gcc.  Even with a simple hello world.c file and 'gcc -o test test.c' I get:
+<ul><i>ed. some lines deleted</i><br />
+	<code>
+	8125556 [main] gcc -134958416 sync_with_child: child 134970152(0xE0) died before initialization with status code 0x1<br />
+	8127752 [main] gcc -134958416 sync_with_child: *** child state waiting for longjmp<br />
+	gcc: vfork: Resource temporarily unavailable</code></ul>
+
+
+</p><p>
+Any ideas why this is occurring?  Is this due to issues with pthreads?
+</p></quote>
+
+<p>Dmitry Timoshkov explained, <quote who="Dmitry Timoshkov">
+Very likely this is due to the implementation of 'fork' in cygwin.</quote> That prompted
+Chris to ask, <quote who="Chris Morgan">
+
+ Ahh, very cool.  Is there anything we can do to keep cygwin from replacing 
+ wines/libc's fork with its own and presumably fix this problem?</quote>  
+</p><p>
+Dmitry didn't think so,<quote who="Dmitry Timoshkov">
+ I'm afraid it's impossible to replace cygwin's fork by an one from libc.
+ Cygwin makes some assumptions about "environment" where it runs and
+ accordingly patches virtual memory of a newly created process to mimic
+ fork behaviour.</quote></p>
+
+
+
+
+
+</section>
+
+</kc>
+

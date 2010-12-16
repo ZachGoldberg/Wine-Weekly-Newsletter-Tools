@@ -1,0 +1,344 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="65" date="16 Oct 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 65th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="88" size="280" contrib="30" multiples="17" lastweek="20">
+<person posts="8" size="32" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="8" size="29" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="7" size="16" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="14" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="6" size="19" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="4" size="9" who="Raymond Orchison &lt;itis@it-integrated-systems.co.za&gt;" />
+<person posts="4" size="8" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="20" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="4" size="12" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="4" size="11" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="10" who="Paul E. Merrell &lt;pem@televar.com&gt;" />
+<person posts="3" size="7" who="Martin Pilka &lt;mpilka@codeweavers.com&gt;" />
+<person posts="3" size="11" who="Peter Hunnisett &lt;hunnise@nortelnetworks.com&gt;" />
+<person posts="3" size="10" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+
+<p />
+
+<ul>
+<li>Martin Pilka released another version (0.32b) of winecfg tool (see 
+<kcref issuenum="62" sectionnum="2">for a previous article</kcref>). You can
+grab it at <a href="http://www.winehq.org/docs/wine-user/config-wine-main">
+http://www.winehq.org/docs/wine-user/config-wine-main</a></li>
+</ul>
+</section>
+
+
+<section 
+  title="Wine press"
+  subject="Wine press"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-73.html"
+  posts="4"
+  startdate="09 Oct 2000 00:00:00 -0800"
+  enddate="10 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Following last week discussion on Corel and Microsoft deal, Paul E.
+Merrel posted another article on the subject: a <a
+href="http://www.linuxworld.com/linuxworld/lw-2000-10/lw-10-corel.html">
+Linux world</a> article reports on Corel's Rene Schmudt (executive VP
+of Corel's Linux product group) on Wine and .NET from a Corel point of
+view. 
+
+<p />
+
+Later on, Paul also posted a LinuxPlanet article where Wine
+development was discussed, with good parts from Jeremy White (CodeWeavers CEO)
+<a href="http://www.linuxplanet.com/linuxplanet/opinions/2439/1/">
+http://www.linuxplanet.com/linuxplanet/opinions/2439/1/</a>
+
+<p />
+
+Jeremy felt the need 
+<quote who="Jeremy White">to briefly 'adjust' an
+impression that this may have left about something I said to Kevin
+(<i>EdNote: the LinuxPlanet's article writer</i>).
+
+<p />
+
+I <b>personally</b> care more about Winelib than about Wine, and I think
+Winelib is more relevant to my customers, particularly here in the
+U.S., where paying for VMware or Win4Lin isn't that much of a barrier
+to my potential customers. 
+
+<p />
+
+I don't speak for the personal goals of the rest of the CodeWeavers
+team, many of whom care passionately about the Wine loader. Further,
+we're making a major effort to boost Wine as a whole (in fact, prior
+to Francois's (<i>EdNote: Francois Gouget</i>) work, all of what we
+did served to help Wine as a whole as opposed to Winelib). Finally,
+I'm actually very excited about the progress of Wine (I was just
+disappointed - I had hoped to show off some cool new 1.0 stuff to
+Kevin, but the demos didn't work out).
+
+<p />
+
+I'm just the nutty kind of geek who gets more of a thrill out of
+watching 500,000 lines of Windows code compile than I do out of
+watching Starcraft run &lt;g&gt;.
+</quote>
+</section>
+
+
+<section 
+  title="Directory access modes"
+  subject="Dir readonly problem"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-95.html"
+  posts="6"
+  startdate="12 Oct 2000 00:00:00 -0800"
+  enddate="12 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Rein Klazes proposed a patch for the following issue he had:
+
+<quote who="Rein Klazes">
+A winrar self extracting archive, created a read-only dir and tried to 
+unpack the archive into that dir. Unfortunately readonly for dirs
+means quite different things, in dos/win the directory is protected
+from deleting, in unix you cannot create new files in it.
+</quote>
+
+
+<p />
+
+Rein then proposed a simple fix: not to create the directory with read 
+only attribute, but this triggered a few comments.
+
+<p />
+
+David Elliot proposed another solution: the directory would be created 
+read-only, and any file operation on this directory would imply a set
+of operations (set the dir attribute to writable, do the file
+operation, reset the dir attributes to their original state). This
+should also be done in an atomic way, involving dir locking/unlocking.
+However, portability of such a solution across all known Unix file
+system would certainly raise lots of issues (like chmod on a FAT
+system).
+
+<p />
+
+Some other people suggested, like Uwe Bonnes, suggested implementing
+the tricks on the wine server side. But this wasn't a good suggestion
+either.
+
+<p />
+
+Francois Gouget had the final word, stating that Rein's first proposal 
+was in fact the correct solution:
+<quote who="Francois Gouget">
+All the solutions that have been discussed on wine-devel are too
+complex and flawed at the root because of the semantics difference:
+FILE_ATTRIBUTE_READONLY applied to a directory means 'make it so this
+directory cannot be deleted'. This is impossible to do in Unix (except 
+on systems that support ACLs).
+</quote>
+
+
+<p />
+
+Francois even tested the same type of operation using Samba, and the
+Windows read-only directories were created with read-write attributes.
+
+<p />
+
+David Elliot agreed with Francois latest proposal. The only remaining
+solution shall be based on ACL, but is another magnitude of complexity.</section>
+
+
+<section 
+  title="Graphics optimization"
+  subject="optimization using assembler"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-105.html"
+  posts="21"
+  startdate="12 Oct 2000 00:00:00 -0800"
+  enddate="15 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Mark Dufour, after reading the benchmark results (see 
+<kcref issuenum="64" sectionnum="4">previous issue</kcref>), 
+<quote who="Mark Dufour"> wondered if windows does many of the
+involved operations so much faster than wine because of x86
+optimizations. Wouldn't wine run much faster in many areas if
+assembler equivalents were written for critical operations, for
+different processors ? I understand that some maintenance problems
+would result from this...</quote> 
+
+<p />
+
+Eric Pouech gave a quick overview of the situation:
+
+<quote who="Eric Pouech">
+Results from the benchmark are also slow because:
+<ul>
+	<li>benchmark mostly stresses the graphics API</li>
+	<li>Wine's graphic APIs are known to be slow (overlay on top
+of X11; no rendering engine per se)</li>
+</ul>
+</quote>
+
+
+<p />
+
+Eric also explained, that most of bitmap handling relied on the X11
+rendering engine, and then used fault handlers on memory used by Wine
+internal data and X11 data for the bitmaps to synchronize the two of
+them. In this area, he added <quote who="Eric Pouech">I doubt assembly would
+help (unless we build our own rendering engine)</quote>
+
+<p />
+
+Mark get lurking around to find some possible improvements and asked
+whether the coordinate computation code according to the DC mapping
+could be optimized: since MM_TEXT is a widely used mapping mode, and
+there's no need to rescale the coordinate, just change the origin,
+Mark noted that lots of computation were not useful.
+
+<p />
+
+Patrik Stridvall proposed a way to code this, based on the fact that a
+mapping shall be constant across a graphic operation call (like
+LineDraw), so different paths doing only the requested conversions
+according to the mapping could be implemented.
+
+<p />
+
+Ulrich Weigand wasn't sure this would bring some speed (had to be
+tested), but rather suggested to update the coordinate conversion
+macro with Patrik's proposal and let the compiler do the rest of the
+job with common subexpression elimination (in this case applied to the 
+mapping testing). He also didn't like Patrik's code duplication
+because: 
+<quote who="Ulrich Weigand">
+But I was rather trying to search for a solution that affects
+maintainability of the code as little as possible, while still
+offering as much performance improvement as possible. 
+
+<p />
+
+Generally, the problem with performance optimizations is that they
+tend to make the code less maintainable, by introducing code
+duplication, special cases, even things like inline assembly etc.  At
+least in the current state of Wine, I tend to think maintainability
+more important than performance ...
+</quote>
+
+
+<p />
+
+Huw Davies also pointed that current coordinate handling missed the
+world transformation from NT (requiring more than just a translation / 
+scale operation). Supporting this would imply changing most of the
+coordinate transformation code.
+
+<p />
+
+Patrik Stridval then proposed another approach: instead of having one
+set of all functions for DC operation, Wine should support for each
+function four different implementations of the function depending of
+the mapping. The DC should know which one to use ; Patrik proposed
+four levels:
+<ol>
+	<li>no modification needed</li>
+	<li>translation applied</li>
+	<li>translation and scaling applied</li>
+	<li>world transform</li>
+</ol>
+and would directly call the right function, hence reducing the cost of 
+comparison in the functions.
+
+<p />
+
+However, Patrik agreed that <quote who="Patrik Stridvall">Premature optimization is
+the root to all evil"</quote> and wondered <quote who="Patrik Stridvall">if we
+should wait with these kind of optimizations until after Wine
+1.0.</quote>
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Another Explorer project"
+  subject="GXExplorer Open Source Project"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-148.html"
+  posts="2"
+  startdate="15 Oct 2000 00:00:00 -0800"
+  enddate="15 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Paul Merrell reported a another open source effort around Windows
+basic software:
+<quote who="Paul E. Merrell">
+Just ran across the EXExplorer open source project, which is
+developing a Delphi-based replacement for the Windows Explorer and
+file manager on the Windows platform. <a 
+href="http://sourceforge.net/projects/gxexplorer">http://sourceforge.net/projects/gxexplorer</a>. 
+I don't remember seeing it mentioned on this list before.  
+
+<p />
+
+Y'all will know far better than me whether that project might
+complement the Wine effort, but it occurred to me that there might be
+some expertise there that might be useful to you. 
+</quote>
+
+
+<p />
+
+Juergen Schmied answered:
+<quote who="Juergen Schmied">
+It's just one more program what can be used with wine. I don't think
+we are trying to supply a set of applets to replace the windows ones
+since all of these are already available as native applications. I see 
+the focus of the wine project (exe-loader part) more in supplying a
+possibility for executing games(joe user) and special customer
+applications (corporate user). 
+
+<p />
+
+The GXExplorer works quite good with wine but you have to use some
+native dlls since it's using quite a bit of the ole stuff. Last time
+I tried (some months ago) I had to use ole* dlls and many registry
+keys from a native windows. This program is a good test for the build
+in shell32, comctl32 and ole* since it uses many advanced features.
+</quote>
+</section>
+
+</kc>

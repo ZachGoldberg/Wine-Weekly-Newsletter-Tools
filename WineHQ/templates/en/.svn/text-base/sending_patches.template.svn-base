@@ -1,0 +1,111 @@
+<!--TITLE:[Sending Patches]-->
+
+<h1>Generating and Submitting Patches</h1>
+
+<p><b>Note</b>: this is a quick reference on how to send us patches.
+For detailed instructions please see the
+<a href="{$root}/site/docs/winedev-guide/codingpractice">Coding Practice</a>
+chapter in our online documentation.</p>
+
+<p>Please submit patches to the Wine patches mailing list,
+<a href="mailto:wine-patches@winehq.org">wine-patches@winehq.org</a>.
+(Note that if you're not <a href="{$root}/site/forums">subscribed</a> to the mailing
+list, the mailing list administrators must first check your submission
+to make sure it's not spam before they can let it through.
+There is no attempt to apply patches that appear in the newsgroup
+or anywhere else to the Git tree.)
+</p>
+
+<p>When submitting patches, please:</p>
+<ul>
+ <li>Include a ChangeLog entry with your <b>real</b> name, email address and
+     a description of what your patch does.
+
+ <li>Keep the patch small and the point of the change clear.
+
+ <li>Submit one fix or group of related changes per patch.
+
+ <li>Generate your patch against the latest version of Wine from the WineHQ Git tree (see below).
+
+ <li>Test your patch, and if possible write a test case demonstrating it is correct.
+
+ <li>Be careful to not corrupt the patch through line-wrapping.
+
+ <li>Avoid unnecessarily changing the formatting of the code.
+
+ <li>Don't mix tabs and spaces because it makes the diff output unreadable, use consistent indentation.
+
+ <li>Use standard C, avoid C++ comments and inline variable declarations.
+
+ <li>Read the diff and make sure it contains only what you want in it.
+</ul>
+
+<p>Accepted patches will appear in the <a href="{$root}/site/forums">wine-cvs</a> mailing list. 
+
+<p>Patches with obvious problems may receive a response on wine-devel.
+
+<p>Some patches may not receive any response.  In this case, your patch
+   maybe considered <i>Not Obviously Correct</i>, and you can:
+
+<ul>
+ <li> Check the patch over yourself, and think about what can be done to
+      clarify the patch (hints in the list above).
+
+ <li> Write a mail to wine-devel, explain your patch and request it be
+      reviewed by anybody that cares to review it.
+
+ <li> Ask for advice about your patch on #winehackers.
+
+ <li> Unless one already exists, open a bug in bugzilla describing the
+      problem you are trying to solve (eg. ./configure fails on Solaris,
+      etc) and attach your patch.
+</ul>
+
+<p>
+    If your patch didn't receive a response for 3 days of WineHQ Git commits
+    your patch has a high chance of being in this category.
+    <br/>
+    You may find it difficult to solicit feedback,
+    so think carefully about the comments you receive.
+    <br/>
+    Just do not give up!
+</p>
+
+<hr>
+
+<h2>Generating a patch for WineHQ with Git</h2>
+
+<p>It's best to send small patches against the current tree using Git.
+First, make sure your tree is up to date, as described on the
+<a href="http://wiki.winehq.org/GitWine">Git</a> page.
+ 
+<p>Check in your patches to your Git tree using
+<a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">git commit</a>.</p>
+
+<p>If you're going to use
+<a href="http://www.kernel.org/pub/software/scm/git/docs/git-imap-send.html">git imap-send</a>
+make sure that you've set up the proper options in your Git config file, then run:</p>
+
+ <table width="700" border=0 cellpadding=10><tr><td class=black>
+ <span class=inverse>
+  git format-patch --stdout --keep-subject --attach origin | git imap-send<br>
+ </span>
+ </td></tr>
+ </table>
+
+<p>That should upload your patches into your IMAP drafts folder, and allow you to check and
+send them.  In Mozilla Thunderbird, that is as simple as clicking "Edit Draft..." then "Send"
+if you have setup the mail headers in the Git config file correctly.
+
+<p>If you can't use IMAP, use the following command to generate patchs:</p>
+
+ <table width="700" border=0 cellpadding=10><tr><td class=black>
+ <span class=inverse>
+  git format-patch --keep-subject origin<br>
+ </span>
+ </td></tr>
+ </table>
+
+<p>That should generate a number of txt files, which you can send manually.</p>
+
+<p>&nbsp;</p>

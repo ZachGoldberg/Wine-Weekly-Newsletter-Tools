@@ -1,0 +1,112 @@
+<!--TITLE:[Wine para distribuciones basadas en Debian]-->
+<!--BLURB:[Wine para distribuciones basadas en Debian]-->
+
+<h1 class="title"><img src="{$root}/images/distro/ubuntu.png" width="50" height="50" alt="Ubuntu Linux" border="0">
+Wine para Ubuntu, Debian y distribuciones basadas en Debian
+<img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></h1>
+
+<p>Ubuntu y otras distribuciones basadas en Debian utilizan una herramienta
+especial para el manejo de paquetes conocida como APT. APT es capaz de
+auto-mágicamente instalar todas las dependencias necesitadas por un
+paquete de software, así también como de mantenerlo actualizado a
+través del rastreo de los que son conocidos como repositorios APT.
+Ubuntu posee su propio repositorio de software que incluye a Wine, sin
+embargo nosotros mantenemos aqui uno propio con los últimos paquetes
+beta disponibles para su descarga.
+
+<h2>Advertencia: Paquetes Beta</h2>
+
+<p><i>Los paquetes aquí disponibles son
+beta. Esto quiere decir que periodicamente sufren de regresiones y como
+resultado de una actualizacion la funcionalidad de Wine puede ser
+comprometida. Si la última versión estable de Wine le sirve a usted,
+entonces tal vez no quiera usar los paquetes beta.</i></p>
+
+<h2>Añadir el repositorio APT WineHQ:</h2>
+
+<p>Abra el menú de Orígenes del software a través de <b>Sistema->Administracion->Orígenes del Software</b>. Seleccione el tab <b>Otro software</b> y haga click en <b>Añadir</b>.</p>
+
+<img src="{$root}/images/distro/ubuntu-ppa.png" width="531" height="509" alt="Sistema->Administracion->Orígenes del Software" border="0">
+
+<p>Entonces <b>copie y pegue una de las lineas debajo</b> de acuerdo a la versión de Ubuntu que está usando:</p>
+
+<p><b>Para Ubuntu Karmic (9.10):</b><br>
+<i>ppa:ubuntu-wine/ppa</i></p>
+<p><b>Para Ubuntu Jaunty (9.04):</b><br>
+<i>deb http://wine.budgetdedicated.com/apt jaunty main #WineHQ - Ubuntu 9.04 "Jaunty Jackalope"</i></p>
+<p><b>Para Ubuntu Intrepid (8.10):</b><br>
+<i>deb http://wine.budgetdedicated.com/apt intrepid main #WineHQ - Ubuntu 8.10 "Intrepid Ibex"</i></p>
+<p><b>Para Ubuntu Hardy (8.04):</b><br>
+<i>deb http://wine.budgetdedicated.com/apt hardy main #WineHQ - Ubuntu 8.04 "Hardy Heron"</i></p>
+
+<h2>Autenticando el repositorio APT WineHQ (9.04 y anteriores):</h2>
+
+<p>Luego de añadir el repositorio, también debe añadir la clave del repositorio a la lista de claves autenticas de su sistema. <b>Los usuarios de Ubuntu 9.10 deben evitar este paso</b>.</p>
+
+<p>Para Ubuntu 9.04 y anteriores, 
+<b><a href="http://wine.budgetdedicated.com/apt/Scott%20Ritchie.gpg">descargue 
+y guarde la clave de Scott Ritchie</a> (boton derecho del mouse -&gt; guardar como) 
+en su escritorio. Luego abra el tab de <b>autenticación</b>, haga click en 
+<b>Importar clave</b> y seleccione el archivo que acaba de guardar 
+(<b>Scott Ritchie.gpg<b>). Es recomendable borrar este archivo luego de 
+realizar este paso.</p>
+
+<img src="{$root}/images/distro/ubuntu-softwaresources2.png" width="531" height="509" alt="System->Administration->Software Sources->Authentication" border="0">
+
+<h2>Instalando Wine:</h2>
+
+<p>Haga click en <b>cerrar</b> para finalizar, y luego haga click en 
+<b>recargar</b> cuando salga el aviso sobre la informacion del software 
+disponible. Si ya tiene Wine instalado el gestor de actualizaciónes le 
+informará de la publicación de las versiones beta para su actualización. Si no 
+ha instalado Wine todavía, vaya a <b>Aplicaciones-&gt;Centro de Software de 
+Ubuntu</b> y busque por <b>Wine</b> o simplemente haga 
+<a href="apt://wine">click en este enlace</a>.</p>
+
+<h2>Actualizando a una nueva versión de Ubuntu</h2>
+
+<p>Si usted está actualizando el sistema entero, como por ejemplo desde Ubuntu 
+8.04 a Ubuntu 8.10, necesitara volver a esta página y añadir el repositorio 
+para la nueva versión arriba.</p>
+
+<h2>Paquetes .deb antiguos.</h2>
+
+<p>Como el repositorio APT sólo contiene los últimos paquetes, las versiones 
+antiguas estan dispoibles en el 
+<a href="http://wine.budgetdedicated.com/archive/index.html">archivo de paquetes .deb de WineHQ</a>.</p>
+
+<h2>Instrucciones de linea de comando alternativas para instalar Wine:</h2>
+
+<p>También es posible añadir los repositorios Wine y realizar la instalación a 
+través de la linea de comandos como sigue. Esto puede ser útil en Kubuntu, 
+Xubuntu y otros derivados de Ubuntu. Necesitara correr los siguiente en una 
+Terminal.</p>
+
+<h3>Para Karmic (9.10):</h3>
+
+<p><i>sudo add-apt-repository ppa:ubuntu-wine/ppa</i></p>
+
+<h3>Para 9.04 y anteriores:</h3>
+<p>Agregue la clave del repositorio a la lista de claves auténtenticas de sus 
+sistema copiando los siguiente en una Terminal:</p>
+
+<p><i>wget -q http://wine.budgetdedicated.com/apt/387EE263.gpg -O- | sudo apt-key add -</i></p>
+
+<p>Luego debe añadir el repositorio a la lista de fuentes APT de su sistema de 
+acuerdo a la versión de Ubuntu que corre:</p>
+
+<p><b>Para Ubuntu Jaunty (9.04):</b><br>
+<i>sudo wget http://wine.budgetdedicated.com/apt/sources.list.d/jaunty.list -O /etc/apt/sources.list.d/winehq.list</i></p>
+<p><b>Para Ubuntu Intrepid (8.10):</b><br>
+<i>sudo wget http://wine.budgetdedicated.com/apt/sources.list.d/intrepid.list -O /etc/apt/sources.list.d/winehq.list</i></p>
+<p><b>Para Ubuntu Hardy (8.04):</b><br>
+<i>sudo wget http://wine.budgetdedicated.com/apt/sources.list.d/hardy.list -O /etc/apt/sources.list.d/winehq.list</i></p>
+
+<p>Luego actualice la información de APT corriendo 
+'<b>sudo apt-get update</b>'. Ahora puede instalar Wine normalmente o tipeando 
+'<b>sudo apt-get install wine</b>' en la terminal.</p>
+
+<br>
+<p><i>Webhosting muy rápido y fiable para repositorios APT suministrado 
+amablemente por <a href="http://www.budgetdedicated.com/">budgetdedicated.com
+</a>.</i></p>

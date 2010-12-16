@@ -1,0 +1,607 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="231" date="07/16/2004" />
+<intro> <p>This is the 231st issue of the Wine Weekly News publication.
+Its main goal is to install operating systems. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="74" size="260" contrib="38" multiples="15" lastweek="15">
+
+<person posts="10" size="38" who="Mike Hearn" />
+<person posts="5" size="12" who="Alexandre Julliard" />
+<person posts="5" size="12" who="Andreas Mohr" />
+<person posts="4" size="11" who="Francois Gouget" />
+<person posts="4" size="10" who="Dmitry Timoshkov" />
+<person posts="4" size="10" who="Vincent B&#233;ron" />
+<person posts="3" size="10" who="Shachar Shemesh" />
+<person posts="3" size="7" who="Lionel Ulmer" />
+<person posts="2" size="8" who="Saulius Krasuckas" />
+<person posts="2" size="5" who="Nicolai Kuntze" />
+<person posts="2" size="5" who="Paul Davis" />
+<person posts="2" size="4" who="Robert Reif" />
+<person posts="2" size="4" who="Mike McCormack" />
+<person posts="2" size="4" who="Tom Schutter" />
+<person posts="2" size="3" who="Tom" />
+<person posts="1" size="31" who="Zhangrong Huang" />
+<person posts="1" size="9" who="Katia Maculan" />
+<person posts="1" size="9" who="Krishna Murthy" />
+<person posts="1" size="6" who="Ivan" />
+<person posts="1" size="4" who="Hans Leidekker" />
+<person posts="1" size="4" who="Troy Rollo" />
+<person posts="1" size="4" who="Shachar Shemesh" />
+<person posts="1" size="3" who="Geoff Thorpe" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="ericson" />
+<person posts="1" size="3" who="Jeremy Newman" />
+<person posts="1" size="2" who="Dimitrie O. Paun" />
+<person posts="1" size="2" who="Flameeyes" />
+<person posts="2" size="4" who="Robert Shearman" />
+<person posts="1" size="2" who="RCascos" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Eric Pouech" />
+<person posts="1" size="2" who="Jonathan Wilson" />
+<person posts="1" size="1" who="(corpseeater.xax)" />
+
+</stats>
+<section 
+	title="News: Winelib Port" 
+	subject="News"
+	archive="http://os.newsforge.com/os/04/07/02/1423212.shtml"
+	posts="1"
+	startdate="07/10/2004"
+	enddate="07/16/2004"
+>
+<topic>News</topic>
+<p>I stumbled on a 
+<a href="http://os.newsforge.com/os/04/07/02/1423212.shtml">neat article</a>
+this week over at NewsForge about a company named Advanced Wave Research, Inc 
+who ported some design software using Winelib:</p>
+<quote who="NewsForge"><p>
+Nevertheless, using WINE cut the length of AWR's porting project significantly,
+putting it months ahead of its competitors. AWR's Linux products went into 
+beta in the end of March and, though they are ready to ship, will probably 
+stay in beta until at least August. "We're in beta until a customer forces us 
+out. You could consider it released because we're ready to deliver it, but 
+there has not been a compelling event," Collins says, and at $30,000 to 
+$80,000 per copy, it takes a compelling event. </p></quote>
+
+<p>While walking through the bookstore the other day I ran across the
+<a href="http://www.linuxjournal.com/modules.php?op=modload&amp;name=NS-lj-issues/issue123&amp;file=index">July, 2004</a> issue of Linux Journal.  Inside was 
+an article by Joey Bernard titled, <i>Developing for Windows on Linux</i>
+discussing MinGW and Wine.  Mainly it focused on using MinGW to compile apps
+for Windows and then using Wine to test them out.  </p>
+</section>
+<section 
+	title="Status of MSI" 
+	subject="Status of MSI"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0143.html" 
+	posts="7"
+	startdate="07/10/2004"
+	enddate="07/12/2004"
+>
+<topic>Status Updates</topic>
+<p>Mike McCormack and Aric Stewart wrapped up a series of patches for
+the Microsoft Installer API and Mike sent a message to the list:</p>
+<quote who="Mike McCormack"><p>
+ I've completed the merge of the work Aric and I have done to date on 
+ MSI.  Some programs that use and do not package the MSI installer may 
+ start to work.  We still have no implementation of msiexec.exe, so there 
+ is still no method to install .msi files directly, however not all MSI 
+ based installs require msiexec.exe.  (It's fairly easy to implement if 
+ anybody wishes to volunteer...)
+</p><p>
+ Consider adding "msi" = "native, builtin" to your Wine configuration 
+ files, and not installing the MSI redistributables straight away when 
+ you encounter an installer that uses msi.dll :)  Let us know what bugs 
+ turn up.
+</p></quote>
+
+<p>Michael Stefaniuc wondered 
+ <a href="http://www.winehq.org/status_dlls">what percentage</a> was
+ now completed.  Mike thought it was at about 40% now.  </p>
+
+</section>
+<section 
+	title="ESD Sound Driver" 
+	subject="[PATCH] Implement an Esd sound module"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0173.html" 
+	posts="1"
+	startdate="07/14/2004"
+>
+<topic>Multimedia</topic>
+<p>Zhangrong Huang wrote a new sound driver for Wine:</p>
+<quote who="Zhangrong Huang"><p>
+I'm now using the GNOME desktop environment which uses esd as sound server, 
+sometimes I need wine to run some Windows apps with sound support, but now 
+wine has no esd sound module, so I have to killall esd before I start wine.
+I have searched the mailing list for solutions, found there is a bug about this:
+<ul><li><a href="http://www.winehq.org/hypermail/wine-bugs/2002/12/0066.html">
+http://www.winehq.org/hypermail/wine-bugs/2002/12/0066.html</a></li>
+<li><a href="http://http://bugs.winehq.com/show_bug.cgi?id=326">
+http://http://bugs.winehq.com/show_bug.cgi?id=326</a></li></ul></p><p>
+
+I have tried esddsp, but it sometimes does not work, so, I decided to write the 
+Esd sound module, it's based on the Arts sound module, I just replaced the arts 
+calls with esd calls, and fixed some problems related to esd.
+It works fine for me, I attach the patch here, and if it works for the others, 
+it may close the old bug #326.</p></quote>
+</section>
+<section 
+	title="Using Multiple Graphics Drivers" 
+	subject="Initial creation of directory and config with ttydrv"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/07/0086.html" 
+	posts="9"
+	startdate="07/08/2004"
+	enddate="07/10/2004"
+>
+<topic>Configuration</topic>
+<p>Shachar Shemesh ran into a problem with
+setting up Wine:</p>
+<quote who="Shachar Shemesh"><p>
+
+I need to create the initial environment for wine (the .wine directory) 
+in an environment where no X11 server is available. Once the directory 
+is up (for example, if I copy it from somewhere), there is no problem to 
+add a config file that chooses the ttydrv driver. However, I cannot 
+create the initial directory.
+</p><p>
+Is there any solution to this problem, or should I just copy the initial 
+config from somewhere?
+</p></quote>
+
+<p>Someone questioned him on it and he explained the catch-22
+again,
+<quote who="Shachar Shemesh">
+Wine won't run if it is set to use the X11drv driver, and there is no 
+X11 display. Then again, the only way I can tell it to use the ttydrv is 
+by placing a config file in the .wine directory, which does not exist 
+until I run wine once.</quote></p>
+
+<p>Vincent B&#233;ron suggested some possible workarounds:</p>
+<quote who="Vincent Beron"><p>
+
+I suppose it's a headless server/workstation. Would using ssh X
+forwarding be possible for initial run?
+</p><p>
+Else, unless you modify the default value in the source code for ttydrv
+to be the default value, I don't see another solution than copying the
+config from, eg., /etc/wine/wine.conf (I think the default is
+${prefix}/etc/wine.conf), modifying the "GraphicsDriver" value while
+copying (sed is your friend here).
+</p><p>
+Note that some of the DX dlls will have problems registering (via
+wine.inf) with ttydrv. Ove has a patch for his debian packages to work
+around that issue (which I also use for RH packages).
+</p></quote>
+
+
+<p>Then Shachar explained the problem was a bit more complicated
+than that,
+<quote who="Shachar Shemesh">
+ I am creating the 
+initial config from an RPM, giving the winehq RPM as a dependency. For 
+the time being, I solved this problem by having my RPM create a new user 
+(which it has to anyways), and copy over a complete .wine directory. 
+However, I'm afraid that if things change in the future, the config may 
+no longer work as it does. For that reason, I would really prefer to 
+have the vanilla config auto-created, and then just add the files and 
+registry necessary for my application.
+</quote></p>
+
+<p>Vincent then suggested the following:</p>
+<quote who="Vincent Beron"><p>
+
+Running wineprefixcreate manually should fix your problem.
+Try this:
+<ul><code>
+mkdir ~/.wine<br />
+sed -e "s/\\\"x11drv\\\"/\\\"ttydrv\\\"/g" /etc/wine/wine.conf
+&gt;~/.wine/config<br />
+wineprefixcreate</code></ul></p><p>
+
+You should then have a populated registry and fake C drive, all using
+ttydrv.
+</p></quote>
+
+<p>Shachar thought that was a nasty solution since it involved
+touching files that he didn't own.  Mike Hearn suggested making
+a small change to Wine,
+<quote who="Mike Hearn">
+Just submit a patch that lets you override the video driver in use via an
+environment variable.</quote></p>
+
+<p>Dimi then suggested automating it,
+<quote who="Dimitrie Paun">
+Can't we just try to load the ttydrv if the x11drv fails to load?
+(That is, when there's no explicit driver setting).</quote></p>
+
+
+<p>Alexandre then made a change that made it possible to 
+specify multiple graphics drivers.  The first one that 
+successfully loads is used.</p>
+
+
+</section>
+<section 
+	title="COM and OLE Marshalling Tutorial" 
+	subject="Marshalling tutorial"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0180.html" 
+	posts="3"
+	startdate="07/14/2004"
+	enddate="07/14/2004"
+>
+<topic>RPC / COM / OLE</topic>
+<topic>Documentation</topic>
+<p>Mike Hearn decided it's time to start putting together some notes
+on how all the OLE, COM, and RPC stuff fits together.   This is pretty
+obtuse stuff, but Mike did a great job of explaining it all:</p>
+<quote who="Mike Hearn"><p>
+Here is the start of some notes on DCOM and OLE RPC. 
+</p><p>
+They're intended to help people like Duane who are hitting problems
+caused by it, and possibly to form the basis of some decent
+documentation for the developer guide. Things that only a few people
+understand make me nervous, getting this stuff into writing will maybe
+help increase the number of people working on Wine - at the very least
+it means when people move on we're not left stranded.
+</p><p>
+Firstly, even though this is a reasonably high level overview it's not
+exactly bed time reading. DCOM is massively complex, and tends to abuse
+and duplicate terminology rampantly. If you read this and get confused
+or don't understand it DON'T PANIC! That's perfectly normal.
+</p><p>
+I'll use the term "DCOM" to refer to all aspects of COM and OLE
+marshalling though other terms could certainly be used too. DCOM is a
+huge, sprawling part of the Windows API and it's impossible to cover it
+all in one email. If people find this helpful maybe I'll write some
+more. I'll assume a basic knowledge of COM (interfaces, IUnknown,
+refcounts etc). The basics are well documented and there are plenty of
+tutorials on the net.
+</p><p>
+Secondly, my understanding is not 100% complete and is still improving.
+There may well be mistakes and omissions here. Hopefully Ove, Marcus,
+Huw or somebody with a better understanding than I, will review it and
+correct me.
+</p><p>
+
+<u>BASICS</u>
+</p><p>
+The basic idea behind DCOM is to take a COM object and make it location
+transparent. That means you can use it from other threads, processes and
+machines without having to worry about the fact that you can't just
+dereference the interface vtable pointer to call methods on it.
+</p><p>
+You might be wondering about putting threads next to processes and
+machines in that last paragraph. You can access thread safe objects from
+multiple threads without DCOM normally, right? Why would you need RPC
+magic to do that?
+</p><p>
+Well, the details of why you'd want to do that can be left until later.
+For now, suffice it to say that COM lets you "marshal" interfaces into
+other "apartments". An apartment (you may see it referred to as a
+context in modern versions of COM) can be thought of as a location, and
+contains objects. 
+</p><p>
+Every thread in a program that uses COM exists in an apartment. If a
+thread wishes to use an object from another apartment, marshalling and
+the whole DCOM infrastructure gets involved to make that happen behind
+the scenes.
+</p><p>
+So. Each COM object resides in an apartment, and each apartment resides
+in a process, and each process resides in a machine, and each machine
+resides in a network. Allowing those objects to be used from <i>any</i> of
+these different places is what DCOM is all about.
+</p><p>
+The process of marshalling refers to taking a function call in an
+apartment and actually performing it in another apartment. Let's say you
+have two machines, A and B, and on machine B there is an object sitting
+in a DLL on the hard disk. You want to create an instance of that object
+(activate it) and use it as if you had compiled it into your own
+program. This is hard, because the remote object is expecting to be
+called by code in its own address space - it may do things like accept
+pointers to linked lists and even return other objects.
+</p><p>
+Very basic marshalling is easy enough to understand. You take a method
+on a remote interface, copy each of its parameters into a buffer, and
+send it to the remote computer. On the other end, the remote server
+reads each parameter from the buffer, calls the method, writes the
+result into another buffer and sends it back.
+</p><p>
+The tricky part is exactly how to encode those parameters in the buffer,
+and how to convert standard stdcall/cdecl method calls to network
+packets and back again. This is the job of the RPCRT4.DLL file - or the
+Remote Procedure Call Runtime. 
+</p><p>
+The backbone of DCOM is this RPC runtime, which is an implementation of
+DCE RPC <a href="#bullet1">[1]</a>. DCE RPC is not naturally object oriented, 
+so this protocol is extended with some new constructs and by assigning new 
+meanings to some of the packet fields, to produce ORPC or Object RPC. You might
+see it called MS-RPC as well.
+</p><p>
+RPC packets contain a buffer containing marshalled data in NDR format.
+NDR is short for "Network Data Representation" and is similar the XDR
+format used in SunRPC (the closest native equivalent on Linux to DCE
+RPC). NDR/XDR are all based on the idea of graph serialization and were
+worked out during the 80s, meaning they are very powerful and can do
+things like marshal doubly linked lists and other rather tricky
+structures.
+</p><p>
+In Wine, our DCOM implementation is <i>not</i> based on the RPC runtime, as
+while few programs use DCOM even fewer use RPC directly so it was
+developed some time after OLE32/OLEAUT32 were. Eventually this will have
+to be fixed, otherwise our DCOM will never be compatible with
+Microsoft's. Bear this in mind as you read through the code however.
+</p><p>
+
+<u>PROXIES AND STUBS</u>
+</p><p>
+Manually marshalling and unmarshalling each method call using the NDR
+APIs (NdrConformantArrayMarshall etc) is very tedious work, so the
+Platform SDK ships with a tool called "midl" which is an IDL compiler.
+IDL or the "Interface Definition Language" is a tool designed
+specifically for describing interfaces in a reasonably language neutral
+fashion, though in reality it bears a close resemblence to C++.
+</p><p>
+By describing the functions you want to expose via RPC in IDL therefore,
+it becomes possible to pass this file to MIDL which spits out a huge
+amount of C source code. That code defines functions which have the same
+prototype as the functions described in your IDL but which internally
+take each argument, marshal it using Ndr, send the packet, and unmarshal
+the return.
+</p><p>
+Because this code proxies the code from the client to the server, the
+functions are called proxies. Easy, right?
+</p><p>
+Of course, in the RPC server process at the other end, you need some way
+to unmarshal the RPCs, so you have functions also generated by MIDL
+which are the inverse of the proxies: they accept an NDR buffer, extract
+the parameters, call the real function then marshal the result back.
+They are called stubs, and stand in for the real calling code in the
+client process.
+</p><p>
+The sort of marshalling/unmarshalling code that MIDL spits out can be
+seen in dlls/oleaut32/oaidl_p.c - it's not exactly what it would look
+like as that file contains DCOM proxies/stubs which are different, but
+you get the idea. Proxy functions take the arguments and feel them to
+the NDR marshallers (or picklers), invoke an NdrProxySendReceive and
+then convert the out parameters and return code. There's a ton of goop
+in there for dealing with buffer allocation, exceptions and so on - it's
+really ugly code. But, this is the basic concept behind DCE RPC.
+</p><p>
+	
+<u>INTERFACE MARSHALLING</u>
+</p><p>
+Standard NDR only knows about C style function calls - they can accept
+and even return structures, but it has no concept of COM interfaces.
+Confusingly DCE RPC <i>does</i> have a concept of RPC interfaces which are
+just convenient ways to bundle function calls together into namespaces,
+but let's ignore that for now as it just muddies the water. The primary
+extension made by Microsoft to NDR then was the ability to take a COM
+interface pointer and marshal that into the NDR stream.
+</p><p>
+The basic theory of proxies and stubs and IDL is still here, but it's
+been modified slightly. Whereas before you could define a bunch of
+functions in IDL, now a new "object" keyword has appeared. This tells
+MIDL that you're describing a COM interface, and as a result the
+proxies/stubs it generates are also COM objects.
+</p><p>
+That's a very important distinction. When you make a call to a remote
+COM object you do it via a proxy object that COM has constructed on the
+fly. Likewise, a stub object on the remote end unpacks the RPC packet
+and makes the call. 
+</p><p>
+Because this is object-oriented RPC, there are a few complications: for
+instance, a call that goes via the same proxies/stubs may end up at a
+different object instance, so the RPC runtime keeps track of "this" and
+"that" in the RPC packets.
+</p><p>
+This leads naturally onto the question of how we got those proxy/stub
+objects in the first place, and where they came from. You can use the
+CoCreateInstanceEx API to activate COM objects on a remote machine, this
+works like CoCreateInstance API. Behind the scenes, a lot of stuff is
+involved to do this (like IRemoteActivation, IOXIDResolver and so on)
+but let's gloss over that for now.
+</p><p>
+When DCOM creates an object on a remote machine, the DCOM runtime on
+that machine activates the object in the usual way (by looking it up in
+the registry etc) and then marshals the requested interface back to the
+client. Marshalling an interface takes a pointer, and produces a buffer
+containing all the information DCOM needs to construct a proxy object in
+the client, a stub object in the server and link the two together.
+</p><p>
+The structure of a marshalled interface pointer is somewhat complex.
+Let's ignore that too. The important thing is how COM proxies/stubs are
+loaded.
+</p><p>
+
+<u>COM PROXY/STUB SYSTEM</u>
+</p><p>
+COM proxies are objects that implement both the interfaces needing to be
+proxied and also IRpcProxyBuffer. Likewise, COM stubs implement
+IRpcStubBuffer and understand how to invoke the methods of the requested
+interface.
+</p><p>
+You may be wondering what the word "buffer" is doing in those interface
+names. I'm not sure either, except that a running theme in DCOM is that
+interfaces which have nothing to do with buffers have the word Buffer
+appended to them, seemingly at random. Ignore it and <i>don't let it
+confuse you</i> :) This stuff is convoluted enough ...
+</p><p>
+The IRpc[Proxy/Stub]Buffer interfaces are used to control the proxy/stub
+objects and are one of the many semi-public interfaces used in DCOM.
+</p><p>
+DCOM is theoretically an internet RFC <a href="#bullet2">[2]</a> and is specced out, but in
+reality the only implementation of it apart from ours is Microsoft's, and
+as a result there are lots of interfaces which <i>can</i> be used if you want
+to customize or control DCOM but in practice are badly documented or not
+documented at all, or exist mostly as interfaces between MIDL generated
+code and COM itself. Don't pay too much attention to the MSDN
+definitions of these interfaces and APIs.
+</p><p>
+COM proxies and stubs are like any other normal COM object - they are
+registered in the registry, they can be loaded with CoCreateInstance and
+so on. They have to be in process (in DLLs) however. They aren't
+activated directly by COM however, instead the process goes something
+like this:
+<ul><li> COM receives a marshalled interface packet, and retrieves the IID of
+the marshalled interface from it</li>
+
+<li> COM looks in
+HKEY_CLASSES_ROOT/Interface/{whatever-iid}/ProxyStubClsId32 to retrieve
+the CLSID of another COM object, which implements IPSFactoryBuffer. </li>
+
+<li> IPSFactoryBuffer has only two methods, CreateProxy and CreateStub. COM
+calls whichever is appropriate: CreateStub for the server, CreateProxy
+for the client. MIDL will normally provide an implementation of this
+object for you in the code it generates.</li></ul>
+</p><p>
+Once CreateProxy has been called, the resultant object is QId to
+IRpcProxyBuffer, which only has 1 method, IRpcProxyBuffer::Connect 
+<a href="#bullet4">[4]</a>
+This method only takes one parameter, the IRpcChannelBuffer object which
+encapsulates the "RPC Channel" between the client and server.
+</p><p>
+On the server side, a similar process is performed - the PSFactoryBuffer
+is created, CreateStub is called, result is QId to IRpcStubBuffer, and
+IRpcStubBuffer::Connect is used to link it to the RPC channel.
+</p><p>
+
+<u>RPC CHANNELS</u>
+</p><p>
+Remember the RPC runtime? Well, that's not just responsible for
+marshalling stuff, it also controls the connection and protocols between
+the client and server. We can ignore the details of this for now,
+suffice it to say that an RPC Channel is a COM object that implements
+IRpcChannelBuffer, and it's basically an abstraction of different RPC
+methods. For instance, in the case of inter-thread marshalling (not
+covered here) the RPC connection code isn't used, only the NDR
+marshallers are, so IRpcChannelBuffer in that case isn't actually
+implemented by RPCRT4 but rather just by the COM/OLE DLLS (fixme: is
+this actually correct?).
+</p><p>
+RPC channels are constructed on the fly by DCOM as part of the
+marshalling process. So, when you make a call on a COM proxy, it goes
+like this:
+<ul>
+Your code -&gt; COM proxy object -&gt; RPC Channel -&gt; COM stub object -&gt; 
+Their code</ul>
+</p><p>
+
+<u>HOW THIS ACTUALLY WORKS IN WINE</u>
+</p><p>
+Right now, Wine does not use the NDR marshallers or RPC to implement its
+DCOM. When you marshal an interface in Wine, in the server process a
+_StubMgrThread thread is started. I haven't gone into the stub manager
+here. The important thing is that eventually a _StubReaderThread is
+started which accepts marshalled DCOM RPCs, and then passes them to
+IRpcStubBuffer::Invoke on the correct stub object which in turn
+demarshals the packet and performs the call. The threads started by our
+implementation of DCOM are never terminated, they just hang around until
+the process dies.
+</p><p>
+Remember that I said our DCOM doesn't use RPC? Well, you might be
+thinking "but we use IRpcStubBuffer like we're supposed to ... isn't
+that provided by MIDL which generates code that uses the NDR APIs?". If
+so pat yourself on the back, you're still with me. Go get a cup of
+coffee.
+</p><p>
+
+<u>TYPELIB MARSHALLER</u>
+</p><p>
+In fact, the reason for the PSFactoryBuffer layer of indirection is
+because you not all interfaces are marshalled using MIDL generated code.
+Why not? Well, to understand <i>that</i> you have to see that one of the
+driving forces behind OLE and by extension DCOM was the development
+Visual Basic. Microsoft wanted VB developers to be first class citizens
+in the COM world, but things like writing IDL and compiling them with a
+C compiler into DLLs wasn't easy enough.
+</p><p>
+So, type libraries were invented. Actually they were invented as part of
+a parallel line of COM development known as "OLE Automation", but let's
+not get into that here. Type libraries are basically binary IDL files,
+except that despite there being two type library formats neither of them
+can fully express everything expressable in IDL. Anyway, with a type
+library (which can be embedded as a resource into a DLL) you have
+another option beyond compiling MIDL output - you can set the
+ProxyStubClsId32 registry entry for your interfaces to the CLSID of the
+"type library marshaller" or "universal marshaller". Both terms are
+used, but in the Wine source it's called the typelib marshaller.
+</p><p>
+The type library marshaller constructs proxy and stub objects on the
+fly. It does so by having generic marshalling glue which reads the
+information from the type libraries, and takes the parameters directly
+off the stack. The CreateProxy method actually builds a vtable out of
+blocks of assembly stitched together which pass control to _xCall, which
+then does the marshalling. You can see all this magic in
+dlls/oleaut32/tmarshal.c
+</p><p>
+In the case of InstallShield, it actually comes with typelibs for all
+the interfaces it needs to marshal (fixme: is this right?), but they
+actually use a mix of MIDL and typelib marshalling. In order to cover up
+for the fact that we don't really use RPC they're all force to go via
+the typelib marshaller - that's what the 1 || hack is for and what the
+"Registering non-automation type library!" warning is about (I think).
+</p><p>
+
+<u>WRAPUP</u>
+</p><p>
+OK, so there are some (very) basic notes on DCOM. There's a ton of stuff
+I have not covered:
+
+<ul><li> Format strings/MOPs</li>
+<li> Apartments, threading models, inter-thread marshalling</li>
+<li> OXIDs/OIDs, etc, IOXIDResolver</li>
+<li> IRemoteActivation</li>
+<li> Complex/simple pings, distributed garbage collection</li>
+<li> Marshalling IDispatch</li>
+<li> Structure of marshalled interface pointers (STDOBJREFs etc)</li>
+<li> Runtime class object registration (CoRegisterClassObject), ROT</li>
+<li> IRemUnknown</li>
+<li> Exactly how InstallShield uses DCOM</li></ul>
+</p><p>
+Then there's a bunch of stuff I still don't understand, like ICallFrame,
+interface pointer swizzling, exactly where and how all this stuff is
+actually implemented and so on.
+</p><p>
+But for now that's enough.
+</p><p>
+
+
+
+
+
+<u>FURTHER READING</u>
+</p><p>
+Most of these documents assume you have knowledge only contained in
+other documents. You may have to reread them a few times for it all to
+make sense. Don't feel you need to read these to understand DCOM, you
+don't, you only need to look at them if you're planning to help
+implement it.
+<ul>
+<li><a name="bullet1">[1]</a> <a href="http://www.opengroup.org/onlinepubs/009629399/toc.htm">
+http://www.opengroup.org/onlinepubs/009629399/toc.htm</a></li>
+
+<li><a name="bullet2">[2]</a> <a href="http://www.grimes.demon.co.uk/DCOM/DCOMSpec.htm">
+http://www.grimes.demon.co.uk/DCOM/DCOMSpec.htm</a></li>
+
+<li><a name="bullet3">[3]</a> <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/com/htm/cmi_n2p_459u.asp">
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/com/htm/cmi_n2p_459u.asp</a></li>
+
+<li><a name="bullet4">[4]</a> <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/com/htm/cmi_q2z_5ygi.asp">
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/com/htm/cmi_q2z_5ygi.asp</a></li>
+
+<li><a href="http://www.microsoft.com/msj/0398/dcom.aspx">
+http://www.microsoft.com/msj/0398/dcom.aspx</a></li>
+
+<li><a href="http://www.microsoft.com/ntserver/techresources/appserv/COM/DCOM/4_ConnectionMgmt.asp">
+http://www.microsoft.com/ntserver/techresources/appserv/COM/DCOM/4_ConnectionMgmt.asp</a></li>
+
+<li><a href="http://www.idevresource.com/com/library/articles/comonlinux.asp">
+http://www.idevresource.com/com/library/articles/comonlinux.asp</a>
+(unfortunately part 2 of this article does not seem to exist anymore, if it was ever written)</li></ul>
+</p></quote>
+
+</section></kc>

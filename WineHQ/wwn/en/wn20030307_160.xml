@@ -1,0 +1,576 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="160" date="03/07/2003" />
+
+<intro>
+<p>This is the 160th release of the Wine's kernel cousin publication. 
+Its main goal is to give me something to do while recovering from
+Silverton and Crested Butte.  It also serves
+to inform you of what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+
+
+<stats posts="243" size="977" contrib="59" multiples="27" lastweek="26">
+
+<person posts="33" size="79" who="Eric Pouech" />
+<person posts="26" size="68" who="Mike Hearn" />
+<person posts="24" size="53" who="Alexandre Julliard" />
+<person posts="20" size="49" who="Dan Kegel" />
+<person posts="14" size="33" who="Dimitrie O. Paun" />
+<person posts="13" size="39" who="Tony Lambregts" />
+<person posts="9" size="27" who="Ferenc Wagner" />
+<person posts="9" size="22" who="Sylvain Petreolle" />
+<person posts="7" size="34" who="Mike Engelhardt" />
+<person posts="7" size="22" who="Michael Stefaniuc" />
+<person posts="6" size="13" who="Duane Clark" />
+<person posts="4" size="36" who="Gerhard W. Gruber" />
+<person posts="4" size="13" who="Uwe Bonnes" />
+<person posts="4" size="12" who="Dmitry Timoshkov" />
+<person posts="4" size="9" who="Marcus Meissner" />
+<person posts="4" size="9" who="Vincent Beron" />
+<person posts="3" size="19" who="Mike McCormack" />
+<person posts="3" size="11" who="Andrew Johnston" />
+<person posts="3" size="7" who="J. Grant" />
+<person posts="3" size="7" who="Lionel Ulmer" />
+<person posts="3" size="6" who="Francois Gouget" />
+<person posts="2" size="10" who="Geoff Thorpe" />
+<person posts="2" size="8" who="Ove Kaaven" />
+<person posts="2" size="5" who="Gregory M. Turner" />
+<person posts="2" size="3" who="Jon Bright" />
+<person posts="1" size="247" who="George D.Plymale" />
+<person posts="2" size="42" who="Mathew McBride" />
+<person posts="1" size="4" who="Hans Leidekker" />
+<person posts="1" size="4" who="Florian Schirmer" />
+<person posts="1" size="4" who="Pierre d'Herbemont" />
+<person posts="1" size="3" who="Gert Bartho" />
+<person posts="1" size="3" who="Raphael Junqueira" />
+<person posts="1" size="3" who="Thomas Mertes" />
+<person posts="1" size="3" who="Gavriel State" />
+<person posts="1" size="2" who="Adam Gundy" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Mathias Menzel-Nielsen" />
+<person posts="1" size="2" who="Shachar Shemesh" />
+<person posts="1" size="2" who="Enrico Horn" />
+<person posts="1" size="2" who="Jaco Greeff" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Vitaliy Margolen" />
+<person posts="1" size="2" who="Andrew M. Johnston" />
+<person posts="1" size="2" who="(juan)" />
+<person posts="1" size="2" who="Robert Reif" />
+<person posts="1" size="2" who="David Fraser" />
+<person posts="1" size="2" who="Paul McNett" />
+<person posts="1" size="2" who="Andreas Mohr" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Matthew Bloch" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Michal Janusz Miroslaw" />
+<person posts="1" size="1" who="David Laight" />
+<person posts="1" size="1" who="Oleg Lyamtsev" />
+
+</stats>
+
+<section 
+	title="News: Gav State and Mike Hearn Interviews" 
+	subject="News"
+	archive="http://www.desktoplinux.com/articles/AT8142909722.html" 
+	posts="2"
+	startdate="03/01/2003"
+	enddate="03/07/2003"
+>
+<topic>News</topic>
+<p>DesktopLinux.com interviewed <a href="http://www.desktoplinux.com/articles/AT8142909722.html">
+Gavriel State</a> of TransGaming.  Rather than strictly focus on WineX, it discusses
+Linux and the gaming industry.  Good stuff.</p>
+
+<p>Also interviewed this week was Mike Hearn.  Mike has been contributing to Wine
+for a little while now, but he's also been working on another project involving
+<a href="http://newsforge.com/article.pl?sid=03/03/04/2310251&amp;mode=thread&amp;tid=23">packaging and installation</a>.
+NewsForge published an article about that project and the issues he's running into.</p>
+
+
+
+</section>
+
+
+
+
+<section 
+	title="Compliance Tests on Longhorn" 
+	subject="Windows Longhorn 3683 complaince status"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0193.html" 
+	posts="1"
+	startdate="03/07/2003"
+>
+<topic>Microsoft Windows</topic>
+<topic>Testing</topic>
+<p>Mathew McBride had an opportunity to run Wine's commpliance
+tests on a Longhorn build - what will be the successor to Windows 
+XP.  All in all, it's quite encouraging.  Mathew also gave a short
+review of features in the new OS:</p>
+<quote who="Mathew McBride"><p>
+I've managed to get hold of Windows Longhorn Build 
+3683. All tests should be simular to WinXP at the moment with notable 
+changes in:<dl>
+<dt> Internet Explorer</dt><dd> Internet Explorer cannot download files. It appears 
+to have been fixed in 4008. Use Mozilla instead. It's way better.</dd>
+
+<dt> DirectX</dt><dd> DirectX appears to be the 899 build, not the 900 build being 
+distributed at the moment on Microsoft's website. Sources tell me that 
+the version in 4008 still has the same build identifier and same size. 
+DirectX diag is unable to run Display tests, claiming a button was pressed.</dd>
+
+<dt> IPv6</dt><dd> Doesn't affect Wine, but Longhorn doesn't seem to include IPv6 
+at all</dd>
+
+<dt> FileSystem</dt><dd> Changes introduced by WinFS Storage services (which needs 
+to be turned off because it sucks a lot of CPU power) are unclear at the 
+moment</dd>
+
+<dt> Compliance mode</dt><dd> There is a WinXP compliance mode. But it only seems 
+to affect the build identifier used.</dd>
+
+<dt> GUI</dt><dd> I had to force Explorer.exe into Safe Mode in the .NET Framework 
+manager to stop it from delaying the playing of the welcome sound. Also 
+included is a new theme called Plex and a XML based sidebar. A new XML 
+based display panel is also included, but has been mothballed in 4008. 
+The sidebar includes a desktop switching panel. You only have 4 of them, 
+however.</dd>
+
+<dt> Others</dt><dd> TabletPC apps (Journal etc.) are included and also drag the 
+system down a bit. But journal.exe seems to be missing. Anyone have any 
+idea about these services and weather they have any place in Longhorn/NT 
+6.0:<ul>
+ <li>Fusion Isolation Service</li>
+ <li>Castle Service</li>
+ <li>Logon Hours (This appears to be more domain oriented, I didn't see this 
+ in XP SP1)</li></ul></dd></dl></p><p>
+
+ Windows still has the nasty activation feature, and as usual, includes 
+a timebomb of 360 days. Both of these have been disabled in the registry.
+It turns out, that the leaked build also contains Beta's of:
+<ul>
+<li>Longhorn XP Home</li>
+<li>Longhorn .NET Server Web Edition</li>
+<li>Longhorn .NET Server      Standard</li>
+<li>Longhorn .NET Server     Enterprise</li>
+<li>Longhorn .NET Server      Datacenter (mothballing of this edition is 
+likley, Unisys is only vendor of 2000 Datacenter and there is no 2003 
+Datacenter edition)</li></ul></p><p>
+Which means that a Syncronised Server and Client release will probably 
+happen in 2004/5. I was not able to test out the Web servers, because I 
+am using a FAT32 Filesystem. (I did switch to Enterprise though, but 
+soon went back)</p>
+
+</quote>
+
+<p>I should note that some of the above is slightly edited in order
+to be more readable.  Mathew went on to 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/03/0193.html">
+describe test output</a>.  In order to make this more readable I'll just
+include a short summary:</p>
+
+<quote who="Mathew McBride"><p>
+Now to the tests:
+<ul><code>
+advapi32_test.exe /registry<br />
+/registry: 56 tests executed, 0 marked as todo, 3 failures.<br /><br />
+
+dsound_test.exe /dsound<br />
+/dsound: 61 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+gdi32_test.exe /generated<br />
+/generated: 2786 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+kernel32_test.exe<br />
+/alloc. 58 executed, 0, 0<br />
+/atom 229398 executed, 0 ,0<br />
+/codepage 2 executed, 0 ,0<br />
+/drive 158 executed, 0, 0<br />
+/environ 39 executed, 0, 0<br />
+/file: 487239 executed, 0, 0<br />
+/format_msg 58 executed, 0, 0<br />
+/generated 609 executed, 0, 0<br />
+/locale: 112 executed, 0 , 11 failures.<br />
+/path: 1730 executed, 0, 2 failures.<br />
+process: 285 tests executed, 0 marked as todo, 6 failures.<br />
+thread: 112 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+msvcrt_test.exe<br />
+/file: 2 tests executed, 0 marked as todo, 0 failures.<br />
+/scanf: 9 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+netapi32_test.exe<br />
+/access: 23 tests executed, 0 marked as todo, 1 failure.<br />
+/apibuf: 15 tests executed, 0 marked as todo, 0 failures.<br />
+/wksta: 14 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+ntdll_test.exe<br />
+/error: 813 tests executed, 0 marked as todo, 5 failures.<br />
+/generated: 1279 tests executed, 0 marked as todo, 0 failures.<br />
+/rtlbitmap: 224 tests executed, 0 marked as todo, 0 failures.<br />
+/rtlstr: 38 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+oleaut32_test.exe<br />
+/safearray: 936 tests executed, 0 marked as todo, 8 failures.<br />
+/vartest: 1875 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+rpcrt4_test.exe<br />
+/rpc: 901 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+shell32_test.exe<br />
+/generated: 272 tests executed, 0 marked as todo, 0 failures.<br />
+/shlfileop: 121 tests executed, 0 marked as todo, 13 failures.<br /><br />
+
+urlmon_test.exe did not execute at all<br /><br />
+
+user32_test.exe<br />
+/class: 80 tests executed, 0 marked as todo, 0 failures.<br />
+/generated: 1524 tests executed, 0 marked as todo, 0 failures.<br />
+/sysparams: 358 tests executed, 0 marked as todo, 0 failures.<br />
+/win: 373 tests executed, 0 marked as todo, 0 failures.<br />
+/wsprintf: 4 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+wininet_test.exe<br />
+/generated: 252 tests executed, 0 marked as todo, 0 failures.<br />
+/http: 23 tests executed, 0 marked as todo, 1 failure.<br /><br />
+
+winmm_test.exe<br />
+/wave: 233 tests executed, 0 marked as todo, 0 failures.<br /><br />
+
+ws2_32_test.exe<br />
+/sock: 1096 tests executed, 0 marked as todo, 0 failures.</code></ul></p></quote>
+
+</section>
+
+
+
+
+
+<section 
+	title="Porting With Winelib" 
+	subject="Winelib article in this month's C/C++ User's Journal"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0162.html" 
+	posts="4"
+	startdate="03/05/2003"
+	enddate="03/06/2003"
+>
+<topic>Winelib</topic>
+<p>
+Matthew Bloch wrote in announcing, <quote who="Matthew Bloch">
+An immodest plug for my introductory Winelib article that the CUJ editor Joe 
+Casad was soliciting through thist list back in December.  It's now in the 
+print journal and on their web site at the (temporary, by the looks of 
+things) link above.  Thanks to the people who offered criticism before 
+publication; hopefully in the three months since I wrote it the information 
+isn't too out of date!</quote></p>
+
+<p>The URL he provided didn't work, but Francois Gouget located the
+article at, <quote who="Francois Gouget"><a>
+http://www.cuj.com/current/feature.htm?topic=current</a></quote></p>
+
+<p>The article is well written and contains Matthew's first hand account
+of porting a game using Winelib.</p>
+
+
+</section>
+
+
+
+
+<section 
+	title="Wine's Library Dependencies" 
+	subject="Wine dependencies"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0075.html" 
+	posts="4"
+	startdate="03/03/2003"
+
+>
+<topic>Documentation</topic>
+<p>Mike Hearn wrote in with a neat list for reference:</p>
+<quote who="Mike Hearn"><p>
+ I thought I'd find out what libs Wine actually required, at least on my build.
+</p><p>
+Running:
+<ul>
+<code>( for f in *.so; do ldd $f | sed 's/ =>.*//'; done ) | sort | uniq</code></ul>
+</p><p>
+ in the <tt>$prefix/lib/wine/</tt> directory produced the following list:
+<ul>
+
+<li>        libc.so.6</li>
+<li>        libdl.so.2</li>
+<li>        libgcc_s.so.1</li>
+<li>        libGLcore.so.1</li>
+<li>        libGL.so.1</li>
+<li>        libGLU.so.1</li>
+<li>        libICE.so.6</li>
+<li>        libjpeg.so.62</li>
+<li>        /lib/ld-linux.so.2</li>
+<li>        libm.so.6</li>
+<li>        libncurses.so.5</li>
+<li>        libntdll.dll.so</li>
+<li>        libSM.so.6</li>
+<li>        libstdc++.so.5</li>
+<li>        libungif.so.4</li>
+<li>        libwine.so</li>
+<li>        libwine_unicode.so</li>
+<li>        libX11.so.6</li>
+<li>        libXext.so.6</li></ul></p><p>
+
+The inclusion of libgcc_s and libstdc++ is from the Direct3D code I
+think, I didn't realise there were deps on the c++ libs.
+</p><p>
+Otherwise, it's a remarkably short list. I think maybe quite a few of
+the libs are detected at runtime, I know there was a patch to make
+OpenGL code detected like this (as opposed to enabled at compile time) -
+despite having a driver for the Jack sound server in this directory for
+instance, there is no dependency on libjack. The other libs are fairly
+standard and would be present on almost all installations. A few, like
+the C++ libs and ncurses aren't a part of the LSB and at present would
+need to be statically linked.
+</p></quote>
+
+<p>Marcus Meissner pointed out a few other things:</p>
+<quote who="Marcus Meissner"><p>
+You missed libXrender.so, libfreetype.so, libjack.so, libcups.so, 
+(libcrypto.so, libssl.so), which are loaded dynamically :)
+</p><p>
+libfreetype.so is also pulling the C++ libraries.
+</p><p>
+
+Also we currently access glibc lowlevel code, which does not help in
+portability.
+
+</p></quote>
+
+
+</section>
+
+
+
+
+
+
+
+<section 
+	title="FindFirstChangeNotification Patch" 
+	subject="miranda"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0017.html" 
+	posts="12"
+	startdate="03/01/2003"
+	enddate="03/04/2003"
+>
+<topic>Filesystems</topic>
+<p>Geoff Thorpe reported a problem, part of which was this missing function:</p>
+<quote who="Geoff Thorpe"><p><code>
+
+ fixme:file:FindFirstChangeNotificationA this is not supported yet (non-trivial).
+</code></p></quote>
+
+<p>Basically this function waits for a change to the underlying
+filesystem.  Eric Pouech felt the implementation would be hard.  Mike Hearn 
+thought FAM was standard enough that it could be used.  Hans Leidekker
+also thought about FAM and wrote in about some initial work:</p>
+<quote who="Hans Leidekker"><p>
+You know, a couple of weeks ago I looked at the possibilities
+of a FAM based implementation, as suggested in bugrequest #588:
+<ul><a href="http://bugs.winehq.org/show_bug.cgi?id=588">
+  http://bugs.winehq.org/show_bug.cgi?id=588</a></ul></p><p>
+  
+There are other solutions (dnotify, fmon on FreeBSD), but FAM is
+available now on RedHat and Mandrake distributions, which gives 
+it an avantage. Furthermore, FAM will fall back to a polling
+strategy when kernel level support is absent. I think it's
+the best candidate.
+</p><p>
+The real question is: does FAM provide enough functionality to
+implement all of FindFirstChangeNotification and friends? The short
+answer is no. For example, Win32 change notifications can be obtained
+for complete subtrees, e.g  you can ask to be notified of changes
+to C:\ and everything beneath. As far as I can tell FAM only 
+supports directory level notifications.
+</p><p>
+In addition, I found that there isn't a straight mapping from Win32
+change events to FAM monitoring events: under Win32 you ask for
+directories to be watched for certain events: file deletions,
+added files, changes to file attributes and some more. With FAM,
+you watch a directory OR a file for changes. This could mean that,
+in order to mimic Win32 behaviour, one would have to watch both the
+specified directory and ALL files in that directory to gather
+all necessary information. And then FAM doesn't support file 
+deletion events. We could of course regain those by doing some
+extra bookkeeping, but it starts getting hairy.
+</p><p>
+All of this did not scare me enough however to actually implement
+some of this API on top of FAM. And you know what, it already works!
+It's really neat to see that Word file dialog automatically refresh
+when you add a file to the directory you're looking at!
+</p><p>
+I will try to clean it up sometime and submit what I have. Don't
+know if it's worth doing that though since it implements so little 
+of the API. 
+</p></quote>
+
+<p>Mike McCormack didn't like the idea at all:</p>
+<quote who="Mike McCormack"><p>
+Please don't write a FAM dependent implementation. This introduces an 
+unnecessary dependency in Wine, and as you mentioned a polling solution 
+to this problem is wasteful or CPU time.
+</p><p>
+I submitted a patch a couple of months ago that implements a kernel 
+based solution (using F_NOTIFY) to the problem, which IMO is much nicer.
+</p><p>
+My patch is at:
+<ul><a href="http://www.winehq.org/hypermail/wine-patches/2002/11/0246.html">
+http://www.winehq.org/hypermail/wine-patches/2002/11/0246.html</a></ul>
+</p></quote>
+
+<p>Dimi wanted to know why it wasn't applied, Alexandre explained,
+<quote who="Alexandre Julliard">
+It needs some portability work, and I haven't found the time to do
+that. And now of course it will need to be adapted to the new fd
+management.</quote></p>
+
+<p>Mike wrote back with a patch 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/03/0119.html">
+updated to the fd management</a> stuff but didn't know what the 
+portability problems were.  Alexandre replied,
+<quote who="Alexandre Julliard">
+Mostly the RT signal stuff. You can't just #define RT_SIGNAL_NOTIFY
+if it's missing...</quote></p>
+
+<p>Mike <a href="http://www.winehq.org/hypermail/wine-patches/2003/03/0073.html">updated</a> 
+his patch with the following note:</p><quote who="Mike McCormack"><p>
+
+This patch implements file change notification. It contains a fix for 
+portability and some changes to avoid race conditions with signal handlers.
+
+</p><p>
+
+ChangeLog:<ul>
+<li> implement file change notification using F_NOTIFY</li></ul></p></quote>
+
+<p>Alexandre hasn't applied it yet.</p>
+
+</section>
+
+
+
+
+
+<section 
+	title="Wine &amp; Smatch HOWTO" 
+	subject="Wine and Smatch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0050.html" 
+	posts="1"
+	startdate="03/02/2003"
+>
+<topic>Debugging</topic>
+<p>Michael Stefaniuc put together instructions
+describing his work with Smatch - the 
+source code checker.  We've also covered 
+this in the past few issues.  His announcement:
+</p>
+<quote who="Michael Stefaniuc"><p>
+
+I've written a web page about Wine and Smatch:
+<a href="http://people.redhat.com/mstefani/wine/smatch/">
+ http://people.redhat.com/mstefani/wine/smatch/</a>
+</p><p>
+It includes also a table with the bugs found by the smatch scripts. I
+could need a hand with the bugs (status BUG, UKNOWN) cause I don't know
+how to fix them correctly (and for some locking BUG's i am not sure that
+they are real bugs).
+</p><p>
+Now that the fight with the web page is over I can go to write more
+smatch scripts ;).
+</p></quote>
+
+<p>The page is an excellent description of installing Smatch,
+how to run it against the Wine source code, and how to use
+various scripts.  </p>
+
+</section>
+
+
+
+
+<section 
+	title="Indenting Relay Traces" 
+	subject="Relay trace indenting?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0056.html" 
+	posts="7"
+	startdate="03/02/2003"
+	enddate="03/04/2003"
+>
+<topic>Debugging</topic>
+<p>Duane Clark was wondering if there was something to help with
+debugging traces:</p>
+<quote who="Duane Clark"><p>
+
+Just wondering if anyone has written a script or something that does 
+indenting of relay traces. I don't know how other people handle these, 
+but I find that I invariably spend a lot of time indenting the calls in 
+relay trace files to make them easier to follow. It would seem like 
+something that someone would already have an automated method of 
+handling (or maybe I'm the only one that does this).
+</p></quote>
+
+<p>A few people discussed how it could be done, then Mike Hearn pointed
+out there was a tool to do this:</p>
+<quote who="Mike Hearn"><p>
+ I was under the impression this is what tools/examine-relay did?
+</p><p>
+ I never understood exactly how it does the indents though, it does it in
+ a slightly non-intuitive way
+</p></quote>
+
+<p>Eric Pouech felt it wasn't so bad:</p>
+<quote who="Eric Pouech"><p>
+ non intuitive ? the only issue examine-relay currently have is that it 
+ doesn't split the output on the thread by thread basis... so, non 
+ intuition may mean thread switch ;-)
+ basically, examine-relay scans every relay output...
+ and recreates the stack on a per thread basis... if it encounters a 
+ CALL, it pushes the info as a func call... if it's a RET, it pops the 
+ function call</p></quote>
+
+<p>Enrico Horn thought it was hard to read for a different reason:</p>
+<quote who="Enrico Horn"><p>
+I think by non-intuitive he means that the calling function is displayed
+BELOW the called function. this is because of the way the script works.
+And I call that non-intuitive too.
+I think it should be the other way around.</p><p>
+
+then it writes out the function so basically if foo calls bar
+then the display look like this:
+<ul><code><ul>
+  bar</ul>
+foo</code></ul></p><p>
+while it should be:
+<ul><code>
+foo<ul>
+ bar</ul></code></ul></p></quote>
+
+<p>Duane adapted the code and submitted 
+<a href="http://www.winehq.org/hypermail/wine-patches/2003/03/0024.html">a new tool</a>
+called "indent-relay".  Alexandre didn't like the idea of another tool.  So
+Duane adapted the current examine-relay tool to take an argument that selects
+full listing mode.  Alexandre committed it the next day.</p>
+
+
+
+</section>
+
+
+
+</kc>
+

@@ -1,0 +1,412 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+
+<issue num="168" date="05/02/2003" />
+
+<intro>
+<p>This is the 168th release of the Wine's kernel cousin publication. 
+  Its main goal is to inform you of what's going on around Wine (the Un*x 
+  Windows emulator).</p>
+</intro>
+
+
+
+
+
+
+
+<stats posts="163" size="521" contrib="53" multiples="32" lastweek="30">
+
+<person posts="25" size="75" who="Dimitrie O. Paun" />
+<person posts="15" size="49" who="Mike Hearn" />
+<person posts="8" size="31" who="Steven Edwards" />
+<person posts="8" size="25" who="Uwe Bonnes" />
+<person posts="7" size="22" who="Dmitry Timoshkov" />
+<person posts="6" size="23" who="Gregory M. Turner" />
+<person posts="6" size="20" who="Shachar Shemesh" />
+<person posts="6" size="14" who="hatky" />
+<person posts="5" size="10" who="Alexandre Julliard" />
+<person posts="4" size="18" who="Francois Gouget" />
+<person posts="4" size="13" who="Pierre d'Herbemont" />
+<person posts="4" size="11" who="Sylvain Petreolle" />
+<person posts="4" size="9" who="Alexandre Julliard" />
+<person posts="4" size="8" who="Juan Lang" />
+<person posts="3" size="10" who="Patrik Stridvall" />
+<person posts="3" size="9" who="Dan Kegel" />
+<person posts="3" size="7" who="Jeremy Newman" />
+<person posts="3" size="6" who="Rein Klazes" />
+<person posts="2" size="18" who="Rob Hughes" />
+<person posts="2" size="11" who="mdew" />
+<person posts="2" size="6" who="Joerg Wunsch" />
+<person posts="2" size="6" who="Bill Medland" />
+<person posts="2" size="6" who="Jeremy White" />
+<person posts="2" size="6" who="Gerald Pfeifer" />
+<person posts="2" size="5" who="Troy Rollo" />
+<person posts="2" size="5" who="Maxime Bellenge" />
+<person posts="2" size="4" who="Mike McCormack" />
+<person posts="2" size="4" who="Ulrich Weigand" />
+<person posts="2" size="4" who="Ferenc Wagner" />
+<person posts="2" size="4" who="BiGgUn" />
+<person posts="1" size="12" who="Steven Tower" />
+<person posts="1" size="5" who="Aric Stewart" />
+<person posts="1" size="4" who="Andrew Rechenberg" />
+<person posts="1" size="4" who="Vincent Beron" />
+<person posts="1" size="3" who="Adam Gundy" />
+<person posts="1" size="3" who="Rok Mandeljc" />
+<person posts="1" size="3" who="Michael Gunnewig" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Robert Reif" />
+<person posts="1" size="2" who="Phil Thompson" />
+<person posts="1" size="2" who="Robert North" />
+<person posts="1" size="2" who="Ove Kaaven" />
+<person posts="1" size="2" who="Jason Edmeades" />
+<person posts="1" size="2" who="Robert Lunnon" />
+<person posts="1" size="2" who="Josh Konkol" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Mark Westcott" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="1" who="=?gb2312?q?Kai?=" />
+<person posts="1" size="1" who="KK singh" />
+
+</stats>
+
+
+
+
+<section 
+	title="News: CrossOver Plug-in 1.2.1, WineX 3 Review" 
+	subject="News"
+	archive="https://secure.codeweavers.com/store/index.php?cat=cxpl" 
+	posts="2"
+	startdate="04/26/2003"
+	enddate="05/02/2003"
+>
+<topic>News</topic>
+<p>This one didn't get any press, but CodeWeavers quietly released
+<a href="https://secure.codeweavers.com/store/index.php?cat=cxpl">CrossOver
+Plugin 1.2.1</a> this week.  There's no new features, just a hack to try
+to get distros with new glibc versions (RH 9.0, etc) working.  About the
+only reference to it you can find is in the web store.</p>
+
+<p>LinuxOrbit has a 
+<a href="http://www.linuxorbit.com/modules.php?op=modload&amp;name=Reviews&amp;file=index&amp;req=showcontent&amp;id=31">review
+of WineX 3.0</a>:</p>
+<quote who="LinuxOrbit"><p>
+ TransGaming's WineX 3.0 continues to push the frontier's edge outward, 
+ enabling hard core Windows gamers the option to choose Linux without 
+ leaving their beloved games behind. With the addition of Point2Play, 
+ WineX 3.0 is getting much closer to delivering an easy to use bridge 
+ from Windows to GNU/Linux systems for gaming. While Point2Play is 
+ still a little rough around the edges, it is still a step in the right 
+ direction. With very little reservation we recommend TransGaming's WineX 
+ 3.0 to anyone insterested in getting their Windows games working under 
+ GNU/Linux.</p></quote>
+
+
+<p>Speaking of Point2Play, TransGaming released a maintenance upgrade
+for it.  <a href="http://www.transgaming.com/showthread.php?news=69">Version 1.0.1</a>
+was released Thursday.</p>
+
+<p>You might have noticed we skipped this week for interviews.  There 
+was enough stuff going on that I decided to just let things calm down
+for a while until the WineHQ server settles down.  Look for another one
+next week!</p>
+
+
+</section><section 
+	title="Mac OS X Work" 
+	subject="Mac OS X and Wine troubles"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0750.html" 
+	posts="7"
+	startdate="04/26/2003"
+	enddate="04/28/2003"
+>
+<topic>Ports</topic>
+<p>Pierre d'Herbemont sent a note to wine-patches to mention
+some initial work getting Wine to compile on Mac OS X.  His
+initial announcement gave a short overview:</p>
+
+<quote who="Pierre d'Herbemont"><p>
+
+First of all I have a good news :) : Wine is able to build on Mac OS X.
+</p><p>
+We decided not to follow WineHQ cvs version for early build, in order 
+not to be so much disturbed by others wine development and not to 
+produce bad patches, but don't worry ;) we are (of course!) planing to 
+send patches, I hope they would be integrated...
+</p></quote>
+
+<p>Pierre then went on to list some configuration issues he ran 
+into and what appeared to be a problem with DLLs loading correctly.
+His <a href="http://www.winehq.org/hypermail/wine-patches/2003/04/0267.html">patch</a>
+included the following notes:</p>
+<quote who="Pierre d'Herbemont"><p>
+Here is a patch which mostly enables compilation on Mac OS X. The 
+support is not full as there is still some makefiles issues on which I 
+can't find a *clean* correction and a new issue I discovered in this 
+cvs version related to the libwine_port and the getopt function.
+</p><p>
+ChangeLog:
+<ul>
+   <li> configure.ac<br />
+     configure<br />
+     Add Mac OS X Support, including Mach-O.<br />
+     Fix PowerPC recognition
+</li>
+   <li> Make.rules.in:<br />
+     Add the LDDYLIB definition for Mach-O support.
+</li>
+   <li> libs/wine/Makefile.in,<br />
+     libs/unicode/Makefile.in:<br />
+     Add Mach-O support, add target for .dylib
+</li>
+   <li> dlls/Makedll.rules.in<br />
+     Add an entry for .dylib building
+</li>
+   <li> tools/winebuild/import.c<br />
+     tools/winebuild/spec32.c<br />
+     Mac OS X linker does not support the same syntax as linux linker, 
+add a case for darwin
+</li>
+   <li> scheduler/process.c<br />
+     Add support for the environ of darwin.
+</li>
+   <li> scheduler/sysdeps.c<br />
+     include/winnt.h<br />
+     For darwin the TEB should be in r13, fix it.
+</li>
+   <li> loader/module.c<br />
+     Add Mach-O recognition for executable.
+</li>
+   <li> libs/port/interlocked.c<br />
+     Add r0 preservation in interlocked functions in order lwarx to be 
+effective and change ';' into '\n'.
+</li></ul></p></quote>
+
+<p>Pierre mentioned they were using version 20030219 of Wine and
+gave a link to the
+<a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/darwine/wine/">
+repository on SourceForge</a>.</p>
+
+</section><section 
+	title="Running Borland's Free Compiler (bcc)" 
+	subject="Re: Patch to get Borland's bcc 5.5 (free beer compiler) to work"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0772.html" 
+	posts="5"
+	startdate="04/27/2003"
+	enddate="04/29/2003"
+>
+<topic>Fixes</topic>
+<p>Troy Rollo posted a 
+<a href="http://www.winehq.org/hypermail/wine-patches/2003/04/0268.html">small patch</a> adjusting addressable
+memory that made Borland's free compiler (bcc 5.5) work.
+Initially it sounded like he had managed to somehow compile
+Wine with it, but really what he was doing was using Wine
+to run it and create executables.  Dimi asked him some
+questions (below in italics) and Troy responded:</p>
+<quote who="Troy Rollo"><p>
+<dl>
+ <dt><i>Do you build on Windows?</i></dt>
+ <dd>
+Until now, I have developed on Windows, but I will be continuing to target 
+Windows from Linux using Wine to support the build environment, and possibly 
+for testing of the application itself, together with plex86 or Bochs VMs as 
+needed for testing under the target OS.</dd>
+
+ <dt><i>    Could we run bcc in Wine on Linux to build on Linux using bcc?</i></dt>
+<dd>
+Yes, this is what I'm doing.</dd>
+
+ <dt><i>    How far do you get? Do you actually get an executable?</i></dt>
+<dd>
+Yes. It produced (among others) an executable of 9402368 bytes (not including 
+debugging information which is in a separate file) from 948 object files (not 
+including libraries).</dd>
+
+ <dt><i>    Does it run?</i></dt>
+<dd>
+Not only does it run, it appears to work OK in wine.</dd>
+
+ <dt><i>    What are the steps you need to take? A concise list of
+     instructions would be nice :) I can post it on the Fun
+     page, so other can play with it was well.</i></dt>
+<dd>
+The setup of the Borland C compiler was quite straight-forward - I copied it 
+over from an existing Windows installation. This was necessary rather than a 
+full install because we use modified header files, but it appears the 
+installation from the self-extracting executable won't run, so copying over 
+from a copy installed on native Windows is necessary.
+<br /><br />
+Then I put it in the PATH, checked out the code and built using exactly the 
+same procedure I used to use under Windows.
+</dd></dl></p></quote>
+
+
+</section><section 
+	title="Updated Valgrind Instructions" 
+	subject="New patch for WINE support in valgrind uploaded to sourceforge"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0779.html" 
+	posts="1"
+	startdate="04/28/2003"
+>
+<topic>Memory Management</topic>
+<p>We've covered <a href="http://developer.kde.org/~sewardj/">Valgrind</a>
+in past issues.  This week Adam Gundy wrote in with new instructions for
+getting it to work with Wine:</p>
+<quote who="Adam Gundy"><p>
+
+A new version of the patch to valgrind needed to support WINE has been uploaded
+to Sourceforge:
+<ul><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=710006&amp;group_id=46268&amp;atid=445588">
+  http://sourceforge.net/tracker/index.php?func=detail&amp;aid=710006&amp;group_id=46268&amp;atid=445588</a>
+</ul>
+</p><p>
+It should apply cleanly to current valgrind CVS.
+</p><p>
+This version of the patch will now work with an unmodified WINE CVS version. This is because
+it now _fully_ implements clone() support - ie it really does create system level threads.
+</p><p>
+Currently only one thread can run at a time, so there are no locking issues in the main valgrind
+code.
+</p><p>
+To use with WINE, you need to get a CVS checkout of valgrind, then apply the patch using:
+<ul><code>
+ export CVSROOT=:pserver:anonymous@cvs.sourceforge.net:/cvsroot/valgrind<br />
+ cvs login<br />
+ cvs co valgrind<br />
+ patch -p0 &lt; valgrind-wine.patch.13
+</code></ul></p><p>
+then build and install valgrind:
+<ul><code>
+  autogen.sh<br />
+  ./configure<br />
+  make install
+</code></ul></p><p>
+Get a CVS checkout of WINE by following the instructions at:
+<ul><a href="http://www.winehq.org/?page=cvs">http://www.winehq.org/?page=cvs</a></ul>
+</p><p>
+then configure (for debugging) and build:
+<ul><code>
+  CFLAGS=-g ./configure<br />
+  make depend &amp;&amp; make install
+</code></ul></p><p>
+now you can start looking for bugs in WINE, and bugs in your own (debug) Windows code.
+Copy any DLLs/EXEs to somewhere WINE can get to them, plus copy any .PDB files that go with
+them into the same directory.
+</p><p>
+Run WINE under valgrind using eg:
+<ul><code>
+ valgrind --num-callers=30 --workaround-gcc296-bugs=yes wine notepad.exe
+</code></ul></p><p>
+or even:
+<ul><code>
+ valgrind --num-callers=30 --workaround-gcc296-bugs=yes --gdb-attach=yes wine notepad.exe
+</code></ul></p><p>
+enjoy.
+</p></quote>
+
+
+</section><section 
+	title="New Server Specs" 
+	subject="Re: server specs"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0851.html" 
+	posts="1"
+	startdate="04/30/2003"
+	enddate="05/01/2003"
+>
+<topic>Project Management</topic>
+<p>A new WineHQ server was installed this week by Jeremy Newman from
+CodeWeavers.  Last week the server was dealt a crushing blow from
+CrossOver Office downloads, Wine downloads, etc.  The WineHQ server
+does everything - CVS, mailing lists, web site, ftp site, etc.  
+I asked Jeremy what the new specs on the server were and he replied:
+</p>
+<quote who="Jeremy Newman"><p>
+<ul>
+<li>4U Rackmount</li>
+<li>Dual Athlon MP 2000</li>
+<li>2 GB of DDR 2100 ECC Registered RAM</li>
+<li>36 GB Ultra 160 SCSI HDD</li></ul></p><p>
+
+We are planning on switching the server over to RAID very soon. (the
+hardware is already purchased), so when that happens, we will have the
+system on RAID Level 1 Dual Ultra 160 36 GB drives.
+</p></quote>
+
+<p>There was a little downtime last week as it was put in place,
+but for an unplanned upgrade it appeared pretty smooth.  Some people
+experienced problems with the new sendmail, but most of those seem
+ironed out now.</p>
+
+
+</section><section 
+	title="Updated CVS Utilities" 
+	subject="[FYI] cvsup on glibc2.3 systems (e.g. RedHat 9)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/04/0743.html" 
+	posts="3"
+	startdate="04/26/2003"
+	enddate="04/26/2003"
+>
+<topic>Utilities</topic>
+<p>Dimi Paun announced some utilities others might find
+useful:</p>
+<quote who="Dimitrie Paun"><p>
+As I've reported earlier on the list, cvsup compiled for
+glibc 2.x (x &lt; 3) systems does not work on the new glibc2.3
+systems, such as RedHat 9, or Mandrake 9.1, due to the
+threading changes.
+</p><p>
+I've been looking all over the net for a precompiled binary
+of cvsup that works on these new systems, as cvsup is written
+in Modula 3, which is a bitch to setup.
+</p><p>
+Finally I gave up and did the work myself. I've created a
+complete binary package which can be download from:
+<ul><i>[ed. note: link removed, see below]</i></ul>
+</p><p>
+Note that the binaries are not small as they are statically
+linked, but they should work on all glibc2.3 system.
+</p><p>
+The archive contains the following files:
+<ul>
+<li>cvsup-glibc2.3/bin/cvpasswd</li>
+<li>cvsup-glibc2.3/bin/cvsup</li>
+<li>cvsup-glibc2.3/sbin/cvsupd</li>
+<li>cvsup-glibc2.3/man/man1/cvpasswd.1</li>
+<li>cvsup-glibc2.3/man/man1/cvsup.1</li>
+<li>cvsup-glibc2.3/man/man8/cvsupd.8</li></ul></p><p>
+
+Simply copy them to the /usr/local prefix. They are compiled 
+to go to /usr/local, they may work even if copied in /usr,
+but I haven't tried that.
+</p><p>
+Enjoy!
+</p></quote>
+
+<p>Jeremy Newman ran into the same thing:</p>
+<quote who="Jeremy Newman"><p>
+I noticed this to when I tried getting cvsup to run on the new server.
+(which is using glibc 2.3). I also had to build it myself. 
+</p><p>
+As WineHQ does use cvsup and cvsupd as an option for getting the WIne
+tree, we should add a note about this on the using CVS page on the site.
+</p><p>
+Also, I will mirror your file in the winehq ftp site.
+</p><p>
+BTW, I built mine using the ezm3 version of modula-3 which was fairly
+simple to build.
+</p></quote>
+
+<p>Dimi uploaded his package to the SourceForge repository
+and listed them under 
+<a href="http://sourceforge.net/project/showfiles.php?group_id=6241">Support
+Files</a>.</p>
+
+
+
+</section>
+</kc>

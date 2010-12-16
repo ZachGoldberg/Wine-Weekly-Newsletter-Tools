@@ -1,0 +1,498 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="191" date="10/10/2003" />
+<intro> <p>This is the 191st issue of the Wine Weekly News publication.
+Its main goal is to go see balloons in Albuquerque. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="189" size="834" contrib="57" multiples="35" lastweek="33">
+
+<person posts="23" size="55" who="Alexandre Julliard" />
+<person posts="28" size="70" who="Dimitrie O. Paun" />
+<person posts="8" size="37" who="Steven Edwards" />
+<person posts="7" size="19" who="Jukka Heinonen" />
+<person posts="6" size="20" who="Pavel Roskin" />
+<person posts="6" size="15" who="Jerry Jenkins" />
+<person posts="6" size="13" who="Warren Baird" />
+<person posts="6" size="11" who="Ivan Leo Murray-Smith" />
+<person posts="5" size="35" who="Andr\&#233; Johansen" />
+<person posts="5" size="14" who="Kevin Koltzau" />
+<person posts="5" size="13" who="Dmitry Timoshkov" />
+<person posts="5" size="11" who="Jon Griffiths" />
+<person posts="4" size="16" who="Robert Reif" />
+<person posts="4" size="14" who="Sylvain Petreolle" />
+<person posts="4" size="13" who="Shachar Shemesh" />
+<person posts="4" size="8" who="Jeremy White" />
+<person posts="3" size="23" who="(Dave_Belanger)" />
+<person posts="3" size="10" who="Martin Fuchs" />
+<person posts="3" size="7" who="Troy Rollo" />
+<person posts="3" size="6" who="Eric Pouech" />
+<person posts="3" size="6" who="Oleg Prokhorov" />
+<person posts="2" size="92" who="Subhobroto Sinha" />
+<person posts="2" size="43" who="Vincent B&#233;ron" />
+<person posts="2" size="42" who="Mike McCormack" />
+<person posts="2" size="13" who="Juraj Hercek" />
+<person posts="2" size="9" who="Geoff Thorpe" />
+<person posts="2" size="5" who="Bill Medland" />
+<person posts="2" size="5" who="Martin Fuchs" />
+<person posts="2" size="5" who="PETREOLLE Sylvain" />
+<person posts="2" size="5" who="Andreas Mohr" />
+<person posts="2" size="5" who="Marcel Partap" />
+<person posts="2" size="4" who="Hannu Valtonen" />
+<person posts="2" size="4" who="Gerald Pfeifer" />
+<person posts="2" size="3" who="(dwillis)" />
+<person posts="1" size="48" who="Roderick Colenbrander" />
+<person posts="1" size="41" who="John Levon" />
+<person posts="1" size="13" who="John Conneely" />
+<person posts="1" size="8" who="Tom Hibbert" />
+<person posts="1" size="5" who="Huw D M Davies" />
+<person posts="1" size="4" who="Patrik Stridvall" />
+<person posts="1" size="4" who="Boaz Harrosh" />
+<person posts="1" size="3" who="Gaul, Ken" />
+<person posts="1" size="3" who="Robert van Herk" />
+<person posts="1" size="3" who="Kevin Groeneveld" />
+<person posts="1" size="2" who="Tom" />
+<person posts="1" size="2" who="Daniel Marmier" />
+<person posts="1" size="2" who="Uwe Bonnes" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="Gregory M. Turner" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Jerry Jenkins" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Rein Klazes" />
+<person posts="1" size="2" who="Moreno" />
+<person posts="1" size="1" who="Francois Gouget" />
+
+</stats>
+<section 
+	title="News: New Interview, Errata, Wine Review"
+	subject="News"
+	archive="http://www.winehq.org/interview/12"
+	posts="2"
+	startdate="10/04/2003"
+	enddate="10/10/2003"
+>
+<topic>News</topic>
+<p>Last week I put together an interview with Peter Hunnisett of TransGaming.
+It didn't get uploaded to the web site in time for last week's issue though.
+I removed the paragraph the news section before publishing it but failed to
+remove the headline announcing it.  No one seemed to notice.. but this week
+you really can find the <a href="http://www.winehq.org/interview/12">
+interview with Peter</a> on WineHQ.  Interviews have slowed down quite a
+bit - real life is getting in the way.  I promise there will be more, however
+infrequent they may be.</p>
+
+<p>Ivan Leo Murray-Smith pointed out that I not only misattributed an
+email to him but a bunch of work that was done to get Wine programs running
+on Windows.  For the record, Pavel Roskin worked on that project.  Ivan
+was responsible for compiling and uploading them to the Sourceforge 
+repository.  </p>
+
+<p>Scott Lowe wrote an article for ZDNet UK about downloading and
+installing Wine.  
+<a href="http://insight.zdnet.co.uk/business/0,39020481,39116972,00.htm">He 
+ran into some problems</a> and gives a thumbs down for usability.  He
+does recommend CodeWeavers CrossOver Office as an alternative to the 
+free version.</p>
+
+
+</section>
+<section
+        title="Theming &amp; UXTheme.DLL"
+        subject="uxtheme.dll"
+        archive="http://www.winehq.org/hypermail/wine-devel/2003/09/1056.html"
+        posts="30"
+        startdate="09/29/2003"
+        enddate="10/08/2003"
+>
+<topic>Integration</topic>
+<p>
+Kevin Koltzau started a thread last week about integrating Windows' 
+theming in Wine:</p>
+<quote who="Kevin Koltzau"><p>
+I started work porting a windows app using winelib, and hit an issue relating 
+to the fact that there is currently no implementation of uxtheme.dll (and 
+more importantly, no headers, of which would be enough to compile the app as 
+it dynamically loads all the uxtheme dlls as needed, and falls back 
+gracefully)
+</p><p>
+Because of this, I've been thinking about beginning an implementation of 
+uxtheme.dll. I am curious if someone has already taken up this task, or if 
+anyone any opinions on this topic.
+</p></quote>
+
+<p>Sylvain Petreolle questioned the usefulness,
+<quote who="Sylvain Petreolle">
+This isn't a windows system dll. Isn't that another attempt like
+cards.dll ?</quote>  Mike Hearn thought it would be a welcome addition:</p>
+<quote who="Mike Hearn"><p>
+Sure it is. Apps attempt to LoadLibrary it if they detect it to enhance
+their drawing capabilities. It's conceivable that one day apps will not
+have this backwards compat code and simply require Windows XP or above,
+so it needs to get done.
+</p><p>
+It's also the Right Way to make Wine not look like ass on our pretty
+desktops, because the win32 apps will be theme aware.
+</p></quote>
+
+<p>Roderick Colenbrander pointed out that this was a non-trivial amount
+of work:</p>
+<quote who="Roderick Colenbrander"><p>
+I hope you know what you will begin with. (For the ones that don't know
+uxtheme.dll is the dll that takes care of all theming on WinXP and it is the dll
+that dlls like comctl32 and all others use for theming) 
+</p><p>
+Some time ago I checked out uxtheme.dll a bit and it seems that it needs
+changes all over Wine. As I understand it WinXP ships with two sets of
+comctl32.dll and friends. One is the "old" version and one is a new uxtheme aware
+version. The uxtheme aware version contains lots of changes and uses uxtheme for
+theming. To use uxtheme you need to add uxtheme support to the dlls that need
+it which looks like a huge job. Perhaps this is something post Wine-1.0?</p></quote>
+
+<p>Dimi wondered why two DLLs were needed and Roderick explained:</p>
+<quote who="Roderick Colenbrander"><p>
+The "old" dll that MS ships with WindowsXP is comctl32.dll version 5.x which 
+is the same as on other Windows versions.
+</p><p>
+Version 6 is the new version. One of the biggest changes is that this updated 
+dll handles both the user and common controls. Further all controls now 
+include some area in which can be drawn for theming.
+</p><p>
+For more info check out: 
+<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnwxp/html/xptheming.asp">
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnwxp/html/xptheming.asp</a>
+</p></quote>
+
+<p>James Gregory jumped in to mention some similar work he'd
+done:</p>
+<quote who="James Gregory"><p>
+Some time ago I started hacking in support for GTK themes. When I first
+suggested this project to the list there was suggestions that doing it
+with uxtheme.dll was the way to go. I agreed, but didn't have winxp to
+play with, so I kept tinkering on this project with the intent of
+learning a bit more about how wine works (which meant learning a lot
+about how GDI and X work, though I didn't realise that I'd need to know
+that stuff when I started on the project). I actually managed to get
+some results which were starting to look promising (though there's no
+way I'd submit that code as a patch). Screenshots here (the checkbox
+being the only important part):
+<ul>        
+    <li>    <a href="http://james.id.au/wine/wine-ss1.png">
+
+	http://james.id.au/wine/wine-ss1.png</a></li>
+    <li>    <a href="http://james.id.au/wine/wine-ss2.png">
+
+	http://james.id.au/wine/wine-ss2.png</a></li>
+    <li>    <a href="http://james.id.au/wine/wine-ss3.png">
+
+	http://james.id.au/wine/wine-ss3.png</a></li></ul>
+</p><p>        
+Anyway, the reason I'm posting is not to suggest that this code be used
+(nor the approach I took), but to mention that if theming code is to be
+written that I think it's really important to have a way to pass off
+rendering of controls etc to a .so that can be dlopened and called with
+dlsym. IIRC the existing system uses a function lookup table, so there
+shouldn't be much that needs to change for this to occur -- only the
+initialisation of this function table and probably some hooks so that
+these .sos can detect whether or not they'll work with the current
+configuration (as an example the way I was doing gtk theming won't work
+with anything that isn't x11drv. I don't like breaking encapsulation
+like this, but it sounds like it's practical in this case). I don't know
+if I can be of any help, but I'm interested in trying -- please keep me
+posted.</p></quote>
+
+<p>Kevin then detailed an area he was looking into:</p>
+<quote who="Kevin Koltzau"><p>
+I'm currently working on implementing support for .msstyles themes (which 
+are used by XP) primarily because the format follows the API pretty closely 
+and will be easier to test my implementation against an XP box.
+</p><p>
+One nice thing about .msstyles themes is they are basically just a 
+resource-only DLL, which could of course include exported functions.
+</p><p>
+Going along that path, one possible way to integrate theme support from your 
+native window manager is to extend the .msstyles theme format to enable using 
+exported functions for drawing some controls, which could then make direct 
+GTK/etc calls.
+</p><p>
+Another possible method would be to create a conversion tool to create 
+an .msstyles theme from a GTK theme, or to simply create a totally new method 
+of defining themes for WINE.
+</p></quote>
+
+<p>Kevin went back and did some more work and posted another note
+several days later wondering how to set up configuration options.  At
+that point Steven Edwards brought up a topic on a similar tangent,
+<quote who="Steven Edwards">
+Is there a way we can merge the winelook option in to the theming
+support? The work I have been doing to port comdlg32 is kind of stalled
+because of tweak_winelook being incomplete in this dll. It would be
+nice if we could plan on moving all of this stuff together post 1.0
+</quote></p>
+
+<p>Kevin wasn't sure of that answer but went into more detail about 
+how Windows' theming worked:</p>
+<quote who="Kevin Koltzau"><p>
+I'm not very familiar with how the winelook is handled in code, what does it 
+do exactly? If it simply affects system metrics &amp; colors that would be easily 
+merged with themes, if its more than that (like for example different common 
+dialogs) it may be more difficult
+</p><p>
+Full blown theming in windows uses a combination of .theme files and .msstyles 
+files.
+</p><p>
+.theme files I believe existed before XP and do not use uxtheme.dll. They 
+primarily just define system metrics and colors (along with icons for things 
+like My Computer, etc and mouse cursors).
+</p><p>
+.msstyles files are the basis of uxtheme.dll, and allow much broader theming 
+support as seen in WinXP, as well as defining system metrics &amp; colors (but do 
+not define icons &amp; cursors).
+</p><p>
+The two theme formats are coupled very loosely, they can be used together 
+(primarily to enable defining icons &amp; cursors with a graphical theme) or 
+separate. When used together, any metrics &amp; colors defined in the msstyles 
+override those defined in the .theme
+</p><p>
+Alexandre has requested I use the registry keys that windows uses to define 
+theme configuration, in which case under XP those keys are located in
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes
+and
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ThemeManager
+</p><p>
+The configuration seems to be split between those two locations, with a couple 
+options in both. HKCU primarily contains configuration related to XP's 
+msstyles method of theming, HKLM looks to primarily define theming 
+with .theme files (although there is some slight crossover between the two).
+</p></quote>
+
+<p>Other people felt it would be a good idea to roll the existing
+look and feel options into something like this.  So will we soon have
+Wine integrating better with Windows and Linux desktops?  Hopefully!</p>
+
+</section>
+<section 
+	title="WineWorks Utility" 
+	subject="[ANNOUNCE]WineWorks - yet another utility to configure Wine!"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/10/0140.html" 
+	posts="3"
+	startdate="10/04/2003"
+>
+<topic>Utilities</topic>
+<p>A new utility appeared out of nowhere last week.
+Subhobroto Sinha dropped a note about a Qt based
+configuration tool:
+</p><quote who="Subhobroto Sinha"><p>
+well this is NOT yet another effort to imitate
+WineCfg!
+</p><p>
+WineCfg needs Wine to be running to work. WineWorks
+does NOT need Wine to be running.
+WineWorks has been developed using Qt 3.1.1
+</p><p>
+WineWorks has been written keeping it in mind as MORE
+of a troubleshooting tool rather than a customization
+and configuring tool. That is something WineCfg is
+there for.
+I intend to make WineWorks as a tool which can HELP a
+user figure out potential problems which can hinder
+running Wine on his machine and to resolve those
+issues so that Wine may be up and going... all from a
+easy to use GUI.
+</p><p>
+Please try out the program and send reports back to
+&lt;subhobrotosinha at yahoo dot com&gt; with [WINEWORKS] in
+the subject line and an optional line appended to it
+if required.
+I will soon put the details up on my site as soon as I
+get a few reports in my mail box.
+</p><p>
+The program is attached compressed as 'WineWorks.zip'
+and has MD5 Sum '145a82af87efa62c8a694c5a1c18a0a5'.
+</p><p>
+NOTE: It's recommended that you run WineWorks from a
+shell window to see the trace/debug messages. That way
+you can see what it's doing behind the scenes and
+where it went wrong (if it did)..
+</p></quote>
+
+<p>I tried it out real quick and it seems to pull off some
+nice features.  The interface is a little rough around the
+edges, but usable.  Roderick Colenbrander noticed it also
+and included a screenshot showing 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/10/att-0146/01-shot.png">WineWorks
+in action</a>.
+</p>
+</section>
+<section 
+	title="The Start Menu" 
+	subject="Of Start Menu, Shortcuts and broken functions..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/10/0136.html" 
+	posts="3"
+	startdate="10/04/2003"
+>
+<topic>Integration</topic>
+<p>Subhobroto posted another email wondering about 
+Windows' infamous "Start" menu.  His application has
+an initial implementation of it.  He dropped a note
+with a lot of details about what he was trying to do
+but needed help making it work:</p>
+<quote who="Subhobroto Sinha"><p>
+Recently there has been a revived interest in putting
+up a 'Windows' like 'Start Menu' onto the Window
+managers. That's good.Thanks.
+</p><p>
+But as I see it, this task is REALLY easy.
+Once we resolve the Windows shortcut files, figuring out
+how to implement the resolved menu entries for
+respective Desktop environments is dependent on the
+Desktop environment themselves, and people wanting to
+implement the 'Start Menu' on that environment.
+Windows maintains its 'Start Menu' under
+'%ROOTDIR%\Documents and Settings\%USER%\Start Menu'
+(yeah I am talking >=NT, Win2k. For 9x, it will be
+probably 'C:\WINDOWS\Start Menu'), and this folder
+contains LOADS of shortcut (.lnk) files.
+So if we can just recurse through this folder and read
+out the .lnk files into compatible menu/desktop
+entries of the corresponding Desktop environment
+(KDE,GNOME...), we have a working, synchronized 'Start
+Menu'.
+</p><p>
+And that's JUST what McCormack's 'winemenubuilder'
+does, and reading out the code I can see it's THE
+thing we need.
+</p><p>
+Unfortunately, 'winemenubuilder' shipped from
+Wine-20030618 - the VERY version from which
+IPersistFile::Load() (the VERY function used to
+resolve windows shortcuts) got broken, so I could not
+see 'winemenubuilder' in practice!
+(Mike, if you are reading this, could you tell me on
+what Wine ver you originally developed it, and does
+'winemenubuilder' work now ? Thanks)
+</p><p>
+You yourself may try out 'winemenubuilder', and if it
+works let me know. I will know that I was at fault all
+along, and that would be good news for me !
+</p><p>
+Now, there arises the problem. Microsoft really does
+not tell us what's the data structure of .lnk files,
+though if Alexandre (or somebody of his status..)
+requested Matt Pietrek for that information, we can
+probably get it.
+</p></quote>
+
+<p>Mike McCormack quickly replied and noted some other
+obstacles that need to be investigated:</p>
+<quote who="Mike McCormack"><p>
+Unfortunately, it's not just as simple as enumerating "C:\Windows\Start 
+Menu", though that would be a good start.
+</p><p>
+To do things exactly the same way as Windows does them, we have to make 
+a shell namespace that contains all the stuff on the start menu, then 
+enumerate that.  Furthermore, since the namespace is dynamic, the menu 
+really should be constructed on the fly, not just written to an .desktop 
+file.
+</p><p>
+I had a bit of discussion with Robert van Herk about this (see the 
+thread about ""Start menu" (continued)" on this list).  I mentioned to 
+him that I thought the best way to solve the problem would be to write a 
+gnome-vfs library and KDE plugin that query a wine process for the 
+structure of the startmenu at runtime.
+</p><p>
+For starters we could just use the 'Start Menu' directory, but you miss 
+out on things like Outlook Express and Internet Explorer's Icons, 
+because there's no .lnk file for those... they are created by a shell 
+namespace extension (I think :).
+</p><p>
+Anyway, it would be great if we figured out the remaining structure of 
+.lnk files, and finished the IShellLink implementation properly, and no 
+matter how things are done, we need that code to be complete.  The best 
+way to do that, IMO, is to examine a lot of .lnk files from windows 
+systems :)
+</p></quote>
+
+<p>Robert jumped in and described some work he's done:</p>
+<quote who="Robert van Herk"><p>
+From discussions with others from this list, I understand that you 
+should not just want to list the entries in the start menu folder, but 
+also other things (control panel, etc).
+</p><p>
+There should be a dll file (shell32.dll?) that can be queried to provide 
+this information.
+</p><p>
+What I am currently working on is a client on Linux and a server in 
+Windows (Wine). The server should notify the client when new entries 
+appear, and the client uses the server to get all the needed information 
+for the start menu.
+</p><p>
+I am about halfway for the first client, that will run on KDE.
+</p><p>
+Didn't touch the server yet, seems harder to build. Also didn't think 
+really hard on the communication between the server and the client. 
+Pipes won't probably be a good idea, because you want bidirectional 
+communication.
+</p><p>
+Anyhow, the first client is set up using QT. I am not sure whether this 
+is general enough, so please tell me if this is not wise to do, for 
+example if it won't be compatible with Gnome. If everything is QT 
+compatible, only the very frontend of the client will have to be 
+reprogrammed for the different desktop environments. That means that 
+most classes could be recycled from the KDE version.
+</p></quote>
+
+<p>In a similar vein, Dimi Paun posted a patch to move around some
+documentation.  Part of it included the following note,
+<quote who="Dimitrie Paun">Nearly complete information about the binary formats 
+of .lnk files available at 
+<a href="http://www.wotsit.org">http://www.wotsit.org</a></quote></p>
+
+</section>
+
+<section 
+	title="ReactOS Task Manager" 
+	subject="Fwd: [ros-kernel] Task Manager"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/10/0145.html" 
+	posts="1"
+	startdate="10/04/2003"
+>
+<topic>Utilities</topic>
+<p>From time to time I mention ReactOS in passing
+(sometimes referred to as simply ROS).  If you're not familiar with 
+the project you may want to check out the <a href="http://www.reactos.com">
+ReactOS website</a>.  Their Win32 subsystem relies on Wine and
+a lot of Wine portability and janitorial work has come out of
+it.  Steven Edwards is their Wine liaison and has contributed a
+lot of valuable work to both projects.  [<i>note to self.. 
+interview Steven</i>]  Increasing contributions are becoming
+apparent as their lower level work matures.  This week Steven
+forwarded a note from one of their developers (sorry, don't have
+the name, it was only signed FiN) describing a task
+manager utility being developed:</p>
+<quote who="Steven Edwards"><p>
+I am going to anonunce that Task Manager is starting to work in ReactOS...
+Thanks to w3seek's last patch it displays almost all controls correctly.
+(Also thanks to GvG and everyone else involved.)
+</p><p>
+There are still these problems:
+<ol>
+<li> It crashes in NtGdiDeleteDC in call to DRIVER_UnreferenceDriver.</li>
+<li> The current state of ReactOS shell32.dll and winmm.dll is bad. It worked
+correctly a while before ReactOS 1.1.3 was released. AFAIK, Steven Edwards
+and Andrew "Silver Blade" Greenwood are working on winmm.dll. I can repair
+the shell32.dll from the old version, if there is enough interest.</li>
+<li> We still don't have a comctl32 port in our CVS. I will commit it as soon
+as my w32api patch will be merged to MinGW's CVS.</li></ol>
+</p></quote>
+
+<p>Included with the email was 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/10/att-0145/02-taskmgr.png">a
+screenshot of the new task manager</a>.  We may see this appear in Wine
+at some point in the future.  A task manager was recently identified as
+a nice application for Wine to have, though no Wine developers seem to have 
+the time or inclination to work on it.</p>
+
+</section></kc>

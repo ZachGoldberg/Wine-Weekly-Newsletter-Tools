@@ -1,0 +1,486 @@
+<kc>
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="14" who="Steven Edwards" date="25 May 2004" />
+ <intro>
+ <p>This is our 14th interview with Wine developers.  Check out the
+  <a href="http://www.winehq.com/site/who">Who's Who</a> page for
+  previous ones.
+ </p><p>
+   Steven Edwards is the first developer we've interviewed that's 
+   associated with the <a href="http://www.reactos.org">ReactOS</a>
+   project.  For several years he's served as a valuable liaison 
+   between Wine and ReactOS.  In addition, he's been responsible for
+   porting Wine to the MinGW compiler and making the resulting 
+   libraries actually work.  Steven and his wife live in Greenville,
+   South Carolina.  Steven keeps reminding everyone that he'll likely
+   not be working on Wine much in the coming months since he has a 
+   baby due any day now.
+</p>
+ </intro>
+<interview>
+
+<question><p><i>BV:</i>
+ I guess this interview might be a bit different than some of the other
+ ones because your primary project isn't Wine.  Or am I wrong?  Do you
+ spend more time on Wine than ReactOS?
+</p></question>
+
+<answer><p><i>Steven:</i>
+This answer is going to be rather long winded...
+</p><p>
+My first real interest in free software was with Wine. About four or five 
+years ago I started playing around Wine to get my games running under Linux 
+but never really got active with the Wine community. I wasn't and still don't 
+see myself as a very good programmer and that was the main reason and I did 
+not become involved sooner. Most of my work relating to computers up until 
+that time had been in end user support and network engineering on Windows 
+networks. As I gained more knowledge of Linux I started branching out in to 
+security related work and gained a real interest in software development.
+</p><p>
+It was mainly out of interest in ReactOS that I started really becoming active
+in the Wine community. I decided it was time that someone needed to build a 
+better Windows than Windows and found the ReactOS project. The idea of the 
+ReactOS project really hit home once I started thinking about how GNU/Linux 
+has grown. The world needed a free Unix clone and the world needs a free 
+Windows clone. I think of them as almost like two brothers with lots of little 
+cousins in the free software movement. ReactOS is of course still the much 
+smaller brother but I think that will change soon.
+</p><p>
+To really answer your question, most of my time is now on spent on Wine.
+It was about a 50/50 split but I recently started doing support work for 
+CodeWeavers and have been focused on that. CodeWeavers allows me a lot of 
+freedom in the flexibility of my time so even if I am doing a lot of work for 
+them I still can find time to fit in some ReactOS stuff. Now that most of the 
+hard part of adapting Wine to build on Windows and ReactOS is done I think I 
+can be of better use making Wine and CrossOver better products. ReactOS won't 
+be stable for at least another year or two and people need a free software 
+solution that works now. That's not to say Wine and CrossOver are going to 
+be irrelevant in my mind either after ReactOS is ready.  Far from it, I think 
+they are all tools in a great chest of free software that I am hoping ReactOS 
+can join soon enough.
+</p><p>
+So in short, I still put a lot of effort into making sure that new features 
+and code in Wine can be shared with the Windows port but I am branching out  
+to other Wine related projects as well.
+</p></answer>
+
+<question><p><i>BV:</i>
+ You gave a nice introduction at WineConf about how Wine is used with
+ ReactOS.  Could you give an overview of what it does for you guys?
+</p></question>
+
+<answer><p><i>Steven:</i>
+When I joined the ReactOS project I was amazed at how much of the really hard 
+work was done on cloning the Windows kernel and saw the real need for someone 
+that knew Wine to jump on board to get the Win32 subsystem up and 
+going. Two of the ReactOS developers, Jim Tabor and Casper Hornstrup, did the 
+initial port to the ReactOS build system and I spent the better part of a year 
+working with Alexandre to get those changes merged back in to WineHQ in a 
+proper way. I would say that because of the method we have used in porting Wine
+to Mingw we are able to make use of 75% of the Wine code and maybe even more as 
+Wine evolves from the Win16/Win9x design to the Win32/NT design.
+</p><p>
+Currently in ReactOS the port of Wine involves building most of the Wine 
+components that sit above the core Win32 subsystem of gdi32/user32 and 
+kernel32/ntdll. From these modules we pick and chose parts of code that are 
+not too dependent on direct Unix or Wineserver calls and do not need X11 
+functions. Anything else such as the common controls, common dialogs and 
+shell32 interface is mainly just a recompile for us. The simplest way to tell 
+if we can share a module in Wine is to see if that module or part of source 
+code imports any non-Windows API. There are some exceptions to this rule in 
+the way GDI and Kernel communicate, but for the most part we can use almost 
+anything other than the Wineserver and X11 driver.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ How complete are your user32/gdi32/ntdll/kernel32 implementations? 
+</p></question>
+
+<answer><p><i>Steven:</i>
+ I would say at this point the ReactOS Win32 subsystem is about 50% implemented.
+ That covers most of the code we have adopted from Wine and our implementation 
+ of Win32k/User32/GDI and friends. As Wine adopts more of the Windows NT/2K 
+ design this type of sharing will be easier. Recently Marcus Meissner submitted
+ a patch for a stub implementation of NTOSKNRL.EXE for Wine because its needed 
+ to run Safe Disk copy protected games. If this patch is implemented we might be
+ able to start working on hiding Wineserver functionality in NTOSKRNL and 
+ share more code in ntdll and kernel32. I spoke with Alexandre a bit at 
+ WineConf about implementing a stub Win32k.sys for Wine and trying to make 
+ User32 and GDI32 shared with Wine and ReactOS.  His response was that it 
+ would be "too much work", which I take to mean if we had more developers 
+ working with us then it might be a good thing, just not right now.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+ Approximately how many people are involved with ReactOS?  
+</p></question>
+
+<answer><p><i>Steven:</i>
+I would estimate that there are about 20 to 30 people working on ReactOS at 
+any given time and maybe 5 to 10 are working as fulltime as you can on any 
+free software project.
+</p><p>
+Really I am amazed at how many of them I have met and am planning on meeting 
+with in the future. The team we have now is really committed to make ReactOS 
+stable. I met the ReactOS Project Coordinator, Jason Filby, at the first 
+WineConf where we committed ourselves to being team players in the Wine 
+community. After that I met Ge Van Geldorp, our Win32k subsystem maintainer, 
+at the Linux World 2002 Expo in San Francisco.  Recently at the last 
+WineConf we had a good showing with Mark Temple, our random bug hunter, Art 
+Yerkes, one of our network gurus and Steven Vizzini, the ReactOS Kernel 
+Coordinator, coming out to help me demo our progress.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Of course, the obvious question people ask about ReactOS is: why would
+ someone ever want to run a clone of Windows?  Why not just run the
+ real thing?
+</p></question>
+
+<answer><p><i>Steven:</i>
+It's a good question. It's also one that I hear quite a lot so if you ever 
+meet me at a tradeshow by the end of the day I tend to be in a bad mood and 
+just answer by saying, "Why do you want to clone Unix?"
+</p><p>
+For me it comes down to the matter of free software. I think Windows and Unix 
+go hand in hand like the gas and diesel engines. Both do mostly the same thing 
+but take very different methods of reaching that goal. Commercial Unix has had 
+free clones with FreeBSD and Linux for quite a while so it's just a matter of 
+the market evolving to answer that need. I suspect Microsoft will take my 
+words one day to say that Longhorn is going to be the hydrogen engine of 
+computing but I think it's free software that is the unlimited fuel. Microsoft 
+can't provide that unless they reform their business and that's what ReactOS is 
+all about. We are a <u>react</u>ion to the state of the market. I myself am a 
+very free market leaning conservative so the idea of ReactOS is a good fit for 
+my beliefs. Being the conservative that I am, I didn't and still don't trust 
+the government to provide a good solution to the problem. Even if the DOJ had 
+broken up Microsoft and instituted regulation then the government would have
+mandated DRM and other online freedom limiting technology sooner because of 
+the players involved in the process. It is because of this that we the people 
+have to keep creating a free alternative rather than waiting on the government 
+to solve the problem for us.
+</p></answer>
+
+<question><p><i>BV:</i>
+ I like the "Why would you want to clone Unix?" argument.  I guess when
+ you step back and look at it, that's exactly what's happening.
+ But building an operating system from scratch is a pretty daunting task.
+ What are you guys working on now?
+</p></question>
+
+<answer><p><i>Steven:</i>
+ Yes it's quite a bit of work but I really think most of the hard work in 
+ cloning ntoskrnl has been done already. Most of our support for the Windows NT 
+ driver model is in place. While it needs some expansion to code the Windows 
+ Driver Model of 2000 and XP, it's not that major of an enhancement. I would 
+ really like to see this happen sometime soon but ReactOS won't start getting 
+ enough users for the driver issues to matter until we have proper networking...
+</p><p>
+ Client side networking is going to be stable sometime soon (circa 6 to 8 
+ months). In some cases it works now with routing packets and sending some TCP 
+ data but is nowhere near where it needs to be for running HTTP and SSH 
+ connections or using a DHCP client. Art Yerkes and Casper Hornstrup have 
+ done a lot of work in the area so I am not really the one to address it but 
+ Art and I have worked with Wine developers to try and share some of Wine 
+ network code in netapi32 and iphlpapi. The ReactOS networking works (large 
+ parts were ripped from Linux) but it does not conform to the Windows NT model 
+ for networking with the NDIS and TDI layers correctly. Plugging the holes and 
+ making it act more like Windows networking is what Art and the 
+ rest of the ReactOS Network team has been focused on.
+</p><p>
+My plan is to use ReactOS fulltime for my primary OS within the year.
+</p></answer>
+
+<question><p><i>BV:</i>
+ So networking is working?
+</p></question>
+
+<answer><p><i>Steven:</i>
+ The big thing we are waiting on now is networking to get polished up. Our
+ networking development team recently imported some large parts of OSKit's 
+ TCP/IP based on FreeBSD and has been using that to fill in the gaps where 
+ Linux TCP/IP was lacking for us.  We are sending and receiving TCP/IP data and
+ routing now so we just have to get it merged off of the branch and
+ plug the remaining holes in the TDI layer.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+ Wine and ReactOS have had a mutually beneficial relationship.  Is
+ there anything Wine could do different that would help ReactOS development?
+</p></question>
+
+<answer><p><i>Steven:</i>
+There is nothing where I can say "if WineHQ would just do this then developing 
+ReactOS would be so much better". There are a couple of minor things, I really 
+wish we had a better system in place for handling Windows developers moving 
+over to Linux and Winelib. Dimi's recent work on winegcc and the Winelib 
+porting process helps with this but I think in some ways we are still too
+different from what the normal Windows developer expects. I expect to put a 
+lot more work in the Visual Studio port in the future, as this will improve 
+the quality of both Wine and ReactOS while making it easier for Windows 
+developers to test Wine components with their apps in the Microsoft Debugger. 
+The only other thing is, I do wish the TransGaming guys would get on the ball 
+and license their work as LGPL.  But it's their right to keep working off of the 
+X11 fork and pick and choose LGPL modules as they go along and I have to 
+support them in that. As compared to other projects I have done some work 
+with, I think Wine is one of the best, otherwise I would not still be around.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+  You guys have certainly contributed a lot of your work back to Wine, 
+  including some of the utilities you've written.  For instance, the
+  task manager was recently ported from ReactOS.  Do you guys have any
+  plans in the works for developing more tools?
+</p></question>
+
+<answer><p><i>Steven:</i>
+ I really want to see a solitaire clone make it in to Wine and ReactOS. =)
+</p><p>
+ It really depends on what the Wine team wants. We have a much better cmd.exe
+ replacement in ReactOS but it cannot be shipped with Wine as it is GPL rather 
+ than LGPL. At some point we are going to have to develop replacement 
+ components for everything in Windows so if there is a program that Wine needs 
+ and ReactOS implements it then I will try to make sure it's released under a 
+ compatible license.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ You've probably gotten pretty good at using cross-compilers and
+ emulators.  What kind of development environment do you use? 
+</p></question>
+
+<answer><p><i>Steven:</i>
+ When hacking on ReactOS I tend to do most of my work on a Windows 2000 laptop 
+ running Mingw and the MSYS environment.  But quite a few of the ReactOS 
+ developers
+ are Linux users and have no problems using a cross-compiler. As I have started 
+ to do more "paying" work again on the Linux side I find myself using Windows 
+ less and less again, even for my ReactOS work. Some of the ReactOS developers 
+ including myself also put a good bit of work into making ReactOS self-hosting 
+ with mingw-gcc. It is possible to rebuild ReactOS on ReactOS although it's 
+ very slow and without networking you can't update your source tree. Once we get
+ the networking part nailed down I may become one of the first people to 
+ setup a dedicated ReactOS development box.
+</p><p>
+ For testing ReactOS I tend to use VMware or real hardware but recently some of 
+ the ReactOS team has put a lot of work in the QEMU workstation project. This 
+ is very nice option over using VMware so I may switch my development work to 
+ it at some point in the future. We used to use Bochs for ReactOS testing in 
+ the early days but its just too damn slow. Now I only use it as a short demo 
+ or for the "wow cool" factor of being able to run ReactOS in Bochs on ReactOS.
+</p></answer>
+
+<question><p><i>BV:</i>
+ How hard was it to get Wine to compile with MinGW? 
+</p></question>
+
+<answer><p><i>Steven:</i>
+ Most of the really hard part was just my overall lack of knowledge. Once the 
+ Wine team knew that we were for real and started really helping us out it 
+ didn't take very long to get things going. I have to thank Alexandre for 
+ making time to fix problems that I pointed out in those early days.
+</p><p>
+ Some of the big issues we faced were bugs in the build system for building 
+ on a native Mingw, splitting out the Win16 and Win32 code and removing code I 
+ have termed "Wineisms" and "Unixisms". The native Mingw problem was really 
+ simple once Alexandre made some time to answer my constant emails. Splitting 
+ out the Win16 and Win32 stuff is still an ongoing project that will be done 
+ around the same time Wine 1.0 is released &lt;g&gt;.  
+ The hard part, at least for me, is when we have to totally rewrite something 
+ because it depends on an internal Wine function or is a Win32 function 
+ implemented on top of Win16 (Wineism) or a Win32 function that depends on the 
+ native Unix API (Unixisms).
+</p><p>
+ To be honest most of the work that I have focused on is the really boring 
+ stuff like making sure things in WineHQ code match what's in the Microsoft 
+ documentation. Developers like Ge Van Geldorp, Filip Navara and Martin Fuchs 
+ have done the really hard work with shell32 and the controls.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Getting all that code split up and merging back into Wine was a pretty
+ big task. Were there a lot of rewrites required to suit Alexandre's 
+ preferences?
+</p></question>
+
+<answer><p><i>Steven:</i>
+ The first port we did was really a dirty proof-of-concept hack. Once we got
+ the build system fixed for Mingw, merging the minor changes was not too
+ difficult.  The simple fixes were mainly doing configure checks for headers 
+ that we might not have in a Windows development environment or functions that 
+ are not a 1:1 mapping to functions that exist in the Windows API. It gets a 
+ little more complex when you have a Win32 function that evolved from 
+ Win16 in Wine. In some cases you either have to duplicate the code in 
+ question or do a total rewrite of the function.
+</p><p>
+ The problem I really ran in to has been my lack of experience as a programmer.
+ What we are trying to do is really simple when compared to other challenges
+ faced in developing an operating system. The Win32 API 
+ <font color="red">vis-avia?</font> Wine is just 
+ that; an API.  Porting it from Wine/Unix to Windows is not hard except for the 
+  fact there are very few people that know both the Unix and Windows worlds and 
+ are aware of the ReactOS project. As the project has grown we have gotten some 
+ help from other developers that have more experience and have taken up the 
+ challenge. Each developer brings their own skill to the table and that helps 
+ Wine and ReactOS. Martin Fuchs has done a lot to fix the Wine shell32 support 
+ while Ge Van Geldorp basically owns all of the Win32 subsystem in ReactOS that 
+ has anything to do with graphics such as Win32k/User32/GDI.
+</p> </answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Those are some areas that often get cited as needing work.  Are there
+ any other things you think Wine needs to concentrate on?
+</p></question>
+
+<answer><p><i>Steven:</i>
+I really think we need to make an effort to get everything we can building 
+under Microsoft Visual Studio. I believe in this so much that I'm tempted to 
+add this to the Wine 1.0 TODO list. Once we make it easy for the Windows 
+developers to test their applications with Wine modules they are more 
+likely to try and move the application over to GNU/Linux. The recent 
+packaging of the Win32 build of Wine on SourceForge is a step in the right 
+direction.
+</p><p>
+I tend to have too many open projects to try to branch in to other areas but 
+one that still really interests me is security. I think it should be possible 
+to implement the Security Reference Monitor (SRM) components in Wineserver 
+allowing us to develop a shared Local Security Authority subsystem for Wine 
+and ReactOS. The nice thing about the LSASS is that it's a modular system so 
+that in theory we could plug in components such as PAM, LDAP and MSV1_0 
+authentication in to both systems.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ What's involved with using Visual Studio and why is it important to
+ integrate with that environment?
+</p></question>
+
+<answer><p><i>Steven:</i>
+I have heard reports of people running Visual Studio under Wine along with other
+Microsoft tools. I am really interested in building Wine with Microsoft Visual
+Studio and the Platform SDK. This helps test Wine code for correctness with
+Microsoft documentation as well as expose other bugs we might have missed. 
+Sometimes though, Microsoft's own documentation is wrong so we have to always 
+be careful and make sure we don't break something that really is implemented 
+properly. Once we can get most of Wine building with MS_VC then I would like 
+to develop an easy way for Windows developers to test building their Winelib 
+applications with MS_VC and the Wine headers and import libs.  This could be 
+the first step toward a Winelib port of a vendor's application.  Dimi's recent 
+work to support Winelib porting is a step in the right direction but it still 
+depends on the developer adapting their project to support a Mingw-gcc build 
+system.
+</p><p>
+Currently the only thing stopping us from cleaning up the MS_VC support is
+disinterest.  The msvcmaker tool that allows you to build Wine on Windows is 
+written in Perl and needs some updates and cleanups. I don't know Perl so I 
+have to beg for help keeping it up to date at times.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Ironically that's an item on my to-do list.  So, besides Wine and ReactOS 
+ are there any other projects you're involved in?
+</p></question>
+
+<answer><p><i>Steven:</i>
+One pet project I have always wanted to see is a Linux subsystem for the 
+ReactOS kernel. This would allow users to use Windows drivers while still 
+having all sorts of free software and might help to move them to a totally  
+free platform. I started out doing some work with the User-mode Linux people 
+on the Windows port but then Dan Aloni threw us a curve ball when he announced 
+he ported the Linux kernel to Windows and developed the CoLinux driver. I 
+started working with the CoLinux team, ReactOS, and Wine developer Filip 
+Navara to fix some issues with ReactOS (such as our broken service control 
+manager) so users can run CoLinux on top of ReactOS. In the next year I expect 
+ReactOS will be fully CoLinux compatible because of our efforts.
+</p><p>
+Another project that I am helping, or helping ReactOS I should say, is 
+Samba-TNG. A few years ago a group of Samba hackers forked the main branch to 
+try and make it more Windows like in terms of services and design. This makes 
+it almost perfect for becoming part of ReactOS. Most of these efforts never 
+made it back into Samba main but the developers are interested in seeing 
+their design used to help get ReactOS talking to Windows networks. I recently 
+started working with Elrond of Samba-TNG to adapt the network code and 
+build system to support building with Mingw just as we have done in Wine.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+  Were you able to get Samba-TNG building under MinGW? 
+</p></question>
+
+<answer><p><i>Steven:</i>
+ Over the past few months I did some work with them on it but my
+ free time has been getting less and less lately.
+</p><p>
+The development is still in process and is going rather slow. After we last
+spoke I joined CodeWeavers full-time to do support of CrossOver and have a son 
+on the way.  So my time to help on the TNG port has been dropping quite a bit. 
+I have also discussed with Jeremy Allison of Samba about merging our TNG work 
+in to the main Samba tree and he seems to be cool with it as long as we don't 
+introduce to many Windowsisms. Right now if you want to play with Samba-TNG on 
+Windows don't expect much. File locking for Win32 is unsupported, some of the 
+Win32 network code has not even been tested, and because the Samba-TNG 
+developers are still doing development of their own it's possible it won't 
+even build for Mingw at any given moment.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Filip Navara just posted a patch that makes Wine's RPC wire-compatible
+ with Windows.  Did that work come from the ReactOS tree? 
+</p></question>
+
+<answer><p><i>Steven:</i>
+ There is not a lot of code coming from Samba-TNG yet. Elrond and Filip have
+ been working together to get WIDL usable as a stand alone application so both
+ projects can make use of it. Samba-TNG does implement some of the DCE/RPC stuff
+ but I don't know much about the code. From what I understand about DCOM and
+ Filip's work, if we can get DCOM working properly then Wine and ReactOS will be
+ able to seamlessly share COM components on a Windows network just like other 
+ Windows servers can. I recently talked with Mike Hearn about merging the 
+ DCOM patch but need to spend more time digging in to it.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Well, it definitely seems like you have your work cut out for you!
+ Congratulations on all the accomplishments so far and thanks for the
+ interview.
+</p></question>
+
+<answer><p><i>Steven:</i>
+ Thanks for letting me share about ReactOS!
+</p></answer>
+
+</interview>
+</kc>

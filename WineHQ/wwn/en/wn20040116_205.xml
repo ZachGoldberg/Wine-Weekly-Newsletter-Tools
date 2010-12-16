@@ -1,0 +1,455 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="205" date="01/16/2004" />
+<intro> <p>This is the 205th issue of the Wine Weekly News publication.
+Its main goal is to huck cliffs. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="174" size="700" contrib="52" multiples="27" lastweek="33">
+
+<person posts="25" size="63" who="Alexandre Julliard" />
+<person posts="12" size="34" who="Mike Hearn" />
+<person posts="10" size="65" who="Dimitrie O. Paun" />
+<person posts="9" size="27" who="Robert Lunnon" />
+<person posts="8" size="63" who="Eric Pouech" />
+<person posts="8" size="28" who="Steven Edwards" />
+<person posts="8" size="22" who="Dimitrie O. Paun" />
+<person posts="7" size="90" who="Dmitry Timoshkov" />
+<person posts="7" size="59" who="Martin Fuchs" />
+<person posts="6" size="19" who="Vincent B&#233;ron" />
+<person posts="6" size="13" who="Hans Leidekker" />
+<person posts="4" size="22" who="Ivan Leo Murray-Smith" />
+<person posts="4" size="9" who="Sami Aario" />
+<person posts="3" size="10" who="Jeremy White" />
+<person posts="3" size="9" who="Boaz Harrosh" />
+<person posts="3" size="8" who="Kirk Ruff" />
+<person posts="3" size="8" who="Jeremy Shaw" />
+<person posts="3" size="7" who="Francois Gouget" />
+<person posts="3" size="6" who="Rein Klazes" />
+<person posts="3" size="6" who="Christian Costa" />
+<person posts="2" size="9" who="MediaHost \(TM\)" />
+<person posts="2" size="7" who="Brian Vincent" />
+<person posts="2" size="5" who="Chris Morgan" />
+<person posts="2" size="5" who="Kevin Koltzau" />
+<person posts="2" size="4" who="Paul Millar" />
+<person posts="2" size="4" who="Jeremy Newman" />
+<person posts="2" size="3" who="Tom" />
+<person posts="1" size="9" who="Acke Carlsson" />
+<person posts="1" size="8" who="Sylvain Petreolle" />
+<person posts="1" size="8" who=" (Frank Schruefer)" />
+<person posts="1" size="4" who="Michael Stefaniuc" />
+<person posts="1" size="4" who="Jesse Hammons" />
+<person posts="1" size="3" who="Emmanuel Charpentier" />
+<person posts="1" size="3" who="Ge van Geldorp" />
+<person posts="1" size="3" who="Shiming Dong" />
+<person posts="1" size="3" who="(chmorgan)" />
+<person posts="1" size="3" who="Christoph Frick" />
+<person posts="2" size="3" who="Marcus Meissner" />
+<person posts="1" size="2" who="hatky" />
+<person posts="1" size="2" who="Jakob Eriksson" />
+<person posts="1" size="2" who="Robert Reif" />
+<person posts="1" size="2" who="Shachar Shemesh" />
+<person posts="1" size="2" who="Daniel Kegel" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Marcelo Duarte" />
+<person posts="1" size="2" who="Jan Brunner" />
+<person posts="1" size="1" who="Robert van Herk" />
+<person posts="1" size="1" who="Mike McCormack" />
+<person posts="1" size="1" who="Andreas Mohr" />
+<person posts="1" size="1" who="Dan Kegel" />
+
+</stats>
+<section 
+	title="ODBC Fun - Tips and Tricks" 
+	subject="Wine User's guide : using Windows ODBC driver manager seems to work"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/01/0466.html" 
+	posts="5"
+	startdate="01/06/2004"
+	enddate="01/14/2004"
+>
+<topic>Documentation</topic>
+<p>There's been some discussion lately about accessing ODBC compliant
+data sources using Windows programs and Wine.  First, Aurelien Marchand
+ran into a problem with Crystal Reports:</p> 
+<quote who="Aurelien Marchand"><p>
+
+I've dumped my WinNT workstation and replaced it with Linux. So far, I
+can do exactly everything I was able to do (except updating my calendar
+on the Exchange server used where I work), minus using Crystal Report.
+I have installed it using CodeWeavers' CrossOver Office and it installed
+without even a hiccup.
+I've also installed unixODBC and tested the odbc.ini configuration using
+isql. It works great when I try to connect to the company's AS400
+database. The default library is set to my username and I can query
+other libraries using the dot (.) as a separator (e.g: SELECT * from
+OTHERLIB.OTHERTABLE).
+</p><p>
+So far so good: UnixODBC works perfectly to talk to IBM's AS400.
+</p><p>
+Now I need to tell Crystal which drivers to use. I've read on the web
+that Crystal is not a very good student and thus ignores Windows'
+ODBC.ini settings but checks what's in the registry. I've also come to
+understand I must set ODBC.dll = "builtin, native" in my Wine's config
+file so that it will try to use whatever is set for
+LIB_ODBC_DRIVER_MANAGER env variable for Windows' ODBC connections.
+</p><p>
+I've come to that point: my system.reg or my user.reg contain one ODBC
+setting (the same name found on /etc/odbc.ini and ~/.odbc.ini). My wine
+config file uses "builtin, native" for it's ODBC setting and my
+~/.odbc.ini contains proper DSN settings (since I can query from the
+console using isql).
+The best part is, when I start Crystal Report, and select ODBC sources,
+I have in the dropdown that appears all the entries I've put in my
+~/.odbc.ini file. As I said earlier, great strides indeed.
+</p><p>
+Now the last missing piece is that it seems Crystal using Wine and
+unixODBC cannot login properly and retrieve the table list. It just
+hangs when I expand the "+" box beside a DSN entry.
+I've enabled sql log (in /etc/odbcinst.ini) but I can't find really
+relevant information.
+Let me know if you want to see it.
+</p><p>
+So now I'm stuck. Any ideas on how I can make it work?
+Note: I've tried to Crystal's DB2 ODBC drivers and also with IBM DB2
+ODBC drivers (both for Windows) - although it shouldn't make a difference.
+</p></quote>
+
+<p>Ulrich Czekalla suggested another way to do it, 
+<quote who="Ulrich Czekalla">
+This is the way I do it. Switch to native odbc32, install mdac (available
+with ms office or download from MS site) and then setup the dsns
+using odbcad32.exe.</quote></p>
+
+<p>That short exchange appeared last week.  This week Emmanuel Charpentier
+ran across a similar problem and provided a brief explanation of how he 
+solved it:</p>
+<quote who="Emmanuel Charpentier"><p>
+Following a suggestion in Wine User's Guide, (§ 1.1.2), I'd like to suggest 
+an addition.
+</p><p>
+The "ODBC" section (5.12) gives details (5.12.1) about the use of the 
+native ODBC driver, routed through a fake "builtin" ODBC driver. I have not 
+yet had to test it in real conditions. All I can tell is that I wasn't able 
+to use it to "Attach" (M$ jargon) Postgres data in MS Access (see PPS for 
+the setup) : when I tried to select "ODBC sources" from the "Attach tables" 
+dialog, I got immediately an error box from unixODBC telling me that no 
+data source was specified.
+</p><p>
+However, the User's Guide is quite terse about the Windows ODBC driver. 
+Exhaustive quotation : " Does anyone actually have any experience of this 
+and anything to add?".
+</p><p>
+Well, I do. In the same setup as before, I have been able to use the 
+*native* odbc32.dll ODBC driver by pulling it from a real Windows 
+installation and adding "odbc32"="native,builtin" in the config file. I 
+Installed the psqlodbc driver from the Postgres database, and retried : 
+selecting "ODBC sources" in the "Attach tables" dialog box led me to the 
+usual ODBC manager dialogs, where I have been able to create a DSN to my 
+Postgres database. I have then been able to "Attach" my Postgres tables and 
+views to an M$ Access database and peruse them.
+</p><p>
+My conclusion is that such a setup can be used, if only to be able to 
+export MS Access data to a more reasonable database manager. This 
+information could be of some help to some people, and I'd like to see it 
+reflected in the User's guide.
+</p><p>
+Of course, I'm aware that such a quick test is no substitute to real tests 
+and explorations. Feel free to reach to me for further information, test 
+cases, etc ...
+</p></quote>
+
+<p>Boaz Harrosh followed up with some more information,
+<quote who="Boaz Harrosh">
+Yes it works. My QA tested it throughly with MSSQL driver and there are 
+no reported problems.
+The best way to go is a free download from Microsoft. mdac_typ.exe . 
+Just Install it under wine and off you go. Also many MS applications 
+Install them (like office).
+Than in system folder find cliconfig.exe &amp; odbcad32.exe put them on the 
+desktop. These are the same apps from the windows control panel. (you do 
+have .exe associate with wine! yes?)
+</quote></p>
+
+</section>
+
+
+
+<section 
+	title="Radius Cinepak Decoder and Directory Structure" 
+	subject="Re: PATCH: Port Tim Ferguson's ICCVID codec to Wine"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/01/0452.html" 
+	posts="5"
+	startdate="01/13/2004"
+	enddate="01/14/2004"
+>
+<topic>Multimedia</topic>
+<p>Mike McCormack ported an open source implementation of a Radius 
+Cinepak video decoder developed by Dr. Tim Ferguson.  This video
+format is used in some AVI and QuickTime formats, and in particular
+Half-Life's intro.  Tim made the driver available to Wine under the
+provisions of the LGPL.  
+
+The new DLL led to some discussion of exactly how to structure the
+codebase to accept some DLLs.  After Mike submitted the patch, 
+Dmitry Timoshkov requested,
+<quote who="Dmitry Timoshkov">
+ Mike, could you put the iccvid sources at the same place
+ as msrle32 (dlls/msvideo) and resend the patch?
+</quote></p>
+
+<p>Mike replied,
+<quote who="Mike McCormack">
+I asked Alexandre where it should go, and he said wine/dlls was an 
+appropriate place.  I don't mind either way...</quote></p>
+
+<p>Dmitry didn't care either, but felt there needed to be some
+consistency.  If the ICCVID driver was moved to wine/dlls then
+MSRLE32 should be moved there as well.  Dimi Paun was in favor
+of a flatter directory structure and advocated it be placed with
+the other DLLs.  Eric Pouech disagreed,
+<quote who="Eric Pouech">
+ I still don't see the point of having a unique dlls/ flat structure. 
+ Which more than 100 dlls right now, I do think we need to structure it. 
+ So putting the video codec in msvideo directory seems the easiest 
+ structure. We could also envisage to have a drivers or codecs directory, 
+ but that'll boil down to the same thing.</quote></p>
+
+<p>Alexandre ended up committing ICCVID driver into wine/dlls
+ without a separate subdirectory.</p>
+
+</section>
+
+<section 
+	title="Shell32 Update &amp; Patch Submission Process" 
+	subject="Re: shell32 patches to be usable by ReactOS Explorer"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/01/0373.html" 
+	posts="12"
+	startdate="01/11/2004"
+	enddate="01/13/2004"
+>
+<topic>Patches</topic>
+<p>Martin Fuchs submitted a hefty patch updating shell32.  I'll include
+the full changelog in case you want to read it.</p>
+<quote who="Martin Fuchs"><p>
+This patch consists of a number of changes we implemented in the ReactOS 
+CVS tree in order to use Wine's shell32.dll implementation for ReactOS 
+explorer. Please see the following changelog lists for the individual 
+patch descriptions:</p>
+<p>
+Ge van Geldorp
+<ul>
+<li>Return absolute path from SHGetPathFromIDListA</li>
+<li>Allow SHGetPathFromIDListA to resolve items in special folders.</li>
+<li>shlview.c: Execute items by default using new function ShellView_OpenSelectedItems()</li>
+<li>Don't return executable name in double quotation marks from FindExecutable</li>
+<li>Since IExtractIcon::GetIconLocation returns the icon *index* (not
+the resource id) and some of these indexes are hardcoded in
+folders.c IExtractIconW_fnGetIconLocation() add some dummy icons
+to force correct index.</li>
+</ul></p><p>
+
+Filip Navara
+<ul>
+<li>shell32_Cs.rc: Czech translation</li>
+</ul></p><p>
+Preparation before moving SHGetFolderPath[AW]() into shfolder.dll:
+<ul>
+<li>Moved actual code from SHGetSpecialFolderPathA to SHGetFolderPathW, adjusted and unicodified it.</li>
+<li>Rewrote SHGetFolderPathA to call SHGetFolderPathA.</li>
+<li>Rewrote SHGetSpecialFolderPath[AW] to call SHGetFolderPath[AW].</li>
+</ul></p><p>
+
+Everaldo Coelho 
+<ul>
+<li>better looking shell icons with 4, 8 and 32 bit colors</li>
+</ul></p><p>
+Martin Fuchs
+<ul>
+<li>correct path parsing in ISF_Desktop_fnParseDisplayName()</li>
+<li>handle CLSID paths in ISF_MyComputer_fnParseDisplayName()</li>
+<li>return CLSID path in ISF_MyComputer_fnGetDisplayNameOf()</li>
+<li>implemented flag SEE_MASK_IDLIST for ShellExecuteEx()</li>
+<li>removed warning message for previously unimplemented flag SEE_MASK_INVOKEIDLIST in ShellExecuteEx()</li>
+<li>add a few TRACE messages to ShellExecuteXYZ()</li>
+<li>SIC_IconAppend(), SIC_GetIconIndex(): use GetFullPathName() instead of PathFindFileNameA() to make icon paths unique</li>
+<li>fixed HCR_GetExecuteCommandExA/W() to correct ShellExecuteEx() behaviour with flag SEE_MASK_CLASSNAME set</li>
+<li>RenderFILENAMEA/W(): only return valid file system names</li>
+<li>extended CSIDL_Data for missing CSIDL_... definitions</li>
+<li>introduced IDL type PT_RAS_FOLDER for "Connections" shell folder </li>
+<li>implementation of shell link resolving for ShellExecuteXYZ() and IExtractIcon:
+  _ResolveShortCut(), IShellLink_ConstructFromFile(), I...XYZ...fnGetUIObjectOf(),
+  _PidlGeticonLocationA/W(), IShellLinkA/W_fn...(), IExtractIconW_fnGetIconLocation()</li>
+<li>CreateStreamOnFile(): use flag FILE_SHARE_READ for opening OLE stream files</li>
+<li>introduced optimized internal functions SHELL_GetPathFromIDListA/W() with HRESULT return value</li>
+<li>SHGetPathFromIDListA/W() return now like on real Windows only real file system paths, no virtual CLSID paths.</li>
+<li>shres.rc, SIC_Initialize(): moved ID for document icon from invalid index 0 to 1</li>
+<li>SIC_Initialize(): use full path to shell32.dll for icon cache</li>
+<li>adjusted ExtractIconExW() to be usable with MinGW and MSVC</li>
+<li>ISvItemCm_fnQueryContextMenu(): corrected default menu item in shell context menus</li>
+<li>ISvItemCm_fnQueryContextMenu(): distinguish between Open and Explore commands</li>
+<li>ShellView_DoContextMenu(): activate Explore-Context menu on the desktop</li>
+<li>ShellView_CreateList(), SIC_Initialize(), PidlToSicIndex(): enabled transparent icons on the desktop</li>
+<li>SHGetDataFromIDListA/W(): corrected error handling</li>
+<li>I...XYZ...fnGetUIObjectOf(): better error handling</li>
+<li>ISF_MyComputer_fnGetDisplayNameOf(): better error handling</li>
+<li>AboutDlgProc(): don't link to undocumented string functions in NTDLL to be compatible with MSVC and MinGW</li>
+<li>SHSimpleIDListFromPathA(): don't link to undocumented string functions in NTDLL to be compatible with MSVC and MinGW</li>
+<li>SHGetDataFromIDListA/W(): handle drives when retrieving file attributes</li>
+<li>_ILCreateFolder, _ILCreateValue(): added missing type casts from DWORD to WORD</li>
+<li>shell32_XY.rc: corrected menu item ids FCIDM_SHVIEW_OPEN and FCIDM_SHVIEW_EXPLORE</li>
+<li>DllMain(): get full path and name to shell32.dll for IExtractIconW_fnGetIconLocation(); directly call InitCommonControlsEx()</li>
+<li>pseudo-implementation for IPersistFile_fnIsDirty()</li>
+<li>IShellLinkA/W_fnGetPath(): added FIXME</li>
+<li>shellink.c: corrected SCF_UNICODE constant</li>
+<li>_FS_ProcessDisplayFilename(): hide configured file extensions in file system shell folders and on the desktop</li>
+<li>ISF_Desktop_fnParseDisplayName(): correct file path parsing on the desktop</li>
+<li>SHELL_FindExecutable(); use PathFindExtensionA() instead if strrchr()</li>
+<li>SHELL32_CoCreateInitSFEx(): improved error handling</li>
+<li>SHMapPIDLToSystemImageListIndex(): improved error handling</li>
+<li>SHELL_FindExecutable(): use PathFindExtension() instead of strrchr()</li>
+<li>folders.c: include header files "config.h" and "port.h" for strcasecmp()</li>
+<li>shellink.c: corrected shell link saving</li>
+<li>IShellLink: implemented IPersistFile::IsDirty()</li>
+<li>ShellExecuteExA(), ISF_MyComputer_fnGetDisplayNameOf(): handle shell links to virtual folders</li>
+<li>read in shell links to control panel applets and enable ShellEcecute() to launch them</li>
+<li>Implementation of control panel folder</li>
+<li>partial implementation of file system folder execution in ShellExecute()</li>
+<li>ExitWindowsDialog(): implemented shutdown request for OS versions NT and better</li>
+<li>implementation of RestartDialog() and RestartDialogEx()</li>
+<li>SHELL32_GetItemAttributes(): implemented SFGAO_LINK</li>
+<li>corrected definition of PathYetAnotherMakeUniqueName()</li>
+<li>implemented SHGetRealIDL()</li>
+<li>fixed allocation length in RenderFILENAMEW()</li>
+<li>SHBindToParent(): call QueryInterface for Desktop</li>
+<li>ShellExecuteExA32(): expand environment strings</li>
+</ul></p></quote>
+
+<p>That changelog is approximately ten million times larger than
+your average changelog.  It's exactly the sort of merge nightmare
+everyone hates to see.  On the one hand you have all this dazzling 
+code that will surely make things better.  On the other hand, you're
+surely going to introduce bugs that will be difficult to narrow down
+to a particular patch.  Alexandre's stance is pretty firm on such 
+issues - he doesn't apply massive patches.  Dimi Paun complained
+first:</p>
+<quote who="Dimitrie Paun"><p>
+Martin, sending a bunch of patches compressed and in one message,
+makes them almost unreviewable but by the most die hards readers
+of wine-patches. It also makes it so much more difficult for
+Alexandre to split them up, match the ChangeLog, review them, etc.
+Please stick to one-(uncompressed, inlined)-patch-per-email-messsage
+rule, it's so much better for everybody. Here are some relevant links:
+        <ul>
+	<a href="http://www.winehq.org/sending_patches">
+    http://www.winehq.org/sending_patches</a><br />
+        <a href="http://www.winehq.org/docs/winedev-guide/codingpractice#PATCH-FORMAT">
+    http://www.winehq.org/docs/winedev-guide/codingpractice#PATCH-FORMAT</a>
+</ul></p></quote>
+
+<p>Martin thought it should just be committed:</p>
+<quote who="Martin Fuchs"><p>
+Yes, I am aware of that.
+This patch is the result of four weeks work (not only of me), spending
+most of the time with debugging, as most of those stuff is pretty
+undocumented by Microsoft. It's not possible to simply look at the
+ReactOS CVS history to separate out patches for every small piece
+of change. If you want me to send in it this way, this would take
+me another week. I don't think, it's worth that.
+It would be better to commit the code changes in one transaction.
+Shell32 has been quite incomplete before this patch, and it's also
+far from complete with this patch.
+</p><p>
+Why I have compressed the attachments:
+Well, I don't think every one on the list wants to read the changes,
+which are not very readable at their own. And reading through endless
+hex numbers of shres.rc is also not very interesting.
+</p></quote>
+
+<p>Alexandre disagreed:</p>
+<quote who="Alexandre Julliard"><p>
+I'm afraid you'll have to do that. There's no way I can put that patch
+in as is, it's way too big and doing way too many different things. It
+also has a number of ugly hacks that will have to be cleaned up.
+Please submit small self-contained patches that do only one thing,
+with a changelog explaining what they do.
+</p><p>
+I know it's a pain, but the real solution for next time is to submit
+things as soon as they are done, instead of waiting a month and then
+sending a huge patch that cannot possibly be reviewed.
+</p></quote>
+
+<p>Martin was afraid of that.  He asked that the new icons be 
+committed first and then the rest would be sorted out.  Steven 
+Edwards wondered if there were any CVS tools that would help with
+the merge process in the future.  Dimi pointed out a script that
+was available,
+<quote who="Dimitrie Paun">
+There is csgrep in the tools/ module in CVS, but for that
+to work you guys need to run our commit_prep and log_accum
+in CVSROOT. If you do that, you get the wine-cvs - type
+messages for free, and can use our patch.py script to
+generate patches. From what I see in other similar systems
+(used in projects such as SourceForge/gcc/KDE/etc.), ours
+is the best -- comes highly recommended! ;)</quote></p>
+
+<p>From there Steven began splitting up and submitting pieces
+of the original patch.</p>
+
+</section>
+
+<section 
+	title="Regression Testing Revisited" 
+	subject="Compilation broken in CVS"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/01/0341.html" 
+	posts="5"
+	startdate="01/09/2004"
+>
+<topic>Testing</topic>
+<p>Almost two years ago Paul Millar announced a Wine regression testing
+system that automatically built the latest version of Wine in CVS.  Well,
+Paul has kept at it and you can still find his daily testing at:
+<ul><a href="http://www.astro.gla.ac.uk/users/paulm/WRT/">
+ http://www.astro.gla.ac.uk/users/paulm/WRT/</a></ul></p>
+ 
+<p>One interesting area to look at is the execution of the Wine tests
+ designed to stress different API's.   The developers are adding about 
+ 4000 tests a year and we're now up to almost 8000.  
+</p>
+
+</section>
+
+<section 
+	title="Key Signing Party at Wineconf" 
+	subject="Key signing party at wineconf"
+	archive="http://www.winehq.org/hypermail/wineconf/2004/01/0012.html" 
+	posts="3"
+	startdate="01/08/2004"
+	enddate="01/09/2004"
+>
+<topic>WineConf 2004</topic>
+<p>Shachar Shemesh announced some ultra-geeky fun for Wineconf:</p>
+<quote who="Shachar Shemesh">
+<p>
+I'm organizing a key signing party at wineconf. Anyone who wishes to 
+participate, please email me the following details:
+Your full, real, name. It is not possible to participate in a key 
+signing party using a nickname or a virtual identity. Sorry.
+Your key's fingerprint.
+Your actual key. Again, the key must have your real name on it (I am 
+talking public key, of course. You should never send your private key to 
+anyone).
+</p><p>
+I am going to compile the list of names into a keyring and post it to a 
+public key server. If, for any reason, you wish your key to remain 
+unpublished (highly unrecommended), please note so in your mail.
+</p><p>
+For more info about GPG key signing parties, check out the howto at 
+<a href="http://www.cryptnet.net/fdp/crypto/gpg-party.html">
+ http://www.cryptnet.net/fdp/crypto/gpg-party.html</a>
+</p></quote>
+
+</section>
+
+</kc>

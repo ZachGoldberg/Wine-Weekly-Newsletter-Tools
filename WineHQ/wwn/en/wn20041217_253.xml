@@ -1,0 +1,395 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="253" date="12/17/2004" />
+<intro> <p>This is the 253rd issue of the Wine Weekly News publication.
+Its main goal is to open Silverton. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="211" size="686" contrib="66" multiples="39" lastweek="33">
+
+<person posts="20" size="58" who="Mike Hearn" />
+<person posts="16" size="41" who="Alexandre Julliard" />
+<person posts="11" size="27" who="Eric Pouech" />
+<person posts="10" size="38" who="Robert Shearman" />
+<person posts="8" size="33" who="Rein Klazes" />
+<person posts="8" size="33" who="Jon Griffiths" />
+<person posts="8" size="22" who="Dmitry Timoshkov" />
+<person posts="7" size="34" who="Bill Medland" />
+<person posts="7" size="23" who="Jonathan Ernst" />
+<person posts="6" size="18" who="Shachar Shemesh" />
+<person posts="6" size="17" who="Vincent B&#233;ron" />
+<person posts="5" size="22" who="Serge S. Spiridonoff" />
+<person posts="5" size="16" who="Tony Lambregts" />
+<person posts="5" size="13" who="=?ISO-8859-1?Q?R=E9mi_Assailly?=" />
+<person posts="5" size="11" who="Ivan Leo Puoti" />
+<person posts="4" size="11" who="James Hawkins" />
+<person posts="4" size="10" who="Dimitrie O. Paun" />
+<person posts="3" size="17" who="MediaHost (TM)" />
+<person posts="3" size="13" who="Jonathan Gevaryahu" />
+<person posts="3" size="12" who="Anish Mistry" />
+<person posts="3" size="12" who="Chris Morgan" />
+<person posts="3" size="8" who="William Lahti" />
+<person posts="3" size="7" who="Jeremy Newman" />
+<person posts="3" size="7" who="Andreas Mohr" />
+<person posts="2" size="24" who="Florian Goth" />
+<person posts="2" size="6" who="Tero Tamminen" />
+<person posts="3" size="8" who="David =?iso-8859-1?q?G=FCmbel?=" />
+<person posts="2" size="5" who="Paul Vriens" />
+<person posts="2" size="5" who="Gerald Pfeifer" />
+<person posts="2" size="5" who="Francois Gouget" />
+<person posts="2" size="5" who="Christian Costa" />
+<person posts="2" size="5" who="Kuba Ober" />
+<person posts="2" size="5" who="Brian Vincent" />
+<person posts="2" size="4" who="Steven Edwards" />
+<person posts="2" size="4" who="Ge van Geldorp" />
+<person posts="2" size="4" who="Scott Ritchie" />
+<person posts="2" size="3" who="M.hearn" />
+<person posts="2" size="3" who="Rklazes" />
+<person posts="1" size="4" who="Huw D M Davies" />
+<person posts="1" size="4" who="Raphael" />
+<person posts="1" size="4" who="(pvriens)" />
+<person posts="1" size="4" who="Ferenc Wagner" />
+<person posts="1" size="3" who="StartCom Ltd." />
+<person posts="1" size="3" who="Geoff Hart" />
+<person posts="1" size="3" who="Arjen Nienhuis" />
+<person posts="1" size="3" who="Marcus Meissner" />
+<person posts="1" size="3" who="Aric Stewart" />
+<person posts="1" size="3" who="Holly Bostick" />
+<person posts="1" size="2" who="Michal Kepien" />
+<person posts="1" size="2" who="Michael Jung" />
+<person posts="1" size="2" who="Paul van Schayck" />
+<person posts="1" size="2" who="Jesse Allen" />
+<person posts="1" size="2" who="Robert Reif" />
+<person posts="1" size="2" who="Frank Richter" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Walt Ogburn" />
+<person posts="1" size="2" who="Ivan Leo Puoti" />
+<person posts="1" size="2" who="Paul Vriens" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="Ira Krakow" />
+<person posts="1" size="2" who="Raul Dias" />
+<person posts="1" size="2" who="nx12" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+
+</stats>
+<section 
+	title="MSI Status Update" 
+	subject=""
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0.html" 
+	posts=""
+	startdate="09/  /2004"
+	enddate="09/  /2004"
+>
+<topic></topic>
+<p>Aric Stewart dropped a quick update on some work done with Microsoft
+Installer APIs:</p>
+<quote who="Aric Stewart"><p>
+
+ Long time no post :) I just wanted to give an update that Mike M. and
+I have done a lot of msi work over the first few weeks of December which
+caused a few significant changes to particularly action.c where we
+eliminated many of the static buffers for file paths and replaced them
+with dynamic buffers. Vitaly Lipatov's patches reminded me that i should
+probably give you all a heads up about that. We were going to break
+them down and start submitting them but then Mike went off and got
+married and is on his Honeymoon. So when he gets back we are going to
+either break the changes down into smaller patches or try to get
+Alexandre to approve a big one.  I will start trying to get some of the
+smaller ones broken down and submitted in the meantime.
+</p><p>
+Vitaly Lipatov's patchs do not directly conflict with anything so we are
+just fine there. I will work them into our tree so that i can be sure
+they are not lost. But if anyone else is also doing msi work you may
+want to check in here so that we can make sure it all fits together ok.
+</p></quote>
+
+</section>
+<section 
+	title="Direct3D 9" 
+	subject="[dx9-19] A d3d9 pgm actually works!"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/12/0281.html" 
+	posts="1"
+	startdate="12/13/2004"
+	enddate="12/13/2004"
+>
+<topic>DirectX</topic>
+<p>Jason Edmeades continued working on Direct3D 9 this week.  A major
+patch was blocked for a few weeks, but since it went in there's been
+quite a few steady patches.  Jason reported some initial success this week:</p>
+
+<quote who="Jason Edmeades"><p>
+  Yes, with this patch all the d3d9 programs that only require the support of
+  a single flat triangle in the middle of the screen will now work fine :-)
+</p><p>
+  Ok... perhaps an exaggeration but the good news is my patches are finally
+  getting to the point where I can test and see output, and the first d3d9
+  program to work under the wine cvs tree is one of the following tutorials:
+	<ul><a href="http://triplebuffer.devmaster.net/tutorials.php">
+	http://triplebuffer.devmaster.net/tutorials.php</a></ul></p><p>
+  Specifically Stepping Stones tutorial 2 (I never bothered with (1) as I can't
+  tell whether a blank screen looks right or not). Actually, I've also tried
+  tutorials 3,4 and 5 - all of which behave about the same as windows. 
+</p><p>
+  There's a long, long way to go, but d3d9 things will slowly start working
+  from here onwards (I hope!).
+</p><p>
+  What's left? RenderTargets, Textures, Shaders are the main things
+</p></quote>
+
+
+</section>
+<section
+        title="Removing Stubs"
+        subject="Re: Stubs in PE build"
+        archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0405.html"
+        posts="21"
+        startdate="12/14/2004"
+	enddate="12/16/2004"
+>
+<topic>Creating Stubs</topic>
+<p>Ge van Geldorp added a new mode to winebuild to build a PE
+DLL C file from a spec file.  He wondered why the patch he
+submitted last month hadn't been committed, so Alexandre
+explained,
+<quote who="Alexandre Julliard">
+I don't think we want to add a special mode just for stubs; they
+should really be replaced by proper functions (even if the functions
+are stubs themselves, at least they can print the parameters and try
+to return something meaningful instead of killing the app). You can
+view the lack of stubs support on PE as an encouragement to help us
+remove them from the spec files ;-)</quote></p>
+
+<p>If you've ever looked at Wine's .spec files you'll see lots of 
+stub entries.  Stubs don't exist yet as functions, not even empty
+functions returning something like 'success'.  Instead, they simply serve as
+a reminder for future work to be done.  Ge thought turning stubs 
+into even empty functions was a daunting task,
+<quote who="Ge van Geldorp">
+ Seems impossible for functions with unknown calling conventions and number
+ of parameters.</quote></p>
+
+<p>Andi Mohr didn't think it was so hard to figure out:</p> 
+<quote who="Andreas Mohr"><p>
+ What's the problem here?
+</p><p>
+ If you have an app exercising that function, then you have an object
+ ready for examination already, and if you don't have any app using it,
+ then you don't have any problem anyway...
+</p><p>
+ OK, mere mortal endusers might have problems with some apps crashing,
+ but they're easily lost in slightly more severe cases anyway ;)
+</p></quote>
+
+<p>Alexandre thought stubs caused problems though,
+<quote who="Alexandre Julliard">
+ we have added stubs as placeholders all over the place, while we should
+ have only added them where there is a real need (mostly for ordinal
+ imports). So now it will be a bit of work before we can get rid of
+ them, but that should be the long term goal; and that's why I don't
+ think we should add more code to support them.
+</quote></p>
+
+<p>Mike Hearn thought they were needed:</p>
+<quote who="Mike Hearn"><p>
+I'm a bit confused, the specfile level stubs are handy if only because
+when an app calls them you can see exactly which function was called in
+the error. Otherwise you'd just get a crash at 0xdeadbeef (what if that
+address is mapped? can that even happen?).
+</p><p>
+It also suppresses all the warnings from the linker when using native DLLs
+that are linked against internal functions but never use them, for
+whatever reason.
+</p><p>
+They also make adding new DLLs easier, as you don't have to submit lots of
+stub functions for every entry point. I guess we could have a script to
+generate them given a header, but still
+</p></quote>
+
+<p>Alexandre thought all that could be worked around,
+<quote who="Alexandre Julliard">
+Not adding the functions at all is even easier, and the results are
+pretty much the same... As you noted, in general the only advantage of
+stubs is that you get a better error message, but that would be fairly
+easy to handle at the loader level. The problem with adding stubs
+everywhere is that now we don't know which ones are really needed.
+</quote></p>
+
+<p>Mike understood what needed to be done:</p>
+<quote who="Mike Hearn"><p>
+Hmm, you mean we could remove the spec file entries that apps never
+actually link against?
+</p><p>
+Perhaps the first step then would be to implement support in winebuild
+and the loader such that the list of stubbed functions is exported then
+the loader can link imports from those to stubs generated on the fly. At
+that point the winebuild support for stubs could be removed, and all the
+@ stub entries also deleted in one go.</p></quote>
+
+<p>There was some concern that just removing stubs would lead to
+losing information.  For example, ordinal functions that are called
+by a number are pretty much undocumented and removing the blank
+stubs would lose things like function name and calling parameters.
+Alexandre thought that could be worked out,
+<quote who="Alexandre Julliard">
+
+ Obviously we can't blindly remove all stubs, each individual case
+ needs to be looked at. But there aren't that many ordinal exports, and
+ adding dummy functions for them shouldn't be that hard.
+</quote></p>
+
+<p>Jon Griffiths pointed out another reason to remove
+stubs:</p>
+<quote who="Jon Griffiths"><p>  
+I had a patch which enabled stub generation for building native dlls
+last year
+(<a href="http://www.winehq.org/hypermail/wine-patches/2003/07/0176.html">http://www.winehq.org/hypermail/wine-patches/2003/07/0176.html</a>),
+that part was not accepted for the same reasons that are being
+mentioned in this thread.
+</p><p>
+I would like to point out again that the VC linker will not generate
+a correct dll unless the ordinal stubs are present. Other native
+linkers may have the same problem. It seems very silly to me that we
+can't use M$'s own compiler/linker to build valid dlls (especially
+since these tools can be downloaded for free these days). M$ defined
+the dll format we are using, after all.
+</p></quote>
+
+<p>Alexandre agreed,
+<quote who="Alexandre Julliard">
+Yes, that's exactly why we need to get rid of stubs; there is no such
+concept on Windows. The solution is not to start building a .spec.c
+file for MSVC, it's to fix our spec files so that they can work on
+Windows without generating extra code. This means replacing the stubs
+by real functions.</quote></p>
+
+</section>
+
+<section
+        title="Apartment Breakage"
+        subject="out-of-process COM design"
+        archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0486.html"
+        posts="16"
+        startdate="12/17/2004"
+	enddate="12/18/2004"
+>
+
+<topic>RPC / COM / OLE</topic>
+
+<p>It appears the dust in the air from the recent 
+COM/OLE work caused a bit of a problem for Bill Medland:</p>
+<quote who="Bill Medland"><p>
+For one reason or another I need to help get the ole32/oleaut32/rpcrt4 working 
+for our application (the REG_EXPAND_SZ issue means that we don't work with 
+wine after 200409 because of the mix of native dlls we use)
+</p><p>
+I just tried running with the native ole32/oleaut32/rpcrt4 and the first thing 
+I tripped over was (what I presume is) an out-of-process COM problem.
+</p><p>
+The actual stack dump is that:
+<ul>
+_LocalServerThread (compobj.c)
+  <ul>    calls  StdMarshalImpl_MarshalInterface (...)
+      <ul>    which has mid.oxid = COM_CurrentApt()-&gt;oxid;</ul></ul></ul></p><p>
+
+which throws a memory error because COM_CurrentApt is null
+because, presumably the thread hasn't yet initialised an apartment.
+</p><p>
+Does anyone know anything about this?  e.g. when starting a new thread where 
+does the apartment get initialized?
+</p></quote>
+
+<p>Mike Hearn took a stab at diagnosing the problem:</p>
+<quote who="Mike Hearn"><p>
+
+It's supposed to get initialized in the call to CoInitialize[Ex] however
+the _LocalServerThread never calls this as it's an internal implementation
+detail of out of process DCOM.
+<p></p>
+This looks like we haven't got the design quite right here, the
+LocalServerThread doesn't exist in native DCOM as far as I can tell
+so it may need to be replaced by something else.
+<p></p>
+The code in StdMarshalImpl is correct, the problem is that the local
+server thread is violating the COM laws by using CoMarshalInterface before
+entering an apartment.
+<p></p>
+For now, does this patch help?
+</p></quote>
+
+<p>The patch got Bill further, but he still ran into problems.
+There was a bit of back and forth on it, without much resolved,
+then Mike figured out the root of the problem:</p>
+<quote who="Mike Hearn"><p>
+ I see the problem. The patch which switched us over to using OXIDs isn't
+ complete, the listener_thread should be per-apartment not per-process, and
+ the pipe it creates should therefore use the oxid >> 32 + oxid string
+ formatter.
+<p></p>
+ Rob is travelling back to the UK today. I don't know when he'll be back
+ online, or even if he'll be working over the Christmas period. If not I'll
+ see if I can write a patch to fix this regression this weekend.
+</p></quote>
+
+<p>Then Rob Shearman popped up and mentioned he was working on
+this very area.  He also thought Mike's patch was hackish and
+posted a one-liner to accomplish the same thing. Mike didn't
+think it was right though,
+<quote who="Mike Hearn">
+ Well, now we have a variation on the same problem. The apartments are
+ getting mixed up, I suspect because Rob's patch creates a new apartment
+ but we still don't create a new listener thread for each apt (rather
+ it's still half process-scoped).</quote></p>
+ 
+<p>Rob verified there was a problem and mentioned two quick solutions,
+<quote who="Rob Shearman">
+ you can either wait for my patch to fix local servers, or you
+ can revert to ole32 as of 28th November.</quote></p>
+
+<p>It'll likely be a few weeks before this work settles down, so
+ if you depend on Wine's COM you may want steer clear of CVS.  
+</p>
+</section>
+
+<section
+        title="Wine-license List Removed"
+        subject="Should we get rid of the wine-license list?"
+        archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0437.html"
+        posts="8"
+        startdate="12/14/2004"
+	enddate="12/15/2004"
+>
+<topic>Project Management</topic>
+
+<p>A few years ago we created a special wine-license mailing
+list to discuss the change from Wine's BSD/X11 license to LGPL.
+Most of the list's traffic occurred over the span of just a few
+weeks.  Since then it's languished and a lot of people don't follow
+it.  Scott Ritchie asked:</p>
+<quote who="Scott Ritchie"><p>
+Looking at the archives it appears that wine-license has had very little
+traffic, to the point where a lot of it is probably not being read when
+it comes up, since people like me are not subscribed to that list.
+</p><p>
+It seems like a lot of the stuff being sent there should instead go to
+wine-devel.</p></quote>
+
+<p>A couple people agreed and it prompted Jeremy Newman to
+ask,
+<quote who="Jeremy Newman">
+ OK, I'll take it down. Shall I remove the archives as well? Or simply
+ leave them for historical type purposes?</quote></p>
+ 
+<p>Dimi Paun favored keeping them,
+<quote who="Dimitrie Paun">
+Keep the archives, they are still reachable via Google, and people
+may have links to them. But I think we should remove the reference
+to the list from the Mailing Lists/Forums page, it simply clutters
+it for no good reason.</quote> </p>
+
+<p>Several other people thought that was a good idea, so Jeremy went 
+ahead and removed the list.</p>
+
+</section>
+</kc>

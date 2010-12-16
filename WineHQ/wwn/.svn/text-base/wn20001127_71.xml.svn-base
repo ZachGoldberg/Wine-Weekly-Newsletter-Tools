@@ -1,0 +1,420 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="71" date="27 Nov 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 71st release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Ove Kaaven pointed out in last week issue (<kcref issuenum="70" sectionnum="2">
+last week</kcref>) that the Drunkard site was building .DEB packages, 
+not .RPM ones... Thanks for correcting.
+</intro>
+
+<stats posts="63" size="175" contrib="25" multiples="14" lastweek="18">
+<person posts="8" size="16" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="7" size="20" who="lawson_whitney@juno.com" />
+<person posts="5" size="13" who="Jon &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="4" size="9" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="4" size="8" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="18" who="Jon Griffiths &lt;jon_p_griffiths@yahoo.com&gt;" />
+<person posts="4" size="10" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="3" size="8" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="3" size="8" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+
+<p />
+
+<ul>
+   <li>This has been a very quiet week, as if every Wine developer
+was more attracted by Thanksgiving's turkey than by writing some mails 
+or patches...</li>
+   <li>Last week at Comdex, Corel talked about selling the Linux part
+of Corel's (<a href="http://news.cnet.com/news/0-1003-200-3785993.html">
+http://news.cnet.com/news/0-1003-200-3785993.html</a>)</li>
+</ul>
+</section>
+
+
+<section 
+  title="Direct drive access"
+  subject="PATCH: INT13 (READ/WRITE SECTORS)"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0267.html"
+  posts="7"
+  startdate="17 Nov 2000 00:00:00 -0800"
+  enddate="21 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Frank Cornelis submitted a patch that allowed direct access thru Int
+13 emulation to a physical driver. By direct access, it means reading
+and writing sectors, whatever the filesystem is.
+
+<p />
+
+Joerg Mayer wondered why, in the patch, Frank didn't <quote who="Joerg Mayer">
+use the devices from the wine.conf file</quote>.
+
+<p />
+
+David Elliot guessed <quote who="David Elliot">one reason is that the devices in
+the wine.conf generally point to a partition. Now obviously with
+floppies the device would match, but for a hard-drive it's
+different. In fact, it really ought to allow assigning a numbered BIOS
+INT13 device to a specific device separate from the drive letter
+definitions. 
+Like:
+<code><pre>
+[Int13]
+Bios0=/dev/fd0
+Bios1=/dev/fd1
+Bios80=/dev/hda
+Bios81=/dev/hdb
+</pre></code>
+</quote>
+
+<p />
+
+'Admiral' Coeyman reported he, once, wrote a similar patch, but his
+also allowed to turn on/off the write feature to a device (Frank
+restricted the read/write access rights to floppy only, assuming hard
+drives access was too error prone). (For the records, the patch has
+never been applied).
+
+<p />
+
+'Admiral' also suggested <code>[Int13]</code> was a too restrictive
+name for a section. Here could also be added the direct write access
+to physical devices, and any other goodies requested for a better BIOS 
+emulation.
+
+<p />
+
+Frank was still pitchy about security features. He went on:<quote who="Frank Cornelis">
+Giving wine access to a hard disk via INT13 only is useful if, lets
+say C is on /mnt/myC and on /mnt/myC the device /dev/hda1 is
+mounted. Then we can give wine access to /dev/hda as BIOS device 0x80
+_if_ your flag in a wine.conf BIOS section allows such low level access.
+
+<p />
+
+But, the question is why providing low level access since it could
+become a big security issue. We are on linux because of the many
+viruses under DOS and now we're about to implement _the_ virus
+interrupt INT13. I needed low level INT13 access to write the boot
+sector of a floppy in order to make a Setup program for my OS. I
+personally believe that we should restrict INT13 only to access
+/dev/fdx devices since it could become very dangerous when we give
+full INT13 access to win32 programs. (or be could disable writing
+sectors for (virtual) hard disks thus only allowing readings of
+sectors).</quote>
+
+<p />
+
+'Admiral' agreed with Frank's comments - even if root would need,
+under certain circumstances, to get this feature... but, kids, don't
+try this at home ;-)</section>
+
+
+<section 
+  title="Wine developers get confused with Microsoft's Windows releases ?"
+  subject="version patch"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0286.html"
+  posts="3"
+  startdate="20 Nov 2000 00:00:00 -0800"
+  enddate="20 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr provided a patch which implements more versions for the
+-winver command line argument (which tweaks Wine behavior to mimic the 
+passed Windows version).
+
+<p />
+
+Andreas added the following versions:
+<ul>
+   <li><code>win20</code> for Windows 2.0 (<quote who="Andreas Mohr">yes, some
+rare programs need this</quote>)</li> 
+   <li><code>win30</code> for Windows 3.0</li>
+   <li><code>nt2k</code></li>
+</ul>
+
+<p />
+
+Dimitrie Paun and Ove Kaaven got confused by the <code>nt2k</code>
+name, and asked whether <code>win2k</code> wouldn't be a better name.
+
+<p />
+
+Andreas replied:
+<quote who="Andreas Mohr">
+Maybe not. IMHO win2k is more or less Win ME. (or at least it could be
+confused this way). So I think we ought to better choose nt2k and
+winme as --winver values. (as win2k is NT based anyway)
+
+<p />
+
+It's not me who created that confusing stuff - it's Me$$ysoft again...
+I'm just trying to get some order into it :)
+
+<p />
+
+But it might be a good idea to alias win2k to nt2k.
+</quote>
+
+
+<p />
+
+Ove Kaaven didn't quite like it: 
+<quote who="Ove Kaaven">
+There is no such thing as <code>nt2k</code>! Adding it is going to
+create a lot of confusion, more than if you sticked to sensible and
+understandable names (based on product names),
+i.e. <code>win2000</code>. And what's this deal with this senseless
+<code>2k</code> here and there, instead of just saying "2000" like
+everyone else is accustomed to, and which actually makes sense
+(especially to Americans that don't use the metric system...)? I'm not
+going to just sit and watch someone trying to enforce the illegitimate
+"2k" instead of "2000" in the version options! It must be "win2000"!
+</quote>
+
+
+<p />
+
+No one actually replied, but Alexandre applied the patch as it was,
+with the <code>nt2k</code> name.</section>
+
+
+<section 
+  title="Compilers think different"
+  subject="DLL functions returning structs"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0298.html"
+  posts="11"
+  startdate="23 Nov 2000 00:00:00 -0800"
+  enddate="26 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jon Griffiths, while updating his CRT DLL test harness, dug out a
+nasty issue:
+<quote who="Jonathonm Griffiths">
+I found a call returning strange values using the native DLL. The call
+is "ldiv", which returns an ldiv_t struct _by value_. ldiv_t is
+defined the same under linux and windows.
+
+<p />
+
+My (linux) test harness uses LoadLibrary to load the DLL, and
+GetProcAddress to get the function pointer. Problem is, the code:
+<code><pre>
+      ldiv_t ldt = p_ldiv(20L,3L);
+      fprintf(stderr,"%ld, %ld\n",ldt.quot,ldt.rem);
+</pre></code>
+
+<p />
+
+Gives with the wine .so: 6, 2
+
+<p />
+
+And with the real DLL: 1079733392, 1073782154
+
+<p />
+
+The .so is behaving 'correctly'. The win32 DLL results look like
+addresses to me. 
+
+<p />
+
+Compiling the program under vc and running the .exe under wine
+generates an exception.
+
+<p />
+
+With the win32 .exe and win32 DLL i get the correct answer once again.
+
+<p />
+
+So it appears that returning structs only works when the dll and
+caller are built with the same compiler (or return convention).
+
+<p />
+
+Before I start checking further, I'd like to check whether anyone has
+any info on this. Presumably what is happening is that vc++ and gcc
+have different conventions for returning structs by value.
+</quote>
+
+
+<p />
+
+Hidenori Takeshima quoted the mingw32 sources (which also embeds a
+CRTDLL implementation):<quote who="Hidenori Takeshima">
+<code><pre>
+/*
+ * div_t and ldiv_t are structures used to return the results of div and
+ * ldiv.
+ *
+ * NOTE: div and ldiv appear not to work correctly unless
+ *       -fno-pcc-struct-return is specified. This is included in the
+ *       mingw32 specs file.
+ */
+</pre></code>
+</quote>
+
+<p />
+
+Jon kept going with his investigation:
+<quote who="Jonathonm Griffiths">
+Most regular functions return their result in registers if it will fit
+(i.e. all integral types). Luckily for us gcc and windows compilers do
+the same thing when returning integrals (use eax, then edx if
+needed). So we have no problem calling those functions between the
+environments (i.e in Wine).
+
+<p />
+
+What happens in a call to a function returning a struct differs
+between the environments, however. Under linux/ix86 gcc pushes a
+hidden argument on to the stack holding the address of the struct, 
+for structs of _any_ size. VC++ doesn't appear to do this  for
+structs &lt;= 8 bytes. The good news is, structs &gt; 8 bytes should
+work fine (VC will pass the hidden parameter also).
+
+<p />
+
+Because of this, if win32 code calls a unix dll function returning a
+struct &lt;= 8 bytes, the unix code freaks because the address of
+where to store it wasn't pushed. Similarly, if unix code calls win32
+code, the win32 code freaks because there is an extra argument on the
+stack.
+
+<p />
+
+the gcc info pages state that using the -no-pcc-blah flag might not
+work on structs &lt; 8 bytes (and it doesn't). In any case that flag
+is not useful because by default the struct passing for &gt; 8 byte
+cases is the same between the two environments. Plus it screws up
+linking with native libs.
+</quote>
+
+
+<p />
+
+Mike McCormack suggested: 
+<quote who="Mike McCormack">
+Why not implement the function using windows calling convention, then
+provide a macro/inline function hack in the appropriate header file
+that, when compiling winelib, converts unix struct calling convention
+to the windows one?
+
+<p />
+
+Better make sure to include the right header when compiling though.
+</quote>
+
+
+<p />
+
+Ove Kaaven also noted that recent ULONGLONG types had been added to
+.spec files, and this would nicely fit with MS calling convention when 
+returning structures which size is &lt;= 8 bytes.
+
+<p />
+
+This should solve the case of a Windows app calling the native CRTDLL, 
+but the case of a WineLib still needed some more thoughts. Alexandre
+Julliard added the last part of the solution:
+<quote who="Alexandre Julliard">
+I agree that -freg-struct-return is a bad idea, especially if the app
+mixes libc and crtdll calls. I think a simpler solution would be to
+have a way to specify in crtdll that ldiv() should not be available
+for imports from winelib apps; this way the app will always link to
+the libc function directly. I was planning to add such a mechanism
+anyway for other simple functions like memcpy() that are always
+identical between crtdll and libc, so that we can avoid the overhead
+of the extra indirection through the import table.
+</quote>
+</section>
+
+
+<section 
+  title="Drunkard will not stop"
+  subject="daily wine builds for debian"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/11/0339.html"
+  posts="1"
+  startdate="27 Nov 2000 00:00:00 -0800"
+  enddate="27 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Schuldei announced: <quote who="Andreas Schuldei">
+The service Zygo Blaxell provided for the last year or so will be
+discontinued because people do not want him to use resources on
+windows promotion. (I have never seen wine as if it would promote
+windows, but hey!) The ease of setup of his buildsystem on the debian
+system encouraged me to announce this new site after a few successful
+builds. 
+
+<p />
+
+In the future packages should be available daily from
+
+<p />
+
+<a href="http://gluck.debian.org/~andreas/debian/dists/wine/main/">
+http://gluck.debian.org/~andreas/debian/dists/wine/main/</a>
+
+<p />
+
+or can be installed automatically with these lines in your
+/etc/apt/sources.list:
+
+<p />
+
+deb     http://gluck.debian.org/~andreas/debian wine main
+deb-src http://gluck.debian.org/~andreas/debian wine main     
+
+<p />
+
+These are not official debian packages and are not distributed with unstable
+since they are not intended to be frozen with woody (the current development
+version of debian) and bugreports about the wine-content are not going to be
+processed by me. These are basic compiles of the CVS tree, so your
+bugreports concerning wine should go to the wine developers list. However I
+would like to hear about packaging problems and ways to correct them or other
+ways to improve this service.
+</quote>
+
+<p />
+
+Bernhard Rosenkraenzer also added:<quote who="Bernhard Rosenkraenzer">
+On a similar note, I'm now making daily wine builds for Red Hat Linux
+7 available.
+</quote>
+
+<p />
+
+That should be enough for most of the Wine addicts to get their daily
+fix. </section>
+
+</kc>

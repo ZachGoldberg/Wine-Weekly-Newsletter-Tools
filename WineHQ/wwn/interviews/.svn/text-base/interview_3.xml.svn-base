@@ -1,0 +1,286 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="3" who="Marcus Meissner" date="15 April 2003" />
+<intro>
+<p>Marcus Meissner's involvement with Wine stretches all the way
+back to 1995.  He's been responsible for significant contributions
+including CUPS printing support, DirectDraw, and COM architecture.
+</p><p>Marcus was born in 1973 and currently lives in Erlangen,
+Germany.  He graduated from the University of Erlangen in 1997 with
+a degree in computer science and
+went to work for Caldera.  Now he works as a developer for SuSE.  
+We caught up recently with him to ask about the various parts
+of Wine he's been involved with.
+</p>
+</intro>
+<interview>
+
+
+
+<question><p><i>BV:</i> Next to Alexandre, you've been active with Wine the
+longest.  Are there any areas of Wine you haven't worked on? </p></question>
+
+<answer><p><i>Marcus:</i> 
+Well, a lot of areas ;)
+I did not work on GDI, USER and higher level GUI stuff, except for
+occasional small bugfixes. I bugfix whatever I encounter and am able to.</p></answer>
+
+<question><p><i>BV:</i>  How did you get involved with Wine? </p></question>
+
+<answer><p><i>Marcus:</i> 
+I was kinda addicted to Solitaire and Winmine on my Windows 3.1
+System, which at some point where the only reason I booted to 
+Windows. Then I heard of this strange Windows Emulator thing
+and downloaded and compiled it and could play them under Linux.
+</p><p>
+Pretty soon afterwards I was just trying out other .exes and
+trying to understand WINE and fix the problems.</p></answer>
+
+<question><p><i>BV:</i>  Do you remember the first patch you submitted? </p></question>
+
+<answer><p><i>Marcus:</i> 
+I do, it was a fix make winfile.exe display the full recursive tree
+view (which it could not do due to a limit on open filedescriptors).</p></answer>
+
+<question><p><i>BV:</i>  If there is one thing you'd like to see Wine do, what would
+ it be?  Or has it already been done? </p></question>
+
+<answer><p><i>Marcus:</i> 
+Hmm, I just have the pretty general goal of that everyone can go
+and type 'wine foo.exe' and it just works.
+</p></answer>
+
+<question><p><i>BV:</i>
+ It seems we're pretty close to that.  CodeWeavers in particular
+ has made installation pretty easy.    Do you think regular old
+ Wine will ever catch up to CodeWeavers?  Or will the commercial
+ version always be better? </p></question>
+
+<answer><p><i>Marcus:</i> 
+Well, a lot of work CodeWeavers does for the emulator itself is happening
+in the free WINE tree or getting merged back to it sooner or later.
+</p><p>
+As for installation and integration, they will stay better, since this
+is their major focus for the CrossOver product.
+</p><p>
+As for ease of installation and integration I think the free WINE is
+at capable of it even if not as good.
+The packaging work I did for Caldera in 1999 and now for SuSE makes the
+installed WINE require no configuration on the users side, he just can
+run "wine foo.exe" and it at least starts.
+</p><p>
+The CrossOver products have the advantage of doing some of the handholding
+you still need to do for a lot of programs with the normal WINE.
+</p></answer>
+
+<question><p><i>BV:</i>
+  To what extent does packaging play a role?  Trying to make
+ Wine work nicely with each distribution seems pretty hard. </p></question>
+
+<answer><p><i>Marcus:</i> 
+It is not hard. The additional scripts I need come to around 200 or
+300 lines of code for making life easy for the user.</p></answer>
+
+<question><p><i>BV:</i>  You left Caldera last year and went to work for SuSE, do you
+  work on Wine there?  Or is it strictly a hobby? </p></question>
+
+<answer><p><i>Marcus:</i> 
+ I did not actually leave, the Caldera engineering was closed down, the
+ engineers at the site laid off and to some part 'migrated' to SuSE in
+ the whole UnitedLinux startup phase.
+</p><p>
+ I do some work on WINE here. I do the WINE package itself, and some help
+ in the integration of the SuSE Linux Office Desktop, which we ship with
+ CrossOver Office. Also some other side work with WINE.
+</p><p>
+ But mainly I work on PowerPC architecture maintenance
+ and distribution development.</p></answer>
+
+<question><p><i>BV:</i>
+ Does SuSE support Wine?  I know you did some recent work trying 
+ to get it to work with glibc 2.3 that SuSE was going to ship.</p></question>
+
+<answer><p><i>Marcus:</i> 
+ In so far that it is included on SuSE Linux (the box product). It is
+ not officially supported in there.
+</p><p>
+ Additionally if we have a customer who wants fixes for WINE, we 
+ are offering support.
+</p><p>
+ We also have released a desktop product, the SuSE Linux Office Desktop,
+ which is using CrossOver Office.
+</p><p>
+ Another product which will use both CrossOver and normal WINE is in
+ the making, this will include a better supported WINE.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>  You've been to a lot of conferences and given quite a few
+ talks on Wine, do you find it helpful to meet other developers? </p></question>
+
+<answer><p><i>Marcus:</i> 
+Most of the talks were for non WINE developers, basically
+to show people 'We WINE developers are still here, here is
+what we can do, we are working on it.' 
+I am never sure how much that helped people ;)
+</p><p>
+As for conferences and fairs, basically still the same,
+showing presence of the project.
+</p><p>
+As for meeting other developers ... Well, it was nice to meet and to
+get to know them, but I think for most of the communication E-Mail is
+sufficient. There is not much need for direct personal coordination,
+since we are not enough people with conflicting interests/areas.</p></answer>
+
+<question><p><i>BV:</i>  What was the most interesting addition you've made to Wine? </p></question>
+
+<answer><p><i>Marcus:</i> 
+DirectX. :)</p></answer>
+ 
+
+<question><p><i>BV:</i>  Last year you did a bunch of COM work to get InstallShield
+ to work.  Since then, more work has been done.  Could you
+ give a brief overview of COM and the problems with implementing
+ it Wine? </p></question>
+
+<answer><p><i>Marcus:</i> 
+Huh. Brief.
+</p><p>
+The whole OLE/COM corner is about integrating components, without
+them knowing of each other. 
+</p><p>
+The first step to independence is the notion of objects and interfaces
+attached to it.
+Every interface is associated with a 128 bit identifier called GUID
+(Generic Unique IDentifier) or IID (Interface IDentifiier).
+</p><p>
+The core interfaces are:
+ <dl>
+	<dt>IUnknown</dt>
+	<dd> 
+                   basic functionality that care about reference counting
+		   and querying of other interfaces based on the IID.</dd>
+	<dt>IClassFactory</dt> 
+	<dd>
+		   basic object creation.</dd></dl>
+</p><p>
+There are predefined interfaces from Microsoft which have a well defined
+API, or you can have other interfaces of your own with their own IIDs.
+</p><p>
+As for interface access, this was always at compile time. As for object
+creation and interface, access was possible for runtime.
+</p><p>
+This was all in-process up to then.
+</p><p>
+Next step is do it across processes, like if you want to embed a table
+from Excel into a Word document. Somehow the interface accesses needed
+to happen between the processes. A set of RPC (remote procedure calls)
+proxies and stubs is used that pack the function arguments into a
+datastream and unpack it on the other side, call the remote function,
+and send the return value back. This can be done across processes on
+the same machine, but also between different machines.
+</p><p>
+These proxies and stubs can be written by hand, or they can be generated
+from interface descriptions files (.IDL or .ODL). Some of them cannot
+be automatically generated, for these special proxies/stubs needs to
+be programmed.
+</p><p>
+The next interesting thing is to be able to find out about new interfaces
+and their methods in runtime, like for scripting languages or for fully 
+automated RPC generation.
+The descriptions and techniques that allow this are called 'OLE Automation'
+and are extensively used in Visual Basic and others.
+</p><p>
+
+The status of the implementation in WINE:
+<ul>
+<li> The object and interface handling is not WINEs task, so it works.</li>
+
+<li> OLE Automation helper functions have been implemented to a large degree,
+  but not fully.</li>
+
+<li> DCOM. We currently support the marshalling based on OLE automation data,
+  but no the custom generated. There is work done by Greg Turner and 
+  TransGaming currently.</li></ul>
+</p><p>
+As for implementing and problems with it, it is a rather large piece
+of Windows, which is, well, not really documented and rather complicated.</p></answer>
+
+<question><p><i>BV:</i>
+  How much of that work was a repetition of what TransGaming had already
+  done?</p></question>
+
+<answer><p><i>Marcus:</i>
+ At the time I did it, it was 99% repetition.</p></answer>
+
+<question><p><i>BV:</i>
+ How is their implementation different?
+ Is theirs more advanced than the LGPL'ed Wine?</p></question>
+<answer><p><i>Marcus:</i>
+At the time both were done to run InstallShield v6 and basically could
+just do that.
+</p><p>
+I did most of it with not looking at TransGaming code, I just took one
+or two hints when I did arrive at problems.
+</p><p>
+I did enhance the typelib based marhsaller over the time to support more
+visual basic programs coming my way.
+</p><p>
+Ove of TransGaming did start the development of the generic RPC framework,
+and contributed this to Rewind and to WINE.
+</p><p>
+So ours is a bit better currently, but the enhanced framework will make
+</p></answer>
+
+
+<question><p><i>BV:</i>
+  OLE over RPC would be really cool.  Is the remaining work
+ 'just' to write a complete RPC implementation?  </p></question>
+
+<answer><p><i>Marcus:</i> 
+Basically the RPC stuff and the marshalling wrappers generated from
+IDL. "just" is however still a lot of work.
+</p><p>
+There is most likely also work in the component interfaces for the user
+visible OLE.</p></answer>
+
+<question><p><i>BV:</i>
+  You mentioned the interfaces are well-defined but a lot of the
+ implementation is undocumented.  Are there any useful resources
+ for figuring how something is supposed to work?  </p></question>
+
+<answer><p><i>Marcus:</i> 
+The same as for the standard APIs, MSDN specifies those interfaces.
+Those it doesn't, the usual guessing and header checking is needed.</p></answer>
+
+<question><p><i>BV:</i>  Are you working on any major Wine projects right now?   </p></question>
+
+<answer><p><i>Marcus:</i> 
+Unhappily, no. I just don't have the time.</p></answer>
+ 
+<question><p><i>BV:</i>  For about the past eight years Wine has continuously been 6-12
+ months from being completed.  Do you think 2003 might be the 
+ year a beta release comes out? </p></question>
+
+<answer><p><i>Marcus:</i> 
+Hey, I have been telling this at conferences in 1999 and 2002. In 2002
+more as a running gag ;)
+</p><p>
+I am still full of hope.</p></answer>
+
+<question><p><i>BV:</i>  Do you think .Net will render Wine obsolete? </p></question>
+
+<answer><p><i>Marcus:</i> 
+WINE might render itself obsolete, after all users have migrated. 
+So most likely never.
+</p><p>
+As for .NET, I do not know.</p></answer>
+
+<question><p><i>BV:</i> Thanks for the interview!</p></question>
+
+</interview></kc>

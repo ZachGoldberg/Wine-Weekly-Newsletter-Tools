@@ -1,0 +1,249 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="202" date="12/26/2003" />
+<intro> <p>This is the 202nd issue of the Wine Weekly News publication.
+Its main goal is to give Santa something to read while he drives his sleigh. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="145" size="545" contrib="41" multiples="26" lastweek="21">
+
+<person posts="15" size="36" who="Mike Hearn" />
+<person posts="14" size="42" who="Dimitrie O. Paun" />
+<person posts="9" size="57" who="Boaz Harrosh" />
+<person posts="9" size="56" who="Kevin Atkinson" />
+<person posts="9" size="24" who="Dmitry Timoshkov" />
+<person posts="7" size="18" who="Ivan Leo Murray-Smith" />
+<person posts="7" size="15" who="Zimler Attila" />
+<person posts="5" size="114" who="Uwe Bonnes" />
+<person posts="5" size="14" who="Eric Pouech" />
+<person posts="5" size="12" who="Ferenc Wagner" />
+<person posts="5" size="11" who="Flameeyes" />
+<person posts="4" size="9" who="Dan Kegel" />
+<person posts="4" size="9" who="Lionel Ulmer" />
+<person posts="3" size="8" who="Shachar Shemesh" />
+<person posts="3" size="8" who="Chris Morgan" />
+<person posts="3" size="6" who="Sami Aario" />
+<person posts="3" size="6" who="Steven Edwards" />
+<person posts="3" size="6" who="Andreas Mohr" />
+<person posts="3" size="5" who="Tom" />
+<person posts="2" size="9" who="Michael Stefaniuc" />
+<person posts="2" size="9" who="Subhobroto  Sinha" />
+<person posts="2" size="7" who="Christian Costa" />
+<person posts="2" size="6" who="Peter Oberndorfer" />
+<person posts="2" size="4" who="Joshua Walker" />
+<person posts="2" size="4" who="Vincent B&#233;ron" />
+<person posts="2" size="3" who="hatky" />
+<person posts="1" size="3" who="Carl Sopchak" />
+<person posts="1" size="3" who="Ralf Juengling" />
+<person posts="1" size="2" who="Fabian Cenedese" />
+<person posts="1" size="2" who="Ralf Juengling" />
+<person posts="1" size="2" who="Marcelo Duarte" />
+<person posts="1" size="2" who="David Laight" />
+<person posts="1" size="2" who="Hans Verkuil" />
+<person posts="1" size="2" who="iain" />
+<person posts="1" size="2" who="Troy Rollo" />
+<person posts="1" size="2" who="Sylvain Petreolle" />
+<person posts="1" size="2" who="Bill Medland" />
+<person posts="1" size="2" who="Vitaly Lipatov" />
+<person posts="1" size="1" who="Paul Kopacz" />
+<person posts="1" size="1" who="Brian Vincent" />
+
+</stats>
+<section 
+	title="News: CrossOver Plugin 2.1.0" 
+	subject="News"
+	archive="http://crossover.codeweavers.com/pipermail/announce/2003-December/000019.html" 
+	posts="1"
+	startdate="12/20/2003"
+	enddate="12/26/2003"
+>
+<topic>News</topic>
+<p>CodeWeavers had a last minute gift for everyone.  On 
+Tuesday they released CrossOver Plugin 2.1.  An official press
+release appears to still be in the making.  Jeremy White emailed 
+<a href="http://crossover.codeweavers.com/pipermail/announce/2003-December/000019.html">an 
+announcement</a> that included the following:</p>
+<quote who="Jeremy White"><p>
+This release is primarily intended as a maintenance release;
+it brings forward some of the internal system changes
+we made for CrossOver Office so that the Plugin should
+work on all Linux distributions again.
+</p><p>
+It also has a range of bug fixes, and supports updated
+versions of various plugins.  A full changelog is in line, below.
+</p></quote>
+
+<p>There's some interesting threads I didn't cover this week.
+You'll just have to read 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/12/">
+the archives</a> for the details.  </p><p>
+Merry Christmas!</p>
+
+</section>
+
+
+
+
+<section 
+	title="Setting Up MinGW Cross-Compiling Environment" 
+	subject="MinGW cross compilation environment setup"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0547.html" 
+	posts="3"
+	startdate="12/22/2003"
+	enddate="12/24/2003"
+>
+<topic>Build Process</topic>
+<p>Michael Stefaniuc put together a short recipe for setting up
+a MinGW cross-compiling environment.  This would be useful if you
+wanted to do something like compile Wine's test suite on Linux in
+order to run it on Windows:</p>
+<quote who="Michael Stefaniuc"><p>
+ Here are the steps needed to setup a MinGW on a Red Hat Linux like rpm
+ based system (Fedora Core, Mandrake Linux, ... should probably work even
+ on a SuSE Linux)
+ <ul>
+    <li> Download the mingw-binutils and mingw-gcc srpm's from
+      <a href="http://ftp.redhat.com/pub/contrib/libc6/SRPMS/">
+        http://ftp.redhat.com/pub/contrib/libc6/SRPMS/</a></li>
+    <li> Download the mingw-3.0-1.src.rpm srpm from
+      <a href="http://ftp.redhat.com/pub/contrib/libc6/noarch/SRPMS/">
+        http://ftp.redhat.com/pub/contrib/libc6/noarch/SRPMS/</a></li>
+    <li> Build the mingw and mingw-binutils rpm's (<tt>rpmbuild --rebuild
+      $SRPM</tt>) and install them.</li>
+    <li> After the above step you can build the mingw-gcc rpm too. Install
+      it.</li>
+    <li> That's almost everything: you need 
+      <a href="http://people.redhat.com/mstefani/wine/patches/mingw.diff">this patch</a>
+      for wine's configure to make it find your mingw binaries.</li>
+    <li> For instructions how to build the Wine tests for Windows see the
+      Wine Documentation.</li></ul></p><p>
+You may want to try your local Red Hat mirror for the above srpm's.
+</p><p>
+This info can be found also on <a href="http://people.redhat.com/mstefani/wine/">
+http://people.redhat.com/mstefani/wine/</a></p></quote>
+
+<p>Boaz Harrosh added,
+<quote who="Boaz Harrosh">
+Just a side note, if we are at the subject.
+  One can download the full package of "MinGW Developer Studio" 
+(<a href="http://www.parinya.ca">http://www.parinya.ca</a>)
+It comes complete with a compiled tool chain. The Installer runs 
+flawlessly under wine. And so is the Dev-Studio and the compiler. (1:0) 
+for wine. The only thing that does not work is MinGW-gdb. One day I 
+intend to check this code out and fix this area on wine.
+</quote></p>
+
+<p>Ferenc Wagner described the setup process for Debian:</p>
+<quote who="Ferenc Wagner"><p> 
+And here are the steps needed to setup MinGW on Debian Woody (stable)
+(hope I remember correctly and you have unstable in sources.list):
+<ul>
+ <tt># apt-get install mingw32 mingw32-runtime/unstable</tt></ul></p>
+
+</quote>
+
+</section>
+
+
+<section 
+	title="Critical Section Document" 
+	subject="Useful document on critical sections"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0618.html" 
+	posts="1"
+	startdate="12/24/2003"
+>
+<topic>Documentation</topic>
+<p>If you've ever seen the term "critical section" and wondered
+what that meant, Mike Hearn found an article that may interest
+you:</p>
+<quote who="Mike Hearn"><p>
+I found this article:
+<ul><a href="http://msdn.microsoft.com/msdnmag/issues/03/12/CriticalSections/">
+http://msdn.microsoft.com/msdnmag/issues/03/12/CriticalSections/</a></ul></p>
+<p>
+There are two points of interest that we don't seem to cover:
+<ul>
+<li> RtlpWaitForCriticalSection will NOT block if the process is shutting
+down and the wait is on the loader lock. I've seen a fair few times when
+an app deadlocks on shutdown on the loader lock - could this be the
+cause?</li>
+
+<li> The loader lock is stored at offset 0xA0 in the PEB. I doubt this is
+important, but now the info is published murphy's law says one day an
+app will try and get to it directly.</li></ul></p></quote>
+
+
+</section>
+
+<section 
+	title="Wine's RichEdit Control Sucks" 
+	subject="Yeah - our RichEDit needs some work"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0639.html" 
+	posts="3"
+	startdate="12/25/2003"
+>
+<topic>Architecture</topic>
+<p>Microsoft's <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/commctls/richedit/richeditcontrols.asp">Rich
+Edit</a> controls are responsible for everything from text entry
+to paragraph formatting.  A good example would be things "Wordpad"
+does.  Subhobroto Sinha had a gripe about the status of Wine's builtin 
+version:</p>
+<quote who="Subhobroto Sinha"><p>
+Actually, I noticed this many times before (text not displaying at all in a 
+RichEdit control..)
+</p><p>
+I am one of those (un)fortunate enough to not have a real Windows, and 
+often download Win32 freeware to see how WINE's doing from time to time...
+</p><p>
+IMHO, one of the best tests are Steve Gibson's (<a href="http://www.grc.com">www.grc.com</a>)
+freeware tools - this guy writes in pure ASM. and thus we can be sure that his code
+will be the least messy (lesser MS stuff..)
+</p><p>
+However, if you try his 'Wizmo' or 'DCOMObulator', you will see that the 
+RichEdit textareas are blank !
+</p></quote>
+
+<p>Joshua Walker wrote back with a pointer to a possible resource:</p>
+<quote who="Joshua Walker"><p>
+If you need the source of a program that can uses RTF
+as it's native format, can spit out
+microsoft-compatible RTF files, has all the tools for
+editing Rick Text, and the source is available in C...
+then use the Source for "Ted"
+<ul>
+<a href="http://www.nllgg.nl/Ted/">http://www.nllgg.nl/Ted/</a></ul></p><p>
+
+I would toss it in myself, but I suck at coding. I
+wouldn't even know where to begin.
+</p></quote>
+
+<p>Good ol' ted.  A long, long time ago it was my favorite editor
+(for a month.)  Still, the properties of ted might be a good
+starting point for working on this control.  Any volunteers?</p>
+</section>
+
+<section 
+	title="Winamp 3 Source Released" 
+	subject="Winamp 3"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0506.html" 
+	posts="2"
+	startdate="12/19/2003"
+	enddate="12/19/2003"
+>
+<topic>Winelib</topic>
+<p>I posted the following note because I thought it was interesting:</p>
+<quote who="Brian Vincent"><p>
+Looks like Nullsoft has released the Winamp 3 code as open source.
+I have no idea what their build process is like, but maybe porting 
+it could be added to the Winelib page?
+<ul>
+<a href="http://www.wasabidev.org/">http://www.wasabidev.org/</a></ul>
+</p></quote>
+
+<p>Dimi replied with a short blurb for the Winelib page.
+</p>
+
+</section>
+</kc>

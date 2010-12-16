@@ -1,0 +1,578 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="267" date="03/25/2005" />
+<intro> <p>This is the 267th issue of the Wine Weekly News publication.
+Its main goal is to eat leftovers. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="211" size="1871" contrib="72" multiples="41" lastweek="43">
+
+<person posts="17" size="50" who="Alexandre Julliard" />
+<person posts="10" size="30" who="Francois Gouget" />
+<person posts="9" size="37" who="Frank Richter" />
+<person posts="9" size="26" who="Dimitrie O. Paun" />
+<person posts="8" size="42" who="Robert Reif" />
+<person posts="8" size="24" who="Jonathan Wilson" />
+<person posts="8" size="24" who="Jakob Eriksson" />
+<person posts="7" size="415" who="(cyrix12)" />
+<person posts="6" size="18" who="Ivan Leo Puoti" />
+<person posts="5" size="21" who="Christian Costa" />
+<person posts="5" size="16" who="James Hawkins" />
+<person posts="5" size="15" who="Mike Hearn" />
+<person posts="6" size="18" who="Robert Shearman" />
+<person posts="5" size="13" who="Steven Edwards" />
+<person posts="5" size="13" who="Mike McCormack" />
+<person posts="5" size="12" who="Paul Vriens" />
+<person posts="4" size="13" who="Boaz Harrosh" />
+<person posts="3" size="21" who="Tobias Burnus" />
+<person posts="3" size="13" who="Paul van Schayck" />
+<person posts="3" size="11" who="Matthew Mastracci" />
+<person posts="3" size="10" who="Dmitry Timoshkov" />
+<person posts="3" size="9" who="Michael Lin" />
+<person posts="3" size="9" who="Tony Lambregts" />
+<person posts="3" size="9" who="Hiji" />
+<person posts="3" size="9" who="Phil Krylov" />
+<person posts="3" size="8" who="Vincent B&#233;ron" />
+<person posts="3" size="7" who="Filip Navara" />
+<person posts="3" size="7" who="Oliver Stieber" />
+<person posts="2" size="44" who="Eric Pouech" />
+<person posts="2" size="22" who="Raphael" />
+<person posts="2" size="10" who="Jesse D Zbikowski" />
+<person posts="3" size="11" who="Marcus Meissner" />
+<person posts="2" size="7" who="Giovanni Delvecchio" />
+<person posts="2" size="7" who="Paul Millar" />
+<person posts="2" size="6" who="Scott Ritchie" />
+<person posts="2" size="6" who="Jon Griffiths" />
+<person posts="2" size="5" who="Jason Edmeades" />
+<person posts="2" size="5" who="Chris Morgan" />
+<person posts="2" size="5" who="Andreas Mohr" />
+<person posts="2" size="5" who="Stefan Leichter" />
+<person posts="2" size="5" who="C. Scott Ananian" />
+<person posts="1" size="696" who="Joris Huizer" />
+<person posts="1" size="35" who="luis lenders" />
+<person posts="1" size="5" who="Rick Romero" />
+<person posts="1" size="5" who="James Gregory" />
+<person posts="1" size="4" who="Chris Morgan" />
+<person posts="1" size="4" who="Glenn Wurster" />
+<person posts="1" size="4" who="Peter Berg Larsen" />
+<person posts="1" size="3" who="Jelmer Vernooij" />
+<person posts="1" size="3" who="Jeremy White" />
+<person posts="1" size="3" who="Mike Hearn" />
+<person posts="1" size="3" who="(wino)" />
+<person posts="1" size="3" who="Jacek Caban" />
+<person posts="1" size="3" who="Kevin Koltzau" />
+<person posts="1" size="2" who="Michael Ost" />
+<person posts="1" size="2" who="Kuba Ober" />
+<person posts="1" size="2" who="Juan Lang" />
+<person posts="1" size="2" who="Hans Leidekker" />
+<person posts="1" size="2" who="Lars Segerlund" />
+<person posts="1" size="2" who="Damjan Jovanovic" />
+<person posts="1" size="2" who="Anssi Hannula" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Vitaly Lipatov" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="Tom Wickline" />
+<person posts="1" size="2" who="Jerry H. Menor" />
+<person posts="1" size="2" who="Robert Lunnon" />
+<person posts="1" size="2" who="George Ginden" />
+
+</stats>
+<section 
+	title="News: Sparx Systems Interview" 
+	subject="News"
+	archive="http://www.winehq.com/" 
+	posts="1"
+	startdate="03/19/2005"
+	enddate="03/25/2005"
+>
+<topic>News</topic>
+<p>
+
+In last week's 
+<a href="http://www.winehq.com/?issue=266#News:%20Enterprise%20Architect%20&amp;%20DirectX9">news
+section</a> we mentioned an Australian company, Sparx Systems, uses
+CrossOver Office as a way to run their app on Linux.  I asked Sam
+Mancarella some questions about it to get a feel for how well the
+process works.  I was thrilled Sam delved into the technical aspects 
+of what they're doing.  Overall, it sounds like it's been a positive 
+experience for the company:</p>
+
+<quote who="Brian Vincent">
+<p><i><u>BV:</u> Could you give a brief summary of what Enterprise Architect
+does?
+</i></p><p>
+<u>Sam:</u> 
+<a href="http://www.sparxsystems.com.au/EAOnLinux.htm">Enterprise Architect</a>
+is a UML 2.0 based modeling tool. It offers
+high-end features and performance at a price that allows for an entire
+development team to be outfitted, realizing the true potential of a
+collaborative and shared modeling environment.  Our corporate focus is
+to provide an affordable, high-quality, team based modeling environment
+founded on the UML 2.0 specification, with comprehensive support for
+model driven generation of common development artifacts (documentation,
+source code, test scripts, requirements, resourcing and more).
+</p><p>
+Enterprise Architect is an extensible environment supporting pluggable
+technologies using MDA and Software Factory concepts. A brief on EA's
+features include:
+<ul>
+<li>	UML 2.0 Support with all 13 UML 2 diagrams supported</li>
+<li>	MDA (Model Driven Architecture) support (available soon in EA
+4.6)</li>
+<li>	Support for large models</li>
+<li>	Team support</li>
+<li>	Easy to use, explorer like interface</li>
+<li>	Very low cost of ownership</li>
+<li>	MDG Link plug-ins for Visual Studio.NET and Eclipse</li>
+<li>	Forward and Reverse Code Engineering for
+   <ul>
+	<li>	C++</li>
+	<li>	Java 1.5</li>
+	<li>	Visual basic</li>
+	<li>	Delphi</li>
+	<li>	C# 2.0</li>
+	<li>	VB.Net</li>
+	<li>	PHP 5</li>
+   </ul></li>
+<li>	Database Modeling, forward and reverse database engineering</li>
+<li>	Comprehensive HTML and RTF document generation (new WYSIWYG RTF
+	Document generator available soon in EA 4.6)</li>
+</ul></p><p><i>
+<u>BV:</u> Running a Windows application with Wine or CrossOver Office
+certainly seems like a good way to enter a new market.  What advantages
+have you found?
+</i></p><p> 
+<u>Sam:</u> Absolutely. Porting a complex Windows application like EA to an OS 
+like Linux is a very complex and expensive task for a company like Sparx Systems
+(EA's code base is in excess of over 500,000 lines of C++ code).
+"Porting" EA to the WINE/CrossOver Office environment was definitely a
+cost-effective solution in getting EA on the Linux platform.
+</p><p>
+Over the past couple years, we at Sparx Systems have received several
+requests from users for native Linux and OS/X ports of EA. As we needed
+to undertake some research on the feasilibity of porting such a large
+application like EA outside of Windows, important to us were answers to
+key questions such as:
+<ul>
+<li> the technical limitations, benefits and gaps which we needed to
+address before porting EA</li>
+<li> how many of our current userbase (in excess of 40,000 worldwide) would
+see value in an EA port to Linux, and most importantly</li>
+<li> how many new users would such a port attract and is the market
+potential significant enough for us to explore further.</li></ul></p><p>
+
+Given that the best way to answer these questions was to ultimately have
+a version of EA available in Linux we decided that an attempt to make
+EA's .exe work in WINE was the most suitable approach as it allowed us
+to continue to develop in a familiar environment, whilst provide users
+with a version of Linux they can use with minimal setup. As a result, we
+went with CrossOver Office mainly because of its extended support for
+many of the subsystems not readily supported in Wine (Help, MSXML,
+MSHTML, etc...) as well as the ease by which a cxoffice environment can
+be configured and manipulated with little regard to the underlying
+Linux/*nix variant.</p><p>
+
+<i><u>BV:</u> Has using CrossOver Office raised your support costs?</i>
+</p><p>
+<u>Sam:</u> Our support/maintenance costs haven't changed as a result of the
+additional development/testing and maintenace cycles we need to perform
+- we already test EA on 4 Windows platforms (win98, winnt, win2k, winxp)
+to begin with so adding one other didn't really hurt. Debugging in
+cxoffice is a little trying at times as we tend to have to "debug" a
+release build on our test cxoffice environment - we have recently moved
+our Windows development onto Visual Studio 2003 so hopefully our
+attempts at remote debugging our cxoffice build will prove worthwhile.
+</p><p>
+<i><u>BV:</u> Are you considering a native Linux port? </i> 
+</p><p>
+<u>Sam:</u> We certainly are - we're considering a "native Non-Windows" port 
+to firstly accommodate the x86 Linux variants as well as OS/X in the longer
+term. Porting an application like EA is not just a matter of making our
+codebase compile under WineLib and so forth, we also have to redesign a
+number of major subsystems to work outside of Windows (DB backend, XML
+parser, HTML, COM and so on). It is this process of design refactoring
+and redesign that is what we're concentrating our efforts on at the
+moment for the short term - once these subsystems are given the
+all-clear we can move on with our porting efforts. In short - watch this
+space! :)
+</p><p>
+<i><u>BV:</u> So it sounds like you guys are actively developing EA on
+Linux.
+</i></p><p>
+
+<u>Sam:</u>Yes, for our current EA on Linux users, please keep an 
+eye on our website - 
+<a href="http://www.sparxsystems.com">http://www.sparxsystems.com</a> for any 
+up to date information. For prospective EA on Linux users, please download and 
+try our evaluation, we'd love to hear your thoughts :)</p></quote>
+
+<p>Thanks Sam!</p>
+
+<p>(Also, someone asked me recently about the interview series that
+was started a few years ago.  It was great, and its something I wish
+I had time to work on more; unfortunately it was extremely time
+consuming.  At some point I'll likely try to pick it up again.)</p>
+
+</section>
+
+<section
+        title="Direct3D Update"
+        subject="Status and (nearby) future of wined3d"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/03/0899.html"
+        posts="2"
+        startdate="03/21/2005"
+>
+<topic>DirectX</topic>
+
+<p>Paul Vriens wanted to know what might happen to Oliver
+Stieber's Direct3D 9 work since Oliver might have problems
+submitting it:</p>
+<quote who="Oliver Stieber"><p>
+There were at least 4 patches or so he sent which were not applied
+(yet).
+</p><p>
+If the sole reason for that is that it couldn't be merged/applied to CVS
+I could give it a try. But that's about the only thing I can do
+regarding wined3d stuff.
+</p></quote>
+
+<p>Oliver sent an update with where all of this needs to
+head:</p>
+<quote who="Oliver Stieber"><p>
+I've just merged with wine head and am about to resend
+the patches, and another couple for stateblocks and
+sampler states.
+</p><p>
+After that there's vertex declarations and resource
+tracking, pointsprites, non-power2 textures, memory
+management, D3DPOOL_DEFAULT texture operations and a
+few more tidyups.
+</p><p>
+Then I should have all the stable work synced with
+winehead.
+</p><p>
+After that stateblocks need to be refactored to get
+offscreen textures, swapchains and multiple
+devices/threads working properly which may take a
+while  to stabilise. A software vertex pipeline also
+needs writing to fill in the gaps in the hardware
+support which is fairly easy, and d3d8 interfaces need
+to wrap up wined3d.
+</p><p>
+Shaders needs moving across from d3d8 which is fairly
+simple and shader 2.0 support needs writing which is a
+little trickier.</p></quote>
+</section>
+<section 
+	title="Theming Revisited"
+	subject="Attempt to make buttons themed"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/03/0906.html" 
+	posts="17"
+	startdate="03/21/2005"
+	enddate="03/23/2005"
+>
+<topic>Controls</topic>
+<p>The topic of theming has popped up again in a few different threads.
+Frank Richter went beyond hypothesizing about it and implemented a 
+sample.  He started off a thread with:</p>
+
+<quote who="Frank Richter"><p>
+To see how easy (or not) it would be to make the controls use themes, I 
+tried to get themed buttons; the result is the 
+<a href="http://www.winehq.com/hypermail/wine-devel/2005/03/0906.html">attached 
+patch</a> (to try it 
+out, you need an .msstyles file and appropriate registry setup). It's 
+probably not perfect as it is, comments/questions are welcome.
+</p><p>
+Screenshot:
+<ul><a href="http://img87.exs.cx/my.php?loc=img87&amp;image=winewiththemedbuttons3xh.png">
+http://img87.exs.cx/my.php?loc=img87.=winewiththemedbuttons3xh.png</a></ul>
+</p><p>
+ Some funny side effect when theming is enabled: applications show up in 
+ standard colors, but as soon as the first button is created, the colors 
+ switch to the theme's colors. I guess opening the theme data in the 
+ button code triggers some uxtheme initialization that in turn changes 
+ the system colors.
+</p><p>
+ Also, all applications get themed buttons, which diverges from WinXPs 
+ behaviour and may or may not be desired for some apps.
+</p></quote>
+
+
+<p>Mike Hearn liked the method Frank used:</p>
+<quote who="Mike Hearn"><p>
+ Hey, brilliant work! Definitely submit this - it doesn't matter if not
+ everything is themed all at once, this can be a long term project and the
+ approach you've taken seems to be a good one.
+</p><p>
+ Yes XP does not theme all apps for compatibility reasons. Once more of our
+ controls are themable I guess we can start to worry about switching it on
+ at the right time.
+</p><p>
+ I'd suggest posting this to wine-patches and seeing what happens. Once we
+ get it into CVS, would you be willing to move on and do the other controls?
+</p></quote>
+
+
+<p>Dmitry Timoshkov felt more work needed to go into the
+low-level parts of it,
+<quote who="Dmitry Timoshkov">
+ user32 cannot depend on uxtheme or any other high level dll. You need to
+ make all the work inside of uxtheme by subclassing/patching every class you
+ wish to change the painting for, and do all the painting inside of uxtheme.
+ I'm not sure how to do it cleanly without adding an explicit dependency of
+ every app on uxtheme. Do you know how Windows does theming on low level?
+</quote></p>
+
+<p>Mike wasn't sure that approach would be best:</p>
+<quote who="Mike Hearn"><p>
+
+Hmm, why not? For DLLs that can be recompiled and used on Windows this
+policy makes sense but our user32 cannot be, so I do not see what we would
+lose by having this.
+</p><p>
+The alternative is to copy/paste the code into comctl32 which is what
+Microsoft appears to have done, and I know we don't want to do that</p></quote>
+
+<p>Dmitry explained why it would still be a problem,
+<quote who="Dmitry Timoshkov">
+It creates circular dependencies and an impossibility to correctly start up Wine.
+Imagine for a moment that ntdll depends on foo.dll which in turn imports kernel32.
+</quote></p>
+
+<p>Frank thought that could worked around by loading uxtheme.dll only
+when it was actually needed.  After some investigation it appeared
+a special, and undocumented API, called RegisterUserApiHook in
+user32.dll was respsonsible for getting theming to work.   
+Alexandre weighed in and said however Windows makes it work should be 
+how Wine does it.  Rob Shearman was familiar with RegisterUserApiHook 
+and wasn't sure if Wine should use it:</p>
+<quote who="Rob Shearman"><p>
+<code>
+typedef DWORD (CALLBACK * USERAPIHOOKPROC)(HINSTANCE hInstance, FARPROC 
+*fnUserApis);
+</code></p><p><code>
+DWORD WINAPI RegisterUserApiHook(HINSTANCE hInstance, USERAPIHOOKPROC 
+fnUserApiHook);
+</code></p><p>
+fnUserApis is an array of User functions that can be overridden.
+</p><p>
+RegisterUserApiHook is a function that is called once for the entire 
+system and then user32 loads the specified module for each process and 
+calls the specified fnUserApiHook function for that process. It is a 
+cumbersome interface that may not be worth duplicating.
+</p></quote>
+
+<p>Frank went back to seeing how Windows actually worked and
+came up with a question about the process,
+<quote who="Frank Richter">
+ Most interesting is probably to find out how the standard controls from user32 
+ are themed. Poking a bit around in comctl32 6.0, it seems that it actually just 
+ registers the standard classes with RegisterClassW, nothing more. AFAIK you 
+ can't register a class when the class name is already used, so it would be 
+ interesting to know why comctl32.dll can get away with it.
+</quote></p>
+
+<p>Boaz Harrosh had a theory about how it worked and
+then provided a possible method for dealing with it:</p>
+<quote who="Boaz Harrosh"><p>
+Maybe it only register as per Process, which makes sense. And it does 
+that before any window is displayed. Actually I know when. (A bug I had) 
+it does it in the InitCommonControlsEx call. Not even in the DLLMain. An 
+app that needs theming needs 3 things. 
+<ol>
+ <li> Link to comctl32 </li>
+ <li> call InitCommonControlsEx </li>
+ <li> a manifest </li></ol></p><p>
+
+Right? So I guess you have it.
+</p><p>
+I'm not 100% but I think there is no need for duplicate code. All 
+comctl32 needs to do is chain to the user32 classes, only overriding 
+PAINT messages and some mouse events. So you don't have to reinvent the 
+wheel.
+</p><p>
+Do you need lots of themed controls WM_PAINT code? Check out 
+codeproject.com GUILIB project. They owner draw all the windows controls 
+with theme support.
+</p></quote>
+
+<p>Rob cautioned:</p>
+<quote who="Rob Shearman"><p>
+It's not just the painting that needs to be overridden. The 
+controls often need to be able to calculate their size.
+</p><p>
+The interface to UxTheme is fairly straight-forward. The SDK sample 
+"ThemeExplorer" is probably worth looking at.</p></quote>
+
+
+</section>
+<section
+        title="Finding Regressions"
+        subject="visual regression in IE"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/03/1014.html"
+        posts="2"
+        startdate="03/24/2005"
+>
+<topic>Debugging</topic>
+
+<p>The topic of finding which patches caused a regression came
+up three separate times this week.  Me thinks it's time to give
+a little coverage to it.  Joris Huizer asked about how to 
+track down a problem with Internet Explorer:</p>
+<quote who="Joris Huizer"><p>
+ I tried to search for information on regressions on the winehq site but 
+ I couldn't find it (maybe it should be made visible on the documentation 
+ page?)
+</p><p>
+ Anyway, in Internet Explorer a visual regression happened: with my 
+ previous cvs build from 15 march, things were displayed correctly, but 
+ now (cvs build from 23 march) the 'address' and the 'links' fields are 
+ displayed incorrectly: they are bigger than they should be, and they are 
+ 'striked through' which should not happen; See also the 
+ <a href="http://www.winehq.org/hypermail/wine-devel/2005/03/1014.html">attached 
+ screenshots</a> - I'm sure it's clear what I mean.
+</p><p>
+ Could someone point me to the correct pages to find out what caused 
+ this? I'm sure someone will be fix this a lot faster than I could do but 
+ I want to learn how to solve such a problem :)
+</p></quote>
+
+<p>James Hawkins supplied the relevant information:</p>
+<quote who="James Hawkins"><p>
+You could run a regression test.
+<a href="http://www.winehq.org/site/docs/winedev-guide/x1344">
+ http://www.winehq.org/site/docs/winedev-guide/x1344</a>
+</p></quote>
+
+<p>Make sense?  Okay, now everyone go out and locate your
+favorite regressions and let us know where the bugs are.
+Extra credit will be awarded for supplying a patch yourself.</p>
+
+</section>
+<section
+        title="Help Save Winrash"
+        subject="saving winrash"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/03/1013.html"
+        posts="9"
+        startdate="03/24/2005"
+>
+<topic>Testing</topic>
+
+<p>We've had a bit of a problem lately with Wine's automatic
+testing infrastructure.  About 9 months ago a system was put
+into place to automatically download Wine's test suite and
+run it on Windows systems.  The idea was that guesses about
+how the Windows API performed could be tested every day on
+a large number of systems.  Well, it actually worked.  People
+did notice problems with Wine and the tests, and problems
+actually did get fixed.  Ivan Leo Puoti wanted to know if
+the system would be back up again:</p>
+<quote who="Ivan Leo Puoti"><p>
+ Currently winrash users aren't returning any results from their testing.
+ This is because we need tests to run on a visible desktop, better still 
+ in interactive mode.  To save both the tests and winrash we need winrash
+ to be somewhat similar to windows automatic updates,
+ when new tests are available, winrash should pop up and say "new tests 
+ are available, run now?" and then give a
+ yes/no, later option. Like this we can have interactive tests, and use 
+ winrash so people don't have to remember to download/run the tests. I do 
+ it but downloading the exe manually/opening a command line in the 
+ desktop/running the tests with the -t option/deleting the test.exe file 
+ isn't exactly user friendly. Maybe this task should go in the todo list, 
+ or should at least go on the web site somewhere, it would be an 
+ attractive task for newcomers with windows programming experience.
+</p></quote>
+
+<p>Chris Morgan, the author of winrash, has been pretty busy
+lately and mentioned in IRC he just doesn't have the time right
+now to fix some of the issues.  This seems like a pretty good
+opportunity for someone to get involved since the there's a 
+pretty good guideline of what needs to be done.  </p>
+
+<p>Rob Shearman replied to Ivan,
+<quote who="Rob Shearman">
+ I have already sent links to documents on MSDN that state how to make a
+ service run on an interactive desktop. As some of the tests are a little
+ distracting graphically, we should probably do the dialog as you
+ suggest. I guess this is really up to the people running the test machines.
+ If the source to winrash was in the Wine tree I would already have fixed
+ it by now.
+</quote></p>
+
+<p>That brought up moving the winrash source into the Wine CVS.  Originally
+winrash was thought to be a general purpose utility and was put on
+SourceForge as its own project.  Apparently that's hindered development
+more than anything.  Dimi thought it was worth making it part of Wine
+so it could be managed more easily.  Steven Edwards had another reason
+for merging it,
+<quote who="Steven Edwards">
+I have enough CVS and SVN trees on my desk without having to manage another and manage
+dealing with keeping them in sync when they share code. If ReactOS is going to use Winetest and
+Winrash I really need the winrash sources to be in WineHQ CVS or the ReactOS people with either A)
+fork it or B) write their own service.</quote></p>
+
+<p>Ivan went on to point out some problems with winetest that could be
+cleaned up,
+<quote who="Ivan Leo Puoti">
+
+Currently the tests also open a windows explorer window, and leave it
+open. Recently winetest is leaving a testdir
+directory behind it, so cleanup needs to be done better. I think the
+whole winetest gui should go up when tests are run,
+so the user can get the progress bar. Winrash can probably be integrated
+into the CVS in programs/.
+I would help myself but I lack a real win installation (not counting
+qemu), a recent build of win, and need to get on with ntoskrnl.
+</quote></p>
+
+</section>
+<section
+        title="Images from video4linux Devices"
+        subject="Preview-window works in Virtualdub,Paltalk etc."
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/03/0886.html"
+        posts="2"
+        startdate="03/20/2005"
+	enddate="03/21/2005"
+>
+<topic>Graphics</topic>
+
+<p>Getting webcams to work has come up in the past
+few weeks and it seems there's some people trying to
+get stuff like that working.  Luis Lenders sent
+a patch to wine-devel this week:</p>
+<quote who="Luis Lenders"><p>
+ don't know if it's of much use for anyone, but i
+can now view the images from my webcam in the preview
+window in programs like Virtualdub, Paltalk and
+WebCamnow. Basically the 
+<a href="http://www.winehq.com/hypermail/wine-devel/2005/03/0886.html">attached</a>
+"patch" reads an
+RGB-image from my 
+video4linux device and  "turns" this into a bitmap,
+which is then displayed. The device must be able to
+"read  RGBs". In case you would like to try, replace
+dlls/avicap32 with the attached one, and replace 
+include/vfw.h with the attached vfw.h. I'm skilled
+enough to turn this into a real patch, maybe someone
+with more programming capabilities could give it try.
+</p></quote>
+
+<p>I think Luis meant that he's <i>not</i> skilled
+enough to get this into Wine.  However, it may serve
+as a starting point for someone else.  Rick Romero
+took a look at it and fixed some problems:</p>
+<quote who="Rick Romero"><p>
+That code doesn't with my QuickCam 3000, which defaults to YUV420.
+</p><p>
+The 
+<a href="http://www.winehq.com/hypermail/wine-devel/2005/03/att-0901/01-vidcat.patch__charset_ISO-8859-1">attached 
+patch</a> adds YUV420 support back in to vidcat.c, and should
+still work with RGB cams.
+</p></quote>
+
+</section></kc>

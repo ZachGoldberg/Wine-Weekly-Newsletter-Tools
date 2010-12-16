@@ -1,0 +1,170 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="28" date="31 Jan 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the twenty eighth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+
+</intro>
+
+<stats posts="95" size="278" contrib="40" multiples="21" lastweek="26">
+<person posts="13" size="27" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="7" size="21" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="6" size="19" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="4" size="9" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="7" who="Matthew J. Francis &lt;mfrancis@plus.net.uk&gt;" />
+<person posts="4" size="17" who="Gavriel State &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="4" size="13" who="Bradley Baetz &lt;bbaetz@student.usyd.edu.au&gt;" />
+<person posts="3" size="7" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="3" size="7" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="3" size="6" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="3" size="5" who="Turchanov Sergei &lt;turchanov@otvprim.ru&gt;" />
+<person posts="3" size="26" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="3" size="15" who="Michael Cardenas &lt;Michael_Cardenas@deneba.com&gt;" />
+</stats>
+
+<section 
+  title="Wine is a slashdot nominee"
+  subject="Slashdot awards"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-447.html"
+  posts="2"
+  startdate="26 Jan 2000 00:00:00 -0800"
+  enddate="26 Jan 2000 00:00:00 -0800"
+>
+
+Alexandre Julliard proudly announced that Wine <quote who="Alexandre Julliard">
+has been nominated for the Most Improved Project slashdot award,
+the press release is <a
+href="http://www.linux-usb.org/beanieForm.html">
+here:</a>
+
+<p />
+
+I encourage you all to go to slashdot and vote; $30k would make a hell 
+of a Party Fund ;-) And if you are in NYC next week there is free beer 
+at the slashdot party so even if we don't win we can still have a
+drink there...
+</quote></section>
+
+<section 
+  title="DIB sections"
+  subject="DIB problems and the faulthandler"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-456.html"
+  posts="5"
+  startdate="27 Jan 2000 00:00:00 -0800"
+  enddate="30 Jan 2000 00:00:00 -0800"
+>
+
+Bradley Baetz reported a(nother) bug in DIB sections handling (you can 
+check <a href="wn19990822_5.html#1">issue #34</a> for more on this
+matter).
+The following code fragment works under Windows and not in Wine:
+
+<p />
+
+<code>
+hBufferObject = CreateFileMapping(<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;(HANDLE)0xFFFFFFFF,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;NULL,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;PAGE_READWRITE,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;0,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;size,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;NULL);<br />
+<br />
+lpvBuffer = MapViewOfFile(hBufferObject, FILE_MAP_ALL_ACCESS, 0, lBufferOffset, size);<br />
+<br />
+...<br />
+<br />
+hdcCompatInput = CreateCompatibleDC(hDCWindow);<br />
+<br />
+hbmInput = CreateDIBSection(hdcCompatInput,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;(LPBITMAPINFO)decompressedFormat(),<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;DIB_RGB_COLORS,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&amp;lpvInput,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;hBufferObject,<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;offset);
+</code>
+
+<p />
+
+As already explained, each DIB in Wine is associated to a X11
+Pixmap. Writing directly to the DIB data section "dirties" the DIB (in 
+fact the data section is protected against write and trying to write
+to it triggers a fault handler which does the job), which then knows
+that the X11 Pixmap must be updated to reflect the modification to the
+DIB data section. In that case the DIB data section is mapped twice in
+the process address space (once with MapViewOfFile and the second time
+with CreateDIBSection), hence fooling the DIB fault handler.
+
+<p />
+
+Ulrich Weigand tried to find some ways to solve this: 
+
+<quote who="Ulrich Weigand">Unfortunately, this would appear to be hard to
+fix. To keep the protection mechanism working, we'd have to protect
+<b>all</b> aliased addresses pointing to the same data. I'm not sure
+whether there is even an easy way to find out if a given file region
+is already mapped :-/  
+
+<p />
+
+There might be one work-around: according to the docs, Windows does
+not guarantee automatic synchronization between GDI and direct
+accesses to a DIB section; the user has to ensure it by calling
+GdiFlush(). If your app does in fact do this, we could maintain a list
+of currently-mapped DIB sections, and get them all in sync whenever
+GdiFlush() is called ... 
+</quote>
+
+<p />
+
+In another thread related to DIB sections, it occurs that some
+protections were missing while updating the Pixmap linked to a DIB
+section (when Wine directly modifies the Pixmap, it must reflect those 
+changes to the DIB data section). This is properly done for the blit
+operations, but not for the other ones (like lines, fonts...). A patch 
+circulated long ago for it, and Bradley asked why it has never been
+applied. Gav State said that this very patch has been in Corel's tree
+for a while and with good success. Alexandre Julliard didn't find any
+reasonable reasons to reject it, so he asked someone to resubmit it.
+
+</section>
+
+<section 
+  title="COM implementation and WineLib"
+  subject="COM implementation problems"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-466.html"
+  posts="3"
+  startdate="28 Jan 2000 00:00:00 -0800"
+  enddate="29 Jan 2000 00:00:00 -0800"
+>
+
+Michael Kowalski reported some issues with a C++ WineLib program using 
+the MFC. Michael investigated the case and it turned that this is
+caused by a wrong compatibility (in WineLib case) with MFC. For
+alignment reasons (and to get MFC compatible COM virtual tables),
+some dummy entries have to be added at the beginning of the
+vtable. There's a macro (<code>ICOM_MSVTABLE_COMPAT</code>) in
+<code>include/wine/obj_base.h</code> that takes care of that.
+
+<p />
+
+However, Gav State pointed out that some internal (built in) vtables
+didn't make a correct use of this padding (as, for example, the file
+dialog browser).
+
+<p />
+
+Francois Gouget, grep:ing faster that the rest of the developers,
+found some other areas were this error exists. He shall fix this
+really soon.
+
+</section>
+</kc>

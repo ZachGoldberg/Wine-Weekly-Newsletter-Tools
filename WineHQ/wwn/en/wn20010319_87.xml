@@ -1,0 +1,217 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="87" date="2001/03/19" />
+
+<intro>
+
+<p />
+
+This is the 87th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="56" size="222" contrib="17" multiples="7" lastweek="6">
+<person posts="17" size="81" who="lawson_whitney@juno.com" />
+<person posts="8" size="30" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="7" size="23" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="4" size="16" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="4" size="12" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="3" size="9" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="3" size="11" who="Rob Farnum &lt;rfarnum@mindspring.com&gt;" />
+</stats>
+
+
+<section 
+  title="Does Peace mean war?"
+  subject="The PEACE Project"
+  posts="9"
+  startdate="2001-03-12"
+  enddate="2001-03-12"
+>
+
+<p />
+
+Damjan Lango posted some information on a PEACE project (quoting the
+web site)
+(<a href="http://chiharu.haun.org/peace/">
+http://chiharu.haun.org/peace/</a>):<quote who="Damjan Lango">
+PEACE is a set of programs to run Win32 apps on NetBSD/i386 (and other
+ports in the future?) box. 
+
+<p />
+
+Q: What is the difference from other Win32 emulators?
+
+<p />
+
+A: Actually, PEACE is `Win32-compatible package' rather than `emulator'
+because different from Wine and WABI, PEACE does not have `emulator
+executable'. EXE files are directly executed from sh or csh. 
+
+<p />
+
+PEACE consists of the following 3 components: 
+<ol>
+	<li>In-kernel *.EXE loader </li>
+	<li>Dynamic linker for Windows *.DLLs</li>
+	<li>Win32 API implementation (i.e. core DLLs)</li>
+</ol>
+
+<p />
+
+Q: How many Win32 API functions are implemented?
+
+<p />
+
+A: Currently, most APIs are NOT implemented. 
+</quote>
+
+<p />
+
+The first cursory look didn't find lots of differences from Wine. The
+PE loader has been included in the dynamic loader library and in the
+BSD kernel. Something similar had been done on Wine. Chad Kitching
+also noted that a command like:
+
+<p />
+
+<code>echo ":DOSWin:M::MZ::/usr/local/bin/wine:" &gt; /proc/sys/fs/binfmt_misc/register</code>
+
+<p />
+
+would produce the same effect on Wine (being able to directly run
+Windows file from the command line). 
+
+<p />
+
+So, it didn't seem the architectural differences were as high as the
+Peace folks seem to claim. Moreover, lots of the DLL stuff is still in 
+its very early days, and Peace could really benefit (and even improve) 
+what has already been done in Wine.
+
+<p />
+
+However, Patrik Stridvall uncovered two possible hurdles:
+<ul>
+	<li>Peace uses C++ code (whereas Wine uses C). This may remind 
+some folks of the years old discussion about Odin (see older issues
+<kcref issuenum="26" sectionnum="1"> 
+#25</kcref> and <kcref issuenum="20" sectionnum="0">#20</kcref>)</li>
+	<li>Peace uses the BSD license with the advertisement clause,
+which is incompatible with Wine's</li>
+</ul>
+
+<p />
+
+However, no cooperation has been set up so far.
+</section>
+
+
+<section 
+  title="Helping debugging Wine"
+  subject=""
+  posts="13"
+  startdate="2001/03/10"
+  enddate="2001/03/15"
+>
+
+<p />
+
+G&eacute;rard Patel wrote a patch to help debugging some parts of Wine.
+<ul>
+	<li><quote who="G&eacute;rard Patel">This implements a way to not output the
+debug trace to disk until the user hits Alt + F12. The goal is to
+avoid too big trace files.</quote> This behavior would be triggered by
+using the -dt command line switch.</li>
+	<li>When switching the debug mode on or off, the list and
+state of all known windows would be displayed</li>
+</ul>
+
+<p />
+
+Alexandre Julliard didn't like the approach because he thought 
+<quote who="Alexandre Julliard">it would be much better to do that with a small
+external program that you pipe the debug output into. This way you can
+have much more flexibility, and you don't need to hardcode a specific
+key that some apps may need.</quote>
+
+<p />
+
+G&eacute;rard didn't agree either. He tested, from a speed perspective, the
+two options (turning off the output inside Wine <i>versus</i> using an 
+external program), and found the former being twice as fast as the
+later on his machine.
+
+<p />
+
+Rob Farnum explained he also tried to achieve what G&eacute;rard did using a
+more generic approach:
+<quote who="Rob Farnum">
+my modification allowed an external application to drive the debugging
+by extending the XClientMessage by adding a new Atom, wineDebug. It
+has the possibility to be more sophisticated than trapping on a
+function key, but for my purposes I limited it to just a few
+functions, ping, dumping the window list, and adding an entry into the
+log file so that I could mark the start and stop of an area of
+interest. It was something quick and dirty to solve a specific
+problem, so I did not submit it for inclusion into wine. I originally
+did use a keyboard interface, but needed something extensible allowing
+for more than just dumping a window list, hence went to more of a
+programmatic interface.
+
+<p />
+
+My current design is to have yet another dll that would register
+itself as the handler for this XClientMessage, so that on receipt of
+the XClientMessage, it is simply passed to this new dll. This dll
+would implement whatever application specific debugging tools I need,
+with only the bare minimum of support from wine needed. Since the wine
+debugger already has quite a bit of the functionality that is needed,
+it might be interesting if this method could be used to effectively
+open a pipe and drive the wine debugger externally.
+</quote>
+
+
+<p />
+
+Alexandre suggested to extend the idea: <quote who="Alexandre Julliard">What you
+should rather do IMO is to put your dll inside the debugger, and have
+the debugger drive Wine instead of the other way around. Then you can
+add all kinds of elaborate mechanisms in the debugger, and do anything
+you want without needing any cooperation from the running Wine
+process.</quote>
+
+<p />
+
+However, all of these large evolutions didn't solve G&eacute;rard's first
+needs:<quote who="G&eacute;rard Patel">What I wanted is something short and simple, so
+I could help people on the news group. The use of my patch could be
+explained in <b>one</b> line and it would have worked with Wine right 'out
+of the box' :-)... something the internal debugger does not do anymore
+since a long time. 
+
+<p />
+
+I am afraid that this thing will be more complex to setup and to use
+that the debugger - something already too complex for many people.
+
+<p />
+
+And well, I almost never use the debugger myself because it crashes at
+the slightest provocation so I don't feel much about saying people to
+use it.
+</quote>
+
+<p />
+
+EOT.</section>
+
+</kc>

@@ -1,0 +1,359 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="5" who="Eric Pouech" date="06 May 2003" />
+<intro>
+<p>This week's interview is with Eric Pouech.  Eric hails
+from France and has been involved with Wine for a number of years.  
+His involvement has centered around multimedia work, the wine
+console, and the debugger.  Most of the questions below center
+on one of those areas.
+
+</p></intro>
+
+<interview>
+
+<question><p><i>BV:</i> How did you get involved with Wine?</p></question>
+
+<answer><p><i>Eric: </i> 
+It was in late '97 or early '98, when I first installed Linux on my home 
+PC, and a friend of mine told me about Wine. So, I installed it, and 
+started running a few apps... (Un)fortunenately, a part of the Windows 
+app I wanted to use (mainly MIDI sequencers &amp; edition program) didn't 
+work on Wine. So, I waited a couple of months to see if someone was 
+tackling the issue, and when I understood no one was actually working on 
+it I decided taking a spin.</p></answer>
+
+<question><p><i>BV:</i> So had you been using Linux/Unix for a while at that point?</p></question>
+<answer><p><i>Eric: </i> yes... since a couple of years</p></answer>
+
+<question><p><i>BV:</i>Do you remember the first patch you submitted?</p></question>
+<answer><p><i>Eric: </i>Yes, it was about implementing Midi playback on the OSS driver.</p></answer>
+
+<question><p><i>BV:</i> Do (did?) you use the commercial OSS drivers from 4Front?</p></question>
+<answer><p><i>Eric:</i> no, just the plain Linux one.</p></answer>
+
+<question><p><i>BV:</i>You've worked a lot on Wine's multimedia architecture.  What parts
+do you really like?</p></question>
+
+<answer><p><i>Eric: </i> 
+There's actually no part I like more or less. After fixing a bit the 
+MIDI playback, I wanted to be sure that I got it right, so I started 
+testing some more multimedia apps, which showed lots of flaws in Wine 
+(unimplemented features, need for architecture improvement), so I kept 
+on going...</p></answer>
+
+<question><p><i>BV:</i>Last year you wrote ALSA driver. What advantages does ALSA 
+offer over OSS?</p></question>
+
+<answer><p><i>Eric: </i> 
+Not exactly. Marco Pietrobono and David Hammerton did most of the work. 
+I gave them a hand on some implementation details. Marco wrote most of 
+the audio part on ALSA 0.9. But the mixer and midi pieces are still 
+missing in the current ALSA driver.</p>
+<p>
+ From a technical point of view, ALSA is a better defined interface (for 
+example, there are lots of cards which don't behave in the same way to 
+the same API, which can give you a lot of head-aches). From a driver 
+implementation point of view, ALSA's shall be a bit cleaner than OSS but 
+we should end up with the same results. There's still one area which is 
+currently not well covered by Wine ALSA driver. 
+</p><p>
+Before explaining it, we 
+need to look at a couple of MM architecture. In Wine, there's only one 
+place where a sound card/interface is implemented: the multimedia driver 
+(surprise!!). This driver is called from two different places: 
+ <ol><li> the "old" mmsystem/winmm DLLs</li>
+     <li> the dsound dll. </li></ol>
+</p><p>
+ The later requires a COM interface we export thru (as of today) undocumented interface. The 
+ dsound driver interface allows the driver to expose the hardware buffer 
+ (basically the DMA region from which the sound card plays its data). We 
+ use this possibility (it's not mandatory) with the OSS driver for better 
+ performance. This is not done yet for ALSA (and the feasibility studies 
+ are not finished yet, so we're not even sure we'll be able to do it).
+ To finish on this technical bits, note that latest Windows version no 
+ longer use this hardware buffer exposition, mainly because they allow 
+ mixing of output streams from different applications (which you cannot 
+ easily do on the DMA buffer).</p></answer>
+
+<question><p><i>BV:</i> But isn't that the point of aRts and esound?  I know there's been
+ a preliminary aRts driver floating around, is something like that
+ necessary?  Or does Wine need to directly access the hardware?</p></question>
+<answer><p><i>Eric:</i> 
+For some games &amp; dsound, adding another mixing level increases latency. 
+On the other hand, as CPU power increases, OS latency decreases, we may 
+in a near future drop that requirement (see also the ALSA bits)</p></answer>
+
+<question><p><i>BV:</i>Do you see this as the future sound backend for Wine, or will 
+OSS continue to be the dominant driver?</p></question>
+
+<answer><p><i>Eric: </i> 
+As more and more Linux distributions now ship with ALSA enabled, and 
+ALSA will be in Linux 2.6, ALSA will become the standard on Linux. But, 
+before we do anything on the matter, we need to have the decent 
+configuration utilities for selecting the appropriate driver. It's still 
+sane to assume today that most PC boxes (at least on Linux and BSD) will 
+have an OSS interface (if they have a soundcard). It won't be sane to 
+suppose the same for ALSA, even for a couple of coming years. So, the 
+automatic configuration is the way to go (it would also allow to support 
+correctly non Linux boxes, and also let Gnome or KDE users choose EsounD 
+or aRts drivers).</p>  </answer>
+
+<question><p><i>BV:</i>Will the ALSA driver work with the new 1.0 ALSA interface? Or
+does it need to be rewritten? </p></question>
+
+<answer><p><i>Eric: </i> 
+Current ALSA driver only supports the audio part, not the mixer and midi 
+interfaces. We have a audio driver for 0.5 and 0.9 interfaces. I hope 
+(even if I didn't check it in all details) that we'll manage easily the 
+0.9 => 1.0 move.</p></answer>
+
+<question><p><i>BV:</i>The other area you've worked on is the Wine debugger.  Did you
+write most of it, or just end up maintaining it at some point?</p></question>
+
+<answer><p><i>Eric: </i> 
+Since many years, Wine had an internal debugger. At the times when Wine 
+was a monolithic application (no separated DLLs, all Windows processes 
+running in the same Unix-address space), the internal debugger had a 
+direct access to all the memory (Wine internals, Windows-process 
+memory). When Wine started to be split (wineserver to allow
+interprocess exchange, each (32bit) Windows-process having its own 
+unix-address space), debugger needed some heavy rewriting. Alexandre 
+Julliard wrote most of the Win32 debugging API (generation of debug 
+events, cross (Windows)-process memory access...). I then ported the 
+existing Wine debugger to this API (instead of direct memory access it 
+was using at that time). Since then I (more or less) maintain what 
+became winedbg, Wine's debugger.</p></answer>
+
+<question><p><i>BV:</i>You did some work to hook it into GDB with a remote stub.  Have
+you continued that work at all?  Does it make debugging easier?</p></question>
+
+<answer><p><i>Eric: </i> 
+ Work on this area (the proxy: conversion of GDB remote stub protocol 
+ into Win32 debugging API) is almost finished (in terms of protocol). The 
+ good side of this is that gdb is far more powerful (and has fewer bugs) 
+ than winedbg. So, IMO this should become more and more used. The real 
+ need for winedbg is for 16 bit applications and native Windows modules 
+ debugging, where gdb is of no help.
+</p><p>
+We also plan to add MS debugging information reading to gdb, so that 
+winedbg would only be meaningful for 16 bit apps.</p>
+</answer>
+
+<question><p><i>BV: </i> Would things like ddd start working too?  Personally I've always
+sucked at programming so I find things like graphical debuggers helpful.</p></question>
+<answer><p><i>Eric: </i> 
+I tried it once (on top of proxy and it worked), but never spent too 
+much time on it. Debuggers are good for catching error conditions &amp; 
+context, you usually gain more by thinking and looking at the code than 
+running things inside the debugger.</p></answer>
+
+<question><p><i>BV:</i>If Wine was to convert over to using pthreads would that make
+integration with GDB easier?</p></question>
+
+<answer><p><i>Eric: </i> 
+ In that case, we should use gdb directly over wine processes without 
+ using the proxy. The proxy would have only one advantage: providing Wine 
+ specific command to explore Wine's internal state (process, memory...) 
+ that gdb wouldn't know about.</p>  </answer>
+
+<question><p><i>BV:</i> How's the work going on adding a ncurses backend to wineconsole?
+and how does that change it?</p></question>
+
+<answer><p><i>Eric:</i>
+finished.
+As of today, if you start a program with wineconsole foo instead of wine 
+foo, it will display its content in the unix-console where you typed the 
+command line. but you'll get a real windows-console, whereas the 'wine 
+foo' form, only works for printf-like output.
+if the program requests the creation of a console, we'll get back to 
+what's called user-backend for the console =&gt; a standalone window, 
+managed by wine.</p></answer>
+
+
+<question><p><i>BV:</i>You're listed in the to-do list as working on Winhelp.  It hasn't
+worked well in a while, what problems are you running into?</p></question>
+
+<answer><p><i>Eric: </i> 
+ Well, I assume it works way better know!!! Most of the .HLP files I know 
+ of are correctly loaded. There are still lots to be done in the 
+ rendering part: for example, help format allows for information 
+ rendering on a matrix base (row x columns). This is currently not 
+ supported at all, and you end up will all text/information as if no 
+ column was present, so below each other. Also, help files contain macro 
+ invocation under certain events (file opening, page opening, link 
+ click...). There are a long list of predefined macro, out of which a few 
+ are currently implemented.
+</p></answer>
+
+<question><p><i>BV: </i>
+ I'm caught.. I haven't tried to open any help files in a long time.
+ Back in November you rewrote the macro engine and there's now a
+ bunch of FIXME's for the various events.  Do those macros hook directly 
+ into common dialogs?  Or is there yet another layer of abstraction going 
+ on?</p></question>
+
+<answer><p><i>Eric: </i>
+It depends on the macros. some are really basic things, some other are 
+pretty much more complex (like presenting all the pages in the help 
+file...). And I also started by working on the simplest macros :-(</p></answer>
+
+<question><p><i>BV:</i>
+ Doesn't Windows have many different versions of help files?  How
+ many are supported right now?</p></question>
+<answer><p><i>Eric:</i>
+The latest .HLP files are well supported. The really early ones are not 
+(but I never came across one of those, they should be for Windows 2.0)</p>
+<p>However, since 
+MS help format evolved from .HLP files to .CHM (compressed HTML), Wine 
+has also to implement a decent .CHM reader. Work is under way, but not 
+finished yet.</p>
+</answer>
+
+<question><p><i>BV:</i>
+ So what are your plans for the future?  More multimedia work?
+ Or are you going to tackle something else?</p></question>
+
+<answer><p><i>Eric:</i>
+well,
+<ul>
+<li> maintenance of multimedia, debugger, wineconsole, winhelp...</li>
+<li> on the multimedia area:
+	<ul>
+	<li> finish the ALSA driver</li>
+	</ul></li>
+<li> one the biggest area of improvement is in the kernel:
+	<ul>
+	<li> ntdll/kernel split</li>
+	<li> putting in place a real FS infrastructure (not sure it'll make it for 
+1.0)</li>
+	<li> NT object naming</li>
+	</ul></li>
+</ul></p></answer>
+
+<question><p><i>BV:</i>So what's going on with all these NTDLL patches
+lately?  How close  is the kernel32/ntdll separation from being done?</p>
+</question>
+
+<answer><p><i>Eric: </i>
+I'd say at least a hundred, if not a couple of hundreds
+I don't think we're going to reach it before summer anyway (especially
+if only Alexandre and myself are working on it)</p></answer>
+
+<question><p><i>BV:</i> 
+ How does kernel32 differ from NTDll?</p></question>
+
+<answer><p><i>Eric: </i>
+kernel32 provides the system level interface (files, memory management,
+process, thread, synchronisation...) for the Win32 API. kernel has
+existed since the very beginning of windows. Starting with NT, a new
+architecture has been put in place, which allowed several subsystems to
+be run on the same box (Win32, POSIX, OS/2, Win16...). In this
+architecture, all common system code now lay in ntdll. Kernel32 provides
+the API for the Win32 subsystem. So basically, from a functionnality
+point of view, ntdll and kernel provide quite the same items. However,
+interfaces are rather different. As Wine evolved from a Win3-like
+architecture to a NT-like one, we still need to go the same way Windows
+already did.</p></answer>
+
+<question><p><i>BV:</i> 
+ Why did you guys decided to tackle that one?  Why not user
+ or GDI since they have the same problem?</p></question>
+<answer><p><i>Eric: </i>
+User and GDI don't have the same problem. Dll separation focuses on two
+separate items:
+<ol>
+<li> make sure, that when DLL A calls into DLL B, this is only done thru
+the Windows import mechanism. For example, the code between ntdll and
+kernel32 is not separated from this aspect, and the import is made thru
+ELF dynamic linking feature.</li>
+<li> make sure, when point #1 is reached, that it's only done thru the
+standard Windows entry points (ie. don't add Wine specific entry points).</li>
+</ol></p><p>
+Providing #1 allows to do all the DLL imports only on a single way (the
+Windows' one), which simplifies and cleans up the implementation.
+Providing #2 allows a better portability of DLLs (to ReactOS for
+example), but also a better isolation for testing a single DLL (on
+windows for example).
+</p><p>
+ntdll/kernel32 suffers from those two items. User32 and GDI32 are
+(mostly) done with #1, and still have to go thru #2.
+Ntdll/kernel32 still have several hundreds of entry points to go thru
+#1, which will take some time.
+</p><p>
+One of the criteria to reach 0.9 is to have achieve the stage #1
+described above.
+</p></answer>
+
+<question><p><i>BV:</i> 
+What issues have you run into?</p></question>
+<answer><p><i>Eric: </i>
+No serious issues so far, more a matter of being sure we don't break
+everything in the process. Moreover, the split may also be the
+opportunity to rework some existing parts of Wine which really need
+this. I'm thinking of:
+<ol>
+<li> really creating a Win16 subsystem (as we already started for the DOS
+one), and not having both Win16/Win32 intermixed as they are today.</li>
+<li> providing a better dynamicity in the file system (mostly for
+mounting/unmounting drives on the fly)</li>
+<li> ...</li></ol></p><p>
+Since, all of this touches the core of Wine, it's rather a touchy
+matter, so extreme care is given for going on step by step basis.</p>
+</answer>
+
+<question><p><i>BV:</i> 
+ It looks like Alexandre recently started that with the winevdm
+ app.  At first glance it looks pretty complete.  Have you used
+ it yet?  Besides cleaning up some code, does it offer other
+ advantages?</p></question>
+<answer><p>
+not yet, but it seems quite promising. Basically, it only splits (a bit) 
+wine into:<ol>
+<li> a 32 bit process loader</li>
+<li> a DOS/16 bit process loader (which is in fact a 32 bit app, and run 
+thru the case #1)</li></ol></p><p>
+there are still a couple of points to be addressed (like separating 
+kernel32 from krnl386, support for shared/separate VDMs in CreateProcess 
+to name a view), but that's a good starter!!</p></answer>
+
+<question><p><i>BV:</i> How's Rewind doing?  I know various bits from TransGaming have 
+made it in there, are there any significant additions in there?</p></question>
+
+<answer><p><i>Eric: </i> 
+IMO, ReWind's goal is to ease the bridge between Wine and TG. So, 
+there's not (as of today) something in ReWind which is not either in 
+Wine or WineX.</p></answer>
+
+<question><p><i>BV:</i> Do you miss writing the Wine Weekly News? </p></question>
+
+<answer><p><i>Eric: </i> 
+ It was really fun writing WWN. I, in fact, started it just to improve my 
+ knowledge of some parts of Wine I didn't know well (covering wine-devel 
+ every week ends up with a very wide area of subjects). I really enjoyed 
+ it. On the other end, it's something very time consuming (moreover for 
+ non native English speaking person), so I also enjoy the time I 
+ "recovered" from WWN to do some other things (like working more on Wine ;-).
+</p> </answer>
+
+<question><p><i>BV:</i>
+ Do you think this year Wine might actually hit 0.9?  Dimi's to-do
+ list is starting to look fairly complete.  A lot of the bigger items
+ are starting to seem like user interface issues and documentation.  
+ Do you see any major architectural issues?</p></question>
+
+<answer><p><i>Eric:</i>
+For me, 0.9 is more a matter of will (pushing for it) than technical 
+issues. In other words, we have to really decide what's in 0.9 and 
+what's not (as of today, lots of work doesn't really fit in reaching the 
+0.9 goal). Dimi's trying to push a bit, at least to track what remains 
+to be done, it doesn't mean it's going to be done.
+1.0 won't be done this year :-(</p></answer>
+
+<question><p><i>BV:</i>
+Thanks for the interview!</p></question>
+
+</interview></kc>

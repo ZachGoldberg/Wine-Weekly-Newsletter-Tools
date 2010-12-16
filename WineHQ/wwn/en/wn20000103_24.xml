@@ -1,0 +1,209 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="24" date="03 Jan 2000 00:00:00 -0800" />
+
+<intro>
+
+This is the twenty fourth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Many thanks to Zack Brown for putting up a KC edition last week while
+I was lingering on vacation. Anyway, for those of you who missed last
+week's KC Wine, here's a summary of the past two weeks.
+
+<p />
+
+I also take the opportunity to wish you a very pleasant new year.
+
+</intro>
+
+<stats posts="149" size="574" contrib="41" multiples="26" lastweek="24">
+
+<person posts="18" size="55" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="12" size="30" who="'Juergen Schmied' &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="10" size="32" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="10" size="30" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="8" size="19" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="7" size="15" who="'Dmitry Timoshkov' &lt;dmitry@sloboda.ru&gt;" />
+<person posts="6" size="17" who="'Peter Hunnisett' &lt;hunnise@nortelnetworks.com&gt;" />
+<person posts="5" size="18" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="5" size="13" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="11" who="Michael Cardenas &lt;Michael_Cardenas@deneba.com&gt;" />
+
+</stats>
+
+<section
+  title="GCC issues"
+  subject="gcc woes"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-418.html"
+>
+
+Eric Pouech reported that gcc 2.91 did produce erroneous code while
+compiling Wine (symptoms were that when moving windows around, they
+all ended up with a y=0 coordinate).
+
+<p />
+
+It turned out that:
+
+<ul>
+
+<li />gcc 2.95 does not produce the error
+
+<li />using gcc 2.91 without the -O2 option also works around the
+issue
+
+</ul>
+
+<p />
+
+As a conclusion, it is <b>STRONGLY</b> recommended not to use gcc 2.91 (or
+as a fall-back, to use it without the -O2 option).
+
+</section>
+
+<section
+  title="DC and first bitmap"
+  subject="best way to handle gdi objects cleaning"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-446.html"
+>
+
+G&#233;rard Patel pointed out an interesting issue:
+
+<p />
+
+<quote who="G&#233;rard Patel">First, a reminding of the problem I have seen on the Word97 viewer:
+when displaying a file (the readme.doc present with the product, in
+fact) in 'online layout' mode, scrolling the text part (to the right)
+by clicking in the scrollbar soon gives strange display problems
+(patches of black, overlaying of text)
+
+<p />
+
+The immediate reason is the hFirstBitmap handle; as far as I
+understand, this parameter has been added to the dc structure to avoid
+a leakage when deleting the DC. Unfortunately, when the application
+itself cleans this handle, by calling DeleteObject on the handle it
+gets after a SelectObject on a bitmap in the (memory) DC, the
+hFirstBitmap stays as a dangling reference to a deleted object. When
+the DC is destroyed, whatever object that happens to have the same
+handle value is destroyed; in this case it's usually the handle of the
+visible region of the main window.</quote>
+
+<p />
+
+G&#233;rard and Patrik Stridvall started then discussing ways of fixing
+this issues.
+
+<p />
+
+Patrik quoted the MS documentation of CreateCompatibleDC:
+
+<p />
+
+<quote who="Patrik Stridvall">A memory device context is a device context that exists
+only in memory. When the memory device context is created,
+its display surface is exactly one monochrome pixel wide
+and one monochrome pixel high. Before an application can
+use a memory device context for drawing operations, it must
+select a bitmap of the correct width and height into the
+device context. This may be done by using CreateCompatibleBitmap
+specifying the height, width, and color organization required
+in the function call.</quote>
+
+<p />
+
+and stressed the word "must", in the sentence "Before an app...",
+suggesting that this first bitmap may have some strange behavior.
+
+<p />
+
+After some testings under Windows NT, G&#233;rard announced that Patrik's
+suggestion was a very good one:
+
+<ul>
+
+<li />the first bitmap in a DC can still be accessed (no error
+returned) after it has been destroyed (DeleteObject returns TRUE)
+(!!!)
+
+<li />the handle of this first bitmap is the same for all the
+applications (trying to access the handle even without getting it with
+as a return value of SelectObject() works (!!!))
+
+<li />modifying the dimensions of this bitmap works (and the changes
+are also seen from other applications (!!!)).
+
+<li />G&#233;rard didn't try to see if setting bits into this bitmap
+enables a new interapplication communication mechanism
+
+</ul>
+
+<p />
+
+So the correct fix would be to create a unique first bitmap
+(monochrome) for all the applications and to prevent its destruction
+in DeleteObject().
+
+</section>
+
+<section
+  title="TEB and different Windows versions"
+  subject="more TEB problems"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-477.html"
+>
+
+J&#252;rgen Schmied reported some more issues regarding the TEB layout. The
+TEB (Thread Environment Block) is the internal Windows structure where
+all the information related to a thread is stored. Win 9X and
+Windows NT have different layout for this structure. Microsoft also
+decided to have this structure live in user space (???), so some
+applications (especially the ones from MS, or MS DLLs) directly access
+this structure, thus requiring Wine to behave in a similar way.
+
+<p />
+
+Currently, Wine's TEB implementation is rather Win 9x centric (but not
+all the fields are present). Some recent patches (from J&#252;rgen Schmied
+and Eric Pouech) tried to alleviate those problems (for example, NT
+uses a 4k TEB whereas Win 9x's is much smaller - a few dozen bytes),
+but more on more seem to show up.
+
+<p />
+
+Alexandre Julliard suggested to extend the Wine's current Win 9x
+centric TEB by adding, when appropriate, the needed Win NT fields.
+
+<p />
+
+J&#252;rgen then pointed out a mismatch: Windows 9 stores at offset
+0xC4 of the TEB the TLS array whereas Win NT puts the current locale
+setting. J&#252;rgen suggested to <quote who="J&#252;rgen Schmied">a better solution
+is to use a union of the 3 (win95/nt/wine) TEBs and accessing fields with
+eg. teb-&gt;win95.fieldname.</quote> This would not help solving the clashes on
+the fields by themselves, but at least to know which TEB layout is referred to.
+
+<p />
+
+Inn another thread, Andreas Mohr reported a crash while running a Win
+NT application, which was also due to this type of clash. No easy fix
+has been foreseen, but trying to run native NT psapi.dll or rpcrt4.dll
+demonstrates the problem.
+
+<p />
+
+Anyway, it would be very astonishing if this issue didn't pop up again
+in the next weeks.
+
+</section>
+
+</kc>

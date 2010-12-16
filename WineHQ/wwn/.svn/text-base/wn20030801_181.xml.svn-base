@@ -1,0 +1,247 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="181" date="08/01/2003" />
+<intro> <p>This is the 181st release of the weekly Wine Weekly News publication.
+Its main goal is to enjoy getting outside, spending time in the mountains, and splicing hundreds of little wires destroyed by a pick axe. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="96" size="289" contrib="45" multiples="20" lastweek="21">
+
+<person posts="8" size="20" who="Dmitry Timoshkov" />
+<person posts="8" size="18" who="Dimitrie O. Paun" />
+<person posts="7" size="19" who="Jonathan Wilson" />
+<person posts="6" size="19" who="Mike Hearn" />
+<person posts="6" size="15" who="Steven Edwards" />
+<person posts="4" size="40" who="Duane Clark" />
+<person posts="3" size="14" who="Gregory M. Turner" />
+<person posts="3" size="10" who="Christian Neumair" />
+<person posts="3" size="7" who="E Lea" />
+<person posts="3" size="6" who="Jeremy Newman" />
+<person posts="2" size="8" who="Peter Hanecak" />
+<person posts="2" size="5" who="Mike Hearn" />
+<person posts="2" size="5" who="Magnus Solvang" />
+<person posts="2" size="5" who="Shachar Shemesh" />
+<person posts="2" size="5" who="Marcelo Duarte" />
+<person posts="2" size="4" who="Jeremy White" />
+<person posts="2" size="4" who="Dustin Navea" />
+<person posts="2" size="4" who="Alexandre Julliard" />
+<person posts="2" size="4" who="Tom" />
+<person posts="2" size="4" who="BiGgUn" />
+<person posts="1" size="4" who="Marcelo Duarte" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="dd jj" />
+<person posts="1" size="3" who="Rok Mandeljc" />
+<person posts="1" size="3" who="Uwe Bonnes" />
+<person posts="1" size="3" who="Joerg Mayer" />
+<person posts="1" size="2" who="Raphael Junqueira" />
+<person posts="1" size="2" who="Philipp Wollermann" />
+<person posts="1" size="2" who="Roderick Colenbrander" />
+<person posts="1" size="2" who="Lars Segerlund" />
+<person posts="1" size="2" who="David D. Hagood" />
+<person posts="1" size="2" who="Vincent Beron" />
+<person posts="1" size="2" who="Omer Sahin \(Link Bilgisayar\)" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="2" who="Dan Timis" />
+<person posts="1" size="2" who="Ove Kaaven" />
+<person posts="1" size="2" who="Boris" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Jon Bright" />
+<person posts="1" size="2" who="Mark Westcott" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Anthony Tuininga" />
+<person posts="1" size="1" who="Troy Rollo" />
+<person posts="1" size="1" who="Michael B Allen" />
+
+</stats>
+<section 
+	title="News: SecurityFocus Article" 
+	subject="News"
+	archive="http://www.securityfocus.com/infocus/1641" 
+	posts="1"
+	startdate="07/26/2003"
+	enddate="08/01/2003"
+>
+<topic>News</topic>
+<p>I really like SecurityFocus.  Unfortunately it's a site
+I don't have a lot of time to read.  I was digging through the
+archives last weekend and ran across an interesting article 
+about 
+<a href="http://www.securityfocus.com/infocus/1641">disassembling
+a Windows trojan</a>.  Granted, the article
+is now nine months old, but it's still very relevant.  It
+goes into great detail on how to use Wine with IDA Pro to
+disassemble the trojan.  After disassembly it shows how to
+run the code under Wine and debug it with gdb.  Oddly enough
+they don't use Wine's own debugger but the process seems to 
+work for them.</p>
+
+
+</section><section 
+	title="Profiling Wine" 
+	subject="Profiling wine"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0690.html" 
+	posts="6"
+	startdate="07/28/2003"
+	enddate="07/29/2003"
+>
+<topic>Debugging</topic>
+<p>Mike Hearn asked a question related to debugging,
+<quote who="Mike Hearn">
+Is there any way to get measurements of where Wine is spending most of
+its time? I have a problem where typing text into the WebBrowser control
+is incredibly slow, but don't really have a clue where to start looking.
+A profiling tool would be handy about now......
+</quote></p>
+
+<p>Jeremy White replied first:</p>
+<quote who="Jeremy White"><p>
+Charles and Mike did a fair amount of work to submit a
+patch to Wine to enable a profiling mode.
+</p><p>
+Sadly, Mike is on vacation this week, so i'm not sure if he's
+around to help out.
+</p><p>
+But if you look through the archives (I think Mike mailed it in),
+you should find it.
+</p><p>
+We'd really like to have other folks using this code...
+</p></quote>
+
+<p>Mike had some questions, but apparently only Mike McCormack
+would be able to answer him.  In lieu of a response about getting
+that patch into Wine, Lars Segerlund wrote:</p>
+<quote who="Lars Segerlund"><p>
+  How about giving oprofile a spin ?
+</p><p>
+  It is very good at pinpointing runtime hotspots. I just wanted to give 
+a suggestion on how to get going with profiling right now without the 
+need to wait for wineprofile functionality.
+</p></quote>
+
+<p>Jeremy wasn't sure how well that would work:</p>
+<quote who="Jeremy White"><p>
+I'm told (and have been persuaded of this), that Wine's internal
+structures preclude a 'normal' profiler from working properly,
+hence the need for a Wine specific one.
+</p><p>
+I know we toyed with adapting gprof to Wine semantics, but
+decided, in the end, that was too hard and not worth it.
+</p></quote>
+
+<p>Ove K&#229;ven felt oprofile was different and would work.
+He mentioned a caveat,
+<quote who="Ove Kaaven">
+ Then again, oprofile is not a normal profiler, it's a kernel-based one.
+ I've tried it, it "works", but it seems that it requires a 2.5 kernel in
+ order to be really useful (it's not able to generate call graphs with
+ 2.4)</quote></p>
+
+
+
+</section><section 
+	title="Debug Problem With Win98 Version" 
+	subject="Is wine a debugger?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0639.html" 
+	posts="3"
+	startdate="07/24/2003"
+	enddate="07/28/2003"
+>
+<topic>Fixes</topic>
+<p>Dan Timis needed help with what appeared to be a 
+problem with the Wine debugger:</p>
+<quote who="Dan Timis"><p>
+ I am trying to load a security Windows dll that does not run under a 
+ debugger.  When I load the dll I get a SIGTRAP, and then wine breaks in 
+ its debugger.
+</p><p>
+ My understanding is that if I run wine as opposed to winedbg I am not 
+ running under a debugger.  But, if there is a crash or some other 
+ exception wine will start a debugger.
+</p><p>
+ I sent some memory dumps to the developer of the security dll, and he 
+ said that it behaves like it was running under a debugger.  His 
+ question was something like does wine have an always "on" debugger?
+</p></quote>
+
+<p>Alex Pasadyn wrote back with a possible solution:</p>
+<quote who="Alex Pasadyn"><p>
+I have seen this kind of thing before.  I had a program that was doing 
+this, and to get around it I changed the "Windows version" for Wine from 
+one of the "DOS-based" ones to one of the "NT-based" ones.
+</p><p>
+This may or may not work for you.  It depends on what exactly the 
+program is trying to do to detect a debugger.  I just tried setting the 
+version to NT because I figured that the things it allowed were closer 
+to what would be allowed on Linux, and it happened to be that whatever 
+it tried to do on NT gave the "correct" answer on Wine.
+</p><p>
+But yes, the Wine debugger loads as a new process only after a crash is 
+detected.  What is happening is the program is poking around in memory 
+somewhere and seeing something different from what it expects.
+</p></quote>
+
+<p>Dan tried it and it worked.</p>
+
+
+</section><section 
+	title="Testing Controls with Mono" 
+	subject="Re: [Mono-winforms-list] SWF Examples/Tests"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0692.html" 
+	posts="1"
+	startdate="07/28/2003"
+>
+<topic>Testing</topic>
+<topic>Integration</topic>
+<p>Timothy Parez sent a message to Mono users about some testing
+he did with the Mono/Wine integration:</p>
+<quote who="Timothy Parez"><p>
+ Some time ago I started writing simple tests for SWF control rendering.
+ At that time I had no way to manage them, but now Duncan has created a
+ new page on the Mono Wiki where I will add the samples.
+</p><p> 
+ Each sample contains the sourcecode, makefile and screenshots.
+ I will try to create these samples for each of the controls in SWF
+</p><p> 
+ I will however make separate projects for controls which use images,
+ because these don't seem to run on SWF yet. (For example a button with a
+ background image)
+</p><p>
+ You can find the wiki page here:
+ <ul><a href="http://www.nullenvoid.com/mono/wiki/index.php/WineSamples">
+   http://www.nullenvoid.com/mono/wiki/index.php/WineSamples</a></ul>
+</p></quote>
+
+<p>Mike Hearn forwarded that to wine-devel and explained:</p>
+<quote who="Mike Hearn"><p>
+ This will be really great for Wine also, I'm forwarding this on to the
+ Wine list. We really need tests like this, but AFAIK nobody has ever
+ done them.
+</p><p>
+ As you can see the Wine widget toolkit does not implement all the
+ features of the MS Windows one (primarily because very few apps actually
+ use them). Nonetheless, adding them should be easy, and it's good to
+ have a reference like this.
+</p></quote>
+
+</section><section 
+	title="Library of Microsoft Compression Formats" 
+	subject="[libmspack] A library for Microsoft compression formats"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0667.html" 
+	posts="2"
+	startdate="07/26/2003"
+>
+<topic>Integration</topic>
+<p>Mike Allen wrote in with a pointer to a library under
+development:</p>
+<quote who="Mike Allen"><p>
+I haven't tried this lib but it looks well organized and clean which is
+rare so check it out or fwd this link to interested parties...
+<ul><a href="http://www.kyz.uklinux.net/libmspack/">
+  http://www.kyz.uklinux.net/libmspack/</a></ul></p></quote>
+
+<p>Greg Turner agreed that it could be useful.</p>
+
+
+</section></kc>

@@ -1,0 +1,415 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="100" date="07/19/2001" />
+
+<intro>
+
+<p>This is the 100th release of the Wine's kernel cousin publication. It's
+main goal is to distribute widely what's going on around Wine (the Un*x 
+windows emulator).</p>
+
+<p>Wow, 100 issues.  Of course if you're really keeping count you'll
+	notice we skipped a few back in the spring.  I've got to thank
+	Eric Pouech for writing almost all of those.  He did a fantastic
+	job for a long time.</p>
+
+<p>In the news the past few weeks was an announcement about 
+	KDE's Konqueror gaining ActiveX support via Wine.  This is
+	quite amazing considering Malte Starostik announced the project
+	only a few weeks ago on the wine-devel list.  There are several
+	patches not yet committed to the wine CVS that allow this to
+	work.  Also of note, in the press release it says that using
+	the native mscvrt DLL is needed rather than the built-in one. 
+	To that, Jon Griffiths noted that he's working on making
+	Wine's builtin DLL have the needed functionality.</p>
+
+<p>For more info, check out the press release over at Linux Today:
+<a href="http://linuxtoday.com/news_story.php3?ltsn=2001-07-10-003-20-PR-KE-MS">
+http://linuxtoday.com/news_story.php3?ltsn=2001-07-10-003-20-PR-KE-MS</a>.
+</p>
+
+	
+	
+
+</intro>
+
+
+<stats posts="119" size="363" contrib="39" multiples="22" lastweek="13">
+<person posts="25" size="58" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="2" size="11" who="Ian Pilcher &lt;ian.pilcher@home.com&gt;" />
+<person posts="6" size="15" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="4" size="10" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="5" size="10" who="Ove K&aring;ven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="8" size="15" who="Bill Medland &lt;medbi01@accpac.com&gt;" />
+<person posts="3" size="8" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="8" size="35" who="Patrick Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="15" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="4" size="11" who="Brandon Kilgore &lt;bkilgore@numa-inc.com&gt;" />
+<person posts="6" size="30" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+</stats>
+
+
+<!-- ################################################################ -- />
+
+
+<section
+  title="The [Windows] Section"
+  subject="The [Windows] section"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/07/.html"
+  posts="3"
+  startdate="07/03/2001"
+  enddate="07/12/2001"
+>
+
+<p>Bill Medland wanted to about where to find [Windows].BorderWidth, namely
+if it was still supposed to be found in the [Windows] section of the
+	config or if Tweak.Layout  was supposed to be used instead.
+	No one replied, but Bill looked up the info and posted the 
+	answer for anyone wondering, 
+	<quote who="Bill Medland">
+   In Windows 95 a load of configuration information moved from win.ini (esp
+   the [windows] section) to the registry.  Now (when the edits are added to
+   the cvs) information should come from the [windows] section of win.ini if
+   the winelook is WIN31 and from the registry in general otherwise, with the
+   Tweak.Layout overriding both.</quote></p>
+
+<p>Bill went on to submit a bunch of patches to clean up window drawing.
+	One of which concerning framing Alexandre noted, 
+	<quote who="Alexandre Julliard">
+	Actually I have hacked your patch a bit when committing it (hope you
+	don't mind ;-), with the idea of phasing out the Tweak.Layout
+	stuff. So now the values come from the registry for Win95, and from
+	win.ini (plus some hard-coded values) for Win3.1.</quote></p>
+
+</section>
+	     
+	     
+<!-- ################################################################ -- />
+
+
+<section
+    title="Automagically Generating Spec Files"
+    subject="Documentation fixes"
+    archive="http://www.winehq.org/hypermail/wine-devel/2001/07/.html"
+    posts="18"
+    startdate="07/12/2001"
+    enddate="07/15/2001"
+>
+
+<p>Patrik Stridvall posted a lengthy patch with documentation fixes, of
+which Alexandre did not apply all of it since parts weren't correct.
+After exchanging some mail, Patrik asked,
+<quote who="Patrik Stridvall">
+	I think that we need to move the solution of this problem one step
+	up the "ladder" and discuss the more general problem:
+	How should we store the information needed to generate
+	the spec files in the source, especially concerning
+	the forwards and stubs?</quote></p>
+
+<p>Alexandre, partly in reference to a another question, replied:</p>
+<quote who="Alexandre Julliard"><p>
+
+	Well, it's a more general problem, namely that the spec files can
+	reference functions that are not implemented directly in the dll.</p>
+	<p>
+	You also have for instance:<br />
+	<ul><code>
+	@ cdecl strcpy(ptr str) strcpy
+	</code></ul><br />
+	in MSVCRT, and strcpy is clearly not implemented there since it's in
+	the C library. So you cannot assume that only the functions contained
+	in the dll can be used in the spec files, it is legal for the spec
+	file to reference external functions.</p>
+	<p>
+	You'll need a file somewhere that specifies all the entries that
+	cannot be determined automatically from the source. You simply cannot
+	build a 100% correct spec file based only on the function comments.
+	And you definitely do not want to need to parse KERNEL source files
+	(like the ones in memory/) to build the USER spec file.</p></quote>
+
+<p>Patrik thought the best solution might be to create a .spec.in file
+	that looks like the spec files but supports configure-like
+	substitutions that could be determined from the source.  
+	Automatically generated spec files prevent storing redundant
+	like C function declarations that can be figured out.  However,
+	like Alexandre mentioned, it's possible for spec files to 
+	reference external functions that aren't part of the DLL.  
+	One of the solutions is to store the information in comments
+	in the source files and then extracting it to create the spec
+	files.  After exchanging more mail, Alexandre mentioned:</p>
+
+	<quote who="Alexandre Julliard"><p>
+	IMO, this is true if we can make the generator work purely on the
+	source code, so that you can give it the unmodified source of a
+	Windows dll and it spits out the spec file. If you need to add
+	comments before each and every exported function, then I don't see
+	much advantage to parsing the source. You might as well put all the
+	information in the comment (or leave it in the current spec file for
+	that matter).</p>
+	<p>
+	Basically, if the source parsing allows doing more than we do now
+	(like build spec files for new dlls) it's worthwhile; if all it does
+	is generate the existing spec files some other way I don't think
+	there's much point. After all, we have the spec files already, and
+	they are not going to change much.</p>
+	<p>
+	Another use of the source parser could be to generate more detailed
+	debugging information for +relay; but in this case I'd say it should
+	go to a completely different file, used by some external relay dumping
+	program. I don't want all the extra debug information to clutter up
+	the spec files.</p></quote>
+
+<p>Patrik and Alexandre exchanged more mail about how to parse out
+	the needed information and Patrik began formulating a tool
+	that could be used to gather it.  In the meantime he asked that
+	a patch of his be applied that would let winapi_check know where 
+	external functions are located.  Alexandre considered the patch
+	a kludge and didn't accept it.</p>
+
+</section>
+		 
+		 
+<!-- ################################################################ -- />
+
+
+
+<section   
+	title="Handling X Errors Using Exception Handlers"   
+	subject="Handling X errors using exception handlers"   
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/07/.html"   
+	posts="4"   
+	startdate="07/14/2001"   
+	enddate="07/15/2001" 
+>
+
+<p>Lionel Ulmer posted a message about handling X errors:</p>
+<quote who="Lionel Ulmer"><p>
+
+   When discussing with Ove yesterday on #WineHQ about the handling of X
+   errors, he told me about an idea of his : using exceptions to handle X
+   errors.</p>
+   <p>
+   This way, when we have to explicitly handle X errors (as we will need to do
+   for XVidmode and XDGA2 due to some (stupidly done IMHO :-) ) security fixes
+   in XFree 4.x), we could do that using exceptions.</p></quote>
+
+<p>He went on to post some code as a quick work-around.  Alexandre
+	replied with:</p>
+
+<quote who="Alexandre Julliard"><p>
+
+	The main problem with that is that I don't think you can jump out of
+	Xlib without corrupting its state. Also you'd need to properly unlock
+	the tsx11 lock in case of exception, which will probably require an
+	finally handler around each X call.</p>
+
+ <p>My idea was to have the following two functions:<br /><code>
+ void X11DRV_expect_error( unsigned char request, unsigned char error, XID id );
+ <br />int X11DRV_check_error(void);</code></p>
+
+	<p>You'd call X11DRV_expect_error before doing an X call that can fail;
+	then if an X error happens that matches what you expect, the X error
+	handler will simply set a flag and ignore the error (if it doesn't
+	match you get the standard error handling). Then after the call you
+	use X11DRV_check_error to see if your error happened or not. Would
+	this work for what you need?</p></quote>
+
+<p>Lionel thought it would work, but did see two potential problems.  
+	He wasn't sure if error codes were standardized on all X servers.
+	He also didn't think it would be able to detect more than one kind of 
+	error at the same time.  To the former, Alexandre replied that they 
+	were part of the X spec and they should be standard.   To the 
+	latter Alexandre replied, <quote who="Alexandre Julliard">
+	I was thinking you could use a special value as a "wildcard" for the
+	error codes, in which case it wouldn't be tested for a match.</quote>
+</p>
+
+
+</section>  
+
+
+
+<!-- ################################################################ -- />
+
+
+<section   
+	title="Small OpenGL Fix"   
+	subject="Small OpenGL Fix"   
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/07/.html"   
+	posts="4"   
+	startdate="07/16/2001"   
+	enddate="07/17/2001" 
+>
+
+<p>Lionel Ulmer submitted a patch to wine-patches that made sure
+	user32.dll is always loaded before the x11drv.dll.  He wrote:</p>
+
+<quote who="Lionel Ulmer"><p>
+ I spent most of the day tracking an 'abort' in <code>
+ SYSMETRICS_Init</code> due to the
+ fact that the "DISPLAY" driver was not loaded.</p>
+
+ <p>I tracked this down to the fact that OpenGL32.DLL was the first library
+ loaded by the application.</p>
+
+ <p>The problem is that when the loading of OpenGL32 happens, it first loads
+ 'USER32'. When attaching 'USER32', it tries to reload 'X11DRV' (and fails as
+ the 'recursion' lock is in place). </p>
+
+ <p>This means that when it calls <code>SYSMETRICS_Init</code>, the 'DISPLAY' 
+	 driver was not registered yet (as we did not yet attach to the 
+	 X11 driver) => we get the abort.</p>
+
+ <p>This is more a problem of inter-dependencies of X11DRV and USER32 (as the
+ former should NEVER be loaded before the latter)... But as I could not fix
+ this problem, I preferred going 'around' the problem :-) </p>
+
+ <p>And thus the attached patch (I see it was already done for DDraw) :</p>
+</quote>
+
+<p>Alexandre did apply the patch, but noted, <quote who="Alexandre Julliard">
+
+	The dependencies between x11drv and user should certainly be fixed,
+	but the real problem is that opengl32 and ddraw import x11drv at all.
+	x11drv is an internal driver and should never be imported by any
+	dll. Anybody feeling like fixing that?</quote></p>
+
+<p>Lionel started figuring out how to go about recoding dlls/opengl32/wgl.c
+	to not depend on x11drv.  He decided there were two possible ways
+	to go about calling the driver:</p>
+<quote who="Lionel Ulmer"><p>
+	<ul><li>one that is 'GDI' specific with the 'dc->funcs->pFUNC_NAME' 
+			sort of calls</li>
+		<li>the other for 'USER' with 'USER_Driver.pFUNC_NAME'</li>
+	</ul>
+</p></quote>
+
+<p>Alexandre felt that he couldn't really do either.  The GDI option 
+	requires calling a function that isn't visible outside of GDI
+	and the USER option requires a reference to a global variable
+	that isn't visible outside of USER.  But he added, 
+	<quote who="Alexandre Julliard">A possible way is to use the Escape 
+	function and add a few
+	x11drv-specific escape codes. But first it would probably be a good
+	thing to check how opengl32 is implemented under Windows; I have no
+	idea how it works, but it probably needs some way to communicate with
+	the graphics driver, and we could use the same mechanism.</quote></p>
+
+<p>Lionel wasn't sure exactly how OpenGL was done on Windows, 
+	<quote who="Lionel Ulmer">
+  Well, the only thing I know for sure about how OpenGL is done in Windows is
+  that you load one DLL (opengl32.dll). This DLL support the standard software
+  rendering mode but can also load an 'ICD' (by looking at the 'OpenGLdrivers'
+  key in the system registry) that is the driver specific to the card.</quote>
+</p>
+
+</section>  
+
+
+
+<!-- ################################################################ -- />
+
+
+<section   
+	title="Implementing ChangeDisplay Settings"   
+	subject="ChangeDisplay Settings"   
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/07/.html"   
+	posts="2"   
+	startdate="07/17/2001"   
+	enddate="07/17/2001" >
+	 
+
+<p>Travis Michielsen posted a message wondering how to go about 
+	changing display settings:</p>
+
+<quote who="Travis Michielsen"><p>
+
+ I was planning on implementing ChangeDisplaySettingsA soon but I'm not certain
+ on how to do it.
+</p>
+<p> I have been browsing the source tree and was following the methods used by
+ DirectDraw and was considering a similar approach.  While I was browsing the
+ source, I was eventually lead to dlls/x11drv/xvidmode.c which contains most of
+ the functions that I will probably need.  But I still have a few concerns: 
+ <ol><li> Is the x11drv used for ddraw AND the gdi or just one? </li>
+ <li>what is the best way to query if the video exists? 
+     without knowing syncs? </li>
+ <li>and if i need to know syncs how do I find them?</li>
+</p>
+<p> Another question I have is about pixel depth.  From what I understand, it is
+ imposible to change the pixel format of the screen while X is running. 
+ However, it is possible to start more than one X server with different configs
+ (and depth) which we could use if we have to but probably not a good idea.  Of
+ course another posibility is to emulate the pixel depth, but that would
+ probably cause performance problems, especially when used by games.  Anyone
+ have any suggestions or should we just leave changing depths as unimplemented?
+</p></quote>
+
+<p>Lionel Ulmer replied:</p>
+<quote who="Lionel Ulmer"><p>
+
+My first question was : why implement it ? I would personally find VERY
+annoying to have any Windows app. change the size of my desktop window when
+I prefer running my applications 'windowed'.</p>
+
+<p>Moreover, I would prefer you to handle first the 'Desktop' case :-) In that
+case, no need to use any X extension, you just have to resize the desktop
+window.</p>
+<p>Depth changing is part of the new X extension called 'RandR' (Rotate and
+Resize). I do not know at all though when it will be available on 'normal' X
+servers (as it was mostly developped now for the iPAQ handheld to rotate the
+screen).</p>
+
+<p>Keith Packard (the Render author (BTW how is the support of this extension
+progressing :-) ? )) and Jim Gettys are the main developpers of this
+extension.</p>
+
+<p>So I would probably wait for this extension to be available before starting
+any code on ChangeDisplaySettings... And please consider having it optional
+:-)</p>
+
+</quote>
+</section>  
+
+
+	
+<!-- ################################################################ -- />
+
+
+
+<section   
+	title="Using CVS Diff"   
+	subject="using cvs diff"   
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/07/.html"   
+	posts="3"   
+	startdate="07/17/2001"   
+	enddate="07/17/2001" 
+>
+
+<p>Bill Medland was trying to keep track of what patches had been applied
+	in the cvs tree but realized he hadn't been doing it properly.
+	He asked how to go about diff'ing his current code against the
+	current cvs.  Marcus Meissner replied first with, 
+	<quote who="Marcus Meissner">
+		To diff your current tree, use 
+		'<code>cvs diff -u</code>' in the wine 
+		toplevel directory.  Or use 
+		'<code>cvs diff -u dir/file1 dir/file2</code>' 
+		if you have only changed file1 and file2.
+		Too see other applied changes, subscribe to the wine-cvs 
+		mailinglist, where those will be posted.	</quote>
+	Huw Davies added, <quote who="Huw Davies">
+
+		cvs diff will show you the differences between your 
+		files and the files in the repository as of your last 
+		cvs update.  To perform a diff against a specific tag 
+		use <code>cvs diff -r</code>, so to diff against the current
+		head you can do <code>cvs diff -r HEAD</code></quote></p>
+	
+</section>  
+</kc>

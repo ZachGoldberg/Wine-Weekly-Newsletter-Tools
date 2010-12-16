@@ -1,0 +1,469 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="46" date="05 Jun 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 46th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+<i>If you haven't already answered our <kcref subject="Survey" startdate="05/29/2000">
+survey</kcref> last week, do so now; we will report on the
+results next week.</i>
+<p />
+To keep more up-to-date on Wine's progress, the Wine Weekly News has
+created a <a href="http://www.winehq.org/News/status.html">Wine Status
+</a> page. If there are any of the items listed on the status page (or
+even items that are not listed) that you'd like the Wine Weekly News
+to write a feature or howto article about, please send your requests
+to us at wwn@winehq.org, so we can see what will be the most
+interesting for our users.
+<p />
+The WineHQ server is now hosted by Corel. You can read the <a
+href="http://www.winehq.org/News/2000/23/announcement.txt">
+announce</a>.
+</intro>
+
+<stats posts="144" size="392" contrib="53" multiples="24" lastweek="28">
+<person posts="17" size="34" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="14" size="27" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="10" size="29" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="10" size="16" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="17" who="Douglas Ridgway &lt;ridgway@winehq.org&gt;" />
+<person posts="5" size="9" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="5" size="4" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="4" size="9" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="4" size="9" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="18" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="15" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+</stats>
+
+
+<section 
+  title="Address space separation"
+  subject="Address space separation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-431.html"
+  posts="25"
+  startdate="28 May 2000 00:00:00 -0800"
+  enddate="02 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+The long awaited address space separation patch has been
+committed. As already covered in previous issues (
+<kcref subject="Win4Lin... Re: OS Opinion ... etc"
+       startdate="04/17/2000">#39</kcref> and
+<kcref subject="Address space separation" 
+       startdate="19 Jan 2000 00:00:00 -0800">#27</kcref>,
+), this patch lets every
+Windows' process run in its own address space (in term of Unix memory
+mappings). This firstly allow to get rid of the famous error where
+Wine was unable to run a 'stripped binary' with another process. 
+
+<p />
+
+Lots of people posted positive feedback on the patch, some others
+(like G&#233;rard Patel, Ove Kaaven, Guy Albertelli) pointed out some
+errors that were quickly fixed.
+
+<p />
+
+The most noticeable bad sides of this patch are:
+<ul>
+	<li />the -desktop option no longer work when more than one
+process is launched
+	<li />DOS (MZ) processes are no longer supported
+	<li />it seems that the patch is less robust with 16 bit apps
+than for 32 bit ones
+	<li />support for native USER is now broken
+	<li />inter-process message sending is also broken
+</ul>
+
+<p />
+
+There are a few other changes, mostly involving the command line
+options:
+<ul>
+	<li />Wine is no longer able to spawn several processes at
+once. Before, it was legal to use<br />
+<code>[old way] wine telnet freecell</code><br />
+Now, you must invoke twice the wine interpreter on the command
+line. The good side of it is you no longer need to put the optional
+arguments to your program into quotes on the command line. Before you
+had to write:<br />
+<code>[old way] wine "winword.exe mytext.doc"</code><br />
+now you must write <br />
+<code>[new way] wine winword.exe mytext.doc</code><br />
+Notes: 
+<ul>
+<li />if any path (to the executable, or to a file name) contains
+spaces, you need to tell the shell not to interpret those spaces as
+separators using back slashes or quotes. For example, if you used to
+write: <br />
+<code>[old way] wine "c:\winnt\winhlp32.exe d:\borland\Borland
+Shared\MSHelp\win32.hlp"</code><br />
+now you need to write:<br />
+<code>[new way] wine c:\\winnt\\winhlp32.exe d:\\borland\\Borland\
+Shared\\MSHelp\\win32.hlp</code><br />
+or<br />
+<code>[new way] wine c:\\winnt\\winhlp32.exe "d:\borland\Borland
+Shared\MSHelp\win32.hlp"</code>
+<li />if among the arguments to your program, one starts with a dash,
+you'd better use<br />
+<code>[new way] wine --desktop 640x480 -- hl.exe -console</code><br />
+note the '--' to tell Wine not to look for options after this sign
+(and consider the rest of the command line as parameters to create the 
+new process).
+</ul>
+</ul>
+
+<p />
+
+</section>
+
+
+<section 
+  title="Code-pages in Wine"
+  subject="Codepages and locales"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-443.html"
+  posts="9"
+  startdate="29 May 2000 00:00:00 -0800"
+  enddate="30 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Bertho Stultiens announced:
+<quote who="Bertho Stultiens">
+I am currently implementing the Wine Message Compiler (wmc: as an
+alternative to mc.exe). I need to implement quite a bit unicode
+support for it to function correctly. Unicode requires a lot of tables
+for conversion and I did just that for nearly all codepages (from
+ftp.unicode.org).</quote>
+
+
+<p />
+
+Alexandre Julliard answered Dmitry Timoshkov has been working with him 
+integrating the same needed basic features into Wine (like on demand
+translation table loading...). Both agreed that (g)libc didn't provide 
+yet a reliable Unicode support, and that a separate one shall be
+provided. However, since the wmc message compiler shall be used to
+compile Wine, it would be difficult to make it heavily rely on Wine
+features. Also, Bertho would like to keep wmc (as wrc - the Wine
+resource compiler - is) independent of Wine.
+
+<p />
+
+Bertho suggested
+<quote who="Bertho Stultiens">
+I am not suggesting to build libunicode.so, but I do suggest to build
+libunicode.a, which can be linked against. This should not require a
+special API if it only concerns tables. The point is that libunicode.a
+should be self-sufficient so that you can take it out of wine's context
+just far enough so that it becomes usable in a wider sense.
+
+<p />
+
+Basically, you need to place the unicode code isolated and only provide
+the mere minimum of API which would also be required within wine's
+context. This enables me to reuse the data/code in wrc without requiring
+a complete wine-build and does not complicate wine's internal API
+because it isn't really extended, but merely reused. It would be a shame
+to neglect the potential while not much effort is required.</quote>
+
+
+<p />
+
+Alexandre agreed on the general scheme, but wasn't happy with creating 
+another library. He strongly kept his opinion on providing those
+features from libwine.so. However, both agreed that libwine.so
+currently contains too many things and shall lose some weight
+(starting with removing USER and GDI code).
+
+<p />
+
+Alexandre announced he shall start committing the code-pages to CVS
+when the Address Space Separation stops shaking the (CVS) tree, and
+asked Bertho to send also his prepatch so that both efforts shall be
+merged together.</section>
+
+
+<section 
+  title="Too many GDI objects ?"
+  subject="LOCAL_GetBlock not enough space in GDI local heap"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-06/Subject/article-12.html"
+  posts="6"
+  startdate="01 Jun 2000 00:00:00 -0800"
+  enddate="01 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jacques Gelinas wrote: 
+<quote who="Jacques Gelinas">
+We are trying to run a win32 application on Wine and Linux. The
+application is starting and ultimately fails with the following
+message:<br />
+<code>
+LOCAL_GetBlock not enough space in GDI local heap (01d7) for 60 bytes</code>
+
+<p />
+
+The application does quite a lot before failing. It does ODBC access
+to a sybase server, brings its splash screen, then its main
+windows. Note that this application main window use quite a few
+widgets. It is made of a notebook object with several data browsers
+and input fields distributed in the various pages.
+
+<p />
+
+Trying to pinpoint the offending piece of code (This is our own
+application, so we have to source), we think it is not any code in
+particular, but simply because there are two many widgets. Commenting out
+the area where our app fails, we get a little further and fails in another
+window.
+</quote>
+
+
+<p />
+
+Jacques asked for explanations. Obviously the number of GDI objects
+was the source of his problems. Either Wine is leaking some objects,
+or Windows provide a support for a larger number of objects.
+
+<p />
+
+Douglas Ridgway pointed back to an <a
+href="http://www.winehq.org/patches970914/">old (unapplied) patch
+</a>to help tracking GDI objects leak (it may even not compile).
+
+<p />
+
+Gavriel State continued 
+<quote who="Gavriel State">
+Actually, the Corel tree has an extensive resource/memory leak tracker, 
+including a motif-based graphical profile viewer client.  Last I heard, 
+Alexandre didn't want to put that into WineHQ, since he wanted Wine to 
+properly implement the equivalent Win32 APIs so that resource-monitoring 
+Win32 apps would work.</quote>
+
+
+<p />
+
+St&#233;phane Lussier provided another track
+<quote who="Sander van Leeuwen">
+In Wine there's currently a limitation on the size of the GDI heap. It is
+limited to 64K. This is a old limitation from Win 3.1 (16 bits), this
+limitation doesn't exist under Win9x/WinNT.
+
+<p />
+
+Alexandre fixed that issue on the Corel wine tree, and I'm pretty sure
+eventually somebody will merge his work back into Wine-HQ source tree. It
+could even be you :-)
+
+<p />
+
+If your application creates a lot of GDI objects that could be the problem.
+Or maybe also your application leaks some GDI object, if it's the case
+you'll run into that problem (no more space in the GDI heap) much faster
+than in Windows. I think in Windows you can create 64K objects before
+Windows starts to complain.
+</quote>
+
+
+<p />
+
+In another thread, Douglas Ridway gave a slightly different
+explanation on GDI heap limitation:
+<quote who="Doug Ridgway">
+Although the Wine GDI heap is only 64K, it's not as bad as it
+looks. The Wine GDI heap, unlike Win16, does not store large objects
+(fonts, palettes, etc.) but only structures which hold flat pointers
+to the objects themselves. So, although the heap is of a limited size,
+the number of objects which can realistically be stored is large and
+not much different from Microsoft implementations. If you're running
+out of space on the GDI heap, then Wine is probably leaking GDI
+objects.</quote>
+</section>
+
+
+<section 
+  title="Wine mail archives"
+  subject="archives up"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-510.html"
+  posts="1"
+  startdate="31 May 2000 00:00:00 -0800"
+  enddate="31 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+John Freed announced that the HTTP access to the Wine mailing lists
+archive is back online. Those archives can be accessed at
+http://www.integrita.com.</section>
+
+
+<section 
+  title="Feature: DLL overrides by Ove K&#229;ven"
+>
+<p />
+The wine.conf directives [DllDefaults] and [DllOverrides] are the subject of some confusion. The overall
+purpose of most of these directives are clear enough, though - given a choice, should Wine use its own
+built-in DLLs, or should it use .DLL files found in an existing Windows installation? This article
+explains how this feature works.
+<p />
+<h3>DLL types</h3>
+<dl>
+<dt />native
+<dd />A "native" DLL is a .DLL file written for the real Microsoft Windows.
+<dt />builtin
+<dd />A "builtin" DLL is a Wine DLL. These can either be a part of libwine.so, or more recently, in a
+special .so file that Wine is able to load on demand.
+<dt />elfdll
+<dd />An "elfdll" is a Wine .so file with a special Windows-like file structure that is as close to
+Windows as possible, and that can also seamlessly link dynamically with "native" DLLs, by using special
+ELF loader and linker tricks. Bertho Stultiens did some work on this, but this feature has not yet been
+merged back into Wine (because of political reasons and lack of time), so this DLL type does not
+exist in the official Wine at this time. In the meantime, the "builtin" DLL type gained some of
+the features of elfdlls (such as dynamic loading), so it's possible that "elfdll" functionality
+will be folded into "builtin" at some point.
+<dt />so
+<dd />A native Unix .so file, with calling convention conversion thunks generated on the fly as the
+library is loaded. This is mostly useful for libraries such as "glide" that has exactly the same
+API on both Windows and Unix.
+</dl>
+<p />
+<h3>The [DllDefaults] section</h3>
+<dl>
+<dt />EXTRA_LD_LIBRARY_PATH
+<dd />This specifies the location of the Wine's DLL .so files. Wine will search this path when trying
+to locate a DLL of the type "builtin" or "elfdll". (This does not apply to libwine.so, since libwine.so
+is not a DLL in this sense.)
+<dt />DefaultLoadOrder
+<dd />This specifies in what order Wine should search for available DLL types, if the DLL in question was
+not found in the [DllOverrides] section.
+</dl>
+<p />
+<h3>The [DllPairs] section</h3>
+At one time, there was a section called [DllPairs] in the default configuration file, but this has been
+obsoleted because the pairing information has now been embedded into Wine itself. (The purpose of this
+section was merely to be able to issue warnings if the user attempted to pair codependent 16-bit/32-bit
+DLLs of different types.) If you still have this in your wine.conf or .winerc, you may safely delete it.
+<p />
+<h3>The [DllOverrides] section</h3>
+This section specifies how you want specific DLLs to be handled, in particular whether you want to use
+"native" DLLs or not, if you have some from a real Windows configuration. Because builtins do not mix
+seamlessly with native DLLs yet, certain DLL dependencies may be problematic, but workarounds exist in
+Wine for many popular DLL configurations. Also see WWN's <a href="status.html">Status Page</a> to figure
+out how well your favorite DLL is implemented in Wine.
+<p />
+It is of course also possible to override these settings by explictly using Wine's --dll command-line
+option (see the man page for details).
+<p />
+Some hints for choosing your optimal configuration (listed by 16/32-bit DLL pair):
+<dl>
+<dt />krnl386, kernel32
+<dd />Native versions of these will never work, so don't try. Leave at builtin.
+<dt />gdi, gdi32
+<dd />Graphics Device Interface. No effort has been made at trying to run native GDI. Leave at builtin.
+<dt />user, user32
+<dd />Window management and standard controls. It was possible to use Win95's native versions at some point
+(if all other DLLs that depend on it, such as comctl32 and comdlg32, were also run native).
+However, this is no longer possible after the Address Space Separation, so leave at builtin.
+<dt />ntdll
+<dd />NT kernel API. Although badly documented, the native version of this will never work.
+Leave at builtin.
+<dt />w32skrnl
+<dd />Win32s (for Win3.x). Native version will probably never work. Leave at builtin.
+<dt />wow32
+<dd />Win16 support library for NT. Native version will probably never work. Leave at builtin.
+<dt />system
+<dd />Win16 kernel stuff. Will never work native. Leave at builtin.
+<dt />display
+<dd />Display driver. Definitely leave at builtin.
+<dt />toolhelp
+<dd />Tool helper routines. This is rarely a source of problems. Leave at builtin.
+<dt />ver, version
+<dd />Versioning. Seldom useful to mess with.
+<dt />advapi32
+<dd />Registry and security features. Trying the native version of this may or may not work.
+<dt />commdlg, comdlg32
+<dd />Common Dialogs, such as color picker, font dialog, print dialog, open/save dialog, etc.
+It is safe to try native.
+<dt />commctrl, comctl32
+<dd />Common Controls. This is toolbars, status bars, list controls, the works.
+It is safe to try native.
+<dt />shell, shell32
+<dd />Shell interface (desktop, filesystem, etc). Being one of the most undocumented pieces of Windows, you
+may have luck with the native version, should you need it.
+<dt />winsock, wsock32
+<dd />Windows Sockets. The native version will not work under Wine, so leave at builtin.
+<dt />icmp
+<dd />ICMP routines for wsock32. As with wsock32, leave at builtin.
+<dt />mpr
+<dd />The native version may not work due to thunking issues. Leave at builtin.
+<dt />lzexpand, lz32
+<dd />Lempel-Ziv decompression. Wine's builtin version ought to work fine.
+<dt />winaspi, wnaspi32
+<dd />Advanced SCSI Peripheral Interface. The native version will probably never work. Leave at builtin.
+<dt />crtdll
+<dd />C Runtime library. The native version will easily work better than Wine's on this one.
+<dt />winspool.drv
+<dd />Printer spooler. You are not likely to have more luck with the native version.
+<dt />ddraw
+<dd />DirectDraw/Direct3D. Since Wine does not implement the DirectX HAL, the native version
+will not work at this time.
+<dt />dinput
+<dd />DirectInput. Running this native may or may not work.
+<dt />dsound
+<dd />DirectSound. It may be possible to run this native, but don't count on it.
+<dt />dplay/dplayx
+<dd />DirectPlay. Native ought to work best on this, if at all.
+<dt />mmsystem, winmm
+<dd />Multimedia system. The native version is not likely to work. Leave at builtin.
+<dt />msacm, msacm32
+<dd />Audio Compression Manager. Builtin works best, if you set msacm.drv to the same.
+<dt />msvideo, msvfw32
+<dd />Video for Windows. It is safe (and recommended) to try native.
+<dt />mcicda.drv
+<dd />CD Audio MCI driver.
+<dt />mciseq.drv
+<dd />MIDI Sequencer MCI driver (.MID playback).
+<dt />mciwave.drv
+<dd />Wave audio MCI driver (.WAV playback).
+<dt />mciavi.drv
+<dd />AVI MCI driver (.AVI video playback). Best to use native.
+<dt />mcianim.drv
+<dd />Animation MCI driver.
+<dt />msacm.drv
+<dd />Audio Compression Manager. Set to same as msacm32.
+<dt />midimap.drv
+<dd />MIDI Mapper.
+<dt />wprocs
+<dd />This is a pseudo-DLL used by Wine for thunking purposes. A native version of this
+doesn't exist.
+</dl>
+<p />
+</section>
+
+
+<section 
+  title="HowTo: Lotus Notes"
+>
+<p />
+Dan Schwarz has brought to our attention that he hosts a
+<a href="http://www.brooklinesoftware.com/linux/linuxnotes.html">Lotus Notes on Linux</a> resource page, which
+explains how to make Lotus Notes work under Wine. It appears a bit outdated as of this writing, but should make
+a good starting point (and you could just pester him if you want updates).
+<p />
+We need more application tips! Submit your contributions to <a href="mailto:wwn@winehq.org">wwn@winehq.org</a>.
+</section>
+
+</kc>

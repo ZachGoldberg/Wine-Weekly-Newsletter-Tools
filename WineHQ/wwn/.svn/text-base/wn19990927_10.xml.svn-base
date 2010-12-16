@@ -1,0 +1,351 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="10" date="27 Sep 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the tenth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine 19990923 has been released. Here's the changelog summary:
+
+<ul>
+
+<li />DIB optimizations.
+
+<li />Multimedia and OLE DLLs reorganization.
+
+<li />Many fixes in font mapping.
+
+<li />Clipboard support improvements.
+
+<li />Lots of bug fixes.
+
+</ul>
+
+<p />
+
+Some changes also occurred with version handling (of .EXE and .DLL); if
+you encounter error messages regarding version handling, try to run
+wine with the -winver XX option (XX being win31, win95, win98, nt35,
+nt40), it helps in some cases.
+
+</intro>
+
+<stats posts="90" size="481" contrib="38" multiples="19" lastweek="8">
+
+<person posts="10" size="27" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="8" size="31" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="8" size="21" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="220" who="'Stephane Lussier' &lt;stephane@macadamian.com&gt;" />
+<person posts="4" size="21" who="Karl Lessard &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="4" size="20" who="Juergen Lock &lt;nox@jelal.kn-bremen.de&gt;" />
+<person posts="4" size="16" who="'Noel Borthwick' &lt;noel@macadamian.com&gt;" />
+<person posts="3" size="7" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="3" size="7" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="3" size="6" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="3" size="5" who="Ove Kaaven &lt;ovek@arcticnet.no&gt;" />
+<person posts="3" size="5" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="2" size="6" who="admiral coeyman &lt;admiral@corner.net&gt;" />
+<person posts="2" size="5" who="Adam Sacarny &lt;magicbox@bestweb.net&gt;" />
+<person posts="2" size="4" who="'Juergen Schmied' &lt;juergen.schmied@metronet.de&gt;" />
+<person posts="2" size="3" who="lawson_whitney@juno.com" />
+<person posts="2" size="3" who="Andreas Eckleder &lt;A.Eckleder@bigfoot.com&gt;" />
+<person posts="2" size="3" who="'Paul E. Merrell' &lt;pem@televar.com&gt;" />
+<person posts="2" size="21" who="Ulrich Czekalla &lt;oponvybl@umail.corel.com&gt;" />
+
+</stats>
+
+<section
+  title="Stock fonts information"
+  subject="Stock fonts information"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-242.html"
+>
+
+After the recent changes to the font size handling, Francis Beaudet reported
+some issues with some programs (QuattroPro not to name it): <quote who="Francis
+Beaudet">The problem I got is that Quattro gets a stock font handle and
+then it uses GetObject to access the height of the font through he LOGFONT
+structure. Since the height is set to 0, all the calculations are off and
+the display is whacked.</quote>
+
+<p />
+
+Richard Cohen expressed two properties to be kept for stock fonts:
+
+<quote who="Richard Cohen">
+
+<ul>
+
+<li />Stock fonts are independent of mapping mode
+
+<li />Stock fonts are proportional to resolution
+
+</ul>
+
+</quote>
+
+and proposed two possible fixes:
+
+<ol>
+
+<li /><quote who="Richard Cohen">the first one, as an extension of Francis' proposal, would
+query the actual height using GetTextMetric()</quote>
+
+<li /><quote who="Richard Cohen">the second one, would require to modify the initialization
+of stock fonts (in device units) and change SelectObject() not to interpret
+the size as logical units.</quote> Richard also reported that, according to
+his tests, this option <quote who="Richard Cohen">is what Windows does (e.g. stock fonts
+selected into printer DCs are interpreted as device units rather than
+logical units)</quote>, but this would require the modify the DC_FUNCTIONS
+accordingly.
+
+</ol>
+
+<p />
+
+Francis acknowledged that solution (2) was the <quote who="Francis
+Beaudet">Right Way
+(TM)</quote> to do it, but that he would rather implement solution (1)
+because it's easier to implement.
+
+<p />
+
+</section>
+
+<section
+  title="Clipboard behavior"
+  subject="Clipboard behavior"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-283.html"
+>
+
+Jutta Wrage reported some issue she had with recent clipboard changes,
+<quote who="Jutta Wrage">If I copy something from inside Agent into the clipboard, I
+cannot copy and paste from xterm into Agent any longer. I always get the
+content copied from Agent before, when trying to paste. - Same with
+Write.</quote>
+
+<p />
+
+Noel Borthwick explained this behavior is how the current clipboard
+code has been designed:
+
+<quote who="Noel Borthwick">When you do a copy in your application, it now takes ownership of both
+PRIMARY and CLIPBOARD selections. Now when you mark something in
+XTerm, Wine loses <b>only</b> the PRIMARY selection, since XTerm doesn't
+support CLIPBOARD selections.When you then try to paste back into
+Wine, since Wine still owns the CLIPBOARD selection it takes priority
+over PRIMARY, and what you see is the data you previously copied in
+Wine.
+
+<p />
+
+We discussed this issue internally and felt that the other alternative
+(losing both PRIMARY and CLIPBOARD selections on loss of PRIMARY) would be
+even worse. Suppose a Windows user copied something into the clipboard using
+Edit | Copy. Now if you were to accidentally mark a selection in XTerm or some
+other app. This would cause the content of the clipboard to be lost. This
+would be pretty non-intuitive for Windows users.
+
+<p />
+
+I think one possible resolution to this could be to have some settings in
+.winerc to customize Wine's clipboard selection behavior to lose both
+PRIMARY and CLIPBOARD selections on loss of PRIMARY, for users who prefer
+this behavior.
+
+<p />
+
+BTW you won't see this symptom if you copy something into an app which uses
+the CLIPBOARD selection. This is because we lose both PRIMARY and CLIPBOARD
+on loss of the CLIPBOARD selection.</quote>
+
+<p />
+
+Dave Elliot proposed to add <quote who="Dave Elliot">an option on the system menu to
+release the CLIPBOARD selection.</quote>, and noted that <quote
+who="Dave Elliot">Netscape uses the PRIMARY selection if you middle click, and the
+CLIPBOARD if you select paste. While that would be a great solution, it is
+rather un-intuitive anyway, and I think implementing middle-button paste
+would be even harder than just allowing WINE to release the CLIPBOARD
+selection.</quote>
+
+<p />
+
+In another thread, J&#252;rgend Lock and Noel discussed the causes of a
+clipboard crash when copying with the 16 bit winhelp. After
+investigation, it turned out that Wine's edit control was the culprit,
+because it called 32 bit clipboard functions with 16 bit data, while
+it should only call the 32 bit (resp. 16) when handling a 32 bit
+(resp. 16) WM_COPY message.
+</section>
+
+<section
+  title="Cvsdate new release"
+  subject="Cvsdate new release"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-319.html"
+>
+
+Jutta Wrage announced that she had enhanced cvsdate (first provided by
+Pavel Roskin). Cvsdate allows to retrieve a complete source version of
+wine by date; this is mainly use to help finding which patch caused a
+regression (by a binary search on the data and regenerating wine from
+the source tree).
+
+<p />
+
+Jutta explains the enhancements:
+
+<quote who="Jutta Wrage">Cvsdate now fetches a specific version of the tree without any useless
+requests on files already existing or obsolete.
+
+<p />
+
+If you want to use cvsdate, copy your working copy of the wine tree to
+another directory and fetch a cvs log with cvsdate first.</quote>
+
+<p />
+
+The latest version can be grabbed at <a
+href="http://www.westfalen.de/witch/cvsdate.tgz">
+http://www.westfalen.de/witch/cvsdate.tgz</a>
+
+<p />
+
+Cvsdate is (currently) not part of wine source tree.
+
+</section>
+
+<section
+  title="The Vineyard"
+  subject="The Vineyard"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-337.html"
+>
+
+Adam Sacarny installed on WineHQ a prototype of "The Vineyard", an extension
+of WineHQ <quote who="Adam Sacarny">website that would be home for News, the daily
+builds maintained by me and Jean-Louis Thirot, and TkWine. The major focus
+of the site would be News and Discussions, although it would have other news
+sections.</quote>
+
+<p />
+
+Feel free to send your comments to <a
+href="mailto:magicbox@bestweb.net">Adam</a>
+
+</section>
+
+<section
+  title="Porting to BeOS (cont'd)"
+  subject="Porting to BeOS (cont'd)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-322.html"
+>
+
+Patrik Stridvall continued his saga about porting Wine to BeOS. His
+concern was linked to the address space mapping imposed by the
+different OSes between kernel space and user space:
+
+<quote who="Patrik Stridvall">
+
+<p />
+
+<table border="1">
+   <tr>
+      <td>OS</td>
+      <td>Kernel space</td>
+      <td>Shared memory</td>
+      <td>User space</td>
+   </tr>
+   <tr>
+      <td>BeOS</td>
+      <td>0x00000000-0x7FFFFFFFF</td>
+      <td></td>
+      <td>0x80000000-0xFFFFFFFFF</td>
+   </tr>
+   <tr>
+      <td>Windows 9x</td>
+      <td>0xC0000000-0xFFFFFFFFF</td>
+      <td>0x80000000-0xBFFFFFFFF</td>
+      <td>0x00000000-0x7FFFFFFFF</td>
+   </tr>
+   <tr>
+      <td>Windows NT</td>
+      <td>0xC0000000-0xFFFFFFFFF</td>
+      <td></td>
+      <td>0x00000000-0xBFFFFFFFF</td>
+   </tr>
+</table>
+
+</quote>
+
+<p />
+
+The inversion in user and kernel space between Win 9x and BeOS makes
+impossible to load a Windows binary into BeOS' user space (if the
+Windows binary uses some knowledge of Windows' user space). Patrik's
+interpretation is that applications respecting the following rules
+would be able to run on BeOS:
+
+<quote who="Patrik Stridvall">
+
+<ul>
+
+<li />1/ Don't use strange undocumented Windows API features
+
+<li />2/ Don't try do strange operations/tests on pointers
+
+<li />3/ Have relocation records
+
+</ul>
+
+</quote>
+
+<p />
+
+Ulrich Weigand agreed with Patrik. He explained it in details:
+
+<ul>
+
+<li />on point 2, <quote who="Ulrich Weigand">some Win95 system DLLs <b>do</b> test on
+address &gt;2GB as a marker for 'shared space'. Apart from those, I don't think
+anyone should care. Any program/DLL that runs both on NT and 95 certainly
+won't care.</quote> According to Ulrich, Native USER could be one of them.
+
+<li />on point 3, Ulrich explained that lots of applications have their
+relocation records striped (this seems to be default behavior of MS linkers
+for "retail" version of executables). This means that the executable can
+only be loaded at one peculiar address (the OS' loader cannot "relocate" the
+executable), generally, <quote who="Ulrich Weigand">at the bottom of the address space
+(4MB or so)</quote>. Currently under Linux, the address space looks like
+this:
+
+<p />
+
+<table>
+   <tr><td>PE executable</td><td>0x0040....</td></tr>
+   <tr><td>Wine executable</td><td>0x0800....</td></tr>
+   <tr><td>PE DLLs</td><td>0x1000....</td></tr>
+   <tr><td>ELF shared libs</td><td>0x4000....</td></tr>
+   <tr><td>PE system DLLs</td><td>0x7xxx.... (Win95)</td></tr>
+   <tr><td>PE shared DLLs</td><td>0xbxxx.... (Win95)</td></tr>
+   <tr><td>Kernel</td><td>0xc000</td></tr>
+</table>
+
+What doesn't work currently on Linux is to run <b>two</b> applications
+without relocation records: this is one the main reason for address
+space separation - see previous releases of this letter.
+
+</ul>
+
+</section>
+
+</kc>

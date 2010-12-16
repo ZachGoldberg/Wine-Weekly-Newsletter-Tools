@@ -1,0 +1,466 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="246" date="10/29/2004" />
+<intro> <p>This is the 246th issue of the Wine Weekly News publication.
+Its main goal is to vote. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="142" size="616" contrib="50" multiples="27" lastweek="31">
+
+<person posts="19" size="55" who="Alexandre Julliard" />
+<person posts="12" size="33" who="Juan Lang" />
+<person posts="10" size="31" who="William Poetra Yoga H" />
+<person posts="8" size="143" who="Michael Jung" />
+<person posts="7" size="18" who="Dimitrie O. Paun" />
+<person posts="6" size="29" who="Mike McCormack" />
+<person posts="4" size="14" who="Eric Pouech" />
+<person posts="4" size="13" who="Walt Ogburn" />
+<person posts="4" size="10" who="Francois Gouget" />
+<person posts="4" size="8" who="Devils Cry" />
+<person posts="3" size="11" who="James Hawkins" />
+<person posts="3" size="11" who="Jason Edmeades" />
+<person posts="3" size="10" who="Rolf Kalbermatter" />
+<person posts="3" size="9" who="Dmitry Timoshkov" />
+<person posts="3" size="9" who="Vincent B&#233;ron" />
+<person posts="3" size="9" who="Hans Leidekker" />
+<person posts="3" size="6" who="M-Halo" />
+<person posts="2" size="10" who="Thorsten Kani" />
+<person posts="2" size="8" who="Sascha Hanse" />
+<person posts="2" size="7" who="Eric Frias" />
+<person posts="2" size="6" who="Rein Klazes" />
+<person posts="2" size="6" who="Shachar Shemesh" />
+<person posts="2" size="6" who="Brian Vincent" />
+<person posts="2" size="5" who="Scott Ritchie" />
+<person posts="2" size="5" who="Mike Hearn" />
+<person posts="2" size="5" who="Uwe Bonnes" />
+<person posts="2" size="4" who="Dan Kegel" />
+<person posts="1" size="49" who="Aneurin Price" />
+<person posts="1" size="16" who="Chris Morgan" />
+<person posts="1" size="5" who="Robert Shearman" />
+<person posts="1" size="4" who="Jeremy White" />
+<person posts="1" size="3" who="Randy Galbraith" />
+<person posts="1" size="3" who="Raphael" />
+<person posts="1" size="3" who="Jakob Eriksson" />
+<person posts="1" size="3" who="Saulius Krasuckas" />
+<person posts="1" size="2" who="Kuba Ober" />
+<person posts="1" size="2" who="=?ISO-8859-1?Q?Joaqu=EDn_Fern=E1ndez?=" />
+<person posts="1" size="2" who="Mario Ohnewald" />
+<person posts="1" size="2" who="Noam Raphael" />
+<person posts="1" size="2" who="Filip Navara" />
+<person posts="1" size="2" who="Ivan Leo Puoti" />
+<person posts="1" size="2" who="Doug" />
+<person posts="1" size="2" who="Andreas Mohr" />
+<person posts="1" size="2" who="Andrew Quigley" />
+<person posts="1" size="2" who="Bill Medland" />
+<person posts="1" size="2" who="Markus Amsler" />
+<person posts="1" size="2" who="Kenneth Porter" />
+<person posts="1" size="2" who="gslink" />
+<person posts="1" size="1" who="Jacobus Erasmus" />
+
+</stats>
+<section 
+	title="MS Enhanced Provider Library" 
+	subject="rsaenh [beware: 27kB attachment]"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/10/0542.html" 
+	posts="4"
+	startdate="10/25/2004"
+	enddate="10/28/2004"
+>
+<topic>Security</topic>
+<p>Microsoft began shipping a new <i>Cryptographic Service Provider</i>
+a few years ago called <i>MS Enhanced Provider</i> and put it in a DLL
+called rsaenh.dll.  It's part of the Crypto API and provides algorithms
+for DES, 3DES, and RSA among others.  Until now, Wine hasn't had an
+implementation of it.  Michael Jung has apparently been working on
+it for a while now this week posted a preview:</p>
+<quote who="Michael Jung"><p>
+
+I've worked on an OpenSSL based implementation of rsaenh.dll in my spare time 
+over the last three months. Although it is by no means complete, I feel that 
+the coarse structure should be stable by now. The patch is appended to this 
+mail as a gzipped tape archive. I'm aware that small patches are preferable, 
+but I hope someone helps me to get this beast in: Please give me feedback on 
+what remains to be done.
+</p><p>
+If you want to try the patch note the following:
+<ul>
+<li> After you have applied the patch you have to run autoheader and autoconf.
+Then cd dlls ; make_dlls ; cd .. ; configure. </li>
+<li> After you have compiled and installed wine, you have to unregister rsabase 
+and register rsaenh (regsvr32 /U rsabase ; regsvr32 rsaenh). rsaenh.dll is 
+meant to replace rsabase.dll sometime (Windows XP also has rsaenh.dll only).</li>
+<li> This patch was tested with the attached regression tests and with some MSDN 
+example code. No real application was tested until now.</li>
+<li> This code is not secure! The user's persistent private RSA signature and key 
+exchange key pairs are stored in the registry in _plaintext_. Do not use this 
+with your homebanking application ;)</li>
+<li> The code depends on CUR_BLOB_VERSION being defined in wincrypt.h. This is 
+implemented in a distinct trivial patch, which I've submitted this morning 
+and which will probably go into CVS tonight (that is if you live in 
+germany ;)</li>
+<li> You ain't see a whole lot, if you don't have the openssl headers installed 
+(libssl-dev on debian). The code will compile without, but you'll get a lot 
+of FIXME's and some of the regression tests will fail.</li>
+</ul></p></quote>
+
+<p>Juan Lang had some ideas for improving the patch:</p>
+<quote who="Juan Lang"><p>
+<ol>
+<li> MD4, MD5, and SHA1 are now implemented in wine's
+advapi32.  Please use these instead of OpenSSL's.</li>
+<li> The regression tests should be written so they
+don't fail if OpenSSL isn't available.</li>
+<li> Get rid of magic numbers:  What do the values 0x36
+and 0x5c mean in copy_hmac_info?  What is the length
+64?</li>
+
+Finally, some stylistic nits:
+<li> Please break long lines.</li>
+<li> In some of the files you have the incorrect
+filename in the comments, e.g. dlls/rsabase/handle.c,
+dlls/rsabse/handle.h</li>
+<li> Your indentation in some places is inconsistent;
+you mix spaces and tabs, and that makes it hard for me
+to guess the appropriate tab size.</li></ol></p></quote>
+
+<p>With regards to using the hash functions in advapi32,
+Michael wanted to know if the two could share an 
+implementation implemented elsewhere,
+<quote who="Michael Jung">
+Would it be possible to move
+ the SHA1, MD4 and MD5 related code to some other
+ directory in the wine tree and link to it
+ statically from both advapi32 and rsaenh? Is the
+ misc directory meant for this purpose?</quote></p>
+
+<p>Juan explained in this case there was no reason for
+it,
+<quote who="Juan Lang">
+No.  Generally, creating static libs is something we
+ avoid in wine.  More specifically, these functions are
+ already exported by advapi32, and you already link to
+ advapi32 (to get access to the registry) so there's no
+ advantage to having a copy in both places.</quote></p>
+
+<p>That led Michael to ask about something else 
+implemented in advapi32:</p>
+<quote who="Michael Jung"><p>
+There is also a DES implementation in dlls/advapi32/crypt_des.c. However, this
+one is not exported by advapi32.dll. I could copy the code over to
+dlls/rsaenh, but this would mean unnecessary code duplication. How are such
+cases handled in wine typically?
+</p></quote>
+
+<p>Now, this is a topic that comes up quite frequently with Wine.  Most
+developers hate the idea of duplicating code, especially on parts that
+require frequent maintenance.  However, Juan pointed out that this
+wonderful design trait comes to us from the folks in Redmond:</p>
+<quote who="Juan Lang"><p>
+They are typically handled by copying the code.  If linking between the
+two requires a private export, then our DLLs can't work with native ones,
+and that's something we try to avoid.  If we use a static library, the
+number of static libraries can potentially get very large, and the
+makefiles unmanageable.  It's really best to accept code duplication,
+especially for something like DES that is quite stable.</p></quote>
+
+<p>After a few more rounds of back and forth discussion, Michael
+submitted a final version of the patch to wine-patches.</p>
+
+</section>
+<section
+        title="Test Dependencies"
+        subject="Writing tests"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0599.html"
+        posts="2"
+        startdate="10/27/2004"
+	enddate="10/28/2004"
+>
+<topic>Testing</topic>
+<p>Wine's test suite has seen sizable improvements in
+the past few years.  Tons of new tests have been added
+enabling more and more bugs and regressions to be 
+caught.  We even have an automated testing facility
+that compiles the tests on a daily basis and runs them
+on actual Windows clients to see how accurate they are.
+Accurate tests mean an accurate interpretation of Win32
+leading to a more accurate reimplementation.  There was
+a bit of a hiccup with some of the reporting, but it
+appears to be straightened out.  If you're curious about
+that data, check out 
+<a href="http://test.winehq.com/data">http://test.winehq.com/data</a>.
+Raw reports can be seen within Hypermail archives at
+<a href="http://www.winehq.com/hypermail/wine-tests-results/">
+http://www.winehq.com/hypermail/wine-tests-results/</a>.  
+If you happen to have a spare Windows machine laying around
+you might be interested in downloading the 
+<a href="http://prdownloads.sourceforge.net/winrash/winrash-0009-chris-msvc.exe?download">winrash</a>
+client and have it automatically run the tests.</p>
+
+<p>&lt;/shameless-wine-advertisement&gt;</p>
+
+<p>Walter Ogburn was poking around with tests this
+week and noticed something odd:</p>
+<quote who="Walter Ogburn"><p>
+I have a question about dependencies when writing tests.  Some tests use
+LoadLibraryA and GetProcessAddress to get access to Windows / Wine APIs,
+and other tests just include the appropriate header files and link to the
+DLLs.  One example of the first type is dlls/oleaut32/olefont.c:
+<ul><code>
+================ &lt;snip&gt; ==============================================<br />
+static HMODULE hOleaut32;<br />
+
+static HRESULT (WINAPI
+*pOleCreateFontIndirect)(LPFONTDESC,REFIID,LPVOID*);<br />
+
+START_TEST(olefont)<br />
+{<ul><code>
+        LPVOID pvObj = NULL;<br />
+        HRESULT hres;<br />
+        IFont*  font = NULL;<br /><br />
+
+        hOleaut32 = LoadLibraryA("oleaut32.dll");<br />
+        pOleCreateFontIndirect = (void*)GetProcAddress(hOleaut32, "OleCreateFontIndirect");<br />
+        if (!pOleCreateFontIndirect)
+	<ul><code>
+            return;</code></ul></code></ul>
+=====================================================================</code></ul>
+</p><p>
+What is the reason for this difference?  Which example should new tests
+follow?  My guess is that LoadLibraryA and GetProcAddress are used if the
+headers, DLLs, and APIs might not be present on some Windows machines, so
+that the tests don't fail.  If that's correct, is there a list somewhere
+of which ones are safe and which ones should be handled like in the
+olefont test?
+</p></quote>
+
+<p>Francois Gouget explained the difference:</p>
+<quote who="Francois Gouget"><p>
+If the API is not going to be available on all Windows systems, then use 
+LoadLibrary()+GetProcAddress() so we can at least run the other parts of 
+the test on these platforms. In extreme cases you may have to tweak the 
+test so it does not link at all with the dll it's supposed to test if 
+that dll may be missing on some Windows versions (e.g. Windows 95 or 
+98).</p><p>
+
+Otherwise just use the standard header+link method. If in doubt, go with 
+with the header+link method and someone will fix the test if it does not 
+compile/run on Windows anymore.
+</p><p>
+The MSDN may tell you that the API is Windows 2000+ or some such. But 
+that's not very reliable: it's quite possible the API is there and just 
+returns ERROR_NOT_IMPLEMENTED or some such.</p></quote>
+
+</section>
+
+<section
+        title="Download Problems"
+        subject="Problems downloading the RedHat packages"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0544.html"
+        posts="3"
+        startdate="10/25/2004"
+>
+<topic>Project Management</topic>
+<p>Most developers, and by that I mean all developers not just
+Wine developers, are thankful for <a href="http://www.sf.net">SourceForge</a>.
+It provides an invaluable service to the open source community.  This week
+Bill Medland noticed something weird with it though:</p>
+<quote who="Bill Medland"><p>
+I am unable to download the RedHat 20041019 packages; any idea why?  (Did they 
+get built?)
+</p><p>
+I can download a SuSE one (well, it at least asks me if I want to save it) but 
+for all the Red Hat ones I've tried the mirror page keeps repeatedly coming 
+up and it never actually tries to download.
+</p></quote>
+
+<p>Vincent B&#233;ron, the Red Hat packager, did a little 
+research and came up with:</p>
+<quote who="Vincent Beron"><p>
+They're all built and uploaded to sourceforge. Unfortunately, it seems
+there are some problems with some mirrors, which are not yet updated
+(it's been at least 72 hours that the last packages have been uploaded).
+</p><p>
+Also, since the stats already show 8500+ downloads (if I total all the
+packages for RH/FC/WBEL, minus the devel ones), some people are getting
+access to the files.
+</p><p>
+Nevertheless, here's what my results are for
+wine-20041019-1fc1winehq.athlon.rpm (other files will probably vary):
+<ul>
+Aleron (US): not available<br />
+OptusNet (AU): available<br />
+UMN (US): not available<br />
+Heanet (EU): not available<br />
+OVH (EU): not available<br />
+Mesh (EU): not available<br />
+UNC (US): not available<br />
+Voxel (US): not available<br />
+Puzzle (EU): available<br />
+Belnet (EU): not available</ul>
+</p><p>
+So the availability stats are not pretty, but it is possible to download
+it. Also, on each mirror (except Heanet), the page returned instead of
+the file said "The mirror you've selected, umn.dl.sourceforge.net does
+not currently have the file you requested. (This is an error on our part
+which will be fixed)." I don't know how to fix their problems, unless we
+begin to host them on winehq.org (which I don't think will anytime
+happen soon).
+</p><p>
+To finish, some fun stats on 20040914 from sf.net:
+The total size of completed downloads is a bit over 1.7 TB. This amounts
+to about 658 kB/s throughout the month. Counting the binary versions and
+the source downloads (and not the devel packages), there were about
+94000 downloads from sf.net mirrors for 20040914.
+</p></quote>
+
+<p>This likely affects more than just the Red Hat packages.
+So, the moral of the story is.. if at first you don't succeed,
+try and try again.</p>
+
+</section>
+ 
+<section
+        title="Gradient Fills"
+        subject="Re: Gradient Color for Caption Bar"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0576.html"
+        posts="7"
+        startdate="10/26/2004"
+	enddate="10/28/2004"
+>
+<topic>Patches</topic>
+<p>A patch came in this week from William Poetra implementing
+gradients for the title bar.  It led Dmitry Timoshkov to
+comment,
+<quote who="Dmitry Timoshkov">
+Use gdi32.GdiGradientFill instead of msimg32.GradientFill, the latter one
+is forwarded to gdi32 anyway.</quote></p>
+
+<p>William couldn't find a reference to that API though,
+<quote who="William Poetra">
+ Well, I can't find GdiGradientFill by searching at MSDN. I found some links
+ through Google, though. Is it a deprecated, old API? If that's the case, I
+ think we'd better link to msimg32.
+</quote></p>
+
+<p>Dmitry explained,
+<quote who="Dmitry Timoshkov">
+ GdiGradientFill is the gdi32 entry point to which msimg32's GradientFill
+ is forwarded. "Deprecated" is the Microsoft term which they usually use
+ to force developers to go the way Microsoft wants and has nothing to do
+ with reality and especially with Wine development.
+</quote></p>
+
+<p>Andi Mohr seconded the motion,
+<quote who="Andreas Mohr">
+It might be a deprecated API, but it doesn't matter since you can bet that
+they won't throw that export away.
+Or at least if they do, then there's still no reason for us to throw it away,
+since there must be some Windows programs depending on that export.
+</quote></p>
+
+<p>Mike McCormack cautioned:</p>
+<quote who="Mike McCormack"><p>
+GradientFill is pretty slow, as it fills the rectangle line by line. 
+I'm not sure how much this is going to slow down a normal application. 
+It used to draw pixel by pixel, and that was a very noticeable 
+slowdown... line by line is much faster than that, but it still may 
+cause a slowdown in some circumstances.
+</p><p>
+Anybody have any ideas about how to speed up GradientFill?
+</p></quote>
+
+<p>Shachar Shemesh threw out an idea,
+<quote who="Shachar Shemesh">
+How many colors are typically drawn across a single bar? If this number 
+is significantly less than the number of vertical lines, you can 
+precalculate the width of each color bar, and draw a series of boxes.
+</quote></p>
+
+<p>Meanwhile, William made the change suggested by Dmitry and
+resubmitted the patch.</p>
+
+</section>
+ 
+<section
+        title="Remote Application Deployment"
+        subject="How difficult would it be to make the equivalent of Windows Terminal Server with Wine?"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0610.html"
+        posts="2"
+        startdate="10/28/2004"
+>
+
+<p>Andrew Quigley thought of an idea similar to Citrix and asked:</p>
+<quote who="Andrew Quigley"><p>
+What I would like to be able to deploy would be a system which runs 
+multiple Win32 compatible desktops and multiple logins on a server, with 
+the clients accessing the desktops via RDP or ICA protocols.  How many 
+of the pieces required to accomplish that already exist, and what pieces 
+have yet to be built? A quick search on freshmeat shows me a few 
+different rdp clients, so it looks like the protocol spec is known. What 
+would be involved in creating a RDP server that shows up as a video 
+driver as far as the win32 programs are concerned?
+</p></quote>
+
+<p>Unbeknowst to Andrew, the idea has already been thought of
+and Jeremy White outlined some of the difficulties:</p>
+<quote who="Jeremy White"><p>
+That's something we've investigated fairly closely, as it seems
+like a Good Idea (TM).
+</p><p>
+First, as far as I know, there is no public implementation around
+the ICA protocol, so that doesn't seem like a good option.
+</p><p>
+Now RDP is based on an IETF protocol spec, so implementing that
+looks like a good, clean option.
+</p><p>
+So, in theory, writing a rdpdrv that is parallel to x11drv
+should be straightforward (and that's the task, just replace
+x11drv with rdpdrv).
+</p><p>
+Unfortunately, the reality is that it will be a lot of work.
+Although the architectural design that the x11 driver is
+supposed to be separated out, that separation isn't that
+clean, and then there are a lot of underlying OS resources
+(e.g. sound etc) that are not so clearly isolated.
+So we felt it would be more work than we could afford to
+bite off in the near term (which is not to say we won't
+contemplate doing this in the medium term future).
+</p><p>
+As an fyi, we chose to follow an alternate course in the
+interim.  Specifically, by examining the use of the X protocol
+that Wine uses, and working to optimize that, we should be able
+to make Wine work decently well over an ssh -C compressed X link.
+This was the consensus we came to after long discussions
+with Keith Packard and Alexandre Julliard.  So, Alexandre
+has been steadily  (if slowly :-/) working to reduce round
+trips to the X server within Wine, with the hopes that we'll get there.
+</p><p>
+Further, there are protocol proxies, like that of nomachine.com,
+that try to take some of that sting out (last I knew, NX
+helped, but still wasn't in ICA or RDP class with Wine).
+</p></quote>
+</section>
+
+<section 
+	title="OpenGL Extension Viewer" 
+	subject="OpenGL Extension Viewer"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/10/0513.html" 
+	posts="3"
+	startdate="10/23/2004"
+	enddate="10/24/2004"
+>
+<topic>DirectX</topic>
+<p>Nikolas provided a link to a utility some developers
+might find helpful:</p>
+<quote who="Nikolas"><p>
+While browsing the web i found a little tool which i expect to be quite
+helpful: the opengl extension viewer. Though it's written for windows,
+it runs perfectly on wine and allows people working on d3d and so on to
+have a quick overview of the functions.
+</p><p>
+<a href="http://www.realtech-vr.com/glview/">http://www.realtech-vr.com/glview/</a>
+</p></quote>
+
+</section></kc>

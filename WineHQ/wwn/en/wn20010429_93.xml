@@ -1,0 +1,174 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="mailto:brianv@REMOVETHIS.ski-copper.com" date="29 Apr 2001 00:00:00 -0800" />
+
+<intro>
+
+<p>This is the 93rd release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (a port of
+the Windows API to Unix-based operating systems).</p>
+
+<p>I'm currently having major ISP problems.  If you've sent me an
+email in the last few weeks I haven't gotten it.  As a result I've 
+changed the address above to one that will work, however it's not a
+permanent solution for me.</p>
+
+</intro>
+
+<stats posts="58" size="159" contrib="27" multiples="13" lastweek="12">
+
+<person posts="5" size="14" who="Francois Gouget &lt;fgouget&gt;" />
+<person posts="5" size="13" who="lawson_whitney" />
+<person posts="5" size="12" who="Andreas Mohr &lt;a.mohr&gt;" />
+<person posts="5" size="11" who="eric pouech &lt;eric.pouech&gt;" />
+<person posts="4" size="12" who="Mike Bond &lt;mbond.com&gt;" />
+<person posts="4" size="17" who="Dan Engel &lt;dengel&gt;" />
+<person posts="3" size="8" who="Dmitry Timoshkov &lt;dmitry&gt;" />
+<person posts="4" size="9" who="gerard patel &lt;gerard.patel&gt;" />
+<person posts="3" size="6" who="Alexandre Julliard &lt;julliard&gt;" />
+<person posts="2" size="10" who="Marcus Meissner &lt;marcus.de&gt;" />
+<person posts="2" size="5" who="Jeremy White &lt;jwhite&gt;" />
+<person posts="2" size="4" who="Uwe Bonnes &lt;bon.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="4" who="Ove Kaaven &lt;ovehk.no&gt;" />
+<person posts="1" size="3" who="Mike Bond &lt;mbond.com&gt;" />
+<person posts="1" size="3" who="Gavriel State &lt;gav&gt;" />
+<person posts="1" size="2" who="Michael Mauch &lt;michael.mauch&gt;" />
+<person posts="1" size="2" who="Marcus Meissner &lt;Marcus.Meissner&gt;" />
+<person posts="1" size="2" who="Juergen Schmied &lt;juergen.schmied&gt;" />
+<person posts="1" size="2" who="Mike McCormack  &lt;mike_mccormack.au&gt;" />
+<person posts="1" size="2" who="Dan Kegel &lt;dank&gt;" />
+<person posts="1" size="2" who="Martin Pilka &lt;mpilka&gt;" />
+<person posts="1" size="2" who="Matthew Cline &lt;matt&gt;" />
+<person posts="1" size="2" who="juergen.schmied" />
+<person posts="1" size="1" who="Stefan Leichter &lt;Stefan.Leichter&gt;" />
+
+</stats>
+
+<section
+  title="Dropping Syslevel Checks from Debugging"
+  subject="GDI syslevel held during psdrv init ... bad"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/04/0156.html"
+  posts="6"
+  startdate="24 Apr 2001 00:00:00 -0800"
+  enddate="25 Apr 2001 00:00:00 -0800"
+>
+
+<mention>Marcus Meissner</mention>
+
+<p>Marcus Meissner was doing some debugging and ran across a problem
+and asked for thoughts on how to fix it.  Alexandre Julliard replied
+with, <quote who="Alexandre Julliard">We could probably get rid of the 
+check. Syslevel locking is reasonably stable now, and dll separation 
+will cause more and more false alarms here.</quote>  So soon in the CVS
+changelog an entry came across that read:</p>
+
+<quote who="">
+
+<p>        Changelog:<br />
+           Drop SYSLEVEL checks from relay debugging, since they break debugging
+           builtin GDI dlls.</p>
+
+</quote>
+
+<p>The effect of this is you get less information printed out when debugging.
+Andreas Mohr felt it was simply not appropriate to take this out and
+responded to the change with:</p>
+
+  <quote who="Andreas Mohr">
+
+  <p>Hmm, do we really want to do this ?<br />
+  (I know it's already been applied)</p>
+ 
+  <p>Shouldn't we create a different SYSLEVEL_CheckNotLevel_unenforced() function
+  instead which simply doesn't call DebugBreak() ?</p>
+ 
+  <p>That way we don't lose the important information about possible syslevel
+  violations.</p>
+ 
+  <p>Syslevel violations are an *ongoing* problem. They are not simply "solved".
+  OTOH I could take Alexandre's cvs commit as his firm promise to go through
+  every future patch line by line to check for syslevel mishaps/omissions ;-)</p>
+ 
+  <p>Oh yeah, and in case you didn't notice: it's me again complaining about
+  yet another silencing ;-)</p>
+ 
+  <p>This patch is not even "too early", it's simply "wrong" IMHO, as it is
+  an ongoing problem (I did mention this before, didn't I ? :).</p>
+ 
+  <p>Sorry for me being of such an opposing nature ;-)      </p>
+
+</quote>
+       
+<p>A few more messages went back and forth between Marcus and Andreas 
+about other ways to get around dropping the check, but the change stayed
+in CVS.</p> 
+
+</section>
+
+<section
+  title="Fault Handling?"
+  subject="fault handling - oof"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/04/0149.html"
+  posts="10"
+  startdate="24 Apr 2001 00:00:00 -0800"
+  enddate="26 Apr 2001 00:00:00 -0800"
+>      
+
+<mention>Alexandre Julliard</mention>
+<mention></mention>
+
+<p>Lawson Whitney was working on a mail application and suddenly had 
+problems with its fault handling.  He suspected it was because of
+something recently added to Wine and began reverting patches until
+it seemed to be narrowed down.  Lawson wrote:</p>
+
+<quote who="Lawson Whitney">
+
+<p> It _might_ be a local
+misconfiguration, so don't waste too much time on it, but if you spot
+something that could be a bit wrong in one of these patches, please let
+me know.</p>
+
+<p>
+  N   1 Apr 23 Alexandre Julliard  (2,414) wine/dlls/msvcrt time.c<br />
+  N   2 Apr 23 Alexandre Julliard  (2,089) wine/include/msvcrt stddef.h<br />
+  N   3 Apr 23 Alexandre Julliard  (2,071) wine/debugger types.c<br />
+</p>
+
+</quote>
+
+<p>This report generated a fair number of emails that left a lot of people
+scratching their heads.  Francois Gouget first wondered, <quote who="Francois
+Gouget">If you're using native msvcrt then the first two should have no
+impact. If you meant that the crash only occurs when you try using the
+builtin msvcrt then maybe it's the patch to time.c. But I would still don't
+see why... quite the opposite.</quote></p>
+
+<p>Eric Pouech then questioned the debugger patch and asked, <quote who="Eric
+Pouech">I don't see how a fix in the debugger could change the way an app
+work when the debugger is not launched...  did you try to run the app with
+the debugger started before the crash to see where you get the first fault
+?</quote></p>
+
+<p>Lawson began messing around and narrowed it down to what he thought was
+the patch to the debugger.  He took a break and when he came back to working
+on it discovered the problem, <quote who="Lawson Whitney"> If you get this,
+it comes by wine with the debugger patch in.  It seems I was getting HD errors
+which were causing wine to hang and otherwise misbehave.  Load a library, and
+when you are done there is nothing there, so when the init code gets called,
+it faults.  reverting moved the files to sectors that happened to work.
+I should have known when the same version of wine worked on one box and not
+on the other for the same app (shared by nfs) but at the time it only made
+my head hurt.  e2fsck -c has fixed it for now, but sterner measures may
+become necessary.</quote></p>
+
+<p>Looks like its time to start trying to find that warranty information..</p>
+
+</section>
+
+</kc>
+

@@ -1,0 +1,269 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="105" date="10/03/2001" />
+
+<intro>
+
+<p>This is the 105th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).</p>
+
+<p>Alexandre kicked out release 20011004 this week.  The announcement lists
+the following changes:</p>
+<p><ul><li>Beginnings of shared window handles.</li>
+	<li>Much improved typelib support.</li>
+	<li>Tons of new code in quartz dll (ActiveMovie)</li>
+	<li>Lots of bug fixes.</li>
+</ul></p>
+
+
+<p>This week in the news we have 
+<a href="http://searchwindowsmanageability.techtarget.com/originalContent/0,289142,sid33_gci772798,00.html">
+an interview</a> with Jim Graham, the
+CTO of CodeWeavers.  Jim wraps up the interview with:</p>
+<p><quote who="Jim Graham">
+A CTO of a large organization with a thousand desktops can buy 
+one copy of Red Hat Linux, for example, and install it on all 
+of those desktops without violating any license agreements. With 
+that, you've got the ability to maintain those from one central 
+location and work with servers and communicate with any other 
+desktop (Macintosh, Apple, or Windows) all from the same environment. 
+We might see a larger utilization of Linux in the workplace, but 
+I don't believe we're going to get all of the applications over 
+there immediately. There's going to be a demand to provide both 
+until there's more application software in the Linux market. 
+Tools like this are going to provide that bridge.</quote></p>
+
+</intro>
+
+<stats posts="74" size="272" contrib="32" multiples="13" lastweek="16">
+
+<person posts="8" size="89" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="21" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="6" size="19" who="Dmitry Timoshkov &lt;dmitry@baikal.ru&gt;" />
+<person posts="6" size="18" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="5" size="10" who="Daniel Walker &lt;diwalker@earthlink.net&gt;" />
+<person posts="5" size="9" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="5" size="8" who="Bill Medland &lt;medbi01_1@accpac.com&gt;" />
+<person posts="6" size="16" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+<person posts="3" size="11" who="lawson_whitney@juno.com" />
+<person posts="3" size="9" who="Nog &lt;Nog@sdf.lonestar.org&gt;" />
+<person posts="2" size="6" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="1" size="5" who="Lucien LaCroix &lt;lacroixlucien@hotmail.com&gt;" />
+<person posts="1" size="5" who="Nikolas Zimmermann &lt;wildfox@kde.org&gt;" />
+<person posts="1" size="3" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="1" size="3" who="David Hammerton &lt;david@transgaming.com&gt;" />
+<person posts="1" size="3" who="Nerijus Baliunas &lt;nerijus@users.sourceforge.net&gt;" />
+<person posts="1" size="2" who="Ian D. Stewart &lt;idstewart@compuvative.com&gt;" />
+<person posts="1" size="2" who="Aric Stewart &lt;aric@codeweavers.com&gt;" />
+<person posts="1" size="2" who="Michael Stefaniuc &lt;mstefani@redhat.de&gt;" />
+<person posts="1" size="2" who="Dominik Strasser &lt;dominik.strasser@mchp.siemens.de&gt;" />
+<person posts="1" size="2" who="Dan Kegel &lt;dank@kegel.com&gt;" />
+<person posts="1" size="2" who="Robert Lunnon &lt;bob@yarrabee.net.au&gt;" />
+<person posts="1" size="2" who="Guilherme Kunz &lt;guiok@ig.com.br&gt;" />
+<person posts="1" size="2" who="Luke Stras &lt;stras@ecf.toronto.edu&gt;" />
+<person posts="1" size="2" who="Mrugan Bhorkar &lt;mruganb@yahoo.co.uk&gt;" />
+<person posts="1" size="1" who="Charles Wyble &lt;jackshck@yahoo.com&gt;" />
+<person posts="1" size="1" who="Marcus Meissner &lt;Marcus.Meissner@caldera.de&gt;" />
+<person posts="1" size="1" who="Gerard Patel &lt;gerard.patel@nerim.net&gt;" />
+<person posts="1" size="1" who="Daniel Sabo &lt;DanielSabo@hotmail.com&gt;" />
+
+</stats>
+
+
+
+ 
+
+<section
+  title="Debugging MFC Programs"
+  subject="can't debug mfc program"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0003.html"
+  posts="4"
+  startdate="10/02/2001"
+  enddate="10/02/2001"
+>
+
+<p>Guilherme Kunz was having a problem getting a program to run after compiling it
+with winelib.  He was going through the following steps:</p>
+<quote who="Guilherme Kunz"><p>
+	I am trying compile a mfc program with winelib. 
+	</p><p>
+	Well, i compiled the part of mfc which i need for use the program without 
+	erros or unresolved functions and compiled the mfc program with the 
+	libmfc.so without errors or unresolved functions, but when i ran the mfc 
+	program happened "Segmentation Fault". 
+	</p><p>
+	I tried use gdb and winedbg but i can't run these debuggers, with gdb 
+	happened "Segmentation Fault" with or without breakpoints in the 
+	beginning of the source and winedbg write only the first line in the 
+	window and go out. 
+</p></quote>
+<p>Francois Gouget wanted to know what kernel and compiler version was being used.
+Eric Pouech just wanted to know what the one line of output was.  And Aric 
+Stewart thought that the problem was more widespread:</p>
+<quote who="Aric Stewart"><p>
+	This appears to not just be mfc programs.. recently I have been unable
+	to use gdb on any wine program with either the 2.4.0 or 2.4.9 kernels.
+	</p><p>
+	same problems, i get a seg fault when loading libntdll.so
+</p></quote>
+ 
+
+
+</section>  
+
+
+
+
+
+
+
+
+<section
+  title="Submitting Patches"
+  subject="CVS, diffs, and a newbie (me)"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0020.html"
+  posts="3"
+  startdate="10/04/2001"
+  enddate="10/04/2001"
+>
+
+<p>Daniel Sabo wrote in wondering, <quote who="Daniel Sabo">
+ What is the proper way to submit a patch to wine? Do you need a 
+ special password to use cvs commit or can you only mail in diffs?
+ How do you make a propper diff (yeah, I'm really new at this)?
+ If someone could just add the needed 'fi' to the end of tools/winelauncher.in
+ I'd be happy too :).</quote></p>
+
+<p>Eric Pouech told him to go check out <a href="http://www.winehq.org">
+www.winehq.org</a> for instructions.  Bill Medland actually went into detail
+and suggested:</p>
+<quote who="Bill Medland"><p>
+
+	This is the way that I do it.</p>
+	<p>
+	My .cvsrc file specifies<br /><code>
+	cvs -z 3<br />
+	update -Pd<br />
+	diff -u</code></p>
+	<p>
+	The -u on the diff is important.
+	</p><p>
+	Then I sit just below the "wine" on my machine and, for example for all the
+	changes in the documentation directory, I do
+	cvs diff wine/documentation &gt; diff.txt
+	</p><p>
+	I then edit diff.txt (actually I number my diff files for my convenience)
+	and add my name and email address at the top and then the description of the
+	change.  At the same time I check that the diff file makes sense.
+	</p><p>
+	If I wer a good boy I would then test the patch against a clean local copy
+	of the code, using "<code>patch --dry_run</code>"
+	</p><p>
+	Finally I email in the diff file to wine-patches.
+</p></quote>
+
+
+
+
+
+
+</section>  
+
+
+
+
+
+<section
+  title="Borland Style Imports"
+  subject="Resolving already resolved ordinal for Borland style imports"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0013.html"
+  posts="3"
+  startdate="10/03/2001"
+  enddate="10/03/2001"
+>
+
+<p>Uwe Bonnes was having some problems with dlls loading.  He provided
+some debugging info and explained:</p>
+<quote who="Uwe Bonnes"><p>
+  	some programm using a dll with Borland style imports crashes if the dll is
+	loaded a second time. When PE_fixup_imports is called for the first time,
+	resolving goes fine.
+	</p><p>
+	Now ordinal is replace by the function pointer in PE_fixup_imports. 
+	The second PE_LoadLibraryExA however goes astray, as it tries to 
+	resolve the function pointer as an ordinal in PE_fixup_imports.
+	</p><p>
+	What is the right solution? Only treat the value as an ordinal if it is
+	smaller than 0x10000 (I suspect that a dll may only have 0xffff entries or
+	the IMAGE_SNAP_BY_ORDINAL wouldn't work)? Or is it an error that we call
+	PE_fixup_imports for the second time at all for an already resolved dll?
+	</p></quote>
+
+<p>Fixup is the process by which a DLL loaded into memory
+has its executable image changed to take into account the difference between
+it's base address and actual load address.  
+Alexandre replied that fixup should never be done twice to
+a DLL.  Uwe asked for help at this point because he couldn't figure out how to
+inhibit that behavior.</p>
+
+</section>
+
+
+
+
+
+<section
+  title="DDEConnect Errors"
+  subject="DdeConnect errors while running setup.exe"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/09/0165.html"
+  posts="2"
+  startdate="09/30/2001"
+  enddate="10/01/2001"
+>
+
+<p>Ian Stewart was having a problem loading a program on his daughter's
+computer.  He described what he was trying to do:</p>
+<quote who="Ian Stewart"><p>
+  Due to resource constraints (75 MHz processor, 1.2 GB hard drive, 16 MB
+  RAM), we recently replaced Windows98 on our daughter's PC with Linux
+  Mandrake, using the IceWM window manager.  It isn't quite as flashy as
+  Windows, but it boots beyond the startup screen, which is more than can be
+  said for Win98.
+ </p><p>
+  Well, to make a long story short, I've installed and configured Wine
+  following the instructions in the Wine User's Guide.  Everything seems to
+  be working properly, but when I attempted to run the setup.exe for 'Jim
+  Henson Muppets Letters: Capital and Small', I received the following errors:
+ </p>
+ <p><code>
+        err:ddeml:DdeConnect .. but no Server window available<br/>
+        err:ddeml:DdeClientTransaction Invalid conversation handle<br/>
+        err:ddeml:DdeClientTransaction Invalid conversation handle<br/>
+        err:ddeml:DdeClientTransaction Invalid conversation handle<br/>
+        fixme:ddeml:DdeUninitialize16  stub calling DdeUninitialize<br/>
+ </code></p>
+ <p>
+  Following the recomendations in the Wine User's Guide, section 3.2
+  (Installing Wine Without Windows), I re-ran wine with --debug msg
+  +module,+file.  I didn't see anything in the trace that jumped out at me,
+  but I've attached it here, just in case it means something to someone else.
+ </p><p>
+  One last thing.  The setup.exe appears to be a 16-bit app, originally
+  designed for Windows 3.1.  Not sure if that makes any difference or not.
+ </p><p>
+  Any help in resolving this would be greatly appreciated.
+ </p></quote>
+
+<p>Eric Pouech replied that DDEConnect currently did not work between two
+different processes.</p>
+
+</section>
+
+
+</kc>

@@ -1,0 +1,414 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="243" date="10/08/2004" />
+<intro> <p>This is the 243rd issue of the Wine Weekly News publication.
+Its main goal is to revere Scaled Composites as a bunch of geniuses. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="155" size="529" contrib="47" multiples="26" lastweek="20">
+
+<person posts="14" size="47" who="Dmitry Timoshkov" />
+<person posts="11" size="31" who="Alexandre Julliard" />
+<person posts="10" size="32" who="Eric Pouech" />
+<person posts="9" size="28" who="Martin Fuchs" />
+<person posts="8" size="23" who="Francois Gouget" />
+<person posts="7" size="24" who="James Hawkins" />
+<person posts="7" size="23" who="Dimitrie O. Paun" />
+<person posts="7" size="21" who="Vincent B&#233;ron" />
+<person posts="6" size="14" who="Saulius Krasuckas" />
+<person posts="5" size="25" who="Duane Clark" />
+<person posts="5" size="16" who="Robert Shearman" />
+<person posts="5" size="11" who="Andreas Mohr" />
+<person posts="4" size="52" who="Dan McGhee" />
+<person posts="4" size="16" who="Shachar Shemesh" />
+<person posts="4" size="11" who="Jon Griffiths" />
+<person posts="4" size="10" who="Filip Navara" />
+<person posts="4" size="9" who="Ivan Leo Puoti" />
+<person posts="3" size="8" who="Mike Hearn" />
+<person posts="3" size="7" who="Ge van Geldorp" />
+<person posts="2" size="10" who="Dietrich Teickner" />
+<person posts="2" size="8" who="Vitaliy Margolen" />
+<person posts="2" size="7" who="Hans Leidekker" />
+<person posts="2" size="6" who="Olivier Kaloudoff" />
+<person posts="2" size="6" who="Carlo Bono" />
+<person posts="2" size="6" who="Bill Medland" />
+<person posts="2" size="5" who="Ferenc Wagner" />
+<person posts="1" size="5" who="Paul Millar" />
+<person posts="1" size="4" who="Bill Medland" />
+<person posts="1" size="4" who="Jia L Wu" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="Daniel Richards Jr." />
+<person posts="1" size="3" who="Francois Gouget" />
+<person posts="1" size="3" who="Vitaliy Margolen" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="=?ISO-8859-1?Q?Joaqu=EDn_Fern=E1ndez?=" />
+<person posts="1" size="2" who="Carl Karsten \(435025\)" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Jason Edmeades" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Jacek Caban" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Kuba Ober" />
+<person posts="1" size="2" who="gslink" />
+<person posts="1" size="2" who="Kevin R. Casper" />
+<person posts="1" size="1" who="(Martin.Rasp)" />
+
+</stats>
+<section
+        title="Audio Driver Auto Detection"
+        subject="Re: audio driver autodetection"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0014.html"
+        posts="15"
+        startdate="10/01/2004"
+        enddate="10/06/2004"
+>
+<topic>Multimedia</topic>
+<p>Last week in the course of Winecfg discussion the
+topic of automatically detecting which audio drive is
+needed came up (see WWN issue 
+<a href="http://www.winehq.com/wwn/242#WineCfg%20Status%20Update">#242</a>.)
+James Hawkins offered to take a stab at it, but wanted some input
+as to how to go about it.  Some discussion occurred, then James
+outlined an idea:</p>
+<quote who="James Hawkins"><p>
+I want to make sure I'm getting the right idea.  So I would implement
+a new audio driver like winealsa, wineoss etc but named something like
+wineautodetect.  This driver is actually a proxy that checks each of
+the available drivers to see if they are available, and if so,
+initialize that driver and send all audio messages to it.  Would
+the registry value for audio driver be wineautodetect instead of
+winealsa, wineoss etc?  If this is how it is to be implemented,
+nothing in winmm would have to be changed would it?  That's what I'm
+thinking.  Are alsa, oss, arts etc the wave out part of winmm?  So
+winmm makes calls to the wineautodetect driver like it would any other
+driver, and then wineautodetect in turn passes those calls onto the
+detected driver, right?  Ok that's about what I have right now.  Let
+me know if you have any thought, ideas, or suggestions.
+</p></quote>
+
+<p>The idea was tossed around a bit, then Alexandre 
+spoke up because he thought this was the wrong way to
+go about it:</p>
+<quote who="Alexandre Julliard"><p>
+ I don't think we want to add yet another driver just for
+ autodetection. Each driver should simply refuse to load if its
+ hardware isn't present, then winmm can load each of them in turn
+ until one succeeds.</p></quote>
+ 
+<p>Eric Pouech pointed out,
+<quote who="Eric Pouech">
+you must then ensure that the list of drivers from the registry fits your 
+desired order (e.g. Alsa before OSS, or ESD...).</quote></p>
+
+</section>
+
+<section
+        title="Button Code Audit"
+        subject="Re: Audit the buttons code"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0058.html"
+        posts="21"
+        startdate="10/04/2004"
+        enddate="10/05/2004"
+>
+<topic>Controls</topic>
+<p>There's been a sporadic effort to do an audit of
+various parts of Wine compared to documented parts
+of Windows available via MSDN.  Basically, when someone
+last touches a control, for example, it's helpful to
+take some time and figure out what's missing while it's
+still fresh in their mind.  It also serves as a helpful
+starting point for the next person.  Dimi Paun did an audit
+of the button code and it prompted Dmitry Timoshkov
+to remark,
+<quote who="Dmitry Timoshkov">
+"Button" is a built-in user32 control and has nothing to do with comctl32
+at all. Same for all other controls in the dlls/user/ subdirectory.
+</quote></p>
+
+<p>Rob Shearman pointed out,
+<quote who="Robert Shearman">
+That was true up until Windows XP. All of the built-in user32 controls 
+have now been copied into comctl32 and extended.</quote></p>
+
+<p>Dmitry didn't think that sounded right though,
+<quote who="Dmitry Timoshkov">
+I can't believe that a simple win32 program linked against user32 only
+under XP starts to depend on comctl32 as well. user32 in XP can't depend
+on comctl32 too. "Button", "listbox", "combobox" and others were always
+a part of user32, moving them into comctl32 would break a lot of apps.
+Perhaps comctl32 simply subclasses standard user32 controls and adds
+"skinning" for them?</quote></p>
+
+<p>Dimi didn't think it really mattered much,
+<quote who="Dimitrie Paun">
+ I think they just made a copy into comctl32, but this is more of a gut
+ feel than anything else :) Anyway, MS now documents the standard controls
+ together with the common ones (which makes sense, logically they belong
+ together, they are all controls after all), so my comment is OK for its 
+ purpose (which is to correctly identify the piece of documentation that
+ the audit was against).</quote></p>
+
+<p>It wasn't okay with Dmitry though,
+<quote who="Dmitry Timoshkov">
+No, your comment is not OK. You are documenting a user32 control, not
+a comctl32 one. You didn't even confirm where it resides now in XP.
+I bet it's still in user32.</quote></p>
+
+<p>From there the discussion delved into whether or not it 
+was right to perform an audit against documentation that 
+might differ from the actual implementation in Windows.  Dmitry's
+main concern was that the audit by Dimi added comments in 
+the user32 DLL that directed developers to look at comctl32
+documentation.  Dimi explained the rationale:</p>
+<quote who="Dimitrie Paun"><p>
+Dmitry, please stop repeating misinformation. Go read the MSDN, I've
+provided you with the relevant URLs. Here is the situation:
+<ul><li>  
+   in XP, there are *two* implementations of the standard controls:
+     the old one in user32, and a strict superset, in comctl32.
+     Applications can ask for the one in comctl32 by specifying so
+     in their manifest file. This is done so that applications continue
+     to run on older versions of Windows.</li>
+  <li> since we don't have the same constraints as MS, and since we can't
+     afford to maintain two versions of the standard controls, we are
+     just going to extend the ones from user32 to the full capability
+     of the ones in comctl32 ver. 6. As such, it make sense to audit them
+     against the comctl32 ver. 6 documentation.</li></ul></p><p>
+
+In other words, the comment is right on the money.</p></quote>
+
+<p>With regard to the second point, Rob thought it might be
+a dicey proposition,
+<quote who="Robert Shearman">
+How do you plan on using image lists from user32? How will you make sure 
+that the version 6 behaviour doesn't break older programs? It's these 
+questions that made Microsoft move the controls to comctl32. Will we get 
+ourselves into a bigger mess by not having two separate implementations?
+</quote></p>
+
+<p>Dimi replied,
+<quote who="Dimitrie Paun">
+I don't dispute that our current approach is not perfect. You are right,
+there may be some problems with it, and in the long term, we may have to
+duplicate them. However, doing so now would imply a lot of work, and as you
+can see, we're way short of manpower. From what I've seen, we can safely
+implement most of the XP functionality into the user32 without risking of
+breaking stuff. That is to say, I don't see right now a big need to dupicate
+the controls. Let's cross that bridge when we get there.
+</quote></p>
+
+<p>Alexandre didn't weigh in, but he usually gets the last word
+in.  In this case, he committed the patch and it reads:</p>
+<quote who="Dimitrie Paun"><p>
+  This code was audited for completeness against the documented features
+  of Comctl32.dll version 6.0 on Oct. 3, 2004, by Dimitrie O. Paun.
+</p><p>  
+  Unless otherwise noted, we believe this code to be complete, as per
+  the specification mentioned above.
+  If you discover missing features, or bugs, please note them below.
+</p><p>    
+  TODO
+  <ul>
+   <li>Styles<ul>
+   <li> BS_NOTIFY: is it complete?</li>
+   <li> BS_RIGHTBUTTON: same as BS_LEFTTEXT</li>
+   <li> BS_TYPEMASK</li></ul>
+   </li>
+   <li>Messages<ul>
+   <li> WM_CHAR: Checks a (manual or automatic) check box on '+' or '=', clears it on '-' key.</li>
+   <li> WM_SETFOCUS: For (manual or automatic) radio buttons, send the parent window BN_CLICKED</li>
+   <li> WM_NCCREATE: Turns any BS_OWNERDRAW button into a BS_PUSHBUTTON button.</li>
+   <li> WM_SYSKEYUP</li>
+   <li> BCM_GETIDEALSIZE</li>
+   <li> BCM_GETIMAGELIST</li>
+   <li> BCM_GETTEXTMARGIN</li>
+   <li> BCM_SETIMAGELIST</li>
+   <li> BCM_SETTEXTMARGIN</li></ul>
+   </li>
+   <li>Notifications<ul>
+   <li> BCN_HOTITEMCHANGE</li>
+   <li> BN_DISABLE</li>
+   <li> BN_PUSHED/BN_HILITE</li>
+   <li> BN_KILLFOCUS</li>
+   <li> BN_PAINT</li>
+   <li> BN_SETFOCUS</li>
+   <li> BN_UNPUSHED/BN_UNHILITE</li>
+   <li> NM_CUSTOMDRAW</li></ul>
+   </li>
+   <li>Structures/Macros/Definitions<ul>
+   <li> BUTTON_IMAGELIST</li>
+   <li> NMBCHOTITEM</li>
+   <li> Button_GetIdealSize</li>
+   <li> Button_GetImageList</li>
+   <li> Button_GetTextMargin</li>
+   <li> Button_SetImageList</li>
+   <li> Button_SetTextMargin</li></ul>
+   </li></ul></p>
+</quote>
+</section>
+ 
+<section
+        title="Changes to Winelib Usage"
+        subject="kind of newbie question :)"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0111.html"
+        posts="3"
+        startdate="10/06/2004"
+>
+<topic>Winelib</topic>
+<topic>Documentation</topic>
+<p>The Winelib documentation is out of date as Carlo Bono
+discovered:</p>
+<quote who="Carlo Bono"><p>
+First of all, excuse me for my bad english. But i hope it will be the
+worst thing that all of you will read here :))
+I'm trying to port an industrial application on linux, some people
+suggested I try to compile it using wine/winelib. I documented
+myself a bit on it, and i tried to build a sample application (as the
+user guide tells, winemine :D) but winemaker DOES NOT generate any
+configure script! wine version is 14/9/2004 and was compiled from
+source on Slackware 10.0 running on a Via C3 (Intel x86 100%
+compatible). Is there any suggestion or workaround, or maybe this is
+normal, or maybe then i'm forgetting something really stupid? (maybe not
+so stupid, don't think it makes a difference :D)
+I also tried to generate by myself a configure script, using tools 
+such as autoscan, autoheader and autoconf, and trying to "fine tune" the
+output script by hand, but I could not manage to get the application
+compile. Something tells me i'm not on the right way to compile a
+greater, more complex program like I have to do :)))
+</p></quote>
+
+<p>Dimi explained this is normal,
+<quote who="Dimitrie Paun">
+Yes, winemaker no longer generates a configure script. It just
+generates a Makefile, which you may need to hand edit a bit.
+Then just type 'make' :)</quote></p>
+
+<p>Vincent B&#233;ron, who recently updated parts of the Winelib
+User Guide, had some other tips:</p>
+<quote who="Vincent Beron"><p>
+The winelib-user-guide was out-of-date for that section. Current cvs
+version is closer to how it works now.
+</p><p>
+Try building notepad instead of winemine, following the version at
+<a href="http://cvs.winehq.org/cvsweb/wine/documentation/winelib-intro.sgml">
+http://cvs.winehq.org/cvsweb/wine/documentation/winelib-intro.sgml</a> (or
+the doc on winehq.org after the next snapshot is out). Looking at the
+diff from 1.10 to 1.11 along with the current version on winehq should
+point you what changed exactly.
+</p></quote>
+</section>
+
+<section
+        title="Using tchar.h in Winelib Programs"
+        subject="Re: Winefile: fix move file implementation"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0115.html"
+        posts="13"
+        startdate="10/06/2004"
+        enddate="10/07/2004"
+>
+<topic>Internationalization</topic>
+<p>Internationalization issues both intrigue me and
+sometimes confuse me.  This one falls mostly in the
+latter - I don't totally understand the issue involved
+here.  Microsoft has a way of writing programs that
+can become Unicode-aware in some locales and ANSI-only
+in others by using special definitions included in
+<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore/html/_core_Generic.2d.Text_Mappings_in_TCHAR..H.asp">TCHAR.H</a>.  Microsoft describes the process
+like this:</p>
+<quote who="Microsoft"><p>
+To simplify transporting code for international use, 
+the Microsoft run-time library provides Microsoft-specific 
+"generic-text" mappings for many data types, routines, 
+and other objects. You can use these mappings, which 
+are defined in TCHAR.H, to write generic code that 
+can be compiled for single byte, multibyte, or Unicode, 
+depending on a manifest constant you define using a #define 
+statement. Generic-text mappings are Microsoft extensions 
+that are not ANSI compatible.</p></quote>
+
+<p>
+In fact, Wine has it's own
+<a href="http://cvs.winehq.com/cvsweb/wine/include/tchar.h?rev=1.23&amp;content-type=text/x-cvsweb-markup">tchar.h</a>
+and you can get an idea of how these special definitions
+work.  Well, using this within Wine is apparently <i>bad</i>
+for reasons I'm not too sure of.  (Perhaps simply because
+Wine itself doesn't have a use for TCHAR and friends.  
+Unicode functions must use Unicode data types, for 
+example.)  Winelib programs are the exception.
+</p>
+
+<p>This week Martin Fuchs posted a patch for Winefile,
+the Wine file manager program, that used the TCHAR data
+type to make the program Unicode compatible.  Dmitry
+Timoshkov didn't like that,
+<quote who="Dmitry Timoshkov">
+By using TCHAR you actually hide the problem and make the code
+very hard to maintain. What is the purpose of that in Wine or
+ReactOS? Why don't you use unicode directly?</quote></p>
+
+<p>Martin didn't think it should be a problem and 
+mentioned that on ReactOS it allowed for a Unicode
+implementation otherwise it was simply ANSI.  Francois
+Gouget thought everything should be made Unicode aware,
+but Martin wasn't so sure it was necessary and pointed
+out some problems:</p>
+<quote who="Martin Fuchs"><p>
+Does the Wine implementation deliver UNICODE file names anyhow?
+UNICODE filenames are mostly only present when using a NTFS drive.
+</p><p>
+Well, changing Wine's winefile to UNICODE is not as easy as in ReactOS:
+<ul>
+<li> First the problem of TEXT() string constants. They would have to
+converted to the (IMHO) ugly "WCHAR str = {...}" constants.</li>
+
+<li> Winefile also reads Unix directories using readdir().
+Is there a UNICODE version of this function, or would you have to
+use some UTF-8 conversion?</li></ul></p><p>
+
+OK, these little problems can all be solved, if you want to switch to a
+UNICODE winefile.</p></quote>
+
+<p>Francois explained some of this:</p>
+<quote who="Francois Gouget"><p>
+Unix systems don't store the filenames in Unicode but 
+use codepages. This codepage may be UTF-8 which is 
+equivalent to Unicode or some other codepage.  Wine takes
+care of converting from that codepage to Unicode.
+</p><p>
+There's no Unix function that returns 16bit Unicode characters. But the 
+filenames retrieved from readdir() can easily be converted to Unicode by 
+using MultiByteToWideChar(...CP_UNIX...).</p></quote>
+
+<p>Martin explained more why he used this:</p>
+<quote who="Martin Fuchs"><p>
+My programming practice is to use TCHAR and the appropriate
+function names to get a code that can simple be compiled in
+both modes. And it's really not difficult. You only have to use
+some rules.
+</p><p>
+For example:
+<ul>
+<li> Use buffers on the stack to avoid malloc() calls for string
+  buffers:  <tt>TCHAR buffer[BUFFER_LEN];</tt></li>
+<li> If you need to use dynamic allocation, just do:
+  <tt>LPTSTR buffer = (LPTSTR) malloc(len*sizeof(TCHAR));</tt></li>
+<li> Use _tcs... functions or lstr... functions instead of str...
+  functions: _tcslen() or lstrlen() instead of strlen()</li>
+</ul></p><p>
+Or just use C++ instead of C, then you can hide the internals
+more easily in a String class.
+</p><p>
+Using these simple rules you get a program you can use in
+both versions. Of course if you know you will only use your
+program in the UNICODE version, this doesn't make sense.
+In this case just program it using WCHAR strings.
+</p></quote>
+
+<p>Alexandre hasn't committed the patch in question yet
+so it's unclear whether the practice is acceptable.</p>
+
+</section>
+</kc>

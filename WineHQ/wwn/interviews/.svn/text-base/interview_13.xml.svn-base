@@ -1,0 +1,421 @@
+<kc>
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="13" who="Mike Hearn" date="6 May 2004" />
+ <intro>
+  <p>This is our 13th interview with Wine developers, and the first
+  for 2004. Check out the 
+  <a href="http://www.winehq.com/site/who">Who's Who</a> page for 
+  previous ones. 
+  </p><p>
+  Pop quiz: which Wine developer lives in 
+  <a href="http://www.dur.ac.uk/Law/c_tour/castle.html">a castle</a>?
+  If you guessed Mike Hearn you'd be correct.  Mike is studying at
+  the University of Durham and claims to be <i>"a pretty average
+  university student"</i>.. with the exception that he's an
+  extraordinary Wine hacker.  He's been pretty busy this year
+  juggling school and work, especially now that he's taken a
+  position with CodeWeavers.  Mike enjoys rock climbing but admits
+  it's been hard to find time for it lately.
+  </p>
+ </intro>
+<interview>
+
+<question><p><i>BV:</i>
+ You've been involved with Wine for just over a year.  How did you get
+ involved? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+I first played with Wine when I moved to Linux from Windows a couple of
+years ago. I can only vaguely remember what I thought of it, but I think
+I was like most people - impressed that it could run some big complex
+apps (in my case, Delphi), interested in its potential, but ultimately
+frustrated at how hard it was to make Wine work correctly.
+</p><p>
+I lost interest and abandoned it, until I started a gap year job at a
+big research company in the UK. I had been using Linux at home for
+development and found it a productive environment to be in, but
+unfortunately the task I was given at work (developing a database web
+app) wasn't possible without being able to run Internet Explorer. That
+was required both to test that the site design looked right, and because
+part of the user interface (a zoomable map of the world) was easiest to
+implement using the Adobe SVG plugin, which did not (and still doesn't)
+work with Mozilla.
+</p><p>
+By that point I had discovered CrossOver, so I jumped on the
+crossover-discuss mailing list and asked if I could test running IE. Of
+course they showed me the demo, and IE worked pretty well for the web
+design part but there was a bug with the mouse cursor positioning in the
+SVG viewer. A few days later I had written my first patch.
+</p><p>
+As it happened, I never did buy CrossOver, as I was using a WineHQ build
+as its backend by then anyway. Little did I know that 18 months later I
+would be back.
+</p></answer>
+
+<question><p><i>BV:</i>
+ You've worked on a lot of different areas of Wine.  What parts do you
+ like the most? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+I don't have any particular preferences. Wine developers seem to fall
+into two different camps - those who work solidly at a single component
+or set of components, and those who just take random apps and debug them
+until they work. A few fall into both categories, like the games guys.
+</p><p>
+I'm definitely in the latter category, which means I could end up
+working on any part of Wine, but I tend to find the common controls
+library the most enjoyable to work on, with core windowing/message
+problems the most difficult. The OLE work I did last year was
+interesting though it has a really steep learning curve.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Was that an extension of Ove's work? 
+ All in all, it seems like there could be a lot
+ of COM/OLE stuff floating around that's not merged. Would it really
+ help if it were?   Or is a lot of it corner-cases? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+Yes, merging Ove's work is an important step. It's not easy unfortunately,
+which is why it hasn't happened yet, but the quick-and-dirty merge I did
+for my employer last year proved it could be done and would actually
+work. I fixed a few other bugs and implemented some new code while I was
+it, but that's mostly already merged into WineHQ.
+</p></answer>
+
+<question><p><i>BV:</i>
+ What's the single biggest thing that needs improvement in Wine?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Probably the development process. I've come to believe lately that the
+system of releasing snapshots each month is really hurting the project,
+though it's hard to see alternatives. The 0.9 and 1.0 efforts are a good
+start, though I'm worried we're trying to cram too much in. 
+</p><p>
+Eventually I'd like to see us migrate to a longer time based release
+schedule, for instance every 6 months, with explicit efforts to
+stabilize the tree and do solid releases that we know works as well as
+our last release.
+</p><p>
+That would be extremely tricky, especially because progress in Wine is
+normally measured in terms of how many apps work and it's really hard to
+detect regressions quickly and even harder to fix them.
+</p><p>
+In terms of technical areas, probably DCOM followed by the 
+window management system.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Do you envision arch as helping with this process?  It seems like the Linux 
+ kernel folks have benefited from having BitKeeper since different people 
+ can set up trees and have smaller user communities around them.  Do you 
+ foresee Wine working like that or are we too small?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Yes, arch or something like it is necessary for any major shift in the
+way Wine is developed. Alexandre is also interested because it lets him,
+and others, pull entire branches into the main tree in a standardized
+fashion so there's less mucking about with email and all the associated
+oddness (mime, wrapping, atomicity etc).
+</p><p> 
+It should also help with people who want to maintain mini-forks of the
+Wine code but still merge in and stay as close as possible, like
+ReactOS, CodeWeavers and maybe Mono.
+</p><p> 
+So far not many people are using arch, even I'm only using it a bit.
+</p><p> 
+Arch isn't just a drop in replacement for CVS, it entails an entirely
+different way of working. It takes time for something as major as that
+to take hold (assuming people want to use it at all!).
+</p></answer>
+
+<question><p><i>BV:</i>
+So, some people are trying out the arch to cvs gateway you set up?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Yes, some people are using it.
+I've had some private feedback on it.  So
+far Dimi has played with it the most, and I think Alexandre has looked
+at it as well; he has been working on converting the Wine CVS history to 
+arch.  The primary advantage of arch is being able to quickly branch and
+then commit to the branch: however, most Wine development is about
+making particular apps work which often entails bugfixes all over the
+place. Branches are useful for keeping logically related sets of changes
+together, so if you don't actually need to that, it's of limited use.
+</p><p>
+Arch should be very handy if a group does a big development push and
+wine-patches becomes a bottleneck like it did with last year's D3D work.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Last summer you did some development that ended up involving Wine.  What 
+ were you working on?
+</p></question>
+
+<answer><p><i>Mike:</i>
+ I was working on making an application that was under development (as a
+ mass-market product) work correctly on Linux. It was written in Java but
+ did things like use Internet Explorer as an embedded word processor.
+ Given that I had only a few weeks left on my placement it didn't seem
+ worth disrupting the current development team and rewriting large parts
+ of the app to use Mozilla or whatever, so I sat down and made it run in
+ Wine.
+</p><p>
+ Getting the app working on Linux was my explicit brief. My employers
+ were an engineering/research firm so they wanted it to run on Linux as
+ they had a high level of "stealth" desktop Linux deployment (on
+ engineers/scientists desks etc)
+</p></answer>
+
+<question><p><i>BV:</i>
+ Does that mean you had to make a Windows Java VM run under Wine too?
+ Were there any particular challenges with that?
+</p></question>
+
+<answer><p><i>Mike:</i>
+ Yes, and yes. The Sun JVM relies on particular memory/TEB layouts when
+ run in win95/98 mode, so I had to run the whole thing in NT mode, which
+ complicated things. It also required fixing various bugs in Wine mostly
+ related to socket management. For instance the JVM used some backwards
+ compatibility magic related to multicast sockets that Wine didn't have.
+</p></answer>
+ 
+<question><p><i>BV:</i>
+ It seemed like other parts of that work involved a lot of COM.  How good 
+ is Wine's COM implementation?  
+</p></question>
+
+<answer><p><i>Mike:</i>
+Wine's COM implementation is woefully incomplete, but 95% of the time
+that doesn't really matter, as the parts most apps use are all there and
+working fine. The main problem is that COM is enormous, and even though
+very few applications use more than say 10% of its abilities, those apps
+are still widespread enough to cause us headaches.
+</p><p>
+In particular, COM's remoting facilities need a lot of improvement to
+properly support older InstallShields. There's just enough there to run
+InstallShield 6 if you steal a type library from a Windows box, but it
+often looks really ugly and isn't reliable. The frustrating thing about
+this is that newer apps come with newer InstallShields, which don't use
+COM remoting anymore, and usually work fine on Wine.
+</p></answer>
+
+<question><p><i>BV:</i>
+ That's kind of strange.  So you're saying things like InstallShield 7 work
+ better under Wine than version 6?
+</p></question>
+
+<answer><p><i>Mike:</i>
+ Yeah. Bizarre huh?
+</p></answer>
+
+<question><p><i>BV:</i>
+ What about Microsoft Installers?  That seems like a whole different
+ ballgame.  
+</p></question>
+
+<answer><p><i>Mike:</i>
+We will eventually need our own implementation of MSI, this is
+especially true because the Win2K/XP version of MSI won't run on Wine
+currently, only the win98 version will. We're starting to hit problems
+caused by that.
+</p><p>
+For now native MSI installs and runs pretty much perfectly as long as
+the app is able to run on Windows 98. For instance, last time I checked
+iTunes wouldn't install because it assumed COM functionality only
+available on NT systems and we don't implement it yet.
+</p></answer>
+
+<question><p><i>BV:</i>
+ One interesting patch that recently appeared was from Filip Navara
+ to make Wine's RPC wire-compatible with Windows.  That sounds like a pretty
+ big deal, or am I wrong?
+</p></question>
+
+<answer><p><i>Mike:</i>
+It's not been high on our wish list. His work is mostly related to the
+RPC runtime, which DCOM is built upon. Wine is normally used for
+end-user desktop apps, which rarely use DCOM/RPC remoting to Windows
+servers, but it's possible it'll become necessary as Linux moves into
+the corporate desktop space.
+</p></answer>
+
+<question><p><i>BV:</i>
+ I've seen quite a few apps like that at different businesses.
+</p></question>
+
+<answer><p><i>Mike:</i>
+ Yes, some programs definitely do. 
+ If I remember correctly, the old Exchange 5 server was
+ based on RPC and maybe DCOM, I forget exactly. However Exchange 2000
+ offers standards-based protocol access too. I'm not aware of any retail
+ killer apps that need it.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ You did some initial work on execshield problems, then Mike McCormack
+ did some.  Do your approaches differ? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+The approaches are identical, they both use the technique I developed at
+WineConf. Mike mostly rewrote what I did so it didn't use glibc and made
+the syscalls directly. His version also doesn't use code from ul_exec
+(which is BSD+Advertising Clause licensed). That results in a smaller
+static binary, but last time I checked Alexandre wasn't keen on the
+idea. So we'll see how things work out. 
+</p><p>
+Mike has actually got a patch against Wine that works, whereas I
+stopped development on it to focus on the next CrossOver release, so it
+may well be his work which gets checked in eventually.
+</p><p>
+The other thing to realize is that this fix is not the one Alexandre
+originally preferred, which I did some work on as well before that was
+blocked by a kernel bug.
+</p></answer>
+
+<question><p><i>BV:</i>
+ What did Alexandre prefer?
+</p></question>
+
+<answer><p><i>Mike:</i>
+He wanted us to use a GNU linker script to reserve the address ranges.
+</p><p>
+I developed one that had the intended effect, but a bug in the way the
+kernel maps ELF files into memory prevented it from working correctly on
+machines that couldn't back a 256mb allocation. It also had the
+disadvantage that the region sizes were decided at compile time not run
+time, effectively placing an upper limit on the size of binaries that
+could be executed. I think Mike's version of the preloader now calculates
+the size of the reservation necessary so it should always work.
+</p><p>
+It also has the slight advantage that more people understand C/x86
+assembly than GNU linker script syntax, though I'm unhappy at how
+complex the code is for both approaches. I don't think there's any way
+to avoid that :(
+</p></answer> 
+
+<question><p><i>BV:</i>
+ Paul Davis' work with making an app that can initialize Wine on the
+ fly is interesting.   What challenges are involved
+ with using Wine as a shared library?  
+</p></question>
+
+<answer><p><i>Mike:</i>
+Yes, Paul has been doing some great work. It's hard to overemphasize
+just how difficult this sort of thing is - it requires a very good
+knowledge of both Linux and Windows programming, as well a strong
+understanding of multithreading and the Wine architecture. Given that
+all the current Wine developers have not put much effort into this, it's
+great to finally get somebody from outside the project who is
+interested.
+</p><p>
+The basic problem behind using Wine as a shared library is that Win32
+code of any form (both inside Wine and in DLLs and EXEs) expect a
+certain environment to be present. For instance, they expect the %fs
+register to point to the TEB (thread environment block), which stores
+all kinds of thread-scoped data. Setting up that structure requires
+modifying the LDT, communicating with the wineserver, running on a new
+stack and setting up SEH backstops. None of this stuff is in place for
+threads created using the Linux APIs, so a way of adopting the thread
+had to be developed to turn a Linux thread into a Linux+Win32 thread on
+the fly. 
+</p><p>
+I think this work could definitely be reused outside of Ardour, and
+solving these problems correctly will allow Wine to be better integrated
+with free software than ever before.
+</p></answer>
+
+<question><p><i>BV:</i>
+ The one that comes to mind is Mono.  They said in the past they didn't
+ care about multithreading since it wasn't in the spec, but wouldn't
+ this give that to them?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Yes, if they decided to use Paul's work. However as they already stated,
+currently they don't need it, so for now they can just about scrape
+by :) Pretty dodgy - they may hit problems with the animation control
+which I think creates its own thread.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Wine could potentially benefit from working closely with other projects.
+ Are there any projects you think Wine should be working with, such as
+ the Linux kernel team or Samba? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+We've already had contact with all these projects before and will
+certainly do so again in future. For the kernel and X  we typically want
+more features and abilities, Samba we need to work with to resolve some
+of the trickier DCOM problems.
+</p></answer>
+
+<question><p><i>BV:</i>
+ You're also involved with autopackage.  How does it differ from other
+ package management systems? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+That's answered in detail on the 
+<a href="http://www.autopackage.org">project's website</a>. In short it's a way
+of building installers that can install on any distribution, detect and
+resolve dependencies no matter how they were installed, and it provides
+a pretty graphical frontend for showing the progress of the install. 
+</p><p>
+It's interesting because it lets projects build their own high quality
+binary packages. At the moment, projects like Wine typically have a
+packager for every distro, which not only leads to a lot of wasted
+effort, but also strange bugs caused by bad or weird packaging. If it
+can be done once, we can spend our time on more productive things.
+</p></answer>
+
+<question><p><i>BV:</i>
+ So looking at the website it appears it does things like make an executable
+ install package and some other neat stuff.  But what really caught my eye were 
+ the tips for creating packages that are easily relocatable between 
+ distributions.  Is that a major goal for you guys? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+Yes, it's <b>the</b> primary goal. Autopackage isn't 
+just cool because it gives
+you pretty animations and stuff while it's installing, it's cool because
+maintainers can build one package and then distribute it to all their
+users. Binary portability is therefore a major focus of the project.
+</p><p>
+We've done a lot of R &amp; D in this area - it feeds back into Wine too. The
+knowledge of ELF and dynamic linking I gained while doing some of that
+research has been useful for Wine since.
+</p><p>
+I want to package Wine eventually. Currently we're struggling simply to
+keep up with the projects that have come to us and want to use
+autopackage themselves so it'll wait a while. Some readers may remember
+the binary relocatability patch I sent it just before WineConf that was
+in anticipation of building a Wine autopackage. It's not been merged but
+I chatted with Alexandre about it at the conference and I know what to
+do to make it acceptable.
+</p><p>
+We're currently working with "normal" apps like 
+<a href="http://www.inkscape.org">Inkscape</a> and 
+<a href="http://apollon.sourceforge.net/">Apollon</a>, as
+those projects are keen on the idea of autopackage and aren't widely
+included with distributions. They also give the dependency resolution
+code a better workout than Wine would :)
+</p></answer>
+
+<question><p><i>BV:</i>
+ Thanks for the interview, Mike!
+</p></question>
+
+</interview>
+</kc>

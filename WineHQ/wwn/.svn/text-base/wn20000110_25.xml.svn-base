@@ -1,0 +1,228 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="25" date="10 Jan 2000 00:00:00 -0800" />
+
+<intro>
+
+This is the twenty fifth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="129" size="670" contrib="34" multiples="22" lastweek="21">
+
+<person posts="15" size="57" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="13" size="36" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="10" size="33" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="10" size="19" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="49" who="Bradley Baetz &lt;bbaetz@student.usyd.edu.au&gt;" />
+<person posts="6" size="38" who="Gavriel State &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="5" size="21" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="15" who="'Matthew J. Francis' &lt;asbel@dial.pipex.com&gt;" />
+<person posts="5" size="13" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="5" size="11" who="Rein Klazes &lt;rklazes@casema.net&gt;" />
+
+</stats>
+
+<section
+  title="Better support for Cyrillic fonts"
+  subject="CodePages and internal unicode support"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-20.html"
+>
+
+Dmitry Timoshkov proposed for discussion a patche to enhance the display of
+Cyrillic characters in Wine. This patch is covering quite a few parts of
+Wine:
+
+<p />
+
+<ul>
+
+<li />setting up the code pages and various locale in Wine's
+configuration file,
+
+<li />character conversion routines from and to Unicode (this uses
+conversion tables from unicode.org)
+
+</ul>
+
+<p />
+
+Even if Dmitry reported better results display results with
+<quote who="Dmitry Timoshkov">Charmap.exe (16 bit) from Russian Windows 95 and
+PageMaker 6.5 Russian Edition (32 bit)</quote>, he requested for some
+feedback.
+
+<p />
+
+Ove K&#229;ven quite didn't like the configuration options suggested by
+Dmitry and proposed some alternatives:
+
+<p />
+
+<ul>
+
+<li />either use the information from the Windows registry if it's
+available,
+
+<li />or deduce the information from the <quote who="Ove K&#229;ven">UNIX locale
+environment variables (LC_ALL, LC_CTYPE, LANG, checked in that order),
+by using the setlocale() call</quote>
+
+</ul>
+
+<p />
+
+Then, Ove suggested to <quote who="Ove K&#229;ven">deduce the codepage information
+from the UNIX locale information (at least if the registry key is
+unavailable) ? (We could get rid of the -lang command line switch once
+and for all while we're at it).</quote>
+
+<p />
+
+Dmitry agreed on it. Later on, Dmitry also discussed with Huw Davies
+some details of mapping the unicode characters strings to the X11
+loaded fonts (especially when those were not unicode).
+
+<p />
+
+As a conclusion, Dmitry has still some polishing to do to his patch,
+but this will sure help for a better displaying of Cyrillic fonts in Wine..
+
+<p />
+
+</section>
+
+<section
+  title="Retrofitting Odin project's modifications"
+  subject="Unidentified subject!"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-62.html"
+>
+
+Rein Klazes sent a patch containing the enhancement brought by the
+Odin project (see <a href="wn19991213_21.html#0">Issue
+#21, Article #1</a>) to the treeview common control.
+
+<p />
+
+Alexandre Julliard rejected the patch because the current Odin license
+doesn't allow back porting the Odin's changes to Wine. The good part of
+the thread, is that the Odin's folks are under the process of changing
+their license so that retrofitting to Wine will be possible.
+
+<p />
+
+Some talks followed trying to make clear whether or not modifications
+existing before the license change could be retrofitted or not, and
+this will depend on the choice of the Odin developers.
+
+</section>
+
+<section
+  title="Improving PE loader"
+  subject="PE Loader speedup patch (it works!)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-87.html"
+>
+
+Guys from Corel have kept working on improving the PE loader (see
+<a href="/index.php?issue=20#Improving%20Wine's%20loader">Issue #20, Article #2</a>). They
+finally reached a stable solution. Gav' State reported some new
+figures on the speed-up: they achieved on one application a reduction
+from 11 seconds to 5 seconds to get it started.
+
+<p />
+
+However, Gav had to make his patch to add some Wine specific flags to
+existing Windows APIs. This allows to adapt the behavior of those APIs
+to the needs of the loader improvement (mainly not to consider the
+default alignment and granularity while mapping part of files).
+
+<p />
+
+Some discussion went on trying to provide better ways of doing it
+(there is always risk to change/extend the semantics of an existing
+Windows API), and also some re-architecturing of Wine's internal parts
+related to memory management and mapping ; to name a few:
+
+<p />
+
+<ul>
+
+<li />mmap() from the underlying OS,
+
+<li />the windows API (MapViewOfFile, VirtualAlloc...)
+
+<li />the Windows API from the VxDs
+
+<li />the NT DLL APIs (NtCreateSection...)
+
+</ul>
+
+<p />
+
+Some pointers and URLs have been also exchanged to get the relevant
+information of those API (some are poorly documented).
+Amongst the provided ones, we can list:
+
+<p />
+
+<ul>
+
+<li /><a href="http://www.sysinternals.com/ntw2k/info/ntdll.shtml">SysInternals
+web site</a>
+
+<li />Links from MSDN help pages to ZwMapViewOfSection,
+ZwOpenSection, ZwUnmapViewOfSection APIs.
+
+<li />J&#252;rgen Schmied even did some advertising for MS:
+
+<quote who="J&#252;rgen Schmied">Another good source is (by surprise):
+
+<p />
+
+   <blockquote>
+      Inside Microsoft NT Second Edition by Microsoft Press (!)<br />
+      ISBN 3-86063-435-6
+   </blockquote></quote>
+
+<li />and the implementations of the ReactOS project (for informative
+purposes only, as ReactOS is GPL'ed, its source cannot be ported to
+Wine).
+
+</ul>
+
+<p />
+
+Later on, Gav State also asked whether the base relocation of the DLLs
+should be done in the seg-fault handler as Windows does (see also the
+<a href="wn19991206_20.html#2">previous issue</a> for the details).
+
+<p />
+
+Ulrich Weigand replied, but with a more pessimistic tone than he did some
+months ago, <quote who="Ulrich Weigand">Well, I'd originally thought it would be easy, but
+then I noticed that there are of course rather ugly race conditions involved
+(two threads executing the same page: one faults, the handler loads the page
+and starts applying fixups; the second doesn't fault because the page is
+already there, and executes code with fixups only half applied :-/).</quote>
+
+<p />
+
+To make it works, this would imply a closer link between the OS memory
+manager and the user space routines, which is rather not
+doable. Ulrich suggested (at least for Corel applications) to base all
+their DLLs at different addresses so that they can be loaded without
+applying any relocation.
+
+<p />
+
+</section>
+
+</kc>

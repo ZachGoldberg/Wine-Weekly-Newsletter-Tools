@@ -1,0 +1,368 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="223" date="05/21/2004" />
+<intro> <p>This is the 223rd issue of the Wine Weekly News publication.
+Its main goal is to forget the sunscreen and get a tan. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="106" size="482" contrib="50" multiples="25" lastweek="29">
+
+<person posts="11" size="27" who="Mike Hearn" />
+<person posts="7" size="24" who="Raphael Junqueira" />
+<person posts="7" size="16" who="Alexandre Julliard" />
+<person posts="6" size="20" who="Eric Pouech" />
+<person posts="5" size="22" who="Scott W Gifford" />
+<person posts="4" size="69" who="Dmitry" />
+<person posts="4" size="66" who="Julliard" />
+<person posts="4" size="8" who="Lionel Ulmer" />
+<person posts="3" size="9" who="Robert Shearman" />
+<person posts="3" size="9" who="Francois Gouget" />
+<person posts="3" size="7" who="Dan Timis" />
+<person posts="2" size="10" who="Ulrich Czekalla" />
+<person posts="2" size="6" who="Christian Costa" />
+<person posts="2" size="6" who="Robert Reif" />
+<person posts="2" size="5" who="Kevin Koltzau" />
+<person posts="2" size="5" who="Jacobus Erasmus" />
+<person posts="2" size="5" who="Dimitrie O. Paun" />
+<person posts="2" size="5" who="Maurizio Monge" />
+<person posts="2" size="4" who="Robert Lunnon" />
+<person posts="2" size="4" who="Filip Navara" />
+<person posts="2" size="3" who="Steven Edwards" />
+<person posts="2" size="3" who="Robert van Herk" />
+<person posts="2" size="3" who="Jonathan Wilson" />
+<person posts="1" size="61" who="Santosh Siddheshwar" />
+<person posts="1" size="8" who=" (=?utf-8?q?Andr=C3=A9_Johansen?=)" />
+<person posts="1" size="5" who="Guido Draheim" />
+<person posts="1" size="4" who="Florian Goth" />
+<person posts="1" size="3" who="Urbez Santana Roma" />
+<person posts="1" size="3" who="sysadmin" />
+<person posts="1" size="3" who="Bill Medland" />
+<person posts="1" size="3" who="Saulius Krasuckas" />
+<person posts="1" size="3" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="hatky" />
+<person posts="1" size="2" who="Aneurin Price" />
+<person posts="1" size="2" who="Paul Davis" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Peter Hartshorn" />
+<person posts="1" size="2" who="Clare" />
+<person posts="1" size="2" who="Abby Ricart" />
+<person posts="1" size="2" who="Warren Turkal" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Joshua Walker" />
+<person posts="1" size="1" who="Luchezar Belev" />
+<person posts="1" size="1" who="Ivan Leo Murray-Smith" />
+<person posts="1" size="1" who="gslink" />
+
+</stats>
+<section 
+	title="News: Interview With Jeremy White" 
+	subject="News"
+	archive="http://interviews.slashdot.org/article.pl?sid=04/05/17/0057241&amp;mode=thread" 
+	posts="1"
+	startdate="05/15/2004"
+	enddate="05/21/2004"
+>
+<topic>News</topic>
+<p>Slashdot posted the interview of 
+<a href="http://interviews.slashdot.org/article.pl?sid=04/05/17/0057241&amp;mode=thread">Jeremy
+White</a> by the Slashdot community.   Jeremy talks about everything from 
+licensing to selecting products to support.
+</p>
+
+</section>
+<section 
+	title="New Janitorial Projects" 
+	subject="some ideas for new janitorial projects"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/05/0305.html" 
+	posts="2"
+	startdate="05/18/2004"
+	enddate="05/19/2004"
+>
+<topic>Build Process</topic>
+<p>Eric Pouech had some ideas for some new janitorial tasks.
+For someone just wanting to get started with Wine these would
+be great - they only require a bit of knowledge of C:</p>
+<quote who="Eric Pouech"><p>
+
+I've been toying with some gcc warnings lately, and this could generate 
+some new ideas for janitorial tasks.
+For example:
+</p><p>
+<ul>
+<li> <tt>-Wmissing-declarations</tt> should point lots of missing APIs declarations 
+(I've done it in some cases, and I'm in the process of submitting some 
+fixes). We cannot turn this warning always on because there are lots of 
+cases where we have global functions without prototypes (more than 2/3 
+of them are made out of the 16bit entry points)</li>
+
+<li> <tt>-Wcast-qual</tt> should point out all the (const bla*) => (foo*) casts. We 
+use quite a bit this, and in some cases it would prevent some errors. 
+These are the main cases pointed out by this warning:
+  <ol>
+	<li> const void* ptr; and then reading a value from ptr (word...) like 
+*(WORD*)ptr which should be written *(const WORD*). The warning in this 
+case is harmless.</li>
+	<li> const void* ptr; and then setting it to another const pointer: const 
+WORD* pw = (WORD*)ptr; which should be written pw = (const WORD*)ptr;. 
+This warning is harmless if pw is really defined as const, in some cases 
+it isn't and this should be fixed.</li>
+	<li> const void* ptr; and then setting it to a pointer to a pointer (used 
+a lot for qsort/bsearch... callbacks), when dealing with arrays of 
+pointers. Here again, what's const is the first pointer, so const foo* f 
+= *(const foo**)ptr is wrong, it should be const foo* f = (const foo* 
+const*)ptr; This could be harmfull if not declared properly.
+Unfortunately, we cannot turn this warning on all the time because some 
+C functions implementation would always trigger it (strstr for example), 
+unless we use integral values (not pointer) to cast from the const 
+char* to the returned char*), and this is uglier IMO than the warning we 
+try to avoid.</li></ol></li></ul>
+</p><p>
+Some other warnings could be used as well. Trying also the Intel 
+compiler gave lots of interesting warnings (and a tons of not so useful 
+too).
+</p></quote>
+<p>
+Francois Gouget had some ideas too:</p>
+<quote who="Francois Gouget"><p>
+Here are a couple extra suggestions:
+<dl>
+ <dt> Add <tt>-Wwrite-strings</tt></dt>
+   <dd>
+   There has already been quite some work on this but I believe it's not
+finished yet. I'm not 100% sure of the status though.<br /></dd>
+
+
+ <dt> Patch our min/max macros to catch signed/unsigned comparisons.</dt>
+ <dd>
+   This generates a lot of warnings. Ideally they should be fixed
+without using casts but it may not always be possible.</dd></dl></p><p>
+
+   (the modified min/max macros where borrowed from a Linux kernel patch)
+</p></quote>
+
+</section>
+<section 
+	title="Wine &amp; Fedora Core 2 Workaround" 
+	subject="Upcoming breakage warning"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/05/0338.html" 
+	posts="5"
+	startdate="05/19/2004"
+	enddate="05/20/2004"
+>
+<topic>Fixes</topic>
+<p>Mike Hearn warned everyone of a problem that was likely
+to appear more and more:</p>
+<quote who="Mike Hearn"><p>
+ On Fedora Core 2, the kernel is compiled with the 4G/4G VM split option
+ enabled, which can prevent us from performing a correct emulation.
+</p><p>
+Win32 apps are apparently built with the assumption that they will not
+be allocated addresses beyond the 3G boundary. The solution therefore is
+to perform a similar trick to the preloader and reserve the address space
+before the emulation starts so mmap will never use addresses in that area.
+</p><p>
+This probably won't be combined with the preloader itself though, as
+Alexandre says it can be done after Wine gets control (what about DSOs
+mapped &gt;3gig?) and so it can be done more portably. Up until now this
+issue has only affected Solaris and therefore nobody fixed it.
+</p><p>
+There is currently no known workaround for this problem short of
+recompiling your kernel. The error looks like this:
+<ul><code>
+wine: unable to create process heap</code></ul>
+</p><p>
+Alexandre diagnosed this problem so I'm sure he'll correct me if this
+email contains any mistakes.
+</p></quote>
+
+<p>Digging deeper, Mike found a temporary solution the next day,</p>
+<quote who="Mike Hearn">
+ According to a Red Hat kernel engineer, you can
+ use 
+  <ul><code>setarch i386 wine ....</code></ul> to switch it back to
+ the 3/1 split while we fix it in the Wine code.</quote>
+
+<p>(<tt>man setarch</tt> if you want to know more details)</p>
+
+<p>Over the past year there's been a series of breakages caused 
+by new distributions.  Marcus Meissner speculated it was part of a
+larger plot,
+<quote who="Marcus Meissner">
+ Could it be that Red Hat is trying to deliberately break WINE every half year ;)
+</quote></p>
+
+</section>
+<section 
+	title="Unreal 2 Working" 
+	subject="[DMUSIC] Happy Happy :)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/05/0337.html" 
+	posts="3"
+	startdate="05/19/2004"
+	enddate="05/20/2004"
+>
+<topic>DirectX</topic>
+<p>DirectX guru, Rapha&#235;l Junqueira, has been submitting some
+large DirectMusic patches lately.  With the latest one this
+week we finally understand what's been motivating him:</p>
+
+<quote who="Raphael Junqueira"><p>
+
+  I'm glad to announce that now (with this little patch) Unreal2 is working 
+and playable (it's only slow and i haven't seen graphics problems for now).
+</p><p>
+  Now play :) 
+</p><p>
+Changelog:
+<ul>
+ <li> better handling of User IDirectMusicTools</li></ul>
+</p></quote>
+
+
+
+</section>
+<section 
+	title="Direct3D Retained Mode" 
+	subject="Re: Empty (Stubs in spec only) d3drm"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/05/0303.html" 
+	posts="6"
+	startdate="05/18/2004"
+>
+<topic>DirectX</topic>
+<topic>Creating Stubs</topic>
+<p>Ivan Leo Murray-Smith submitted a patch to add a
+stubbed implementation of d3drm.dll; the Direct3D
+<a href="http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/dnardxgen/html/msdn_dx5media.asp">Retained
+Mode API</a>:</p>
+<quote who="Ivan Leo Murray-Smith"><p>
+ This dll is needed by a game, bug report number 1202. With this empty dll, the
+ game crashes at the same point where it crashes when used with the native copy,
+ mainly because it crashes before any function in the dll is called. But at least
+ it doesn't crash with a dll not found error. You'll have to run the autofoo
+ stuff after applying this patch.
+</p></quote>
+
+<p>Lionel Ulmer thought the DLL should be disabled by forcing it
+ to native though,
+<quote who="Lionel Ulmer">
+As far as I know, you did not submit also a patch to the default
+configuration file to add this DLL with 'native' as default (which is a good
+thing as all the people having a Windows box have this DLL - it could even
+be installed if someone manages to install DirectX under Wine).
+</quote></p>
+
+<p>Ivan pointed out the native DLL didn't work, so that might not
+be a good idea.  Rapha&#235;l suggested "just" completing the stubbed 
+DLL,
+<quote who="Raphael Junqueira">
+This dll should be easy to implement (almost geometries utilities
+functions as d3dx8/d3dx9 for d3d8/d3d9). It can be a beginning for people
+ who want to begin patches for wine (as for d3dx8/d3dx9) :)
+</quote></p>
+
+<p>Lionel explained his reasoning:</p>
+<quote who="Lionel Ulmer"><p>
+Well, my point was the same made about stubs in normal DLLs: why add a
+completely useless DLL which may break more things than actually help.
+</p><p>
+Or, when adding it, have it at least disabled by default.
+</p><p>
+As for its simplicity, from what I remember there are tricky stuff like Mesh
+builders, interpolations, ... Which are 'easy' in the sense it's pure
+geometrical stuff and not at all linked to Win32, but still something that
+needs at least a good knowledge in 3D geometry processing.
+</p></quote>
+
+<p>Rapha&#235;l felt it might be a nice starting point just because
+little knowledge of Win32 is required.  The geometry could all
+be tested with DirectX development kit demos.  Lionel cautioned
+against spending much development time on it:</p>
+<quote who="Lionel Ulmer"><p>
+ Well, D3DRM is so rarely used (in all my game demos I ever tested, only one
+ actually used it) that it's something very difficult to do for no real gain
+ to Wine.
+</p><p>
+ But well, I do not object to someone working on it, I just object to the
+ 'let's add an empty DLL to Wine' approach... If adding an empty DLL, it
+ should at least have FIXME printed on each call (to know which calls are
+ used) and, even better, to have the COM hierarchy implemented with stubs to
+ see which calls are used in which interfaces.
+</p><p>
+ Otherwise, it's no help to anyone.
+</p></quote>
+
+
+
+</section>
+<section 
+	title="Hiding Symbols (con't)" 
+	subject="symbol hiding - with gcc -fvisibility"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/05/0291.html" 
+	posts="3"
+	startdate="05/16/2004"
+>
+<topic>Build Process</topic>
+<p>Guido Draheim followed up this week on a thread we covered 
+( <a href="http://www.winehq.com/?issue=222#Hiding%20Symbols%20&amp;%20PE%20vs.%20ELF">issue
+#222</a>) about hiding symbols:</p>
+<quote who="Guido Draheim">
+<p>
+sorry, just saw the note on WWN. I did hope that there would be someone
+to point to the gcc visibility stuff already - but it seems that people are
+more concerned to exchange their beliefs and politics rather showing
+off some engineering stuff.
+<dl>
+ <dt> preface</dt>
+<dd><p>it's not in the file format - it's in the tools.</p><p>
+
+The name ELF stands for Extensible Linker Format, it allows to invent all kind
+of new sections, and expand the symbol table with many interesting attributes
+that can be checked up by a toolchain. Well, "IF" the tools check for them.
+</p></dd>
+
+ <dt> <tt>gcc -fvisibility</tt></dt>
+
+<dd>
+The <tt>gcc -fvisibility</tt> exists since 3.1 and is supported by binutils. If you read up
+some web reports, it seems to have been invented for hiding stuff not quite
+unlike what the original poster wanted. The icc supports all -fvisibility options
+as well afair.<br /></dd>
+
+ <dt> the real problem</dt>
+
+<dd>
+traditionally, one can kill local systems which are usable within one file only,
+i.e. "static". Pretty 20year old unix stuff. The other symbols are referencable
+outside (in .o) and the standard shared linker will put all of them into the
+shared library symbol export table. - But now we want two different symbol
+flavours, one exported to the same library, the others for the rest of the world.
+Perhaps use a linker script to decide later about symbol visibility.<br /></dd>
+
+<dt>example solution</dt>
+<dd> gcc supports the universal attribute syntax, and it does now know about more
+symbol flavours as to their visibility. Probably you want to have "hidden".
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/05/0291.html">Attached</a>
+are two simple test*.c files and a makefile. The final sharedlib
+symbol table contains only test3 after stripping. - using a linker script instead
+of in-source __attribute__ is left as an exercise to the reader.<br /></dd>
+
+<dt>more hints</dt>
+
+<dd>
+search <a href="http://www.freshmeat.net">freshmeat</a> - there are ELF tools to 
+staticlink, to obfuscate, and more.
+It's all in the tools. There is only one problem with opensource: many programmers
+do not need to hide symbols to the extreme, so they did not write such tools
+so far. Not yet. There are some real ELF-educated people out there - hire one, and
+let him write the tool you need. The ELF format is well-defined and simple enough
+to allow everything and quite easily.<br /></dd>
+</dl></p></quote>
+
+<p>Mike Hearn tried it out and reported success after stripping the
+resulting binaries.</p>
+
+</section>
+</kc>

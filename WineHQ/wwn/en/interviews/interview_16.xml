@@ -1,0 +1,520 @@
+<kc>
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="16" who="Shachar Shemesh" date="30 June 2004" />
+ <intro>
+  <p>This is our 16th interview with Wine developers. Check out the Wine
+  <a href="http://www.winehq.org/interview">Interviews</a>
+  page for previous ones.</p>
+  <p>
+  I'm always amazed at the diversity of Wine's developers.  This week
+  we sat down with Shachar Shemesh of Tel Aviv, Israel to discuss parts of 
+  Wine's internationalization.  Shachar is a software consultant and
+  ardent open source advocate.  A few years ago he founded 
+  <a href="http://www.lingnu.com">Lingnu Open Systems Consulting</a> 
+  specializing in networking, security, and free software integration.
+  In his spare time he volunteers as a board member for 
+  <a href="http://www.hamakor.org.il/english.html">Hamakor</a>, an
+  Israeli organization that promotes free/open source software.  
+  </p>
+ </intro>
+<interview>
+
+<question><p><i>BV:</i>
+How did you first get involved with Linux and Wine?
+</p></question>
+
+<answer><p><i>Shachar:</i> 
+Hmm, let's see. Linux was a gradual entrance. My first Linux experience 
+was about 1992, when a friend bought a Ygdrassil distribution, and we 
+sat and tried to compile the kernel (0.9 something, IIRC). Around 1996, 
+as a sys admin, I connected the place I worked to the Internet, and the 
+ISP recommended a Linux server for that, and offered to install it for 
+me for $400. I politely said I'll do it myself. From there on it was 
+pretty much inevitable.
+</p><p>
+As for Wine, I think I actually first heard of Wine through the ReactOS 
+project announcement on Slashdot. I'm sure someone can look up when that 
+was. It sounded interesting, but I never had the time for it. I was a 
+Win32 programmer at the time, so I figured that it's an interesting way 
+to do fun stuff. Strange, considering that today, when I present Wine, I 
+have no answer to the question "So why are people doing ReactOS?" (sorry 
+guys, don't lynch me, please).
+</p><p>
+At some point of my professional life I decided that
+ adding Hebrew support for Wine would be an interesting thing to do. That
+ was the first time I downloaded and compiled wine. At first, I went on
+ IRC where I learned  to always use BiDi (bidirectional) rather than "RTL"
+ ("Right to Left") as a name for what I'm doing; RTL being also the name 
+ for <i>Run Time Library</i>. I then sent 
+ <a href="http://www.winehq.org/hypermail/wine-devel/2002/03/0236.html">a 
+ message</a> to wine-devel saying 
+ "hey, anybody working on it?".
+</p><p>
+ I was, quite surprisingly answered in private by an IBM group in 
+ Jerusalem that, yes, they were working on it. They ran out of budget, 
+ however, and their code was never released. A colleague who works for 
+ IBM Israel (he is their chief "Linux guy") tried to get their already 
+ written code released, but didn't even succeed in doing that. Several 
+ months later I gave up on waiting for them, and started working on it on 
+ my own.
+</p></answer>
+
+<question><p><i>BV:</i>
+ So a few years ago IBM had Hebrew support working with Wine?
+</p></question>
+
+<answer><p><i>Shachar:</i> 
+ They were, unsurprisingly, using ICU. I have seen none of their work,
+ and it is probably not relevant anymore anyways. The same group also
+ added Hebrew support to OpenOffice's writer version 1.0. That work was
+ actually published (for anyone brave enough to compile OpenOffice, that
+ is). Of course, by OO 1.1, there was support built into the product by
+ Sun, and that work was a dead end too. I have heard conflicting reports
+ on what actually happened there, regarding who's fault it was that the
+ IBM code was not used. Not surprisingly, that project was also based on ICU.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ <a href="http://oss.software.ibm.com/icu/">ICU</a> is the same Unicode 
+ library you used to support Hebrew in Wine.  How suited to the task is it?
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+ ICU has all the BiDi support we will ever need. Well, almost - it will 
+ probably be too hard to make it more MS BiDi compatible, but that is not 
+ a major issue. What is a major issue with ICU is that it is an entire 
+ Unicode implementation. This means it has lots and lots of stuff that 
+ Wine does itself. For example - GDI without BiDi support is ~2MB. With 
+ BiDi support from ICU statically linked, after ICU has been trimmed of 
+ all the easy-to-remove stuff, it grows to ~4MB. Without this trimming, 
+ it grows an additional 7MB to 11MB! Don't forget that GDI neither uses 
+ nor needs most of that code.
+</p><p>
+ I guess things would not be so bad if you could just say "I'll just 
+ dynamically link it". For all practical purposes, you can't. As a design 
+ decision, ICU has the library version mangled into each function name. 
+ This means that you have to have the same version installed on the 
+ machine as the one you compiled with, or it won't be usable. As a 
+ byproduct of this, nobody uses ICU dynamically. Both Mozilla and 
+ OpenOffice use ICU for their reordering, and both of them statically 
+ link it. As a byproduct of that, almost no distro carries ICU, or carry 
+ a very old version of it. In short, I would like to ditch ICU as soon as 
+ possible.
+</p><p>
+ There is another library, called "Fribidi", that also does reordering. 
+ That library has been my first choice from the beginning. The problem 
+ with this library is that it doesn't work with UTF-16, which means that 
+ I would have to translate each string from UTF-16 to UCS4 and back after 
+ conversion. I did, originally, write a patch that did just that, but 
+ Alexandre said "let's see how it goes", and from one thing to another, 
+ this route was abandoned. There were lots of talks about ADDING support 
+ for UTF-16 to Fribidi, including a technical suggestion by yours truly. 
+ However, with Behdad, the Fribidi maintainer, being too busy with other 
+ stuff that has not came to pass yet. He was actually relieved when I 
+ told him I was going with ICU, as he was probably feeling bad about 
+ holding Wine back.
+</p><p>
+ ICU does one thing that Fribidi doesn't, which is "shaping". This is 
+ when a letter is rendered differently, depending on its place in the 
+ word. A letter may appear one way when alone, another when at the 
+ beginning of the word, a third when in the middle, and a forth when at 
+ the end. This is done automatically by the rendering engine. This, 
+ however, is not my itch to scratch - it is only relevant for Arabic and 
+ Farsi. Also, as Behdad is from Iran, and as last I heard he was working 
+ on it, it is likely that by the time Fribidi supports UTF-16, it will 
+ also support Arabic shaping.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Do you set up your personal computer to use English, Hebrew or both? 
+</p></question>
+
+<answer><p><i>Shachar:</i> 
+Most adapt computer users in Israel positively HATE the way user 
+interfaces are translated into Hebrew. I think this is partly due to the way 
+combined Hebrew/English text looks if BiDi is not done properly and 
+partly due to the crappy way in which Windows supported Hebrew 
+originally. This is probably one of the triggers that caused Microsoft 
+to issue Windows 3.11 (which was supposed to be "fully international"). 
+By Windows 95 time, TWO versions of Windows were available for both 
+Hebrew and Arabic. One was a fully translated version, with menus in 
+Hebrew, and the other was dubbed "Hebrew enabled", where the OS would 
+speak only English, but would support BiDi and Hebrew. I also suspect 
+that around that time they also changed the resource locating algorithm 
+to always pick the OS language, regardless of locale settings. If they 
+hadn't done that, programs written properly would start speaking Hebrew 
+on OSes that were merely "Hebrew Enabled". Thankfully, Wine did not 
+follow that madness (not that we don't have our own quirks, mind you). 
+The separate "Enabled" version was terminated in Windows 2000, where you 
+can make any installation speak any language. All the "Enabled" clients 
+just used the English Windows 2000, adding Hebrew support.
+</p><p>
+On Linux, things are pretty similar, and for similar reasons. Most Linux 
+users in Israel, myself included, use the English interface, installing 
+Hebrew fonts. Today, Hebrew support is available in pretty much all 
+major toolkits and environments. Gnome, KDE, Mozilla, OpenOffice, etc 
+all support BiDi and Hebrew. Some do it better, some do it worse. In
+fact, due to the fact that the community normally capable of doing the 
+translations doesn't have the itch, Hebrew interfaces in Linux are 
+somewhat lagging. KDE is in considerably better shape than Gnome, though.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ I think a large problem with internationalization is that a lot of people
+ just don't understand all the issues involved and therefore interfaces
+ don't get designed well from the start.
+</p></question>
+
+<answer><p><i>Shachar:</i> 
+Yes. When you come to translate an interface, and you find that you have
+no way to reverse the order of GUI elements on screen, that is a major
+hindrance to implementing good Hebrew interfaces.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Sure.  A lot of us Latin-based speakers are pretty ignorant.  Take for
+ instance the 
+ <a href="http://www.winehq.org/?issue=224#Internationalization%20of%20Calendars">recent
+ question</a> on wine-devel concerning calendars.  
+ I had never really considered any other system beside the Gregorian 
+ calendar.
+</p></question>
+
+<answer><p><i>Shachar:</i> 
+ Well, day to day activities in Israel are according to the Gregorian
+ calendar. Still, there are important differences. For example, the new
+ Mozilla calendar is willing to let me set the week as starting on Sunday
+ rather than Monday. It does not, however, comprehend the idea that
+ weekends in Israel are Friday - Saturday, rather than Saturday-Sunday.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ What other types of things cause internationalization problems?
+</p></question>
+
+<answer><p><i>Shachar:</i> 
+ I think there is no such thing "a project that works on all possible
+ locales". ICU has a mechanism where you put in a number, and it gives
+ out a textual representation of that number. The Hebrew data in ICU is
+ horrible, to the point where whoever put the data in did not know the
+ difference between the letter Zadi and the letter Ain (they look
+ similar, but are pronounced entirely differently). Obviously they were 
+ not a Hebrew speaker, but someone who copied it from someplace.
+</p><p>
+ I started to look at the raw data, and quickly had to stop. There is
+ just no way to do it. In Hebrew, all nouns (animate, inanimate, and
+ abstract) have a gender. Accordingly, most adjectives have a gender as
+ well, that has to match that of the noun. In addition, the word "and" is
+ not translated into a separate word, but into a letter prepended to the
+ word (same goes for "the"). The ICU engine is simply not strong enough
+ to handle these nuances when it needs to produce "two thousands three
+ hundred and forty seven (female)". The list goes on and on. In short, I
+ think the only way to produce really good localizable interfaces is to
+ work with your translators, or give them access to the source :-)
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ You gave an interesting presentation at WineConf about supporting 
+ languages such as Arabic and Hebrew.  Could you give a brief 
+ overview of bidirectional text, how it works, and the challenges
+ faced with supporting it?
+</p></question>
+
+<answer><p><i>Shachar:</i> 
+ Phew - how do you present something like that to people who don't know 
+ the language? I'll use the Unicode convention that CAPITALS meaning, for the 
+ sake of this discussion, Hebrew characters, and lowercase meaning 
+ English. This way, if you want a sentence that displays as:
+ <ul><i>RAC in english is said "car"</i></ul>
+</p><p>
+ In other words - that's the visual order of the sentence. You would 
+ probably want to type it, letter by letter, in the same order you say 
+ it. Remember, we are reading all capitals from right to left, so you 
+ would want to type:
+ <ul><i>CAR in english is said "car"</i></ul>
+</p><p> 
+ That's the logical order of the sentence. The trick is to do the 
+ logical-&gt;visual conversion in a way that will be most intuitive to the 
+ reader - that is, the reader's eye will naturally scan the letters in 
+ their logical order, when presented with the proper visual order. This 
+ is far more intuitive to people who know a BiDi language, as you 
+ automatically scan forward to look for where to continue reading when 
+ you hit a sequence of opposite direction. Still, if we take the 
+ sentence, in logical order:
+ <ul><i>TO SAY "CAR" IN ENGLISH, SAY "car"</i></ul>
+</p><p>
+Which is the exact same sentence, only in the different "language". 
+Ideally, you would render it:
+ <ul><i>"car" YAS ,HSILGNE NI "RAC" YAS OT</i></ul>
+</p><p>
+ Notice how, despite the fact that both sentences begin with right-to-left 
+ characters, one has the right-to-left part on the left, while the other has 
+ the right-to-left part on the right?  This is because the first is an English 
+ sentence, with an occasional Hebrew word, while the second is a Hebrew 
+ sentence, with an occasional English word. I think, introduction wise, we can 
+ stop here. You can rest assured that it gets much, much, much more complicated 
+ than that.
+</p><p>
+ There are several algorithms for handling this task. Microsoft has one 
+ that is almost, but not quite, entirely unlike anyone else's. Unicode 
+ has had about three versions to date, the latest of which is called 
+ "ANNEX #9 to the Unicode standard 3.0", available online at 
+<ul><a href="http://www.unicode.org/reports/tr9/">
+ http://www.unicode.org/reports/tr9/</a></ul>
+</p><p>For the brave of heart who want to 
+ read it, it consists of 35 steps+6 higher level overrides. Oh what fun. 
+ Like I said, it is <i>almost</i> compatible with what Microsoft is doing.
+</p></answer>
+
+<question><p><i>BV:</i>
+ That sounds like loads of fun.  So, what does Wine do to support
+ BiDi?  Does it require special API's to be used by an application?
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+ Not as many special APIs exist as you would expect; in fact, so far 
+ none at all. BiDi processing, for the most part, is done on the strings 
+ in transit. There are a few flags that deal with BiDi, but that is 
+ mostly about stating whether the sentences used are RTL or LTR. Windows 
+ 3.1 had specific APIs for BiDi and I only recently found some old
+ documentation for them. 
+</p><p>
+ At the moment, Wine mostly does the text output processing. I originally 
+ chose two of the 35 points the Unicode algorithm says I should do, and 
+ did just those. This worked far better than expected. In fact, it was 
+ "good enough" for many people. I later replaced that by ICU (an IBM 
+ library for Unicode support that also does BiDi). Several months ago, I 
+ even added paragraph direction support to most APIs. Dialogs don't enjoy 
+ it yet. At the moment most changes are centered around GDI, but I will 
+ probably have to move it out to a separate DLL when explicit support to 
+ DrawText is added. That's also how Windows does that, BTW. They use a 
+ DLL called LPK.DLL (Language Pack), which is, (un)fortunately, undocumented.
+</p><p>
+ As for applications - despite the fact that the "treat strings as right 
+ to left in proper environment" flag exists in all development tools, 
+ very few applications know what to do with it. I don't really blame them 
+ - the effects of this flag are not so clear to anyone who has not had to 
+ rev-eng the system in order to reimplement it.  As a result, most 
+ applications work with BiDi to the extent that they don't, as a rule, 
+ set paragraph direction properly.
+</p><p>
+ Wine still lacks, quite glaringly, proper support for Hebrew menus, edit 
+ controls, and other areas I may not even be aware of. For an example of the 
+ menu support problem, consider the following example menu text:
+<ul><i>H&amp;ELP</i></ul></p><p>
+ According to the standard, the E should be underscored. What actually 
+ happens is one of two things. Either the entire thing gets reordered, 
+ resulting in:
+<ul><i>PLE&amp;H</i></ul></p><p>
+ Or, the character position that needs to be underlined is marked before 
+ reordering, resulting in the same effect as if you wrote:
+<ul><i>HE&amp;LP</i></ul></p><p>
+ Either way - the underline ends up in the wrong place.
+</p><p>
+ For the edit control, the problem is even more amusing (and much more 
+ difficult to solve). There, as the text is being sent out as a whole, 
+ text appears properly as you type it. The cursor, however, is at the 
+ entirely wrong place. In effect, the cursor is located on the logical 
+ string, while the display shows the visual order.
+</p><p>
+ Also, many applications rely on correctly identifying the current 
+ keyboard language, which may or may not be supported in current Wine, 
+ depending on who you ask.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Doesn't Wine just get the keyboard info from X?
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+ The problem is not with getting the info from X. The problem is with
+ relaying that info to the Win32 applications. Also, bear in mind that
+ almost all Israeli users keep one Latin and one Hebrew keyboard
+ available at all times. This is a different type of detection than the
+ usual one. Dmitry Timoshkov did some work in that area, and I have
+ heard reports of people saying that it worked for them. To date, I have
+ not been able to get it to work myself. Not enough time for fun things
+ I'm afraid.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ You mentioned that most applications for Windows implement their own form
+ of BiDi such that no real standard exists.  If so, why would Wine need to
+ support BiDi natively?  Couldn't we just use whatever comes with the
+ application?
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+ Yes and no. The applications that do that are mostly those that either 
+ have to stick to an external standard, or have their own standard that 
+ they need to strictly adhere to. The first category includes, for 
+ example, Netscape/Mozilla, and the second includes Word/Office. Most 
+ applications don't do their own BiDi, but most applications that count 
+ do. Yes, you can run Word, assuming you don't want a Hebrew interface. 
+ The keyboard language problem will prevent you from actually using it 
+ for BiDi, but otherwise it will work quite nicely. Other applications, 
+ however, will probably suffer from the missing functionality. Even Word 
+ uses its own BiDi only for the actual text editing. Everything else is 
+ done using the OS. So effectively, you cannot really use it without 
+ Hebrew support in Wine.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ What other areas of Wine have you worked on?
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+ I was charged by a client with the task of making a specific program 
+ work. As it turned out, that program had (and still has) problems with 
+ the infamous UNICOWS.DLL, an MS attempt to bring a watered down version 
+ of Unicode to Windows 9x users. As luck would have it, I spent about 
+ three weeks getting a unicows replacement more or less working, only to 
+ be replaced by several lines of brilliant code written by Alexandre. 
+ Working on free software can be frustrating at times.
+</p><p>
+ I was also involved in Wine's startup support - wineboot. That was 
+ really just a "I know this area from past experience, the basics are 
+ easy, just do it". Although it was announced good enough for 0.9, I 
+ still don't like where it's at. I would like to see it auto-running when 
+ needed. I'm afraid that cannot be easily done, at least not without the 
+ concept of wine "sessions".
+</p><p>
+ Other than that, there are lots of places I would have loved to get 
+ involved in, which I will, regrettably, probably not have the time for. 
+ I think the most alluring to me, off the top of my head, are Cryptoapi, 
+ getting Winelib to run natively, and the security permissions APIs. I 
+ guess I will have to leave those to others, as I don't see myself 
+ getting the time to do these. Something which I may yet find the time 
+ for is getting Wine to work in a multi-user environment, with actual 
+ "session start" etc, as well as copying configurations over from a 
+ global setting.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ The security and crypto areas seem to be interesting because implementations
+ have been done by other projects.  All that's left is to integrate
+ with Wine.  Or am I wrong?
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+ I actually wrote a DES implementation once, many years ago. It was while
+ I was taking a course in cryptography, and I wanted a royalty free DES
+ implementation. I'm not sure whether SSLeay would have solved my needs,
+ but I was not aware of it at the time. I mentioned that to my teacher,
+ who showed some shock, and then said I must have a lot of free time on
+ my hands.
+</p><p>
+ In case someone wishes to say the teacher was naive, we are talking
+ about Prof. Eli Biham. He is best known for writing Serpent (the first
+ AES runner up), and also known to be the first one to find a working
+ attack on DES. I don't think anyone can blame him for not having the
+ capacity of understanding the amount of work involved.
+</p><p>
+ So, no, I do not intend to write any cryptographic algorithms myself.
+ Once was enough to understand that I neither have the free time for it,
+ nor the right type of programming talent to do it efficiently. I am
+ interested in that area because the APIs are interesting to me. Then
+ again, like I said, that's something I'll probably not get around to.
+</p><p>
+
+
+</p></answer>
+
+<question><p><i>BV:</i>
+How is Linux doing in Israel?  Are there many people who use it?
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+Quite a lot. There are quite a few active lectures community, and 
+several mailing lists, many of them in English. Then again, just when 
+you think you know everyone, someone like Boaz Harrosh pops up. He did 
+not belong to any of the standard communities, and the only reason I 
+know of his existence is because of his participation in the Wine project.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Is there an active Arab Linux community?  Have you had any contact
+ with them? 
+</p></question>
+<answer><p><i>Shachar:</i>  
+ I can't say for sure. I'm sure many of you read 
+ <a href="http://interviews.slashdot.org/article.pl?sid=04/05/13/1346237&amp;mode=thread">the
+ interview on Slashdot</a> with the
+ guy who organized the
+ <a href="http://developers.slashdot.org/article.pl?sid=04/05/02/1838225&amp;mode=thread">Linux
+ Installfest in Cairo</a>.
+ Unfortunately, we are not mingling much with them. There was some
+ cooperation, but my personal impression is that the Arabic Linux
+ community is much more scattered than in Israel. Maybe it has to do with
+ higher computers per square kilometer ratio in Israel. There is one
+ virtual community at
+ <a href="http://www.arabeyes.org">http://www.arabeyes.org</a>. I 
+ was actually invited to
+ participate in a yearly IRC party they were holding, to give Wine a
+ voice. There are also some per-country communities, but I don't know
+ much about them. I know of at least two people who are participating in
+ the Israeli English speaking mailing lists and virtual communities.
+</p><p>
+ I'll just mention that when we do establish contact, I don't get the
+ feeling it's the political problems that cause cooperation not to work
+ out. It probably has more to do with not enough time and resources. I
+ think computer people, and free software people in particular, are too
+ cynical to take such things on a personal level.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ And on a sidenote, how is your business doing?  
+</p></question>
+
+<answer><p><i>Shachar:</i>  
+ We're doing ok. It may turn out yet that Wine will play a role in what 
+ we're doing, but it's too early to tell for sure. I have not used Wine 
+ to solve a client problem per-se, but I have a client who has had a 
+ Wine problem and came to me. On the whole, and in a way 
+ that is totally unrelated to Wine, it seems that the economics of at 
+ least some of the free software development are sounder than some people 
+ would have you believe. When you are not an upstream supplier, investing 
+ money in developing software that will not be yours is not very 
+ difficult to justify economically. We have done/are doing several 
+ software development projects (the most major of which is an OLE DB 
+ provider for PostgreSQL), that are released as free software under a 
+ copyleft license, despite being requested by a paying customer.
+</p><p>
+ Unfortunately, I am not yet at liberty to disclose exactly what the 
+ need was to trigger the Wine development. I will love to give the example 
+ on wine-devel when it's public knowledge. I can reassure everyone that 
+ all development done on wine was committed to be sent to wine-patches even 
+ before my client saw it.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Thanks for the interview!
+</p></question>
+
+</interview>
+</kc>
+
+
+

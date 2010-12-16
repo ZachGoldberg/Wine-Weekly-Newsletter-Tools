@@ -1,0 +1,586 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="247" date="11/05/2004" />
+<intro> <p>This is the 247th issue of the Wine Weekly News publication.
+Its main goal is to grab the boards and slide on snow. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="185" size="667" contrib="71" multiples="42" lastweek="33">
+
+<person posts="15" size="75" who="Alexandre Julliard" />
+<person posts="11" size="33" who="Dimitrie O. Paun" />
+<person posts="10" size="31" who="Dmitry Timoshkov" />
+<person posts="8" size="25" who="William Poetra Yoga H" />
+<person posts="7" size="23" who="Jakob Eriksson" />
+<person posts="6" size="20" who="James Hawkins" />
+<person posts="6" size="19" who="Dan Kegel" />
+<person posts="8" size="25" who="Mike Hearn" />
+<person posts="5" size="12" who="Andreas Mohr" />
+<person posts="4" size="25" who="Vincent B&#233;ron" />
+<person posts="4" size="20" who="Hans Leidekker" />
+<person posts="4" size="9" who="Juan Lang" />
+<person posts="3" size="19" who="Dagan Shai" />
+<person posts="3" size="18" who="Markus Amsler" />
+<person posts="3" size="17" who="Jeremy White" />
+<person posts="3" size="12" who="Ivan Leo Puoti" />
+<person posts="3" size="10" who="Walt Ogburn" />
+<person posts="3" size="10" who="Eric Pouech" />
+<person posts="3" size="9" who="Boaz Harrosh" />
+<person posts="3" size="9" who="Brian Vincent" />
+<person posts="3" size="9" who="Ryan Underwood" />
+<person posts="3" size="8" who="Francois Gouget" />
+<person posts="2" size="12" who="Dan McGhee" />
+<person posts="2" size="11" who="Holly Bostick" />
+<person posts="2" size="8" who="Robert Shearman" />
+<person posts="2" size="7" who="Jason Edmeades" />
+<person posts="2" size="7" who="Geoff K. Hart" />
+<person posts="2" size="6" who="Rolf Kalbermatter" />
+<person posts="2" size="6" who="Robert Reif" />
+<person posts="2" size="6" who="Huw D M Davies" />
+<person posts="2" size="6" who="Vitaliy Margolen" />
+<person posts="2" size="6" who="Rein Klazes" />
+<person posts="2" size="6" who="Ferenc Wagner" />
+<person posts="2" size="5" who="Joel Konkle-Parker" />
+<person posts="2" size="5" who="Jon Griffiths" />
+<person posts="2" size="5" who="Thorsten Kani" />
+<person posts="2" size="5" who="Duane Clark" />
+<person posts="2" size="5" who="Scott Ritchie" />
+<person posts="2" size="5" who="Vitaly Lipatov" />
+<person posts="2" size="4" who="Jia L Wu" />
+<person posts="2" size="4" who="Stefan D&#246;singer" />
+<person posts="1" size="6" who="MediaHost \(TM\)" />
+<person posts="1" size="5" who="Geoff K. Hart" />
+<person posts="1" size="4" who="Fabrice Menard" />
+<person posts="1" size="4" who="Gerald Pfeifer" />
+<person posts="1" size="4" who="Michael Stefaniuc" />
+<person posts="1" size="3" who="Mike McCormack" />
+<person posts="1" size="3" who="Jukka Heinonen" />
+<person posts="1" size="3" who="Uwe Bonnes" />
+<person posts="1" size="3" who="Helder Carvalho" />
+<person posts="1" size="3" who="Roderick Colenbrander" />
+<person posts="1" size="3" who="Lionel Elie Mamane" />
+<person posts="1" size="3" who="Roger" />
+<person posts="1" size="3" who="Aric Stewart" />
+<person posts="1" size="3" who="Tobias Burnus" />
+<person posts="1" size="3" who="Jakob Eriksson" />
+<person posts="1" size="2" who="Michael Jung" />
+<person posts="1" size="2" who="Bill Medland" />
+<person posts="1" size="2" who="Justin" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Elad Lahav" />
+<person posts="1" size="2" who="Chris Morgan" />
+<person posts="1" size="2" who="Jim White" />
+<person posts="1" size="2" who="Tony Lambregts" />
+<person posts="1" size="2" who="Filip Navara" />
+<person posts="1" size="2" who="Devils Cry" />
+<person posts="1" size="2" who="Aneurin Price" />
+<person posts="1" size="2" who="Dietrich Teickner" />
+<person posts="1" size="1" who="Daniel Kegel" />
+
+</stats>
+<section 
+	title="Windows Update Region Changes" 
+	subject="Update region patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/11/0048.html" 
+	posts="4"
+	startdate="11/02/2004"
+	enddate="11/03/2004"
+>
+<topic>Graphics</topic>
+<p>Alexandre came up with a large patch for
+something that's been planned for a while -
+moving the update region management into
+the Wine server.  There's lots of reasons
+for it, not the least of which is wrapping
+up the DLL separation: </p>
+<quote who="Alexandre Julliard"><p>
+ 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/11/att-0048/01-wm.diff.gz">Here's</a> 
+the first step of moving the update region management to the
+server. The refresh on window moves is not optimized yet, so it will
+probably flicker quite a bit, but things should still be painted
+properly in the end. If you feel like giving this a try, I'm
+interested in hearing about any case where things don't repaint
+correctly.</p></quote>
+
+<p>Rein Klazes took it for a test drive an reported some problems:</p>
+<quote who="Rein Klazes"><p><ol>
+<li> Newsbin pro gets into an apparently endless loop when building up its
+main screen. 
+I've uploaded a +relay,+server trace to
+<a href="http://www.xs4all.nl/~rklazes/temp/nbhangs.log.bz2">
+http://www.xs4all.nl/~rklazes/temp/nbhangs.log.bz2</a></li>
+
+<li> the 'tool tips' windows of Agent news reader do not close until
+another tool tip is made to appear. They stay open also when switching
+to other X windows, or even other work spaces.</li>
+
+<li>Calling up a dialog and moving it using the mouse causes lots of
+repainting of the dialog, it does not without the patch. Just try wine's
+notepad and the font dialog to see.</li></ol>
+</p></quote>
+
+<p>Dimi Paun reported some problems he had reported a long time
+ago still persisted even with the patch.  Alexandre pointed
+out that could be expected,
+<quote who="Alexandre Julliard">
+No, it's not supposed to fix anything; at this point the goal is to
+avoid introducing too many new bugs. Fixing the old ones will come
+later...</quote></p>
+
+
+</section>
+<section 
+	title="InstallShield Status" 
+	subject="COM / InstallShield status?"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0669.html" 
+	posts="3"
+	startdate="10/31/2004"
+	enddate="11/02/2004"
+>
+<topic>Status Updates</topic>
+<p>Installers can be a pain to run under Wine.  Often it's harder to
+make the installation program run than the actual program after it
+gets installed.  Support has certainly improved over the past few 
+years and we've gone from no-chance of installation to, well, a chance.   
+It led Dan Kegel to wonder what the current status on all this is,
+<quote who="Dan Kegel">
+what's the current status of InstallShield support,
+and how much work would it be to fully support
+InstallShield-based installers?  I don't see any
+open InstallShield bug reports, maybe I should file
+one against the apps I have that don't install at
+the moment.  (Or would that be overkill?)</quote>
+</p><p>
+
+Tony Lambregts pointed out Bugzilla does have reports of
+failures.  If you look in the AppDB under 
+<a href="http://appdb.winehq.org/bugs.php?appId=995">InstallShield
+extractor</a> there are instructions for tracking down the 
+<a href="http://bugs.winehq.org/buglist.cgi?product=Wine&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_file_loc_type=allwords&amp;bug_file_loc=appdb%20995">related
+Bugzilla entries</a>.  Mike Hearn followed up with a detailed explanation
+of where InstallShield stands:</p>
+<quote who="Mike Hearn"><p>
+Rob and I did some work on InstallShield for iTunes a few months ago, 
+since then AFAIK no work has been done.
+</p><p>
+Status back then was that the InstallShield 7/MSI hybrid installers 
+worked pretty well, the bug I chased for nearly a week was refcounting 
+related (the backend wasn't shutting down) and since that was fixed I 
+believe it works pretty well.
+</p><p>
+The other main problems I'm aware of are:
+<ul>
+<li> needs stdole32.tlb, we have a program to generate this in CrossOver
+   and it needs to be pulled upstream as previously discussed.</li>
+
+<li> Painting problems. I've not investigated this deeply but I'm 99% sure
+   I know what the problem is. I've even written a patch to fix it as
+   part of investigating iTunes, but I never tried the patch with an
+   InstallShield that shows the issue.</li></ul>
+</p><p>
+Apart from those two there are mostly just generic issues - 
+InstallShield contains its own scripting language which heavily 
+exercises the variant APIs, so it sometimes shows up problems with them. 
+I believe Marcus found an issue with them thanks to InstallShield recently.
+</p><p>
+In other words, InstallShield <i>should</i> work though it might not be pretty.
+</p><p>
+There may be installers out there which don't work, I'd like to start 
+nailing them once I get back to Wine hacking. I don't know if I'll get 
+time however. Also, Murphy continues to smack me down w.r.t internet 
+connection, the ISP sent me the wrong type of modem and yesterday I 
+discovered the phone socket I was going to connect the modem to doesn't 
+actually work :(</p></quote>
+
+
+</section>
+<section
+        title="Fun With Signals"
+        subject="Re: ez-cdda sleep"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/11/0081.html"
+        posts="8"
+        startdate="11/03/2004"
+	enddate="11/05/2004"
+>
+<topic>Architecture</topic>
+<p>A few weeks ago Mike Hearn analyzed a debugging trace
+(see WWN issue
+<a href="http://www.winehq.com/?issue=242#Analyzing%20Debug%20Traces">#242</a>).
+He came to the conclusion there was a problem resuming a suspended thread.
+After some work this week, he came up with a patch to fix it, but mentioned,
+<quote who="Mike Hearn">
+This feels like the sort of patch Alexandre will rewrite to his liking
+anyway</quote></p>
+
+<p>Alexandre replied,
+<quote who="Alexandre Julliard">
+ Actually I already did a similar hack in the CrossOver tree; it's not
+ merged because it's full of races (which at first glance seems to be
+ the case with yours too).
+</quote></p>
+
+<p>Mike wanted to know what the race conditions were and the
+discussion moved over to irc (#winehackers for anyone interested).
+He reported back on wine-devel:</p>
+<quote who="Mike Hearn"><p>
+The first race he was thinking of
+is not a problem with this patch as Get/SetThreadContext loop until the
+context is uploaded. The second race is setting the context after the
+suspend context has been released but before SIGUSR2 returns.
+</p><p>
+Long term the plan is to use SIGUSR2 to implement SetThreadContext, with
+SIGUSR1 uploading the sigcontext to the server for GetThreadContext like
+in the patch.
+</p><p>
+That requires modifying DOSVM so it doesn't use SIGUSR2 (or figuring out
+how to overload SIGUSR2).
+</p><p>
+Alexandre isn't going to apply the patch for now, on the grounds that it
+needs to be done properly and the current code does at least work for
+debug registers.
+</p><p>
+This does leave the question of OpenGL/D3D thread affinity open, the plan
+was to use a signal for that but we only have 2!
+</p><p>
+If anybody wants to run with this, be my guest. I won't be working on it
+anytime soon. It might be worth adding a comment to the source explaining
+the situation.
+</p><p>
+Oh and finally for Mike, it turns out our guess was wrong:
+SIGSTOP isn't used because it's process-wide on NPTL.
+</p></quote>
+
+<p>Most people are used to signals and sending signals to 
+processes - using <tt>kill</tt> is a common example.  In general,
+POSIX signals are used to for processes to communicate synchronously
+or asynchronously with other processes.  However, one traditional
+limitation is the lack of signals that applications can
+define on their own.  POSIX defines just two application specific
+signals, SIGUSR1 and SIGUSR2.  Right now Wine uses both, though
+as Mike mentioned SIGUSR2 could be reused if the old DOS part
+was modified.  Dimi wondered though,
+<quote who="Dimitrie Paun">
+ Sorry if I'm way off (haven't looked at the problem myself), but can't we
+ include a command-byte or so with the payload (in the case the context), so
+ we can multiplex multiple requests on the same signal?
+</quote></p>
+
+<p>Mike didn't think that was an option but tossed out
+ some other ideas:</p>
+ <quote who="Mike Hearn"><p>
+ Well, that's what I meant by figuring it out. As far as I know signals
+ cannot contain payload information. The fact that they arrive *is* the
+ information.
+</p><p>
+ Actually that's not quite true. You get the context of the thread at the
+ time of signal arrival, if you use lots of OS specific code. Problem is
+ the nature of signals is that they're async, so you can't use the context
+ to carry information. Or I can't think of how.
+</p><p>
+ The most obvious way is to have a new server request which lets the thread
+ ask what it's supposed to do. That's a bit heavy but would work.
+</p><p>
+ Another way would be a global variable but that'd be prone to races too.
+</p></quote>
+
+<p>Andi Mohr asked whether signals could be muxed,
+<quote who="Andreas Mohr">
+If we only have two signals (SIGUSR1, SIGUSR2), then a good idea would be
+to implement some sort of signal multiplexing mechanism, since we damn sure
+will want to use this resource for any future signalling tasks, too....
+But I'm sure that within fractions of a second you will tell me that this
+certainly isn't possible :-\
+</quote></p>
+
+<p>Above I mentioned that <i>traditionally</i> POSIX signals
+only allow for an app to define two.  Michael Stefaniuc described
+the caveat and also answered Andi's question:</p>
+<quote who="Michael Stefaniuc"><p>
+There are plenty of signals available to applications besides SIGUSR1 
+and SIGUSR2. These are the real time signals in the range SIGRTMIN ... 
+SIGRTMAX specified by POSIX 1003.1-2001. The only main difference to the 
+"normal" signals is that these signals can be queued.
+</p><p>
+From man signal(7):
+ <ul><tt>
+  Unlike standard signals, real-time signals have no predefined meanings:
+  the entire set of real-time signals can be used for application-defined
+  purposes.</tt></ul></p><p>
+And btw. you could easily do signal multiplexing with the real time 
+signals: you can send additional data with the signal if you use 
+sigqueue(2).
+</p><p>
+The question now is how portable this is. Linux has SIGRTMIN ... 
+SIGRTMAX at least in the 2.4 and 2.6 kernels, Solaris and Irix (from 
+Google hits) seem to have it too, but I don't know about the *BSD 
+variants including Darwin.
+</p></quote>
+
+<p>It remains to be seen if that becomes solution.  If not, it 
+will likely be because of portability concerns.
+</p>
+</section>
+ 
+<section
+        title="Incorporating Public Domain Code"
+        subject="Public domain source in wine"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/11/0084.html"
+        posts="5"
+        startdate="11/04/2004"
+        enddate="11/05/2004"
+>
+<topic>Licensing</topic>
+<p>Michael Jung wanted to know about the legal and ethical 
+aspects of including code written by others in Wine:</p>
+<quote who="Michael Jung"><p>
+I would like to use source code from 
+<a href="http://libtomcrypt.org">LibTomCrypt</a> in 
+my implementation of rsaenh.dll (which I still hope has a remote chance of 
+being accepted into wine ;-), in order to get rid of the OpenSSL 
+dependencies. LibTomCrypt is in the public domain. I have two questions:
+<ol><li>
+ What is the legaly correct way to do this? As I understand it, public 
+domain source can simply be taken as is and re-licensed under the LGPL. Is 
+this correct? Am I allowed to remove the headers in the original file, which 
+state that the code is public domain? How do you generally acknowledge the 
+original author?
+</li><li>
+ A more technical question: LibTomCrypt's original sources are highly 
+customizable (A lot of conditional compilation and hook-functions). Since we 
+have fairly special requirements for rsaenh, I could cut down the source code 
+a lot. However, this would make it harder to incorporate code from a newer 
+version of libtomcrypt, once it becomes available. Which way is preferable? 
+Having less code or being easily upgradable?</li></ol></p></quote>
+
+<p>(On a side note, Michael's rsaenh.dll, covered last week in
+WWN issue 
+<a href="http://www.winehq.com/?issue=246#MS%20Enhanced%20Provider%20Library">#246</a>
+was committed to CVS shortly after he sent
+that email.)</p>
+
+<p>With regard to the first question, Mike McCormack described
+what he's done before:</p>
+<quote who="Mike McCormack"><p>
+I think the way is to leave the original headers on there, and add the 
+LGPL header above it, perhaps with a note saying something like:
+<ul>
+<code>/* This file was derived from code written by Tom St. Denis with the 
+following license: */</code></ul></p></quote>
+<p>With regard to cutting down code, Mike explained:</p>
+<quote who="Mike McCormack"><p>
+My approach when incorporating code from other libraries has been to 
+modify as little as possible, but remove all the #ifdefs and code that 
+isn't relevant to the WIN32 platform.
+</p><p>
+It's likely that the code will diverge from libtomcrypt over time 
+anyway, and there may be win32 "features" that we wish to implement... 
+NSAKEY anybody? ;)
+</p></quote>
+
+<p>Alexandre thought removing any unnecessary code was desirable
+as a long as it was a noticeable amount.  </p>
+
+
+</section>
+
+<section
+        title="Advocating Wine"
+        subject="Countering arguments against Wine"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0641.html"
+        posts="10"
+        startdate="10/30/2004"
+	enddate="11/01/2004"
+>
+
+<p>Years ago Wine was often criticized and the
+argument usually sounded something like, <i>"Windows
+is evil therefore Wine is evil"</i>.  Hearing
+that gets boring pretty quick and a few years
+ago we put together two articles about
+<a href="http://www.winehq.com/site/why">why Wine
+is important</a> and 
+<a href="http://www.winehq.com/site/myths">debunking
+Wine myths</a>.  Dan Kegel decided to put together
+something similar:</p>
+<quote who="Dan Kegel"><p>
+I've run into people several times who dislike the
+fact that I advocate or even work on the Wine project,
+because they feel that it takes focus away from
+working on the Linux desktop.  I beg to differ, but
+I've never had a really snappy comeback for them.
+It happened again today, and this time it occurred
+to me I should write a page on the topic to organize
+my thoughts.  Here it is:
+<ul><a href="http://www.kegel.com/wine/why.html">
+http://www.kegel.com/wine/why.html</a></ul></p></quote>
+
+<p>Holly Bostick had some thoughts on it:</p>
+<quote who="Holly Bostick"><p> 
+Dan, first of all, thanks for writing that dowm. I agree with what you 
+say, until you reach the "But doesn't Wine take away the incentive for 
+native ports?" section.
+</p><p>
+I actually appreciate this reason, as it clarifies a 'feeling' that I've 
+been unable to clearly express about this issue:
+<ul>
+2. once Linux's market share is above 20%, there will be a strong 
+economic incentive to do native Linux ports anyway, because running a 
+Windows app under Linux will always feel strange.</ul></p><p>
+
+But I wonder if this is in fact true.
+</p><p>
+I am a pure Linux user; I began my migration a year and a half ago, 
+moving from a dual-boot, to a multi-boot (2 versions of Windows and 5 
+distributions of Linux on one system), and finally ditched all alternate 
+boots except the Linux one a few months ago.
+</p><p>
+So I'm not all that far from the migration mindset, since I used Windows 
+for over 10 years, but as a pure Linux user, I'm not all that close to 
+it anymore, either.
+</p><p>
+I've got Wine running, and installed several programs I was familiar 
+with under Windows, mostly to perform tasks that I couldn't figure out 
+how to do under Linux, but which I either knew how to perform using 
+Windows apps, or could find HOW-TOs for that specified Windows apps. I 
+find that it doesn't necessarily "feel strange" or at least as strange 
+as I might have imagined. What mostly feels strange is the complications 
+of getting the program started in the first place (having to cd to the 
+application folder to run wine <i>program_name</i> from a terminal, or having 
+to write a little start script in order to make a panel shortcut to it).
+</p><p>
+Once the program is running, though, it doesn't "feel" strange at all; 
+after all, the reason I'm running it is most likely because I'm familiar 
+with it. This of course, assumes that the program in question runs well 
+under Wine, which we will assume for the sake of this discussion, if you 
+don't mind ;-) .
+</p><p>
+I have admittedly found that it's ultimately "easier" (for me) to 
+re-encode a video with transcode and mplex than it is to do so using 
+TMPGEnc under Wine, which was a surprise given that I know squat about 
+re-encoding video (I know somewhat more, now, though). I also found that 
+    given a choice between equivalent Linux native programs and Windows 
+programs under Wine (Aisle Riot and Pretty Good Solitaire), I'll often 
+choose the Linux native program simply because it's easier to *start* 
+(not because I prefer it, per se).
+</p><p>
+Maybe that's what you (and I) mean by "feeling strange", but since I'm 
+not sure what causes this feeling, I am not certain that migrating XP 
+users, who are used to and have no complaints with XP functionality but 
+rather are migrating because they don't like the Windows security model 
+(or lack therof)-- meaning, for practical reasons such as increasing 
+cost for less value, rather than philosophical ones such as a deep 
+objection to Windows' design philosophy or business practices-- would 
+feel the same way after switching to Linux.
+</p><p>
+All of those "a computer is just a tool" people who find it more strange 
+and painful to use the command-line, or get confused if they have to 
+read --help output or a man page "just to get something done" may well 
+find that their relief at having these familiar tools available swamps 
+any "strange" feelings of (guilt,irritation?) that they may (or may not) 
+experience when running Windows programs under Linux.
+</p><p>
+After all, you'll only have those feelings if you *care*-- and many, 
+many users don't.
+</p><p>
+If I come up with a "better" reason #2, I'll let you know ;-) .    
+</p></quote>
+
+</section>
+ 
+<section
+        title="Wine in the Spotlight"
+        subject="Success Stories?"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0619.html"
+        posts="5"
+        startdate="10/28/2004"
+	enddate="10/30/2004"
+>
+<topic>WineHQ</topic>
+<p>Lots and lots of people use Wine.  We know that because
+we have about a hundred thousand downloads a month off 
+Sourceforge, we see tons of hits to the website, and
+Alexandre is still getting a paycheck from CodeWeavers.  
+What we don't hear about often are success stories,
+especially those of people using Wine in an enterprise environment
+(and having a 19" rack in your bedroom closet doesn't make
+you an enterprise user, it just lets you add a few plus signs
+to your geek code.)  It led Hiji to ask this week:</p>
+<quote who="Hiji"><p>
+Are there any plans to spotlight Wine-use success
+stories on the WineHQ home page?  I always think of
+how Disney used Wine to run Photoshop 7 so they could
+move to a Linux platform.  I'm sure it could draw
+additional attention/ support and provide additional
+credibility to non-Wine users.
+</p><p>
+I know this article is a year old, but I think it's
+the type of thing that should be shown to the world:
+:)
+<ul><a href="http://www.eweek.com/article2/0,3959,1210083,00.asp">
+http://www.eweek.com/article2/0,3959,1210083,00.asp</a></ul></p>
+</quote>
+
+<p>I thought it would be a nice addition to the website,
+<quote who="Brian Vincent">
+ Nope, there's no plans.  Are you volunteering?  It would
+ be great if you could do it.  Rather than just provide links,
+ I think it would be nice to put together short summaries
+ and short interviews about it.  In other words, create
+ original content rather than regurgitate an article.
+</quote></p>
+
+<p>Hiji wrote back and said he would try to put something
+together.  Scott Ritchie gave a pointer to another 
+source for success stories,
+<quote who="Scott Ritchie">
+ This exact story is on the CodeWeavers page somewhere, as an
+ advertisement for CrossOver.  At the least, read it first :)
+</quote></p>
+
+<p>Anyone out there have a success story they'd like to
+share?  If you don't want to share things like the 
+business name that's ok.  See Hiji's 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/10/0619.html">original
+email</a> for an address to send it
+to.  You could even mail it to the wine-devel list
+(wine-devel -at- winehq.org); I'm sure some developers
+wouldn't mind hearing such stories.
+</p>
+</section>
+
+<section
+        title="Patches Galore"
+        subject="We hit 5mb for 3 months running!"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0632.html"
+        posts="1"
+        startdate="10/29/2004"
+>
+<topic>Patches</topic>
+<p>Wine development typically slows in summer, or rather, it 
+slows during the summer in the northern hemisphere.  Not so
+coincidentally, almost every Wine developer lives in the
+northern hemisphere.  The resident Aussie, Mike McCormack,
+happens to live in South Korea.  Mike Hearn pointed out
+development is picking up:</p>
+<quote who="Mike Hearn"><p>
+ Here's a great excuse for a party: wine-patches has had 5mb of traffic 
+ per month for the last three months now. Apart from a short dip over the 
+ summer, it looks like we've been consistently generating 5mb/month for 
+ most of the year!
+</p><p>
+ 2003 was mostly hovering around the 4mb level, and 2002 was mostly 1-2mb 
+ (apart from when Dimi had his listview hackfest and we got 6mb!) so we 
+ seem to be doing something right :)
+</p><p>
+ Let's see if we can keep it up and who knows, maybe 2005 will be 
+ averaging at 6mb/month!
+</p></quote>
+
+<p>October narrowly missed 6MB with the final total coming in at
+around 5.8MB.  </p>
+
+
+</section></kc> 

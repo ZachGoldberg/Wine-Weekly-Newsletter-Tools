@@ -1,0 +1,433 @@
+
+<section 
+	title="News: Wine in 2009"
+	subject="News"
+	archive="#"
+	posts="0"
+>
+<topic>News</topic>
+<p>
+Welcome to the first World Wine 2009 Newsletter!  Okay, I'm sorry, that rhyme just had to be made.  2008 was an exciting year for Wine, from releasing Wine 1.0 to having Photoshop CS2 work nigh flawlessly, (and CS3 installing) to the release of Crossover Games and Crossover Chromium.  Realistically its likely that 2009 will see Wine 1.2 which will (unrealistically) include flawless DirectX 10 and Wine64 support as well as a fully functioning DIB engine.  (Realistically Wine64 may happen.  See later in this issue for status of the DIB engine).
+</p>
+<p>
+What would a new years edition of the WWN be without annual commit statistics?  This year provided by Hans Leidekker:
+</p>
+<pre>
+$ for year in {2002..2008}; do \
+  count=$( git log | grep ^Date: | grep $year | wc -l ); \
+  echo "Number of commits in $year: $count"; \
+  done
+Number of commits in 2002: 3094
+Number of commits in 2003: 3283
+Number of commits in 2004: 3851
+Number of commits in 2005: 6006
+Number of commits in 2006: 8431
+Number of commits in 2007: 9532
+Number of commits in 2008: 11292
+</pre>
+<p>
+Paul Vriens with a slight modification:
+</p>
+<pre>
+I had a look at these stats as I'm (still) playing around with gitstat 
+in combination with Wine. The numbers didn't match up so I had a closer 
+look. 'git log' shows the author date and not the commit date.
+
+So maybe this one is more correct?
+
+$ for year in {2002..2008}; do \
+   count=$(git log --pretty='format:%cd' | grep $year | wc -l ); \
+   echo "Number of commits in $year: $count"; \
+   done
+Number of commits in 2002: 3094
+Number of commits in 2003: 3283
+Number of commits in 2004: 3851
+Number of commits in 2005: 6006
+Number of commits in 2006: 8404
+Number of commits in 2007: 9540
+Number of commits in 2008: 11307
+
+Oh and btw, Happy New Year to all !
+</pre>
+<p>
+Eric Pouech brings up a slightly different statistic, unique authors:
+</p>
+<pre>
+digging a bit deeper:
+for year in {2002..2008}; do \
+count=$( git log | grep -2 -e "^Date.*$year" | grep ^Author: | sed -e 
+'s/&amp;lt;.*\&amp;gt;//' | LC_ALL=C sort -u -f | wc -l ); \
+echo "Number of committers $count in year: $year"; \
+done
+Number of committers 185 in year: 2002
+Number of committers 166 in year: 2003
+Number of committers 183 in year: 2004
+Number of committers 211 in year: 2005
+Number of committers 197 in year: 2006
+Number of committers 217 in year: 2007
+Number of committers 234 in year: 2008
+
+of course, this doesn't take into account the different names used by 
+the same person (ie there is for example a "frangois gouget" in the 
+committers' list...)
+but this gives a good idea of the variation
+A+
+</pre>
+
+This WWN was published with assistance in editing from Andrew Riedi and Austin English.</section>
+<section 
+	title="Test Suite Passes!"
+	subject=""
+	archive="http://test.winehq.org/data/bd25af9dba280e3d80f3080140f2f5ab2cd0dfb3/"
+	posts=""
+>
+<topic></topic>
+<p>
+Since the early 2000s (long, long ago) the Wine community has maintained a test suite to test the behavior of the Windows APIs.  Essentially a developer will learn how a specific function should work, and then write a test to ensure that the function behaves properly in many scenarios.  This test can then be applied in both Windows (to confirm that the test does in fact represent how the function behaves in Windows) and in Wine, to make sure that Wine's functions output is the same as Windows'. This form of black box engineering is key to Wine's ability to match the Windows APIs and to prevent regressions.  
+</p>
+<p>
+Fortunately, Wine's test suite has grown very large over the years.
+Unfortunately many of the tests have been broken on Wine for everybody
+on the planet except for one man. As it turns out this one man is the
+only man for whom it counts, Alexandre Julliard, where it has always
+passed. Everyone else had large number of test failures, which led to
+regressions in various parts of Wine. In prepration for Wine 1.0, a
+lot of effort was made to make the tests pass for everyone. These
+efforts, along with Patchwatcher, have brought the test passing rate up
+drastically. Now, there are three machines capable of passing the
+tests!  (Alexandre's, Stefan D's, and now Alasdair's!)
+</p>
+<p>
+The <a href="http://test.winehq.org/data/bd25af9dba280e3d80f3080140f2f5ab2cd0dfb3/">succeeding</a> test run was by <a href="http://www.winehq.org/pipermail/wine-devel/2008-December/071186.html">Alasdair Sinclair</a>  on his  <a href="http://test.winehq.org/data/bd25af9dba280e3d80f3080140f2f5ab2cd0dfb3/wine_xp_as-fed10-lap/version.html">Fedora 10</a> laptop.
+</p>
+<p>
+It may not be obvious from the linked page what passing means.  If you <a href="http://test.winehq.org/data/bd25af9dba280e3d80f3080140f2f5ab2cd0dfb3/#group_Wine">drill down</a> in to the Wine based statistics you'll see that one of the columns has an orange header.  In fact this is the only orange header, everything else is red.  Orange indicates that there were no failed tests.  The header is not yet yellow or green because some tests are skipped.
+</p></section>
+<section 
+	title="Wine in Ubuntu"
+	subject="Ubuntu"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-December/071073.html"
+	posts="Many"
+>
+<topic>Ubuntu</topic>
+<p>
+So there was a lot of press in mid-December about some work Scott Ritchie was doing.  Scott Ritchie, an Ubuntu MOTU (Master of the Universe), and avid Wine community member, brought up the idea of integrating Wine into Ubuntu Main.
+</p>
+<p>
+The <a href="https://lists.ubuntu.com/archives/ubuntu-devel/2008-December/026985.html">initial proposal</a> is a very good read.  Scott has very high aspirations for the idea:
+</p>
+<quote>
+<p>
+There's also great potential to build upon Wine as a platform for
+porting applications.  In theory, there's nothing stopping us from using
+Wine as a means of creating a package out of an arbitrary piece of
+formerly Windows-only software; Google has already done this in-house
+for Picasa, however we could take it one step further and package
+everything from the open source eMule to commercial tax software.  With
+proper packages, these programs would be easier to install and use on
+Ubuntu than in Windows itself.
+</p>
+</quote>
+<p>
+Feedback to the idea is mixed.  Most Linux/Ubuntu users seem enthusiastic about the idea, however there is some concern from developerss and Ubuntu QA folks about the overall end user experience.  Dan Kegel even inspired a similar <a href="http://www.winehq.org/pipermail/wine-devel/2008-December/071073.html">thread</a> on Wine-Devel.  Overall the conversation on Wine-devel was hopeful and included some ideas of how it should be done.  One of the more interesting pitches comes from Reece Dunn.
+</p>
+<quote>
+<p>
+It would be useful to have winetricks distributed in a deb/rpm
+package, so that you could install it easily to have it
+updated/managed by the package manager. This would provide the core
+support for installing applications run on wine via deb/rpm packages
+(that would depend on winetricks and wine).
+</p><p>
+Each application would then use winetricks (and any support scripts
+that it provides, similar to what PlayOnLinux does), and support an
+install.sh and uninstall.sh script. These scripts can then be run via
+the pre/post install/uninstall hooks in the deb/rpm packages to do the
+installation.
+</p><p>
+For the install.sh and uninstall.sh scripts, it could be useful to
+provide a mechanism in AppDB to create and modify these so that the
+maintainers/users of the application could create these scripts. There
+would need to be a way to aggregate the scripts and to version control
+them.
+</p><p>
+Also, to simplify package creation we could have a configuration file
+that then generates the deb or rpm data and builds the corresponding
+package output using the package manager tools. This information (and
+what version of wine the app works well on) could even be extracted
+from AppDB itself and thus remove the need to have a wine-specific
+package configuration format.
+</p><p>
+- Reece
+</p>
+</quote>
+<p>
+Scott Ritchie has done a lot of work analyzing what is needed to be done to achieve a well integrated Wine-Ubuntu experience.  As has been brought up in many conversations of this topic the devil is in the details of the integration.  Scott has his own <a href="https://wiki.ubuntu.com/ScottRitchie">wiki</a> page which links to<a href="https://wiki.ubuntu.com/BetterIntegratedWineSpec">Better Wine Integration</a> and <a href="https://wiki.ubuntu.com/BestIntegratedWine">Best Wine Integration</a> wiki specifications.  There is also a <a href="https://wiki.ubuntu.com/WineTeam">Wine Ubuntu Team</a> that you can join if you are interested in helping out!
+</p>
+<p>
+For some other takes on these events see <a href="http://education.zdnet.com/?p=1995">ZDNet</a> and <a href="http://www.phoronix.com/scan.php?page=news_item&amp;px=NjkyOA">Phoronix</a> and <a href="http://www.pcmech.com/article/should-wine-be-in-ubuntus-main-repository-yes/">PC Mech</a> and <a href="http://www.linuxloop.com/news/2008/12/15/wine-in-ubuntu-implementation-is-key/">Linux Loop</a>.
+</p></section>
+<section 
+	title="OpenBSD, we do care!"
+	subject="Wine on BSD"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-December/071557.html"
+	posts="6"
+>
+<topic>Wine on BSD</topic>
+<p>
+Now and then the issue of Wine on platforms other than Linux comes up.
+The WWN has highlighted, and it was highlighted at WineConf that the
+Wine development community is willing to support other platforms and
+makes a best effort to do so. The limiting factor is simply developers
+who use other platforms for regular testing. Below an excerpt from
+Wine-Devel. David Gerard writes in with a wine-users question:
+</p>
+<quote>
+<p>
+Some of us on wine-users are trying to get Wine to install on OpenBSD.
+First, of course, we need to get it to compile on OpenBSD ...
+</p><p>
+Are bugs on this platform considered valid reportable bugs? I couldn't
+find any OpenBSD bugs on a quick search in Bugzilla.
+</p><p>
+State of things: it doesn't compile cleanly yet, and ./configure seems
+to fail to recognise a lot of libs that are in fact present.
+</p><p>
+(I realise that running Windows on OpenBSD may cause a
+matter-antimatter explosion as the two security models meet ... But it
+has *hack value*!)
+</p><p>
+- d.
+</p>
+</quote>
+<p>
+Austin English, Wine bugs enthusiast, responds:
+</p>
+<quote>
+<p>
+File bugs on compiling issues, if you're sure they're bugs in wine and
+not bugs in OpenBSD.
+</p>
+</quote>
+<p>
+Kai Blin
+</p>
+<quote>
+<p>
+They are considered valid bugs, but be prepared to go through a lot of
+iterations if developers aren't able to test on their own machines. (At least
+I don't have a spare just for toying with OpenBSD) Basically, the best way to
+get a new, uncommon POSIX OS supported in Wine is to get somebody familiar
+with (programming on) the OS to work on Wine, or at least closely with the
+Wine developers. That's how FreeBSD was fixed to better support Wine's needs
+some time ago. This required a couple of patches to the FreeBSD kernel, IIRC,
+so if the OpenBSD kernel lacks a feature Wine needs, you might have to spend
+time talking to the OpenBSD team to get features added.
+</p><p>
+Cheers,<br />
+Kai
+</p>
+</quote>
+<p>
+Austin has, in a personal interview, confirmed his interest in identifying OpenBSD bugs and recently has <a href="http://www.winehq.org/pipermail/wine-patches/2009-January/067002.html">submitted</a> <a href="http://www.winehq.org/pipermail/wine-patches/2009-January/067003.html"> a number</a> <a href="http://www.winehq.org/pipermail/wine-patches/2009-January/067006.html"> of </a> <a href="http://www.winehq.org/pipermail/wine-patches/2009-January/067009.html">patches</a> to fix <a href="http://www.winehq.org/pipermail/wine-patches/2009-January/067066.html">compilation</a> on non-Linux/x86 machines.
+</p></section>
+<section 
+	title="DXDiag for Wine"
+	subject="DXDiag"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-December/071581.html"
+	posts="20"
+>
+<topic>DXDiag</topic>
+<p>
+Dan Kegel brought up the idea again that Wine could use a utility similar to DXDiag, and that the implementation of such a utility could make a good student project.</p>
+<quote>
+<p>
+Hi folks,<br />
+it seems odd to me that Wine doesn't have a tool like
+dxdiag yet.   We often have people complain that
+graphics aren't working, and we have to ask them
+to do things like run glxgears as diagnostics.
+Would it make sense to implement our own
+dxdiag.exe program?<br />
+This seems like it might be a fun student project.<br />
+- Dan
+</p>
+</quote>
+<p>
+Several developers and Wine D3D experts then gave their opinions.  Roderick Colenbrander:
+</p>
+<quote>
+<p>
+On Windows the main task of dxdiag is to show some diagnostic info and to run some very basic network, sound and 3d tests. In case of Wine 3D testing would be the most important feature but I'm not sure if it is that useful. There are various causes of slowness e.g. no 3d drivers installed, indirect rendering, driver bugs (e.g. fglrx falling back to indirect rendering due to virtual memory issues in Wine), the use of a composition manager and more. Most of this information can't be retrieved using Win32 APIs or we would need internal APIs.
+</p><p>
+I think it would be better to write a 'wine3ddiag' script which uses glxinfo, glxgears and which can also check if lets say compiz is running.
+</p><p>
+Roderick
+</p>
+</quote>
+<p>
+Henri Verbeet:
+</p>
+<quote>
+<p>
+If the student in question is capable, sure. Like Chris already
+mentioned, I think the main use of such an application would be
+dumping information like supported caps, texture formats, etc in case
+of D3D and supported extensions, pixelformats, various limits, drivers
+strings, etc. for OpenGL. It would probably also be useful to dump
+some registry settings, like anything under
+HKCU\Software\Wine\Direct3D. We could add some tests to see if basic
+D3D is working, but on its own I don't think that adds much over
+glxinfo &amp; glxgears.
+</p>
+</quote>
+<p>
+The next step is to find out specifically which function calls are needed to get this information.  Dan Kegel:
+</p>
+<quote>
+<p>
+OK.  Can you list the main Win32 API calls you'd like such
+an app to use to retrieve information?
+</p>
+</quote>
+<p>
+Henri again:
+</p>
+<quote>
+<p>
+For d3d9 that would probably be IDirect3D9::CheckDeviceFormat(),
+IDirect3D9::CheckDeviceMultiSampleType(),
+IDirect3D9::EnumAdapterModes(), IDirect3D9::GetAdapterIdentifier() and
+IDirect3D9::GetDeviceCaps(). Ddraw and d3d8 should have similar
+methods, I'm not completely sure about dxgi/d3d10.
+</p><p>
+For OpenGL there's DescribePixelFormat(), and glGetString() with
+various constants like GLRENDERER, GL_VENDOR, GL_VERSION and
+GL_EXTENSIONS. Limits are usually retrieved with glGetIntegerv() or
+glGetFloatv() and an appropriate constant.
+</p>
+</quote>
+<p>
+This part of the conversation seemed to die off (hopefully a student will pick up on it and run with it).  Stefan D&#246;singer later discussed another way to think of these utilities in Wine.
+</p>
+<quote>
+<p>
+I think we should stay as close to the way the windows tools work and avoid
+inventing too much wine-specific things. This is how I understand the
+windows tools:
+</p><p>
+* dxdiag.exe: Prints DLL information, has very simple tests for ddraw, d3d,
+dsound, dmusic, dplay. The tests just show that a device can be created and
+a cube can be rendered. This could detect if the opengl libs are missing,
+but it won't be able to tell direct rendering from indirect rendering.
+(really dxdiag can't say so via the win32 API).
+</p><p>
+*) dxcapsviewer.exe: This app lists all the capability flags advertised for
+ddraw, d3d8, dsound, etc. It is part of the dx sdk, but I don't see a
+problem with implementing it. Sooner or later we'll clone other tools from
+the dx sdk too, like vsa.exe, psa.exe and fxc.exe(shader assemblers and
+compiler)
+</p><p>
+Another feature idea is to enable ddraw, d3d8 and d3d9 to import a
+capability flag dump from dxcapsviewer to advertise exactly the same flags
+as on Windows. This can help to debug capability flag problems.
+</p><p>
+*) pixwin.exe is interesting too. It allows to record something similar to a
++d3d9 trace on Windows, and save it for playback. The native version
+currently doesn't work on wine, but I think it is fixable. A similar tool
+could be useful to (1) see if a log recorded on windows produces the same
+output on Wine, and (2) to see if a windows app performs the same calls on
+Wine as it does on Windows(to detect caps problems for example)
+</p>
+</quote></section>
+<section 
+	title="Real DIB Progress"
+	subject="DIB Engine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-December/071459.html"
+	posts="5"
+>
+<topic>DIB Engine</topic>
+<p>
+Massimo Del Fedele has been working hard on a new DIB (Device
+Independent Bitmap) Engine using bits from Jesse Allen and Huw Davies.
+Alexandre thus far has been reluctant to use either Jesse or Huw's
+implementation. It has yet to be seen what Alexandre thinks of this
+attempt. Massimo has reported some success with real world
+applications (Something others were having trouble with).
+</p>
+<quote>
+<p>
+As my DIB engine is becoming usable (I already use it on Autocad for my 
+job), I'm thinking to publish the patches.
+As it's still not complete, I'm thinking to add a way to enable it on 
+demand with registry and environment variable :
+</p><p>
+export WINEDIB=ON activates it<br />
+export WINEDIB=OFF deactivates it
+</p><p>
+if no environment variable, it checks a registry key (I'd like to have 
+some suggestion on where to put it).
+If no environment variable nor registry entry are present it'll be 
+disabled (by now) as is for testing purposes.
+</p><p>
+How should I publish it ? A big unique patch, 2 patches, one with the 
+(small) changes in gdi32 and another big one with the engine itself, or 
+many small patches ?<br />
+Is it right to put on wine patches list ?
+</p><p>
+Ciao
+</p><p>
+Max
+</p>
+</quote></section>
+<section 
+	title="Serious Wine64 Progress"
+	subject="Wine64"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-December/071577.html"
+	posts="0"
+>
+<topic>Wine64</topic>
+<p>
+Improvements in Wine's ability to compile for 64-bits and run native Win64 applications have made a number of headlines lately.  Many of the major roadblocks have been cleared, and some major benchmarks are starting to be met.  Maarten has a number of test applications working and Dan Kegel has a new <a href="http://wiki.winehq.org/Wine64">wiki page</a> for compiling Wine64 yourself.  There is also a a 64-bit version of <a href="http://test.winehq.org/builds/winetest64-latest.exe">winetest</a> available on the <a href="http://test.winehq.org/data/">wine test page</a>.  Speaking of the test suite, Wine64 does pass a significant number of tests.  Dan Kegel:
+</p>
+<quote>
+<p>
+I updated <a href="http://wiki.winehq.org/Wine64">http://wiki.winehq.org/Wine64</a> with easy
+instructions (thanks, Maarten!) for how to build
+wine's 64 bit support and try 64 bit pacman
+(which works!).
+</p><p>
+And then I ran "make -k test".
+</p><p>
+Surprisingly, I got 260 passing tests according to<br />
+ find . -name '*.ok' | wc<br />
+and only 128 failed tests according to<br />
+ grep ok.*Error test.log | wc -l
+</p><p>
+Ladies and gentlemen, I believe it's time
+for a 64 bit winetest.exe to be added to the daily build,
+and for 64 bit test data to start showing up at <a href="http://test.winehq.org.">http://test.winehq.org.</a> 
+That would let us tamp down errors in the test suite
+on 64 bits.  (Yeah, I know, gcc with win64 ABI isn't
+released yet, and there are problems with exception
+handling still, but it still seems worth it...)<br />
+- Dan
+</p>
+</quote></section>
+<section 
+	title="Vertex Pipeline Replacement Status Update"
+	subject="Direct3D"
+	archive="#"
+	posts="0"
+>
+<topic>Direct3D</topic>
+<p>
+In the last WWN there was a lot of excitement about Stefan D&#246;singer's vertex pipeline replacement.  However, there is some unfortunate news in this area: Stefan has shelved the new pipeline work.  It turns out that the new design did not yield significant performance improvements and in many scenarios actually was slower than the original.  Stefan:
+</p>
+<quote>
+<p>
+I am pretty sure my code can be optimized(the lighting code is *awful*), but it
+certainly complicates things if I have to be really picky with respect to performance
+from the start to avoid causing regressions.
+</p>
+</quote></section>

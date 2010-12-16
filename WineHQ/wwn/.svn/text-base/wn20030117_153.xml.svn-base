@@ -1,0 +1,839 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="153" date="17 Jan 2003 00:00:00 -0800" />
+
+<intro>
+<p>This is the 153rd release of the Wine's kernel cousin publication. Its
+main goal is to give you something to do other than work or study.  It
+also serves to inform you of what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+<stats posts="299" size="915" contrib="80" multiples="48" lastweek="38">
+
+<person posts="33" size="108" who="Dan Kegel" />
+<person posts="19" size="56" who="Dimitrie O. Paun" />
+<person posts="17" size="45" who="Francois Gouget" />
+<person posts="16" size="41" who="Sylvain Petreolle" />
+<person posts="15" size="48" who="Shachar Shemesh" />
+<person posts="15" size="35" who="Alexandre Julliard" />
+<person posts="13" size="37" who="Mike Hearn" />
+<person posts="8" size="18" who="Tom Wickline" />
+<person posts="7" size="15" who="Greg Turner" />
+<person posts="6" size="27" who="Robert North" />
+<person posts="6" size="21" who="Alberto Massari" />
+<person posts="6" size="17" who="Paul Millar" />
+<person posts="6" size="15" who="Dmitry Timoshkov" />
+<person posts="5" size="20" who="Tony Lambregts" />
+<person posts="5" size="19" who="liu spider" />
+<person posts="5" size="13" who="Steven Edwards" />
+<person posts="5" size="13" who="Uwe Bonnes" />
+<person posts="5" size="13" who="Marcus Meissner" />
+<person posts="4" size="12" who="(fenix)" />
+<person posts="4" size="10" who="davep" />
+<person posts="5" size="23" who="Eric Pouech" />
+<person posts="4" size="13" who="Raphael Junqueira" />
+<person posts="3" size="11" who="Robert Shearman" />
+<person posts="3" size="10" who="Roderick Colenbrander" />
+<person posts="3" size="10" who="Richard Allen" />
+<person posts="3" size="9" who="Ender" />
+<person posts="3" size="9" who="Andreas Mohr" />
+<person posts="3" size="8" who="Oliver Sampson" />
+<person posts="3" size="6" who="Rein Klazes" />
+<person posts="3" size="6" who="Philipp Wollermann" />
+<person posts="3" size="6" who="Lionel Ulmer" />
+<person posts="2" size="12" who="John Westerman" />
+<person posts="2" size="6" who="Bill Medland" />
+<person posts="2" size="6" who="Shravan Sadasivan" />
+<person posts="2" size="6" who="Glen Kaukola" />
+<person posts="2" size="5" who="Michal Janusz Miroslaw" />
+<person posts="2" size="5" who="John K. Hohm" />
+<person posts="2" size="4" who="Jos van den Oever" />
+<person posts="2" size="4" who="Enrico Horn" />
+<person posts="2" size="4" who="Juan Rey Saura" />
+<person posts="2" size="4" who="Vincent Beron" />
+<person posts="2" size="4" who="Dimitrie O. Paun" />
+<person posts="2" size="4" who="Duane Clark" />
+<person posts="2" size="4" who="Shachar Shemesh" />
+<person posts="2" size="4" who="Ann and Jason Edmeades" />
+<person posts="2" size="4" who="Brian Vincent" />
+<person posts="1" size="28" who="Susan Pierce" />
+<person posts="1" size="8" who="Mauro Carvalho Chehab" />
+<person posts="1" size="6" who="mpfbk" />
+<person posts="1" size="4" who="Gustavo Junior Alves" />
+<person posts="1" size="4" who="Martin Pool" />
+<person posts="1" size="4" who="Dave Miller" />
+<person posts="1" size="3" who="Boris" />
+<person posts="1" size="3" who="Mathew McBride" />
+<person posts="1" size="3" who="Shravan Sadasivan" />
+<person posts="1" size="3" who="Johan Dahlin" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Michael Stefaniuc" />
+<person posts="1" size="2" who="Enrico Horn" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Patrik Stridvall" />
+<person posts="1" size="2" who="Dominik Strasser" />
+<person posts="1" size="2" who="Christian Costa" />
+<person posts="1" size="2" who="John Wehle" />
+<person posts="1" size="2" who="Keith Matthews" />
+<person posts="1" size="2" who="Martin Cracauer" />
+<person posts="1" size="2" who="Alistair Leslie" />
+<person posts="1" size="2" who="Steve Langasek" />
+<person posts="1" size="2" who="Lawson Whitney" />
+<person posts="1" size="2" who="Hetz Ben Hamo" />
+<person posts="1" size="1" who="mohanad al-shayeb" />
+<person posts="1" size="1" who="Luis Marques" />
+<person posts="3" size="6" who="Juergen Schmied" />
+<person posts="1" size="1" who="Jeremy White" />
+<person posts="1" size="1" who="Jelcyn" />
+<person posts="1" size="1" who="J. Wesley Cleveland" />
+
+</stats>
+<section 
+	title="News: Wine-20030115; TransGaming Update; CodeWeavers Partnership" 
+	subject="News"
+	archive="http://www.codeweavers.com/about/press_releases/?id=20030113" 
+	posts="2"
+	startdate="11 Jan 2003 00:00:00 -0800"
+	enddate="17 Jan 2003 00:00:00 -0800"
+>
+<topic>News</topic>
+
+<p>Alexandre caught up to more patches that came in while
+he was on vacation and released Wine-20030115.  The
+following changes were noted:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20030115: (see
+<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.67&amp;content-type=text/x-cvsweb-markup">ChangeLog</a>
+for details)
+<ul>
+        <li> Much better header files compatibility in Winelib.</li>
+        <li> A ton of Direct3D work.</li>
+        <li> Many improvements in sound support.</li>
+        <li> New wineboot tool to simulate a Windows reboot.</li>
+        <li> Lots of bug fixes.</li></ul></p>
+</quote>
+<p>TransGaming 
+<a href="http://www.transgaming.com/showthread.php?news=56">posted</a> an update to say 
+what they've been up to.  The highlights from that:</p>
+<quote who="TransGaming"><p>
+<ul>
+<li>All efforts now focused on CVS head tree</li>
+<li>Technology Progress - Vertex Shaders, Direct3D, and more </li>
+<li>Additional Development - Joystick improvements and DirectPlay</li>
+<li>Games Updates</li>
+<li>Voting Report</li>
+</ul>
+</p></quote><p>
+They had a little more news splashed on their front page too.
+If you're headed off to a Linux conference in the near future, be
+sure to where your TransGaming t-shirt.  Gav and Vikas will be handing
+out gift certificates if they see you in one.  WineX 3.0 is on
+the way, stay tuned to TransGaming's web site for more info.</p>
+
+<p>CodeWeavers announced a <a href="http://www.codeweavers.com/about/press_releases/?id=20030113">
+strategic partnership</a> with Shaolin Microsystems.  From the press release:
+</p><quote who="CodeWeavers"><p>
+ShaoLin Microsystems Limited, an award winning provider of distributed computing solutions 
+and CodeWeavers, a leading Windows-to-Linux software developer, today announced a strategic 
+alliance partnership. CodeWeavers and ShaoLin joined forces to give a boost to the acceptance 
+of the Linux desktop, particularly in enterprise environments whereby CrossOver and ShaoLin 
+are combining to enhance the capabilities of bridging windows applications to Linux on the 
+desktop deployment and management in enterprise computing environments.
+</p><p>
+ShaoLin Aptus is the world's best Linux workstation deployment and management solution for 
+enterprises which desired low cost desktop computing system with high availability. It is a 
+middle-ware that makes the most reliable, manageable, secure and open platform alternative 
+to high cost and heavy administration traditional PC's. CodeWeavers' CrossOver allows you 
+to run your favorite windows productivity applications in a ShaoLin environment under Linux, 
+without needing Microsoft OS licenses for each client machine.</p></quote>
+
+<p>CodeWeavers gets an early nomination for the Most Cryptic Press Release
+award.  As near as I can tell, CodeWeavers is going to supply software to
+an amorphous middleware company I've never heard of to do unspecified things
+that possibly involves Windows connectivity.  Oh, here's my favorite sentence,
+<quote who="CodeWeavers">[ShaoLin] makes the most reliable, manageable, secure 
+and open platform alternative to high cost and heavy administration traditional PC's.
+</quote>  A visit to 
+<a href="http://www.shaolinmicro.com/">ShaoLin's</a> tells a little more.  What 
+appears to be going on is a way to distribute Windows apps to Linux workstations.
+The Aptus line of products concentrates <a href="http://www.shaolinmicro.com/product/aptus/feature_benefit.php">
+the management</a> of applications to the server side.  Basically it acts very
+similar to the <a href="http://www.ltsp.org">Linux Terminal Server Project</a>
+software except it doesn't require a boot ROM and is more of a client side
+approach to the same problem.
+</p>
+
+
+</section>
+
+
+<section 
+	title="IWebBrowser Status / More Ideas" 
+	subject="Wine, Mozilla &amp; IE ?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0463.html" 
+	posts="26"
+	startdate="10 Jan 2003 00:00:00 -0800"
+	enddate="11 Jan 2003 00:00:00 -0800"
+>
+<topic>Status Updates</topic>
+<topic>Integration</topic>
+<p>The IWebBrowser interface continues to plague developers.  I most
+recently covered it back in December, 
+<kcref subject="HTML Help and IWebBrowser status" startdate="03 Dec 2002 00:00:00 -0800" />
+and previous to that I gave a pretty good explanation of the issue
+back in late October
+<kcref subject="Re: WebBrowser" startdate="19 Oct 2002 00:00:00 -0700" />.  
+Back in October I wrote, 
+<quote who="Brian Vincent">
+ IWebBrowser is a set of interfaces Microsoft defined for Internet Explorer that 
+ allow you to embed it within another program. It provides methods navigation, 
+ hyperlinking, etc.</quote>  Increasingly it's being used to add help pages
+to applications or web functionality.
+</p>
+<p>Just to recap the story so far, it's come down to
+two ideas for creating the IWebBrowser processing engine.  The first is to use 
+Mozilla, the second is to use KHTML.  Mozilla has pretty much been ruled out -
+it's way too big and maintaining the code within Wine's CVS would be next to
+impossible.  KHTML has the advantage of being a lot smaller and easier to 
+integrate.  According to the developers it would also handle the eccentricities
+of IE better.  KHTML's problem is historically it's been tied to Qt.  
+In addition, both of them suffer
+from being written in C++ (see the next thread for info on that.)  There was
+more discussion this week about the details.  Ender jumped in and discussed
+some of the work he's been doing:</p>
+<quote who="James Brown"><p>
+I've been too busy lately (job hunting mostly, although I've also been
+sick and bedridden lately) to do any more work on it, and I was really
+waiting for Alexandre to comment on my question about C++ before going any
+further... I haven't seen a reply yet tho.
+</p><p>
+The current state of my local tree, besides being a mess, is that it has
+most QT dependencies removed. Currently it uses a lot of QT stub's around
+WinAPI functions that I wish to remove before doing much more work with
+it.
+</p><p>
+It is currently quite MS html compatible, and my CHM viewer seems to have
+few problems rendering HtmlHelp pages using the KHTML/KJS functionality.
+Unlike Gecko, which is too 'standards compliant'... eg, it deliberatly
+doesn't implement any of the IE specific functionality.
+</p><p>
+The other issue I need to look into is where each part of IE functionality
+need to go. Implementing IWebBrowser is easy enough from my current work,
+however that is only the very top of the iceburg. The more important issue
+is to get all the various parts in the right dlls (shdocvw,  shdoclc,
+jscript, ecetra). Many programs that embed IE use and/or subclass a large
+number of functions - mostly undocumented - from these dlls, as opposed to
+using IWebBrowser itself. There is also the problem of res:// inclusion of
+HTML templates embedded in shdocvw, ecetra.
+</p><p>
+This is, btw, another reason that gecko isn't very well suited. It would
+require a lot more work to butcher gecko (simply because of it's size and
+complexity) into these stub dlls, than it would to do so to KHTML/KJS.
+Either way, it's a lot of work that unfortunately I don't have all that
+much time to do at the moment.
+</p><p>
+Hopefully my job hunting will calm down soon, and I will have time to
+clean up the code to a state where I can at least post it for other people
+to work on... then again, if it calms down it means I've FOUND a job... so
+it could work both ways :)
+</p></quote>
+
+<p>Dimi Paun raised a valid point with maintaining any code integrated
+into Wine:</p>
+<quote who="Dimitrie Paun"><p>
+Ender, you may be right that we might have to integrate something into
+the tree. Nonetheless, it scares me shitless! What happens 3 mo, 1 year
+down the road? KHTML is very much a work in progress, who's gonna track
+it? We don't have any richedit control, heck even our bog standard edit
+box is not finished! And for how many years now?!? Just for curiosity's
+sake, can you give us a wc -l of the KHTML stuff?
+</p><p>
+If we do have to integrate something, I think we *have* to have a way to
+track the KHTML development. Just throwing something in the tree may
+actually be detrimental, if it remains unmaintained. To be able to track
+the KHTML development, we need to keep track of the revisions we worked
+off of, and we have to avoid touching their sources. To this end, I think
+we are much better off by implementing a QT subset:
+<ul>
+	<li> It should be a lot stabler than the KHTML stuff. It seems to
+	   me QT hasn't change that much from the 1.0 days, now it should
+	   be close to a libc in terms of interface stability.</li>
+	<li> I haven't looked, but I assume KHTML can't use that many
+	   difficult to implement QT features</li>
+	<li> Having a free QT/Windows implementation is generally useful to
+	   a lot of people, so we're likely to get more people to help</li>
+</ul></p><p>
+If our changes to the KHTML source are minor, I am certain the KDE people
+will help us by integrating them upstream. If in time we can work off of
+the same code base, we can simply delete our copy from the Wine tree.
+</p><p>
+There might be another way. Now that Safari is out and it's deQTfied,
+and having more and more people interested in KHTML, the KDE folk may
+decide to officially switch to a QT-free KHTML version, in which case
+we'll be saved the trouble of implementing a WQT (pronounced wicked :)).
+</p></quote>
+
+<p>Ender thought taking a break from it right now might be the best 
+thing to do.  Perhaps things will change with KHTML for the better:</p>
+<quote who="James Brown"><p>
+As it seem there is some effort going on to create a native Win32 KHTML
+port using Apple's WebCore wrapper system I think I will take a break on
+my current code and play with that a little. Personally I didn't want to
+have to take on the chore myself, but this whole Safari thing IS creating
+more interest in non-X11/QT platforms... it definitely changes the playing
+field, and with the large speed and compatibility merges from Safari
+lately my current tree is hopelessly out of date anyway :)
+</p><p>
+So I think I will play with that and work on the DLL layout and COM
+interfaces until something eventuates... I've decided it's worth waiting
+to see what direction KHTML takes (portability wise) now that it is being
+use in a 'real' non-KDE application. There's no point rushing into a
+WINE-specific implementation if something more closely tied to the
+upstream code is released meer weeks later.
+</p><p>
+Of course there still a small problem of having to separate the code into
+MS compatible COM objects and DLLs... I will have to benchmark the speed
+impact of stubbing the MS dlls into khtml.dll/kjs.dll ecetra, instead of
+replicating the exports more natively.
+</p></quote>
+
+<p>Mike Hearn then threw out a completely different idea for implementing
+IWebBrowser,
+<quote who="Mike Hearn">
+ GTK-HTML doesn't get the same amount of press that KHTML does,
+ but it's written in C and is actually a fairly capable embedded html
+ renderer. It relies upon GTK/GDK which already has a port to Windows,
+ the GNOME help system uses it for rendering afaik so it should be easier
+ to integrate with Wine. Finally it supports editing, which might come in
+ useful in future.</quote></p>
+<p>Johan Dahlin gave a little more detailed explanation of GNOME's 
+renderers:</p>
+<quote who="Johan Gill"><p>
+There is actually two different HTML renderers that's used in GNOME
+gtkhtml and gtkhtml2
+</p><p>
+GtkHTML was originally a port of a very old version of KHTML to Gtk+.
+gtkhtml2 was written from scratch.
+</p><p>
+GtkHTML is used by evolution for both showing html (in html messages)
+and for editing, in the composer. I think there exist a browser
+somewhere which use this widget. But as far as i can say i don't think
+it renders web pages very good.
+</p><p>
+gtkhtml2 on the other hand is the library used by yelp, the GNOME 2 Help
+system which support css quite well. But no editing and is more or less
+unmaintained. At one point in the future it will be abandoned and GNOME
+will use GtkHTML in the help browser instead.
+</p></quote>
+
+<p>Ender quickly shot down the idea,
+<quote who="James Brown">
+ GTK-HTML is far too basic for our needs. We need at least DHTML and JS
+ support for any IWebBrowser/IE replacement to be useful.</quote></p>
+
+<p>So it appears the way things stand, no work is going to be done in the
+immediate future.  Hopefully the Qt bits of KHTML will be separated out
+and the remaining parts will be ported to Windows.  If that happens, then
+Wine won't need to replicate the KHTML code.  </p>
+<p>I'll be a little lazy and include references here rather than hyperlinked
+above:
+<dl><dt><a href="http://www.apple.com/safari/download/">Safari</a></dt>
+	<dd><quote who="Apple">
+	Safari offers you a superior Web experience with outstanding performance. 
+	Even the most complex of pages load at breakneck speed. In fact, Safari 
+	loads pages more quickly than any other Mac Web browser. But that's not all. 
+	Safari uses the advanced interface technologies underlying Mac OS X to offer 
+	you an all-new view of the Web, one that's much easier to use.</quote></dd>
+
+   <dt><a href="http://freshmeat.net/projects/gtkhtml/?topic_id=809">GtkHTML</a></dt>
+	<dd>Freshmeat's page is about the closest GtkHTML has to a web page.  
+	<quote who="GtkHTML">
+	GtkHTML is a HTML rendering/editing library. It is not designed to be the ultimate 
+	HTML browser/editor; instead, it is designed to be easily embedded into applications 
+	that require lightweight HTML functionality. </quote></dd>
+
+
+   <dt><a href="http://lists.gnome.org/archives/gnome-hackers/2002-April/msg00008.html">GtkHTML
+	changes</a> and future direction</dt>
+	<dd>Discussion of moving to GtkHTML1 in order to add editing</dd>
+</dl>	</p>
+
+</section>
+
+
+<section 
+	title="No C++ in Wine" 
+	subject="html browser for wine (khtml)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0370.html" 
+	posts="13"
+	startdate="08 Jan 2003 00:00:00 -0800"
+	enddate="10 Jan 2003 00:00:00 -0800"
+>
+<topic>Integration</topic>
+<topic>Project Management</topic>
+
+<p>Recently a couple people have asked for the reasoning
+behind the policy of not having C++ code in Wine's CVS.  
+The main reason is because of the IWebBrowser stuff discussed
+above.  The best fit for implementing is with existing
+projects based on C++.  Alexandre's response is best found
+in a different thread than the one referenced in the
+archive link above.  The rationale:</p>
+
+<quote who="Alexandre Julliard"><p>
+Some of the reasons are related to C++ itself: lack of standard ABI,
+large differences between compilers making it harder to write portable
+code. Other reasons would apply to any language: more complex build
+process, more external tool dependencies, harder to debug, developers
+need to be familiar with both languages, harder to copy code around,
+etc.
+</p><p>
+None of these are showstoppers, but it needs a *really* good reason to
+overcome all of them. So far I haven't heard anything convincing
+enough.
+</p></quote>
+
+<p>Several people pointed out that the ABI is standardizing and
+gcc 3.2 (and to a greater degree gcc 3.3) supports a standard
+that Intel and SGI (et al) are trying to conform to.  Alexandre 
+didn't completely rule it out though,
+<quote who="Alexandre Julliard">
+ I'd prefer to avoid C++, but if there's no other choice then of course
+ we'll have to do it. </quote></p>
+
+<p>Anyone got a fully functional web browser library (written in
+C) in their back pocket?</p>
+
+</section>
+
+
+<section 
+	title="Wineboot Progress" 
+	subject="wineboot - run keys"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/01/0226.html" 
+	posts="5"
+	startdate="06 Jan 2003 00:00:00 -0800"
+	enddate="14 Jan 2003 00:00:00 -0800"
+>
+<topic>Status Updates</topic>
+<topic>Configuration</topic>
+<topic>Utilities</topic>
+<p>There's been work done lately on creating a new Wine tool named
+"wineboot".  This tool handles setting up the configuration of
+Wine when it's started.  It also will eventually handle things
+like parsing the registry for the RunOnce keys and other things
+needed by installation programs.  Shachar Shemesh started out
+adapting some code from Andi Mohr and is now in the process of
+doing a completely new implementation.  This is pretty big deal -
+when all of the configuration is moved into the registry it will
+allow graphical Winelib configuration tools to be written (in 
+fact, some of that work is reportedly underway).  Below are some of 
+changes Shachar has noted in patches:</p>
+<p>Jan 1, 2003:</p>
+<quote who="Shachar Shemesh"><p>
+This is the initial version of wineboot, the next generation. It is a 
+rewrite, using the old code as reference only.
+<ul>
+
+    <li> At this stage only wininit.ini processing has been written. Lots
+      more work to do.</li>
+    <li> _stricmp is not defined, and is called directly instead of as stricmp.</li>
+    <li> As a result of the above, there is a compilation warning when
+      compiling.</li></ul></p></quote>
+
+
+<p>Jan 6, 2003:</p>
+<quote who="Shachar Shemesh"><p>
+<ul>
+
+    <li> Cleaned up the code (saving on chaining strings) by CDing to the
+      system root directory before doing anything else.</li>
+    <li> Will now rename wininit.ini to wininit.bak instead of erasing it
+      as before.</li></ul></p></quote>
+
+<p>Jan 10, 2003:</p>
+<quote who="Shachar Shemesh"><p>
+<ul><li>Implemented the "pending rename" registry processing.</li></ul></p></quote>
+
+<p>Jan 14, 2003:</p>
+<quote who="Shachar Shemesh"><p>
+<ul><li>Added listing of what the boot process is like, listing what is
+      and what is not (yet) done.</li>
+    <li>Fixed incorrect statement in the "bugs" list.</li>
+    <li>Added trace when everything is done.</li></ul></p></quote>
+
+
+<p>Jan 14, 2003:</p>
+<quote who="Shachar Shemesh"><p>
+<ul><li> Added a "runCmd" function, which is a cleaned up version of Andy's
+      "BOOT_CreateProcess" function.</li>
+    <li> Added a function "ProcessRunKeys", to process all the keys that
+      have the common "Run" syntax.</li>
+    <li> Called the new function from main for all the various keys.</li></ul></p></quote>
+
+<p>In the one patch referenced above, Shachar added the following notes
+about the Windows boot process and exactly what wineboot does:</p>
+<quote who="Shachar Shemesh"><p>
+This app handles the various "hooks" windows allows for applications to perform
+as part of the bootstrap process. These are roughly devided into three types.
+Knowledge base articles that explain this are 137367, 179365, 232487 and 232509.
+Also, 119941 has some info on grpconv.exe
+The operations performed are (by order of execution):
+</p><p>
+Preboot (prior to fully loading the Windows kernel):
+<ul>
+<li> wininit.exe (rename operations left in wininit.ini - Win 9x only)</li>
+<li> PendingRenameOperations (rename operations left in the registry - Win NT+ only)</li>
+</ul></p><p>
+Startup (before the user logs in)
+<ul>
+<li>  Services (NT, ?semi-synchronous?, not implemented yet)</li>
+<li>  HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce (9x, asynch)</li>
+<li>  HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunServices (9x, asynch)</li>
+</ul></p><p>
+After log in
+<ul>
+<li> HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce (all, synch)</li>
+<li> HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run (all, asynch)</li>
+<li> HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run (all, asynch)</li>
+<li> Startup folders (all, ?asynch?, no imp)</li>
+<li> HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce (all, asynch)</li>
+</ul></p><p>
+Somewhere in there is processing the RunOnceEx entries (also no imp)
+</p></quote>
+
+<p>The "no imp" reference in the last line means "not implemented".  Alexandre
+has committed all of the patches submitted so far.</p>
+
+
+</section>
+
+
+
+<section 
+	title="D3D Status Page" 
+	subject="[D3D status] Page update..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0580.html" 
+	posts="1"
+	startdate="13 Jan 2003 00:00:00 -0800"
+	enddate=""
+>
+<topic>Status Updates</topic>
+<p>Lionel Ulmer posted an updated status page on his Direct3D work:
+</p><quote who="Lionel Ulmer"><p>
+I updated the D3D status page (
+<a href="http://www.bbrox.org/d3d_status.html">
+http://www.bbrox.org/d3d_status.html</a>) with
+some new screenshots and some new demos. Nothing revolutionnary though :-)
+</p><p>
+Thanks to Christian for the 3D Mark 2000 paragraph.
+</p></quote>
+
+<p>The purpose of the page isn't really to inform you of how
+well a game works (that's the purpose of the 
+<a href="http://appdb.winehq.org">App DB</a>).  It's more or
+less to let you know what programs the D3D guys are doing testing with
+and the specific problems they're running into.  The links 
+give you a way to download the demos in case you wanted to
+hack on Wine.</p>
+
+</section>
+
+
+
+<section 
+	title="Accessing X11 Calls" 
+	subject="Help wanted: Implementing Wine dlls that need access to X11 commands."
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0571.html" 
+	posts="10"
+	startdate="13 Jan 2003 00:00:00 -0800"
+	enddate="16 Jan 2003 00:00:00 -0800"
+>
+<topic>IO</topic>
+<p>Robert North wanted to know how to go about creating
+a DLL that needs to hook in to the current X11 display
+code:</p>
+<quote who="Robert North"><p>
+
+I'm about to start serious implementation on the wintab32 dll.
+I now need some guidance as to how best to implement it's access to X11 
+calls.
+</p><p>
+My current thoughts on how to do this are given below.
+Are they reasonable??
+</p><p>
+I need to access a number of X11 calls, largely in the XInput extension.
+None of these are exposed by the x11drv dll.
+</p><p>
+My intention is currently to change nothing in the x11drv dll.
+</p><p>
+The only hints I can find about how to do this are from the direct draw 
+and open gl dlls.
+</p><p>
+These dlls can do the following:
+<ul>
+    <li>Get the X11 Display object of a gdi context.</li>
+    <li>Get the X11 window handle given a win32 window handle.</li>
+    <li>Synchronise with the x11_drv code for multi threading.</li>
+</ul></p><p>
+
+My wintab code will do the same.
+</p><p>
+    The one difference will be that wintab will create it's own X11 
+Display objects.  It will interrogate a gdi's X11 Display object to ensure
+it talks to the same screen.
+</p><p>
+    The wintab code will also require multiple message queues.
+    To implement this I intend to use one display object per queue.
+    (Much as wine uses one display object per thread)
+</p></quote>
+
+<p>Alexandre didn't like the part about using different message
+queues and asked for
+more detail concerning wintab.  Robert replied with a lengthy 
+email on exactly what he's doing:</p>
+<quote who="Robert North"><p>
+That's what I thought, and I have proof of concept patch that hack the 
+x11drv code to
+insert &amp; read XInput events from wine's X11 event loop.
+</p><p>
+Unfortunately this doesn't fit well with the way wintab works.
+So, here's an explanation, why I've made these decisions.
+It's far longer than I'd wish, but the issues involved in the design are 
+complex.
+</p><p>
+So here goes......
+</p><p>
+<u>Quick recap of what wintab does</u>
+The wintab dll will takes messages from a graphics tablet, and provides 
+them to the user.
+But isn't that what a mouse does?
+A mouse provides information on the X &amp; Y screen coords, and buttons 
+pressed.
+A tablet provides all the above, plus extra axes defining the tilt of a 
+pen, the pen's pressure,
+rotation of a mouse, (and possibly more). All this can be provided at 
+resoloutions much higher than screen resoloution.
+</p><p>
+<u>The XInput side of the implementation</u>
+</p><p>
+The official way to get tablet data for an X display is to use the 
+XInput extension.
+</p><p>
+The XInput extension defines a specialised set of event classes to 
+represent tablet data, which enter the normal X11 message queue.
+These messages are initially disabled. XInput provides a function to 
+enable them for a given display and window.
+</p><p>
+        OK, So far it looks as if the XInput messages could be injected 
+into the wintab messaging system.
+        But note that this would reqire some patching to the x11drv dll 
+to do the following
+          
+	<ol>
+      <li> decode the messages.</li>
+      <li> enable the messages for a given window and display.</li></ol>
+        But I'm assuming that changing the x11drv code could cause 
+severe regressions to wine.
+        I'm therefore assuming that it's good manners to avoid fiddling 
+with x11drv code till the
+        wintab driver implementation is known to be adequate.
+</p><p>
+<u>The wintab side of the implementation</u>
+</p><p>
+To access  tablet, a "tablet context" is created that maps a window to a 
+particular tablet device.
+</p><p>
+For each tablet context the application is given a separate tablet 
+message queue, which provides 2 ways to access the tablet message queue.
+<ol>
+    <li> A set of functions that get or peek, or otherwise interrogate the 
+message queue for queue size, message at index etc.</li>
+    <li> Posting messages into the windows(wine) message queue.</li></ol>
+To complicate matters, it appears that it's possible to use both methods 
+in the same program.
+</p><p>
+At present, I will only implement method a. as this is the one used by 
+Painter5 and Photoshop6.
+</p><p>
+        Now, as it turns out, the methods to interrogate a wintab 
+message queue are extremely similar to those to interrogate an X11 
+message queue.
+            So that's +1 to giving wintab it's own X11 message queue. 
+(Or possibly even one X11 msg queue per tablet context!).
+            A simple X11&lt;-&gt;wintab mapping can be implemented, and no 
+additional queue data structs are needed in the wintab implementation.
+        As the wintab dll implements it's own message queue, an 
+implementation using the wine message queue would give a number of problems:
+<ol>
+        <li> All wintab messages would have to be hidden from the 
+application's windows(wine) message queue.
+            Could be done with one specific thread, or threads for 
+wintab. This becomes similar, but more complicated to the X11 message 
+queue implementation.</li>
+        <li> Filtering methods would have to be implemented to only access 
+the messages appropriate to the reqired tablet context. X11 provides all 
+the filtering necessary.
+            While windows provides enough filtering for ranges of 
+messages. But this would mean 3 message mappings X11-&gt;windows(wine)-&gt;wintab.</li>
+        <li> All the queue management functions, and any necessary data 
+structs to manage the queue will have to be implemented specifically in 
+wintab, as the windows queue
+        doesn't give much control over the message queue, and what's 
+more, may need to copy data into a wintab specific message queue before 
+the application can access it.</li></ol>
+</p><p>
+            I think after all that complexity, that's +4 or more to X11 
+message queue implementation, and for wintab at least, avoid the wine 
+message queue.
+
+
+</p><p>
+Well, that's the end of my whistle stop tour of the issues I've been 
+cosidering with this part of the design.
+I've omitted any reference to function names, to keep this document as 
+breif and readable as possible.
+If you wish, I can annotate it with the relevant function names.
+</p><p>
+Please feel free to comment on anything.
+</p><p>
+And finally,  Some references:
+</p><p>
+For the wintab spec see the following location:
+   <ul>
+	<a href="http://www.pointing.com/FTP.HTM">
+    http://www.pointing.com/FTP.HTM</a></ul></p><p>
+For XInput see
+   <ul>
+	<a href="ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/Xi/lib.PS.gz">
+    ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/Xi/lib.PS.gz</a><br />
+
+(Much of the doccumentation will probably be bundled with your 
+xfree86 implementation too)</ul></p></quote>
+
+<p>Alexandre looked at the specs and suggested something slightly
+different and a little less complex:</p>
+<quote who="Alexandre Julliard"><p>
+I agree you probably don't want to store wintab events in the Windows
+message queue. But that doesn't mean you have to create your own X
+connection and event loop, you can simply retrieve the events from the
+normal X event loop and store them into the wintab queue.</p></quote>
+
+<p>Robert wasn't sure that was the correct approach:</p>
+<quote who="Robert North"><p>
+[That] is initially how I was going to implement it.
+</p><p>
+The issue I came up against is how to inject the messages into the 
+wintab queue?
+</p><p>
+In wine, messages are currently injected into the for each thread, when 
+GetMessage() is called.
+</p><p>
+As wintab has it's own equivalent of GetMessage (named WTPacketsGet) 
+the  which seems to have direct access to the driver, it would look like 
+wintab needs an alternative method to inject messages into it's queue.
+</p><p>
+The only one I could come up with, in wine style, was to have a worker 
+thread whose sole purpose is to inject messages into the wintab message 
+queue. It might call GetMessage(), but all this would do is cause the 
+wine message loop to insert a message into the wintab loop.
+</p><p>
+The problem with this system is that it means that the queue has to be
+accessed by multiple threads, and therefore will lead to the usual 
+thread synchronisation hassles.
+</p><p>
+It was the fact that I could avoid synchronisation which lead me to 
+think about building my own message loop.
+</p></quote>
+
+<p>Robert also wanted everyone's thoughts on the separation of 
+wintab - what parts needed to go into x11drv and what parts
+needed to go into wintab.dll.  X11drv doesn't have many 
+exposed interfaces, so Robert thought he was going to run
+into problems with that.  The easy solution would be to just
+dump a lot of the new code into x11drv. He looked at how
+the DirectDraw code worked but Lionel Ulmer cautioned him
+not to use that as a guide.  Ever.</p>
+</section>
+
+
+<section 
+	title="NTFS Filesystem Type" 
+	subject="Add filesytem type NTFS to config"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/01/0217.html" 
+	posts="14"
+	startdate="13 Jan 2003 00:00:00 -0800"
+	enddate="15 Jan 2003 00:00:00 -0800"
+>
+<topic>Filesystems</topic>
+<p>Tony Lambregts submitted a patch that added a new filesystem
+type:</p>
+<quote who="Tony Lambregts"><p>
+ Some program (VirtualDub) checks the fsname returned by 
+ GetVolumeInformation, to find the name of the file system, when it needs 
+ to write files that are larger than 2GB. It refuses to create the file 
+ when we return FAT but will successfully write the file when NTSF is 
+ returned.
+</p><p> 
+ Change Log: add configuration option to report NTFS as the file system 
+ type for a drive.
+</p></quote>
+
+<p>Mike Hearn thought it might just be a good idea to always return
+NTFS if asked.  Andreas Mohr disagreed and felt the whole concept
+was flawed:</p>
+<quote who="Mike Hearn"><p>
+ Hmm, I'm not sure whether we should increase the preexisting Filesystem
+ type mess by doing that.
+ I've hated the "win95", "vfat" etc. syntax almost from the beginning
+ (well, to be fair, I think I'm not too innocent when it comes to its
+ implementation, but at some time I just came to the conclusion
+ that it sucked)
+</p><p>
+ After all we're running on *Unix* file systems in many cases,
+ so "win95" does have no place here at all ! (neither does "vfat")
+ Not to mention that "win95" awfully collides with the "win95" winver...
+</p><p> 
+ And adding yet another "incorrect" "ntfs" setting makes my head
+ want to go bonkey ;-)
+</p><p>
+ So I guess that it might be a good idea to think about how to solve this
+ configuration issue in a nicer way (and of course keep the old config
+ capabilities for about 2 years in order to have backward compatibility).
+</p><p>
+ We might even want to think of introducing "nameless" filesystem type
+ settings (instead of having "broken" conflicting and "wrong" FS type names).
+ And of course it seems as if we also need a separate FS *name* setting
+ in order to have Wine return "NTFS" instead of "FAT" in your case...
+</p><p>
+ So could we start a discussion about that perhaps ?
+</p></quote>
+
+<p>From there the discussion delved into exactly what type
+of filesystems Windows knows about.  There was some speculation
+on exactly how and when they differ.  For example, what type of
+filesystem is reported on DVD's?  Tony summed it up:</p>
+<quote who="Tony Lambregts"><p>
+So we The way I see it Windows  knows about the following file systems. 
+CDFS, FAT, FAT23, NTFS and HPFS.
+<ul>
+	<li>HPFS is  irrelevent.</li>
+	<li>CDFS covers all CD like Media.</li>
+	<li>FAT will deal with all drives less that 2 GB.</li>
+	<li>NTFS can be used with  drive over 10MB.</li>
+	<li>FAT32 can be ignored.</li>
+</ul></p></quote>
+
+
+</section>
+
+
+
+</kc>

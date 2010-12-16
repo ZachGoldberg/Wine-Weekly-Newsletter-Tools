@@ -1,0 +1,429 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="248" date="11/12/2004" />
+<intro> <p>This is the 248th issue of the Wine Weekly News publication.
+Its main goal is to telemark. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="137" size="570" contrib="51" multiples="24" lastweek="32">
+
+<person posts="16" size="58" who="Dan Kegel" />
+<person posts="13" size="31" who="Alexandre Julliard" />
+<person posts="10" size="36" who="William Poetra Yoga H" />
+<person posts="9" size="32" who="Michael Jung" />
+<person posts="8" size="23" who="Dimitrie O. Paun" />
+<person posts="6" size="24" who="James Hawkins" />
+<person posts="6" size="93" who="Mike Hearn" />
+<person posts="4" size="15" who="Jakob Eriksson" />
+<person posts="4" size="13" who="Hans Leidekker" />
+<person posts="4" size="10" who="Andreas Mohr" />
+<person posts="3" size="9" who="Robert Shearman" />
+<person posts="3" size="8" who="Fabrice Menard" />
+<person posts="3" size="8" who="Robert Reif" />
+<person posts="2" size="41" who="Jason Edmeades" />
+<person posts="2" size="11" who="(Simon.Tyler)" />
+<person posts="2" size="9" who="Michael Stefaniuc" />
+<person posts="2" size="7" who="Nicolai Kuntze" />
+<person posts="2" size="7" who="Jeremy Newman" />
+<person posts="2" size="6" who="Bill Medland" />
+<person posts="2" size="6" who="Duane Clark" />
+<person posts="2" size="6" who="Tony Lambregts" />
+<person posts="2" size="5" who="Vincent B&#233;ron" />
+<person posts="2" size="5" who="Kenneth Porter" />
+<person posts="2" size="4" who="Ivan Leo Puoti" />
+<person posts="1" size="15" who="Dagan Shai" />
+<person posts="1" size="9" who="MediaHost \(TM\)" />
+<person posts="1" size="6" who="Holly Bostick" />
+<person posts="1" size="3" who="Jia L Wu" />
+<person posts="1" size="3" who="Jukka Heinonen" />
+<person posts="1" size="3" who="Shachar Shemesh" />
+<person posts="1" size="3" who="Jeremy White" />
+<person posts="1" size="3" who="Juan Lang" />
+<person posts="1" size="3" who="Ferenc Wagner" />
+<person posts="1" size="3" who="Ge van Geldorp" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="Dmitry Timoshkov" />
+<person posts="1" size="2" who="Izak Burger" />
+<person posts="1" size="2" who="Chris Morgan" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Andreas Mohr" />
+<person posts="1" size="2" who="Jonathan Wilson" />
+<person posts="1" size="2" who="Grant Williamson" />
+<person posts="1" size="2" who="Harald Milz" />
+<person posts="1" size="2" who="Saulius Krasuckas" />
+<person posts="1" size="2" who="Aaron Arvey" />
+<person posts="1" size="2" who="Frank v Waveren" />
+<person posts="1" size="2" who="Aneurin Price" />
+
+</stats>
+<section 
+	title="News: Ekush LGPL Violation?; AppDB Additions" 
+	subject="News"
+	archive="http://slashdot.org/article.pl?sid=04/11/10/1320231&amp;tid=201&amp;tid=190&amp;tid=1" 
+	posts="2"
+	startdate="09/06/2004"
+	enddate="09/12/2004"
+>
+<topic>News</topic>
+<p>A story appeared on Slashdot this week about an apparent LGPL license 
+violation with a product known as <a href="http://www.akshor.com/">Ekush</a>.  
+In particular, they have redistributed slightly modified ReactOS binaries.  
+ReactOS, in turn, uses Wine for it's Win32 subsystem.  Ge van Geldorp, who 
+has also contributed to Wine, wrote on Slashdot:</p>
+<quote who="Ge van Geldorp"><p>
+ The release of Ekush caused some uproar in the ReactOS community, since it 
+ soon became apparent that Ekush was not much more than a repackaged version 
+ of ReactOS. Doing a simple string search for ReactOS on the Ekush binaries 
+ showed a number of hits.</p><p>
+ Shortly after this was reported on the ReactOS mailing list, the Ekush website 
+ went down "for maintenance". Today they are back with a slightly altered set 
+ of binaries, which no longer contain the ASCII string "ReactOS". However, they 
+ forgot to search for Unicode strings... Ekush is not only violating the rights 
+ of ReactOS by deriving a product without releasing the modified source, they 
+ also derive code of (and are violating the rights of) Wine, FreeType and QEmu.
+</p></quote>
+
+<p>Now, there's nothing illegal about changing GPL'ed sources and not making
+the changes available for download.  However, if you request the source code 
+it must be made available.  What's of more concern is that the copyright
+information has been removed.  Allegedly, they've also added some stuff
+that's not legal to redistribute.  The ReactOS guys have put together
+a <a href="http://blight.eu.org/reactos/ekush.html">nice summary</a> of
+the situation and proof of their claims.
+</p><p> 
+On a more positive note, Chris Morgan and Tony Lambregts hacked on the
+Wine <a href="http://appdb.winehq.org">AppDB</a> this week and added
+support for maintainers.  One problem with the database is simply
+keeping it up to date.  The hope is that people will sign up to become
+maintainers of an application and then make sure comments and any other
+relevant info are up to date.  This is actually quite similar to how 
+CodeWeavers' 
+<a href="http://www.codeweavers.com/compatibility/">Compatibility 
+Center</a> works.  For instance, if you check out Wine's page on 
+<a href="http://appdb.winehq.org/appview.php?appId=10&amp;versionId=67">
+Microsoft Word 2000</a> you'll notice there's a big fat button that says
+"Log in to become an app maintainer".  Guess what?  If you set up an
+account and log in you'll be given an option to be an app maintainer. 
+</p><p>
+If you regularly use an application it would really help to maintain
+a page in the AppDB.  The time commitment is minimal and it could really
+help others.  For instance, on Word 2000 you'll find something like
+136 comments.  A bunch of them are from 2001 and clearly aren't
+relevant.  There's also no screenshot.  By maintaining the app you
+can clean up the comments, post comments of your own, and soon you'll
+be able to add your own screenshots.  Lastly, if you're a PHP hacker
+you might be interested in working on the AppDB itself.  If so, 
+contact <a href="mailto:chmorgan_at_charter.net">Chris Morgan</a>. </p>
+
+
+</section>
+<section
+        title="Cxbx: Xbox Emulator Ported"
+        subject="Cxbx"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/11/0273.html"
+        posts="1"
+        startdate="11/11/2004"
+>
+<topic>Winelib</topic>
+<p>There's a little project called 
+<a href="http://www.caustik.com/cxbx/">Cxbx</a> you might have
+heard of.  It's an Xbox emulator that, until now, has only run
+on Windows.  It's also open source.  Why has it only run on
+Windows?  There's a great description on the website of how
+it works:</p>
+<quote who="Caustik"><p>
+The first step to creating an Xbox Emulator was determining 
+the hardware and software systems used by the Xbox. Since 
+the Xbox is pretty much a PC dressed up like a console, the 
+hardware component was easy enough. The software side was a 
+bit more complicated. The Xbox uses a stripped down and 
+partially modified Windows 2000 Kernel. The Xbox also only 
+executes a single process at a time.
+</p><p>
+In order to emulate an Xbox game, it is necessary to simulate 
+the game's environment. For the Xbox, this means making the 
+game believe that it is running on a very specific set of PC 
+hardware, running a very specific operating system. The 
+operating system is simulated by intercepting kernel function 
+calls, and wrapping them around existing NTDLL functions 
+within Windows 2000 and Windows XP. The specific hardware 
+is simulated by intercepting code that is known to touch 
+the hardware at the lowest level possible. For Direct3D, 
+this means simulating the Direct3D API by wrapping it around 
+the Windows Direct3D API.
+</p></quote>
+
+<p>That makes a lot of sense.  If you think about it though,
+Wine also has an NTDLL and we also have a Direct3D implementation
+so in theory you could use those instead of the native Windows
+ones.  It just so happens Dimi Paun spent some time doing a 
+Winelib port.  He reported this week,
+<quote who="Dimitrie Paun">
+ Willie Sippel suggested I port the Cxbx Xbox emulator to Winelib.
+ And I did, patch attached. It seems like we need a multimon.h,
+ any takers?</quote></p>
+
+<p>I almost included the patch here to show how ridiculously
+small it is - about a total of 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/11/att-0273/01-wine.diff">ten
+lines</a> changed in Cxbx.  
+Now, before you run off and get all excited about this, you
+should be aware that XBox emulation with Cxbx still needs a
+lot of work.  In fact, <i>Turok Evolution</i> is the only
+playable game.  How well does it work under Wine?  Well, no
+idea on that.  One of the important things here is just how
+little work was needed to support it on Linux.  Who knows,
+maybe someday it will let you play Halo 2.
+</p>
+</section>
+
+<section
+        title="Gcov Support"
+        subject="Re: Enabling gcov code coverage"
+        archive="http://www.winehq.com/hypermail/wine-patches/2004/11/0136.html"
+        posts="1"
+        startdate="11/10/2004"
+>
+<topic>Testing</topic>
+<p>A 
+<a href="http://www.winehq.org/hypermail/wine-patches/2004/11/0136.html">patch</a>
+came in this week to add 
+<a href="http://gcc.gnu.org/onlinedocs/gcc/Gcov.html">Gcov</a>
+profiling support to Wine.  For the most part, the patch just
+enables it with gcc when Wine is compiled.  What you end up with
+is a way to see how well Wine's test suite actually tests API's.
+Aaron Arvey submitted the patch and also included some 
+really nice docs on how to use Gcov.  Rather than cover the 
+patch, which in itself isn't that interesting, I'll include 
+what Aaron wrote about using it:</p>
+<quote who="Aaron Arvey"><p>
+        The Wine test suite doesn't actually test all of Wine.
+	Surprised?  You shouldn't be.  It's difficult to write a truly
+	complete test suite.  Fortunately, gcc comes with a tool
+	called 'gcov' that will tell you exactly which code is not yet
+	tested.
+      </p>
+      <p>
+        To use gcov on wine, do the following:
+      
+      <ol>
+        <li>
+         
+           Configure wine with the <tt>--enable-gcov</tt>
+           option to <tt>configure</tt>, then do a clean
+           build of wine as normal.
+         
+        </li>
+        <li>
+           Run part or all of the Wine test suite.  For example, if
+	   you're interested in how well
+	   <tt>kernel32.dll</tt> is tested, just do
+	   <ul><code>
+		cd dlls/kernel/tests<br />
+		rm *.ok<br />
+		make test</code></ul>
+           
+        </li>
+        <li>
+           Run gcov on the source files for the part of Wine you're
+           interested in testing.  For instance,
+	   <ul><code>
+		cd dlls/kernel<br />
+		for a in *.c; do gcov $a; done</code></ul>
+	   For each file, it will output statistics about what
+           percentage of the code has been tested, as well as an
+           annotated source file showing exactly which lines were
+           exercised by the test suite.
+       </li>
+      </ol></p>
+      <p>
+        For instance, to find out what lines of
+        <tt>dlls/lzexpand/lzexpand_main.c</tt> are not yet
+        tested by <tt>dlls/lzexpand/tests</tt>, you might
+        do (the following example uses an out-of-tree build):
+        <ul><code>
+		cvs checkout wine<br />
+		mkdir build<br />
+		cd build<br />
+		../wine/configure --enable-gcov<br />
+		make depend &amp;&amp; make<br />
+		cd dlls/lzexpand/tests<br />
+		make test<br />
+		cd ..<br />
+		gcov ../../../wine/dlls/lzexpand/lzexpand_main.c
+		<ul><code>
+  			0.00% of 3 lines executed in file ../../../wine/include/wine/unicode.h<br />
+  			Creating unicode.h.gcov.<br />
+  			0.00% of 4 lines executed in file /usr/include/ctype.h<br />
+  			Creating ctype.h.gcov.<br />
+  			0.00% of 6 lines executed in file /usr/include/bits/string2.h<br />
+  			Creating string2.h.gcov.<br />
+  			100.00% of 3 lines executed in file ../../../wine/include/winbase.h<br />
+  			Creating winbase.h.gcov.<br />
+  			50.83% of 240 lines executed in file ../../../wine/dlls/lzexpand/lzexpand_main.c<br />
+  			Creating lzexpand_main.c.gcov.</code></ul>
+		less lzexpand_main.c.gcov
+        </code></ul></p><p>
+        Look through the output file
+	<tt>lzexpand_main.c.gcov</tt> for a line that has
+	<tt>####</tt> instead of a line count.  Here's one,
+	in the function <tt>LZOpenFile</tt>:
+        <ul><code>
+    &#160;&#160;&#160;&#160;9:  545:        if ((mode&amp;~0x70)!=OF_READ)<br />
+    &#160;&#160;&#160;&#160;6:  546:  &#160;&#160; return fd;<br />
+M
+    &#160;&#160;&#160;&#160;3:  547:        if (fd==HFILE_ERROR)<br />
+    #####:  548:                      &#160;&#160; return HFILE_ERROR;<br />
+    &#160;&#160;&#160;&#160;3:  549:        cfd=LZInit(fd);<br />
+    &#160;&#160;&#160;&#160;3:  550:        if ((INT)cfd &lt;= 0) return fd;<br />
+    &#160;&#160;&#160;&#160;3:  551:        return cfd;
+        </code></ul></p><p>
+        <tt>gcov</tt> output consists of three components:
+        the number of times a line was run, the line number, and the
+        actual text of the line.  (If a line is optimized out by the
+        compiler, it will appear as if it was never run, so
+        <tt>--enable-gcov</tt> disables optimization.)  gcov
+        is telling us that line 548 is not exercised by the test
+        suite.  This is bad, because it means the test suite might
+        miss a bug.  In this case, fixing the problem is simple: since
+        this is the only place <tt>LZOpenFile</tt> returns
+        <tt>HFILE_ERROR</tt>, we just have to add a
+        situation to
+        <tt>dlls/lzexpand/tests/lzexpand_main.c</tt> where
+        <tt>LZOpenFile</tt> ought to return
+        <tt>HFILE_ERROR</tt>, and verify that it does.
+        For example, the following lines added to
+        <tt>dlls/lzexpand/tests/lzexpand_main.c</tt> would
+        do the job:
+	<ul><code>
+	INT file;<br />
+ 	/* Check for nonexistent file. */<br />
+	file = LZOpenFile("badfilename_", &amp;test, OF_READ);<br />
+	ok(file == LZERROR_BADINHANDLE, 
+   		"LZOpenFile succeeded on nonexistent file\n");<br />
+	LZClose(file);
+       </code></ul></p><p>
+       Once we add this, we naturally want to find out if the new line
+       actually does exercise the line in question.  To do this, clear
+       the histograms (line counts) by removing <tt>*.da</tt>, remove
+       the old <tt>*.gcov</tt> output files, remove the
+       <tt>*.ok</tt> so <tt>make test</tt> knows
+       it needs to actually run the test, and rerun it:
+      <ul><code>
+	rm *.da *.gcov<br />
+	cd tests<br />
+	rm *.ok<br />
+	make<br />
+	make test<br />
+	cd ..<br />
+	gcov ../../../wine/dlls/lzexpand/lzexpand_main.c
+	<ul><code>
+  		0.00% of 3 lines executed in file ../../../wine/include/wine/unicode.h<br />
+  		Creating unicode.h.gcov.<br />
+  		0.00% of 4 lines executed in file /usr/include/ctype.h<br />
+  		Creating ctype.h.gcov.<br />
+  		0.00% of 6 lines executed in file /usr/include/bits/string2.h<br />
+  		Creating string2.h.gcov.<br />
+  		100.00% of 3 lines executed in file ../../../wine/include/winbase.h<br />
+  		Creating winbase.h.gcov.<br />
+  		51.67% of 240 lines executed in file ../../../wine/dlls/lzexpand/lzexpand_main.c<br />
+  		Creating lzexpand_main.c.gcov.</code></ul>
+	less lzexpand_main.c.gcov
+      </code></ul>
+      </p><p>
+         Sure enough, gcov reported that
+	 <tt>lzexpand_main.c</tt> has 51.67% coverage
+	 instead of 50.83%.  That's nearly a one percent improvement,
+	 which is awfully good.  The output file confirms this:
+      <ul><code>
+       10:  545:        if ((mode&amp;~0x70)!=OF_READ)<br />
+       &#160; 6:  546:        &#160;&#160;  return fd;<br />
+       &#160; 4:  547:        if (fd==HFILE_ERROR)<br />
+       &#160; 1:  548:        &#160;&#160;  return HFILE_ERROR;<br />
+       &#160; 3:  549:        cfd=LZInit(fd);<br />
+       &#160; 3:  550:        if ((INT)cfd &lt;= 0) return fd;<br />
+       &#160; 3:  551:        return cfd;
+      </code></ul>
+      </p><p>
+        So there you have it: that's how to use gcov to increase the coverage
+	of the wine test suite.</p></quote>
+
+</section> 
+<section 
+	title="Emacs Flymake Support" 
+	subject="Update to flymake patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/11/0209.html" 
+	posts="1"
+	startdate="11/08/2004"
+>
+<p>Mike Hearn posted a change on wine-devel to
+add <a href="http://flymake.sf.net">Flymake</a> Emacs mode
+for Wine development:</p>
+<quote who="Mike Hearn"><p>
+
+This adds support for the lovely flymake-mode, which compiles C as you
+write it in the background and highlights errors and warnings. It's an
+update to the patch I sent in about a year ago.
+</p><p>
+Since then GNU Emacs has changed (in cvs) so I've attached the version
+of flymake-mode you need to make it all work.
+</p><p>
+Not expecting this to get merged so it goes to wine-devel.
+</p></quote>
+</section>
+<section
+        title="Network Config Not Updating"
+        subject="wine notes &amp; /etc/resolv.conf"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/11/0251.html"
+        posts="4"
+        startdate="11/10/2004"
+	enddate="11/11/2004"
+>
+<topic>Fixes</topic>
+<p>Grant Williamson ran into a networking problem and
+asked for some help:</p>
+<quote who="Grant Williamson"><p>
+is there a patch anywhere, which will allow wine to reread the 
+<tt>/etc/resolv.conf</tt> file.
+</p><p>
+i.e.
+application Lotus Notes
+
+a) start Notes whilst connected to home network. <tt>/etc/resolv.conf</tt> gets 
+populated by home dhcp server
+b) start vpn connection to work <tt>/etc/resolv.conf</tt> gets populated with 
+extra name servers
+c) try and connect to work Notes, server fails, as it cannot resolve 
+named address
+
+If you start Notes after the vpn connection is started, then <tt>/etc/resolv</tt> 
+if correctly populated and the problem does not occur.
+Same issue happens when u suspend your machine and start in a different 
+location.
+</p></quote>
+
+<p>Andi Mohr didn't think Wine was the culprit and explained:</p>
+<quote who="Andreas Mohr"><p>
+Wine doesn't read the resolv.conf file, at all (ok, I didn't check,
+but I'd be very surprised if it did).
+</p><p>
+Wine uses bog-standard networking support APIs, there's no magic involved
+in connecting to the net.
+</p><p>
+As such the problem is probably that Wine makes use of an API that somehow
+doesn't take into account a changed name server configuration.
+</p></quote>
+
+<p>Mike Hearn seemed to recognize the problem and confirmed 
+Andi's idea,
+<quote who="Mike Hearn">
+This is a glibc problem. I'm pretty sure Red Hat fixed this recently as
+part of their NetworkManager work. It might be in Fedora Core 3, I'd ask
+on fedora-devel.</quote></p>
+
+</section>
+</kc>

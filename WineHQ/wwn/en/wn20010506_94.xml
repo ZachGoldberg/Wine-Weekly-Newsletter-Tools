@@ -1,0 +1,453 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Wine Traffic</title>
+<author contact="mailto:brianv@REMOVETHIS.ski-copper.com">Brian Vincent</author>
+<issue num="94" date="06 May 2001 00:00:00 -0800" />
+<intro>
+ 
+<p>This is the 94th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x Windows emulator).</p>
+</intro>
+
+<stats posts="58" size="172" contrib="23" multiples="11" lastweek="10">
+<person posts="10" size="22" who="Alexandre Julliard &lt;julliard&gt;" />
+<person posts="7" size="24" who="Gerard Patel &lt;gerard.patel&gt;" />
+<person posts="7" size="20" who="Ian Pilcher &lt;ian.pilcher&gt;" />
+<person posts="4" size="13" who="Francois Gouget &lt;fgouget&gt;" />
+<person posts="4" size="11" who="Andreas Mohr &lt;a.mohr&gt;" />
+<person posts="3" size="17" who="Dmitry Timoshkov &lt;dmitry&gt;" />
+<person posts="3" size="7" who="Eric Pouech &lt;eric.pouech&gt;" />
+<person posts="3" size="6" who="Bang Jun-Young &lt;bjy&gt;" />
+<person posts="2" size="8" who="Gavriel State &lt;gav&gt;" />
+<person posts="2" size="4" who="Marcus Meissner &lt;marcus&gt;" />
+<person posts="2" size="3" who="David Howells &lt;dhowells&gt;" />
+<person posts="1" size="2" who="Dan Kegel &lt;dank&gt;" />
+<person posts="1" size="1" who="Chris Morgan &lt;cmorgan&gt;" />
+<person posts="1" size="1" who="David.Goodenough" />
+<person posts="1" size="1" who="Christopher Morgan &lt;cmorgan&gt;" />
+</stats>
+ 
+ 
+ 
+<section
+  title="Headlines"
+  subject="CUPS Support"
+  archive="http://www.winehq.org/hypermail/wine-cvs/2001/04/0158.html"
+  posts="2"                                                 
+  startdate="27 Apr 2001 00:00:00 -0800"
+  enddate="27 Apr 2001 00:00:00 -0800"
+>
+ 
+<mention></mention>
+
+<p>Gerard Patel, quite rightly, pointed out that I had missed an
+interesting CVS commit last week.  In particular Gerard wrote,
+  <quote who="Gerard Patel">
+     I noticed on LinuxToday that the last Kernel Cousin Wine was showing
+     a 'slow week' - the week where Marcus posted CUPS support - IMHO the
+     more interesting patch since months for all non-games apps. He is not
+     following wine-patches and wine-cvs it seems :-/
+  </quote></p>
+ 
+<p>That patch by Marcus Meissner was posted with the following note:</p>
+<quote who="Marcus Meissner"><p>
+ 
+I have implemented CUPS support in WINE.</p>
+ 
+<p>Rerun autoconf ; autoheader -l include</p>
+<p>The only dangerous option currently is that in win.ini it modifies the
+   line: <br />
+        [windows] <br />
+        device=... <br />
+marking the default printer.</p>
+ 
+<p>I used a hack with 'CUPS:CupsPrinterName' to pass the information
+on which printer to use down to the spooling code, since this appears to
+be otherwise impossible.</p>
+ 
+<p>I have also added some gotos to get rid of the huge unnecessary code
+duplication in PSDRV_FindPrinterInfo().</p>
+ 
+<p>I have tested it with: <br />
+        notepad.exe <br />
+        mspaint.exe <br />
+        winhelp.exe <br />
+        uedit32.exe <br /></p>
+ 
+<p>Printing now works out of the box, if you have [afmdirs] set up and .afms
+available.</p></quote>                                                          
+
+<p>In addition to this, in the last few weeks there has been other work done
+on printing.  Changes have affected getting the page setup dialogs functional,
+work on font handling (see below), and fixes to the Postscript driver.</p>
+</section>
+ 
+ 
+<section
+  title="Font Handling Issues"
+  subject="TrueType font metrics for PostScript driver"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/04/0199.html"
+  posts="9"
+  startdate="29 Apr 2001 00:00:00 -0800"
+  enddate="30 Apr 2001 00:00:00 -0800">
+ 
+<mention></mention>
+
+<p>Ian Pilcher was working on on the Postscript driver and ran into the
+following dilemna:</p>
+
+
+<quote who="Ian Pilcher"><p>
+   In order to Unicode-enable the PostScript driver, it needs information
+   about font encodings that isn't present in Adobe's AFM file
+   format (glyph names for character encodings greater than 256).  For
+   Type 1 fonts with a standard encoding, the driver can use the encoding
+   in the Adobe Glyph List.  (There's no other choice.)</p>
+<p>
+   TrueType font designers, however, seem to regard glyph naming as an
+   opportunity to express their creativity.  Besides, the information is
+   present in the TrueType font files, so the driver might as well use it.</p>
+<p>
+   The driver could read this information directly from the font files, but
+   this would make Wine dependent on the FreeType libraries, and that
+   doesn't strike me as a wonderful idea.  Instead, I have cobbled together
+   a small program which reads a TrueType font file and creates a "TrueType
+   Font Metrics" file, which is very similar to an AFM file.  (This program
+   does use the FreeType library.)</p>
+<p>
+   Anyone have any objections to using this approach as an interim measure?  </p>
+</quote>
+
+<p>Gavriel State responded to this by describing a general
+   framework for working with fonts:</p>
+<quote who="Gavriel State"><p>                                   
+   From the end user perspective, printing in Wine sucks right now due to
+   the fact that you've got to manually make all these AFM files (or now
+   your proposed TT equivalent), and then just kind of hope that the printer
+   has the font available.  If you're printing to a local inkjet or something
+   and you have Ghostscript set up just so, it'll work, but it acts horribly
+   if you're printing to a remote PS device.</p>
+<p>
+   The only way that that problem can be solved is if we can automatically
+   upload a T1 version of any given font to the PS file.  We can only do
+   that if we have access to the glyph outline data, which would require
+   linking to something like FreeType in some way.</p>
+<p>
+   When we were doing WPO2K for Linux at Corel, we used Bitstream's commercial
+   font server for this purpose.  It had an extended API that you could use
+   to get at additional font characteristics and glyph outlines.  It was
+   a major pain to use, and it appears to be the top reason that end users
+   have problems with the product (font server configuration is a nightmare
+   for newbies).  It's a shame that we didn't use FreeType instead.</p>
+<p>
+   What I'd love to see happen with fonts in Wine is this:</p>
+<p><ul>
+ <li> shift the x11drv and wineps over to using the DDK Font Engine APIs
+   that are currently just stubs.</li>
+ 
+ <li> Implement a FreeType font driver that links to FreeType and uses
+   the FreeType APIs for all font metrics data as well as rasterization.</li>
+
+ <li> Implement an X11-dependent font driver in the Font Engine to rely
+   on as a backup if FreeType isn't available.</li></ul></p>
+<p>
+   Using FreeType more directly would also allow Wine to do serious
+   typography - the metrics data available from X is awful compared to
+   what you can get directly from FreeType, and doing anything less gives
+   you subtle variations in glyph placement that can completely mess up
+   the decision of where to break a line.  If we ever want to see people
+   using Wine for serious graphics and page layout applications, we
+   have no choice but to go for the FreeType approach.</p>
+<p>
+   Now, all of that said, I don't actually have the time to help with
+   any of this directly (unless someone wants to throw a contract
+   my way, of course).  All I can really do is cheer you on from the
+   sidelines should you decide to go for it, and perhaps offer the
+   occasional nugget of advice. Speaking of which, I do hope that you've
+   seen the font &amp; printing code in the Corel wine tree.  It may not
+   do you much immediate good, but I suspect that it could be a useful
+   reference point.                                </p></quote>
+ 
+<p>He also asked, <quote who="Gavriel State">
+  What do you find objectionable about making wine work more closely with
+  FreeType? </quote>
+   Ian replied,
+ <quote who="Ian Pilcher">
+  Absolutely nothing.  I just don't think the immediate benefit of getting
+  at TrueType encodings justifies creating the dependency at this time. </quote>
+  Ian also agreed with Gavriel's ideas, but pointed out that for now he was
+  just interested in getting the driver Unicode-enabled.</p>
+ 
+<p>Alexandre Julliard wondered though, <quote who="Alexandre Julliard">
+  But doesn't your solution also require FreeType anyway?  Linking it
+  into Wine or into a separate program is not really different for the
+  user, he still needs to install it. </quote>
+   Ian responded,
+ <quote who="Ian Pilcher">
+  With a separate program, FreeType is only required for people who want
+  to print TrueType fonts.  If I put FreeType calls directly into the
+  driver, FreeType will be required to build/run Wine at all, even for
+  users that derive no benefit from it.       </quote></p>
+ 
+<p>Alexandre didn't seem to mind putting the calls right within
+   the driver, noting that
+ <quote who="Alexandre Julliard">
+  We will have to use FreeType at some point anyway, so we might as well
+  start now.  Besides it seems it will be easier to use if everything is
+  built-in instead of having to run a separate tool. </quote></p>
+ 
+<p>From there the discussion evolved into ways of setting up the autoconf
+checks and exactly what versions of FreeType should be supported.  Red Hat
+shipped FreeType 1.4 with their 7.0 distribution while with 7.1 they
+included FreeType 2.0.1 too.  The consensus seemed to be that FreeType
+2.0 API should be used.   From there Ian went on to add autoconf checks for
+the FreeType header files.</p>
+ 
+</section>
+                                                                                 
+<section
+  title="Wine and NetBSD"
+  subject="Wine and NetBSD"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0004.html"
+  posts="5"
+  startdate="01 May 2001 00:00:00 -0800"
+  enddate="02 May 2001 00:00:00 -0800"
+>
+ 
+<mention></mention>
+<mention>Francois Gouget</mention>
+<mention>Eric Pouech</mention>
+
+<p>Bang Jun-Young posted an interesting message to the list:</p>
+<quote who="Bang Jun-Young"><p>
+  For the last couple of weeks I spent some time doing porting Wine to
+  NetBSD (there used to be a port but was too out of date). After applying
+  patches my own, it has been successfully compiled and started running.</p>
+<p>
+  The most serious problem occurs, however, whenever I try to run a
+  Windows binary with it:</p>
+<p><ul>
+        $ wine c:\\windows\\sol.exe<br />
+        No built-in EXE module loaded!  Did you create a .spec file?
+   </ul></p>
+<p>
+  Obviously sol.exe doesn't need a .spec file to run. When/Why do I get
+  such an error?           </p></quote>
+ 
+<p>Eric Pouech thought the problem was a loader issue.  At some point the
+  native DLLs weren't being registered most likely because Wine's
+  initialization functions weren't being called. </p>
+ 
+<p>Francois Gouget was digging through configure.in and noticed that
+  for NetBSD it didn't really specify how to link a builtin DLL.
+  Jun-Young noted that as of NetBSD 1.5 the native binary format had
+  completely switched over to ELF so most GNU tools could be used just
+  like on Linux and FreeBSD.  Of course this also means that older
+  versions of NetBSD likely won't work. </p>
+</section>
+                                                    
+<section
+  title="Wine Manuals"
+  subject="Script to get committed patches"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0005.html"
+  posts="7"
+  startdate="01 May 2001 00:00:00 -0800"
+  enddate="02 May 2001 00:00:00 -0800"
+>
+ 
+<mention></mention>
+<mention>Gerard Patel</mention>
+
+<p>Gerard Patel was trying to retrieve a patch and couldn't figure
+   why it didn't look like the normal output from diff.  Eric Pouech
+   replied to that by mentioning,
+   <quote who="Eric Pouech">
+   this type of issue has been introduced when I added the ability of
+   listing the added files in a patch (before only the diffs to existing
+   files were printed) </quote>.  </p>
+ 
+<p>In the course of more discussion Gerard mentioned he had just read
+   the Wine user manual.  Francois Gouget then gave pointers to the official
+   manuals:</p>
+  <quote who="Francois Gouget"><p>
+  right there on the WineHQ site:</p>
+  <p><ul>
+  <li>there's a big 'Help!' heading with 'WINE Documentation and Support,
+      FAQ and HOWTO.' as the subtitle. Click on it.</li>
+  <li>there, the first item is 'Official Wine documentation', click on it</li>
+  <li>and then you have the choice of:</li>
+  <ul>
+   <li> the 'Wine User Guide'
+     <a href="http://www.winehq.org/docs/wineusr-guide/">http://www.winehq.org/docs/wineusr-guide/</a></li>
+   <li> the 'Winelib User Guide'
+     <a href="http://www.winehq.org/docs/winelib-guide/">http://www.winehq.org/docs/winelib-guide/</a></li>
+   <li> the 'Wine Developers Guide'
+     <a href="http://www.winehq.org/docs/winedev-guide/">http://www.winehq.org/docs/winedev-guide/</a></li>
+   </ul></ul></p>
+  <p>
+   It should even be up to date but I'm not entirely sure. If not then  
+something must be done about it.</p></quote>
+ 
+<p>There's a lot of interesting reading in there for users and developers
+alike.</p>
+</section>
+  
+
+<section
+  title="Update: InstallShield and OLE Question..."
+  subject="Re: InstallShield and ole question..."
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0105.html"
+  posts="18"
+  startdate="18 Apr 2001 00:00:00 -0800"
+  enddate="01 May 2001 00:00:00 -0800"
+>
+
+<mention></mention>
+
+<p>I was a bit premature in covering the InstallShield thread a few
+weeks ago
+<kcref subject="InstallShield and ole question..." startdate="17 Apr 2001 23:00:00 -0800"></kcref>.
+Shortly afterward the thread spun off in a few different
+directions.  It was decided that some method of marshalling was needed
+to get InstallShield v6 installers to work because some method was needed
+to get function calls to go between processes.  That led into various
+people discussing attempts to take a stab at supporting COM/DCOM protocols.</p>
+ 
+<p>Dan Kegel pointed to the FreeDCE project: </p>
+
+<quote who="Dan Kegel">
+
+<p>
+   <a href="http://freedce.sourceforge.net/">http://freedce.sourceforge.net/</a>
+   is an open source project to implement COM.
+   It's been around quite some time, and started off from the same
+   DCE sources that Microsoft based its stuff on.  (See also
+   <a href="http://linas.org/linux/corba.html">http://linas.org/linux/corba.html</a></p>
+   <p>I wonder if that might not be useful here?</p>
+
+</quote>
+ 
+<p>Jeremy White felt there were a lot of legal implications to consider:</p>
+
+<quote who="Jeremy White"><p>
+   With COM, the other issue is that someone needs to look at the MS           
+   patents in this area.  Mainsoft is telling people that they can't use Wine to
+   port COM code, because Microsoft holds patents on some of the Vtable
+   logic used in COM (and no, I don't have any more detail than that, this came
+   to me third hand).  I've also asked the FSF for help tracking this FUD down
+   and refuting it.</p>
+ 
+   <p>The upshot of my comment is that it's critical that we use our own
+   marshalling/ipc protocol.</p>
+ 
+   <p>DCOM is documented, and what's more it appears to be well documented,
+   and what's more, it doesn't look as though the implementation will
+   be particularly hard...</p></quote>
+ 
+<p>Dan Kegel provided some more information:</p>
+<quote who="Dan Kegel"><p>
+   For the curious:<br />
+   Snooping on his conversation using google.com, I see it's patent number
+   5297284 he's worried about.</p>
+<p>
+<a href="http://164.195.100.11/netacgi/nph-Parser?Sect2=PTO1&amp;p=1&amp;u=%2Fnetahtml%2Fsearch-bool.html&amp;r=1&amp;f=G&amp;l=50&amp;d=PALL&amp;RefSrch=yes&amp;Query=PN%2F5297284">
+http://164.195.100.11/netacgi/nph-Parser?Sect2=PTO1&amp;p=1&amp;u=%2Fnetahtml%2Fsearch-bool.html&amp;r=1&amp;f=G&amp;l=50&amp;d=PALL&amp;RefSrch=yes&amp;Query=PN%2F5297284</a>
+</p></quote>
+ 
+<p>Gavriel State pointed out the
+following problems with the relevancy of the patent:  </p>
+
+<quote who="Gavriel State">
+
+<p>Hmmm - a few points to consider:</p>
+<p><ol>
+ <li> The patent seems very much oriented towards compilers for object
+    oriented languages.  I'm not sure how broadly that patent can be
+    applied to code like ours that uses C to mimic the behaviour of
+    a OO language.  If there's an issue anywhere, I'd suspect that
+    it's with g++, not Wine.</li>
+ <li> Even with g++, the work described in the patent that's actually new
+    (ie: wasn't implemented in other C++ compilers as of April 1991) mostly
+    seems to cover multiple inheritance related issues - adjusting the
+    this pointer to the right part of an MI object's vtable, etc.  Since
+    a COM interface is nothing but a flat array of function pointers,
+    I fail to see any relevance at all to the Wine side of things.</li>
+ <li> At least some of the g++ people seem to know something about this
+    patent.  There's a small thread here:                        
+        <p>
+      <a href="http://gcc.gnu.org/ml/gcc/1999-08/msg00862.html">http://gcc.gnu.org/ml/gcc/1999-08/msg00862.html</a>    
+      And there's some further discussion wrt the ia64 C++ abi here:
+        </p><p>
+      <a href="http://www.codesourcery.com/cxx-abi/cxx-open.html">http://www.codesourcery.com/cxx-abi/cxx-open.html</a></p></li>
+ <li> G++ was around for quite some time prior to the patent application.
+    You can download an archival copy of g++ 1.39.0, which predates the
+    patent here:
+        <p>
+      <a href="http://planetmirror.com/pub/gcc/old-releases/gcc-1/?N=D">http://planetmirror.com/pub/gcc/old-releases/gcc-1/?N=D</a></p></li>
+</ol>
+</p>
+
+<p>
+Anyhow, this is just from a very cursory analysis, but I'd say that the
+Mainsoft FUD is just that: FUD.          </p>
+
+</quote>
+ 
+</section>
+ 
+ 
+ 
+ 
+<section
+  title="Library Freeing"
+  subject="FreeLibrary() library freeing"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0009.html"
+  posts="7"
+  startdate="01 May 2001 00:00:00 -0800"
+  enddate="02 May 2001 00:00:00 -0800"
+>
+ 
+<mention></mention>
+
+<p>Andreas Mohr received a trace of a crash from an install program.  The
+root of the problem was that libraries weren't being freed in Freelibrary().
+Andreas wrote:</p>
+<quote who="Andreas Mohr"><p>
+   This happened because the program did some FileVersionGet*() calls before
+   on uninst.exe, which do LoadLibrary()/FreeLibrary() internally, but of
+   course the file handle didn't get freed any more.</p>
+<p>
+   I believe the potential problems that this can cause are way more important
+   than some claims that "there are some problems with library freeing".     
+   I've had that FreeLibrary() #if hack removed for a long time,
+   and I haven't see any adverse effects (not that it's too easy to spot
+   and attribute to this problem probably, though).</p>
+<p>
+   Besides, Musicmatch Jukebox used zillions of MB (yes, that's a leak for you)
+   due to that Wine "feature".</p>
+<p>
+   I for one would truly like to see it fixed ASAP.</p>
+<p>
+   If FreeLibrary() has a problem, then we need to fix it.
+   Running away from the problem by implementing strange hacks does no good
+   to anybody.</p></quote>
+ 
+<p>The main problems right now center on various versions of glibc and
+the fact that the DLL separation is continuing.  Alexandre responded
+with, <quote who="Alexandre Julliard">
+   Agreed; I have uncommented the VirtualFree, and you are hereby
+   volunteered to track down and fix any crash caused by this ;-)</quote></p>
+ 
+<p>Some discussion went back and forth concerning potential problems
+this might cause with older glibc versions.  Alexandre clarified the
+change with, <quote who="Alexandre Julliard">Actually we still cannot 
+  dlclose builtin libraries; the change I made
+  is to free memory used by PE dlls. Freeing builtins properly will
+  require dll separation to be completed first. And once this is done we
+  will no longer rely on glibc dlclose reference counting so the bug
+  shouldn't impact us.</quote></p>
+ 
+</section>
+ 
+</kc>

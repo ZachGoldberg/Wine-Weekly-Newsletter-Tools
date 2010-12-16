@@ -1,0 +1,4560 @@
+From kai.blin at gmail.com  Mon Dec  1 01:47:24 2008
+From: kai.blin at gmail.com (Kai Blin)
+Date: Mon, 1 Dec 2008 08:47:24 +0100
+Subject: wineconsole: Wait on events in curses backend using select
+	instead of poll
+In-Reply-To: <4931D5D9.1030008@martin.st>
+References: <4931D5D9.1030008@martin.st>
+Message-ID: <200812010847.28506.kai.blin@gmail.com>
+
+On Sunday 30 November 2008 00:52:57 Martin Storsj? wrote:
+> poll can't handle terminal devices on Darwin, since Tiger. See the
+> following discussion:
+> http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00066.html
+
+There's reasons we switched from select to poll. You can't just switch back to 
+select to work around a OSX _bug_. If Apple can't get their act together to 
+fix this, this needs to go behind a configure check/ifdef.
+
+Cheers,
+Kai
+
+
+-- 
+Kai Blin
+WorldForge developer  http://www.worldforge.org/
+Wine developer        http://wiki.winehq.org/KaiBlin
+Samba team member     http://www.samba.org/samba/team/
+--
+Will code for cotton.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081201/5aa13870/attachment.pgp 
+
+From pbronline-wine at yahoo.co.uk  Mon Dec  1 02:08:28 2008
+From: pbronline-wine at yahoo.co.uk (Paul Bryan Roberts)
+Date: Mon, 01 Dec 2008 08:08:28 +0000
+Subject: mshtml: suppress module unloading while gecko is loaded
+Message-ID: <49339B7C.5000904@yahoo.co.uk>
+
+ > Dan Kegel wrote:
+ > Thanks to Mike Hearn for pointing out that mshtml reference
+ > counting was wrong, and Jacek for pointing out how to fix
+ > it for now.
+ >
+ > Once gecko is loaded, don't let mshtml unload.
+ > This fixes a crash in starting Sketchup (bug 16164),
+ > and probably fixes a number of other apps that
+ > went pear-shaped after unloading mshtml...
+ >
+Bug 14065 is another instance of the same thing.
+
+I did a quick survey of DllCanUnloadNow() on the Wine 1.1.8 code base a 
+couple of weeks ago ...
+
+  55 DllCanUnloadNow routines (in some 272 dll subdirectories)
+
+  11 FIXME stubs return S_FALSE
+   7 FIXME stubs return S_OK
+
+   3 without FIXME return S_FALSE
+   2 without FIXME return S_OK
+
+  32 appear to be real implementations
+
+However, the first in the list (alphabetically) is in astream/main.c.  
+It's reference counter (ddl_ref) is not incremented or decremented 
+anywhere.  I count four pairs of inc/dec omissions.
+
+In mshtml, I count 7 dll reference count inc/dec pairs, including the 
+server lock pair, in main.c, htmldoc.c and protocol.c   I count 28 pairs 
+of InterlockedDecrement / InterlockedIncrement calls around the creation 
+/ destruction of active objects throughout the dll.  That would seem to 
+imply 22 missing reference count inc/dec pairs.
+
+If I finish my script, it will report how many pairs are missing for 
+which dlls and in which source files, which might help make a decision 
+whether the take up Mike Hearn's suggestion of never unloading 
+anything.  Even that should involve work taking out the reference counts 
+that are already there.
+
+I do not see how the classic WinAPI regression tests can catch this kind 
+of bug other than being a tautologous test of the creation/destruction 
+all the known active objects.  If Mike Hearn's suggestion is not taken 
+up, the script might also be useful for regression test purposes.
+
+Cheers,
+
+
+From hverbeet at gmail.com  Mon Dec  1 02:55:45 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Mon, 1 Dec 2008 09:55:45 +0100
+Subject: d3d9 : do not proceed reset or release from another thread than
+	the one which created the device.
+In-Reply-To: <4932D8BE.3010402@laposte.net>
+References: <4932D8BE.3010402@laposte.net>
+Message-ID: <d658b69e0812010055x1bc8c4cetb2148af8926002f9@mail.gmail.com>
+
+2008/11/30 J?r?me Gardou <jerome.gardou at gmail.com>:
+> -    if (ref == 0) {
+> +    if (ref <= 0) {
+This doesn't work, of course. ref is an ULONG. The check for Reset
+should probably go into wined3d.
+
+From martin at martin.st  Mon Dec  1 03:57:43 2008
+From: martin at martin.st (=?iso-8859-1?Q?Martin_Storsj=F6?=)
+Date: Mon, 1 Dec 2008 11:57:43 +0200 (EET)
+Subject: wineconsole: Wait on events in curses backend using select
+	instead of poll
+In-Reply-To: <200812010847.28506.kai.blin@gmail.com>
+References: <4931D5D9.1030008@martin.st>
+	<200812010847.28506.kai.blin@gmail.com>
+Message-ID: <Pine.LNX.4.64.0812011152320.11249@localhost.localdomain>
+
+On Mon, 1 Dec 2008, Kai Blin wrote:
+
+> On Sunday 30 November 2008 00:52:57 Martin Storsj? wrote:
+>> poll can't handle terminal devices on Darwin, since Tiger. See the
+>> following discussion:
+>> http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00066.html
+>
+> There's reasons we switched from select to poll. You can't just switch back to
+
+As far as I can tell from the history of curses.c, it never used select 
+(directly) before, it used WaitForMultipleObjects, which was changed into 
+a poll in 267d38e1bc78541221d20cc72a759acc78908e8e, "wineconsole: Don't 
+use a Win32 wait on a Unix file descriptor."
+
+But there may of course be other reasons for using poll, which I don't 
+know about.
+
+> select to work around a OSX _bug_. If Apple can't get their act together to
+> fix this, this needs to go behind a configure check/ifdef.
+
+Yes, that's true.
+
+I'm not too familiar with the wine codebase and customs, so instead of 
+nagging you with questions on what a proper solution would look like, 
+should I just file a bug with the actual issue; that the curses based 
+console is unusable on Darwin at the moment?
+
+// Martin
+
+From robertshearman at gmail.com  Mon Dec  1 04:57:24 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Mon, 1 Dec 2008 10:57:24 +0000
+Subject: ole32: implement CoGetCallContext and CoSwitchCallContext
+In-Reply-To: <b6bb06270811301336s24459404p3d1f03d0ad66c77e@mail.gmail.com>
+References: <b6bb06270811301336s24459404p3d1f03d0ad66c77e@mail.gmail.com>
+Message-ID: <1096648c0812010257x17792004h4069b627ac118100@mail.gmail.com>
+
+2008/11/30 Austin English <austinenglish at gmail.com>:
+> +    if( !ppv)
+> +        return E_INVALIDARG;
+> +
+> +    /* get COM tls */
+> +    info = COM_CurrentInfo();
+> +    if( !info)
+
+Please try to keep the style consistent here. The style that the rest
+of the file uses is a space after the "if" and no space inside the
+brackets.
+
+> +        return E_OUTOFMEMORY;
+> +
+> +    hr = RPC_E_CALL_COMPLETE;
+> +    if( info->ctx_call)
+> +    {
+> +        hr = IUnknown_QueryInterface( info->ctx_call, riid, ppv);
+> +    }
+> +
+> +    if (FAILED(hr))
+
+...
+
+> +    /* Receives a pointer to the call context object of the call currently
+> +       in progress. This value is returned so that the original call context
+> +       can be restored by the custom marshaller.
+> +       The returned pointer will be NULL if there was no call in progress. */
+> +    *ppOldObject = info->ctx_call;
+> +
+> +    /* It may be NULL if you are calling CoSwitchCallContext to switch back
+> +       to the original call context and there was no original call context. */
+> +    info->ctx_call = pNewObject;
+
+You don't take a reference to the object that is passed-in. This is
+against COM semantics and so requires a test case to prove that this
+is indeed what the function does.
+
+-- 
+Rob Shearman
+
+
+From paul.vriens.wine at gmail.com  Mon Dec  1 05:28:15 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Mon, 1 Dec 2008 12:28:15 +0100
+Subject: [advapi32/tests] Fix some crashes on NT4 (Try2)
+In-Reply-To: <49312D0B.8040008@gmail.com>
+References: <49312D0B.8040008@gmail.com>
+Message-ID: <229cc3050812010328v38084325te91fdf6374bf1348@mail.gmail.com>
+
+On Sat, Nov 29, 2008 at 12:52 PM, Paul Vriens
+<paul.vriens.wine at gmail.com> wrote:
+> Hi,
+>
+> (Try2 removes some useless LocalFree's when NewAcl is NULL, duh).
+>
+> NT4 crashes at 3 distinct places. The first two we can get rid of by
+> removing
+> the LocalFree on failure. The third one we can skip as we can detect NT4
+> easily.
+>
+Just to be a little bit more precise. NT4 doesn't crash at those
+LocalFree's but leaving either of them in will make sure the test
+crashes a bit later.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From amorozov at etersoft.ru  Mon Dec  1 05:53:59 2008
+From: amorozov at etersoft.ru (Alexander Morozov)
+Date: Mon, 1 Dec 2008 14:53:59 +0300
+Subject: USB device drivers support
+Message-ID: <200812011454.00077.amorozov@etersoft.ru>
+
+Hello,
+
+I sent patch "Add support of WDM drivers for USB devices." in October and 
+received such reply from Alexandre Julliard:
+
+> Your design needs a lot more thought. You can't add all these
+> Wine-specific modules, or make winedevice special-case usb devices, or
+> poll the server for the add_device request like you do. All this needs
+> to be properly integrated in the existing infrastructure.
+
+I`d like to ask about better way of modifying patches which add USB device 
+drivers support before doing something.
+
+Wineusb and wineusbhub can be moved to usbhub.sys. This driver creates a 
+device which is used as second argument for AddDevice on Windows XP. So no 
+wine-specific modules will be added.
+
+Using wineserver to call AddDevice can be avoided if move code which loads 
+device drivers and code which enumerates devices and call AddDevice to one 
+process. This can be made if use one winedevice process for all drivers. This 
+will allow every driver to use IRP, DEVICE_OBJECTs and other structures 
+created by other driver and will help to implement such functions as 
+IoGetDeviceObjectPointer. Can I do so? Or there are some reasons which do not 
+allow?
+
+Thanks, Alexander
+
+
+From Andrew.Talbot at talbotville.com  Mon Dec  1 06:01:57 2008
+From: Andrew.Talbot at talbotville.com (Andrew Talbot)
+Date: Mon, 01 Dec 2008 12:01:57 +0000
+Subject: wined3d: Sign-compare warnings fix
+References: <200811291742.25773.andrew.talbot@talbotville.com>
+	<b6bb06270811291551j3d4d8070n49ed5500057f982a@mail.gmail.com>
+Message-ID: <gh0jnl$fps$1@ger.gmane.org>
+
+Austin English wrote:
+
+>>     This->baseShader.device;
+>>     int i;
+>> -    unsigned int extra_constants_needed = 0;
+>> +    unsigned int i, extra_constants_needed = 0;
+> 
+> You forgot to remove 'int i' here.
+> 
+
+Thanks, Austin. Good catch!
+
+-- 
+Andy.
+
+
+
+
+From jandemooij at gmail.com  Mon Dec  1 07:59:55 2008
+From: jandemooij at gmail.com (Jan de Mooij)
+Date: Mon, 1 Dec 2008 14:59:55 +0100
+Subject: Fwd: [1/2] shell32/autocomplete: fix handling of WM_KILLFOCUS
+	messages (try 2)
+In-Reply-To: <f25439870811291157q20f4da65n2a2ced0a56f76e24@mail.gmail.com>
+References: <f25439870811291157q20f4da65n2a2ced0a56f76e24@mail.gmail.com>
+Message-ID: <f25439870812010559u34b3bd85w9506e242b4ee3834@mail.gmail.com>
+
+Hello,
+
+Anybody knows why this patch was rejected?
+
+Thanks in advance.
+
+
+---------- Forwarded message ----------
+From: Jan de Mooij <jandemooij at gmail.com>
+Date: Sat, Nov 29, 2008 at 8:57 PM
+Subject: [1/2] shell32/autocomplete: fix handling of WM_KILLFOCUS
+messages (try 2)
+To: wine-patches at winehq.org
+
+
+From fgouget at free.fr  Mon Dec  1 08:24:02 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Mon, 1 Dec 2008 15:24:02 +0100 (CET)
+Subject: [1/4] winemenubuilder: move path normalization to Process_Link
+	and Process_URL
+In-Reply-To: <200811301922.10365.ambro@b4ever.net>
+References: <200811301922.10365.ambro@b4ever.net>
+Message-ID: <alpine.DEB.1.10.0812011520540.26182@amboise.dolphin>
+
+On Sun, 30 Nov 2008, Ambroz Bizjak wrote:
+[...]
+> To allow that, I've modified winemenubuilder to record created shortcuts to 
+> registry, and my service will obtain and maintain the list of .lnk/url files 
+> from there.
+
+The general idea is good, but I don't think you should store these paths 
+in the registry. Instead the daemon should ask for file change 
+notifications for the relevant special folders (CSIDL_STARTMENU, etc) 
+and act accordingly when a .lnk or .url file gets added / deleted 
+somewhere in thes directories.
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+ Advice is what we ask for when we already know the answer but wish we didn't
+                                 -- Eric Jong
+
+
+From paul.vriens.wine at gmail.com  Mon Dec  1 08:35:00 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Mon, 01 Dec 2008 15:35:00 +0100
+Subject: [2/2] shell32/autocomplete: add unit tests for autocomplete
+In-Reply-To: <f25439870811291157l65c5ffdcq7fd65047d89bda85@mail.gmail.com>
+References: <f25439870811291157l65c5ffdcq7fd65047d89bda85@mail.gmail.com>
+Message-ID: <4933F614.5010207@gmail.com>
+
+Jan de Mooij wrote:
+> Tests pass on 98, XP and Wine (after applying my previous patch)
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+There is an unrelated change to shelllink.c in this patch.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From jandemooij at gmail.com  Mon Dec  1 08:47:09 2008
+From: jandemooij at gmail.com (Jan de Mooij)
+Date: Mon, 1 Dec 2008 15:47:09 +0100
+Subject: [2/2] shell32/autocomplete: add unit tests for autocomplete
+In-Reply-To: <4933F614.5010207@gmail.com>
+References: <f25439870811291157l65c5ffdcq7fd65047d89bda85@mail.gmail.com>
+	<4933F614.5010207@gmail.com>
+Message-ID: <f25439870812010647t6f24ba40u60d0900aa664e462@mail.gmail.com>
+
+Hi Paul,
+
+Thanks for your reply.
+
+On Mon, Dec 1, 2008 at 3:35 PM, Paul Vriens <paul.vriens.wine at gmail.com> wrote:
+
+> There is an unrelated change to shelllink.c in this patch.
+
+It's not unrelated, initguid.h needs to be included exactly once or
+you will get linker warnings (multiple definitions for...).
+It only compiles if i move it to autocomplete.c, looks like it should
+be in the first file which uses it..
+
+Regards,
+
+Jan de Mooij
+
+
+From paul.vriens.wine at gmail.com  Mon Dec  1 09:00:44 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Mon, 01 Dec 2008 16:00:44 +0100
+Subject: [2/2] shell32/autocomplete: add unit tests for autocomplete
+In-Reply-To: <f25439870812010647t6f24ba40u60d0900aa664e462@mail.gmail.com>
+References: <f25439870811291157l65c5ffdcq7fd65047d89bda85@mail.gmail.com>	
+	<4933F614.5010207@gmail.com>
+	<f25439870812010647t6f24ba40u60d0900aa664e462@mail.gmail.com>
+Message-ID: <4933FC1C.1030606@gmail.com>
+
+Jan de Mooij wrote:
+> Hi Paul,
+> 
+> Thanks for your reply.
+> 
+> On Mon, Dec 1, 2008 at 3:35 PM, Paul Vriens <paul.vriens.wine at gmail.com> wrote:
+> 
+>> There is an unrelated change to shelllink.c in this patch.
+> 
+> It's not unrelated, initguid.h needs to be included exactly once or
+> you will get linker warnings (multiple definitions for...).
+> It only compiles if i move it to autocomplete.c, looks like it should
+> be in the first file which uses it..
+> 
+> Regards,
+> 
+> Jan de Mooij
+> 
+But I guess that's the reason it's not applied/committed. If you move the 
+include of initguid.h to after windows.h it will work, not?
+
+-- 
+Cheers,
+
+Paul.
+
+
+From kornelpal at gmail.com  Mon Dec  1 09:07:52 2008
+From: kornelpal at gmail.com (=?ISO-8859-2?Q?Korn=E9l_P=E1l?=)
+Date: Mon, 01 Dec 2008 16:07:52 +0100
+Subject: Mono integration to Wine
+Message-ID: <4933FDC8.5090202@gmail.com>
+
+Hi,
+
+Wine is still using Mono by creating a new process altough it has 
+support for _CorExeMain and _CorDllMain. There is a MonoFixupCorEE 
+method exported by mono.dll that could be used.
+
+I also did some research on executing exe assemblies without creating a 
+mono.exe process on MS Windows by injecting code to the new process 
+before initialization to load Mono. Note that because mscoree.dll is 
+loaded at a very early process initilization stage no side-by-side 
+manifests can be used that is required by newer MSVCRTs so I'll most 
+likely create a separate DLL that will load mono.dll later in 
+_CorExeMain or _CorDllMain.
+
+For the above mentioned reason it may be better not to use 
+MonoFixupCorEE yet.
+
+I would like to receive comments on mixed-mode assembly support of Mono 
+on Wine and if there are people willing to update the Loader to call 
+_CorValidateImage, _CorExeMain (real entry point is not called for EXEs) 
+and _CorImageUnloading for managed images.
+
+MSVCRT also should call CorExitProcess on exit.
+
+Korn?l
+
+
+From susancragin at earthlink.net  Mon Dec  1 09:06:27 2008
+From: susancragin at earthlink.net (Susan Cragin)
+Date: Mon, 1 Dec 2008 10:06:27 -0500 (GMT-05:00)
+Subject: Did anyone have any trouble compiling wine today? Or was it
+	just me ....
+Message-ID: <14779139.1228143988079.JavaMail.root@elwamui-polski.atl.sa.earthlink.net>
+
+>>I don't know off hand then. I'd say run a regression test. As a guess,
+>>you might try removing:
+>>#ifdef HAVE_LINUX_SERIAL_H
+>>#include <linux/serial.h>
+>>#endif
+>>
+>>but that would just be a kludgy workaround.
+>>
+>>-- 
+>>-Austin
+>
+>Will try both tomorrow.
+>Thanks.
+
+Austin:
+Did not see above section, but did see this, so removed it. 
+#ifdef HAVE_LINUX_INPUT_H
+#include <linux/input.h>
+#endif
+Did not work. Got same error. :(
+
+
+
+
+From vitperov at etersoft.ru  Mon Dec  1 09:39:11 2008
+From: vitperov at etersoft.ru (Vitaly Perov)
+Date: Mon, 1 Dec 2008 18:39:11 +0300
+Subject: netapi32: Why my patch is ignored?
+Message-ID: <200812011839.11853.vitperov@etersoft.ru>
+
+What is wrong with my patch?
+
+I have fixed all errors found by Juan Lang.
+I resent this patch several times, but hasn't received any answer.
+
+Why my patch is ignored?
+
+Maybe something is still wrong, but why somebody just tell me about it?
+
+"Juan Lang" <juan.lang at gmail.com> wrote:
+>Hi Vitaliy, overall your patch looks pretty good. ?A few minor points:
+>
+>+ ? ?FIXME("(%s %d %p) partially implemented\n",
+>debugstr_w(servername), level, buf);
+>Because you add a more specific FIXME for every unimplemented path, it
+>seems to me this would be better as a TRACE.
+>
+>+ ? ?result = RegCreateKeyExA(HKEY_LOCAL_MACHINE, regKey, 0, NULL, 0, 
+>KEY_WRITE,
+>+ ? ? ? ? ? ? ? ?NULL, &hKey, &disposition);
+>+ ? ?if (result != ERROR_SUCCESS)
+>+ ? ?{
+>+ ? ? ? ?FIXME("Unable to open/create key 'HKLM\\%s'\n", regKey);
+>+ ? ? ? ?return result;
+>This shouldn't be a FIXME, as there's nothing to "fix" in the code:
+>if the key couldn't be created, there's a setup problem or some other
+>unrecoverable error. ?A TRACE is fine.
+
+>+ ? ?/* FIXME: A duplicate patch checking should be implemented here */
+>Do you mean a duplicate path?
+
+-- 
+Best wishes,
+Vitaly Perov
+Russia, Saint-Petersburg. www.etersoft.ru
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-netapi32-Add-partial-implementation-of-NetShareAdd.patch
+Type: text/x-diff
+Size: 6130 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081201/f59ed6b8/attachment.patch 
+
+From julliard at winehq.org  Mon Dec  1 09:45:22 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 01 Dec 2008 16:45:22 +0100
+Subject: netapi32: Why my patch is ignored?
+In-Reply-To: <200812011839.11853.vitperov@etersoft.ru> (Vitaly Perov's message
+	of "Mon, 1 Dec 2008 18:39:11 +0300")
+References: <200812011839.11853.vitperov@etersoft.ru>
+Message-ID: <874p1n6grx.fsf@wine.dyndns.org>
+
+Vitaly Perov <vitperov at etersoft.ru> writes:
+
+> +    GetCurrentDirectoryA(MAX_PATH, tmpPath);
+> +    result = SetCurrentDirectoryW(path);
+> +    SetCurrentDirectoryA(tmpPath);
+> +    if (!result) return ERROR_FILE_NOT_FOUND;
+
+This is not the right way to test if a directory exists.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From ambro at b4ever.net  Mon Dec  1 09:07:11 2008
+From: ambro at b4ever.net (Ambroz Bizjak)
+Date: Mon, 1 Dec 2008 16:07:11 +0100
+Subject: [1/4] winemenubuilder: move path normalization to Process_Link
+	and Process_URL
+In-Reply-To: <alpine.DEB.1.10.0812011520540.26182@amboise.dolphin>
+References: <200811301922.10365.ambro@b4ever.net>
+	<alpine.DEB.1.10.0812011520540.26182@amboise.dolphin>
+Message-ID: <200812011607.11774.ambro@b4ever.net>
+
+On Monday 01 December 2008, Francois Gouget  wrote:
+> On Sun, 30 Nov 2008, Ambroz Bizjak wrote:
+> [...]
+>
+> > To allow that, I've modified winemenubuilder to record created shortcuts
+> > to registry, and my service will obtain and maintain the list of .lnk/url
+> > files from there.
+>
+> The general idea is good, but I don't think you should store these paths
+> in the registry. Instead the daemon should ask for file change
+> notifications for the relevant special folders (CSIDL_STARTMENU, etc)
+> and act accordingly when a .lnk or .url file gets added / deleted
+> somewhere in thes directories.
+
+In that case the daemon would still have to store the list of known files, so 
+that if a shortcut is deleted while Wine is not running, or if my service is 
+not running at that particular time, its removal could still be detected.
+
+Another issue with your suggestion is that it would complicate watching. 
+Assuming the notification functions don't work everywhere, and they may have 
+race conditions*,  we still have to poll for changes - that means recursing 
+the folders.
+
+Last, my service does not yet remove created icons. With the current design, 
+it is largely a matter of also recording the icon names to registry in 
+winemenubuilder. It would be quite hard and hackish to locate the icon from 
+the .desktop file. It would even be hard to get the logical location of the 
+shortcut only from the location of the .lnk, because functions in menubuilder 
+that do that require the file to exist.
+
+* I once deleted two watched files in some folder, but only one notification 
+was generated, and my program found only one of the files missing.
+
+
+From paul.vriens.wine at gmail.com  Mon Dec  1 09:48:28 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Mon, 01 Dec 2008 16:48:28 +0100
+Subject: netapi32: Why my patch is ignored?
+In-Reply-To: <200812011839.11853.vitperov@etersoft.ru>
+References: <200812011839.11853.vitperov@etersoft.ru>
+Message-ID: <4934074C.2050504@gmail.com>
+
+Vitaly Perov wrote:
+> What is wrong with my patch?
+> 
+> I have fixed all errors found by Juan Lang.
+> I resent this patch several times, but hasn't received any answer.
+> 
+> Why my patch is ignored?
+> 
+> Maybe something is still wrong, but why somebody just tell me about it?
+> 
+> "Juan Lang" <juan.lang at gmail.com> wrote:
+>> Hi Vitaliy, overall your patch looks pretty good.  A few minor points:
+>>
+>> +    FIXME("(%s %d %p) partially implemented\n",
+>> debugstr_w(servername), level, buf);
+>> Because you add a more specific FIXME for every unimplemented path, it
+>> seems to me this would be better as a TRACE.
+>>
+>> +    result = RegCreateKeyExA(HKEY_LOCAL_MACHINE, regKey, 0, NULL, 0, 
+>> KEY_WRITE,
+>> +                NULL, &hKey, &disposition);
+>> +    if (result != ERROR_SUCCESS)
+>> +    {
+>> +        FIXME("Unable to open/create key 'HKLM\\%s'\n", regKey);
+>> +        return result;
+>> This shouldn't be a FIXME, as there's nothing to "fix" in the code:
+>> if the key couldn't be created, there's a setup problem or some other
+>> unrecoverable error.  A TRACE is fine.
+> 
+>> +    /* FIXME: A duplicate patch checking should be implemented here */
+>> Do you mean a duplicate path?
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+I'm not sure about this, but I don't like the mixture of A and W-calls.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From dank at kegel.com  Mon Dec  1 09:52:05 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 1 Dec 2008 07:52:05 -0800
+Subject: mshtml: suppress module unloading while gecko is loaded
+In-Reply-To: <49339B7C.5000904@yahoo.co.uk>
+References: <49339B7C.5000904@yahoo.co.uk>
+Message-ID: <a71bd89a0812010752v3379f907mabd6d6889933cc21@mail.gmail.com>
+
+On Mon, Dec 1, 2008 at 12:08 AM, Paul Bryan Roberts
+<pbronline-wine at yahoo.co.uk> wrote:
+> In mshtml, I count 7 dll reference count inc/dec pairs, including the server
+> lock pair, in main.c, htmldoc.c and protocol.c   I count 28 pairs of
+> InterlockedDecrement / InterlockedIncrement calls around the creation /
+> destruction of active objects throughout the dll.  That would seem to imply
+> 22 missing reference count inc/dec pairs.
+
+I suspect Alexandre didn't commit my lame patch because he wants us to
+have a go at getting CanDLLUnloadNow right.  Thanks for the analysis.
+
+> If I finish my script, it will report how many pairs are missing for which
+> dlls and in which source files
+
+That sounds quite handy.
+
+> which might help make a decision whether the
+> take up Mike Hearn's suggestion of never unloading anything.  Even that
+> should involve work taking out the reference counts that are already there.
+
+I have a feeling we're not quite in the "memory is free" era yet...
+
+> I do not see how the classic WinAPI regression tests can catch this kind of
+> bug other than being a tautologous test of the creation/destruction all the
+> known active objects.  If Mike Hearn's suggestion is not taken up, the
+> script might also be useful for regression test purposes.
+
+Your script is doing static analysis ... maybe it should be integrated into
+http://people.redhat.com/mstefani/wine/smatch/
+Making it a smatch rule might be easier than writing it from scratch.
+- Dan
+
+
+From vitperov at etersoft.ru  Mon Dec  1 10:02:05 2008
+From: vitperov at etersoft.ru (Vitaly Perov)
+Date: Mon, 1 Dec 2008 19:02:05 +0300
+Subject: netapi32: Why my patch is ignored?
+In-Reply-To: <874p1n6grx.fsf@wine.dyndns.org>
+References: <200812011839.11853.vitperov@etersoft.ru>
+	<874p1n6grx.fsf@wine.dyndns.org>
+Message-ID: <200812011902.05660.vitperov@etersoft.ru>
+
+On Monday 01 December 2008 18:45:22 Alexandre Julliard wrote:
+> Vitaly Perov <vitperov at etersoft.ru> writes:
+> > +    GetCurrentDirectoryA(MAX_PATH, tmpPath);
+> > +    result = SetCurrentDirectoryW(path);
+> > +    SetCurrentDirectoryA(tmpPath);
+> > +    if (!result) return ERROR_FILE_NOT_FOUND;
+>
+> This is not the right way to test if a directory exists.
+
+Thank you for your answer. I will fix it.
+
+-- 
+Best wishes,
+Vitaly Perov
+Russia, Saint-Petersburg. www.etersoft.ru
+
+
+From susancragin at earthlink.net  Mon Dec  1 11:52:22 2008
+From: susancragin at earthlink.net (Susan Cragin)
+Date: Mon, 1 Dec 2008 12:52:22 -0500 (GMT-05:00)
+Subject: Did anyone have any trouble compiling wine today? Or was it
+	just me ....
+Message-ID: <3549288.1228153942887.JavaMail.root@elwamui-mouette.atl.sa.earthlink.net>
+
+>On Mon, Dec 1, 2008 at 9:06 AM, Susan Cragin <susancragin at earthlink.net> wrote:
+>>>>I don't know off hand then. I'd say run a regression test. As a guess,
+>>>>you might try removing:
+>>>>#ifdef HAVE_LINUX_SERIAL_H
+>>>>#include <linux/serial.h>
+>>>>#endif
+>>>>
+>>>>but that would just be a kludgy workaround.
+>>>>
+>>>>--
+>>>>-Austin
+>>>
+>>>Will try both tomorrow.
+>>>Thanks.
+>>
+>> Austin:
+>> Did not see above section, but did see this, so removed it.
+>> #ifdef HAVE_LINUX_INPUT_H
+>> #include <linux/input.h>
+>> #endif
+>> Did not work. Got same error. :(
+>
+>Regression test? As Detleft said, it may be kernel related.
+>
+>-- 
+>-Austin
+
+Found something similar to what Detlef found, so filed a Ubuntu bug against the kernel. 
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/303711
+Also tried new kernel, 2.6.28-1-ub, but got same result. 
+Susan
+
+
+
+
+From mstefani at redhat.com  Mon Dec  1 12:00:00 2008
+From: mstefani at redhat.com (Michael Stefaniuc)
+Date: Mon, 01 Dec 2008 11:00:00 -0700
+Subject: Patchwatcher locked up?
+Message-ID: <49342620.3090201@redhat.com>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hello Dan,
+
+did the patchwatcher look up? The last patch it shows is from
+30-Nov-2008 14:01.
+
+bye
+	michael
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+Comment: Using GnuPG with Red Hat - http://enigmail.mozdev.org
+
+iD8DBQFJNCYg08alQ5mXm14RAnsPAJ44C2vVFmSnD5OknaoMGPkSuB+VFQCfbb6J
+PhbFmQ4U1nOrHIw5JycPWbc=
+=005q
+-----END PGP SIGNATURE-----
+
+
+From robertshearman at gmail.com  Mon Dec  1 05:01:58 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Mon, 1 Dec 2008 11:01:58 +0000
+Subject: Error Message and Office 2000
+In-Reply-To: <305519.12547.qm@web31407.mail.mud.yahoo.com>
+References: <305519.12547.qm@web31407.mail.mud.yahoo.com>
+Message-ID: <1096648c0812010301q41ab74f8o82a88b2b98abea92@mail.gmail.com>
+
+2008/11/30 SWEETSKY at ROCKETMAIL.COM <sweetsky at rocketmail.com>:
+> Hi,
+>
+> I'm in Southern California.
+> I did a search for the event when my
+> Office 2000 Professional gave me an error
+> message. It won't setup.
+> The event was 1000
+> and the fault address is the same as a
+> read out of your computer that you posted online.
+> http://www.winehq.org/pipermail/wine-devel/2003-July/018313.html
+> Did you ever figure out how to get it to work?
+
+It looks like you want the wine-users mailing list.
+
+Alternatively, you could try CrossOver instead:
+http://www.codeweavers.com/products/cxlinux/download_trial/
+
+-- 
+Rob Shearman
+
+
+From thestig at google.com  Mon Dec  1 16:44:21 2008
+From: thestig at google.com (Lei Zhang)
+Date: Mon, 1 Dec 2008 14:44:21 -0800
+Subject: Bugzilla's down again
+In-Reply-To: <b6bb06270811261415l2b2cbb04ld410148a096bebae@mail.gmail.com>
+References: <b6bb06270811261226h5e24c0c3y801c9bb483183942@mail.gmail.com>
+	<492DC9C5.9090005@codeweavers.com>
+	<b6bb06270811261415l2b2cbb04ld410148a096bebae@mail.gmail.com>
+Message-ID: <558b2f5c0812011444s4c1920f9x5a27be5c80b0eb18@mail.gmail.com>
+
+On Wed, Nov 26, 2008 at 2:15 PM, Austin English <austinenglish at gmail.com> wrote:
+> On Wed, Nov 26, 2008 at 4:12 PM, Jeremy Newman <jnewman at codeweavers.com> wrote:
+>> mysqld didn't crash at least. This seems to be a temporary issue that
+>> cleared up when the server load came back down.
+>>
+>> I don't think the server has been down hardly at all? Where are you getting
+>> your "down so much" from?
+>>
+>> -Newman
+>>
+>> Austin English wrote:
+>>>
+>>> Different error than usual though:
+>>>
+>>> <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+>>> <html><head>
+>>> <title>500 Internal Server Error</title>
+>>> </head><body>
+>>> <h1>Internal Server Error</h1>
+>>> <p>The server encountered an internal error or
+>>> misconfiguration and was unable to complete
+>>> your request.</p>
+>>> <p>Please contact the server administrator,
+>>>  bugs-admin at winehq.org and inform them of the time the error occurred,
+>>> and anything you might have done that may have
+>>> caused the error.</p>
+>>> <p>More information about this error may be available
+>>> in the server error log.</p>
+>>> </body></html>
+>>>
+>>> Is there anything we can do to prevent it from going down so much?
+>>>
+>>
+>
+> Sorry if that came off as rash. It's been much better in the past few
+> months. But I was referring to the semi-frequent mysql crashes. I'm on
+> bugzilla a lot, so even if it's only down for a few minutes, I usually
+> catch it.
+>
+> --
+> -Austin
+>
+>
+>
+
+I notice it from time to time as well. 95% of the time it works fine,
+but every so often, for about 30 minutes or so, I get an error 500 or
+a mysql error.
+
+
+From wine at mkarcher.dialup.fu-berlin.de  Mon Dec  1 17:26:38 2008
+From: wine at mkarcher.dialup.fu-berlin.de (Michael Karcher)
+Date: Tue, 02 Dec 2008 00:26:38 +0100
+Subject: [08/12] msxml3: Add an internal IUnknown object for xmlnode
+In-Reply-To: <1227952375.16595.27.camel@hermes2.karcher.local>
+References: <1227952375.16595.27.camel@hermes2.karcher.local>
+Message-ID: <1228173998.5868.86.camel@hermes2.karcher.local>
+
+Am Samstag, den 29.11.2008, 10:52 +0100 schrieb Michael Karcher:
+> This makes the xmlnode structures kind-of aggregatable COM objects.
+> The explanation of the new reference management is in the rather verbose
+> comment at the top of the new node_unk.c file.
+
+For reference, the comment explaining the proposed reference counting
+scheme is at the end of this mail. This patch got the comment on IRC: 
+"julliard: mkarcher: the comment explaining that COM rules are not
+followed rings an alarm bell".
+
+So, let me first explain the problem I'm trying to solve.
+
+In libxml2, the application is responsible for lifetime management,
+whereas in msxml3, lifetime management is done by reference counting.
+The XML documents are highly cyclic data structures: There is one real
+root, called the "document node". In XML documents, it has a single
+child, the so called "document element". The document element is the
+root of the so called DOM tree. Every node in the DOM tree has a
+get_parent and a get_ownerDocument method. Also, each non-leaf node has
+a get_children method. This is opposed to the standard
+container-containee model, where the container owns a reference on the
+containees, but the containees do not know about being in a container.
+Reference counting in that case is straightforward.
+
+Currently, msxml3 implements reference counting in the following way: As
+soon as an interface object for any DOM node is requested, the reference
+count of the document is increased by one, and as soon as the interface
+looses its final reference, the document's reference count is
+decremented. If the document's reference count reaches zero, no pointer
+to any object in the DOM tree is out anymore, so the document can be
+deleted. This seems to work nicely, but has two major catches, that made
+me do this rewrite of the reference management:
+
+a) msxml3 has methods to splice subtrees.
+b) msxml3 can create nodes nodes owned by a document, that are not in
+the DOM tree
+
+Point a) means that the document a node belongs to is not constant over
+the lifetime of the node. As in the current model, the node needs to
+take a reference on its current document, reference counts have to be
+adjusted. The xmldoc_release and xmldoc_add_ref function calls in
+removeChild, insertBefore (and alike) seem to take care of this. But as
+the bullet already said, it is not just splicing the node passed into
+the splicing function, but a whole subtree! That means that all
+interface objects to child nodes have to move their reference to the new
+document. Alas, there is *no* *way* in current wine to find all
+interface objects for a given node, so there is no way to tell these
+interface objects to move their references. As there is also no way just
+to know *how* *many* interface objects are out for a given node, let
+alone for a whole subtree, reference-correct moving is impossible.
+
+Point b) means that just freeing the nodes in the DOM tree on document
+destruction does not get all the nodes belonging to the document. This
+is taken care of in the orphan list. The (benign) problem with the
+orphan list approach is that the so called orphan subtrees, i.e.
+subtrees that are not part of the document get not freed as soon as no
+references to the subtree are out anymore, but not until there are no
+references to any node that is associated with the document. Think
+put_documentElement, that replaces the whole DOM tree, making the old
+tree orphan. This might be quite a lot of wasted memory.
+
+Now, lets look at what can be done.
+To solve the important issue in part a, there are two possible
+approaches:
+ a1) Move to a concept that doesn't need the missing information
+ a2) Make the missing information available.
+My patch went the route of a1), but I think a2) is also possible: We
+might count reference to a node in the _private element of the node, so
+the number of references to a node is at hand. If a subtree is spliced,
+we would have to traverse the whole subtree to collect the number of
+references in the subtree to move from the old document to the new
+document. Another a2) approach is to count the number of references to
+the whole subtree inside the _private element. This makes obtaining the
+number of references to the subtree an O(1) operation, but updating the
+interface object count of one node means the interface count of all
+parents has to be updated, too. While this is not as expensive as a
+subtree traversal, updating interface object counts is a very common
+operation that ought to be O(1) too, and not O(depth).
+
+To solve the issue of b), the same things are imaginable. If a node gets
+orphan, check whether the whole subtree is orphan, and nuke it if it is.
+If it is not, add it to the orphan list. If later the last reference
+into that subtree is freed, one has to detect that the subtree is
+orphan. One could do that by checking on every interface release whether
+the subtree is now orphan. As this is a "is there any reference to the
+subtree" question, the first a2 approach is out immediately. The second
+one can do. The up-traversal will stop either at the document element or
+at the root of the orphan subtree, and the information whether there is
+any reference left is immediately at hand.
+
+Now, there is the a1 thing left. Throw the old concept of "everyone refs
+the document" away (which is only band-aided by the orphan list and the
+expensive sub-tree counts or up-traversals, IMHO) and try to find a
+clean way to get what we need. This is what this patch is about. The
+first choice about reference counting in cyclic structures is the choice
+of reference direction. The choice that the parent node owns its child
+nodes is tempting, as it seems to resemble the simple
+container-owns-containee concept. But it breaks down as soon as there
+are references to the child nodes out, and the parent node looses its
+last reference, as the parent node would get freed in that case. It
+would be possible for a parent node to wait for all children to be
+released before it gets freed itself. But this again needs non-local
+information. A node has to stay alive as long as *any* descendant of
+that node, however deep in the hierarchy it might be, is alive. On the
+other hand, if the explicit references are from child to parent, the
+crucial operation is no longer to find out whether any child node is
+still in use (we do have that info in the node's reference count now),
+the difficult operation is now to find out whether the parent is still
+in use. This operation is unneeded however, as freeing is delegated to
+the root node of the subtrees, so a node doesn't care whether there
+might be new reference obtained to it by use of its parent node, as it
+can be sure, the parent won't destroy it until it is sure that
+references can no longer be obtained through it. This finally leads to
+the solution I implemented. (I won't explain it here again in detail,
+see below the PS for the explanation of that system)
+
+Now, my question is how to proceed. The patches I posted seem to be
+working fine and seem to clean up the reference management, for example,
+they do away with the orphan list I introduced but still looks like a
+hack to me. On the other hand, there are concerns that the new reference
+management does not follow COM rules (although I couldn't find
+definitive COM rules for cyclic structures, just the usual info that
+reference cycles have to be avoided in some way). As I really want
+problem a) to get fixed, I ask for advice.
+
+Thanks for reading this quite long mail. I would be grateful for
+suggestions.
+
+Regards,
+  Michael Karcher
+
+PS: This mail does not cover the second, independent topic that we need
+an IUnknown pointer with node lifetime stability. A basis for that is
+also introduced in the new reference counting system. While lifetime
+IUnknown and reference counting are two different things, it looked like
+a good idea to have both things solved at once. To make use of the
+provided lifetime IUnknown, the upper layer classes like XMLDOMNode,
+XMLDOMDocument and the like have to be adjusted too, but I postponed
+that part of work.
+
+
+  The node_unk object serves two purposes:
+    a) it provides a lifetime stable IUnknown for an XML node
+    b) it manages references
+  each xmlNode can carry a node_unk reference in its _private member.
+  If there is an interface pointer to the node floating around, the node
+  does have an associated node_unk object which is created and destroyed
+  lazily. Lazy allocation means: node_unk objects are created when first
+  needed, not at XML document creation time. The main advantage of it is
+  that one does not need to manually create the node_unk objects at each
+  place a xmlNode could be created.
+
+  Lazy destruction means that the node_unk object is *not* freed as soon
+  as its reference count drops down to zero, because purpose a) wouldn't
+  be fulfilled that way. A node_unk with no references are said to be in
+  "standby mode".
+
+  Reference counting is done this way:
+   1) Parents do *not* hold references on their children
+   2a) If the child is not in standby mode, a reference is held in the parent.
+   2b) If there is no parent, a reference on the document is held instead.
+   2c) The document node is exempt from rule 2b), it doesn't hold a reference.
+
+  Rule 1 is obvious to prevent cyclic references. As children do not
+  destroy themselves on their own, there is no danger of stale child
+  pointers.
+
+  Each node needs to indirectly reference its document, as strings like
+  node names can be stored in per-document dictionaries in libxml2. For nodes
+  being part of the document tree, this is accomplished by each node
+  referencing its parent via 2a, up to the root element, whose parent
+  is the document itself.
+
+  There is a complication: A document is fact is not a tree, but a forest!
+  The forest has one main tree, its root being the "document element", but
+  can have many further trees consisting of nodes created by createElement,
+  createText and alike functions, or by removing some subtrees from the
+  document tree, for example by removeChild or replaceChild. These trees are
+  called orphan trees, as they don't have a parent, opposed to the "document
+  element" whose parent is the document itself. The root node of the orphan
+  tree (having no parent) is holding a reference on the document by rule 2b.
+
+  As there is no way to get a reference to a node in an orphan tree except
+  for having a reference to another node in the same orphan tree, orphan
+  trees can be destroyed as soon as its root node enters standby mode.
+  This has the consequence that the document doesn't need to know about
+  the orphan trees itself, it just needs to know whether there are any of
+  them to prevent early destruction. This is implemented by the reference
+  from rule 2b. On the other hand, one can not free the main document tree
+  as long as any orphan tree is alive, as each orphan tree provides a
+  reference to the document which in turn provides a reference to its main
+  tree.
+
+  Finally, all nodes you can access from the document node are members
+  of the main document tree, which is kept alive as subtree of the document
+  node, so the document node does not have to hold the reference on anything.
+
+  So, the implementation works like this:
+    As soon, as the windows program asks for an interface pointer into some
+  XML document (we don't care about the source here), the node is equipped
+  with its node_unk structure, and so get all its parents. While it would be
+  possible to delay the allocation to the AddRef call, the AddRef call has
+  no way to indicate failure in the out-of-memory case. If the application
+  asks for further interface pointers into the same document, chains of
+  node_unk objects are created until a branch is met that already has them;
+  at that point, the reference count is just increased by one on that level
+  without further up-propagation.
+
+  The document itself (the parent of the document element) keeps out of
+  standby mode until all interface pointers to the document vanished.
+  At that point, the document frees itself and all children. Root node
+  of orphan trees work the same way.
+
+  The most interesting points are not covered yet: Subtrees can be spliced
+  from one document into another one, like with IXMLDOMNode::appendChild or
+  IXMLDOMNode::replaceChild. In that case, the simple old approach where
+  each IXMLDOMFoo interface held a reference on its document breaks down, as
+  it is unknown how many IXMLDOMFoo pointers are out there that get moved to
+  a different document behind their back. With this model, it is quite
+  simple. A tree that gets spliced out has either zero or one reference on
+  its direct parent, depending on whether it is in standby mode or not. A
+  tree that gets spliced in takes exactly one reference if it is not in
+  standby mode. As an added bonus, we get orphan tracking and early freeing
+  of orphans (a feature we didn't have in the old model) for free.
+
+
+
+
+From paul at astro.gla.ac.uk  Mon Dec  1 17:30:24 2008
+From: paul at astro.gla.ac.uk (Paul Millar)
+Date: Tue, 2 Dec 2008 00:30:24 +0100
+Subject: winetest.exe now available on test.winehq.org
+In-Reply-To: <49315461.2020407@gmail.com>
+References: <49315461.2020407@gmail.com>
+Message-ID: <200812020030.30763.paul@astro.gla.ac.uk>
+
+On Saturday 29 November 2008 15:40:33 Paul Vriens wrote:
+> This also means that Paul Millars winetest is no longer available.
+
+Yup, this is true.  After providing winetest.exe for (I think) a little over 4 
+years, quisquiliae is falling silent and WineHQ is picking up the baton for 
+winetest.exe.
+
+
+> I'd like to thank Paul for all the hard work he did with keeping up that
+> site and providing us for years with a cross compiled version of winetest. I
+> also like to thank the people that provided the necessary MinGW patches in
+> the past to get that winetest compiled again.
+
+I'd like to add my vote of thanks to the people who have helped out behind the 
+scenes, providing useful suggestions or sending in patches for MinGW so we 
+can keep winetest.exe rolling out the door (in alphabetical order)
+
+	Alexandre Julliard,
+	John Klehm,
+ 	Kevin Koltzau,
+	Saulius Krasuckas,
+	Stefan Leichter,
+	Hans Leidekker,
+	Mike McCormack,
+	Juan Melgarejo,
+	Detlef Riekenberg,
+	Sebastian Schauenburg,
+	Brian Vincent,
+and	Paul Vriens.
+
+(and anyone else I've inadvertently forgotten)
+
+My thanks to you all!
+
+Cheers,
+
+Paul.
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081202/0cf0f425/attachment.pgp 
+
+From most at museresearch.com  Mon Dec  1 19:31:33 2008
+From: most at museresearch.com (Michael Ost)
+Date: Mon, 01 Dec 2008 17:31:33 -0800
+Subject: Status of 64 bit Wine
+Message-ID: <49348FF5.2000501@museresearch.com>
+
+Hi list,
+
+Every once in a while my boss asks me about 64 bit wine. And today was 
+the day. So what's the status?
+
+ From my understanding there are two parts to the question. First, is 
+anyone using a 64 bit build of Wine? How successfully? Does it pass the 
+internal wine tests?
+
+And second, is there any progress on loading 64 bit windows binaries in 
+Wine? My understanding was that changes were needed to gcc to make that 
+happen. Is that correct? Is there any progress on that score?
+
+And please correct any misunderstandings I may have.
+
+Thanks... mo
+
+
+From austinenglish at gmail.com  Tue Dec  2 03:28:04 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 2 Dec 2008 03:28:04 -0600
+Subject: wineoss.drv: Eliminate all 64-bits warnings
+In-Reply-To: <4934FDB8.2050306@gmail.com>
+References: <4934FDB8.2050306@gmail.com>
+Message-ID: <b6bb06270812020128y3a676bfbkf3e38a13bc974bba@mail.gmail.com>
+
+On Tue, Dec 2, 2008 at 3:19 AM, Maarten Lankhorst
+<m.b.lankhorst at gmail.com> wrote:
+> sizeof is defined as int on 32-bits, and long on 64-bits. To keep this
+> working I'm casting all sizeofs to longs
+> ---
+>
+
+Minor, but you've got a few extraneous whitespace changes:
+
+diff --git a/dlls/wineoss.drv/audio.c b/dlls/wineoss.drv/audio.c
+index 460c1f5..1828320 100644
+--- a/dlls/wineoss.drv/audio.c
++++ b/dlls/wineoss.drv/audio.c
+@@ -1923,7 +1923,6 @@ static	DWORD	CALLBACK	wodPlayer(LPVOID pmt)
+ 	    dwNextFeedTime = dwNextNotifyTime = INFINITE;
+ 	}
+     }
+-
+     return 0;
+ }
+
+diff --git a/dlls/wineoss.drv/mmaux.c b/dlls/wineoss.drv/mmaux.c
+index b48ea6b..44e22b7 100644
+--- a/dlls/wineoss.drv/mmaux.c
++++ b/dlls/wineoss.drv/mmaux.c
+@@ -219,10 +219,10 @@ static DWORD AUX_SetVolume(WORD wDevID, DWORD dwParam)
+ /**************************************************************************
+  *		auxMessage (WINEOSS.2)
+  */
+-DWORD WINAPI OSS_auxMessage(UINT wDevID, UINT wMsg, DWORD dwUser,
+-			    DWORD dwParam1, DWORD dwParam2)
++DWORD WINAPI OSS_auxMessage(UINT wDevID, UINT wMsg, DWORD_PTR dwUser,
++			    DWORD_PTR dwParam1, DWORD_PTR dwParam2)
+ {
+-    TRACE("(%04X, %04X, %08X, %08X, %08X);\n",
++    TRACE("(%04X, %04X, %08lX, %08lX, %08lX);\n",
+ 	  wDevID, wMsg, dwUser, dwParam1, dwParam2);
+
+ #ifdef HAVE_OSS
+@@ -250,3 +250,4 @@ DWORD WINAPI OSS_auxMessage(UINT wDevID, UINT
+wMsg, DWORD dwUser,
+     return MMSYSERR_NOTENABLED;
+ #endif
+ }
++
+
+-- 
+-Austin
+
+
+From kai.blin at gmail.com  Tue Dec  2 04:07:55 2008
+From: kai.blin at gmail.com (Kai Blin)
+Date: Tue, 2 Dec 2008 11:07:55 +0100
+Subject: wineoss.drv: Eliminate all 64-bits warnings
+In-Reply-To: <b6bb06270812020128y3a676bfbkf3e38a13bc974bba@mail.gmail.com>
+References: <4934FDB8.2050306@gmail.com>
+	<b6bb06270812020128y3a676bfbkf3e38a13bc974bba@mail.gmail.com>
+Message-ID: <200812021107.56089.kai.blin@gmail.com>
+
+On Tuesday 02 December 2008 10:28:04 Austin English wrote:
+
+> Minor, but you've got a few extraneous whitespace changes:
+
+Those are on otherwise empty lines, I don't see how that'd matter.
+The reason people don't like formatting-only patches is that it breaks "git 
+blame" history. As git blame supports an "ignore whitespace-only changes" 
+flag, I don't see why these whitespace changes are bad.
+
+Cheers,
+Kai
+
+-- 
+Kai Blin
+WorldForge developer  http://www.worldforge.org/
+Wine developer        http://wiki.winehq.org/KaiBlin
+Samba team member     http://www.samba.org/samba/team/
+--
+Will code for cotton.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081202/7ae8bd2b/attachment.pgp 
+
+From julliard at winehq.org  Tue Dec  2 04:30:12 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 02 Dec 2008 11:30:12 +0100
+Subject: wineoss.drv: Eliminate all 64-bits warnings
+In-Reply-To: <4934FDB8.2050306@gmail.com> (Maarten Lankhorst's message of
+	"Tue, 02 Dec 2008 10:19:52 +0100")
+References: <4934FDB8.2050306@gmail.com>
+Message-ID: <87myfe50p7.fsf@wine.dyndns.org>
+
+Maarten Lankhorst <m.b.lankhorst at gmail.com> writes:
+
+> sizeof is defined as int on 32-bits, and long on 64-bits. To keep this
+> working I'm casting all sizeofs to longs
+
+Please don't add casts, simply get rid of sizeof in traces like we did
+in the rest of the code. And please do it as a separate patch.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From m.b.lankhorst at gmail.com  Tue Dec  2 07:31:39 2008
+From: m.b.lankhorst at gmail.com (Maarten Lankhorst)
+Date: Tue, 02 Dec 2008 14:31:39 +0100
+Subject: Status of 64 bit Wine
+In-Reply-To: <49348FF5.2000501@museresearch.com>
+References: <49348FF5.2000501@museresearch.com>
+Message-ID: <493538BB.1010609@gmail.com>
+
+Hi Michael,
+
+Michael Ost schreef:
+> Hi list,
+>
+> Every once in a while my boss asks me about 64 bit wine. And today was 
+> the day. So what's the status?
+>
+>  From my understanding there are two parts to the question. First, is 
+> anyone using a 64 bit build of Wine? How successfully? Does it pass the 
+> internal wine tests?
+>   
+Been playing around with it a little bit for fun and profit. If you look 
+at the Wine64 wiki page you see the current state.
+> And second, is there any progress on loading 64 bit windows binaries in 
+> Wine? My understanding was that changes were needed to gcc to make that 
+> happen. Is that correct? Is there any progress on that score?
+>   
+The changes are mostly in, there is a bug in gcc with handling it, but I 
+got the patch for it so locally it works. Basic programs winelib 
+programs like winecfg work.
+The most succesful binary I ran was a pacman for win64, but the only 
+thing it does is throw up a messagebox 'unable to load resources'.
+
+Getting it in an AJ approved form is a bit harder, but I'm working on it.
+
+Cheers,
+Maarten.
+
+
+From most at museresearch.com  Tue Dec  2 10:40:04 2008
+From: most at museresearch.com (Michael Ost)
+Date: Tue, 02 Dec 2008 08:40:04 -0800
+Subject: Status of 64 bit Wine
+In-Reply-To: <493538BB.1010609@gmail.com>
+References: <49348FF5.2000501@museresearch.com> <493538BB.1010609@gmail.com>
+Message-ID: <493564E4.7060609@museresearch.com>
+
+Maarten Lankhorst wrote:
+> Hi Michael,
+> 
+> Michael Ost schreef:
+>> Hi list,
+>>
+>> Every once in a while my boss asks me about 64 bit wine. And today was 
+>> the day. So what's the status?
+>>
+>>  From my understanding there are two parts to the question. First, is 
+>> anyone using a 64 bit build of Wine? How successfully? Does it pass 
+>> the internal wine tests?
+>>   
+> Been playing around with it a little bit for fun and profit. If you look 
+> at the Wine64 wiki page you see the current state.
+
+Thanks for the link. It says AMD64 --- I hope this doesn't sound stupid 
+but will that work on 64 bit Intels too?
+
+Is this an afterhours project for you, or something more serious?
+
+>> And second, is there any progress on loading 64 bit windows binaries 
+>> in Wine? My understanding was that changes were needed to gcc to make 
+>> that happen. Is that correct? Is there any progress on that score?
+>>   
+> The changes are mostly in, there is a bug in gcc with handling it, but I 
+> got the patch for it so locally it works. Basic programs winelib 
+> programs like winecfg work.
+> The most succesful binary I ran was a pacman for win64, but the only 
+> thing it does is throw up a messagebox 'unable to load resources'.
+
+"Pacman" is a windows 64 binary, with the windows ABI? And that required 
+your local gcc patch to work, right? Does --enable-win64 alter gcc so it 
+builds code that can deal with the windows 64 bit conventions?
+
+Knowing that you got past that would be good news, because this sounded 
+like the biggest, scariest part when I looked into it a while back.
+
+> Getting it in an AJ approved form is a bit harder, but I'm working on it.
+
+Right-o! Glad to hear you are at it.
+
+Thanks! ... mo
+
+
+From fgouget at free.fr  Tue Dec  2 11:07:41 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Tue, 2 Dec 2008 18:07:41 +0100 (CET)
+Subject: Status of 64 bit Wine
+In-Reply-To: <493564E4.7060609@museresearch.com>
+References: <49348FF5.2000501@museresearch.com> <493538BB.1010609@gmail.com>
+	<493564E4.7060609@museresearch.com>
+Message-ID: <alpine.DEB.1.10.0812021754100.8197@amboise.dolphin>
+
+On Tue, 2 Dec 2008, Michael Ost wrote:
+[...]
+> Thanks for the link. It says AMD64 --- I hope this doesn't sound stupid 
+> but will that work on 64 bit Intels too?
+
+Yes. It's called AMD64 in many places because the 64bit extension of the 
+x86 ISA was made by AMD and Intel played catch up later. So for instance 
+on my Core 2 Quad I use the amd64 Linux kernel (2.6.26-1-amd64).
+
+
+
+[...]
+> "Pacman" is a windows 64 binary, with the windows ABI? And that required 
+> your local gcc patch to work, right? Does --enable-win64 alter gcc so it 
+> builds code that can deal with the windows 64 bit conventions?
+
+That's also the way I understand it.
+
+
+> Knowing that you got past that would be good news, because this sounded 
+> like the biggest, scariest part when I looked into it a while back.
+
+Yep. However once we're past this stage there is still a lot of work. 
+Not scary because it's hard but because of the size of it, fixing types 
+all over the place:
+ * long -> LONG when related to the Windows API
+ * DWORD -> DWORD_PTR when used to pass around pointers
+ * spec file fixes: long -> ptr
+
+Then there will be the harder issue of getting 64bit and 32bit binaries 
+to play nice together: a 64bit executable should be able to start a 
+32bit one and vice versa, and both should talk to the same Wine server.
+
+But yes. With the gcc issue fixed the future looks much brighter.
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+ "Only wimps use tape backup: _real_ men just upload their important stuff on
+       ftp, and let the rest of the world mirror it ;)" -- Linus Torvalds
+
+
+From dank at kegel.com  Tue Dec  2 11:17:57 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Tue, 2 Dec 2008 09:17:57 -0800
+Subject: Patchwatcher status
+Message-ID: <a71bd89a0812020917x620fed01ofabb5652ac4da721@mail.gmail.com>
+
+Patchwatcher is down for the moment - I mistakenly
+tried using proprietary nvidia drivers, forgetting
+that my nvidia card is too old to be supported,
+and don't have time this morning to recover.
+I'll fix it tonight.
+
+
+From susancragin at earthlink.net  Tue Dec  2 11:40:13 2008
+From: susancragin at earthlink.net (Susan Cragin)
+Date: Tue, 2 Dec 2008 12:40:13 -0500 (GMT-05:00)
+Subject: today's git does not compile with yesterday's new gcc --
+	regression test results
+Message-ID: <26737233.1228239614102.JavaMail.root@elwamui-polski.atl.sa.earthlink.net>
+
+>>> I did the regression test. But how legitimate are the results if the problem is the new gcc that I downloaded recently, and not wine? 
+
+
+This problem was an Ubuntu linux bug, and has been fixed in headers for kernel 2.6.28-2.2. 
+See Ubuntu bug 303711.
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/303711
+
+
+
+
+
+
+
+From kai.blin at gmail.com  Tue Dec  2 11:58:37 2008
+From: kai.blin at gmail.com (Kai Blin)
+Date: Tue, 2 Dec 2008 18:58:37 +0100
+Subject: Coverity Telco coming up
+Message-ID: <200812021858.41183.kai.blin@gmail.com>
+
+Hi folks,
+
+Coverity is hosting a telco tomorrow about some new technology they're going 
+to roll out to projects. I'm planning to attend, and would like to bring up 
+any issues we're currently having in the Q&A session.
+
+Issues I'm currently seeing with our Coverity experience:
+- Adding new developers to the access list is painfully slow
+- Builds are pretty outdated (They seem to be working on this)
+
+Anything else?
+
+Cheers,
+Kai
+
+-- 
+Kai Blin
+WorldForge developer  http://www.worldforge.org/
+Wine developer        http://wiki.winehq.org/KaiBlin
+Samba team member     http://www.samba.org/samba/team/
+--
+Will code for cotton.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081202/f3cc231d/attachment.pgp 
+
+From marcus at jet.franken.de  Tue Dec  2 13:45:08 2008
+From: marcus at jet.franken.de (Marcus Meissner)
+Date: Tue, 2 Dec 2008 20:45:08 +0100
+Subject: Coverity Telco coming up
+In-Reply-To: <200812021858.41183.kai.blin@gmail.com>
+References: <200812021858.41183.kai.blin@gmail.com>
+Message-ID: <20081202194507.GA5590@galeere.jet.franken.de>
+
+On Tue, Dec 02, 2008 at 06:58:37PM +0100, Kai Blin wrote:
+> Hi folks,
+> 
+> Coverity is hosting a telco tomorrow about some new technology they're going 
+> to roll out to projects. I'm planning to attend, and would like to bring up 
+> any issues we're currently having in the Q&A session.
+> 
+> Issues I'm currently seeing with our Coverity experience:
+> - Adding new developers to the access list is painfully slow
+> - Builds are pretty outdated (They seem to be working on this)
+> 
+> Anything else?
+
+- rung1.html page is still outdated.
+- More regular Builds (not just every 2 months or so) would be helpful
+- Notification Mail(s) and/or RSS feed when new builds appear.
+
+Ciao, Marcus
+
+
+From paul.vriens.wine at gmail.com  Tue Dec  2 15:27:01 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Tue, 02 Dec 2008 22:27:01 +0100
+Subject: Coverity Telco coming up
+In-Reply-To: <20081202194507.GA5590@galeere.jet.franken.de>
+References: <200812021858.41183.kai.blin@gmail.com>
+	<20081202194507.GA5590@galeere.jet.franken.de>
+Message-ID: <4935A825.4040908@gmail.com>
+
+Marcus Meissner wrote:
+> On Tue, Dec 02, 2008 at 06:58:37PM +0100, Kai Blin wrote:
+>> Hi folks,
+>>
+>> Coverity is hosting a telco tomorrow about some new technology they're going 
+>> to roll out to projects. I'm planning to attend, and would like to bring up 
+>> any issues we're currently having in the Q&A session.
+>>
+>> Issues I'm currently seeing with our Coverity experience:
+>> - Adding new developers to the access list is painfully slow
+>> - Builds are pretty outdated (They seem to be working on this)
+>>
+>> Anything else?
+> 
+> - rung1.html page is still outdated.
+> - More regular Builds (not just every 2 months or so) would be helpful
+> - Notification Mail(s) and/or RSS feed when new builds appear.
+> 
+> Ciao, Marcus
+> 
+> 
+> 
+Well actually:
+
+==
+For projects that have never had regular builds, we have a new solution to
+get rung 1 projects updated builds as often as you want them.
+
+We are launching a new program that allows you to submit new builds for
+analysis as often as you want. Please read
+http://scan.coverity.com/self-build/ for more information, and send an
+email to scan-admin at coverity.com if you wish to sign up.
+==
+
+Doesn't help in updating the rung1.html page though ;)
+
+-- 
+Cheers,
+
+Paul.
+
+
+From austinenglish at gmail.com  Tue Dec  2 15:54:39 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 2 Dec 2008 15:54:39 -0600
+Subject: Coverity Telco coming up
+In-Reply-To: <200812021858.41183.kai.blin@gmail.com>
+References: <200812021858.41183.kai.blin@gmail.com>
+Message-ID: <b6bb06270812021354i4f8ae80bif178172f8d060139@mail.gmail.com>
+
+On Tue, Dec 2, 2008 at 11:58 AM, Kai Blin <kai.blin at gmail.com> wrote:
+> Hi folks,
+>
+> Coverity is hosting a telco tomorrow about some new technology they're going
+> to roll out to projects. I'm planning to attend, and would like to bring up
+> any issues we're currently having in the Q&A session.
+>
+> Issues I'm currently seeing with our Coverity experience:
+> - Adding new developers to the access list is painfully slow
+
+To add new developers, don't we have project admins that are notified
+on request to approve the developers? Couldn't we just add more
+admins?
+
+To list as well.
+
+--
+-Austin
+
+
+From ricardo_barbano at hotmail.com  Tue Dec  2 16:40:18 2008
+From: ricardo_barbano at hotmail.com (ricardo filipe)
+Date: Tue, 2 Dec 2008 22:40:18 +0000
+Subject: Coverity Telco coming up
+In-Reply-To: <b6bb06270812021354i4f8ae80bif178172f8d060139@mail.gmail.com>
+References: <200812021858.41183.kai.blin@gmail.com>
+	<b6bb06270812021354i4f8ae80bif178172f8d060139@mail.gmail.com>
+Message-ID: <BAY118-W196DBB4EAFD322B311577D83000@phx.gbl>
+
+
+even if there are admins the information about them and how to apply is well hidden and not easy to join :) so it's a good subject to bring...> Date: Tue, 2 Dec 2008 15:54:39 -0600> From: austinenglish at gmail.com> To: kai.blin at gmail.com> Subject: Re: Coverity Telco coming up> CC: wine-devel at winehq.org> > On Tue, Dec 2, 2008 at 11:58 AM, Kai Blin <kai.blin at gmail.com> wrote:> > Hi folks,> >> > Coverity is hosting a telco tomorrow about some new technology they're going> > to roll out to projects. I'm planning to attend, and would like to bring up> > any issues we're currently having in the Q&A session.> >> > Issues I'm currently seeing with our Coverity experience:> > - Adding new developers to the access list is painfully slow> > To add new developers, don't we have project admins that are notified> on request to approve the developers? Couldn't we just add more> admins?> > To list as well.> > --> -Austin> > 
+_________________________________________________________________
+Cansado de espa?o para s? 50 fotos? Conhe?a o Spaces, o site de relacionamentos com at? 6,000 fotos!
+http://www.amigosdomessenger.com.br
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20081202/922dce8b/attachment.htm 
+
+From ivg231 at gmail.com  Tue Dec  2 21:58:31 2008
+From: ivg231 at gmail.com (Ivan Gyurdiev)
+Date: Tue, 02 Dec 2008 22:58:31 -0500
+Subject: [4/5] wined3d: Use a bitmask to store which bool and int constants
+	are set.
+In-Reply-To: <493574FC.7070500@codeweavers.com>
+References: <493574FC.7070500@codeweavers.com>
+Message-ID: <493603E7.6020509@gmail.com>
+
+ > Re: [4/5] wined3d: Use a bitmask to store which bool and int 
+constants    are set.
+
+Why is this a good thing - this just artificially caps your constants at 
+32. If I remember correctly I had to change shaders to do the exact 
+opposite change, because newer versions introduced more than 32 constants.
+
+Ivan
+
+
+
+
+
+
+
+From juan.lang at gmail.com  Tue Dec  2 22:25:29 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Tue, 2 Dec 2008 20:25:29 -0800
+Subject: [4/5] wined3d: Use a bitmask to store which bool and int
+	constants are set.
+In-Reply-To: <493603E7.6020509@gmail.com>
+References: <493574FC.7070500@codeweavers.com> <493603E7.6020509@gmail.com>
+Message-ID: <3a768c550812022025q33cb8c64ld7521c7cd9b72a6f@mail.gmail.com>
+
+> Why is this a good thing - this just artificially caps your constants at
+> 32. If I remember correctly I had to change shaders to do the exact
+> opposite change, because newer versions introduced more than 32 constants.
+
+I agree with you, this is a questionable change.  The benefit in
+reduced data results in a gain of code size and runtime cost.
+--Juan
+
+
+From hverbeet at gmail.com  Wed Dec  3 02:49:21 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Wed, 3 Dec 2008 09:49:21 +0100
+Subject: [4/5] wined3d: Use a bitmask to store which bool and int
+	constants are set.
+In-Reply-To: <493603E7.6020509@gmail.com>
+References: <493574FC.7070500@codeweavers.com> <493603E7.6020509@gmail.com>
+Message-ID: <d658b69e0812030049u52feb9a0nf4edd4e5a275bf90@mail.gmail.com>
+
+2008/12/3 Ivan Gyurdiev <ivg231 at gmail.com>:
+>> Re: [4/5] wined3d: Use a bitmask to store which bool and int constants
+>>  are set.
+>
+> Why is this a good thing - this just artificially caps your constants at 32.
+> If I remember correctly I had to change shaders to do the exact opposite
+> change, because newer versions introduced more than 32 constants.
+>
+> Ivan
+>
+We could always extend the number of possible constants by using an
+array. However, when we need more constants we'll probably need a
+scheme more like what's used for float constants anyway. The reduced
+memory usage is significant, not so much because we can't spare the
+memory, but because it allows the compiler to just keep the entire
+thing in a register. Perhaps even more importantly, when an
+application starts using constants from zero and goes up from there
+(which is not an unreasonable thing to do), we only have to go through
+the loop the amount of times as there are constants set. If the
+application doesn't use int or bool constants at all, we don't have to
+go through the loop at all either.
+
+
+From hverbeet at gmail.com  Wed Dec  3 02:53:07 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Wed, 3 Dec 2008 09:53:07 +0100
+Subject: [4/5] wined3d: Use a bitmask to store which bool and int
+	constants are set.
+In-Reply-To: <3a768c550812022025q33cb8c64ld7521c7cd9b72a6f@mail.gmail.com>
+References: <493574FC.7070500@codeweavers.com> <493603E7.6020509@gmail.com>
+	<3a768c550812022025q33cb8c64ld7521c7cd9b72a6f@mail.gmail.com>
+Message-ID: <d658b69e0812030053u4e93328rc0541b171e2adf86@mail.gmail.com>
+
+2008/12/3 Juan Lang <juan.lang at gmail.com>:
+>> Why is this a good thing - this just artificially caps your constants at
+>> 32. If I remember correctly I had to change shaders to do the exact
+>> opposite change, because newer versions introduced more than 32 constants.
+>
+> I agree with you, this is a questionable change.  The benefit in
+> reduced data results in a gain of code size and runtime cost.
+> --Juan
+>
+Perhaps setting constants becomes slightly more expensive this way,
+but I'm not convinced it's very significant. The more performance
+critical code that applies the constants becomes significantly cheaper
+though.
+
+
+From julliard at winehq.org  Wed Dec  3 03:17:57 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 03 Dec 2008 10:17:57 +0100
+Subject: [4/5] wined3d: Use a bitmask to store which bool and int
+	constants are set.
+In-Reply-To: <d658b69e0812030053u4e93328rc0541b171e2adf86@mail.gmail.com>
+	(Henri Verbeet's message of "Wed, 3 Dec 2008 09:53:07 +0100")
+References: <493574FC.7070500@codeweavers.com> <493603E7.6020509@gmail.com>
+	<3a768c550812022025q33cb8c64ld7521c7cd9b72a6f@mail.gmail.com>
+	<d658b69e0812030053u4e93328rc0541b171e2adf86@mail.gmail.com>
+Message-ID: <871vwpbosa.fsf@wine.dyndns.org>
+
+"Henri Verbeet" <hverbeet at gmail.com> writes:
+
+> 2008/12/3 Juan Lang <juan.lang at gmail.com>:
+>>> Why is this a good thing - this just artificially caps your constants at
+>>> 32. If I remember correctly I had to change shaders to do the exact
+>>> opposite change, because newer versions introduced more than 32 constants.
+>>
+>> I agree with you, this is a questionable change.  The benefit in
+>> reduced data results in a gain of code size and runtime cost.
+>> --Juan
+>>
+> Perhaps setting constants becomes slightly more expensive this way,
+> but I'm not convinced it's very significant. The more performance
+> critical code that applies the constants becomes significantly cheaper
+> though.
+
+I expect most operations will become faster, because the data is more
+likely to be kept in cache and in registers. It could probably be made
+even more efficient by getting rid of most of the remaining loops.
+I think it's a very reasonable change, using array of BOOLs is really
+wasteful.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Wed Dec  3 03:59:34 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 03 Dec 2008 10:59:34 +0100
+Subject: cryptdlg: Implement FormatVerisignExtension (resend)
+In-Reply-To: <3a768c550812020932t730cad12q43aa939f52047296@mail.gmail.com>
+	(Juan Lang's message of "Tue, 2 Dec 2008 09:32:13 -0800")
+References: <3a768c550812020932t730cad12q43aa939f52047296@mail.gmail.com>
+Message-ID: <87wseha8ah.fsf@wine.dyndns.org>
+
+"Juan Lang" <juan.lang at gmail.com> writes:
+
+> Aside from the size, is there anything wrong with this one?
+
+You are still wasting lots of space by storing copies of string
+resources. There's no need to do that.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From robertshearman at gmail.com  Wed Dec  3 07:01:21 2008
+From: robertshearman at gmail.com (Rob Shearman)
+Date: Wed, 3 Dec 2008 13:01:21 +0000
+Subject: Alexandre Julliard : ole32: Register interfaces through dlldata.
+	c as far as possible.
+In-Reply-To: <E1L7qL4-0002dK-JO@wine.codeweavers.com>
+References: <E1L7qL4-0002dK-JO@wine.codeweavers.com>
+Message-ID: <1096648c0812030501s15326569t602c08bd803882dd@mail.gmail.com>
+
+2008/12/3 Alexandre Julliard <julliard at winehq.org>:
+>  /* from dlldata.c */
+> +extern HINSTANCE hProxyDll DECLSPEC_HIDDEN;
+> +extern BOOL WINAPI OLE32_DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID fImpLoad) DECLSPEC_HIDDEN;
+
+Why declare OLE32_DllMain when it isn't used?
+
+>  extern HRESULT WINAPI OLE32_DllGetClassObject(REFCLSID rclsid, REFIID iid,LPVOID *ppv) DECLSPEC_HIDDEN;
+> +extern HRESULT WINAPI OLE32_DllRegisterServer(void) DECLSPEC_HIDDEN;
+> +extern HRESULT WINAPI OLE32_DllUnregisterServer(void) DECLSPEC_HIDDEN;
+
+
+-- 
+Rob Shearman
+
+
+From razielmine at gmail.com  Wed Dec  3 08:50:42 2008
+From: razielmine at gmail.com (=?UTF-8?Q?Ismael_Barros=C2=B2?=)
+Date: Wed, 3 Dec 2008 15:50:42 +0100
+Subject: Wine t-shirts?
+In-Reply-To: <b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>
+	<480F2E38.7010506@winehq.org>
+	<b130c85e0804301730m286189fbsf6a837ef97d335d3@mail.gmail.com>
+	<4819B052.3010808@codeweavers.com>
+	<b130c85e0805012154r59d66199qcfdfeb63df88b6ea@mail.gmail.com>
+	<481B0A16.1050409@codeweavers.com>
+	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>
+	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>
+	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>
+	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+Message-ID: <82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+
+On Thu, May 8, 2008 at 10:32 PM, Maarten Lankhorst
+<m.b.lankhorst at gmail.com> wrote:
+> 2008/5/8 Maarten Lankhorst <m.b.lankhorst at gmail.com>:
+>> 2008/5/8 Jon Parshall <jparshall at codeweavers.com>:
+>>> I've messed around with Wine Bottles for our installer artwork, and I have this version that I could gussy up for the shirts if you'd like.
+>> I like the most left bottle, can you make one in the reddish color
+>> wine uses? And put the label I created on it and get it roughly in the
+>> same size? It would be perfect for the t-shirt.
+> Uncorked, since wine will be released. :D
+>
+
+Hi all
+
+I'm setting up a T-shirt store specialized in free software,
+www.freewear.org (work still in progress, but if everything goes well
+it should be running in one or two weeks), and obviously want Wine
+T-shirts in :)
+
+I already asked julliard about permissions and donations (winehq is
+getting 3? for each sold T-shirt), and now I should determine the
+T-shirt design itself. We'll probably start off with the classical
+wine logo, but we're not sure about the composition, any ideas? The
+website logo looks fine (without the shades, we're limited to 4
+colours), but the "hq" is probably unnecessary for a T-shirt.
+
+Anyway, if you guys want come up with a nicer design/logo, or want to
+order T-shirts for some Wine/FOSS event, we're open for business.
+
+Cheers
+Ismael Barros
+
+From sedwards at bordeauxgroup.com  Wed Dec  3 09:29:57 2008
+From: sedwards at bordeauxgroup.com (Steven Edwards)
+Date: Wed, 3 Dec 2008 10:29:57 -0500
+Subject: Wine t-shirts?
+In-Reply-To: <82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>
+	<b130c85e0804301730m286189fbsf6a837ef97d335d3@mail.gmail.com>
+	<4819B052.3010808@codeweavers.com>
+	<b130c85e0805012154r59d66199qcfdfeb63df88b6ea@mail.gmail.com>
+	<481B0A16.1050409@codeweavers.com>
+	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>
+	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>
+	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>
+	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+	<82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+Message-ID: <19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+
+On Wed, Dec 3, 2008 at 9:50 AM, Ismael Barros? <razielmine at gmail.com> wrote:
+> I already asked julliard about permissions and donations (winehq is
+> getting 3? for each sold T-shirt), and now I should determine the
+> T-shirt design itself. We'll probably start off with the classical
+> wine logo, but we're not sure about the composition, any ideas? The
+> website logo looks fine (without the shades, we're limited to 4
+> colours), but the "hq" is probably unnecessary for a T-shirt.
+
++1 on the teeshirts if you can use the drunk Penguin on some of them
+now that CodeWeavers is not using it for products.
+
+http://www.ixsoft.de/software/products/CWTSHIRTDP-L.html
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From hverbeet at gmail.com  Wed Dec  3 10:15:51 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Wed, 3 Dec 2008 17:15:51 +0100
+Subject: [2/2] gdiplus: fix a warning in GdipMultiplyTextureTransform
+In-Reply-To: <1228318284.7310.5.camel@debian.localdomain>
+References: <1228318284.7310.5.camel@debian.localdomain>
+Message-ID: <d658b69e0812030815k3afa9551r1ccc7d3ab388ab86@mail.gmail.com>
+
+2008/12/3 Nikolay Sivov <bunglehead at gmail.com>:
+> -    return GdipMultiplyMatrix(brush->transform, matrix, order);
+> +    return GdipMultiplyMatrix(brush->transform, (GpMatrix*)matrix, order);
+
+I don't think casting const away makes it much better. Considering
+what the function does, and the fact that the matrix *is* const in the
+prototype for Matrix::Multiply(), I'd say it would be better to just
+change the prototype for GdipMultiplyMatrix. MS doesn't seem to care a
+whole lot about their plain C interfaces these days.
+
+Slightly OT, the code in matrix_multiply() isn't quite the most
+efficient way to multiply two 2x3 matrices, although if you're lucky
+the compiler will unroll the loop for you and fold the constants.
+
+
+From julliard at winehq.org  Wed Dec  3 10:29:58 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 03 Dec 2008 17:29:58 +0100
+Subject: Alexandre Julliard : ole32: Register interfaces through dlldata.
+	c as far as possible.
+In-Reply-To: <1096648c0812030501s15326569t602c08bd803882dd@mail.gmail.com>
+	(Rob Shearman's message of "Wed, 3 Dec 2008 13:01:21 +0000")
+References: <E1L7qL4-0002dK-JO@wine.codeweavers.com>
+	<1096648c0812030501s15326569t602c08bd803882dd@mail.gmail.com>
+Message-ID: <87iqq19q7t.fsf@wine.dyndns.org>
+
+"Rob Shearman" <robertshearman at gmail.com> writes:
+
+> 2008/12/3 Alexandre Julliard <julliard at winehq.org>:
+>>  /* from dlldata.c */
+>> +extern HINSTANCE hProxyDll DECLSPEC_HIDDEN;
+>> +extern BOOL WINAPI OLE32_DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID fImpLoad) DECLSPEC_HIDDEN;
+>
+> Why declare OLE32_DllMain when it isn't used?
+
+No reason, I just declared all the functions that could be useful, but
+DllMain turned out to be not so useful in the end.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From kondratyuk at etersoft.ru  Wed Dec  3 11:02:12 2008
+From: kondratyuk at etersoft.ru (Konstantin Kondratyuk)
+Date: Wed, 3 Dec 2008 20:02:12 +0300
+Subject: IServiceProvider::QueryService tests
+Message-ID: <200812032002.13309.kondratyuk@etersoft.ru>
+
+In dlls/mshtml/tests/htmldoc.c there is a comment:
+
+    /*
+     * Services used by HTMLDocument:
+     *
+     * IOleUndoManager
+     * IInternetSecurityManager
+     * ITargetFrame
+     * {D5F78C80-5252-11CF-90FA-00AA0042106E}
+     * HTMLFrameBase
+     * IShellObject
+     * {3050F312-98B5-11CF-BB82-00AA00BDCE0B}
+     * {53A2D5B1-D2FC-11D0-84E0-006097C9987D}
+     * {AD7F6C62-F6BD-11D2-959B-006097C553C8}
+     * DefView (?)
+     * {6D12FE80-7911-11CF-9534-0000C05BAE0B}
+     * IElementBehaviorFactory
+     * {3050F429-98B5-11CF-BB82-00AA00BDCE0B}
+     * STopLevelBrowser
+     * IHTMLWindow2
+     * IInternetProtocol
+     * IWebBrowserApp
+     * UrlHostory
+     * IHTMLEditHost
+     * IHlinkFrame
+     */
+
+It is confirmed by tests? I have not found. 
+
+It seems to me, also there should be IHTMLEditServices interface support. How 
+it is correct to add the test on IServiceProvider::QueryService?
+
+Thanks.
+
+-- 
+Best regards,
+Konstantin Kondratyuk.
+
+
+From bunglehead at gmail.com  Wed Dec  3 11:11:24 2008
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Wed, 03 Dec 2008 20:11:24 +0300
+Subject: [2/2] gdiplus: fix a warning in GdipMultiplyTextureTransform
+In-Reply-To: <d658b69e0812030815k3afa9551r1ccc7d3ab388ab86@mail.gmail.com>
+References: <1228318284.7310.5.camel@debian.localdomain>
+	<d658b69e0812030815k3afa9551r1ccc7d3ab388ab86@mail.gmail.com>
+Message-ID: <4936BDBC.5090803@gmail.com>
+
+Henri Verbeet wrote:
+> 2008/12/3 Nikolay Sivov <bunglehead at gmail.com>:
+>   
+>> -    return GdipMultiplyMatrix(brush->transform, matrix, order);
+>> +    return GdipMultiplyMatrix(brush->transform, (GpMatrix*)matrix, order);
+>>     
+>
+> I don't think casting const away makes it much better. Considering
+> what the function does, and the fact that the matrix *is* const in the
+> prototype for Matrix::Multiply(), I'd say it would be better to just
+> change the prototype for GdipMultiplyMatrix. MS doesn't seem to care a
+> whole lot about their plain C interfaces these days.
+>   
+Our prototypes should match MS', shouldn't they?. In this case I don't 
+see another way to silent this warning
+which means nothing (you've already named the reason why).
+> Slightly OT, the code in matrix_multiply() isn't quite the most
+> efficient way to multiply two 2x3 matrices, although if you're lucky
+> the compiler will unroll the loop for you and fold the constants.
+>   
+Of course you're right here.
+
+
+From hverbeet at gmail.com  Wed Dec  3 11:19:41 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Wed, 3 Dec 2008 18:19:41 +0100
+Subject: [2/2] gdiplus: fix a warning in GdipMultiplyTextureTransform
+In-Reply-To: <4936BDBC.5090803@gmail.com>
+References: <1228318284.7310.5.camel@debian.localdomain>
+	<d658b69e0812030815k3afa9551r1ccc7d3ab388ab86@mail.gmail.com>
+	<4936BDBC.5090803@gmail.com>
+Message-ID: <d658b69e0812030919n64305fd2o50968452d09c9a49@mail.gmail.com>
+
+2008/12/3 Nikolay Sivov <bunglehead at gmail.com>:
+> Our prototypes should match MS', shouldn't they?. In this case I don't see
+> another way to silent this warning
+> which means nothing (you've already named the reason why).
+Up to a point. Personally I'd say the PSDK headers are broken here
+since they're inconsistent with themselves.
+
+
+From scott at open-vote.org  Wed Dec  3 14:01:09 2008
+From: scott at open-vote.org (Scott Ritchie)
+Date: Wed, 03 Dec 2008 12:01:09 -0800
+Subject: Mono integration to Wine
+In-Reply-To: <4933FDC8.5090202@gmail.com>
+References: <4933FDC8.5090202@gmail.com>
+Message-ID: <4936E585.8020404@open-vote.org>
+
+Korn?l P?l wrote:
+> Hi,
+> 
+> I would like to receive comments on mixed-mode assembly support of Mono 
+> on Wine and if there are people willing to update the Loader to call 
+> _CorValidateImage, _CorExeMain (real entry point is not called for EXEs) 
+> and _CorImageUnloading for managed images.
+> 
+
+What is the current status of running a mixed-mode assembly app with
+Wine after doing something like winetricks mono2?
+
+I'm very interested in this question, especially in finding a good
+sample application out there.
+
+Thanks,
+Scott Ritchie
+
+
+From hverbeet at gmail.com  Wed Dec  3 15:15:54 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Wed, 3 Dec 2008 22:15:54 +0100
+Subject: patch for gdi32
+In-Reply-To: <da8c61f0812030056s61bfe3b0rb25329cc52397af9@mail.gmail.com>
+References: <da8c61f0812030056s61bfe3b0rb25329cc52397af9@mail.gmail.com>
+Message-ID: <d658b69e0812031315v13b58cb1nde33e0d9132e3ee9@mail.gmail.com>
+
+Isn't this the same issue a bug 4065?
+(http://bugs.winehq.org/show_bug.cgi?id=4065)
+
+
+From dank at kegel.com  Wed Dec  3 15:29:30 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Wed, 3 Dec 2008 13:29:30 -0800
+Subject: patch for gdi32
+In-Reply-To: <a71bd89a0812031324w6b7a6851k42af9bc237127cb9@mail.gmail.com>
+References: <a71bd89a0812031324w6b7a6851k42af9bc237127cb9@mail.gmail.com>
+Message-ID: <a71bd89a0812031329j6facb9c0hb7401a9b6837331e@mail.gmail.com>
+
+On Wed, Dec 3, 2008 at 1:24 PM, Dan Kegel <dank at kegel.com> wrote:
+> Hi Xiangrong,
+> you forgot to attach the patch, I think.
+
+Aha.  You attached the wrong format.  We want a plain text file,
+i.e. not .odt, but .txt.    The nice description in your .odt/.pdf
+belongs in a bug report in http://bugs.winehq.org.
+(And, as somebody mentioned, there may be related bugs already,
+e.g. http://bugs.winehq.org/show_bug.cgi?id=4065 )
+
+If you don't want to use "git diff" to generate the patch, use 'diff -u'.  See
+http://kegel.com/academy/opensource.html#patches
+
+Good luck, and welcome to Wine development!
+- Dan
+
+
+From razielmine at gmail.com  Wed Dec  3 17:12:00 2008
+From: razielmine at gmail.com (=?UTF-8?Q?Ismael_Barros=C2=B2?=)
+Date: Thu, 4 Dec 2008 00:12:00 +0100
+Subject: Wine t-shirts?
+In-Reply-To: <19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>
+	<4819B052.3010808@codeweavers.com>
+	<b130c85e0805012154r59d66199qcfdfeb63df88b6ea@mail.gmail.com>
+	<481B0A16.1050409@codeweavers.com>
+	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>
+	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>
+	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>
+	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+	<82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+	<19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+Message-ID: <82e274890812031512s8f47c1cqf385423caf7834b5@mail.gmail.com>
+
+Hum, that would be cool, I'll ask the boss but it's probably in.
+
+Does anyone have a higher resolution version?
+
+On Wed, Dec 3, 2008 at 4:29 PM, Steven Edwards
+<sedwards at bordeauxgroup.com> wrote:
+> On Wed, Dec 3, 2008 at 9:50 AM, Ismael Barros? <razielmine at gmail.com> wrote:
+>> I already asked julliard about permissions and donations (winehq is
+>> getting 3? for each sold T-shirt), and now I should determine the
+>> T-shirt design itself. We'll probably start off with the classical
+>> wine logo, but we're not sure about the composition, any ideas? The
+>> website logo looks fine (without the shades, we're limited to 4
+>> colours), but the "hq" is probably unnecessary for a T-shirt.
+>
+> +1 on the teeshirts if you can use the drunk Penguin on some of them
+> now that CodeWeavers is not using it for products.
+>
+> http://www.ixsoft.de/software/products/CWTSHIRTDP-L.html
+>
+> --
+> Steven Edwards
+>
+> "There is one thing stronger than all the armies in the world, and
+> that is an idea whose time has come." - Victor Hugo
+>
+
+From dank at kegel.com  Wed Dec  3 17:50:56 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Wed, 3 Dec 2008 15:50:56 -0800
+Subject: patch for gdi32
+In-Reply-To: <da8c61f0812031538g6fe481b3m161223d99bc3dcb1@mail.gmail.com>
+References: <a71bd89a0812031324w6b7a6851k42af9bc237127cb9@mail.gmail.com>
+	<a71bd89a0812031329j6facb9c0hb7401a9b6837331e@mail.gmail.com>
+	<da8c61f0812031538g6fe481b3m161223d99bc3dcb1@mail.gmail.com>
+Message-ID: <a71bd89a0812031550v2f7e9ed1n45600b55287577b3@mail.gmail.com>
+
+On Wed, Dec 3, 2008 at 3:38 PM, Xiangrong Fang <xrfang at gmail.com> wrote:
+> It is indeed bug #4065.  I read the info there, although I don't fully
+> understand every bit information there, but that is marked as FIXED
+> and CLOSED?? As far as I know, this is NOT fixed yet, and it affect a
+> HUGE amount of Chinese applications, those applications are otherwise
+> perfectly supported by wine.
+
+I think 4065 was closed because we found what seemed to
+be an acceptable way to get that particular app (Picasa) working.
+
+> A very good progress in this area is
+> that I found Chinese text are more properly auto-wrapped in recent
+> Wine releases, which is excellent.
+
+We are very interested in providing excellent Asian language
+support.  We can use all the help we can get, though, as
+few Wine developers speak any Asian languages well.
+
+> About this issue, shall I submit discussion in #4065 or open a new
+> bug?  (I need to upload some screenshots to illustrate the problem --
+> this is NOT a missing font problem as discussed).
+
+Please open a new bug.  If possible, include source code
+for a small noninteractive program that demonstrates
+the problem.  e.g. a C program that displays a single character
+that is wrong in wine but right in windows.
+
+> BTW, for these discussions, shall I use wine-devel or wine-patch?
+
+All discussions go to wine-devel.   When replying to a message
+on wine-patches, please change the destination to wine-devel.
+- Dan
+
+
+From jjmckenzie51 at earthlink.net  Wed Dec  3 21:27:51 2008
+From: jjmckenzie51 at earthlink.net (James McKenzie)
+Date: Wed, 03 Dec 2008 20:27:51 -0700
+Subject: wineconsole: Wait on events in curses backend using select instead
+	of poll
+In-Reply-To: <4931D5D9.1030008@martin.st>
+References: <4931D5D9.1030008@martin.st>
+Message-ID: <49374E37.7060304@earthlink.net>
+
+Martin Storsj? wrote:
+>
+> poll can't handle terminal devices on Darwin, since Tiger. See the
+> following discussion:
+> http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00066.html
+>
+This will have to be setup so that it only works for Macs.  Maybe this
+can be a static patch in the Darwine code but it does not belong in the
+Wine code stack.
+
+I'll look at what the Darwine code can and cannot do.
+
+James McKenzie
+
+
+
+
+From jjmckenzie51 at earthlink.net  Wed Dec  3 22:15:45 2008
+From: jjmckenzie51 at earthlink.net (James McKenzie)
+Date: Wed, 03 Dec 2008 21:15:45 -0700
+Subject: Wine t-shirts?
+In-Reply-To: <19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>	<b130c85e0804301730m286189fbsf6a837ef97d335d3@mail.gmail.com>	<4819B052.3010808@codeweavers.com>	<b130c85e0805012154r59d66199qcfdfeb63df88b6ea@mail.gmail.com>	<481B0A16.1050409@codeweavers.com>	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>	<82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+	<19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+Message-ID: <49375971.7030403@earthlink.net>
+
+Steven Edwards wrote:
+> On Wed, Dec 3, 2008 at 9:50 AM, Ismael Barros? <razielmine at gmail.com> wrote:
+>   
+>> I already asked julliard about permissions and donations (winehq is
+>> getting 3? for each sold T-shirt), and now I should determine the
+>> T-shirt design itself. We'll probably start off with the classical
+>> wine logo, but we're not sure about the composition, any ideas? The
+>> website logo looks fine (without the shades, we're limited to 4
+>> colours), but the "hq" is probably unnecessary for a T-shirt.
+>>     
+>
+> +1 on the teeshirts if you can use the drunk Penguin on some of them
+> now that CodeWeavers is not using it for products.
+>
+> http://www.ixsoft.de/software/products/CWTSHIRTDP-L.html
+>
+>   
+It would be nice to ask the folks at CodeWeavers before running off and
+producing a bunch of t-shirts.  They may not own the copyrights to it,
+but can point you in the right direction.
+
+James McKenzie
+
+
+
+From dmitry at codeweavers.com  Wed Dec  3 22:28:05 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Thu, 4 Dec 2008 12:28:05 +0800
+Subject: wineconsole: Wait on events in curses backend using select
+	insteadof poll
+References: <4931D5D9.1030008@martin.st> <49374E37.7060304@earthlink.net>
+Message-ID: <3ACB8483AA0842E5AE3D66427C451A31@DMITRY>
+
+"James McKenzie" <jjmckenzie51 at earthlink.net> wrote:
+
+> Martin Storsj? wrote:
+>>
+>> poll can't handle terminal devices on Darwin, since Tiger. See the
+>> following discussion:
+>> http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00066.html
+>>
+> This will have to be setup so that it only works for Macs.  Maybe this
+> can be a static patch in the Darwine code but it does not belong in the
+> Wine code stack.
+
+Why do you prefer to have a broken hack in Darwine instead of fixing this
+properly?
+
+Btw, what are the difference between Darwine and WineHQ that you insist
+to have a different name (Darwine) instead of just Wine? Are you aware
+that due to that all bugs reported to Wine bugzilla mentioning Darwine
+are closed as invalid? Do you have your own bug tracking system?
+
+-- 
+Dmitry. 
+
+
+
+From sedwards at bordeauxgroup.com  Wed Dec  3 22:38:13 2008
+From: sedwards at bordeauxgroup.com (Steven Edwards)
+Date: Wed, 3 Dec 2008 23:38:13 -0500
+Subject: Wine t-shirts?
+In-Reply-To: <49375971.7030403@earthlink.net>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>
+	<b130c85e0805012154r59d66199qcfdfeb63df88b6ea@mail.gmail.com>
+	<481B0A16.1050409@codeweavers.com>
+	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>
+	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>
+	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>
+	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+	<82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+	<19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+	<49375971.7030403@earthlink.net>
+Message-ID: <19e31a080812032038r60fc905fra8379e0dffea03da@mail.gmail.com>
+
+On Wed, Dec 3, 2008 at 11:15 PM, James McKenzie
+<jjmckenzie51 at earthlink.net> wrote:
+>> +1 on the teeshirts if you can use the drunk Penguin on some of them
+>> now that CodeWeavers is not using it for products.
+>>
+>> http://www.ixsoft.de/software/products/CWTSHIRTDP-L.html
+>>
+>>
+> It would be nice to ask the folks at CodeWeavers before running off and
+> producing a bunch of t-shirts.  They may not own the copyrights to it,
+> but can point you in the right direction.
+
+That was supposed to be implied by the 'if you can use'. I guess I
+should have clarified that yes of course be sure to check with
+CodeWeavers first.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From sedwards at bordeauxgroup.com  Wed Dec  3 22:43:09 2008
+From: sedwards at bordeauxgroup.com (Steven Edwards)
+Date: Wed, 3 Dec 2008 23:43:09 -0500
+Subject: Wine t-shirts?
+In-Reply-To: <82e274890812031512s8f47c1cqf385423caf7834b5@mail.gmail.com>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>
+	<b130c85e0805012154r59d66199qcfdfeb63df88b6ea@mail.gmail.com>
+	<481B0A16.1050409@codeweavers.com>
+	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>
+	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>
+	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>
+	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+	<82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+	<19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+	<82e274890812031512s8f47c1cqf385423caf7834b5@mail.gmail.com>
+Message-ID: <19e31a080812032043ycad1ee2w948da3c0c12e2ce6@mail.gmail.com>
+
+On Wed, Dec 3, 2008 at 6:12 PM, Ismael Barros? <razielmine at gmail.com> wrote:
+> Hum, that would be cool, I'll ask the boss but it's probably in.
+>
+> Does anyone have a higher resolution version?
+
+There is a copy of the images from a prior email Jeremy Newman at
+CodeWeavers sent here
+
+ftp://wine.codeweavers.com/pub/wine/logos/
+
+Jeremy White of CodeWeavers has been pretty liberal in the past about
+letting others (myself included) use the old logos they developed for
+other Wine related projects now that CrossOver has moved to a new
+logo.
+
+jwhite, was it implied by the drunk Penguin EPS being on the ftp site
+that the Wine project now has free reign to that logo?
+
+
+Thanks
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From sedwards at bordeauxgroup.com  Wed Dec  3 22:43:39 2008
+From: sedwards at bordeauxgroup.com (Steven Edwards)
+Date: Wed, 3 Dec 2008 23:43:39 -0500
+Subject: Wine t-shirts?
+In-Reply-To: <19e31a080812032043ycad1ee2w948da3c0c12e2ce6@mail.gmail.com>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>
+	<481B0A16.1050409@codeweavers.com>
+	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>
+	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>
+	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>
+	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+	<82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+	<19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+	<82e274890812031512s8f47c1cqf385423caf7834b5@mail.gmail.com>
+	<19e31a080812032043ycad1ee2w948da3c0c12e2ce6@mail.gmail.com>
+Message-ID: <19e31a080812032043p709b7112uaf445b18d38fc83e@mail.gmail.com>
+
+Would help if I actually send the email to you Jer
+
+On Wed, Dec 3, 2008 at 11:43 PM, Steven Edwards
+<sedwards at bordeauxgroup.com> wrote:
+> On Wed, Dec 3, 2008 at 6:12 PM, Ismael Barros? <razielmine at gmail.com> wrote:
+>> Hum, that would be cool, I'll ask the boss but it's probably in.
+>>
+>> Does anyone have a higher resolution version?
+>
+> There is a copy of the images from a prior email Jeremy Newman at
+> CodeWeavers sent here
+>
+> ftp://wine.codeweavers.com/pub/wine/logos/
+>
+> Jeremy White of CodeWeavers has been pretty liberal in the past about
+> letting others (myself included) use the old logos they developed for
+> other Wine related projects now that CrossOver has moved to a new
+> logo.
+>
+> jwhite, was it implied by the drunk Penguin EPS being on the ftp site
+> that the Wine project now has free reign to that logo?
+>
+>
+> Thanks
+> --
+> Steven Edwards
+>
+> "There is one thing stronger than all the armies in the world, and
+> that is an idea whose time has come." - Victor Hugo
+>
+
+
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From winehacker at gmail.com  Wed Dec  3 22:47:36 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Wed, 3 Dec 2008 23:47:36 -0500
+Subject: Wine t-shirts?
+In-Reply-To: <19e31a080812032043p709b7112uaf445b18d38fc83e@mail.gmail.com>
+References: <a71bd89a0804230443w3240caf7v46108219330713af@mail.gmail.com>
+	<b130c85e0805081406xf86434dj1cd20807748735ac@mail.gmail.com>
+	<33F6268AA99B6C448F07F03B2B6497D3093635@taz.CodeWeavers.local>
+	<b130c85e0805081431m782693cape88140ae722ca50@mail.gmail.com>
+	<b130c85e0805081432y5244a667n8494983ca0cc8bc2@mail.gmail.com>
+	<82e274890812030650r15f2c7d9ua1d0bc21cc4f3afb@mail.gmail.com>
+	<19e31a080812030729p3ed5f87dreb562271f9a94cd@mail.gmail.com>
+	<82e274890812031512s8f47c1cqf385423caf7834b5@mail.gmail.com>
+	<19e31a080812032043ycad1ee2w948da3c0c12e2ce6@mail.gmail.com>
+	<19e31a080812032043p709b7112uaf445b18d38fc83e@mail.gmail.com>
+Message-ID: <19e31a080812032047v23881ea2gc52e66cbcb0783b4@mail.gmail.com>
+
+Heh sorry for all the spam, it would help if I used gmail for
+everything, in the original thread Jer already gave blanket permission
+for Wine to that logo:
+
+from	Jeremy White <jwhite at winehq.org>
+to	Dan Kegel <dank at kegel.com>
+cc	Wine Developers List <wine-devel at winehq.org>
+date	Wed, Apr 23, 2008 at 7:40 AM
+subject	Re: Wine t-shirts?
+mailing list	wine-devel.winehq.org Filter messages from this mailing list
+	
+> http://kegel.com/wine/wine-penguin-corkscrew.png
+
+Jon Parshall is proud of his ability to draw those penguins,
+and we'd gladly send that artwork to anyone that wanted to make a T-shirt.
+
+Note, though, that we felt we had to (very sadly) drop the penguin; it doesn't
+really work for Mac users.
+
+
+Again sorry for the spam, I will stop with it now.
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From damjan.jov at gmail.com  Thu Dec  4 01:10:09 2008
+From: damjan.jov at gmail.com (Damjan Jovanovic)
+Date: Thu, 4 Dec 2008 09:10:09 +0200
+Subject: wineconsole: Wait on events in curses backend using select
+	instead of poll
+In-Reply-To: <Pine.LNX.4.64.0812011152320.11249@localhost.localdomain>
+References: <4931D5D9.1030008@martin.st>
+	<200812010847.28506.kai.blin@gmail.com>
+	<Pine.LNX.4.64.0812011152320.11249@localhost.localdomain>
+Message-ID: <9e89675b0812032310l67e189e0ha17cee6c667a06de@mail.gmail.com>
+
+On Mon, Dec 1, 2008 at 11:57 AM, Martin Storsj? <martin at martin.st> wrote:
+> On Mon, 1 Dec 2008, Kai Blin wrote:
+>
+>> On Sunday 30 November 2008 00:52:57 Martin Storsj? wrote:
+>>>
+>>> poll can't handle terminal devices on Darwin, since Tiger. See the
+>>> following discussion:
+>>> http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00066.html
+>>
+>> There's reasons we switched from select to poll. You can't just switch
+>> back to
+>
+> As far as I can tell from the history of curses.c, it never used select
+> (directly) before, it used WaitForMultipleObjects, which was changed into a
+> poll in 267d38e1bc78541221d20cc72a759acc78908e8e, "wineconsole: Don't use a
+> Win32 wait on a Unix file descriptor."
+>
+> But there may of course be other reasons for using poll, which I don't know
+> about.
+
+select() not only has a hard limit on the number of file descriptors
+(1024 or whatever) that can only be increased at kernel and libc build
+time, but also has a corresponding limit on the maximum file
+descriptor that can be selected (1023).
+
+On the other hand, console handles presumably exist on the low file
+descriptors (0, 1, and 2 - though doesn't transferring fds from the
+wineserver result in call to dup() which can change that?) and we poll
+very few of them, so those could possibly be done using select() - on
+MacOS *only*.
+
+>
+>> select to work around a OSX _bug_. If Apple can't get their act together
+>> to
+>> fix this, this needs to go behind a configure check/ifdef.
+>
+> Yes, that's true.
+>
+> I'm not too familiar with the wine codebase and customs, so instead of
+> nagging you with questions on what a proper solution would look like, should
+> I just file a bug with the actual issue; that the curses based console is
+> unusable on Darwin at the moment?
+>
+> // Martin
+>
+>
+>
+
+Damjan
+
+
+From martin at martin.st  Thu Dec  4 02:02:33 2008
+From: martin at martin.st (=?iso-8859-1?Q?Martin_Storsj=F6?=)
+Date: Thu, 4 Dec 2008 10:02:33 +0200 (EET)
+Subject: wineconsole: Wait on events in curses backend using select
+	instead of poll
+In-Reply-To: <9e89675b0812032310l67e189e0ha17cee6c667a06de@mail.gmail.com>
+References: <4931D5D9.1030008@martin.st>
+	<200812010847.28506.kai.blin@gmail.com>
+	<Pine.LNX.4.64.0812011152320.11249@localhost.localdomain>
+	<9e89675b0812032310l67e189e0ha17cee6c667a06de@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0812040948270.11249@localhost.localdomain>
+
+On Thu, 4 Dec 2008, Damjan Jovanovic wrote:
+
+> On Mon, Dec 1, 2008 at 11:57 AM, Martin Storsj? <martin at martin.st> wrote:
+>>
+>> But there may of course be other reasons for using poll, which I don't know
+>> about.
+>
+> select() not only has a hard limit on the number of file descriptors
+> (1024 or whatever) that can only be increased at kernel and libc build
+> time, but also has a corresponding limit on the maximum file
+> descriptor that can be selected (1023).
+
+Ah, thanks for pointing this out.
+
+> On the other hand, console handles presumably exist on the low file
+> descriptors (0, 1, and 2 - though doesn't transferring fds from the
+> wineserver result in call to dup() which can change that?) and we poll
+> very few of them, so those could possibly be done using select() - on
+> MacOS *only*.
+
+So, what would be the correct and clean way of conditionally enabling 
+this?
+
+The broken poll behaviour could be checked with this kind of snippet:
+
+#include <poll.h>
+
+int main(int argc, char** argv) {
+         struct pollfd pfd;
+         pfd.fd = 0;
+         pfd.events = POLLIN;
+         poll(&pfd, 1, 0);
+         return (pfd.revents & POLLNVAL) ? 1 : 0;
+Should this kind of detection be welded into configure in some way?
+
+Or would it be better to simply define e.g. POLL_BROKEN whenever building 
+for Darwin? That way, the binary would work well on all versions even if 
+built on some newer version, if they would happen to fix the bug there.
+
+Regards,
+// Martin
+
+From paul.vriens.wine at gmail.com  Thu Dec  4 02:35:11 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Thu, 04 Dec 2008 09:35:11 +0100
+Subject: dsound: fix remaining ds3d, dsound,	dsound8 test failures shown
+	on test.winehq.org
+In-Reply-To: <f5d9424f0812040020u56038b37s3fd6b36464130ddb@mail.gmail.com>
+References: <f5d9424f0812040020u56038b37s3fd6b36464130ddb@mail.gmail.com>
+Message-ID: <4937963F.2000305@gmail.com>
+
+Jeff Zaroyko wrote:
+> This should clear up the remaining dsound test failures shown for the
+> Win98 and WinME test results.
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+Hi Jeff,
+
+Would be a nice-to-have if you could add the platforms as comments to the 
+different return values.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From jeffzaroyko at gmail.com  Thu Dec  4 02:39:49 2008
+From: jeffzaroyko at gmail.com (Jeff Zaroyko)
+Date: Thu, 4 Dec 2008 19:39:49 +1100
+Subject: dsound: fix remaining ds3d, dsound,
+	dsound8 test failures shown on test.winehq.org
+In-Reply-To: <4937963F.2000305@gmail.com>
+References: <f5d9424f0812040020u56038b37s3fd6b36464130ddb@mail.gmail.com>
+	<4937963F.2000305@gmail.com>
+Message-ID: <f5d9424f0812040039w46ebb953h97a38f2a1a43a493@mail.gmail.com>
+
+On Thu, Dec 4, 2008 at 7:35 PM, Paul Vriens <paul.vriens.wine at gmail.com> wrote:
+> Jeff Zaroyko wrote:
+>>
+>> This should clear up the remaining dsound test failures shown for the
+>> Win98 and WinME test results.
+>>
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+> Hi Jeff,
+>
+> Would be a nice-to-have if you could add the platforms as comments to the
+> different return values.
+>
+> --
+> Cheers,
+>
+> Paul.
+>
+
+Maybe - do you think it's really platform dependent?
+
+I think it's just up to the underlying driver and that will vary even
+on the same platform.
+
+
+From martin at martin.st  Thu Dec  4 02:40:08 2008
+From: martin at martin.st (=?iso-8859-1?Q?Martin_Storsj=F6?=)
+Date: Thu, 4 Dec 2008 10:40:08 +0200 (EET)
+Subject: Any problems with these wineconsole patches?
+Message-ID: <Pine.LNX.4.64.0812041033480.11249@localhost.localdomain>
+
+Hi,
+
+In addition to the select vs poll patch to wineconsole, I sent two other 
+unrelated minor patches for wineconsole last Friday (attached here); are 
+there any obvious problems with these, prohibiting them from getting 
+merged?
+
+The first one simply makes fallbacks from the curses to the user backend 
+work if the curses library isn't found; not only in the case when the 
+curses backend isn't compiled in at all.
+
+The second one makes --use-event not resetting the backend to user, since 
+that's already the default. By setting the environment variable 
+WINECONSOLE="wineconsole --backend=curses", the user could make all 
+implicitly opened consoles be curses based consoles -- if --use-event 
+wouldn't reset the backend back to user as it does at the moment.
+
+Regards,
+// Martin
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-wineconsole-Fallback-to-window-based-console-if-the.patch
+Type: text/x-diff
+Size: 1431 bytes
+Desc: 
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081204/5e5366ef/attachment.patch 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0003-wineconsole-Don-t-force-a-window-backend-when-use.patch
+Type: text/x-diff
+Size: 1521 bytes
+Desc: 
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20081204/5e5366ef/attachment-0001.patch 
+
+From paul.vriens.wine at gmail.com  Thu Dec  4 02:45:26 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Thu, 04 Dec 2008 09:45:26 +0100
+Subject: dsound: fix remaining ds3d, dsound, dsound8 test failures shown
+	on test.winehq.org
+In-Reply-To: <f5d9424f0812040039w46ebb953h97a38f2a1a43a493@mail.gmail.com>
+References: <f5d9424f0812040020u56038b37s3fd6b36464130ddb@mail.gmail.com>	
+	<4937963F.2000305@gmail.com>
+	<f5d9424f0812040039w46ebb953h97a38f2a1a43a493@mail.gmail.com>
+Message-ID: <493798A6.3080202@gmail.com>
+
+Jeff Zaroyko wrote:
+> On Thu, Dec 4, 2008 at 7:35 PM, Paul Vriens <paul.vriens.wine at gmail.com> wrote:
+>> Jeff Zaroyko wrote:
+>>> This should clear up the remaining dsound test failures shown for the
+>>> Win98 and WinME test results.
+>>>
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>> Hi Jeff,
+>>
+>> Would be a nice-to-have if you could add the platforms as comments to the
+>> different return values.
+>>
+>> --
+>> Cheers,
+>>
+>> Paul.
+>>
+> 
+> Maybe - do you think it's really platform dependent?
+> 
+> I think it's just up to the underlying driver and that will vary even
+> on the same platform.
+> 
+If it's driver dependent you can ignore my email.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From dank at kegel.com  Thu Dec  4 04:32:55 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Thu, 4 Dec 2008 02:32:55 -0800
+Subject: wineconsole: Wait on events in curses backend using select
+	instead of poll
+Message-ID: <a71bd89a0812040232u58b6ab0cobff59ed7b90ab7e1@mail.gmail.com>
+
+James McKenzie wrote:
+> This will have to be setup so that it only works for Macs.
+> ... it does not belong in the Wine code stack.
+
+Why?  Select is a perfectly reasonable choice -- and
+arguably preferable to poll -- when you are absolutely
+sure that no file descriptor higher than 1023 can be
+passed to it.   (e.g. when you're using it in a program
+that does not open many file descriptors, or when
+you're using it with no file descriptors, as a nice sleep).
+
+I think wineconsole is an example of an app that does
+not open many file descriptors, so select is fine there.
+- Dan
+
+
+From xrfang at gmail.com  Wed Dec  3 17:38:13 2008
+From: xrfang at gmail.com (Xiangrong Fang)
+Date: Thu, 4 Dec 2008 07:38:13 +0800
+Subject: patch for gdi32
+In-Reply-To: <a71bd89a0812031329j6facb9c0hb7401a9b6837331e@mail.gmail.com>
+References: <a71bd89a0812031324w6b7a6851k42af9bc237127cb9@mail.gmail.com>
+	<a71bd89a0812031329j6facb9c0hb7401a9b6837331e@mail.gmail.com>
+Message-ID: <da8c61f0812031538g6fe481b3m161223d99bc3dcb1@mail.gmail.com>
+
+Hi Dan,
+
+Thank you for your explanations!
+
+It is indeed bug #4065.  I read the info there, although I don't fully
+understand every bit information there, but that is marked as FIXED
+and CLOSED?? As far as I know, this is NOT fixed yet, and it affect a
+HUGE amount of Chinese applications, those applications are otherwise
+perfectly supported by wine.  A very good progress in this area is
+that I found Chinese text are more properly auto-wrapped in recent
+Wine releases, which is excellent.
+
+About this issue, shall I submit discussion in #4065 or open a new
+bug?  (I need to upload some screenshots to illustrate the problem --
+this is NOT a missing font problem as discussed).
+
+BTW, for these discussions, shall I use wine-devel or wine-patch?
+
+Please advise.
+
+Thank you!
+
+Sincerely,
+Shannon
+
+2008/12/4 Dan Kegel <dank at kegel.com>:
+> On Wed, Dec 3, 2008 at 1:24 PM, Dan Kegel <dank at kegel.com> wrote:
+>> Hi Xiangrong,
+>> you forgot to attach the patch, I think.
+>
+> Aha.  You attached the wrong format.  We want a plain text file,
+> i.e. not .odt, but .txt.    The nice description in your .odt/.pdf
+> belongs in a bug report in http://bugs.winehq.org.
+> (And, as somebody mentioned, there may be related bugs already,
+> e.g. http://bugs.winehq.org/show_bug.cgi?id=4065 )
+>
+> If you don't want to use "git diff" to generate the patch, use 'diff -u'.  See
+> http://kegel.com/academy/opensource.html#patches
+>
+> Good luck, and welcome to Wine development!
+> - Dan
+>
+
+
+From mah at jump-ing.de  Thu Dec  4 06:49:10 2008
+From: mah at jump-ing.de (Markus Hitter)
+Date: Thu, 4 Dec 2008 13:49:10 +0100
+Subject: patch for gdi32
+In-Reply-To: <da8c61f0812031538g6fe481b3m161223d99bc3dcb1@mail.gmail.com>
+References: <a71bd89a0812031324w6b7a6851k42af9bc237127cb9@mail.gmail.com>
+	<a71bd89a0812031329j6facb9c0hb7401a9b6837331e@mail.gmail.com>
+	<da8c61f0812031538g6fe481b3m161223d99bc3dcb1@mail.gmail.com>
+Message-ID: <CB771B95-2E75-42F7-B295-FCAE1CBA9DE3@jump-ing.de>
+
+
+Am 04.12.2008 um 00:38 schrieb Xiangrong Fang:
+
+> but that is marked as FIXED and CLOSED??
+
+Yes, Wine developers are sometimes pretty quick at closing bugs. The  
+sad thing is, you can't comment on closed bugs and have to open a new  
+one.
+
+> BTW, for these discussions, shall I use wine-devel or wine-patch?
+
+wine-patches is for patches only, -devel is where discussions should go.
+
+
+MarKus
+
+- - - - - - - - - - - - - - - - - - -
+Dipl. Ing. Markus Hitter
+http://www.jump-ing.de/
+
+
+
+
+
+
+From dank at kegel.com  Thu Dec  4 07:45:21 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Thu, 4 Dec 2008 05:45:21 -0800
+Subject: Package repository discussion
+Message-ID: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+
+Ubuntu is having a meeting next week to discuss
+how to more easily grant users access to third
+party repositories (like wine's, perhaps).
+
+I've got a meeting wiki up at
+ http://wiki.winehq.org/TrustingThirdPartyRepositories
+It already lists the big issues that need discussing.
+If you're interested in the topic, please have a look and put your two cents in!
+- Dan
+
+
+From meissner at suse.de  Thu Dec  4 07:55:46 2008
+From: meissner at suse.de (Marcus Meissner)
+Date: Thu, 4 Dec 2008 14:55:46 +0100
+Subject: Package repository discussion
+In-Reply-To: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+References: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+Message-ID: <20081204135546.GB2125@suse.de>
+
+On Thu, Dec 04, 2008 at 05:45:21AM -0800, Dan Kegel wrote:
+> Ubuntu is having a meeting next week to discuss
+> how to more easily grant users access to third
+> party repositories (like wine's, perhaps).
+> 
+> I've got a meeting wiki up at
+>  http://wiki.winehq.org/TrustingThirdPartyRepositories
+> It already lists the big issues that need discussing.
+> If you're interested in the topic, please have a look and put your two cents in!
+
+Well, openSUSE 11.0/11.1 use a remote hosted XML file which provides
+a list of repositories for addition, and also single-click "YMP" files
+for very easy repository addition.
+
+This XML list includes my Emulators:Wine repository on the openSUSE
+buildservice for instance.
+
+So perhaps they should look at and evaluate how openSUSE does it ;)
+
+As for the points listed, we sometimes adopt a "do not care" attitude,
+because, well, users do not want it to be overdesigned or just don't
+care.
+
+Ciao, Marcus
+
+
+From dank at kegel.com  Thu Dec  4 08:33:28 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Thu, 4 Dec 2008 06:33:28 -0800
+Subject: Package repository discussion
+In-Reply-To: <20081204135546.GB2125@suse.de>
+References: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+	<20081204135546.GB2125@suse.de>
+Message-ID: <a71bd89a0812040633g4b237actfeb6303ceefe9b5d@mail.gmail.com>
+
+On Thu, Dec 4, 2008 at 5:55 AM, Marcus Meissner <meissner at suse.de> wrote:
+>>  http://wiki.winehq.org/TrustingThirdPartyRepositories
+>
+> Well, openSUSE 11.0/11.1 use a remote hosted XML file which provides
+> a list of repositories for addition, and also single-click "YMP" files
+> for very easy repository addition.
+>
+> This XML list includes my Emulators:Wine repository on the openSUSE
+> buildservice for instance.
+>
+> So perhaps they should look at and evaluate how openSUSE does it ;)
+
+I'm very aware of the YMP / OneClickInstall stuff, and it will be discussed.
+I already have an indirect link to it, maybe I'll add a direct one, too.
+
+> As for the points listed, we sometimes adopt a "do not care" attitude,
+> because, well, users do not want it to be overdesigned or just don't
+> care.
+
+Users don't care about security and dll hell until it bites them, either.
+
+
+From fgouget at free.fr  Thu Dec  4 16:41:51 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Thu, 4 Dec 2008 23:41:51 +0100 (CET)
+Subject: Alexandre Julliard : wintab32: Make a function static.
+In-Reply-To: <E1L8Fj0-0002Zx-Bm@wine.codeweavers.com>
+References: <E1L8Fj0-0002Zx-Bm@wine.codeweavers.com>
+Message-ID: <alpine.DEB.1.10.0812042336320.9729@amboise.dolphin>
+
+
+On Thu, 4 Dec 2008, Alexandre Julliard wrote:
+[...]
+> -UINT WINAPI WTInfoT(UINT wCategory, UINT nIndex, LPVOID lpOutput, BOOL bUnicode)
+> +static UINT WTInfoT(UINT wCategory, UINT nIndex, LPVOID lpOutput, BOOL bUnicode)
+
+
+So how do you know which functions to make static? I guess you don't 
+just mark them all static and see if it causes compilation errors.
+
+Is it a script parsing the 'nm -D' output and then grepping for them in 
+the spec file and in object files? I guess there's better way.
+
+Is it something that can be automated? I'm thinking either patchwatcher 
+or my weekly scripts here.
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+                      Computers are like airconditioners
+                They stop working properly if you open WINDOWS
+
+
+From scott at open-vote.org  Thu Dec  4 18:01:41 2008
+From: scott at open-vote.org (Scott Ritchie)
+Date: Thu, 04 Dec 2008 16:01:41 -0800
+Subject: Package repository discussion
+In-Reply-To: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+References: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+Message-ID: <49386F65.2040106@open-vote.org>
+
+Dan Kegel wrote:
+> Ubuntu is having a meeting next week to discuss
+> how to more easily grant users access to third
+> party repositories (like wine's, perhaps).
+> 
+> I've got a meeting wiki up at
+>  http://wiki.winehq.org/TrustingThirdPartyRepositories
+> It already lists the big issues that need discussing.
+> If you're interested in the topic, please have a look and put your two cents in!
+> - Dan
+> 
+> 
+I'll be there.  I proposed a similar thing that never quite happened
+last year (ThirdPartyApt), but only because I didn't really have time to
+write the actual code.
+
+Thanks,
+Scott Ritchie
+
+
+From dank at kegel.com  Thu Dec  4 18:04:48 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Thu, 4 Dec 2008 16:04:48 -0800
+Subject: Package repository discussion
+In-Reply-To: <49386F65.2040106@open-vote.org>
+References: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+	<49386F65.2040106@open-vote.org>
+Message-ID: <a71bd89a0812041604s43647635k885b280989180fa6@mail.gmail.com>
+
+On Thu, Dec 4, 2008 at 4:01 PM, Scott Ritchie <scott at open-vote.org> wrote:
+> I'll be there.  I proposed a similar thing that never quite happened
+> last year (ThirdPartyApt), but only because I didn't really have time to
+> write the actual code.
+
+Yeah, saw that.  I guess I should link to it.
+
+See you there!
+
+
+From madewokherd+8cd9 at gmail.com  Thu Dec  4 18:19:20 2008
+From: madewokherd+8cd9 at gmail.com (Vincent Povirk)
+Date: Thu, 4 Dec 2008 18:19:20 -0600
+Subject: [PATCH] comdlg32: Avoid passing NULL to
+	FILEDLG95_LOOKIN_InsertItemAfterParent.
+In-Reply-To: <558b2f5c0812041457x69ca870bs4a1bbcf16b6bdb6f@mail.gmail.com>
+References: <558b2f5c0812041457x69ca870bs4a1bbcf16b6bdb6f@mail.gmail.com>
+Message-ID: <ced95fe0812041619m1cfc7a24ua626c4bc29d5c08b@mail.gmail.com>
+
+Hi,
+
+I think you need to free the pidl you get from SHGetSpecialFolderLocation.
+
+Vincent Povirk
+
+
+
+On Thu, Dec 4, 2008 at 4:57 PM, Lei Zhang <thestig at google.com> wrote:
+> Hi,
+>
+> This is my second attempt to fix bug 16332. We can make sure
+> FILEDLG95_LOOKIN_InsertItemAfterParent() doesn't infinite loop by
+> always giving it a non-null pidl. The Desktop folder seems like a
+> sensible default.
+>
+>
+>
+>
+
+
+From jjmckenzie51 at earthlink.net  Thu Dec  4 20:02:32 2008
+From: jjmckenzie51 at earthlink.net (James McKenzie)
+Date: Thu, 04 Dec 2008 19:02:32 -0700
+Subject: wineconsole: Wait on events in curses backend using select
+	insteadof poll
+In-Reply-To: <3ACB8483AA0842E5AE3D66427C451A31@DMITRY>
+References: <4931D5D9.1030008@martin.st> <49374E37.7060304@earthlink.net>
+	<3ACB8483AA0842E5AE3D66427C451A31@DMITRY>
+Message-ID: <49388BB8.9020503@earthlink.net>
+
+Dmitry Timoshkov wrote:
+> "James McKenzie" <jjmckenzie51 at earthlink.net> wrote:
+>
+>> Martin Storsj? wrote:
+>>>
+>>> poll can't handle terminal devices on Darwin, since Tiger. See the
+>>> following discussion:
+>>> http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00066.html
+>>>
+>> This will have to be setup so that it only works for Macs.  Maybe this
+>> can be a static patch in the Darwine code but it does not belong in the
+>> Wine code stack.
+>
+> Why do you prefer to have a broken hack in Darwine instead of fixing this
+> properly?
+Because I don't think AJ will approve a Mac-only fix.  If the 'proper'
+thing to do is to produce an appropriate patch, then that should be our
+goal.
+>
+> Btw, what are the difference between Darwine and WineHQ that you insist
+> to have a different name (Darwine) instead of just Wine? 
+I did not create Darwine, I only test the builds from Zach Drayer and
+Mike Kronenberg.
+> Are you aware
+> that due to that all bugs reported to Wine bugzilla mentioning Darwine
+> are closed as invalid? Do you have your own bug tracking system?
+>
+I'll check if Darwine has its own tracking system.
+
+I would like go segway at this point to two projects that I actually
+produced code for:
+
+NeoOffice.org, which was a Aqua port of OpenOffice.org
+The Mac X11 port of OpenOffice.org, which has produced a release version
+of an Aqua port after about two years.
+
+So, how does this apply to Wine?  If a problem was found in
+NeoOffice.org that was caused by the base OpenOffice.org code, the
+NeoOffice.org testers would create a bug in the OpenOffice.org Bug
+Tracker.  I propose that we do the same thing with Darwine.  If a bug is
+found that concerns ONLY the Darwine builds, then it should stay with
+the Darwine people.  An example of this is the lack of OpenGL support
+from Apple/MacQuartz's X11.  If a bug is found that concerns the Wine
+code, then it goes into the Wine Bugzilla.  This way developers are
+aware of problems that need to be fixed.  As a final thought, I have an
+X86 PC (acutally, a Thinkpad A22p with an ATI video card) that I can
+test problems on and possibly work with to build Wine from git. 
+However, my time is limited as is everyone's.
+
+So, why the long story:  If AJ will allow Mac-specific 'c' code, then
+I'm all in on keeping it in Wine.  If he cannot, then it should be part
+of the Darwine project.  I don't want a repeat of what happened between
+the NeoOffice.org and OpenOffice.org projects.  
+
+My opinion is that there should be one and only one code base from which
+builds for all of the x86 operating systems can be built from.  This
+includes the various flavors of Linux, UNIX, Solaris and MacOSX.  Maybe
+we can even include the small OS/2 crowd somehow.
+
+James McKenzie
+
+
+
+From julliard at winehq.org  Fri Dec  5 03:07:29 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 05 Dec 2008 10:07:29 +0100
+Subject: Alexandre Julliard : wintab32: Make a function static.
+In-Reply-To: <alpine.DEB.1.10.0812042336320.9729@amboise.dolphin> (Francois
+	Gouget's message of "Thu, 4 Dec 2008 23:41:51 +0100 (CET)")
+References: <E1L8Fj0-0002Zx-Bm@wine.codeweavers.com>
+	<alpine.DEB.1.10.0812042336320.9729@amboise.dolphin>
+Message-ID: <87hc5jq9bi.fsf@wine.dyndns.org>
+
+Francois Gouget <fgouget at free.fr> writes:
+
+> So how do you know which functions to make static? I guess you don't 
+> just mark them all static and see if it causes compilation errors.
+>
+> Is it a script parsing the 'nm -D' output and then grepping for them in 
+> the spec file and in object files? I guess there's better way.
+
+Currently I'm doing basically nm -D and then grep *.spec *.c. There are
+a number of false positives since it will miss macros etc. so it's
+probably a bit hard to automate. I suppose you could keep a current list
+and then check for new symbols once a week.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From hans at codeweavers.com  Fri Dec  5 03:00:38 2008
+From: hans at codeweavers.com (Hans Leidekker)
+Date: Fri, 5 Dec 2008 10:00:38 +0100
+Subject: inetcomm: possible null pointer dereferences
+In-Reply-To: <a41bcdbd0812041232t1b600332ud4f6a1d13de35d74@mail.gmail.com>
+References: <a41bcdbd0812041232t1b600332ud4f6a1d13de35d74@mail.gmail.com>
+Message-ID: <200812051000.38303.hans@codeweavers.com>
+
+On Thursday 04 December 2008 21:32:37 Gregor Schneider wrote:
+
+> -    TRACE("(%s)\n", pszEmailFrom);
+> -
+>      if (!pszEmailFrom)
+>         return E_INVALIDARG;
+> 
+> +    TRACE("(%s)\n", pszEmailFrom);
+> +
+> +    len = sizeof(szCommandFormat) - 2 /* "%s" */ + strlen(pszEmailFrom);
+> +
+
+Instead of moving the trace down you should use debugstr_a(), which handles
+the NULL pointer for you.
+
+ -Hans
+
+
+From twickline at gmail.com  Fri Dec  5 05:13:55 2008
+From: twickline at gmail.com (Tom Wickline)
+Date: Fri, 5 Dec 2008 06:13:55 -0500
+Subject: Package repository discussion
+In-Reply-To: <49386F65.2040106@open-vote.org>
+References: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+	<49386F65.2040106@open-vote.org>
+Message-ID: <53e3a9930812050313v454e0850raea7306e5a50d925@mail.gmail.com>
+
+Well maybe you will want to fix the 8.04 debs so they will actually
+install for people before you tell everyone to come and get them.
+
+The debs that you provide have a unresolved dependency.
+
+Also from the download page: http://www.lamalennyrepo.altervista.org/binary.php
+is a 404
+
+Tom
+
+On Thu, Dec 4, 2008 at 7:01 PM, Scott Ritchie <scott at open-vote.org> wrote:
+> Dan Kegel wrote:
+>> Ubuntu is having a meeting next week to discuss
+>> how to more easily grant users access to third
+>> party repositories (like wine's, perhaps).
+>>
+>> I've got a meeting wiki up at
+>>  http://wiki.winehq.org/TrustingThirdPartyRepositories
+>> It already lists the big issues that need discussing.
+>> If you're interested in the topic, please have a look and put your two cents in!
+>> - Dan
+>>
+>>
+> I'll be there.  I proposed a similar thing that never quite happened
+> last year (ThirdPartyApt), but only because I didn't really have time to
+> write the actual code.
+>
+> Thanks,
+> Scott Ritchie
+>
+>
+>
+
+
+
+-- 
+http://www.wine-reviews.net/
+
+
+From hans at codeweavers.com  Fri Dec  5 07:49:52 2008
+From: hans at codeweavers.com (Hans Leidekker)
+Date: Fri, 5 Dec 2008 14:49:52 +0100
+Subject: winebrowser: Interpret the DDE data as CHAR or WCHAR just like
+	the shell32 dde_connect helper sends it
+In-Reply-To: <200812051505.08493.paulc@voip.null.ro>
+References: <200812051505.08493.paulc@voip.null.ro>
+Message-ID: <200812051449.52290.hans@codeweavers.com>
+
+On Friday 05 December 2008 14:05:08 Paul Chitescu wrote:
+
+> Shell32 sends either 8 bit or 16 bit strings in XTYP_EXECUTE depending on the 
+> highest bit of "operating system version" - ASCII based or Unicode based. 
+> When the data is used in winebrowser it must be interpreted the same.
+
+The impression I get from reading MSDN is that the character set depends
+on whether the client called DdeInitializeA or DdeInitializeW, and it can
+be overridden too by setting iCodePage in the CONVCONTEXT structure.
+
+  -Hans
+
+
+From paulc at voip.null.ro  Fri Dec  5 08:17:47 2008
+From: paulc at voip.null.ro (Paul Chitescu)
+Date: Fri, 5 Dec 2008 16:17:47 +0200
+Subject: winebrowser: Interpret the DDE data as CHAR or WCHAR just like
+	the shell32 dde_connect helper sends it
+In-Reply-To: <200812051449.52290.hans@codeweavers.com>
+References: <200812051505.08493.paulc@voip.null.ro>
+	<200812051449.52290.hans@codeweavers.com>
+Message-ID: <200812051617.48245.paulc@voip.null.ro>
+
+Hi!
+
+The problem is not about the service name or other identifiers but rather the 
+obscure data pushed by the DdeClientTransaction. DDE knows nothing about the 
+format of this data as this is rather a convention between the client 
+(shell32) and the server (winebrowser).
+
+Paul Chitescu
+
+
+On Friday 05 December 2008 15:49:52 Hans Leidekker wrote:
+> On Friday 05 December 2008 14:05:08 Paul Chitescu wrote:
+> > Shell32 sends either 8 bit or 16 bit strings in XTYP_EXECUTE depending on
+> > the highest bit of "operating system version" - ASCII based or Unicode
+> > based. When the data is used in winebrowser it must be interpreted the
+> > same.
+>
+> The impression I get from reading MSDN is that the character set depends
+> on whether the client called DdeInitializeA or DdeInitializeW, and it can
+> be overridden too by setting iCodePage in the CONVCONTEXT structure.
+>
+>   -Hans
+
+
+From paul.vriens.wine at gmail.com  Fri Dec  5 08:25:56 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Fri, 05 Dec 2008 15:25:56 +0100
+Subject: opengl/tests: Skip tests if we can't find a pixel format.
+In-Reply-To: <20081205141925.GB4101@merlot.physics.ox.ac.uk>
+References: <20081205141925.GB4101@merlot.physics.ox.ac.uk>
+Message-ID: <493939F4.9050704@gmail.com>
+
+Huw Davies wrote:
+> ---
+>  dlls/opengl32/tests/opengl.c |    8 ++++++++
+>  1 files changed, 8 insertions(+), 0 deletions(-)
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+
+Hi Huw,
+
+This looks a bit strange:
+
++        if(iPixelFormat == 0)
++        {
++            todo_wine ok(iPixelFormat > 0,
+
+
+Is it your intention to just throw up a failed message in all cases?
+
+-- 
+Cheers,
+
+Paul.
+
+
+From huw at codeweavers.com  Fri Dec  5 08:31:43 2008
+From: huw at codeweavers.com (Huw Davies)
+Date: Fri, 5 Dec 2008 14:31:43 +0000
+Subject: opengl/tests: Skip tests if we can't find a pixel format.
+In-Reply-To: <493939F4.9050704@gmail.com>
+References: <20081205141925.GB4101@merlot.physics.ox.ac.uk>
+	<493939F4.9050704@gmail.com>
+Message-ID: <20081205143141.GC4101@merlot.physics.ox.ac.uk>
+
+On Fri, Dec 05, 2008 at 03:25:56PM +0100, Paul Vriens wrote:
+> This looks a bit strange:
+> 
+> +        if(iPixelFormat == 0)
+> +        {
+> +            todo_wine ok(iPixelFormat > 0,
+> 
+> 
+> Is it your intention to just throw up a failed message in all cases?
+
+Hi Paul,
+
+It was my intention to throw a todo if ChoosePixelFormat rets 0 when
+run under Wine.
+
+Huw.
+
+
+From hans at codeweavers.com  Fri Dec  5 08:33:04 2008
+From: hans at codeweavers.com (Hans Leidekker)
+Date: Fri, 5 Dec 2008 15:33:04 +0100
+Subject: winebrowser: Interpret the DDE data as CHAR or WCHAR just like
+	the shell32 dde_connect helper sends it
+In-Reply-To: <200812051617.48245.paulc@voip.null.ro>
+References: <200812051505.08493.paulc@voip.null.ro>
+	<200812051449.52290.hans@codeweavers.com>
+	<200812051617.48245.paulc@voip.null.ro>
+Message-ID: <200812051533.04554.hans@codeweavers.com>
+
+On Friday 05 December 2008 15:17:47 Paul Chitescu wrote:
+
+> The problem is not about the service name or other identifiers but rather the 
+> obscure data pushed by the DdeClientTransaction. DDE knows nothing about the 
+> format of this data as this is rather a convention between the client 
+> (shell32) and the server (winebrowser).
+
+But is it safe to assume that shell32 is the only client of winebrowser?
+
+  -Hans
+
+
+From paulc at voip.null.ro  Fri Dec  5 10:20:33 2008
+From: paulc at voip.null.ro (Paul Chitescu)
+Date: Fri, 5 Dec 2008 18:20:33 +0200
+Subject: winebrowser: Interpret the DDE data as CHAR or WCHAR just like
+	the shell32 dde_connect helper sends it
+In-Reply-To: <200812051533.04554.hans@codeweavers.com>
+References: <200812051505.08493.paulc@voip.null.ro>
+	<200812051617.48245.paulc@voip.null.ro>
+	<200812051533.04554.hans@codeweavers.com>
+Message-ID: <200812051820.33686.paulc@voip.null.ro>
+
+On Friday 05 December 2008 16:33:04 Hans Leidekker wrote:
+> On Friday 05 December 2008 15:17:47 Paul Chitescu wrote:
+> > The problem is not about the service name or other identifiers but rather
+> > the obscure data pushed by the DdeClientTransaction. DDE knows nothing
+> > about the format of this data as this is rather a convention between the
+> > client (shell32) and the server (winebrowser).
+>
+> But is it safe to assume that shell32 is the only client of winebrowser?
+>
+>   -Hans
+
+The few examples I've found for direct IE invocation pass a HDDEDATA handle 
+created by DdeCreateStringHandle (a HSZ). Wine's implementation seems to 
+simply get the data and length from the data and send it over DDE (in 
+WDML_ClientQueueExecute). No idea if string type is preserved in Windows.
+
+The fact winebrowser doesn't crash suggest no program is doing 
+DdeClientTransaction directly ;-) although it may be possible that 
+winebrowser just prints this warning message which my patch fixes:
+
+Unabled to retrieve URL from string L"\""
+
+LOL!
+
+We could easily guess if the data received by winebrowser has the wrong 
+character size since normally the 1st character is a quote. However this 
+doesn't look clean to me.
+
+Paul
+
+
+From jmiller-wine at tanner.com  Fri Dec  5 14:15:20 2008
+From: jmiller-wine at tanner.com (Jeff Miller)
+Date: Fri, 05 Dec 2008 12:15:20 -0800
+Subject: App hang on creating modal dialog
+Message-ID: <49398BD8.8000003@tanner.com>
+
+I'm trying to solve my bug 16346
+http://bugs.winehq.org/show_bug.cgi?id=16346
+
+Whenever an application pops up a modal dialog in response to a 
+WM_ACTIVATEAPP message, the entire app permanently hangs.  The dialog 
+comes up and is usually rendered the first time, but then no more 
+messages are ever received by the app.
+
+I'm trying to figure out where in the wine code I should look for a 
+system that might be eating all of the messages intended for my 
+application.  Can anyone point me in the right direction?
+
+My best guess is that there is a race between the application becoming 
+the active window and the dialog taking over as the active window, and 
+the message system is arriving at an inconsistent state.
+
+Jeff
+
+
+From austinenglish at gmail.com  Fri Dec  5 14:40:20 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Fri, 5 Dec 2008 14:40:20 -0600
+Subject: mshtml: Removed the reference counting of the DLL.
+In-Reply-To: <9d69cf6b0812051236x57797dacj66a057c4111ff6d6@mail.gmail.com>
+References: <9d69cf6b0812051236x57797dacj66a057c4111ff6d6@mail.gmail.com>
+Message-ID: <b6bb06270812051240i3f1500efm713d27532c4fdbd5@mail.gmail.com>
+
+On Fri, Dec 5, 2008 at 2:36 PM, Alexandru Balut
+<alexandru.balut at gmail.com> wrote:
+> Hi,
+>
+> This is a fix for: http://bugs.winehq.org/show_bug.cgi?id=16164
+>
+>
+>
+>
+
+
++    // We never unload the dll, so we just ignore this call.
++    // See DllCanUnloadNow().
+
+You've got C++ style comments, only use straight C /* comment */
+
+-- 
+-Austin
+
+
+From m.b.lankhorst at gmail.com  Fri Dec  5 14:57:51 2008
+From: m.b.lankhorst at gmail.com (Maarten Lankhorst)
+Date: Fri, 05 Dec 2008 21:57:51 +0100
+Subject: Wine64 hello world app runs!
+Message-ID: <493995CF.4050104@gmail.com>
+
+Hi guys,
+
+I can finally report success on the first ever win64 program running on 
+wine. The program was a textbook classic, but to make it work gcc had to 
+be changed a lot. This was done by Kai Tietz, who has put a lot of 
+effort in the task of making gcc accept the calling convention.
+
+There are still a lot of things which should be done before this will be 
+able to get into mainline though.
+
+My repository is at http://repo.or.cz/w/wine/wine64.git , but in order 
+to actually get it working you need gcc checked out from subversion with 
+some experimental patches. They are expected to get merged soon, so 
+until then it is not recommended to even try. :)
+
+There are a bunch of things in my tree which are not merged with 
+mainline. A few of them are hacks (disabling SEGV handling for example).
+
+There are also some changes which should be accepted, but still need 
+some work. For example wineserver, AJ wants something with regards to fd 
+handling, but I didn't find him clear on what exactly. va_list also is 
+incompatible, and should be replaced with ms_va_list where appropiate.
+
+Once again, thanks to Kai Tietz for making this possible.
+
+Cheers,
+Maarten.
+
+
+From scott at open-vote.org  Fri Dec  5 15:51:25 2008
+From: scott at open-vote.org (Scott Ritchie)
+Date: Fri, 05 Dec 2008 13:51:25 -0800
+Subject: Package repository discussion
+In-Reply-To: <53e3a9930812050313v454e0850raea7306e5a50d925@mail.gmail.com>
+References: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>	<49386F65.2040106@open-vote.org>
+	<53e3a9930812050313v454e0850raea7306e5a50d925@mail.gmail.com>
+Message-ID: <4939A25D.5040900@open-vote.org>
+
+Tom Wickline wrote:
+> Well maybe you will want to fix the 8.04 debs so they will actually
+> install for people before you tell everyone to come and get them.
+> 
+> The debs that you provide have a unresolved dependency.
+
+Could you clarify?  I'm not aware of any installation-critical bugs in
+the 8.04 packages.
+
+> 
+> Also from the download page: http://www.lamalennyrepo.altervista.org/binary.php
+> is a 404
+
+Which download page is this?  I've never seen this site before.
+
+Thanks,
+Scott Ritchie
+
+
+From dank at kegel.com  Sat Dec  6 00:30:27 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Fri, 5 Dec 2008 22:30:27 -0800
+Subject: App hang on creating modal dialog
+Message-ID: <a71bd89a0812052230l329b319y98b6359901d34b98@mail.gmail.com>
+
+Jeff wrote:
+>I'm trying to solve my bug 16346
+>http://bugs.winehq.org/show_bug.cgi?id=16346
+>...
+>I'm trying to figure out where in the wine code I should look for a
+>system that might be eating all of the messages intended for my
+>application.  Can anyone point me in the right direction?
+
+I dunno, but that test case is nice and small.  Can you
+turn it into a wine conformance test?  That will make it
+even more likely somebody helps find a solution...
+- Dan
+
+
+From twickline at gmail.com  Sat Dec  6 05:18:29 2008
+From: twickline at gmail.com (Tom Wickline)
+Date: Sat, 6 Dec 2008 06:18:29 -0500
+Subject: Package repository discussion
+In-Reply-To: <4939A25D.5040900@open-vote.org>
+References: <a71bd89a0812040545k6038ffe8q8e754dbb2e11f83@mail.gmail.com>
+	<49386F65.2040106@open-vote.org>
+	<53e3a9930812050313v454e0850raea7306e5a50d925@mail.gmail.com>
+	<4939A25D.5040900@open-vote.org>
+Message-ID: <53e3a9930812060318ib542e1djbe670fb48d46527c@mail.gmail.com>
+
+On Fri, Dec 5, 2008 at 4:51 PM, Scott Ritchie <scott at open-vote.org> wrote:
+> Tom Wickline wrote:
+>> Well maybe you will want to fix the 8.04 debs so they will actually
+>> install for people before you tell everyone to come and get them.
+>>
+>> The debs that you provide have a unresolved dependency.
+>
+> Could you clarify?  I'm not aware of any installation-critical bugs in
+> the 8.04 packages.
+>
+
+ok ill re test the older bulds again.
+
+>>
+>> Also from the download page: http://www.lamalennyrepo.altervista.org/binary.php
+>> is a 404
+>
+> Which download page is this?  I've never seen this site before.
+
+from here: http://www.winehq.org/site/download-deblenny
+but now its working, it was a 404 for a couple days.
+
+>
+> Thanks,
+> Scott Ritchie
+>
+
+
+From jerome.gardou at gmail.com  Sat Dec  6 06:13:59 2008
+From: jerome.gardou at gmail.com (=?UTF-8?B?SsOpcsO0bWUgR2FyZG91?=)
+Date: Sat, 06 Dec 2008 13:13:59 +0100
+Subject: d3d9 : do not proceed reset or release from another thread than
+	the one which created the device.
+In-Reply-To: <d658b69e0812010055x1bc8c4cetb2148af8926002f9@mail.gmail.com>
+References: <4932D8BE.3010402@laposte.net>
+	<d658b69e0812010055x1bc8c4cetb2148af8926002f9@mail.gmail.com>
+Message-ID: <493A6C87.1060909@laposte.net>
+
+Henri Verbeet a ?crit :
+> 2008/11/30 J?r?me Gardou <jerome.gardou at gmail.com>:
+>   
+>> -    if (ref == 0) {
+>> +    if (ref <= 0) {
+>>     
+> This doesn't work, of course. ref is an ULONG.
+Why not just a cast in this case ?
+>  The check for Reset
+> should probably go into wined3d.
+>   
+OK... but a test should check is this is the same behaviour in d3d8. Not 
+sure...
+
+
+
+From jerome.gardou at gmail.com  Sat Dec  6 06:50:05 2008
+From: jerome.gardou at gmail.com (=?UTF-8?B?SsOpcsO0bWUgR2FyZG91?=)
+Date: Sat, 06 Dec 2008 13:50:05 +0100
+Subject: d3d9 : do not proceed reset or release from another thread than
+	the one which created the device.
+In-Reply-To: <493A6C87.1060909@laposte.net>
+References: <4932D8BE.3010402@laposte.net>	<d658b69e0812010055x1bc8c4cetb2148af8926002f9@mail.gmail.com>
+	<493A6C87.1060909@laposte.net>
+Message-ID: <493A74FD.2070100@laposte.net>
+
+J?r?me Gardou a ?crit :
+> Henri Verbeet a ?crit :
+>   
+>> 2008/11/30 J?r?me Gardou <jerome.gardou at gmail.com>:
+>>   
+>>     
+>>> -    if (ref == 0) {
+>>> +    if (ref <= 0) {
+>>>     
+>>>       
+>> This doesn't work, of course. ref is an ULONG.
+>>     
+> Why not just a cast in this case ?
+>   
+According to d3d9_private.h , ref is a LONG.
+
+
+From hverbeet at gmail.com  Sat Dec  6 07:07:10 2008
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Sat, 6 Dec 2008 14:07:10 +0100
+Subject: d3d9 : do not proceed reset or release from another thread than
+	the one which created the device.
+In-Reply-To: <493A74FD.2070100@laposte.net>
+References: <4932D8BE.3010402@laposte.net>
+	<d658b69e0812010055x1bc8c4cetb2148af8926002f9@mail.gmail.com>
+	<493A6C87.1060909@laposte.net> <493A74FD.2070100@laposte.net>
+Message-ID: <d658b69e0812060507h6161b0bcpf598f5a450c17a70@mail.gmail.com>
+
+2008/12/6 J?r?me Gardou <jerome.gardou at gmail.com>:
+>
+> According to d3d9_private.h , ref is a LONG.
+>
+ref is not defined in d3d9_private.h.
+
+From jerome.gardou at gmail.com  Sat Dec  6 08:34:27 2008
+From: jerome.gardou at gmail.com (=?UTF-8?B?SsOpcsO0bWUgR2FyZG91?=)
+Date: Sat, 06 Dec 2008 15:34:27 +0100
+Subject: d3d9 : do not proceed reset or release from another thread than
+	the one which created the device.
+In-Reply-To: <d658b69e0812060507h6161b0bcpf598f5a450c17a70@mail.gmail.com>
+References: <4932D8BE.3010402@laposte.net>	
+	<d658b69e0812010055x1bc8c4cetb2148af8926002f9@mail.gmail.com>	
+	<493A6C87.1060909@laposte.net> <493A74FD.2070100@laposte.net>
+	<d658b69e0812060507h6161b0bcpf598f5a450c17a70@mail.gmail.com>
+Message-ID: <493A8D73.4080601@laposte.net>
+
+Henri Verbeet a ?crit :
+> 2008/12/6 J?r?me Gardou <jerome.gardou at gmail.com>:
+>   
+>> According to d3d9_private.h , ref is a LONG.
+>>
+>>     
+> ref is not defined in d3d9_private.h.
+>   
+Taken from d3d9_private.h :
+
+typedef struct IDirect3DDevice9Impl
+    /* IUnknown fields */
+    const IDirect3DDevice9ExVtbl   *lpVtbl;
+    LONG                          ref;
+...
+
+That's why the compiler did not complained... But release actually 
+returns a ULONG, and the IUnknown ref is an ULONG anyway...
+I guess this should be changed for consistency.
+
+
+From wine at stwm.de  Sat Dec  6 12:56:35 2008
+From: wine at stwm.de (Wolfgang Walter)
+Date: Sat, 6 Dec 2008 19:56:35 +0100
+Subject: Use show instead of glyphshow because glyphshow is very slow on
+	kyocera
+Message-ID: <200812061956.35473.wine@stwm.de>
+
+Hello,
+
+this is is a proposed change to the wineps driver.
+
+Problem: wine uses the postscript command glyphshow to print characters. At
+least all Postscript Printers from Kyocera are very slow when showglyph is
+used.  Even simple pages with only one downloaded truetype font slow down fast
+printers as the Kyocera FS-4000DN or FS-9520DN so that they print not more
+then 3 pages/minute - often only one to two.
+
+I can only speculate why glyphshow is such bad for performance. The generic
+windows postscript printer driver does usually not use showglyph. Nor do the
+driver from Kyocera. Applications as OpenOffice don't do either.
+
+The following patch changes wineps.drv such that it uses show (for downloaded
+truetype fonts). It still contains code which inserts postscript comments in
+its output for debugging purpose. It's meant for discussion.
+
+
+
+
+Regards,
+
+Wolfgang Walter
+
+-- 
+Wolfgang Walter
+Studentenwerk M?nchen
+Anstalt des ?ffentlichen Rechts
+Leiter EDV
+Leopoldstra?e 15
+80802 M?nchen
+
+
+
+From e3cfd6d376bb397f8378fe65127496d7b30b4826 Mon Sep 17 00:00:00 2001
+From: Wolfgang Walter <wine at stwm.de>
+Date: Sat, 6 Dec 2008 17:43:35 +0100
+Subject: Use show instead of glyphshow
+
+On many postscript printers glyphshow is slow. Especially all Kyocera models
+from FS-1020 up to FS-4000DN or FS-9520DN are very slow when glyphshow is used
+with downloaded truetype fonts. Even simple text-only pages are rendered at 1/6
+to 1/10 of the usual time (i.e. reached under windows with the generic window
+postscript driver).
+
+I don't know why glyphshow is slow but I suppose that its usage is not optimised
+as the eneric windows postscript printer driver seems not to use glyphshow. Nor
+do the driver from Kyocera. Applications as OpenOffice don't do either.
+
+This change modifies wineps.drv such that it uses show for downloaded fonts as
+other the window printer drivers do.
+
+Show accesses glyphs of base fonts by there character code in the encoding array
+of the font. Only 256 glyphs may be encoded. Therefor I clone the font if
+necessary. As the clones share all resources but their encoding array with the
+original font this is not expensive.
+
+Actually I limit the number of clones (by undefining older ones) but it's
+probably not worth the code:
+
+* the gylphs themselves are the really expensive part
+
+* all fonts are released when a page is rendered
+
+I had to modify how font setting works as I have to set the clone with the
+correct encoding for each character.
+
+With this modification printing perfomance is up to what one would expect. I
+tested this on several Kyocera laser printers (FS-1010, FS-1030, FS-1300,
+FS-C5025, FS-4000DN, FS-9520DN) and also on a HP Laserjet and a Minolta
+Laserprinter. And of course with ghostscript.
+
+This patch still contains code which creates comments in the generated
+postscript file for debugging purpose.
+---
+ dlls/wineps.drv/download.c |  337 +++++++++++++++++++++++++++++++++++++++-----
+ dlls/wineps.drv/font.c     |    4 +-
+ dlls/wineps.drv/ps.c       |   14 ++
+ dlls/wineps.drv/psdrv.h    |   16 ++
+ dlls/wineps.drv/type1.c    |   27 +---
+ dlls/wineps.drv/type42.c   |   27 +---
+ 6 files changed, 347 insertions(+), 78 deletions(-)
+
+diff --git a/dlls/wineps.drv/download.c b/dlls/wineps.drv/download.c
+index e794af6..bd40ef0 100644
+--- a/dlls/wineps.drv/download.c
++++ b/dlls/wineps.drv/download.c
+@@ -42,6 +42,23 @@ WINE_DEFAULT_DEBUG_CHANNEL(psdrv);
+ #define GET_BE_DWORD(ptr) ((DWORD)MAKELONG( GET_BE_WORD(&((WORD *)(ptr))[1]), \
+                                             GET_BE_WORD(&((WORD *)(ptr))[0]) ))
+ 
++#define GLYPH_SENT_INC 128
++#define MAX_ENC_PER_FONT 16  /* must be <= 0xfe */
++#define OPT_ENC_PER_FONT 10  /* when we should start to undefine clones */
++#define MIN_ENC_PER_FONT  4  /* when we undefine: how agressive */
++
++static const char fontname[] = "%s_wine_%04X";
++static const char undefinefont[] = "/%s_wine_%04X undefinefont\n";
++static const char setdeffont[] = "/%s findfont 40 scalefont setfont\n";
++
++
++#if DOWNLOAD_SPOOLBUF_MINPLUS <= 1000
++#error "DOWNLOAD_SPOOLBUF_MINPLUS must be greater then 1000"
++#endif
++#if MAX_ENC_PER_FONT > 0xfe
++#error "MAX_ENC_PER_FONT must not exceed 0xfe"
++#endif
++
+ /****************************************************************************
+  *  get_download_name
+  */
+@@ -192,7 +209,7 @@ static BOOL get_bbox(PSDRV_PDEVICE *physDev, RECT *rc, UINT *emsize)
+  */
+ BOOL PSDRV_SelectDownloadFont(PSDRV_PDEVICE *physDev)
+ {
+-    char *ps_name;
++    char *ps_name = NULL;
+     LPOUTLINETEXTMETRICA potm;
+     DWORD len = GetOutlineTextMetricsA(physDev->hdc, 0, NULL);
+ 
+@@ -219,6 +236,44 @@ BOOL PSDRV_SelectDownloadFont(PSDRV_PDEVICE *physDev)
+ }
+ 
+ /****************************************************************************
++ *  Download_WriteSetFont
++ *
++ *  If <force> == TRUE or <g_enc> != pdl->glyph_enc_last_used:
++ *  write postscript code to select the clone of font <pdl>
++ *  where encoding g_enc is mapped as character code (<g_enc> & 0xff)
++ *
++ */
++static BOOL Download_WriteSetFont(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl,
++                                  WORD g_enc, BOOL force)
++{
++    BOOL ret;
++
++    UINT fontnr = (g_enc & 0xff00);
++
++    if(!force && pdl->glyph_enc_last_used == fontnr)
++        return TRUE;
++
++    sprintf(pdl->spoolbuf, fontname, pdl->ps_name, fontnr);
++    ret = PSDRV_WriteSetFont(physDev, pdl->spoolbuf, physDev->font.size,
++                             physDev->font.escapement);
++    if (ret)
++       pdl->glyph_enc_last_used = fontnr;
++
++    return ret;
++}
++
++/****************************************************************************
++ *  Download_WriteUndefineFont
++ *
++ */
++static BOOL Download_WriteUndefineFont(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl,
++                                       WORD fontnr)
++{
++    sprintf(pdl->spoolbuf, undefinefont, pdl->ps_name, fontnr);
++    return PSDRV_WriteSpool(physDev, pdl->spoolbuf, strlen(pdl->spoolbuf));
++}
++
++/****************************************************************************
+  *  PSDRV_WriteSetDownloadFont
+  *
+  *  Write setfont for download font.
+@@ -226,24 +281,24 @@ BOOL PSDRV_SelectDownloadFont(PSDRV_PDEVICE *physDev)
+  */
+ BOOL PSDRV_WriteSetDownloadFont(PSDRV_PDEVICE *physDev)
+ {
+-    char *ps_name;
+-    LPOUTLINETEXTMETRICA potm;
+-    DWORD len = GetOutlineTextMetricsA(physDev->hdc, 0, NULL);
+     DOWNLOAD *pdl;
+ 
+     assert(physDev->font.fontloc == Download);
+ 
+-    potm = HeapAlloc(GetProcessHeap(), 0, len);
+-    GetOutlineTextMetricsA(physDev->hdc, len, potm);
+-
+-    get_download_name(physDev, potm, &ps_name);
+-
+     if(physDev->font.fontinfo.Download == NULL) {
++        char *ps_name;
++        DWORD len = GetOutlineTextMetricsA(physDev->hdc, 0, NULL);
++        LPOUTLINETEXTMETRICA potm;
+         RECT bbox;
+         UINT emsize;
+ 
++        potm = HeapAlloc(GetProcessHeap(), 0, len);
++        GetOutlineTextMetricsA(physDev->hdc, len, potm);
++        get_download_name(physDev, potm, &ps_name);
++
+         if (!get_bbox(physDev, &bbox, &emsize)) {
+ 	    HeapFree(GetProcessHeap(), 0, potm);
++            HeapFree(GetProcessHeap(), 0, ps_name);
+ 	    return FALSE;
+ 	}
+         if(!is_room_for_font(physDev))
+@@ -254,6 +309,15 @@ BOOL PSDRV_WriteSetDownloadFont(PSDRV_PDEVICE *physDev)
+ 	strcpy(pdl->ps_name, ps_name);
+ 	pdl->next = NULL;
+ 
++	pdl->spoolbuf_len = 2*strlen(ps_name) + DOWNLOAD_SPOOLBUF_MINPLUS;
++        pdl->spoolbuf = HeapAlloc(GetProcessHeap(), 0, pdl->spoolbuf_len);
++	pdl->glyph_sent_size = GLYPH_SENT_INC;
++        pdl->glyph_sent = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
++                                    pdl->glyph_sent_size * sizeof(*(pdl->glyph_sent)));
++        pdl->glyph_enc_first_valid = 0x100;
++        pdl->glyph_enc_next_free = 0x100;
++        pdl->glyph_enc_last_used = 0;
++
+         if(physDev->pi->ppd->TTRasterizer == RO_Type42) {
+ 	    pdl->typeinfo.Type42 = T42_download_header(physDev, ps_name, &bbox, emsize);
+ 	    pdl->type = Type42;
+@@ -271,14 +335,18 @@ BOOL PSDRV_WriteSetDownloadFont(PSDRV_PDEVICE *physDev)
+             get_glyph_name(physDev->hdc, 0, g_name);
+             T42_download_glyph(physDev, pdl, 0, g_name);
+         }
++        HeapFree(GetProcessHeap(), 0, ps_name);
++        HeapFree(GetProcessHeap(), 0, potm);
++        PSDRV_WriteSpool(physDev, "% servus1a\n", strlen("% servus1a\n"));
++    } else {
++        PSDRV_WriteSpool(physDev, "% servus1a\n", strlen("% servus1b\n"));
++        pdl = physDev->font.fontinfo.Download;
++        assert(physDev->font.fontinfo.Download);
+     }
+ 
++    PSDRV_WriteSpool(physDev, "% servus2\n", strlen("% servus1\n"));
++    Download_WriteSetFont(physDev, pdl, 0, TRUE);
+ 
+-    PSDRV_WriteSetFont(physDev, ps_name, physDev->font.size,
+-		       physDev->font.escapement);
+-
+-    HeapFree(GetProcessHeap(), 0, ps_name);
+-    HeapFree(GetProcessHeap(), 0, potm);
+     return TRUE;
+ }
+ 
+@@ -289,6 +357,191 @@ void get_glyph_name(HDC hdc, WORD index, char *name)
+     return;
+ }
+ 
++/*
++ * download_glyph
++ *
++ * Downloads the glyph <index> of font <pdl> if necessary and naming it
++ * <glyph_name>.
++ *
++ * Defines an encoding for <glyph_name>.
++ *
++ * As a base font in postscript may only have up to 256 entries it clones the
++ * font if necessary. The name of the font will be <pdl->ps_name>_wine_<XX>00
++ * where 0x<XX>00 == <return value> & 0xff00
++ * The character code is <return value> & 0xff
++ *
++ * If it fails it returns (<return value> & 0xffff) <= 0xff
++ * or in other words <XX> == 0.
++ *
++ * As font <pdl->ps_name>_wine_0000 always exists and every character code of
++ * it is mapped to .notdef you may ignore errors and print then the undefined
++ * symbol of the font.
++ *
++ * If you call download_glyph with <may_free_encs> = TRUE earlier encodings you
++ * got for this font may not be valid any more because download_glyph may
++ * undefine older clones when more than OPT_ENC_PER_FONT clones exist.
++ *
++ * As long as you call it with <may_free_encs> = FALSE older encodings beginning
++ * with the last call with <may_free_encs> = TRUE remain valid.
++ * But download_glyph will not make more then MAX_ENC_PER_FONT clones and may
++ * fail then with <return value> == 1
++ *
++ * But you can be sure that
++ *    If you got 0x<XX><YY>
++ *    and you get next 0x<XX><ZZ> or 0x00<WW>
++ *    then 0x<XX><YY> is still valid
++ *
++ */
++static WORD download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
++                    char *glyph_name, BOOL may_free_encs)
++{
++    DWORD encoding = 0;
++    DWORD first_valid;
++    DWORD next_free;
++    DWORD used;
++    BOOL ret;
++
++    const char glyph_enc[] =
++      "/%s_wine_%04X findfont /Encoding get\n"
++      "dup %u /%s put\n"
++      "pop\n";
++
++    const char font_clone[] =
++      "/%s_wine_0000 findfont\n"
++      "dup length dict begin\n"
++      "{ 1 index /FID ne\n"
++      "  {def} {pop pop} ifelse\n"
++      "} forall\n"
++      "/Encoding 256 array 0 1 255 {1 index exch /.notdef put} for def\n"
++      "currentdict\n"
++      "end\n"
++      "/%s_wine_%04X exch definefont pop\n";
++
++    TRACE("%d %s\n", index, glyph_name);
++
++    first_valid = pdl->glyph_enc_first_valid;
++    next_free = pdl->glyph_enc_next_free;
++    assert(first_valid <= next_free);
++    assert( (first_valid & 0xff00) != 0);
++
++    used = ((next_free - first_valid) & 0xff00)>>8;
++    if (next_free > 0xffff)
++        used--;
++
++    if(index < pdl->glyph_sent_size) {
++        encoding = pdl->glyph_sent[index];
++        assert(encoding < next_free);
++        if( encoding >= 0x100 &&
++           ( first_valid <= encoding || first_valid < (next_free & 0x10000) + encoding))
++           goto encset;
++    }
++
++    if( used > MAX_ENC_PER_FONT && !may_free_encs) {
++        /* we need a new clone of the font but we must not create one */
++        return 1;
++    }
++
++    PSDRV_WriteSpool(physDev, "% hallo1\n", strlen("% hallo1\n"));
++    if(index >= pdl->glyph_sent_size) {
++        pdl->glyph_sent_size = (index / GLYPH_SENT_INC + 1) * GLYPH_SENT_INC;
++        pdl->glyph_sent = HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
++                                      pdl->glyph_sent,
++                                      pdl->glyph_sent_size * sizeof(*(pdl->glyph_sent)));
++        encoding = 0;
++        PSDRV_WriteSpool(physDev, "% hallo1a\n", strlen("% hallo1a\n"));
++    }
++
++    PSDRV_WriteSpool(physDev, "% hallo2\n", strlen("% hallo2\n"));
++    if(!encoding) {
++        /* download glyph */
++        switch(pdl->type) {
++	case Type42:
++	    ret = T42_download_glyph(physDev, pdl, index, glyph_name);
++	    break;
++
++	case Type1:
++	    ret = T1_download_glyph(physDev, pdl, index, glyph_name);
++	    break;
++
++	default:
++	    ERR("Type = %d\n", pdl->type);
++	    assert(0);
++	}
++        if (! ret)
++           return 0;
++        /* we never assign 0x0000 through 0x00ff as valid encoding.
++         * If we fail to assign a valid encoding later on we
++         * still know that we downloaded the glyph already and
++         * only need to assign an encoding.
++         */
++        pdl->glyph_sent[index] = 1;
++        PSDRV_WriteSpool(physDev, "% hallo2c\n", strlen("% hallo2c\n"));
++    }
++
++    PSDRV_WriteSpool(physDev, "% hallo3\n", strlen("% hallo3\n"));
++    if( (next_free & 0xff) == 0) {
++        PSDRV_WriteSpool(physDev, "% hallo3a\n", strlen("% hallo3a\n"));
++        /* we need a new clone of the font */
++        if ( (next_free & 0xffff) == 0) {
++            /* we overflow: we must mark encodings < first_valid as
++               downloaded but unencoded */
++            DWORD i;
++            for(i = 0; i < pdl->glyph_sent_size; i++) {
++                if (pdl->glyph_sent[i] < first_valid)
++                    pdl->glyph_sent[i] = 1;
++            }
++            next_free += 0x100;
++            PSDRV_WriteSpool(physDev, "% hallo3b\n", strlen("% hallo3b\n"));
++        }
++        /* now clone the font */
++        sprintf(pdl->spoolbuf, font_clone, pdl->ps_name, pdl->ps_name, next_free & 0xff00);
++        PSDRV_WriteSpool(physDev, pdl->spoolbuf, strlen(pdl->spoolbuf));
++
++        /* reserve character 0 for .notdef */
++        next_free++;
++    }
++    encoding = next_free++;
++    used++;
++
++    PSDRV_WriteSpool(physDev, "% hallo4\n", strlen("% hallo4\n"));
++    pdl->glyph_enc_next_free = next_free;
++    pdl->glyph_sent[index] = encoding;
++    /* define encoding */
++    sprintf(pdl->spoolbuf,  glyph_enc, pdl->ps_name,
++            (encoding & 0xff00), (encoding & 0xff), glyph_name);
++    PSDRV_WriteSpool(physDev, pdl->spoolbuf, strlen(pdl->spoolbuf));
++
++encset:
++    PSDRV_WriteSpool(physDev, "% hallo5\n", strlen("% hallo5\n"));
++    if (used > OPT_ENC_PER_FONT && !may_free_encs) {
++        int i;
++
++        PSDRV_WriteSpool(physDev, "% hallo5a\n", strlen("% hallo5a\n"));
++        Download_WriteSetFont(physDev, pdl, 0, TRUE);
++
++        used += (next_free > 0xffff);
++        for(i = 0; i < used - MIN_ENC_PER_FONT; i++) {
++            DWORD fontnr = (first_valid & 0xff00);
++            if (fontnr == (encoding & 0xff00))
++                break;
++            if (fontnr)
++                Download_WriteUndefineFont(physDev, pdl, fontnr);
++            first_valid += 0x100;
++            PSDRV_WriteSpool(physDev, "% hallo5b\n", strlen("% hallo5b\n"));
++        }
++        if (first_valid > 0xffff) {
++            first_valid = 0x100;
++            next_free &= 0xffff;
++            pdl->glyph_enc_next_free = next_free;
++            PSDRV_WriteSpool(physDev, "% hallo5c\n", strlen("% hallo5c\n"));
++        }
++        pdl->glyph_enc_first_valid = first_valid;
++    }
++
++    PSDRV_WriteSpool(physDev, "% hallo6\n", strlen("% hallo6\n"));
++    return encoding;
++}
++
+ /****************************************************************************
+  *  PSDRV_WriteDownloadGlyphShow
+  *
+@@ -298,36 +551,26 @@ void get_glyph_name(HDC hdc, WORD index, char *name)
+ BOOL PSDRV_WriteDownloadGlyphShow(PSDRV_PDEVICE *physDev, WORD *glyphs,
+ 				  UINT count)
+ {
++    DOWNLOAD *pdl;
+     UINT i;
+     char g_name[MAX_G_NAME + 1];
++    DWORD g_enc;
++
+     assert(physDev->font.fontloc == Download);
+ 
+-    switch(physDev->font.fontinfo.Download->type) {
+-    case Type42:
+-    for(i = 0; i < count; i++) {
+-        get_glyph_name(physDev->hdc, glyphs[i], g_name);
+-	T42_download_glyph(physDev, physDev->font.fontinfo.Download,
+-			   glyphs[i], g_name);
+-	PSDRV_WriteGlyphShow(physDev, g_name);
+-    }
+-    break;
++    pdl = physDev->font.fontinfo.Download;
++    assert(pdl);
+ 
+-    case Type1:
+     for(i = 0; i < count; i++) {
+         get_glyph_name(physDev->hdc, glyphs[i], g_name);
+-	T1_download_glyph(physDev, physDev->font.fontinfo.Download,
+-			  glyphs[i], g_name);
+-	PSDRV_WriteGlyphShow(physDev, g_name);
+-    }
+-    break;
+-
+-    default:
+-        ERR("Type = %d\n", physDev->font.fontinfo.Download->type);
+-	assert(0);
++        g_enc = download_glyph(physDev, pdl, glyphs[i], g_name, TRUE) & 0xffff;
++        Download_WriteSetFont(physDev, pdl, g_enc, FALSE);
++        PSDRV_WriteShow1(physDev, (g_enc & 0xff));
+     }
+     return TRUE;
+ }
+ 
++
+ /****************************************************************************
+  *  PSDRV_EmptyDownloadList
+  *
+@@ -337,8 +580,7 @@ BOOL PSDRV_WriteDownloadGlyphShow(PSDRV_PDEVICE *physDev, WORD *glyphs,
+ BOOL PSDRV_EmptyDownloadList(PSDRV_PDEVICE *physDev, BOOL write_undef)
+ {
+     DOWNLOAD *pdl, *old;
+-    static const char undef[] = "/%s findfont 40 scalefont setfont /%s undefinefont\n";
+-    char buf[sizeof(undef) + 200];
++
+     const char *default_font = physDev->pi->ppd->DefaultFont ?
+         physDev->pi->ppd->DefaultFont : "Courier";
+ 
+@@ -349,11 +591,30 @@ BOOL PSDRV_EmptyDownloadList(PSDRV_PDEVICE *physDev, BOOL write_undef)
+ 
+     pdl = physDev->downloaded_fonts;
+     physDev->downloaded_fonts = NULL;
++
++    if (write_undef) {
++        pdl->spoolbuf[pdl->spoolbuf_len-1] = '\0';
++        snprintf(pdl->spoolbuf, pdl->spoolbuf_len, setdeffont, default_font);
++        if (pdl->spoolbuf[pdl->spoolbuf_len-1]) {
++            default_font = "Courier";
++            sprintf(pdl->spoolbuf, setdeffont, default_font);
++        }
++        PSDRV_WriteSpool(physDev, pdl->spoolbuf, strlen(pdl->spoolbuf));
++    }
++
+     while(pdl) {
+         if(write_undef) {
+-            sprintf(buf, undef, default_font, pdl->ps_name);
+-            PSDRV_WriteSpool(physDev, buf, strlen(buf));
++            DWORD i;
++            /* free derived fonts */
++            for(i = pdl->glyph_enc_first_valid; i < pdl->glyph_enc_next_free; i += 0x0100) {
++                int fontnr = (i & 0xff00);
++                if (fontnr) {
++                    Download_WriteUndefineFont(physDev, pdl, fontnr);
++                }
++            }
++            Download_WriteUndefineFont(physDev, pdl, 0);
+         }
++	HeapFree(GetProcessHeap(), 0, pdl->glyph_sent);
+ 
+         switch(pdl->type) {
+ 	case Type42:
+@@ -370,6 +631,8 @@ BOOL PSDRV_EmptyDownloadList(PSDRV_PDEVICE *physDev, BOOL write_undef)
+ 	}
+ 
+ 	HeapFree(GetProcessHeap(), 0, pdl->ps_name);
++	HeapFree(GetProcessHeap(), 0, pdl->glyph_sent);
++	HeapFree(GetProcessHeap(), 0, pdl->spoolbuf);
+ 	old = pdl;
+ 	pdl = pdl->next;
+ 	HeapFree(GetProcessHeap(), 0, old);
+diff --git a/dlls/wineps.drv/font.c b/dlls/wineps.drv/font.c
+index 9e0ae39..1a6bf8e 100644
+--- a/dlls/wineps.drv/font.c
++++ b/dlls/wineps.drv/font.c
+@@ -125,11 +125,14 @@ HFONT PSDRV_SelectFont( PSDRV_PDEVICE *physDev, HFONT hfont, HANDLE gdiFont )
+ BOOL PSDRV_SetFont( PSDRV_PDEVICE *physDev )
+ {
+     PSDRV_WriteSetColor(physDev, &physDev->font.color);
++    PSDRV_WriteSpool(physDev, "% salve1\n", strlen("% salve1\n"));
+     if(physDev->font.set) return TRUE;
+ 
++    PSDRV_WriteSpool(physDev, "% salve2\n", strlen("% salve2\n"));
+     switch(physDev->font.fontloc) {
+     case Builtin:
+         PSDRV_WriteSetBuiltinFont(physDev);
++        physDev->font.set = TRUE;
+ 	break;
+     case Download:
+         PSDRV_WriteSetDownloadFont(physDev);
+@@ -139,6 +142,5 @@ BOOL PSDRV_SetFont( PSDRV_PDEVICE *physDev )
+         assert(1);
+ 	break;
+     }
+-    physDev->font.set = TRUE;
+     return TRUE;
+ }
+diff --git a/dlls/wineps.drv/ps.c b/dlls/wineps.drv/ps.c
+index fdebf46..4d7769a 100644
+--- a/dlls/wineps.drv/ps.c
++++ b/dlls/wineps.drv/ps.c
+@@ -122,6 +122,9 @@ static const char psrrectangle[] = /* x, y, width, height, -width */
+ static const char psglyphshow[] = /* glyph name */
+ "/%s glyphshow\n";
+ 
++static const char psshow[] = /* encoding name */
++"<%02X> show\n";
++
+ static const char pssetfont[] = /* fontname, xscale, yscale, ascent, escapement */
+ "/%s findfont\n"
+ "[%d 0 0 %d 0 0]\n"
+@@ -611,6 +614,17 @@ BOOL PSDRV_WriteGlyphShow(PSDRV_PDEVICE *physDev, LPCSTR g_name)
+     return TRUE;
+ }
+ 
++BOOL PSDRV_WriteShow1(PSDRV_PDEVICE *physDev, BYTE g_encoding)
++{
++    char    buf[128];
++    int     l;
++
++    l = sprintf(buf, psshow, g_encoding);
++
++    PSDRV_WriteSpool(physDev, buf, l);
++    return TRUE;
++}
++
+ BOOL PSDRV_WriteFill(PSDRV_PDEVICE *physDev)
+ {
+     return PSDRV_WriteSpool(physDev, psfill, sizeof(psfill)-1);
+diff --git a/dlls/wineps.drv/psdrv.h b/dlls/wineps.drv/psdrv.h
+index fcdc78d..4e30238 100644
+--- a/dlls/wineps.drv/psdrv.h
++++ b/dlls/wineps.drv/psdrv.h
+@@ -292,8 +292,23 @@ typedef struct _tagDOWNLOAD {
+     TYPE42 *Type42;
+   } typeinfo;
+   char *ps_name;
++  char *spoolbuf;
++  size_t spoolbuf_len;
++  DWORD glyph_sent_size;
++  WORD *glyph_sent;
++  WORD glyph_enc_first_valid;
++  DWORD glyph_enc_next_free;
++  WORD glyph_enc_last_used;
+   struct _tagDOWNLOAD *next;
+ } DOWNLOAD;
++#define DOWNLOAD_SPOOLBUF_MINPLUS 1001
++/* tmp_spool_buf is quaranteed to hold at least
++   2*strlen(psname) + DOWNLOAD_TMPBUF_MINPLUS bytes
++   Attention:
++       spoolbuf may be changed by any function
++       of WINE   BUT  those from ps.c
++       Never give it as parameter to a WINE function
++       but those from ps.c */
+ 
+ enum fontloc {
+   Builtin, Download
+@@ -444,6 +459,7 @@ extern BOOL PSDRV_WriteRRectangle(PSDRV_PDEVICE *physDev, INT x, INT y, INT widt
+ extern BOOL PSDRV_WriteSetFont(PSDRV_PDEVICE *physDev, const char *name, INT size,
+                                INT escapement);
+ extern BOOL PSDRV_WriteGlyphShow(PSDRV_PDEVICE *physDev, LPCSTR g_name);
++extern BOOL PSDRV_WriteShow1(PSDRV_PDEVICE *physDev, BYTE g_encoding);
+ extern BOOL PSDRV_WriteSetPen(PSDRV_PDEVICE *physDev);
+ extern BOOL PSDRV_WriteArc(PSDRV_PDEVICE *physDev, INT x, INT y, INT w, INT h,
+ 			     double ang1, double ang2);
+diff --git a/dlls/wineps.drv/type1.c b/dlls/wineps.drv/type1.c
+index fe8c8ba..c74bb88 100644
+--- a/dlls/wineps.drv/type1.c
++++ b/dlls/wineps.drv/type1.c
+@@ -37,8 +37,6 @@
+ WINE_DEFAULT_DEBUG_CHANNEL(psdrv);
+ 
+ struct tagTYPE1 {
+-    DWORD glyph_sent_size;
+-    BOOL *glyph_sent;
+     DWORD emsize;
+ };
+ 
+@@ -62,7 +60,7 @@ TYPE1 *T1_download_header(PSDRV_PDEVICE *physDev, char *ps_name, RECT *bbox, UIN
+ 
+     char dict[] = /* name, emsquare, fontbbox */
+       "25 dict begin\n"
+-      " /FontName /%s def\n"
++      " /FontName /%s_wine_0000 def\n"
+       " /Encoding 256 array 0 1 255{1 index exch /.notdef put} for def\n"
+       " /PaintType 0 def\n"
+       " /FontMatrix [1 %d div 0 0 1 %d div 0 0] def\n"
+@@ -87,11 +85,6 @@ TYPE1 *T1_download_header(PSDRV_PDEVICE *physDev, char *ps_name, RECT *bbox, UIN
+     t1 = HeapAlloc(GetProcessHeap(), 0, sizeof(*t1));
+     t1->emsize = emsize;
+ 
+-    t1->glyph_sent_size = GLYPH_SENT_INC;
+-    t1->glyph_sent = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+-			       t1->glyph_sent_size *
+-			       sizeof(*(t1->glyph_sent)));
+-
+     buf = HeapAlloc(GetProcessHeap(), 0, sizeof(dict) + strlen(ps_name) +
+ 		    100);
+ 
+@@ -194,7 +187,7 @@ BOOL T1_download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
+     RECT rc;
+ 
+     static const char glyph_def_begin[] =
+-      "/%s findfont dup\n"
++      "/%s_wine_0000 findfont dup\n"
+       "/Private get begin\n"
+       "/CharStrings get begin\n"
+       "/%s %d RD\n";
+@@ -206,15 +199,10 @@ BOOL T1_download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
+     assert(pdl->type == Type1);
+     t1 = pdl->typeinfo.Type1;
+ 
+-    if(index < t1->glyph_sent_size) {
+-        if(t1->glyph_sent[index])
+-	    return TRUE;
+-    } else {
+-        t1->glyph_sent_size = (index / GLYPH_SENT_INC + 1) * GLYPH_SENT_INC;
+-	t1->glyph_sent = HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+-				      t1->glyph_sent,
+-				      t1->glyph_sent_size * sizeof(*(t1->glyph_sent)));
+-    }
++    if(index >= pdl->glyph_sent_size)
++        return FALSE;
++    if(pdl->glyph_sent[index])
++	return TRUE;
+ 
+     GetObjectW(GetCurrentObject(physDev->hdc, OBJ_FONT), sizeof(lf), &lf);
+     rc.left = rc.right = rc.bottom = 0;
+@@ -295,7 +283,7 @@ BOOL T1_download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
+     PSDRV_WriteSpool(physDev, buf, strlen(buf));
+     str_free(charstring);
+ 
+-    t1->glyph_sent[index] = TRUE;
++    pdl->glyph_sent[index] = 1;
+     HeapFree(GetProcessHeap(), 0, glyph_buf);
+     HeapFree(GetProcessHeap(), 0, buf);
+     return TRUE;
+@@ -303,7 +291,6 @@ BOOL T1_download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
+ 
+ void T1_free(TYPE1 *t1)
+ {
+-    HeapFree(GetProcessHeap(), 0, t1->glyph_sent);
+     HeapFree(GetProcessHeap(), 0, t1);
+     return;
+ }
+diff --git a/dlls/wineps.drv/type42.c b/dlls/wineps.drv/type42.c
+index 172072e..a6c7f8a 100644
+--- a/dlls/wineps.drv/type42.c
++++ b/dlls/wineps.drv/type42.c
+@@ -74,8 +74,6 @@ struct tagTYPE42 {
+     int glyf_tab, loca_tab, head_tab; /* indices of glyf, loca and head tables */
+     int hmtx_tab, maxp_tab;
+     int num_of_written_tables;
+-    DWORD glyph_sent_size;
+-    BOOL *glyph_sent;
+     DWORD emsize;
+     DWORD *glyf_blocks;
+ };
+@@ -143,7 +141,7 @@ TYPE42 *T42_download_header(PSDRV_PDEVICE *physDev, char *ps_name,
+     TYPE42 *t42;
+     static const char start[] = /* name, fontbbox */
+             "25 dict begin\n"
+-	    " /FontName /%s def\n"
++	    " /FontName /%s_wine_0000 def\n"
+ 	    " /Encoding 256 array 0 1 255{1 index exch /.notdef put} for\n"
+ 	    " def\n"
+ 	    " /PaintType 0 def\n"
+@@ -193,11 +191,6 @@ TYPE42 *T42_download_header(PSDRV_PDEVICE *physDev, char *ps_name,
+ 	return NULL;
+     }
+ 
+-    t42->glyph_sent_size = GLYPH_SENT_INC;
+-    t42->glyph_sent = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+-				t42->glyph_sent_size *
+-				sizeof(*(t42->glyph_sent)));
+-
+     buf = HeapAlloc(GetProcessHeap(), 0, sizeof(start) + strlen(ps_name) +
+ 		    100);
+ 
+@@ -287,7 +280,7 @@ BOOL T42_download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
+     TYPE42 *t42;
+ 
+     const char glyph_def[] = 
+-      "/%s findfont exch 1 index\n"
++      "/%s_wine_0000 findfont exch 1 index\n"
+       "havetype42gdir\n"
+       "{/GlyphDirectory get begin %d exch def end}\n"
+       "{/sfnts get 4 index get 3 index 2 index putinterval pop}\n"
+@@ -302,15 +295,10 @@ BOOL T42_download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
+     assert(pdl->type == Type42);
+     t42 = pdl->typeinfo.Type42;
+ 
+-    if(index < t42->glyph_sent_size) {
+-        if(t42->glyph_sent[index])
+-	    return TRUE;
+-    } else {
+-        t42->glyph_sent_size = (index / GLYPH_SENT_INC + 1) * GLYPH_SENT_INC;
+-	t42->glyph_sent = HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+-				      t42->glyph_sent,
+-				      t42->glyph_sent_size * sizeof(*(t42->glyph_sent)));
+-    }
++    if(index >= pdl->glyph_sent_size)
++        return FALSE;
++    if(pdl->glyph_sent[index])
++        return TRUE;
+ 
+     if(!get_glyf_pos(t42, index, &start, &end)) return FALSE;
+     TRACE("start = %x end = %x\n", start, end);
+@@ -364,7 +352,7 @@ BOOL T42_download_glyph(PSDRV_PDEVICE *physDev, DOWNLOAD *pdl, DWORD index,
+     sprintf(buf, glyph_def, pdl->ps_name, index, glyph_name, index);
+     PSDRV_WriteSpool(physDev, buf, strlen(buf));
+ 
+-    t42->glyph_sent[index] = TRUE;
++    pdl->glyph_sent[index] = 1;
+     HeapFree(GetProcessHeap(), 0, buf);
+     return TRUE;
+ }
+@@ -374,7 +362,6 @@ void T42_free(TYPE42 *t42)
+     OTTable *table;
+     for(table = t42->tables; table->MS_tag; table++)
+         HeapFree(GetProcessHeap(), 0, table->data);
+-    HeapFree(GetProcessHeap(), 0, t42->glyph_sent);
+     HeapFree(GetProcessHeap(), 0, t42->glyf_blocks);
+     HeapFree(GetProcessHeap(), 0, t42);
+     return;
+-- 
+1.5.6.5
+
+
+
+From mikolaj at zalewski.pl  Sat Dec  6 19:15:48 2008
+From: mikolaj at zalewski.pl (=?UTF-8?B?TWlrb8WCYWogWmFsZXdza2k=?=)
+Date: Sun, 07 Dec 2008 02:15:48 +0100
+Subject: Wine translation statistics sources
+Message-ID: <493B23C4.3090207@zalewski.pl>
+
+  Hi,
+  I didn't update the translation statistics 
+(http://www.mikolaj.zalewski.pl/wine-transl/) very regularly lately - my 
+server is a bit broken and I can't run the scripts from cron but have 
+remember to do it manually from a different computer. I have plans to 
+fix it, but in the mean time, as some people may want fresh data, I have 
+finished the changes I've been working on and uploaded the sources. It 
+should be very easy to run them on ones machine and check the tree one 
+has on disk - there is a README with explanations. The archive is 
+available at http://www.mikolaj.zalewski.pl/dl/wine-transl.tgz . It is 
+the latest version that adds support for dumping/diffing dialogs.
+
+Mikolaj Zalewski
+
+
+From dmitry at codeweavers.com  Sat Dec  6 22:36:02 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 7 Dec 2008 12:36:02 +0800
+Subject: explorer: improve ABM_GETTASKBARPOS stub
+References: <ced95fe0812060931r5974baden5bdc8bb6f3b56d62@mail.gmail.com>
+Message-ID: <7AA4DD36A3B747359F5C065EC793F7AA@DMITRY>
+
+"Vincent Povirk" <madewokherd+8cd9 at gmail.com> wrote:
+
+> Fixes http://bugs.winehq.org/show_bug.cgi?id=15835
+
+That's not hard to implement this properly using monitor info.
+
+-- 
+Dmitry.
+
+
+From madewokherd+8cd9 at gmail.com  Sat Dec  6 22:50:45 2008
+From: madewokherd+8cd9 at gmail.com (Vincent Povirk)
+Date: Sat, 6 Dec 2008 22:50:45 -0600
+Subject: explorer: improve ABM_GETTASKBARPOS stub
+In-Reply-To: <7AA4DD36A3B747359F5C065EC793F7AA@DMITRY>
+References: <ced95fe0812060931r5974baden5bdc8bb6f3b56d62@mail.gmail.com>
+	<7AA4DD36A3B747359F5C065EC793F7AA@DMITRY>
+Message-ID: <ced95fe0812062050o26e4067t64d75e82e574d51c@mail.gmail.com>
+
+Implement what?
+
+Linux doesn't have any concept of this "taskbar" thing.
+
+Vincent Povirk
+
+
+
+On Sat, Dec 6, 2008 at 10:36 PM, Dmitry Timoshkov
+<dmitry at codeweavers.com> wrote:
+> "Vincent Povirk" <madewokherd+8cd9 at gmail.com> wrote:
+>
+>> Fixes http://bugs.winehq.org/show_bug.cgi?id=15835
+>
+> That's not hard to implement this properly using monitor info.
+>
+> --
+> Dmitry.
+>
+
+

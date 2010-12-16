@@ -1,0 +1,191 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="63" date="02 Oct 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 63rd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="69" size="184" contrib="29" multiples="14" lastweek="13">
+<person posts="6" size="44" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="6" size="32" who="David Howells &lt;David.Howells@nexor.co.uk&gt;" />
+<person posts="5" size="59" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="4" size="9" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="31" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="27" who="Peter Hunnisett &lt;hunnise@nortelnetworks.com&gt;" />
+<person posts="4" size="24" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="22" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="4" size="20" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="10" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="3" size="28" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="2" size="8" who="Douglas Ridgway &lt;ridgway@winehq.org&gt;" />
+<person posts="2" size="15" who="lawson_whitney@juno.com" />
+<person posts="2" size="11" who="James Hatheway &lt;james@macadamian.com&gt;" />
+</stats>
+
+
+<section 
+  title="Window Manager woes"
+  subject="Disabled windows can't be resized by WM"
+  archive=""
+  posts="10"
+  startdate="20 Sep 2000 00:00:00 -0800"
+  enddate="25 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Dmitry Timoshkov posted a patch which <quote who="Dmitry Timoshkov">) attempts to
+prevent resizing of disabled windows by a Window Manager. Most (if not
+all) windows applications don't expect to be resized while popup or
+dialog is currently displayed and interacts with user. The least
+damage to the app's widow that could be done is just a misbehavior in
+painting, but it can also lead to another unexpected results.
+
+<p />
+
+My patch makes disabled window to temporary behave like a dialog,
+then when window gets enabled its behavior is restored.
+</quote>
+
+<p />
+
+In a course of the discussion, Dmitry pointed out another problem: 
+
+<quote who="Dmitry Timoshkov">
+<a href="http://www.winedt.com/">WinEdt</a> exhibits some flaws in the
+way Wine manages windows. For instance main WinEdt window has only
+close box on it, though in Windows all three standard buttons showed. 
+
+<p />
+
+My patch adds another "feature": after any dialog box was shown,
+bitmap on the system menu along with the sole close box on the main
+window caption disappear and don't get restored after the main window
+was enabled back. 
+</quote>
+
+
+<p />
+
+Analyzing KWM 1.1.1 code, G&#233;rard Patel found the source of the issue
+in the KDE code:
+<quote who="G&#233;rard Patel">
+What I understand from the Kwm code is that once reconfigured, a
+transient X window loses the menu and close buttons. I may be wrong
+but I think Kwm has not hit this bug too often because it is
+probably not common for X program to reconfigure transient
+windows. It's only in Wine that transient windows are alive for the
+entire duration of the program I guess :-) 
+</quote>
+
+
+<p />
+
+Note: a transient window in X11 words is close to dialog boxes in
+Windows.
+
+<p />
+
+However, Dmitry patch also triggered on G&#233;rard's side that Dmitry
+couldn't reproduce (even if both used the same WM: KWM 1.1.1).
+
+<p />
+
+As a conclusion (where more questions have been raised than points
+have been answered), G&#233;rard advise not <quote who="G&#233;rard Patel">to fight too
+hard with windows managers; or owned popups should not be transient
+windows. It's a difficult problem, you'll see that Corel has a
+completely different solution in their tree. I am not sure there is a
+good solution, in fact.</quote></section>
+
+
+<section 
+  title="Module loading and default directories"
+  subject="PATCH: LDFLAGS and -rpath"
+  archive=""
+  posts="10"
+  startdate="27 Sep 2000 00:00:00 -0800"
+  enddate="27 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Marcus Meissner proposed a patch to make use of the -rpath directive
+for building Wine's .so files (this directly embeds inside the .so
+files, where to look for the .so module dependencies - other .so files
+where to look for functions/variables -). With the patch, Marcus
+claimed to be able to run the wine binary emulator and the wineserver
+without a proper /etc/ld.conf configuration.
+
+<p />
+
+Ove K&#229;ven reacted:
+<quote who="Ove Kaaven">
+<ul>
+	<li>Is there a particular reason why libwine_unicode.so can't
+just be in the same directory as libwine.so, since it's not really a
+"DLL"? Shouldn't take a special rpath to find it...</li>
+	<li>For wine itself, I don't see a need for rpath in the
+emulator binary either... the EXTRA_LD_LIBRARY_PATH in wine.conf
+should work to find the .so files, after which the rpath compiled into
+the .so files are enough to find their dependencies.</li>
+</ul>
+</quote>
+
+
+<p />
+
+Ove also had in mind to be able someday <quote who="Ove Kaaven">to choose
+different DLL builds by just changing the EXTRA_LD_LIBRARY_PATH but
+using the same wine binary... if the rpath is embedded in wine, that
+won't be possible. Is there a reason you need to do so?</quote>
+
+<p />
+
+Alexandre Julliard explained how he liked things to be:
+
+<quote who="Alexandre Julliard">
+libwine_unicode.so will definitely be in the same directory as
+libwine.so; but this can be a non-standard place, which is why we need 
+rpath. In fact libwine and libwine_unicode are the only libraries that 
+need it, because they are (should be) the only ones loaded implicitly
+by ld.so. 
+
+<p />
+
+At the moment we have the problem that dlls import one another at the
+ELF level, which is why they have to be installed in the same
+directory and with the same rpath as libwine.so. But once import
+tables are working, dlls will only import each other through an
+explicit dlopen using EXTRA_LD_LIBRARY_PATH.
+
+<p />
+
+Basically the final situation should be:
+<ul>
+	<li>libwine.so and libwine_unicode.so in $(prefix)/lib</li>
+	<li>all dlls .so in $(prefix)/lib/wine</li>
+	<li>rpath set to $(prefix)/lib</li>
+	<li>EXTRA_LD_LIBRARY_PATH set to $(prefix)/lib/wine</li>
+</ul>
+</quote>
+
+
+<p />
+
+Current solution is a compromise between simplicity, and the ability
+to packagers to install all modules in any place using
+configure --prefix=/usr/mydir without having to tweak heavily users'
+config files.</section>
+
+</kc>

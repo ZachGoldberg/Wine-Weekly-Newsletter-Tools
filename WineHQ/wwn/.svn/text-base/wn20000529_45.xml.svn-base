@@ -1,0 +1,209 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="45" date="29 May 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 45th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+Wine 20000526 has been released. The main changes include:
+<ul>
+	<li />New C preprocessor for the resource compiler
+        <li />More built-in debugger improvements
+        <li />OpenGL support
+        <li />Many common controls fixes and merges from Corel tree
+        <li />Lots of bug fixes.
+</ul>
+
+</intro>
+
+<stats posts="128" size="317" contrib="42" multiples="23" lastweek="26">
+<person posts="17" size="33" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="11" size="22" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="9" size="20" who="James Sutherland &lt;jas88@cam.ac.uk&gt;" />
+<person posts="7" size="11" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="6" size="13" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="6" size="10" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="6" size="10" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="9" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="4" size="7" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="12" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="11" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+</stats>
+
+
+<section 
+  title="Improving error messages"
+  subject="*Much* better error msgs"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-316.html"
+  posts="33"
+  startdate="21 May 2000 00:00:00 -0800"
+  enddate="23 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr made a proposal to modify the Wine's debug messages macro
+(TRACE, ERR, FIXME, WARN) in order to make those messages more
+readable as well as more portable.
+
+<p />
+
+He proposed to:
+<ul>
+	<li />move error messages text out of the code to a
+configuration file,
+	<li />add more information to the error case (what should be
+done, a list of persons to contact...)
+	<li />report a given error only once
+	<li />localization of error messages could also be done
+</ul>
+
+<p />
+
+Lots of people disliked the proposal, firstly for code readability:
+Dimitrie O Paun liked to have, in the code, the content of the error
+message. Patrik Stridval didn't agree either:
+<quote who="Patrik Stridvall">
+So I think that we must instead ask the question:
+"What methods should we use to find the existing bugs in Wine?" Trying
+to reduce the problem to "How should our error messages look like?" is
+not doable.
+</quote>
+
+
+<p />
+
+Some other liked the idea and proposed to (re)use some existing
+tools. Marcus Meissner pointed to gettext GNU tool which shall do
+part of the work. Dimitry Timoshkov remembered a Win32 API
+FormatMessage that provides part of the needed functionality
+(basically parameter positioning). As Francois Gouget noticed, when
+translating from one language to another have a parameter index
+change: the formating engine has to take care of it.
+
+<p />
+
+Anyway, everyone agreed that internationalization of error messages
+was not a top priority, and also that there was no need to change
+current internal macros, but only, in the few cases, to use
+FormatMessage to provide a much detailed (and configurable) error
+reporting mechanism.
+
+<p />
+
+James Sutherland disliked the idea of implementing this lookup
+functionality with a Win32 API. He'd better use a Unix only function,
+for portability issues, but also for better control on memory
+conditions for example.
+
+<p />
+
+But, most of the posters didn't follow James point of view and turned
+back his Unix only implementation.
+
+<p />
+
+As a conclusion, no more API will be available on that very
+subject. Developers can make use of FormatMessage to display nicer
+error messages. The only good news is that Bertho Stultiens started
+working on a Wine's message compiler. This tool creates the resource
+holding the messages table used by FormatMessage.
+</section>
+
+
+<section 
+  title="OpenGL requirements"
+  subject="Any documentation of prerequisites for OpenGL"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-391.html"
+  posts="2"
+  startdate="23 May 2000 00:00:00 -0800"
+  enddate="23 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Uwe Bonnes asked what are the prerequisites to run OpenGL software
+with Wine. Lionel Ulmer gave the details:
+<quote who="Lionel Ulmer">
+The requirements are easy, it's a Linux OpenGL ABI compliant OpenGL
+library (<a 
+href="http://oss.sgi.com/projects/ogl-sample/ABI/">
+http://oss.sgi.com/projects/ogl-sample/ABI/</a>). To summarize, it
+provides :
+<ul>
+	<li />include files gl.h, glx.h and glext.h
+	<li />a libGL defining all OpenGL v1.2 + the multi-texture extension
+	<li />a libGL defining the function used to query extensions 
+(glXGetProcAddressARB).
+</ul>
+
+<p />
+
+The known compliant libraries are (I am sure) NVIDIA's OpenGL drivers
+and XFree 4.0's default drivers (dunno about the 3DFx DRI drivers
+included in XF4.0). I think that Mesa 3.3beta also includes everything
+that is needed.
+
+<p />
+
+After that, as ALL compliant libGLs are relying on libpthread (as
+thread safety is explicitly required by the ABI), you need to force
+inclusion of OpenGL (--enable-opengl) (<i>Ed note: while configuring
+Wine</i>). This is known to work with glibc 2.1.3 and was failing with
+2.0.6 (not tested recently).
+</quote>
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Survey"
+  subject="Survey"
+  startdate="05/29/2000"
+>
+
+<p />
+
+After almost ten months of existence (and the upcoming of Wine 1.0),
+we think it's time to get some feedback from you, reader of this news
+letter. One of its major drawback is that it only covers technical
+aspects and is geared towards techies and developers, not end
+users. We'll try to improve on this last part by providing two new
+types of articles will (hopefully on a weekly basis): 
+<ul>
+	<li /><b>feature article</b>: this type of article should cover
+one aspect of Wine (address space separation, printing, DirectDraw...)
+and give information on: current state, how it's implemented
+	<li /><b>report of success (or failure)</b>: this type of
+article would report successful running of some application (and
+configuration twists when needed)
+</ul>
+
+<p />
+
+Any contribution on both types is welcomed (if you feel like a
+technical write, don't hesitate). If you also have some wishes for the
+feature articles, or have other suggestions for this news letter
+improvement, just let us now. All messages shall be sent to this
+<a href="mailto:wwn@winehq.org">e-mail address</a>
+
+<p />
+
+</section>
+
+</kc>

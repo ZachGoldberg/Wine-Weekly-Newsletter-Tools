@@ -1,0 +1,270 @@
+<!--TITLE:[Debunking Wine Myths]-->
+<!--BLURB:[Debunking Wine Myths]-->
+
+<h1 class="title">Debunking Wine Myths</h1>
+
+<p>
+Here are some common Wine &quot;myths&quot; that are either completely wrong or not very correct:
+<ul>
+  <li><a href="#slow">&quot;Wine is slow because it is an emulator&quot;</a>
+  <li><a href="#wine_bad">&quot;Wine is bad for Linux&quot;</a>
+  <li><a href="#emulators_better">&quot;Emulators like VMware are better&quot;</a>
+  <li><a href="#need_win">&quot;You need Windows anyway&quot;</a>
+  <li><a href="#winelib_better">&quot;Wine is bad, Winelib is better&quot;</a>
+  <li><a href="#catch_up">&quot;Wine will always be playing catch up to Windows and can't possibly succeed at running new applications&quot;</a>
+  <li><a href="#small_percentage">&quot;Because Wine only implements a small percentage of the Windows APIs, it's always going to suck&quot;</a>
+  <li><a href="#not_current">&quot;Wine is only for Windows 3.1 / Wine will never support Win64&quot;</a>
+  <li><a href="#only_linux">&quot;Wine is for Linux only&quot;</a>
+  <li><a href="#only_x86">&quot;Wine is for Intel x86 only&quot;</a>
+  <li><a href="#no_copy_protection">&quot;My game has copy protection that doesn't work with Wine&quot;</a>
+</ul>
+
+<p><hr size=2 noshade>
+
+<a name="slow"></a>
+<h2>Myth 1: &quot;Wine is slow because it is an emulator&quot;</h2>
+
+Some people mean by that that Wine must emulate each processor
+instruction of the Windows application. This is plain wrong. As Wine's
+name says: "Wine Is Not an Emulator": Wine does not emulate the Intel
+x86 processor. It will thus not be as slow as Wabi which, since it is
+not running on a x86 Intel processor, also has to emulate the processor.
+Windows applications that do not make system calls will run just as fast
+as on Windows (no more no less).
+<p>
+Some people argue that since Wine introduces an extra layer above the
+system a Windows application will run slowly. It is true that, in theory,
+Windows applications that run in Wine or are recompiled with Winelib
+will not be able to achieve the same performance as native Unix applications.
+But that's theory. In practice you will find that a well written Windows
+application can beat a badly written Unix application at any time. The
+efficiency of the algorithms used by the application will have a greater
+impact on its performance than Wine.
+<p>
+Also, and that's what people are usually interested in, the combination
+Wine+Unix may be more efficient that Windows. Just as before it's just how
+good/bad their respective algorithms are. Now to be frank, performance
+is not yet a Wine priority. Getting more applications to actually work
+in Wine is much more important right now. For instance most benchmarks
+do not work yet in Wine and getting them to work at all should obviously
+have a higher priority than getting them to perform well.
+<p>
+But for those applications that do work and from a purely subjective
+point of view, performance is good. There is no obvious performance
+loss, except for some slow graphics due to unoptimized Wine code and
+X11 driver translation performance loss (which can be a problem
+sometimes, though).
+
+<a name="wine_bad"></a>
+<h2>Myth 2: &quot;Wine is bad for Linux&quot;</h2>
+
+One undeniable fact exists:  there is a vast software
+library that works with Microsoft's operating systems. Many
+of these applications already have Linux equivalents, however
+for most people there remains a handful of programs keeping
+them tied to Windows.  Some of these programs have almost no
+chance of getting ported to Linux (e.g. Microsoft Office),
+others simply can't be ported because they've become
+abandonware (e.g. TurboTax 1999).  Would I want to have
+Windows just because someday I may need to access an old tax
+program?
+<p>
+The fact that Wine exists won't prevent companies from porting
+their software, but having less than a few percentage points of
+ marketshare will. Wine puts more free software into the hands
+of people who would otherwise not use it.  In turn, history
+has repeatedly shown that larger marketshare leads to more commercial
+development.  More commercial development has always led to
+more efforts to develop better free software equivalents.
+
+<a name="emulators_better"></a>
+<h2>Myth 3: &quot;Emulators like VMware are better&quot;</h2>
+
+Sure they're better.. if you like purchasing a full copy of
+an operating system just to run it under a virtual machine.
+Not to mention you need to purchase a copy of VMware to make
+it work.
+<p>
+Oh, and don't forget the huge performance hit you take to
+run an application on a full-blown operating system running
+on top of an operating system.
+<p>
+However, having said that there are instances where emulators
+are quite useful.  Developers can create sandboxes to run
+applications in, test other operating systems without rebooting,
+etc.  But having a full-blown emulator just to run a word
+processor probably isn't the best solution.
+
+<a name="need_win"></a>
+<h2>Myth 4: &quot;You need Windows anyway&quot;</h2>
+
+No. The goal of Wine is a full reimplementation of the Windows API which
+will make Windows unnecessary.
+<p>
+You can already run a lot of applications without having Windows installed.
+But you have to realize that because Wine is still far from completion
+many applications will indeed require Windows for some functionality
+that Wine does not yet provide itself.
+
+<a name="winelib_better"></a>
+<h2>Myth 5: &quot;Wine is bad, Winelib is better&quot;</h2>
+
+This seems to be a quite popular myth on Slashdot. Basically some people
+think that running a regular Windows application with Wine is much less
+reliable and yields much lower performance than recompiling this same
+application with Winelib. It seems to be a variant of the 'Wine is slow
+because it is an emulator' myth.
+<p>
+There is really no reason for this. For starters I certainly did not
+observe any performance difference between Wine and Winelib for the
+(relatively few I admit) applications I tested in Winelib. Furthermore
+you have to realize that bugs are not in the way Wine handles PE, i.e.
+Win32's executable format, programs. Bugs, and performance issues alike,
+come from the implementation of the Windows API and this is shared
+anyway.
+
+<a name="catch_up"></a>
+<h2>Myth 6: &quot;Wine will always be playing catch up to Windows and can't possibly succeed at running new applications&quot;</h2>
+
+The architecture of Wine makes adding new APIs (or DLLs)
+fairly easy.  Wine developers rapidly add functions as needed,
+even applications requiring the latest functionality are
+usually reported working within a few months of release.
+Examples of this include Office XP and Max Payne (a DirectX 8.0
+game) - both of which were fairly new as of this writing (5/2002.)
+<p>
+In addition, Wine supports using native DLLs when the built-in
+versions don't function properly.  In many cases, it's possible
+to use native DLL versions to gain access to 100% of the functions an
+application requires.
+
+<a name="small_percentage"></a>
+<h2>Myth 7: &quot;Because Wine only implements a small percentage of the Windows APIs, it's always going to suck&quot;</h2>
+
+APIs are like a library - it's always nice to have as
+many books on the shelves as possible, but in reality
+a few select books are referenced over and over again.  Most
+applications are written to the lowest common denominator
+in order to have the widest audience possible.  Windows
+XP support is simply not that important - most applications
+only require Windows 95 or Windows 98.  Currently Wine
+supports over 90% of the calls found in popular Windows
+specifications such as ECMA-234 and Open32.
+
+Wine is still adding Win32 APIs, but a lot of the
+work right now involves fixing the existing functions
+and making architecture changes.
+
+
+<a name="not_current"></a>
+<h2>Myth 8: &quot;Wine is only for Windows 3.1 / Wine will never support Win64&quot;</h2>
+
+Wine started back in the days when Windows 95 did not exist yet. And
+although Windows NT (and thus the Win32 API) already existed, it only
+supported Windows 3.1 applications. Anyway, almost no-one used Windows
+NT in that time anyway.
+<p>
+But these days are long gone.  Since August 2005, Wine advertises its version
+as Windows 2000, and for several years before this it was Windows 98, so really
+Win32 is the primary thing Wine supports.  Support for Windows 3.1 applications
+is still around, of course, as is some support for DOS applications.
+<p>
+Win64 support would allow Wine to run native Windows 64-bit executables, and
+as of February 2006, Wine does not yet have this support.  That's okay, since
+there are very few commercially available Win64 applications.  One exception,
+Unreal Tournament 2004, is available in a native Linux 64-bit version, so
+nobody (except maybe a Wine hacker) should want to run the Windows version
+anyway.
+<p>
+This doesn't mean that Wine will not work on 64-bit systems.  It does.  See
+<a href="http://wiki.winehq.org/WineOn64bit">this entry</a> in the
+<a href="http://wiki.winehq.org/">Wine Wiki</a> for more info.
+
+<a name="only_linux"></a>
+<h2>Myth 9: &quot;Wine is for Linux only&quot;</h2>
+
+This is just plain incorrect. Ok, as of now Wine does not run on many
+platforms: just Linux, FreeBSD and Solaris. Still, this is not 'Linux
+only'.
+<p>
+It is true too that most developers work on Linux. So you run a higher
+risk of having a specific release of Wine not compile/work on a
+non-Linux platform. But this is usually fixed in the next release. Also
+Wine has been known to be missing some important functionality on
+non-Linux, e.g. good multi-threading. As far as I know these problems
+are now solved and Wine works just as well on any of the three platforms
+mentioned above.
+<p>
+There also is a Win32 compatibility project for OS/2
+(<a href="http://odin.netlabs.org">Odin</a>), which makes use of Wine code.
+
+<a name="only_x86"></a>
+<h2>Myth 10: &quot;Wine is for Intel x86 only&quot;</h2>
+
+Well, it is true that Wine only runs on Intel's x86 processors.
+Unfortunately it will also require quite a lot of work before it runs on
+other processor architectures.
+<p>
+But what do we mean by 'running on a non x86 processor'.
+<p>
+First it can mean 'I can compile a Windows application on Sparc, link it
+with Winelib, and have it run on Solaris'. I know, this is not what you
+had in mind. This may seem very restrictive and yet would be very
+useful: it means easy porting of Windows applications to almost any Unix
+architecture. In any case this is the first step towards allowing Wine
+to run on other processor architectures. Unfortunately Wine's code is
+not very portable to other processor architectures, partly because some
+parts of it have to know a lot about the processor, and partly because
+most of it makes assumptions like 'sizeof(int)==sizeof(pointer)' and
+'byte-sex==little-endian'. This is being worked on though, and progress
+is being made albeit slowly.
+<p>
+Then we could take it to mean 'Wine on Alpha should be able to run
+Windows NT Alpha applications'. The prerequisite for this is that
+Winelib compiles on Alpha (or MIPS, the other defunct Windows NT
+platform). Now, would it be really useful? I don't think many people
+have Windows NT applications for the Alpha or MIPS processor. So this is
+probably not that useful and also rather unlikely to happen since we
+would need a programmer who has just this combination of hardware and
+software to work on it.
+<p>
+Then there's what everyone has been waiting for: 'I want to be able to
+run my x86 Windows applications on any processor architecture I like.
+That's the most complex one. Again the prerequisite is that Winelib
+works on this architecture, which will definitely happen someday. Then
+'all that is needed' is to integrate an x86 emulator with Wine (and also
+change Wine's name :-). Ulrich Weigand just did that as an experiment
+some time ago when he had 'some spare time'. He even managed to get some
+Win16 applications to run. His code was not in a state where it could be
+integrated into Wine yet and I don't know how much work has been put
+into pursuing it. His attempt did spark many discussions on Wine's
+mailing list though. The result is that we would need a sophisticated
+emulator including a JIT in order to get something really viable (i.e.
+not too slow). And developing such an emulator is a whole project in
+itself.<br>
+Does it mean it will never happen? Not sure. Maybe we'll get some
+motivated developers once the Winelib problems are solved. Of course,
+it would happen much faster if, for instance, Compaq made its Fx32!
+Intel x86 emulator Open Source and financed the development of Wine for
+their Alpha machines. As with all Open Source projects, if enough people
+are interested and pool their resources together, it will happen.
+
+<a name="no_copy_protection"></a>
+<h2>Myth 11: &quot;My game has copy protection that doesn't work with Wine&quot;</h2>
+
+Currently SecuRom works in Wine, and directory objects support has been added to 
+get us toward implementing an ntoskrnl.exe that will support loading copy protection drivers 
+like Safedisc. Once ntoskrnl.exe is implemented Wine will have full support for Safedisc versions 1 and 2 
+
+<hr>
+<table width="100%" border=0 cellpadding=0 cellspacing=0>
+<tr valign=top>
+  <td width="50%" align=left>
+    <a href="{$root}/why">Previous</a>: Why Wine is so important 
+  </td>
+  <td width="50%" align=right>
+  </td>
+</tr>
+</table>
+
+<p>&nbsp;</p>

@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="56" date="14 Aug 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 56th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="87" size="281" contrib="31" multiples="17" lastweek="16">
+<person posts="12" size="49" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="10" size="34" who="Peter Ganten &lt;peter@ganten.org&gt;" />
+<person posts="8" size="22" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="5" size="9" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="5" size="37" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="5" size="13" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="4" size="9" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="3" size="8" who="James Abbatiello &lt;abbeyj@wpi.edu&gt;" />
+<person posts="3" size="6" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="3" size="6" who="Deven T. Corzine &lt;deven@ties.org&gt;" />
+<person posts="3" size="5" who="Turchanov Sergei &lt;turchanov@otvprim.ru&gt;" />
+</stats>
+
+
+<section 
+  title="Handling wininit.ini"
+  subject="Where and how to handle wininit.ini"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-08/Subject/article-56.html"
+  posts="6"
+  startdate="05 Aug 2000 00:00:00 -0800"
+  enddate="08 Aug 2000 00:00:00 -0800"
+>
+
+<p />
+
+Uwe Bonnes obviously had some issue with installer files:
+
+<quote who="Ulrich Weigand">
+For moving and deleting otherwise busy file, windows enters these
+files to move in wininit.ini. At the next start of windows this file
+is processed once early in the windows start up sequence. This is done 
+by a MZ-executable wininit.exe.
+</quote>
+
+
+<p />
+
+Uwe then asked if such a behavior had to be reproduced in Wine, and
+if yes, how ?
+
+<p />
+
+Sergei Turchanov pointed out that: <quote who="Sergei Turchanov">This is true only
+for Win9x. As for WinNT, there is registry value under 
+<br /><code>
+"HKLM\CurrentControlSet\Control\Session Manager"<br />
+&#160;&#160;&#160;&#160;PendingRenameOperations:REG_MULTI_SZ
+</code><br />
+which contains for each rename operation two lines - old and new name;
+and if new name is empty then the file is deleted.
+</quote>
+
+<p />
+
+Peter Ganten reminded he just submitted a patch that implements those
+features. He also added: <quote who="Peter Ganten">the whole sense of
+PendingRenameOperations and wininit.ini is, that under Windows you may
+not delete opened files. Since application might expect this, wine has
+to forbid deletion of files, which are opened by other wine processes,
+too. So we need something to handle wininit.ini and MoveFileEx. 
+</quote>
+
+<p />
+
+</section>
+
+
+<section 
+  title="strlen vs. lstrlenA"
+  subject="lstrlenA exception handling"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-08/Subject/article-108.html"
+  posts="9"
+  startdate="09 Aug 2000 00:00:00 -0800"
+  enddate="10 Aug 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jim Aston, while profiling Wine code with cprof 
+(<kcref issuenum="54" sectionnum="1">see previous issue</kcref>), found out 
+that the exception handling around lstrlenA was a rather high
+tribute.
+
+<p />
+
+Jim then wondered why such an exception mechanism was needed (running
+without gave a performance improvement).
+
+<p />
+
+Marcus Meissner explained that Windows allowed NULL (or invalid)
+parameters to be passed to lstrlenA, and in that case to return error
+codes, hence the TRY/EXCEPT block around the function.
+
+<p />
+
+However, it would be possible to replace call to lstrlenA inside Wine
+with their libc equivalent (strlen), for gaining some speed.
+
+<p />
+
+This has been committed to the CVS tree.
+
+<p />
+
+</section>
+
+</kc>

@@ -1,0 +1,335 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="286" date="08/05/2005" />
+<intro> <p>This is the 286th issue of the Wine Weekly News publication.
+Its main goal is to go to rodeos. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="139" size="591" contrib="48" multiples="28" lastweek="28">
+
+<person posts="12" size="32" who="Alexandre Julliard" />
+<person posts="11" size="38" who="Felix Nawothnig" />
+<person posts="9" size="40" who="Oliver Stieber" />
+<person posts="9" size="34" who="Uwe Bonnes" />
+<person posts="6" size="19" who="James Liggett" />
+<person posts="6" size="17" who="Jesse Allen" />
+<person posts="6" size="27" who="=?ISO-8859-1?Q?Alex_Villac=ED=ADs_Lasso?=" />
+<person posts="5" size="16" who="Dmitry Timoshkov" />
+<person posts="4" size="14" who="Saulius Krasuckas" />
+<person posts="4" size="12" who="Stefan Leichter" />
+<person posts="4" size="12" who="Mike McCormack" />
+<person posts="4" size="10" who="Detlef Riekenberg" />
+<person posts="4" size="10" who="Hans Leidekker" />
+<person posts="3" size="16" who="Joseph Garvin" />
+<person posts="3" size="13" who="Richard Cohen" />
+<person posts="3" size="8" who="Ivan Leo Puoti" />
+<person posts="3" size="6" who="Andreas Mohr" />
+<person posts="3" size="6" who="Christian Britz" />
+<person posts="2" size="10" who="Raphael" />
+<person posts="2" size="8" who="Christian Costa" />
+<person posts="2" size="7" who="Jeremy White" />
+<person posts="2" size="6" who="Kai Blin" />
+<person posts="2" size="6" who="Tom Wickline" />
+<person posts="2" size="6" who="James Hawkins" />
+<person posts="2" size="5" who="Francois Gouget" />
+<person posts="2" size="5" who="Jonathan Wilson" />
+<person posts="2" size="5" who="Frank Richter" />
+<person posts="2" size="4" who="Dimi Paun" />
+<person posts="1" size="96" who="Oliver =?iso-8859-1?q?M=F6ssinger?=" />
+<person posts="1" size="33" who="Chris Morgan" />
+<person posts="1" size="12" who="Alexander Yaworsky" />
+<person posts="1" size="4" who="johan kdks" />
+<person posts="1" size="3" who="Andreas Schneider" />
+<person posts="1" size="3" who="Huw D M Davies" />
+<person posts="1" size="2" who="George Lober" />
+<person posts="1" size="2" who="Wesley Parish" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Stefan D&#246;singer" />
+<person posts="1" size="2" who="Robert Shearman" />
+<person posts="1" size="2" who="Michael Jung" />
+<person posts="1" size="2" who="Jacek Caban" />
+<person posts="1" size="2" who="Rafael Almeida" />
+<person posts="1" size="2" who="Dripple" />
+<person posts="1" size="2" who="David Laight" />
+<person posts="1" size="2" who="Dimi Paun" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Marcus Meissner" />
+
+</stats>
+<section 
+	title="News: Xandros Review"
+	subject="News"
+	archive="http://www.xyzcomputing.com/index.php?option=content&amp;task=view&amp;id=382&amp;Itemid=2&amp;limit=1&amp;limitstart=0"
+	posts="1"
+	startdate="07/30/2005"
+	enddate="08/05/2005"
+>
+<topic>News</topic>
+<p>We interrupt your regularly scheduled news of Cisco exploits
+to bring you this issue of the Wine Weekly News.  We'll start out this 
+week with a small news item of XYZ Computing's 
+<a href="http://www.xyzcomputing.com/index.php?option=content&amp;task=view&amp;id=382&amp;Itemid=2&amp;limit=1&amp;limitstart=0">review 
+of Xandros Desktop OS Version 3 Business Edition</a>. 
+For you acronym lovers, that's XDOSV3BE.  There's a few paragraphs about 
+CrossOver Office
+on <a href="http://www.xyzcomputing.com/index.php?option=content&amp;task=view&amp;id=382&amp;Itemid=2&amp;limit=1&amp;limitstart=3">page 4</a>:</p>
+<quote who="XYZ Computing"><p>
+Using this tool I was able to install a number of Windows programs that I have 
+stored on my C: in their executable form. Again, this may seem like the type 
+of thing that a long-time Linux user would scoff at but if you are trying to 
+move to Linux in a gradual manner or you just happen to be attached to 
+certain programs, tools like this can prove invaluable. This process could be 
+done in just a few clicks but took a good deal longer than a standard Windows 
+installation due to the internal adjustments that must be made.</p></quote>
+
+</section>
+<section 
+	title="AppDB Improvements"
+	subject="AppDB - allow maintainers to process submitted screenshots and application versions"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/08/0078.html"
+	posts="1"
+	startdate="08/02/2005"
+>
+<topic>WineHQ</topic>
+<p>Wine's <a href="http://appdb.winehq.org">AppDB</a> has continued to 
+see steady improvements.  Of course the goal is to make it easy to
+find applications, info on running them, and keeping everything up
+to date.  Well, that in turn relies on application maintainers and
+requires some management infrastructure to be in place.  Chris Morgan
+came up with a patch this week to give maintainers the ability to
+manage screenshots:</p>
+<quote who="Chris Morgan"><p>
+
+This patch should offload a little bit of the work involved in being
+an appdb admin by allowing maintainers and super maintainers to
+process screenshots submitted for applications they maintain or
+supermaintain, or to process submitted versions for applications they
+super maintain.
+</p><p>
+Any comments on the code changes?  Ideas for improving the patch?  I
+wanted as much review as possible for this one given that we are
+expanding the roles of maintainers.
+</p><p>
+ChangeLog:
+<ul>
+Chris Morgan <br />
+Allow maintainers to process submitted screenshots and application
+versions for applications they maintain and supermaintain.</ul>
+</p></quote>
+
+<p>The <a href="http://wiki.winehq.org/AppdbInfo">AppdbInfo</a> page
+on the wiki was updated this week as well.  If you like to hack on 
+PHP, you might be interested in looking at the to-do list.
+</p>
+</section>
+<section 
+	title="PeekMessage and Performance"
+	subject="test case demonstrating PeekMessage give up timeslices"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/08/0038.html"
+	posts="13"
+	startdate="08/02/2005"
+>
+<topic>Architecture</topic>
+<p>It's known there are performance issues with some sensitive areas
+of Wine.  On Windows, calls between threads and processes can be
+handled really fast directly within the kernel.  With Wine, those
+same calls require the wineserver to handle the synchronization, which
+itself is just another Linux process.  Those roundtrip IPC calls to
+the server can be expensive, and a lot of work has gone into trying
+to make sure those roundtrips are minimized.  </p>
+
+<p>Oliver M&#214;ssinger illustrated an example of a performance
+problem with a test program:</p>
+<quote who="Oliver Mossinger"><p>
+attached i have a test case which demonstrates the difference between Windows 
+and wine. There is also a sample program 'TEST.CPP' attached.</p><p>
+
+On Windows XP
+<ol>
+<li> Start 'test.exe' from a dos-box... you see some FAST counting integers</li>
+<li> Start another (loop.pl) program which consumes much cpu time.</li>
+<li> the output of 'test.exe' is slower but FAST</li></ol></p><p>
+
+On wine
+<ol>
+<li> Start 'test.exe' from a dos-box... you see some FAST counting integers</li>
+<li> Start another (loop.pl) program which consumes much cpu time.</li>
+<li> the output of 'test.exe' is very slow</li></ol></p><p>
+
+This different behavior starts from wine version 20041201. The version before 
+was ok.
+</p><p>
+I have no patch and it would be nice if someone can write a patch to fix this.
+</p></quote>
+
+<p>In this case, Alexandre suggested fixing the app behind the test case
+(assuming there is one) rather than Wine:</p>
+<quote who="Alexandre Julliard"><p>
+You can probably fix it by passing PM_NOYIELD in the PeekMessage
+calls. But if your app needs a lot of CPU, restructuring the code to
+avoid all the needless polling would give much better results, and
+probably improve the behavior on Windows too.
+
+</p></quote>
+
+<p>Felix Nawothnig thought there was a real issue here that needed
+fixing:</p>
+<quote who="Felix Nawothnig"><p>
+That's just a workaround. Our PeekMessage is definitely misbehaving - I 
+ran the attached test-program in Wine and WinXP... here are the results:
+</p><p>
+Wine:
+<ul>
+     wine_at_majestix c $ wine foo.exe<br />
+     NtYieldExecution yielded 100 times<br />
+     PeekMessage(...) yielded 200 times<br />
+     PeekMessage(... PM_NOYIELD) yielded 100 times
+</ul></p><p>
+WinXP:
+<ul>
+     C:\>foo.exe<br />
+     NtYieldExecution yielded 100 times<br />
+     PeekMessage(...) yielded 0 times<br />
+     PeekMessage(... PM_NOYIELD) yielded 0 times
+</ul></p><p>
+(The numbers differ slightly between runs for obvious reasons but they 
+are close enough (with an error margin of +/- 10 we could maybe make 
+this a real testcase))
+</p><p>
+So, PeekMessage always yields execution (it shouldn't) and without PM_NOYIELD 
+specified it yields execution twice (although it shouldn't at all).
+</p><p>
+
+The (real) effect of PM_NOYIELD is described at
+<ul>
+ <a href="http://www.piclist.com/techref/os/win/api/win32/func/src/f67_6.htm">
+ http://www.piclist.com/techref/os/win/api/win32/func/src/f67_6.htm</a></ul>
+</p></quote>
+
+<p>Alexandre asked for a real world case of an app misbehaving:</p>
+<quote who="Alexandre Julliard"><p>
+PeekMessage is going to call the server and wait on the result,
+there's no way around it. The extra yield is to avoid hammering the
+server with requests in stupid apps that constantly poll for messages,
+since a server call is much more expensive than a Windows system call.
+</p><p>
+This could certainly be changed, but it will require evidence that the
+changes help for common real cases, not just to make some artificial
+benchmark show better results.</p></quote>
+
+<p>Jeremy White jumped into the thread:</p>
+<quote who="Jeremy White"><p>
+I can imagine a case where a bad programmer has two threads and depends
+(not intentionally, but through accident) on one thread
+starving the other thread of CPU time such that a race condition
+never occurs.  I don't have an example, but I have seen behavior
+like that, notably with IE and PowerPoint (although I think
+the case was with some other signalling method, not PeekMessage).
+</p><p>
+Thus, I think it's reasonable to try to preserve relative
+timing on Wine as closely as we can, even if it creates some
+overall performance degradation for poorly designed apps.
+(Famous last words, I'm sure I'll shortly be screaming about why
+is Wine suddenly so slow *grin*).</p></quote>
+
+<p>Alexandre didn't agree:</p>
+<quote who="Alexandre Julliard"><p>
+Yes, but the thing is you can write bad code that works fine on
+Windows but chokes down Wine, because we spend so much more time
+inside PeekMessage. The yield is an attempt to fix this by penalizing
+badly written apps to prevent them from hurting well written ones.
+</p><p>
+
+The problem is that the poorly designed apps will hammer the server,
+which will cause a much bigger performance degradation in unrelated
+apps than what you'd expect simply by hogging the CPU.</p></quote>
+
+<p>Jeremy dug into it and several hours later reported his findings:</p>
+<quote who="Jeremy White"><p>
+I dug into this a bit further.
+
+Felix, the extra 100 yields are coming from code I
+prompted, in ntdll/sync.c; if the return from
+an NtWait... is TIMEOUT, then we force a yield.
+(The thread that points to more info is here:
+<a href="http://www.winehq.org/hypermail/wine-devel/2005/01/0469.html">
+http://www.winehq.org/hypermail/wine-devel/2005/01/0469.html</a>)
+</p><p>
+If I back that down and apply your patch, I can
+get to 100/1/1.  This also makes Olivers test program
+retain priority (rather than slowing to a crawl as it
+does today).  In fact, it keeps too high a priority
+(the perl test is slow and jerky by comparison to the Wine
+one, instead of being relatively even as on Windows).
+I'd theorize that's due to the server calls; we smell
+like an X process so we get priority.
+</p><p>
+However, this makes it clear to me that the yield
+in message.c is largely moot; you need to remove both
+that one and the one in ntdll/sync.c to have
+any material effect on Wine timing with messages.
+</p><p>
+Further, while I've been wanting to probe that yield
+in ntdll.c further, I haven't done my homework yet,
+so I think maybe I'll shut up and slink back into
+my corner.</p></quote>
+
+<p>Felix had an idea of a way to improve performance using
+shared memory,
+<quote who="Felix Nawothnig">
+shm generally would lower the cost of a server
+ request and doing that extra yield would no longer be necessary
+ (although we'd still have the other yield due to the request itself
+ unless the queue is put into shm).</quote></p>
+
+<p>Alexandre disagreed,
+<quote who="Alexandre Julliard">
+
+  If you mean passing the parameters through shared memory instead of a
+  pipe, then no, it doesn't really make a difference. The cost is not
+  the few bytes we need to copy across, it's the context switches.</quote></p>
+
+</section>
+<section 
+	title="Turning off Anti-Aliasing"
+	subject="How to turn off Anti-aliasing"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/07/0870.html"
+	posts="4"
+	startdate="07/29/2005"
+	enddate="08/01/2005"
+>
+<topic>Configuration</topic>
+<p>Well, the configuration changes seem to have settled down.  The
+config file has been gone for over a month, winecfg is the preferred
+method for making changes, but you can also run regedit or even hand
+edit the text-based reg files.  Part of the growing pains have meant
+some of the lesser used options are now accessible only in the
+registry with the caveat that you have to know where to put them.
+George Lober asked last week about Wine's handling of fonts and
+anti-aliasing:</p>
+<quote who="George Lober"><p>
+
+I have just updated my install of Wine and I notice that the config file 
+is now deprecated, it doesn't get used. I want to turn off Wine 
+Anti-aliasing. I was able to do it in the config file, but now I don't 
+know. 'winecfg' doesn't have any such setting.  Can it be turned off in 
+the registry ?  If so what is the setting ?
+</p></quote>
+
+
+<p>Huw Davies replied this week where those can be found now:</p>
+<quote who="Huw Davies"><p>
+
+Add the values
+<ul><code>
+"ClientSideAntiAliasWithRender"="N"<br />
+"ClientSideAntiAliasWithCore"="N"
+</code></ul></p><p>
+to the key
+<ul><code>
+HKCU\Software\Wine\X11 Driver</code></ul></p></quote>
+ 
+<p>George reported it worked.</p>
+</section></kc>

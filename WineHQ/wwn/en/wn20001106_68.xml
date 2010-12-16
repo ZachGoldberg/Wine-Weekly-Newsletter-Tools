@@ -1,0 +1,778 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="68" date="06 Nov 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 68th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="143" size="716" contrib="32" multiples="20" lastweek="22">
+<person posts="20" size="48" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="20" size="105" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="9" size="43" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="9" size="42" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="8" size="113" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="7" size="22" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="20" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="6" size="4" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="6" size="21" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+</stats>
+
+
+<section 
+  title="Wine configuration tools"
+  subject="wine configuration issues (long)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-283.html"
+  posts="17"
+  startdate="24 Oct 2000 00:00:00 -0800"
+  enddate="27 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Martin Pilka, keeping going with his work on Wine configuration tools
+(see <kcref issuenum="62" sectionnum="2">issue #62</kcref>), ran into some
+interesting questions:
+<quote who="Martin Pilka">
+I'm working on easier configuration of Wine and better integration
+into most common desktop environments (like KDE, GNOME). As i'm tracing
+things down, i'm running into some problems. what's going on:
+
+<p />
+
+One part of the integration is that icons should appear on your linux
+desktop (and menu) after you run some installer under Wine. That
+requires correctly set paths (like Desktop, StartUp) under
+<code>HKEY_CURRENT_USER</code> key. The user who runs installer uses
+only the global configuration files (like /etc/wine/wine.conf,
+system.reg, wine.userreg). Wine is set to use fake windows
+installation (no real windows installed, but it's not really important
+in this case). 
+
+<p />
+
+The problem is that there is no way how to set something under
+<code>HKEY_CURRENT_USER</code> registry key in global configuration
+files. That's probably right, because information under this key are
+related to concrete user, and therefore should be stored in users home 
+directory. But this causes there is no way how to properly configure
+GLOBAL Wine configuration - i mean superuser runs configuration once,
+and all other users have Wine ready to use. In fact all users are
+supposed to run "<code>regapi setValue &lt; winedefault.reg</code>"
+command before they run their first application (this translates the
+<code>HKEY_CURRENT_USER</code> key to real user name and writes this
+translated keys to ~/.wine/user.reg file). 
+
+<p />
+
+I would like to solve it somehow, but before i do that i need the
+answers for a few questions:
+<ul>
+   <li>let's say superuser configured system for all users at once, so
+Wine is ready-to-use for all normal users. is that scenario what we
+want?</li> 
+   <li>if yes, then:
+
+<p />
+
+how to manage that users will have correctly set paths under
+<code>HKEY_CURRENT_USER</code> key? one solution is to allow something like
+<code>HKEY_CURRENT_USER</code> in /etc/wine/wine.userreg file. Is that
+the right solution?</li>
+</ul>
+</quote>
+
+
+<p />
+
+Francois Gouget gave some insights on current Windows behavior:
+
+<quote who="Francois Gouget">
+Windows has the notion of a 'Default User':
+"<code>HKEY_USERS/.Default</code>". This should probably be checked,
+but I believe that when a new user is created, the information stored
+in this tree is duplicated to form the new user's registry tree.
+
+<p />
+
+Maybe this could be used for solving this problem: when root installs
+Wine he sets all the directories right, and this is stored in  this
+'.Default' tree. Then when an actual user starts Wine for the first
+time, obviously he does not have a registry yet. So what Wine would do
+is copy the contents of the ".Default" tree to form the user's new
+<code>HKEY_CURRENT_USER</code> key. That way he would inherit all the 
+right settings automatically.
+
+<p />
+
+The exact behavior should be checked under NT too (the above was from
+Windows 9x) but I believe it is similar. There is another item that
+works the same in NT which is profile information: 
+in NT4 when a user logs in for the first time on a machine, the
+contents of 'c:\winnt\Profiles\Default User' is duplicated and used
+for that user. This directory contains the settings for the Start
+Menu, the Desktop, etc.
+
+<p />
+
+IIRC the same goes for Windows 2000 but the location of the directory
+is different.
+</quote>
+
+
+<p />
+
+Even if Martin liked the idea, Alexandre Julliard pin-pointed some
+trouble makers:
+<quote who="Alexandre Julliard">
+I'm afraid you cannot simply copy the values, some have to be adapted
+for the current user; for instance on my NT box the programs directory
+is in <code>C:\WINNT\Profiles\&lt;username&gt;\Start
+Menu\Programs</code> so you need to plug the right username in there
+when setting the key. 
+
+<p />
+
+A possible approach suggested by Jeremy White is to specify a user
+setup script in the global configuration. Then when Wine notices that
+the user doesn't have a .wine directory it will launch this script,
+which can copy the registry files from some templates and run a sed
+script on them to fix the necessary things.
+</quote>
+
+
+<p />
+
+The discussion then refined the details of such an implementation. The 
+last important issue, as Martin put it, is "language mutation": some
+registry entries (like 'Program Files', have a different name
+depending on the localization of the system). Shell32 should provide
+this flexibility, so the little script's proposal evolved into a more
+complex tool, even if, as Ove Kaaven suggested, it could use an
+existing WineLib application like regapi to do the job.
+</section>
+
+
+<section 
+  title="Wine bottling"
+  subject="Wine packaging - part 2 - what RPM/DEBs do"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-329.html"
+  posts="61"
+  startdate="26 Oct 2000 00:00:00 -0800"
+  enddate="28 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Based on some conversations, Jeremy White proposed a scheme to let
+users get access to Wine from the WineHQ download are:
+
+<quote who="Jeremy White">
+I propose that the user see the following ordered list (and that the
+list be presented in a nice, friendly way):
+<ol>
+   <li>How to get Wine from CVS and build it</li>
+   <li>How to get source tarballs of the snapshots Alexandre releases</li>
+   <li>RPM and DEB packages of Wine, <b>unstripped</b>, built from the snapshots</li>
+   <li>A link to other places (i.e. what exists today) where they
+could get stripped versions of Wine, if they want to do that to us
+poor, suffering, Wine hackers.</li>
+</ol>
+
+<p />
+
+When we release Wine 1.0, the top of the list would be stripped,
+packaged RPM and DEB files. 
+
+<p />
+
+Obviously, the main thrust I'm trying to set up is encouraging users
+to build Wine from source (at this time), or at least to use a version
+with symbolic info so we can get decent bug reports.
+</quote>
+
+
+<p />
+
+Since no one really answered this (and which came from a larger
+consensus), next major WineHQ revamping shall include this.
+
+<p />
+
+At the same time, Jeremy proposed what turned out to be a more
+controversial point regarding Wine RPM and DEB packaging. Several
+aspects have been covered.
+
+<p />
+
+1/ <quote who="Jeremy White">Install the files to the appropriate place
+(/usr/bin? /usr[/share]/doc /usr/lib/wine)</quote>
+<ul>
+Not much was discussed here, not even the regular /usr/ vs /usr/local
+flamewar.
+</ul>
+
+<p />
+
+2/ <quote who="Jeremy White">Modify ld.so.conf to include the lib
+directory</quote>
+<ul>
+As Marcus Meissner pointed out (and also implemented for the Caldera 
+package), updating /etc/ld.conf is not necessary if -rpath is used
+while linking modules (<kcref issuenum="63" sectionnum="1">see previous issue
+</kcref>). Ove Kaaven now also does it for Debian packages.
+</ul>
+
+<p />
+
+3/ <quote who="Jeremy White">[Controversial] Modify Gnome/KDE file associations 
+to associate .exe files with wine</quote>
+<ul>
+This is an old idea (<kcref issuenum="16" sectionnum="1">see previous issue
+</kcref>), which got agreed.
+
+<p />
+
+Marcus Meissner proposed to add a <quote who="Marcus Meissner">wrapper should put
+up a messagebox "Launching WINE...", since WINE startup takes longer than
+the n seconds that the casual user expects a application startup to take.
+(We had several people clicking on .exe and wondering why nothing happens
+ since on the first run it takes like > 30 seconds to calculate
+fonts.)</quote>
+
+<p />
+
+Jeremy went even further, proposing to add <quote who="Jeremy White">a global
+KDE/Gnome menu entry for Wine, put Winecfg under it, and maybe also
+put in a simple Windows application launcher. Hmmm.  This could be
+cool; we could make a little launcher with checkboxes that turn on
+good debug info, and facilitate the creation of a decent bug report.
+Also, the wine launcher could control (hide) the stdout/stderr of
+Wine, and give the user an option to see it if/when Wine crashes.
+Thus, the wine launcher would be the thing tied to the .exe
+associations.</quote>
+
+<p />
+
+This sound useful to some people. Jeremy even wrote a first
+implementation of such a tool (which now sits in tools/winelauncher in 
+the CVS tree).
+</ul>
+
+<p />
+
+4/ <quote who="Jeremy White">[Controversial] Install a kernel patch to allow
+.exe files to be launched from the command line.</quote>
+<ul>
+Ove Kaaven noticed that <quote who="Ove Kaaven">kernel patches aren't
+necessary. If the user has binfmt_misc in the kernel, it's just a 
+matter of injecting a descriptor into /proc/sys/fs/binfmt_misc after
+boot...</quote> Andreas Mohr also pointed out that .exe should have
+been 'chmod +x':ed which is not always the case (evenmore, when .exe
+resides on a FAT partition, you cannot set the +x attribute on a per
+file basis). So, the KDE/Gnome association is a better solution
+(which doesn't prevent from implementing this other one).
+</ul>
+
+<p />
+
+5/ <quote who="Jeremy White">[Controversial] Do <b>not</b> install a /etc/wine.conf
+file.  IMHO, since the global wine configuration is IMHO misleading,
+we shouldn't install one by default.</quote>
+<ul>
+
+<p />
+
+Since the first wording wasn't very clear (and/or understood), Jeremy
+White explained further: <quote who="Jeremy White">AFAIK, the global wine
+configuration has no effect if you have a local .winerc. Since I think
+almost everyone will run with a ~/.winerc (so the Wine settings can be
+tweaked at user level, not by root), I feel that is misleading.
+
+<p />
+
+I do, however, think it's a great idea to have a
+/etc/wine/wine.conf.default (along with the default registry files).
+</quote>
+
+<p />
+
+Alexandre agreed saying that <quote who="Alexandre Julliard">Wine should only try to
+load the user config file. If someone really wants a global config, it
+is always possible to make the user config a symlink to some central
+file.</quote>
+
+<p />
+
+There was also some tough exchanges to determine whether multi-user
+configuration (read some installation could be done for several users
+at the same time) versus single-user (each user is responsible for his 
+configuration). First option would ease up the life of system
+administrators in deploying a new application on top of Wine.
+
+<p />
+
+Even if everyone agreed it was a neat features, Jeremy and Martin
+feared this was too high an achievement for 1.0 and were keen to drop
+it for 1.0 (or to add it to the wish list for 1.1). Ove, on the other
+hand, didn't think it was an heavy task to accomplish <quote who="Ove Kaaven">
+Why's that? It can't be harder to do than agreeing on a clean
+design and writing a couple of lines of code... the current registry
+model would only require minor tweaks to enable registry
+sharing.</quote> 
+
+<p />
+
+However, such a clear design has not been agreed on yet.
+</ul>
+
+<p />
+
+6/ When to run the configuration tool(s)
+<ul>
+   It wasn't not clear either when to run the configuration tools. The 
+first approach required to have it run on the post-installation
+process, but on a non interactive way. The second approach rejoigned
+what's presented in previous article: when a user starts Wine for the
+first time, it's configuration is then created.
+
+<p />
+
+   In both case, it should also be defined whether the installation
+shall be made with a native Windows system if one is found (note, that 
+it can also not be found, like when the C: partition is not mounted at 
+the time the tool is run). In any cases, the configuration system
+should be able to prepare a windows-less installation. It seemed also
+an agreement was reached upon reducing the interactivity of the
+installation process.
+
+<p />
+
+Also, Ove suggested, for Debian, the use of debconf to get most of the 
+needed information (which could be done in an non interactive way).
+
+<p />
+
+Jeremy White summed the last two points divergence:
+
+<quote who="Jeremy White">
+At package install time, should we create a global wine.conf?
+<ul>
+	View 1: No - we supply something like wine.conf.template, and
+then walk the user through using winecfg of wineconf to get their own .winerc.
+
+<p />
+
+        View 2: Yes. We autobuild a global wine.conf file during the
+install process. With debian, we can do this somewhat elegantly due to
+debconf. 
+
+<p />
+
+        Side issues: With View 2, there is a hope that Wine can
+support a true multiple user configuration. Some of us feel that this
+is not worthwhile to try to support at this time.
+</ul>
+
+<p />
+
+Perhaps we resolve this by saying that for debian, because of debconf,
+we take view 2, and for RPMS, we take view 1. I hate to diverge, but
+I think the opposing views are pretty entrenched.</quote>
+
+
+<p />
+
+However, if View #2 can be easily reached, it's likely it'll be the
+default approach.
+</ul>
+
+<p />
+
+Claus Fisher opened another area of discussion:
+<ul>
+<quote who="Claus Fisher">
+
+<p />
+
+Perhaps it's time to talk to the FHS guys about a possible inclusion
+of Wine windows/pseudo-windows directories in the Filesystem Hierarchy 
+Standard. Probably in two versions: with native Windows on disk, and
+without.
+
+<p />
+
+Define guidelines
+<ul>
+   <li>which drive letters should hold globally installed applications 
+if possible</li>
+   <li>which drive letters should be for the users' stuff (home dir),
+which tmp directories are used</li>
+   <li>how packages for installation under Wine should be prepared (if
+possible)</li>
+</ul>
+</quote>
+
+<p />
+
+Marcus Meissner explained the setup he uses on a Caldera system:
+<ul>
+   <li>A: first floppy pointing to floppy automountpoint</li>
+   <li>B: (commented out) second floppy</li>
+   <li>C: users homedirectory / windows base installation</li>
+   <li>...</li>
+   <li>R: cdrom   (just a generic choice) pointing to CD-ROM
+automountpoint</li>
+   <li>...</li>
+   <li>T: temp drive, pointing to /tmp/</li>
+   <li>W: point to shared windows directory (so we can
+use w:\ and w:\system in paths later.</li>
+   <li>U: users homedirectory     / $HOME. As network drive, so
+windows don't try to use it as temp storage.</li> 
+   <li>Z: the / drive, a network drive, so windows apps don't try to
+use it as temp storage.)</li>
+</ul>
+
+<p />
+
+Of course, lots of people disagreed on the naming of letters and what
+they should be used for (everyone is used to his own setup).
+</ul>
+
+<p />
+
+In another part, Jeremy White tried to have the packaging tool make
+their way inside the CVS tree. As Jeremy put it:
+<quote who="Jeremy White">
+I think that in order for Wine to succeed, it needs to have
+consistent, strong packaging. I think in order for that to happen, the
+packaging process needs to be automated, and easily replicated. And I
+think the best way for that to happen is for the package files to
+reside in a CVS tree. I'm not sure I see the flaw in having a
+tools/package/redhat, and a tools/package/debian, and a
+tools/package/openlinux and so on. 
+
+<p />
+
+Otherwise, Marcus gets run over by a bus, and OpenLinux Wine packaging
+stagnates, or Ove gets abducted by Microsoft and Debian users are
+forever forlorn... &lt;g&gt;.
+</quote>
+
+
+<p />
+
+Alexandre Julliard didn't like the approach:<quote who="Alexandre Julliard">
+I strongly disagree with the automated part. You don't want anybody to 
+do a 'make package' and put the package up for ftp; this is the most
+sure way of having tons of broken packages floating around.
+
+<p />
+
+You want to have knowledgeable people like Ove and Marcus, who
+understand what they are doing, generate the packages for the rest of
+us. So yes, we should have more documentation on how to do that, and
+this will probably include parts of sample spec files to illustrate
+the documentation. But it should not be possible to blindly generate a
+package without understanding what's going on.
+</quote>
+
+<p />
+
+The discussion ended with issues like:
+Q: how many packages for Wine (and what should be inside) ?
+A: that's a distribution oriented matter.
+
+<p />
+
+Q: which dependencies can winecfg rely on ? (currently it uses Tcl/Tk
+and some other packages)
+A: try to reduce the dependencies.
+
+<p />
+
+As a final word, things are not completely settled down. The hairy part 
+of this kind of discussion if to find the right balance between:
+<ul>
+	<li>Wine providing enough tools, features and guidelines so
+that packagers can write easy to use but consistent across
+distributions packages.</li>
+	<li>Wine providing enough flexibility so that packagers can
+tweak them to the distribution philosophy or intented use (more games
+oriented, or more Office application oriented...)</li>
+</ul>
+</section>
+
+
+<section 
+  title="Bitmaps in menu"
+  subject="Fix for selected bitmap menu items"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-376.html"
+  posts="7"
+  startdate="27 Oct 2000 00:00:00 -0800"
+  enddate="05 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Dmitry Timoshkov wrote a patch to <quote who="Dmitry Timoshkov">make bitmap menu
+items look like in windows when selected, i.e. hilited and
+inverted.</quote>
+
+<p />
+
+Francois Gouget took a look at it, and found the modification, even if 
+fixing some issues in Wine, didn't do as Windows:<quote who="Francois Gouget">
+<ul>
+	<li>in Win95
+	<ul>
+		<li>the normal display is black text on the regular
+gray background when an item is selected its background becomes white,
+the text stays black</li>
+		<li>except for the checkboxes which become white on
+the regular gray background</li>
+	</ul></li>
+	<li>in win98
+	<ul>
+		<li>same as Win95 when the window is active and the
+mouse is not over the menu bar</li>
+		<li>if the window is inactive then the black parts
+become dark gray, i.e. it looks the same as if we had a regular menu
+</li>
+		<li>when the mouse is over a menu bar item, there's a
+raised border drawn around the bitmap (even if the window is
+inactive)</li>
+		<li>when a menubar item is selected, there is a sunken
+border drwan around it and, unlike in Win95, the background remains
+grey</li>
+		<li>when a menu item is selected, it is highlighted
+like any other, i.e. we have the dark blue background. But the bitmap
+is indeed displayed kind of inverted. I get dark blue on white. And I
+also note that the size of the menu item is calculated so that there
+is a 1 pixel dark blue border above and below the bitmap.</li>
+	</ul></li>
+</ul>
+</quote>
+
+<p />
+
+Francois resumed the issues in two blocks: calculation of the item
+size, where some part seemed to be overridden in some cases, and some
+color management issues.
+
+<p />
+
+Dmitry then decided to write a simple test application to help
+determine the color management issue. This simple app includes
+monochrome and color bitmaps in menus. As Dmitry put it (as a Russian
+byword) <quote who="Dmitry Timoshkov">things are simpler than they look: Eyes are
+afraid - hands are doing</quote>
+
+<p />
+
+Using this application, and merging Dmitry first work, and other fixes 
+he add, Francois provided a patch which now closer mimics the drawing
+of bitmaps in menu (in particular, the inversions when the mouse goes
+over the selected menu).</section>
+
+
+<section 
+  title="MSC info handling in winedbg"
+  subject="[Q] Status of wine debugger"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-397.html"
+  posts="9"
+  startdate="28 Oct 2000 00:00:00 -0800"
+  enddate="01 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+Uwe Bonnes had a hard time debugging an application:
+
+<quote who="Uwe Bonnes">
+I am trying to debug some misfunction in a program (avrstudio.exe)
+that uses MFC. The missfunction are senseless top/left/width/height
+values to CreateWindowExA and that CreateWindowExA is called from the 
+MFC library. As VC++ comes with PDB files and source for the MFC
+library, I thought that windebg should read that pdb files and then
+would give me a sensible stack backtrace at that invocation of
+CreateWindowExA.
+
+<p />
+
+However doing so it looks like:
+<code>
+0x405cdf46 (CreateWindowExA+0x46 [win.c:1118])<br />
+1118          FIXME("BON:Setting up SysHeader32\n");<br />
+Wine-dbg&gt;bt<br />
+Backtrace:<br />
+=&gt;0 0x405cdf46 (CreateWindowExA+0x46(exStyle=0x0, className=0x5f4a5444, windowName=0x0, style=0x40000042, x=0x5f403903, y=0x5f4d1b60,<br />
+width=0xa10af35d, height=0xa0b2e4a0, parent=0x341c, menu=0x9c70, instance=0x400000, data=0x0) [win.c:1118]) (ebp=4083cde0)<br />
+&#160;&#160;1 0x5f407d8a (COccManager::SplitDialogTemplate+0x6(pTemplate=0x0, ppOleDlgItems=0x5f4a5444) [occmgr.cpp:182]) (ebp=4083ce50)<br />
+&#160;&#160;2 0x5f409a6b (MFC42.DLL.2124+0x46) (ebp=4083ce8c)<br />
+&#160;&#160;3 0x5f456a10 (MFC42.DLL.2093+0x2d) (ebp=ffffffff)<br />
+*** Invalid address 0xffffffff (SHLWAPI.DLL..reloc+0x4048dfff)<br />
+</code>
+</quote>
+
+
+<p />
+
+Uwe then asked by the <quote who="Ulrich Weigand">stack levels 2 and 3 don't get
+resolved in Function names and looking at the MFC source for
+occmgr.cpp I think winedbg doesn't get things right...</quote>
+
+<p />
+
+Juergen Schmied explained that <quote who="Juergen Schmied">WineDbg can read pdb
+files if the debug information of the exe file is not stripped and the
+exe file is pointing directly to the pdb file. 
+If the debug information is stripped to a dbg file and there is a
+record pointing to the pdb file in the dbg file, WineDgb is not able to
+load the filename.</quote>
+
+<p />
+
+Juergen said he already had some code to fix this missing feature, but 
+the code wasn't mature yet (basically, some functions still weren't
+found correctly, and timestamping gave bad results - when an
+application compiled with MS VC++ has his debug information stored in
+a .DBG file, a timestamp is stored in both .EXE and .DBG file so the
+debugger can assume that both files are in sync).
+
+<p />
+
+Ulrich Weigand pointed out another possible issue:
+
+<quote who="Ulrich Weigand">
+It would appear that these .DBG files carry OMAP data. To quote Matt
+Pietrek (<a href="http://www.microsoft.com/msj/0597/hood0597.htm">
+http://www.microsoft.com/msj/0597/hood0597.htm</a>):
+<ul>
+	Yet another form of debug information is relatively new and
+  undocumented, except for a few obscure references in WINNT.H and the
+  Win32 SDK help. This type of information is known as OMAP.
+  Apparently, as part of Microsoft's internal build procedure, small
+  fragments of code in EXEs and DLLs are moved around to put the most
+  commonly used code at the beginning of the code section. This
+  presumably keeps the process memory working set as small as possible.
+  However, when shifting around the blocks of code, the corresponding
+  debug information isn't updated. Instead, OMAP information is created.
+  It lets symbol table code translate between the original address in a
+  symbol table and the modified address where the variable or line of code
+  really exists in memory.
+</ul></quote>
+
+
+<p />
+
+Later on, Ulrich proposed a long patch which should support such OMAP
+information in MSC debug information reading.
+
+<p />
+
+However, this should not yet solve the name mangling issues. Yet,
+WineDbg doesn't support C++ features, so name mangling is part of the
+missing ones. This even may be a long job, because name mangling is
+not the same across several compilers. So, support for at least MS
+VC++ and GCC shall be provided. Anyway, if WineDbg has to be used in
+helping porting Windows applications with WineLib, (basic) C++ support
+is a must have.
+</section>
+
+
+<section 
+  title="Mac OS X"
+  subject="Issues regarding porting WineLib to Mac OS X"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-11/Subject/article-5.html"
+  posts="7"
+  startdate="01 Nov 2000 00:00:00 -0800"
+  enddate="04 Nov 2000 00:00:00 -0800"
+>
+
+<p />
+
+James Hatheway, while thinking to port Wine to Mac OS X, tried to
+summarize the known issues he may encounter, if starting such an
+adventure.
+
+<p />
+
+Gavriel State reported some previous actions he had on this matter:
+<quote who="Gavriel State">I briefly started on a Mac OS X port at MacHack, but
+stopped after being annoyed at how many header files for important
+stuff Mac OS X seemed to be missing.
+
+<p />
+
+I have a tarball of an old hacky winelib port to LinuxPPC around. At 
+MacHack I switched to updating it for then-current WineLib, but got 
+stuck on the issue of thread local storage. The solution there is
+to apply a patch that makes wine use pthreads for Windows threads
+(I know that Andrew Lewycky did this for Corel for the cprof profiler).
+</quote>
+
+<p />
+
+Several detailed points were addressed:
+<ul>
+<li><b>Endianess</b>. First question links to the way resource shall
+be stored (using the endianess of the CPU, meaning that resource
+compiler and Wine must be run on machine sharing the same endianess,
+or storing the resources with a predefined endianness, leaving the
+resource compiler and the Wine resource loader to do any conversion if 
+necessary). Gav reminded of an old discussion he had with Bertho
+Stultiens on this very matter. Even resources by themselves shall be
+converted (for example, width or height of a bitmap, stored in .bmp
+header).</li>
+<li>Regarding <b>alignment issues</b>, Gav thought it was more a
+matter of performance (either using packed or unpacked
+structures). The CPU shall be used to do several aligned memory
+accesses to handle an unaligned data.</li>
+<li><b>Driver interfaces</b> shall be reworked. This would include the
+X11 driver (Gav commented <quote who="Gavriel State">the GDI side should be
+fairly straightforwards, but the window/event management will be 
+nasty.</quote>), but also the multimedia driver (mainly for audio
+support).</li>
+<li>James feared the <b>Wine debugger</b> to be too tightly bound to
+the x86 architecture to be useful as it is. Gav reminded that gdb
+worked just fine.</li>
+</ul>
+
+<p />
+
+Patrik Stridval also had a look after the unsuccessful BeOS port try
+(which got stalled because of missing OS level functionalities like
+file descriptor passing in sendmsg/recvmsg or the handling of sockets
+as file descriptors), but thought that this could be way easier to do
+the Mac OS port than the BeOS one.
+
+<p />
+
+Anyway, this was a feasibility study, and James didn't make his mind
+yet if he would go or not for it.
+
+<p />
+
+ 
+
+<p />
+
+
+<p />
+
+
+<p />
+
+</section>
+
+</kc>

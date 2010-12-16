@@ -1,0 +1,394 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="77" date="08 Jan 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 77th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="128" size="488" contrib="45" multiples="24" lastweek="21">
+<person posts="18" size="58" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="10" size="31" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="9" size="36" who="lawson_whitney@juno.com" />
+<person posts="7" size="24" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="7" size="19" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="27" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="5" size="17" who="Jon Griffiths &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="5" size="16" who="Adam D. Moss &lt;adam@gimp.org&gt;" />
+<person posts="5" size="15" who="Gavriel State &lt;gav@transgaming.com&gt;" />
+</stats>
+
+
+<section 
+  title="COM macros and preprocessor"
+  subject="compilation error on uuid.c"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/417.html"
+  posts="27"
+  startdate="31 Dec 2000 00:00:00 -0800"
+  enddate="03 Dec 2001 00:00:00 -0800"
+>
+
+<p />
+
+James Juran reported errors while compiling Wine with Red Hat 7.0 gcc
+(2.96) compiler. After some testings, it turned out that a recent
+patch was mis-interpreted by the pre-processor.
+
+<p />
+
+The definition and the implementation of the COM virtual tables in
+Wine is done using a set of macros. Some cases are somewhat
+difficult: some methods in those vtables have the same name as a
+regular API function (<code>GetObject</code> and
+<code>GetClassInfo</code> are the two known examples). But, as
+Windows, some APIs are present under two forms (Ansi and Unicode); in
+that case two functions are defined (one is suffixed with A for Ansi,
+the other one for W for Wide (aka Unicode) (for example
+<code>fooA</code> and <code>fooW</code>). Then a macro foo is defined
+either as <code>fooW</code> (resp <code>fooA</code>) if the manifest
+constant <code>UNICODE</code> is defined (resp. not defined).
+
+<p />
+
+This behavior is mostly implemented for the sake of Winelib
+programs. For the Wine internal code, the suffixed version only are
+supposed to be called. To enforce this rule, the headers turn the foo
+macro (while compiling Wine) into a dummy identificator to catch the
+error.
+
+<p />
+
+The COM macros in order to be in sync will all this did some tricks:
+<ul>
+<li>all methods (say <code>bar</code>) have to be implemented as a
+function whose name is the concatenation of a prefix (<code>fn</code>)
+with the name of the method  (in this example <code>fnbar</code>)</li> 
+<li>the set of COM macros was defined so that when defining the method 
+<code>GetObject</code> the prefixing with fn was done <b>before</b>
+expanding <code>GetObject</code> into its error identifier</li>
+</ul>
+
+<p />
+
+It finally turned out some recent gcc versions did trigger this error.
+
+<p />
+
+Some suggestions to cope with that were suggested:
+<ul>
+<li>the first one (coming from the gcc hackers) was to redefine the
+macro for prefixing with <code>fn</code>, but this would lead to
+changing more than 1500 COM definitions, which was overkill</li> 
+<li>another one made use of the variable arguments feature of macros;
+but this didn't work either (it was too gcc centric: even if vararg
+macros are part of C99, too few compilers do implement this
+feature)</li>
+<li>the finally chosen solution was simply to get rid of the
+<code>fn</code> prefix  in the COM methods definition. This was doable
+if the <code>GetObject</code> and <code>GetClassInfo</code> macros
+were <code>#undef</code>:ined, removing some of the compilation  time
+coherency tests for those APIs (the error shall be caught at link
+time).</li>
+</ul>
+</section>
+
+
+<section 
+  title="Another libc2.x and dl-library issue"
+  subject="libc2.2 pthread segfault"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0003.html"
+  posts="12"
+  startdate="01 Jan 2001 00:00:00 -0800"
+  enddate="03 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr reported a segmentation fault at startup. This seemed to
+occur right after he upgraded Debian libc6 2.2-6 to libc6 2.2-8. 
+
+<p />
+
+After some testings, the same type of errors with dlopen as already
+worked around before
+(<kcref issuenum="73" sectionnum="0">see previous issue</kcref>) stroke once
+again.
+
+<p />
+
+James Abbatiello proposed another patch (in the same vein as the one
+he already wrote for the previous issue), except that in the current
+case the dl error code had to be cleared before calling any dl
+functions. 
+
+<p />
+
+However, after some testings Andi found out Debian libc6 2.2-8 to
+cause lots of issues to his notebook, and wondered if the patch
+against a poor libc version was needed.
+
+<p />
+
+As of today, no patch has been applied. Since Debian libc6 2.2-9 fixes 
+this very issue (read works correctly without this patch), it's very
+likely Wine will never be compatible with 2.2-8. Anyone using this
+libc version is requested to upgrade.</section>
+
+
+<section 
+  title="Revisiting Wine application database"
+  subject="[LONG :-)] Some ramblings about the Wine Application Database"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0359.html"
+  posts="11"
+  startdate="28 Dec 2000 00:00:00 -0800"
+  enddate="02 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Lionel Ulmer started a long thread by posting a long proposal
+revisiting the internals of Wine's application database. It's the
+database containing the test results from existing Windows
+applications against the different Wine versions.
+
+<p />
+
+Here are the main parts;
+<quote who="Lionel Ulmer">
+<b>Goals</b>
+
+<p />
+
+The ultimate goals of this database are:
+<ol>
+   <li>list all working and non working applications. With the
+'scoring' of applications, we can have an idea of:
+<ul>
+<li>the progress of Wine</li>
+<li>the most wanted applications</li>
+</ul>
+</li>
+<li>for working applications, this database should be the reference on 
+HOW to get them working (ie last working version of Wine, Wine
+configuration regarding native / builtin DLLs, ...). </li>
+<li>when Wine will be out of alpha state, this database could be the
+basis for a distributed regression testing system (if we get enough
+people involved in the Wine project by taking 'ownership' of an
+application and do regular bug reports / regression testings).</li>
+</ol>
+
+<p />
+
+Some other ideas could be:
+<ol>
+<li>if we add some 'relay statistics' in Wine code (of course, there
+will be problems with COM objects where relaying does not work for
+now) and incorporate these statistics in the database, we could have a
+list of the most frequently used Windows calls.</li>
+</ol>
+(feel free to add new ideas for improvements :-) )
+</quote>
+
+
+<p />
+
+Then, Lionel got into describing his view on the database content. He
+put several questions to be looked after:
+<ul>
+<li>How to 'classify' applications ?: the main point was how an
+application should be identified (think of Word 5 vs. WinWord 5
+cs. Word 7.0, and lots of other quirks (limited versions, demo
+version, patched versions...)</li>
+<li>What information should we have about an application ?: this would
+help in knowing the correct context of execution of such an
+application (target Windows version, used DLLs, used APIs...)</li> 
+<li>And about an user ?: how to structure user access between
+readonly, and registered people and the associated rights</li>
+<li>And about a Wine release ?: the tested Wine version, (also if 
+the configuration is with or without a Windows installation)...</li>
+<li>How about scoring ?: how to get a uniform score between
+different testers.</li>
+<li>What additional information should one application have ?: like
+how to install the application with Wine, or is there a peculiar setup 
+/ command line options to run the applications</li>
+</ul>
+
+<p />
+
+Lots of people largely agreed with Lionel's first proposal (and
+enhance it a bit somewhat). Francois Gouget gave a more detailed
+description of an important actor in this process: application
+maintainer.
+<quote who="Francois Gouget">
+That's where I describe the role of the application owner as I see it.
+
+<p />
+
+He definitely should have the application installed and, very
+preferably, he should also be using it regularly (or testing it
+regularly if it is not yet in the usable state). You are right in
+pointing out that he cannot test all possible but I contend he does
+not have to. His role would be to: 
+<ul>
+<li>read the comments entered in the application's comment section.</li>
+<li>engage into a discussion with the users who post interesting
+tricks, information, report a sub-version as not working, report
+problems with a specific Wine/Windows combination</li>
+<li>extract and summarize the above in his application status
+report. This section would come first in the application's page and
+only the application maintainer would be allowed to modify it (whether
+it's strictly enforced or not is another issue)</li>
+<li>test the application regularly and update the information on the
+application's page</li>
+<li>help users having problems with that application</li>
+</ul>
+</quote>
+
+
+<p />
+
+Jon Griffiths proposed to have two different ratings <quote who="Jonathonm Griffiths">
+with and without an official O/S installed. This is important because
+the difference between the two gives us a clearer picture of how much
+work is outstanding on replacing the core dlls. Knowing which Wine
+dlls don't work for an app is also important. I would probably use that
+information to decide where to hack around if I wanted to do something 
+different for a while.</quote>
+
+<p />
+
+Jeremy White proposed some scheme to help keeping the database
+usable:
+<quote who="Jeremy White"> 
+I think the biggest problem with the app database is that we get
+garbage in, it produces garbage out.  I think we should not report or
+even use <b>any</b> user scores until a trusted app db maintainer has
+validated that user experience (and possibly users can become trusted
+reporters).  Too many people say 'Hey!  The main screen came up!
+That's a 5!  Witness the Slashdot post about MS Office 2k. (anyone
+actually try to use Office 2K in Wine to author a sizable document?).
+
+<p />
+
+I think we need to overreact to the problem (a misleading and crufty
+apps database) and provide a rigorous, simple, and scrupulously honest
+apps db.
+</quote>
+
+
+<p />
+
+Lionel, Jeremy and Francois then started to discuss in greater details 
+the data model of such a database. There's now a common understanding
+of what needs to be done and the global rules for building it... only
+remains the hours of coding and debugging to put it in place. Any
+volunteers ?</section>
+
+
+<section 
+  title="CDROMs handling"
+  subject="CDROM_GetLabel return code"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0108.html"
+  posts="4"
+  startdate="06 Jan 2001 00:00:00 -0800"
+  enddate="06 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Ryan Cumming proposed a patch to the CD ROM label handling:
+
+<quote who="Ryan Cuming">
+This patch causes CDROM_GetLabel to always return zero in the event of
+failure. In some cases it was setting the label to an empty string and
+returning one, which prevented DRIVE_GetLabel from falling back to the
+drive label explicitly set in ~/.wine/config.
+</quote>
+
+
+<p />
+
+Ryan was happy this patch let "Red Alert: Aftermath" installer to run
+without tweaking the CD Rom information from the
+<code>~/.wine/config</code> file.
+
+<p />
+
+Before going further, a quick reminder on CD. CD can be of various
+forms. The most known are the CD Audios (which contain music) and CD
+containing data (using the ISO 9660 format). Under Linux, the second
+type requires to be mounted, and if the iso 9660 file system is
+supported in the OS, content of the CD can be read as any device (hard 
+disk...). The first type can be read by CD Audio players.
+
+<p />
+
+CD can also be mixed: they contain both audio tracks and binary
+data. This latter format is not properly handled in Wine because of
+the duality of accesses which are cannot be easily intertwined.
+
+<p />
+
+In some cases, Wine is not able to get the label from an ISO 9660
+drive. To cope with that, the user can add a default label to the
+Wine's config file which will be returned in that case (of course,
+it's not an universal solution because the label changes with every
+CD, and the entry in the configuration file is linked to the CD ROM
+device, not the CD ROM itself).
+
+<p />
+
+Going back to Ryan's patch, Andreas Mohr completely agreed on Ryan's
+proposal (the old code setting an empty string in case of failure
+wasn't correct). However Andi suggested to always have a default value 
+for the label (like <code>"[Drive E]"</code> in the case the user
+didn't set up a default label in the<code> ~/.wine/config
+file</code>).
+
+<p />
+
+Later on, Ryan proposed again his patch, returning a blank string if
+no default label has been set. Ryan also proposed <quote who="Ryan Cuming">to
+read the ISO9660 label, even on a mixed mode CD. This is actually
+successful on the "Red Alert: Aftermath" CD-ROM, allowing the
+installer to start up without setting the CD-ROM's label in my WINE
+config.</quote>
+
+<p />
+
+Andi didn't like the last part:
+<quote who="Andreas Mohr">
+Uuuuhh. I don't think this is a good idea.
+
+<p />
+
+This will result in media error output for certain types of mixed-mode
+CDs, and I don't think we want that.
+
+<p />
+
+Better implement the "real" mixed-mode CD handling first...
+(needs to use the "raw sector read" ioctl()s for that).
+</quote>
+
+
+<p />
+
+
+<p />
+
+</section>
+
+</kc>

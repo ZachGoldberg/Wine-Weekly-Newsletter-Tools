@@ -1,0 +1,251 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="85" date="05 Mar 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 85th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="45" size="190" contrib="20" multiples="11" lastweek="9">
+<person posts="7" size="17" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="6" size="38" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="5" size="17" who="Ian Pilcher &lt;pilcher@concentric.net&gt;" />
+<person posts="3" size="9" who="lawson_whitney@juno.com" />
+<person posts="3" size="23" who="Michael McCormack &lt;mccormac@aals27.alcatel.com.au&gt;" />
+<person posts="2" size="9" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="2" size="8" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="2" size="6" who="Vedran Rodic &lt;vedran@renata.irb.hr&gt;" />
+<person posts="2" size="5" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="2" size="4" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="2" size="0" who="Robert O'Callahan &lt;roc+@cs.cmu.edu&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+
+<p />
+
+Wine-20010305 has been released. Main changes include:
+<ul>
+	<li>Some improvements to the wineserver protocol.</li>
+	<li>The usual common controls fixes/improvements.</li>
+	<li>Version information in builtin dlls.</li>
+	<li>Lots of bug fixes.</li>
+</ul></section>
+
+
+<section 
+  title="Wine's speed-up"
+  subject="Speeding up wineserver syncronization objects with shared memory"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0211.html"
+  posts="19"
+  startdate="15 Feb 2001 00:00:00 -0800"
+  enddate="26 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+(<i>EdNote: resurrecting <kcref issuenum="83" sectionnum="4">old
+article</kcref></i>) Gavriel State put out a speed issue in current
+Wine code: 
+<quote who="Gavriel State"> 
+
+<p />
+
+We've recently been working on getting American McGee's Alice (a
+visually stunning game, if you haven't seen it before) running well
+under Wine, and we've run into a serious speed issue with
+synchronization objects like Mutexes.
+
+<p />
+
+Currently, Alice runs at about 50% the framerate it gets in Windows
+with the same graphics driver (NVidia). When we started investigating,
+it turned out that the reason for this is that it's spending half of
+it's time in the WineServer. At first we assumed that this was due to
+the fact that the GL thunks need to grab the X11 lock. We realized
+that this wasn't necessary for most GL calls if we're using a direct
+rendering GL implementation, and turned off the locks. There was no
+effect - because there really wasn't much contention for the x11
+lock.
+
+<p />
+
+After going through a number of similar Wine internal possibilities
+and getting nowhere, we finally realized that the problem was the app
+itself. It's grabbing and releasing a mutex of it's own bazillions of
+times each frame. Since there's nothing much we can do about that we
+started thinking about the proposed linux kernel module approach. 
+After re-reading the thread (<i>EdNote: you call also look at 
+<kcref issuenum="59" sectionnum="3">WWN coverage part #1</kcref> and 
+<kcref issuenum="60" sectionnum="0">WWN coverage part #2</kcref></i>) and
+looking over the prototype, I have to concur with Alexandre's
+judgement - the prototype that exists is trying to do too much
+work.</quote>
+ 
+
+<p />
+
+Gavriel and Ove Kaaven proposed to use a shared memory section between 
+every process and the Wine server to help speeding up the lock/unlock
+operations.
+
+<p />
+
+Alexandre Julliard didn't like the approach at all:
+
+<quote who="Alexandre Julliard">
+I don't see how you are going to make this work reliably. A basic
+design principle of the server is that no matter what a client process 
+does, it cannot break either the server or other clients; given the
+number of bugs Windows apps contain, I feel this is very important.
+
+<p />
+
+As soon as you introduce a shared memory area, you need the
+collaboration of all clients to ensure the stability of the whole
+system, since any client can corrupt system data structures. This is
+very bad. Also since the server is single-threaded its data structures 
+don't need to be protected; but as soon as you manipulate them from
+multiple threads you need locking mechanisms, which will probably cost 
+a lot in performance too.
+</quote>
+
+
+<p />
+
+Gavriel tried to minimize the impact on system stability of his
+proposal, but he couldn't convince Alexandre of it.
+
+<p />
+
+Robert O'Callahan put on the table some other algorithms to tackle the 
+issue. Unfortunately, they either required some "ugly" (read not
+accepted by Alexandre Julliard features) like letting the wine server
+call back some function on the client side, or using the already
+rejected shared memory approach.
+
+<p />
+
+As a conclusion (since none went out of the discussion), it may be
+possible that Gav (with TransGaming) writes an almost right but quick
+implementation of the mutexes, but which wouldn't be committed into the
+main Wine tree because it wouldn't be completely right. 
+</section>
+
+
+<section 
+  title="Wine press coverage"
+  subject="Wine press"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/03/0002.html"
+  posts="2"
+  startdate="22 Mar 2001 00:00:00 -0800"
+  enddate="02 Mar 2001 00:00:00 -0800"
+>
+
+<p />
+
+Eric Pouech posted a link to a <a 
+href="http://linux.cnet.com/linux/0-2136864-7-4961586.html">
+C|Net article</a>, making a comparison of three Linux products,
+letting Windows applications run on Linux. Those products are Wine (of 
+course), VMware and Win4Lin.
+
+<p />
+
+The article is pretty much product (and end user) oriented, hence the
+final bad ranking for Wine (so far, the Wine had put more effort into
+adding feature, rather than putting a 1.0 version). However, the
+potential for Wine is here. It just needs some more (oouch) work to
+terminate the developments. 
+
+<p />
+
+Here are the overall comparison from the CNET Linux Center's review by
+Bill O'Brien:<quote who="Bill O'Brien">
+<table border="1">
+<th>Product</th><th>Overall rank (1..10)</th><th>The
+good</th><th>The bad</th><th>The bottom line</th> 
+<tr><td>VMware Workstation 2.03</td><td>9</td><td>Provides a
+self-contained Windows environment that makes its Linux host platform
+nearly immune to collateral damage.</td><td>It's
+expensive.</td><td>VMware is an essential IS tool for multiplatform
+application management.</td></tr>
+<tr><td>NeTraverse Win4Lin 2.0</td><td>7</td><td>Simple installation;
+good documentation; works as promised.</td><td>No DirectX or Windows
+networking support.</td><td>Win4Lin is a bargain Windows emulation
+platform if you need just the basics.</td></tr>
+<tr><td>Wine</td><td>5</td><td>Runs Windows apps without Windows;
+strong user community</td><td>Difficult to use; spotty application
+support; still under heavy development.</td><td>With its innovative
+approach to Windows compatibility, Wine is destined to play a major
+role in the world of Linux. But for now, it's not quite ready for
+prime time.</td></tr> 
+</table>
+</quote></section>
+
+
+<section 
+  title="C Code style"
+  subject="for loop fixes"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/03/0010.html"
+  posts="6"
+  startdate="04 Mar 2001 00:00:00 -0800"
+  enddate="04 Mar 2001 00:00:00 -0800"
+>
+
+<p />
+
+After an unwanted semi-colon had been found where it shouldn't: loops
+of the form:
+<code><pre>
+   for (i = nFirst; i &lt;= nLast; i++)<blink>;</blink>
+   {
+     /* do something */
+   }
+</pre></code>
+, Andreas Mohr proposed several things.
+
+<p />
+
+First of all, he wanted to add a space between the closing parenthesis 
+and the semi-colon to indicate clearly the intent of putting an empty
+C expression. Francois Gouget replied he preferred the writing of such
+cases as
+<code> <pre>
+	&lt;init_expression&gt;;
+	while (&lt;test_condition&gt;) {
+	     &lt;update_expression&gt;;
+	}
+</pre></code>
+Alexandre Julliard more than agreed: he converted such cases into the
+while form of the loop.
+
+<p />
+
+Andreas also looked for other places plagued with the same default and 
+found another one (which he of course fixed).
+
+<p />
+
+Unsurprinsignly, this almost started a flame war on coding style (how
+many spaces for a tab, which indentation style...). But it didn't
+happen. Wine developers seemed to like sticking to the rule of letting 
+the developer do what best fits him (her), even if this doesn't
+provide a consistent coding style across the source files.</section>
+
+</kc>

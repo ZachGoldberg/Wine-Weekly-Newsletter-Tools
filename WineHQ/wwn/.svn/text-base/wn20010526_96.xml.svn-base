@@ -1,0 +1,421 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="mailto:brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="96" date="26 May 2001 00:00:00 -0800" />
+
+<intro>
+
+<p>This is the 96th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).</p>
+
+</intro>
+
+<stats posts="79" size="218" contrib="26" multiples="13" lastweek="14">
+<person posts="12" size="27" who="Gerard Patel &lt;gerard.patel&gt;" />
+<person posts="10" size="23" who="Alexandre Julliard &lt;julliard&gt;" />
+<person posts="10" size="32" who="Francois Gouget &lt;fgouget&gt;" />
+<person posts="9" size="19" who="Ove Kaaven &lt;ovehk&gt;" />
+<person posts="4" size="12" who="Ian Pilcher &lt;ian.pilcher&gt;" />
+<person posts="4" size="14" who="Heiko Nardmann &lt;h.nardmann&gt;" />
+<person posts="4" size="9" who="Steve Fox &lt;stevefx&gt;" />
+</stats>
+
+<section
+  title="Wine.conf Addition"
+  subject="Configuration/Announce"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0192.html"
+  posts="5"
+  startdate="22 May 2001 00:00:00 -0800"
+  enddate="23 May 2001 00:00:00 -0800"
+>
+
+<mention></mention>
+<mention>Mike Bond</mention>
+
+<p>Eric Pouech posted the following announcement concerning 
+the addition of a new section to the wine.conf configuration
+file and some new registry keys:</p>
+
+<quote who="Eric Pouech">
+
+<p>
+ with today's CVS commit (for those who stay up to date with 
+ the latest developments), you'll have to modify your Wine 
+ configuration to reflect the changes.</p>
+
+<p>First of all, your Wine configuration file now needs a WinMM section
+ containing the following:</p>
+
+ <p><ul><code>[WinMM]<br />
+ "Drivers" = "wineoss.drv"<br />
+ "WaveMapper" = "msacm.drv"<br />
+ "MidiMapper" = "midimap.drv"<br /></code></ul></p>
+
+<p>Not adding this will print the following message</p>
+
+<p><ul><code>
+&gt; You didn't setup properly the config file for the Wine multimedia modules.<br />
+&gt; Will use the hard-coded setup, but this will disappear soon.<br />
+&gt; Please add a WinMM section to your Wine config file.<br />
+</code></ul></p>
+
+<p>Note that the above configuration will be shortly required, so don't
+ wait before setting your configuration up</p>
+
+<p>Next, you have also to add a key to your registry. To do so, 
+create a sample file (let's call it foo) containing the following text:</p>
+
+<p><ul><code>
+[HKEY_LOCAL_USER\Software\Microsoft\Windows\CurrentVersion\Multimedia\MIDIMap]
+989041554<br />
+"AutoScheme"=dword:00000000<br />
+"CurrentInstrument"="#0"<br />
+"UseScheme"=dword:00000000<br /></code></ul></p>
+
+<p>then goto the &lt;wine&gt;/programs/regapi and compile the program
+the run:</p>
+<p><ul><code>regapi setValue &lt; foo</code></ul></p>
+<p>that's it</p>
+
+<p>Not applying the key in the registry will result in various errors in 
+MIDIMAP_ functions (mainly if Wine is set up to use a native 
+Windows system)</p>
+
+<p>Maintainers are welcome to update theirs packages accordingly (default 
+values are in documentation/samples/config &amp; winedefault.reg)</p>
+
+<p>Detailed information is available in documentation/multimedia.sgml.</p>
+</quote>
+
+<p>Mike Bond pointed out it should be <code>[HKEY_CURRENT_USER]</code>
+rather than <code>[HKEY_LOCAL_USER]</code>.</p>
+
+<p>In addition, Alexandre thought that it would be a bad idea to have
+the hard-coded setup disappear.  He thought it wouldn't be very user
+friendly to make these values go away when Wine had a reasonable chance
+at guessing the configuration.</p>
+
+
+
+
+</section>
+
+
+
+
+
+<section
+  title="What About XP?"
+  subject="What about XP?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0137.html"
+  posts="2"
+  startdate="18 May 2001 00:00:00 -0800"
+  enddate="20 May 2001 00:00:00 -0800"
+>
+<mention></mention>
+
+<p>A question was posted wondering what will happen with Wine 
+with regards to Microsoft's latest XP incarnation.  Basically
+this comes down to new applications taking advantages of 
+additions to the Windows API.  In the past a lot of vendors
+have avoided immediately using new stuff because they would
+break backwards capatibility with the older versions
+of Windows that users are inevitably using.  Francois Gouget
+summed it up by saying:</p>
+<quote who="Francois Gouget"><p>
+
+   I understand what you mean, but nope, I think we don't really care
+about XP.</p>
+
+<p>   Sure, one day we'll have to implement whatever new APIs are in XP,
+but this will come when an application needs it.</p>
+<p>   The Wine development is application driven, not Windows driven: what
+we want is for applications to run in Wine and the release of a new
+version of Windows changes nothing for the 99.99999% of applications
+that are already out there (and solitaire XP is not the most important
+app although I quite sure that it will be one of the first XP apps to
+run).</p>
+
+<p>   Now, if you were to ask about Office XP (if such a thing exists)...</p>
+</quote>
+
+<p>In regards to Office XP, here's a little  
+<a href="http://www.zdnet.com/products/stories/reviews/0,4161,2694583,00.html">
+info</a> on it. </p> 
+
+</section>
+
+<section
+  title="Installing Office the Wrong Way"
+  subject="problem starting winword 97SR2"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0170.html"
+  posts="7"
+  startdate="21 May 2001 00:00:00 -0800"
+  enddate="22 May 2001 00:00:00 -0800"
+>
+
+<mention></mention>
+
+<p>Heiko Nardmann was trying to get Office up and running by copying
+some of the required files and creating the registry entries.  In
+particular he was copying winword.exe, mso97.dll, and wwintl32.dll.
+By trial and error he was putting files into place as the app 
+required them.  In addition he added a font alias to take care
+of the annoying message you get upon starting office, namely with 
+<code>"Alias0" = "Tahoma,-adobe-helvetica-"</code>.  But as 
+James Juran pointed out, that doesn't always work:</p>
+<quote who="James Juran"><p>
+ You will need to run the installation program or manually copy all the
+ registry entries from an existing installation.  The Microsoft Office
+ applications put tons of stuff in the registry which is necessary for
+ them to run.</p></quote>
+</section>
+
+
+<section
+  title="Differences in FreeType Versions"
+  subject="wineps include fix"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0156.html"
+  posts="5"
+  startdate="20 May 2001 00:00:00 -0800"
+  enddate="20 May 2001 00:00:00 -0800"
+>
+
+<mention></mention>
+<mention>David Hammerton</mention>
+
+<p>David Hammerton submitted a small change because the
+version of FreeType on his system had a different name
+for the header file.  He was unable to #include
+<code>&lt;freetype/ftnames.h&gt;</code> because on
+his system it was <code>&lt;freetype/ftsnames.h&gt;</code>.
+After looking into the problem Ian Pilcher realized the difference in
+names between what he and David were using:</p>
+
+<quote who="Ian Pilcher"><p>
+I just checked, and they appear to have changed the name between 2.0.1
+and 2.0.2.  I can't help wondering how the FreeType people expect any-
+one to keep up with this.</p></quote>
+
+<p>I guess I can do an autoconf check specifically for 2.0.1.  I simply
+refuse to try to #ifdef every point release of FreeType.  Down that road
+lies madness.</p>
+</section>
+
+<section
+  title="DLL Separation"
+  subject="DLL separation and PROFILE functions"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0113.html"
+  posts="2"
+  startdate="15 May 2001 00:00:00 -0800"
+  enddate="16 May 2001 00:00:00 -0800"
+>
+
+<mention></mention>
+<mention>Ove K&#229;ven</mention>
+
+<p>I won't comment on this too much because the two emails pretty
+much speak for themselves.  If you've heard this term of "DLL
+separation" in past issues this kind of summarizes an example. 
+Ian Pilcher wrote to the list with:</p>
+<quote who="Ian Pilcher"><p>
+ DLL separation has been mentioned quite a few times on this list
+ (usually as the ultimate solution to a problem), but I don't think I've
+ ever seen it actually defined.  Based on my own misadventures in this
+ area, however, I would hazard a guess that is essentially the conversion
+ of all inter-DLL function calls from OS-based dynamic linking to the
+ Wine DLL loading mechanism.</p>
+
+<p>Under this assumption, adding 'IMPORTS = ntdll' to a DLL's Makefile.in
+ file (in order to use one of the PROFILE functions) seems like a
+ definite step backwards.  I think that the proper approach is to add the
+ function in question to dlls/ntdll/ntdll.spec and make sure that the
+ importing DLL lists ntdll.dll as an import in its own SPEC file.</p>
+
+<p> All of which is wonderful until you consider the following in
+ ntdll.spec:</p>
+
+<p><ul><code>##################<br />
+# Wine extensions<br />
+#<br />
+# All functions must be prefixed with '__wine_' (for internal functions)<br />
+# or 'wine_' (for user-visible functions) to avoid namespace conflicts.<br />
+</code></ul></p>
+
+<p>This would seem to indicate that the PROFILE functions (in
+files/profile.c) need to have their names changed before they are
+exported.  Is this an appropriate time to go crazy with grep and sed?
+(For example, PROFILE_EnumWineIniString would become
+__wine_EnumIniString.)</p></quote>
+
+<p>Ove K&#229;ven replied that DLL separation is  
+<quote who="Ove Kaaven">needed to be able to have Wine DLLs and Winelib apps be 
+able to seamlessly import and use native PE DLLs</quote>.  He also added:</p>
+<quote who="Ove Kaaven"><p>
+The profile functions are not exported and you should not use them. If
+you're trying to access the config file, use the registry API instead; for
+an example, see what Alexandre did in dlls/x11drv/x11drv_main.c. You'll
+see the reason Alexandre changed the .wine/config file format to the
+registry format.</p>
+
+<p>You could use #defines in a .h file too, but you shouldn't add wine
+extensions without a *very* good reason. Alexandre has even advocated code
+duplication in some instances to keep DLL separation tight.</p></quote>
+
+</section>
+
+
+
+
+
+
+
+<section
+  title="Wine Networking With SuSE and Mandrake Distributions"
+  subject="Networking with Mandrake 8.0 and SuSE 7.1"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0117.html"
+  posts="7"
+  startdate="17 May 2001 00:00:00 -0800"
+  enddate="21 May 2001 00:00:00 -0800"
+>
+
+<mention></mention>
+<mention>Gerard Patel</mention>
+
+<p>Steve Fox was wondering why networking in Wine no longer worked
+after he upgraded to Mandrake 8.0:</p>
+<quote who="Steve Fox"><p>
+I'm running Lotus Notes 5.04a under WINE with one of the January releases
+and its been working great for months. However, any release since February
+does not seem to do reliable networking on my Mandrake 8.0 system. I can
+occasionally actually get into my inbox and even open up a message, but
+I've never been able to read more than one.</p>
+
+<p>Some cow-orkers using this same setup on RedHat 7.1 do not have this
+problem, but others using SuSE 7.1 do too.</p>
+
+<p>Does anyone have any ideas why only networking would be affected and only
+on select distributions? It stumps me because all three mentioned distros
+use  glibc-2.2 and gcc-2.96 (SuSE may use 2.95...not sure). On a related
+note, another cow-orker who is using Mandrake Cooker (development distro)
+and his own compiled kernel does not have this problem. I am on a token
+ring network, which I don't think should matter.</p></quote>
+
+<p>Rob Maurizzi said he had experienced the same problem with SuSE and 
+their 2.2.18 kernel.  However, if he compiled a stock kernel it worked
+ok.  Gerard Patel mentioned that it would be better to try out a 2.4
+kernel and work from there.  But Steve couldn't try that with Mandrake's
+distribution because they didn't have the PCMCIA token ring patch
+applied in the standard distribution.  However, he did try out 
+the kernel from Mandrake's "Cooker" distribution and discovered it worked: 
+<quote who="Steve Fox">This weekend I upgraded to Mandrake's 2.4.4 kernel 
+from Cooker (since it fixed both my mouse and token ring) and suddenly 
+this problem has gone away (using Notes 5.0.7 and wine-20010305).</quote></p>
+</section>
+ 
+
+
+
+<section
+  title="Exposing Non-Windows Functions from DLLs"
+  subject="Question on exposing non-windows functions from dlls..."
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0126.html"
+  posts="7"
+  startdate="18 May 2001 00:00:00 -0800"
+  enddate="18 May 2001 00:00:00 -0800"
+>
+
+
+<mention></mention>
+<mention>Ove K&#229;ven</mention>
+
+<p>Mike Bond was wondering how to go about exposing functions:</p>
+<quote who="Mike Bond"><p>
+ I just submitted a patch to wine-patches that provides the implementation
+ of spawnl and spawnlp. I had been hoping to implement execl and execlp as
+ well but found that the underlying functionality that I would need is not
+ exposed outside scheduler/process.c. My question is what guidelines are
+ there, if any, are there to exposing non-win functions, such as
+ exec_wine_binary in scheduler/process.c?</p>
+
+<p>Also, from just a cursory glance at exec_wine_binary that I may need to
+wrap it to do some of the work that fork_and_exec and PROCESS_Create are
+doing, such as calling DOSFS_GetFullName. I'm not sure what, if anything,
+the server would need to know about this.</p></quote>
+
+<p>Ove K&#229;ven replied, <quote who="Ove Kaaven">
+The guidelines are pretty simple and easy to understand: with a very few
+*very* exceptional exceptions, never ever expose them. And definitely
+never to non-core DLLs such as msvcrt - there's no reason an application
+DLL like msvcrt can't be implemented on top of the Win32 API the same way
+it's implemented on Windows.</quote></p>
+
+<p>Mike wondered how to go about implementing those functions using the
+standard Win32 API.  He wanted to know how to go about loading and
+running an image in-process.  Ove reminded him to be careful of assuming
+that was what was actually happening (Unix semantics are not the same
+as Microsoft's).  Similarly Alexandre mentioned:</p>
+
+<quote who="Alexandre Julliard">
+
+<p>You cannot do this with the Win32 API, that's true. And since the
+ native msvcrt is implemented on top of the Win32 API, this means that
+ msvcrt exec functions cannot possibly behave exactly like the Unix
+ ones.</p>
+
+<p>What you must do is find out the expected behavior of the msvcrt exec,
+and implement the same behavior; you should then be able to do this
+using the Win32 API, since this is how the native one does it.</p>
+
+</quote>
+
+<p>Mike wrote back:</p>
+
+<quote who="Mike Bond">
+
+<p>
+ I have gone ahead and implemented most of the exec variants as described
+ just terminating the previous process, the internal spawn implementation
+ already provided a flag to accomplish this easily.</p>
+
+ <p>On the question of determining compatibility, what methods are we "allowed"
+ to persue? For instance, I created a small test app for the exec variants,
+ tested it under Windows NT then under Wine. I would hope this is a valid
+ method, but with the way the lawyers work, it's sometimes hard to tell.</p>
+
+ <p>As a note, it seems NT is doing the same thing as they end up with different
+ address spaces and pids after execl.</p>
+
+</quote>
+
+
+
+<p>And with in regards to the old argument that goes into the extent to which
+backwards engineering is legal.  Ian Pilcher responded with:</p>
+
+<quote who="Ian Pilcher">
+
+<p>Big disclaimer: <b>I am not a lawyer;</b> 
+if you end up in court because you pay attention to anything I say, that's 
+just too darn bad.</p>
+
+<p>It depends on which country you're in.  What you've done is classic
+"black box" reverse engineering, which has historically been protected
+by the U.S. legal system.  Even the DMCA protects it as long as you
+don't decrypt anything.</p>
+
+<p>UCITA in its unaltered form, however, legitimizes all those software
+license agreements that U.S. courts have found unenforceable.  So I
+guess it's starting to depends on what state you're in if you're in the
+U.S.</p>
+
+</quote>
+
+</section>
+</kc>

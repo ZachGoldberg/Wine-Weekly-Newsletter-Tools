@@ -1,0 +1,337 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Interview</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="2" who="Dimitrie Paun" date="08 April 2003" />
+
+<intro>
+<p>
+  Open source projects tend to go through spurts of development.
+  Constant, steady development seems to be the exception rather
+  than the norm.  This is partly driven by developers who themselves 
+  do some significant work very quickly.  One such developer with
+  Wine is Dimi Paun.  He's been involved with Wine for a long time,
+  but recently submitted some signicant enhancements to several
+  different areas.</p><p>  
+
+  Born in Bucharest, Romania in 1974, Dimi started hacking on a Sinclair
+  Spectrum clone called HC85 in grade 9. 
+    In 1992 he moved to Toronto, Canada. He earned a
+  B.Sc. and M.Sc. in Comp. Sci. at the University of Toronto
+   Now he's working as an independent contractor for clients
+  such as GM and financial institutions.</p>
+</intro>
+
+<interview>
+
+<question><p><i>BV:</i> How did you get involved with Wine?</p></question>
+
+
+<answer><p><i>Dimi:</i> When I switched over to Linux, I was looking for a
+Windows Explorer replacement. It's hard to even imagine it right now, but 
+as a Windows user, I could not conceive life without Explorer. Somehow I've 
+stumbled across Wine on the net, and tried to get it to run for curiosity's 
+sake. I would have liked to be able to run some Windows apps (Excel comes to mind),
+but I didn't really depend on them. The project simply looked interesting,
+so I started to poke around. </p></answer>
+
+<question><p><i>BV:</i>  Do you remember the first patch you submitted? </p></question>
+
+<answer><p><i>Dimi:</i> Not really. But one of my first efforts was to rewrite 
+the debugging layer. The old one was such a mess, that I simply <b>had</b> 
+to do something about it! Once again, I had no need for it, as at the time 
+I wasn't developing or debugging anything Wine related, but the task seemed 
+interesting, and it didn't require deep internal Wine knowledge. I guess the 
+proverbial itch for me was the excitement to work on such a fascinating 
+project. </p></answer>
+
+<question><p><i>BV:</i>  You've been involved with Wine for a while, but recently
+ you been extremely active (and that's probably putting it
+ mildly).  Any particular reason why? </p></question>
+
+<answer><p><i>Dimi:</i> Partly because I managed to get more free time, but mainly because I
+developed an unhealthy obsession with it. In fact, my involvement
+with the project has always had an uneven pattern, simply because
+my Wine-related work quickly turns into an addiction: I don't sleep,
+I don't eat, I don't work, all I can do or think it's Wine. Obviously,
+after a few months I'm burned out, and in real bad shape, so I have
+to stop for a while. </p></answer>
+
+<question><p><i>BV:</i>  Before this recent activity, what was the most significant
+ contribution you made to Wine? </p></question>
+
+<answer><p><i>Dimi:</i> Probably the debugging layer, and common control work. To be honest,
+I don't keep track and I forget. Back in 2002 at Wineconf I was
+shocked when Alexandre said that I've been involved with the project
+for 7 years. Seven years! Time flies when you're having fun I guess, but
+it really got me by surprise. </p></answer>
+
+<question><p><i>BV: </i>
+ Speaking of Wineconf, was that the first time you've met anyone
+ else involved?  Who was the most interesting person you met?</p></question>
+
+<answer><p><i>Dimi: </i>
+Yes, it was actually. It was a great conference, and I enjoyed it
+immensely. I certainly hope we have another one soon. As for the most
+interesting person, I don't know, I've never thought about it this way.
+But I can tell you that virtually everyone was <b>very</b> different from
+my mental picture, which made the entire thing so much more interesting.</p></answer>
+
+<question><p><i>BV:</i>  Would you consider the listview changes the most
+significant work you've done?  What issues were involved with that? </p></question>
+
+<answer><p><i>Dimi:</i> Yes, I'd say so. Issues? Where do I start? :) The problem with
+it is that it's the most complex control. By far. When I started
+my latest work on it (I actually did work on it some time ago), the
+file was over 10,000 lines. And this does not include any of
+the features introduced by XP (tiles, group, workareas). I've put
+a ridiculous amount of time into it, starting from a working version!
+And yet, we don't even have all the pre-XP features done! It would
+probably cost over $300,000USD to develop at market rates such a control 
+with all the XP features. It's crazy. </p></answer>
+
+<question><p><i>BV:</i>
+ So basically a small team of developers and about a year.  That
+ really puts the level of development in perspective!  Microsoft's
+ "common" controls seem quite different between versions of their
+ operating systems.  Is it hard trying to find a baseline to build
+ upon?</p></question>
+
+<answer><p><i>Dimi:</i>
+No, I had no problem with that. Microsoft is fairly good at maintaining
+backwards compatibility, so it's just a matter of keeping up with the
+features they are adding. It is also true that the documentation is
+incomplete or sometimes incorrect, and some of the undocumented semantics 
+are rather surprising. However, the fundamental problem is that we don't
+have enough resources to implement the necessary functionality. Quite
+frankly, the existing documentation is good enough, we are simply
+lacking manpower.</p></answer>
+
+<question><p><i>BV:</i>  Now you've moved on to getting Windows' based programs
+ to compile with Winelib.  What are the main issues you've
+ run into? </p></question>
+
+<answer><p><i>Dimi:</i>
+We do offer Winelib, why is it such a pain to use?
+Winelib is here to stay, it should be easy and pleasant to use.
+</p><p>
+Our previous Winelib
+processes was very complicated, and different from current norm.
+To make matters worse, going from Windows to Linux involved a
+cataclysmic change: the compiler changed, the build process
+changed, the OS changed. Each of these are big and stressful
+changes in themselves, imagine the mess you have to deal with
+when all of them happen simultaneously.
+</p><p>
+Enter MinGW. This toolchain allows you to isolate these changes,
+and test them separately. An ideal situation! First you change
+the compiler and build process, but you keep everything else
+constant. People don't have to learn 1000 things at once,
+but rather they first focus on building their application with a
+different compiler, and a Makefile-based build process. It may not
+be as convenient as MSVC, but most developers can deal with that.
+You can work out the minor compiler incompatibilities, fix the
+build process, and thouroughly test your changes. Once this step
+is complete, you just change the OS, and everthing else remains
+virtually unchanged. This is the promise of the new tools.
+</p></answer>
+
+<question><p><i>BV:</i>  Any luck with Mozilla? </p></question>
+
+<answer><p><i>Dimi:</i> I haven't had much time to work on it. Unfortunately, Mozilla
+ Win32 requires MSVC to build. There's no point in trying a
+ Wine port unless Mozilla gets ported to the MinGW toolchain.
+ There is an effort under way (<a href="http://bugzilla.mozilla.org/show_bug.cgi?id=134113">Bug #134113</a>),
+ and most of the work has been integrated in the official tree. There
+ were some problems with windres (the MinGW resource compiler),
+ and I've helped out with those to get this done and over with. </p></answer>
+
+<question><p><i>BV:</i>
+ That's right.  I remember a post on that a few weeks ago.  On a
+ related note, how have the new Winelib tools you've been working
+ on helped with porting applications?</p></question>
+
+<answer><p><i>Dimi:</i>
+Porting is significantly simpler now. It's all about
+incremental development. The only reason I've started porting apps
+over to Winelib in the first place was to experience the pain inflicted
+on us by the porting process, and to try to remove it. I have posted
+the patches required to port a number of projects (such as PuTTY,
+wxWindows, VisualMinGW) to Winelib using the new tools to show how
+small and unintrusive they are. I am personally pleased with the
+results so far, but there is still plenty of work left to do.
+</p></answer>
+
+
+<question><p><i>BV:</i>  On your to-do list you have yourself mostly working on some
+ toolchain items.  Most of which already seem complete.  Are
+ there any major tasks you're planning on taking on? </p></question>
+
+<answer><p><i>Dimi:</i> As soon as I finish the Winelib work, I plan on returning to
+ the common controls maintenance. A lot of them are still in
+ need of love (treeview, listview, etc.). In general, I will
+ be focusing on the UI side of things: standard controls,
+ common controls, common dialogs. There is an obscene amount
+ of work left to do in this area, I hope others will join my
+ crusade. </p></answer>
+
+<question><p><i>BV:</i>  What do you see as the biggest stumbling block preventing
+ Wine from reaching a "1.0" release? </p></question>
+
+<answer><p><i>Dimi:</i> A flawless UI (of course, apart from the items listed on the
+ 0.9 TODO). This may sound strange from a vim guy like myself,
+ but I think this will be the toughest nut to crack. </p></answer>
+
+<question><p><i>BV:</i>
+ Do you think the ability to run with the native MS controls
+ hinders Wine at all?  It almost seems too easy to just copy
+ a Microsoft DLL from a Windows installation and use it to
+ make an app work.  Has it caused that area to languish at all?</p></question>
+
+<answer><p><i>Dimi:</i>
+It's hard to say. Sometimes it's very important to be able to
+test stuff against the real thing. The ability to mix and match
+native DLLs with builtin DLLs has greatly helped the project
+overall. And if we've missed a few bugfixes because we've made it
+easy for people to be lazy, so be it -- it's a small price to pay
+for all the other good things we get out of it.</p></answer>
+
+<question><p><i>BV:</i>
+ So why is the TODO list the way it is?  One
+ topic that comes up is the ability for Wine to run a small set
+ of apps flawlessly.  How come you don't have any items on the list
+ like "Make Word run perfectly" ?  And then just have a list pertaining
+ to that?</p></question>
+
+<answer><p><i>Dimi:</i>
+I might as well explain my motivation. You see,
+history has shown, time and again, that getting the interfaces
+(and I use the term very loosly here)
+right is the key to success. Microsoft noticed that the ultimate
+interface is the one with the user, and they refined that one better
+than anyone else. And surprise, surprise, they hit the jackpot.
+</p><p>
+There is a very simple, intuitive explanation for why this works.
+It's just simple math: you optimize where it matters. 90% of
+the users care how they interact with the machine, not how you
+program the serial card.
+</p><p>
+I'm approaching the 0.9 goal from this perspective. What is user visible?
+What are the interfaces visible to the user? Let's see:
+<ol>
+<li> The site, WineHQ.org</li>
+<li> The tools (winebuild, wrc, etc.)</li>
+<li> The file formats (.spec, .reg)</li>
+<li> The usage patterns/process/workflow for using wine, winelib, etc.</li>
+<li> The exported API</li>
+<li> The windowing code, drawing code, UI controls</li>
+<li> The wine's source code tree structure</li></ol>
+</p><p>
+If you look closely, you'll see that virtually all my work revolves
+around some of these issues. Having actual apps run under Wine is
+important, but at this stage in the game, it's secondary to these
+problems. Once we get the interfaces right, we can fix all the bugs 
+we want without having to bother the vast majority of the population 
+who just wants to use Wine. I believe this is the path to the heart 
+and mind of the user.
+</p><p>
+I think we should get 1-4 stabilized for 0.9. In particular (4)
+is easy to miss, but very important, as people are loath to change. 
+This is why I've focused on fixing the way we interact with winelib. 
+</p><p>
+(5) is of course the completion of the DLL separation, which is already
+slated for 1.0. (6) is something that haven't been discussed, but I 
+think it's paramount. Today, I don't think users accept visual glitches. 
+I can argue why on several pages, but I hope it's self evident. However, 
+having a perfect UI is hard, and we'd be lucky to have it done by 1.0,
+so I did not included in the 0.9 TODO (BTW, this is the motivation 
+for my work on the common controls). 
+</p><p>
+One thing that hasn't been discussed before it's (7). It refers to the
+fact that we carry a lot of baggage in our tree, in terms of organization,
+which makes the source so much harder to follow. After all these years,
+I still find it confusing, and annoying. I would like to see this fixed
+before 0.9, because I think it simply scares potential developers away,
+and inflicts unneeded pain on the ones that stay.
+</p></answer>
+
+<question><p><i>BV:</i>
+ You recently submitted a patch adding a Wine configuration tool 
+ based on work by Jaco Greef. It's definitely a sorely lacking 
+ application, but how much work remains in order to make it usable? </p></question>
+
+<answer><p><i>Dimi:</i>
+
+It depends on your point of view. Relative to the application, there 
+is quite a bit of work to do, as the current winecfg code is just a 
+skeleton. However, in absolute terms I don't think it's that much work 
+to get something useful. This is an important project, and anyone with
+a bit of Win32 and C experience can contribute. An excellent opportunity
+to get started with Wine development.</p></answer>
+
+<question><p><i>BV:</i>
+ One thing that's always annoyed me with Microsoft's configuration 
+ tools is they're basically a special tool for manipulating the 
+ registry.  However, there's a ton of options that require manually 
+ running regedit and making changes.  Will Wine eventually suffer
+ from the same problem?  Is it feasible to move all the configuration
+ into the registry?  Or is this simply a matter of making a better
+ registry editor? </p></question>
+
+<answer><p><i>Dimi:</i>
+I don't really know, and it's something we have to do, so I guess
+it's not worth worrying about it. We do have an ASCII format for
+storing the registry, which is good as you can always use
+your favorite editor to modify the settings. I'm not sure what else
+we can do beyond that, other than provide user friendly tools
+(and that would be winecfg, of course). </p></answer>
+
+<question><p><i>BV:</i>
+ You mentioned carrying baggage around in Wine tree..
+ does this affect other projects?  Recently the mplayer and Mono
+ folks have taken chunks of Wine and reworked them to provide
+ integration in their own projects.  Does this show Wine is somehow
+ lacking something since they couldn't directly use it?  Or is this
+ just the power of open source development at work, namely adapting
+ others' work to fit into your own? </p></question>
+
+<answer><p><i>Dimi:</i>
+
+I was mainly referring to organizational baggage. The mplayer and Mono
+examples show a different problem, namely that Wine is not easily
+usable as a library in the classical Unix sense. Ideally, a Unix program
+should be able to use Wine and call DLLs by simply specifying -lwine
+at link time. That is currently not possible. One has to transform
+the Unix app into a Winelib/Windows app in order to do that, which is
+very unintuitive to say the least. Nobody in their right mind would
+go to the trouble of taking chunks of Wine as these projects are forced
+to do now, for obvious reasons. So yes, this clearly shows a shortcoming
+on Wine's part, but fixing it is not a top priority right now. For sure
+a post 0.9 task. </p></answer>
+
+
+
+<question><p><i>BV:</i>After the listview work you went on vacation, did you get any
+fresh powder skiing in St. Anton? </p></question>
+
+<answer><p><i>Dimi:</i> Oh yeah -- 3 days! </p></answer>
+
+<question><p><i>BV:</i>  What's your favorite place to ski? </p></question>
+
+<answer><p><i>Dimi:</i> Maybe Tignes. I've had lots of fun in St. Anton, so it's hard
+ to tell. In fact, I had *lots* more fun in St. Anton, it's
+ just that the weather was better in Tignes, and the mountains
+ were better connected. You can't go wrong either way. :) </p></answer>
+
+<question><p><i>BV:</i>Thanks for the interview!</p></question>
+
+
+
+</interview>
+
+</kc>
+

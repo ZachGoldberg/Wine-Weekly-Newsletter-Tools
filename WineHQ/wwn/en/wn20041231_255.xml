@@ -1,0 +1,485 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="255" date="12/31/2004" />
+<intro> <p>This is the 255th issue of the Wine Weekly News publication.
+Its main goal is to watch fireworks. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="142" size="512" contrib="47" multiples="26" lastweek="22">
+
+<person posts="18" size="86" who="Linus Torvalds" />
+<person posts="11" size="58" who="Jesse Allen" />
+<person posts="9" size="27" who="Thomas Sailer" />
+<person posts="10" size="31" who="Mike Hearn" />
+<person posts="7" size="17" who="Dimitrie O. Paun" />
+<person posts="6" size="28" who="Davide Libenzi" />
+<person posts="6" size="22" who="Stefan Leichter" />
+<person posts="5" size="15" who="Diego Petten&#242;" />
+<person posts="4" size="17" who="Robert Shearman" />
+<person posts="4" size="15" who="Daniel Jacobowitz" />
+<person posts="4" size="12" who="Mark Knecht" />
+<person posts="4" size="12" who="Dmitry Timoshkov" />
+<person posts="4" size="9" who="Chris Morgan" />
+<person posts="3" size="16" who="Jacek Caban" />
+<person posts="3" size="14" who="Joris Huizer" />
+<person posts="3" size="10" who="Michael Stefaniuc" />
+<person posts="3" size="8" who="Paul van Schayck" />
+<person posts="3" size="7" who="Christian Costa" />
+<person posts="2" size="8" who="Andi Kleen" />
+<person posts="2" size="7" who="Paul R Streitman" />
+<person posts="2" size="5" who="Jonathan Ernst" />
+<person posts="2" size="5" who="Lionel Ulmer" />
+<person posts="2" size="5" who="Kenneth Porter" />
+<person posts="2" size="5" who="Vincent B&#233;ron" />
+<person posts="2" size="4" who="Michael Jung" />
+<person posts="1" size="5" who="Eric Pouech" />
+<person posts="1" size="3" who="Brad DeMorrow" />
+<person posts="1" size="3" who="Serge S. Spiridonoff" />
+<person posts="1" size="3" who="Eric Blade" />
+<person posts="1" size="3" who="Stefan Munz" />
+<person posts="1" size="3" who="Ivan Leo Puoti" />
+<person posts="1" size="2" who="Kuba Ober" />
+<person posts="1" size="2" who="Ferenc Wagner" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Hans Leidekker" />
+<person posts="1" size="2" who="d13f00l" />
+<person posts="1" size="2" who="Scott Ritchie" />
+<person posts="1" size="2" who="Mike McCormack" />
+<person posts="1" size="2" who="Andreas Mohr" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Andrew Morton" />
+<person posts="1" size="2" who="Tony Lambregts" />
+<person posts="1" size="1" who="Jonathan Wilson" />
+<person posts="1" size="1" who="Filip Navara" />
+<person posts="1" size="1" who="Vitaly Lipatov" />
+
+</stats>
+<section 
+	title="News: Xandros Reviews" 
+	subject="News"
+	archive="http://madpenguin.org/cms/?m=show&amp;id=3145&amp;page=2" 
+	posts="1"
+	startdate="12/25/2004"
+	enddate="12/31/2004"
+>
+<topic>News</topic>
+<p>Some reviews of Xandros Desktop 3 Deluxe have come out this week.
+Xandros includes CrossOver Office and usually gets high marks for
+the integration it has with the rest of the desktop.  Once again,
+reviewers seem impressed with CodeWeavers' work.
+<a href="http://madpenguin.org/cms/?m=show&amp;id=3145&amp;page=2">Mad
+Penguin's review</a> thought CrossOver Office 4 showed good improvement
+over earlier versions.   
+<a href="http://os.newsforge.com/article.pl?sid=04/12/23/2039209&amp;tid=2&amp;pagenum=2">NewsForge's
+review</a> thought it was a valuable addition to the distribution:</p>
+<quote who="NewsForge"><p>
+CrossOver Office is going to be a big selling point for this version
+of Xandros, and if you have indispensable Windows applications that 
+are on the supported list (like Quicken, various Microsoft Office 
+versions, and so on) it can provide you with an end to dual-booting 
+to get them those apps. </p></quote>
+
+</section>
+<section 
+	title="Kernel Problem Solved (con't)" 
+	subject="Re: ptrace single-stepping change breaks Wine"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0713.html" 
+	posts="53"
+	startdate="12/28/2004"
+	enddate="12/31/2004"
+>
+<topic>Integration</topic>
+<p>Over a month ago we reported some issues with Wine running on
+the latest development versions of the Linux kernel.  For the most
+part everything runs, but some specific stuff used by nasty things
+like copy protection schemes seem to mysteriously fail.  We first 
+covered this in 
+<a href="http://www.winehq.com/wwn/249#Kernel%20Integration%20Problems">issue #249</a>,
+but you can find a detailed description in 
+<a href="http://www.winehq.com/wwn/250#Kernel%20Issue%20(con't)">issue #250</a>.
+At the time, Linus came up with some patches that fixed some problems
+he uncovered but it didn't appear to fix the original problem reported
+by Jesse Allen.  This week Thomas Sailer raised the issue again with
+a different program:</p>
+
+<quote who="Thomas Sailer"><p>
+Any news about the ptrace single-stepping breakage of wine?
+</p><p>
+The application that stopped working for me is xst, the Xilinx HDL
+synthesizer (there's a free as in beer version at
+<a href="http://www.xilinx.com/xlnx/xebiz/designResources/ip_product_details.jsp?sGlobalNavPick=PRODUCTS&amp;sSecondaryNavPick=Design+Tools&amp;key=DS-ISE-WEBPACK"><i>ed. this link</i></a>
+). I'm currently at kernel 2.6.10-ac1 (as packaged by Arjan van de Ven),
+and wine-20041201-1fc3winehq.
+</p><p>
+Compiling vhdl file H:/sailer/src/vhdl/xxx/vprim.vhd in Library synwork.
+FATAL_ERROR:Xst:Portability/export/Port_Main.h:127:1.13 - This
+application has discovered an exceptional condition from which it cannot
+recover.  Process will terminate.  To resolve this error, please consult
+the Answers Database and other online resources at
+<a href="http://support.xilinx.com">http://support.xilinx.com</a>. If you need further assistance, please open a
+Webcase by clicking on the "WebCase" link at <a href="http://support.xilinx.com">http://support.xilinx.com</a>
+</p></quote>
+
+<p>Just a few hours before that Jesse posted a great analysis
+of the original problem he uncovered:</p>
+<quote who="Jesse Allen"><p>
+Last I reported on Warcraft 3 with the ptrace changes in 2.6.10-rc3 is
+that it made some improvement, but still doesn't work.  I'll will
+describe in detail what I know now.
+</p><p>
+Since the changes in 2.6.10-rc3, Linus made a very good clean up of
+ptrace.c and signal.c in arch/i386/kernel.  I don't want to
+necessarily reverse all these changes because they are good changes
+(ie easier to understand and hack now).  So I hacked the kernel to
+change what is necessary to make the game run again.  I have attached
+the patch against 2.6.10 to show the required changes.
+</p><p>
+Comments on what I have learned about the 3 ptrace changes (see my
+original report):
+#1 ptrace.c
+<ul>
+In set_singlestep() and clear_singlestep(), the flag TIF_SINGLESTEP is
+now set and cleared.  In the header file in
+include/asm-i386/thread_info.h, it seems to indicate to me that it is
+an internal flag to remember to re enable single-stepping for a thread
+on returning to the program.  While speaking to my brother on this, we
+believe that this change was done correctly.  But this change alone
+will break the game.  I have looked in both wine for PTRACE_SINGLESTEP
+to see what it does and in the kernel for TIF_SINGLESTEP.  Since
+set/clear TIF_SINGLESTEP causes the problem, I really need more
+information on everything about TIF_SINGLESTEP.
+</ul></p><p>
+#2 signal.c - Not single-stepping into signal handlers unless the
+tracer requests it
+<ul><p>
+Previous to 2.6.9-rc2,  my understanding is that a call to
+setup_frame() would clear the trap flag in preparation for a signal
+delivery.  Roland made a slight tweak to it and an example of it is
+this:
+<ul><code>
+       if (regs-gt;eflags &amp; TF_MASK) {
+       <ul><code>
+               if (current-&gt;ptrace &amp; PT_PTRACED) {
+               <ul><code>
+                       ptrace_notify(SIGTRAP);</code></ul>
+               } else {
+               <ul><code>
+                       regs-gt;eflags &amp;= ~TF_MASK;</code></ul>
+               }</code></ul>
+       }</code></ul>
+</p><p>
+Linus later changed it to:
+<ul><code>
+       /*<br />
+        * Clear TF when entering the signal handler, but<br />
+        * notify any tracer that was single-stepping it.<br />
+        * The tracer may want to single-step inside the<br />
+        * handler too.<br />
+        */<br />
+       if (regs-&gt;eflags &amp; TF_MASK) {
+       <ul><code>
+               regs-&gt;eflags &amp;= ~TF_MASK;<br />
+               if (current-&gt;ptrace &amp; PT_DTRACE)
+	       <ul><code>
+                       ptrace_notify(SIGTRAP);</code></ul></code></ul>
+       }
+</code></ul></p><p>
+In 2.6.10, this new piece of code actually works with Warcraft III.  I
+no longer have to reverse this change.  The result is obvious because
+it makes it so you don't automatically single step into the handler,
+which wine doesn't really want.
+</p></ul></p><p>
+#3 signal.c - Clearing the trap flag if being traced by debugger in
+setup_sigcontext()
+<ul><p>
+For some reason, Warcraft III doesn't work if it is cleared here.  I
+have no idea if this TF clear is really necessary.  However,
+everything I've read on this seems to indicate to me that this change
+is important, so I need to find out what this causes to the game.
+</p><p>
+I captured a log of the seh debug messages because I think this is may
+be where to look.  I also hacked in to display trace messages in
+wine's dlls/ntdll/signal_i386.c showing eflags and whether TF is
+cleared in trap_handler() and raise_trap_exception().  I ran the game
+under 2.6.10 and the modded 2.6.10, to capture the working version,
+and the failing version.   The results are fairly nonrandom and
+comparable and you can identify differences.  Unfortunately, I cannot
+upload them at the moment because my connection is slow and the files
+are large.  I'll upload it another time.
+</p></ul></p></quote>
+
+<p>This last item, #3, seemed to be at the core of the problem.  Linus
+and Jesse exchanged some emails discussing it and Jesse began coming 
+up with some patches to address the problem.  Linus had an idea for
+another change to make in the kernel for locating the exact cause
+of the problem:</p>
+<quote who="Linus Torvalds"><p>
+ Setting TIF_SINGLESTEP shouldn't actually matter in this case, since we
+ set the TRAP_FLAG in eflags by hand anyway (and that's what TIF_SINGESTEP
+ will just re-do when returning to user space).
+</p><p>
+ What TIF_SINGLESTEP <i>does</i> do, however, is change how some other issues
+ are reported to user space. In particular, it causes system call tracing
+ (see arch/i386/kernel/ptrace.c: do_syscall_trace), and maybe it is _that_
+ that messes up Wine.
+</p><p>
+ So instead of removing the setting of TIF_SINGLESTEP in set_singlestep(),
+ can you test whether removing the <i>testing</i> of it in do_syscall_trace()
+ makes things happier for you? Hmm?
+</p><p>
+ (Also, looking at the code, I get the feeling that set_singlestep() should
+ <i>only</i> set TIF_SINGLESTEP, and not set the TRAP_FLAG by hand at all, since
+ TIF_SINGESTEP should take care of that detail regardless).
+</p></quote>
+
+<p>Jesse tried that and reported it fixed the problem but it did require
+another small change regarding how the TF bit gets cleared.  While that
+additional change worked for Jesse, it wasn't the proper solution and
+Linus came up with a more general approach.  Linus also brought
+Davide Libenzi into the conversation since he'd made some of the
+original changes a few months ago.  After some more testing it became
+obvious there were more interactions between other parts of this area
+of the kernel than originally thought.  </p>
+
+<p>At this point, Thomas jumped back in to mention that none of the
+changes that were working for Jesse had any effect on his problem.  He
+suspected that other kernel changes, perhaps flexible mmap, were
+causing it.  Mike Hearn began digging into it confirmed it
+was a different issue than Jesse ran into.  Thomas' app seemed to
+depend on a specific memory layout for the stack.  Mike came up 
+with a patch to Wine that works with newer kernels.  </p>
+
+<p>That left finding a solution to Jesse's problem.  Linus began
+putting together some patches for Jesse to test and reported:</p>
+<quote who="Linus Torvalds"><p>
+I'm actually able to now re-create some problems with TF handling with a
+simple non-wine test, and I think I'm zeroing in on the reason for Wine
+breaking. And I think it just happened to work by luck before.
+</p><p>
+Not only do we have problems single-stepping over a system call, we <i>also</i>
+have problems single-stepping over a "popf" - we'll set TF (to
+single-step), and then afterwards we'll <i>clear</i> TF, even if the "popf"
+also was supposed to set it.
+</p><p>
+Working on a patch for this right now, I'll send something out soonish
+(and I'll test it on my test-case before sending it, so that it at least
+has some chance of working).</p></quote>
+
+<p>With that in mind, Linus went back to work to find a fix.  Within a
+few hours he whipped up a couple hundred lines of code and described 
+what it did:</p>
+<quote who="Linus Torvalds"><p>
+Ok, here's a patch that may or may not make Wine happier. It's a _lot_
+more careful about TF handling, and in particular it's trying really
+really hard to make sure that a controlling process does not change the
+trap flag as it is modified or used by the process.
+</p><p>
+This hopefully fixes:
+<ul>
+<li> single-step over "popf" should work - we won't clear TF after the popf,
+  but instead let the popf results remain.
+  <br /><br />
+  NOTE! I tried to make sure that it does the right thing for segments
+  with non-zero bases, but I never actually tested that code. It's fairly
+  obvious, but it's also fairly likely to have some silly problems. Wine
+  may well show effects of this, although I don't know how common
+  non-zero bases are with any kind of half-modern windows binaries.</li>
+
+<li> ptrace reporting of "eflags" register after a single-step (we used to
+  report TF as being set because the debugger set it - even though the
+  "native state" without debugging had it cleared).
+  <br /><br />
+  This also hopefully means that all the conditional TF clearing games
+  etc aren't necessary, since arch/i386/kernel/traps.c should now be
+  taking care of hiding the debugger for most cases ("pushf" still
+  remains, and is hard. See comment in ptrace.c part of the patch)</li>
+</ul></p><p>
+
+It's a bit more involved than I'd like, since especially the "popf" case
+just is pretty complex, but I'd love to hear whether it works.
+</p><p>
+NOTE NOTE NOTE! I've tested it, but only on one small test-case, so it
+might be totally broken in many ways. I'd love to have people who are x86
+and ptrace-aware give this a second look, and I'm confident Jesse will
+find that it won't work, but can hopefully try to debug it a bit with
+this..</p></quote>
+
+<p>(I found the comment about pushf being a hard case to handle
+particularly amusing since at this point it's pretty obvious there's
+maybe a handful of people the world who could understand the exact
+nature of this problem.)  While Linus had low expectations for the
+patch, Jesse reported it worked!  Namely:</p>
+<quote who="Jesse Allen"><p>
+ Well I tried this patch and it works.  I captured a log showing the
+ signals and eflags again when running the program.  I compared it to
+ the working version.  There are differences, but none seem to be the
+ scenario TF was not set when it should have been.  Both log files are
+ just about the same size too.  I captured a second log in a row, and
+ compared the previous.  Again there are differences, so there is some
+ unavoidable randomness.
+</p><p>
+ Since I cannot spot any issue, the patch looks good.  Are there any
+ other test cases?
+</p></quote>
+
+<p>There was some back and forth discussion with other kernel developers
+and some people expressed concern that the patch looked overengineered.
+Linus felt it did exactly what it needed to do and since no one 
+else could come up with a simpler solution it should be the proper
+fix.  Various people pointed out some other situations that broke with
+Linus' patch and he came up with fixes for them.  
+Jesse was just glad his problem was taken care of, 
+<quote who="Jesse Allen">
+ I think that copy protection routines are particually nasty.  They
+ purposely make debugging hard (again see above, no sane program would
+ be like that).   And the program's reason for failing is not the
+ reason at all -- "please insert disc" -- the disc is already in there!
+ So they don't say the real reason why it failed, leaving the user
+ totally hopelessly lost on what they should do.  It's really hard to
+ file a bug report on that alone!  Had I not placed my guess on ptrace
+ early on, this problem may have gone undiscovered for a long time.  I
+ have checked transgaming and they seem to be not aware about this, but
+ it would have been a rude awakening for them when they find that when
+ most distros had updated to 2.6.9, that all the SecuRom protected
+ games silently broke, and they would have had a heck of a time
+ debugging them to find the reason, I'm sure, even with the specs on
+ it!  Though who knows if cedega is affected because their code-base is
+ diverging, and I'm sure their copy protection support is very
+ different.</quote></p>
+
+
+
+</section>
+<section 
+	title="Safedisc and ntoskrnl (con't)" 
+	subject="safedisc update"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0662.html" 
+	posts="1"
+	startdate="12/26/2004"
+>
+<topic>Status Updates</topic>
+<p>Ivan Leo Puoti had a small update on some of the Safedisc
+work he's been doing:</p>
+<quote who="Ivan Leo Puoti"><p>
+I've got safedisc and ntoskrnl to load, unfortunately safedisc throws an exception as soon as it
+starts, so I'll be learning x86 assembly (cool!) soon to try and work this out.
+I've got ntoskrnl with all the correct prototypes for safedisc, and I've added some definitions to
+our include/winternl.h so ntoskrnl can build. Unfortunately quite a few structs are needed to
+compile one of the functions (IofCompleteRequest), so as I don't have time to add them right now 
+it's commented out.
+</p><p>
+These patches are strictly work in progress, but as I'll be away for a few days I'm posting them
+here just in case someone wants to play with them, I would also like to know if I'm adding the
+definitions to the winternl.h stuct correctly (For example, is it OK to have all the structs for
+ntoskrnl in the same place?).
+</p><p>
+If anyone feels the temptation to fix the header so IofCompleteRequest compiles, please go ahead
+and do it.
+</p><p>
+Comments/suggestions/whatever highly welcome.
+<ul>
+<li><a href="http://spazioinwind.libero.it/nonsolomicrosoft/header.diff">http://spazioinwind.libero.it/nonsolomicrosoft/header.diff</a></li>
+<li><a href="http://spazioinwind.libero.it/nonsolomicrosoft/ntoskrnl.diff">http://spazioinwind.libero.it/nonsolomicrosoft/ntoskrnl.diff</a></li>
+</ul>
+</p></quote>
+</section>
+<section 
+	title="Software to Test Crypto API" 
+	subject="Looking for Software which uses the MS Crypto API"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0738.html" 
+	posts="4"
+	startdate="12/30/2004"
+>
+<topic>Security</topic>
+<p>Michael Jung wanted to know if anyone knew of some software 
+to test out the library he wrote to implement the CryptoAPI:</p>
+<quote who="Michael Jung"><p>
+In order to test rsaenh.dll, I'm looking for software, which applies the 
+Microsoft Crypto-API. Any suggestions? It would be ideal if the source is 
+available.</p></quote>
+
+<p>Jesse Allen replied first,
+<quote who="Jesse Allen">
+
+ Blizzard's game patching software seems to use it to authenticate the
+ patch archive.  Your changes broke the patcher: "unable to
+ authenticate", last time I checked, but I am unable to update to the
+ current cvs at the moment.  No source, sorry.  I'll check up on it at
+ a later time.</quote></p>
+
+<p>Michael tried it and reported,
+<quote who="Michael Jung">
+ I've downloaded the current Diablo II patch and tricked it into running up to 
+ the authentication step by patching my registry. It crashed and allowed me to 
+ find and fix a bug. This is exactly what I need. Thanks!
+</quote></p>
+
+<p>Scott Ritchie had some ideas too:</p>
+<quote who="Scott Ritchie"><p>
+ I'm pretty sure Steam does.
+</p><p>
+ And, coincidentally, Steam happens to be broken at the moment, although
+ it does work in CrossOver.
+</p><p>
+ Also, I think the open source eMule uses that DLL a bit, IIRC to
+ generate a crypt key for each userid.  Previous hacks to get eMule
+ working in Wine involved generating the key in a separate program and
+ then merging it in - there's an entire thread about it in the eMule
+ forums.
+</p></quote>
+
+</section>
+<section 
+	title="Removing include/heap.h" 
+	subject="Re: Remove heap.h"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/12/0761.html" 
+	posts="4"
+	startdate="12/30/2004"
+>
+<topic>Fixes</topic>
+<p>Jon Griffiths posted a patch and noted,
+<quote who="Jon Griffiths">
+ After applying, include/heap.h can be removed from cvs.  
+</quote>  His changelog included this line,
+<quote who="Jon Griffiths">
+ Remove heap.h, and simplify code that used HEAP_strdupWtoA.
+</quote></p>
+
+<p>Dimi Paun thought it obscured a different problem involving
+converting a Wide (Unicode) character to an ASCII one,
+<quote who="Dimitrie Paun">
+ To be honest, I'm not too happy with this patch, HEAP_strdupWtoA
+ was a good marker for code that needed fixing, this patch just
+ makes those places harder to find.</quote></p>
+
+<p>Mike Hearn thought it could still be removed but leaving
+the semantics in place as a reminder it needed fixing,
+<quote who="Mike Hearn">
+I don't really understand why we can't make this an inline or something,
+it seems that it's a lot more convenient than the direct win32
+equivalents. Making it an inline would achieve the same effect as simply
+replacing each usage manually, and allow us to improve DLL separation as
+well.
+</quote></p>
+
+<p>Dimi didn't like that either,
+<quote who="Dimitrie Paun">
+Because in 99.99% of cases you don't want to convert from W->A.
+If all our functions are Unicode, a W->A conversion is a warning
+sign, and for sure you wouldn't want to encourage people to do
+so by making it any easier.</quote></p>
+
+<p>Jon thought it was worth getting rid of heap.h though:</p>
+<quote who="Jon Griffiths"><p>
+winapi_check will already tell us all cross-calls anyway, doesn't
+it?  It may be years before all the a to w conversions are done and we are
+100% internally unicode, why live with a non standard header that
+long?</p></quote>
+
+<p>The patch hasn't been committed yet, but then again there haven't been 
+any commits at all since it was submitted.</p>
+
+
+</section></kc>

@@ -1,0 +1,310 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="212" date="02/27/2004" />
+<intro> <p>This is the 212th issue of the Wine Weekly News publication.
+Its main goal is to act as a gravitational lens. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="177" size="678" contrib="61" multiples="32" lastweek="28">
+
+<person posts="16" size="57" who="Fabian Cenedese" />
+<person posts="12" size="32" who="Boaz Harrosh" />
+<person posts="9" size="34" who="Dimitrie O. Paun" />
+<person posts="9" size="24" who="Uwe Bonnes" />
+<person posts="8" size="21" who="Dmitry Timoshkov" />
+<person posts="8" size="18" who="Alexandre Julliard" />
+<person posts="7" size="19" who="Mike Hearn" />
+<person posts="6" size="20" who="Dan Kegel" />
+<person posts="6" size="19" who="Hans Leidekker" />
+<person posts="6" size="13" who="Eric Pouech" />
+<person posts="5" size="13" who="Robert Shearman" />
+<person posts="4" size="15" who="Ove Kaaven" />
+<person posts="4" size="11" who="Ferenc Wagner" />
+<person posts="4" size="11" who="Paul van Schayck" />
+<person posts="4" size="10" who="Kevin Koltzau" />
+<person posts="4" size="8" who="Robert Shearman" />
+<person posts="3" size="18" who="saravanan" />
+<person posts="3" size="14" who="Stefan Leichter" />
+<person posts="3" size="9" who="Matt Chapman" />
+<person posts="3" size="8" who="Yorick Hardy" />
+<person posts="3" size="7" who="Joerg Mayer" />
+<person posts="3" size="6" who="Alfons Hoogervorst" />
+<person posts="2" size="167" who="Yorick Hardy" />
+<person posts="2" size="8" who="Enrico Weigelt" />
+<person posts="2" size="6" who="Christopher Faylor" />
+<person posts="2" size="6" who="Vitaliy Margolen" />
+<person posts="2" size="6" who="Gregory M. Turner" />
+<person posts="2" size="4" who="Robert Reif" />
+<person posts="2" size="4" who="maman yonatan" />
+<person posts="2" size="4" who="Jakob Eriksson" />
+<person posts="2" size="4" who="Steven Edwards" />
+<person posts="2" size="3" who="Marcus Meissner" />
+<person posts="1" size="3" who="(wire99)" />
+<person posts="1" size="3" who="Bill Medland" />
+<person posts="1" size="3" who="vishal wable" />
+<person posts="1" size="3" who="Rok Mandeljc" />
+<person posts="1" size="3" who="Huw D M Davies" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Shachar Shemesh" />
+<person posts="1" size="2" who="Robert van Herk" />
+<person posts="1" size="2" who="Samuel Herzog" />
+<person posts="1" size="2" who="Jon Griffiths" />
+<person posts="1" size="2" who="James Gregory" />
+<person posts="1" size="2" who="Tim Teulings" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="hatky" />
+<person posts="1" size="2" who="jiangyi178" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Chris Seaton" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="2" who="Chris Morgan" />
+<person posts="1" size="1" who="Vitaliy Margolen" />
+<person posts="1" size="1" who="Geoff Thorpe" />
+<person posts="1" size="1" who="Juan Lang" />
+<person posts="1" size="1" who="Robert Vojta" />
+<person posts="1" size="1" who="Christian Costa" />
+<person posts="1" size="1" who="Matthew Davison" />
+
+</stats>
+<section 
+	title="Cross-compiling Wine, Revisited" 
+	subject="Re: crosstest compile fix (another)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0536.html" 
+	posts="14"
+	startdate="02/22/2004"
+	enddate="02/26/2004"
+>
+<topic>Ports</topic>
+<p>The topic of cross-compiling came up this week.  It's been a little
+while since the topic came up.  Hans Leidekker beat MinGW into 
+submission:</p>
+<quote who="Hans Leidekker"><p>
+As promised, a set of MinGW RPM packages for a MinGW cross compiler
+that can compile all Wine tests. I've thrown in three patches of mine: 
+one that adds missing DirectX guids, an urlmon import lib and some
+corrections to comctl32.
+</p><p>
+Find them here:
+<ul><a href="http://mirzam.it.vu.nl/mingw/">
+  http://mirzam.it.vu.nl/mingw/</a></ul></p></quote>
+  
+<p>Later he reported on cross-compiling all of Wine:</p>
+<quote who="Hans Leidekker"><p>
+I spent some time cross-compiling all of Wine with MinGW according
+to this recipe:
+<ul>  <a href="http://winehq.com/wwn/123#Cross-compiling%20Wine">
+  http://winehq.com/wwn/123#Cross-compiling Wine</a></ul></p><p>
+
+and I thought you might be interested in the results. I can report
+a bug in Wine's makefiles right away: having those vxd's in subdirectories
+that end in .vxd causes make to barf on targets like this one:
+<ul><tt>
+ifsmgr.vxd$(DLLEXT): ifsmgr.vxd/ifsmgr.vxd$(DLLEXT)
+   $(RM) $@ &amp;&amp; $(LN_S) ifsmgr.vxd/ifsmgr.vxd$(DLLEXT) $@</tt></ul>
+</p><p>
+because, if $(DLLEXT) is empty, it will try to create a link
+with a name that's already there as a directory.
+</p><p>
+Of all dlls these don't compile:
+<ul>
+<li>x11drv</li>
+<li>kernel32</li>
+<li>gdi32</li>
+<li>ws2_32</li>
+<li>comctl32</li>
+<li>icmp</li>
+<li>iphlapi</li>
+<li>msvcrt</li>
+<li>ntdll</li>
+<li>rpcrt4</li>
+<li>shlwapi</li>
+<li>vnb.vxd</li>
+<li>wininet</li>
+<li>wsock32</li>
+</ul></p><p>
+x11drv, kernel32, gdi32 and ntdll being predictable, because they build
+directly on X11 and Unix API's. Same goes for the networking related dlls
+(ws2_32, icmp and iphlpapi, vnb.vxd, wininet, wsock32). msvcrt is close
+to building because what I saw was mostly header clashes, which could be
+fixed with proper guards I think.
+</p><p>
+rpcrt4 fails because it uses one Unix API, gettimeofday, and both comctl32
+and shlwapi suffer from the bug in dlltool that Dmitry reported and fixed
+recently.
+</p></quote>
+
+</section>
+<section 
+	title="Theming Widgets" 
+	subject="Theming widgets"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0604.html" 
+	posts="4"
+	startdate="02/24/2004"
+	enddate="02/25/2004"
+>
+<topic>Graphics</topic>
+<p>The framework for Kevin Koltzau's theming work has been
+laid, now it's time to begin thinking about how it will 
+affect the look and feel of Wine.  Kevin asked for opinions
+on the actual widgets:</p>
+<quote who="Kevin Koltzau"><p>
+I'm starting to work on theming some widgets, and I've come up with a few methods of doing this:
+<ol>
+<li> Add theming code to every widget itself, static link to uxtheme.dll</li>
+<li> Add theming code to every widget itself, using LoadLibrary/GetProcAddress</li>
+<li> Subclass widgets when uxtheme.dll is loaded and override default painting</li></ol>
+</p><p>
+Windows takes a totally different approach, using a different version of common controls that implement
+theming, under windows in order to enable theming you first need a manifest to load the proper version of comctrl32
+then you also must call InitCommonControls which registers the standard controls (BUTTON,EDIT,etc)
+</p><p>
+Going with that, I think #3 might be the best option, and extend InitCommonControls to subclass the standard
+controls if theming is enabled
+</p></quote>
+
+<p>Mike Hearn had a different idea,
+<quote who="Mike Hearn">
+4) Theme all widgets with a hard link to uxtheme but have a "Win98 look"
+theme which replicates the current drawing?</quote></p>
+
+<p>Kevin said if theming is disabled then the widgets will be responsible
+for drawing themselves.  So the current style will stay as it is in that
+case.  No one else replied and it appears Kevin is leaning toward his third
+option listed above.</p>
+
+</section>
+
+<section 
+	title="NetBSD Audio Driver" 
+	subject="Re: Native NetBSD audio driver"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0.html" 
+	posts="9"
+	startdate="02/22/2004"
+	enddate="02/26/2004"
+>
+<topic>Multimedia</topic>
+<p>Yorick Hardy created a sound driver for NetBSD:</p>
+<quote who="Yorick Hardy"><p>
+ This patch adds the audio driver winenbsd using the native NetBSD
+ audio system as an alternative to OSS. On the one hand
+ this is useful to directly make use of the features of the NetBSD
+ audio system instead of using emulation, on the other hand
+ it is another driver to maintain and is quite close to the wineoss driver.
+ If the driver is accepted, I think the NetBSD support for wineoss
+ should remain for testing and for the main driver.
+</p></quote>
+
+<p>Eric Pouech thought maybe it should just be combined with an
+existing driver,
+<quote who="Eric Pouech">
+I really think we're starting to create a real mess for the audio 
+drivers. It's always useful to have drivers access the HW at the lowest 
+level, so we should support NetBSD.
+However, if the interface is rather close to OSS, I'd rather suggest we try 
+to integrate all the drivers with the same features into a single piece 
+of driver.</quote></p>
+
+<p>Yorick <a href="http://www.winehq.org/hypermail/wine-devel/2004/02/0572.html">reposted 
+</a> his patch including bugfix.  At the very least it's a good starting point
+for someone else.  Dimi thought that any integration with the OSS driver
+needed to be done now before the NetBSD patch bitrots and diverges.  Robert
+Reif expanded on Eric's idea:</p>
+<quote who="Robert Reif"><p>
+I  think it might be worthwhile considering restructuring the audio
+drivers into hardware independent wave, direct sound, midi
+and  mixer sections and a hardware dependent  low level
+implementation for oss, alsa, ...
+</p><p>
+The basic structure of all the drivers is similar enough to abstracted
+out the hardware independent portions.
+</p></quote>
+
+<p>Alexandre thought that was a good idea.  Yorick mentioned he would
+be able to combine the OSS and NetBSD drivers but definitely wouldn't
+have to time to do the restructuring Robert suggested.</p>
+
+</section>
+
+
+
+
+
+
+
+
+<section 
+	title="Implementing NdrClientCall/NdrClientCall2" 
+	subject="NdrClientCall/format string interpreter/stubless proxies"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0638.html" 
+	posts="6"
+	startdate="02/26/2004"
+>
+<topic>RPC / COM / OLE</topic>
+<p>Mike Hearn asked Rob Shearman,
+<quote who="Mike Hearn">
+A few weeks back you mentioned you had done some work on implementing
+the stubless proxy entry points - can you explain a bit more about this?
+In particular, how far away are you from having something submittable,
+have you got docs on the format string syntax and how much are you
+intending to implement?
+</quote></p>
+
+<p>Rob described the work he had done:</p>
+<quote who="Robert Shearman"><p>
+
+I have implemented NdrClientCall/NdrClientCall2 and 
+respective server functions and they are working fairly
+well (except for no exception handling and no pipe 
+support). The thing that was blocking my submission of
+the patch was lack of testing. So far I have only 
+tested on simple types and pointers to simple types.
+Full pointers have been implemented, but are not 
+working correctly. I haven't had time to port my test
+program to the Wine test framework and test the rest of
+the types.</p><p>
+I have been using references from MSDN on NDR format 
+strings compared with my own tests based on code 
+generated by MIDL. I have also used the OpenGroup DCE
+specification. (I have URLs for these, but not at hand
+and you can probably find them in my previous posts on
+the subject.)</p><p>
+I will try to submit the patches tonight.
+</p></quote>
+
+<p>Later he announced the patch was available for anyone who wanted
+to try it out:</p>
+<quote who="Robert Shearman"><p>
+I have uploaded the big stubless RPC patch to a website as it is rather
+large (~120k). You can get it here:
+<ul><a href="http://www.dcs.warwick.ac.uk/~csvmc/rpcrt4_3.diff">
+http://www.dcs.warwick.ac.uk/~csvmc/rpcrt4_3.diff</a></ul></p><p>
+As you can probably see, a lot of the stuff in this patch is a bit rough
+around the edges (lack of copyright notice in some files), but it does
+seem to work for a lot of cases.
+</p><p>
+P.S. It doesn't work for native OLE32 yet because we need some
+undocumented interfaces in RPCSS.
+</p></quote>
+
+<p>Mike wondered if it would be possible to document some of
+it,
+<quote who="Mike Hearn">
+  Wow, fantastic! One thing, could you write up some basic info on 
+  the structure of format strings? I'm just a bit concerned that one
+  day we'll have to rewrite the typelib marshaller to use this interpreter
+  and not know how, as this stuff is pretty opaque :)
+</quote></p>
+
+<p>Greg Turner pointed out that Microsoft had already documented a lot of it:</p>
+<quote who="Greg Turner"><p>
+They are actually pretty well-documented on MSDN:
+<ul><a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/rpc/rpc/rpc_ndr_format_strings.asp">
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/rpc/rpc/rpc_ndr_format_strings.asp</a></ul>
+</p><p>
+Looks like a lot of work, Robert; thanks for your efforts.
+</p></quote>
+</section>
+</kc>

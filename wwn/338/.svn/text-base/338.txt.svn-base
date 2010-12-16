@@ -1,0 +1,4517 @@
+From alexd4 at inbox.lv  Tue Jan  1 04:19:50 2008
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Tue, 01 Jan 2008 02:19:50 -0800
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <200712311351.13994.stefan@codeweavers.com>
+References: <47784E12.1080800@inbox.lv>
+	<200712310108.18304.stefan@codeweavers.com>
+	<4778D5E9.1010002@inbox.lv>
+	<200712311351.13994.stefan@codeweavers.com>
+Message-ID: <477A13C6.4030105@inbox.lv>
+
+OK, I'll see what I can do with the test. Speaking of tests, I submitted test
+for zero vertex rhw case (as suggested by H.Verbeet to avoid future
+regressions), but I think it didn't get accepted. Perhaps, you can look through
+it and provide some feedback? Would be good to hear the bad news now, before I
+submit more wrong stuff (esp. considering that I'm also trying to write a test
+for another issue with Aliens vs Predator 1 that I want to fix). I'm attaching
+the zero rhw test.
+
+Stefan D?singer wrote:
+> Am Montag, 31. Dezember 2007 12:43:37 schrieb Alexander Dorofeyev:
+>> The thing that it tries this copy palette thing at all (AVP1 doesn't depend
+>> on that BTW, it does SetPalette on both source and target) - that shouldn't
+>> be difficult to test, I think I could write it. Beyond that, I don't know,
+>> the documentation on these old interfaces seems non-existant. Is there a
+>> way to obtain DX6 docs?
+> I suspect that we shouldn't copy the palette at all, I think Texture::Load and 
+> friends just copy the bytes over. A test could verify / falsify that. As for 
+> the docs, there were older dx docs available on some websites, but I lost the 
+> link. I'll see if I can find it.
+
+
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: rhw_zero_test.diff.txt
+Url: http://www.winehq.org/pipermail/wine-devel/attachments/20080101/0385f399/attachment-0001.txt 
+
+From dmitry at codeweavers.com  Tue Jan  1 00:30:44 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Tue, 1 Jan 2008 14:30:44 +0800
+Subject: comdlg32: 2/2 PageSetupDlgW: Draw paper preview
+References: <200712302140.05652.alex@thehandofagony.com><019b01c84b78$dcebaa90$a600fea9@DMITRY>
+	<200712311614.09282.alex@thehandofagony.com>
+Message-ID: <003b01c84c3f$d7f9ebb0$a600fea9@DMITRY>
+
+"Alexander Nicolaysen S?rnes" <alex at thehandofagony.com> wrote:
+
+> > What's the reason of moving PRINTDLG_PS_ChangePrinterW and changing
+> > its indentation?
+>
+>
+> I added a few new functions which it depends on.  The change of indentation
+> was accidental.
+
+I fail to see how you can satisfy new functions by moving it down, not up.
+
+-- 
+Dmitry.
+
+
+
+From hans at it.vu.nl  Tue Jan  1 07:37:02 2008
+From: hans at it.vu.nl (Hans Leidekker)
+Date: Tue, 1 Jan 2008 14:37:02 +0100
+Subject: Commit stats
+Message-ID: <200801011437.02229.hans@it.vu.nl>
+
+
+$ for y in {2002..2007}; do \
+  n=$( git log | grep ^Date: | grep $y | wc -l ); \
+  echo "Number of commits in $y: $n"; \
+  done
+Number of commits in 2002: 3094
+Number of commits in 2003: 3283
+Number of commits in 2004: 3851
+Number of commits in 2005: 6006
+Number of commits in 2006: 8431
+Number of commits in 2007: 9526
+
+ -Hans
+
+
+From stefan at codeweavers.com  Tue Jan  1 07:42:41 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Tue, 1 Jan 2008 14:42:41 +0100
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <477A13C6.4030105@inbox.lv>
+References: <47784E12.1080800@inbox.lv>
+	<200712311351.13994.stefan@codeweavers.com>
+	<477A13C6.4030105@inbox.lv>
+Message-ID: <200801011442.41388.stefan@codeweavers.com>
+
+Am Dienstag, 1. Januar 2008 11:19:50 schrieb Alexander Dorofeyev:
+> OK, I'll see what I can do with the test. Speaking of tests, I submitted
+> test for zero vertex rhw case (as suggested by H.Verbeet to avoid future
+> regressions), but I think it didn't get accepted. Perhaps, you can look
+> through it and provide some feedback? Would be good to hear the bad news
+> now, before I submit more wrong stuff (esp. considering that I'm also
+> trying to write a test for another issue with Aliens vs Predator 1 that I
+> want to fix). I'm attaching the zero rhw test.
+It is likely that Alexandre was waiting for an OK from me or Henri. He is the 
+only committer, but when someone he doesn't know sends a patch he usually 
+waits for the OK from someone who is maintaining the part of Wine. I think I 
+forgot to send an OK mail to the test when you submitted it.
+
+A few minor suggestions for the test:
+* The vertex structure should be declared somewhere else already, as part of 
+the lighting test I think. You can reuse that instead of redeclaring it.
+
+* You don't have to AND the color if 0xffffff, getPixelColor should do that 
+already.
+
+* You don't have to set the render states unless you need a different setting 
+than the previous tests leave behind
+
+* The "if(hr == D3D_OK)" after BeginScene should be changed 
+to "if(SUCCEEDED(hr))"
+
+
+From jan.wine at zerebecki.de  Tue Jan  1 09:17:09 2008
+From: jan.wine at zerebecki.de (Jan Zerebecki)
+Date: Tue, 1 Jan 2008 16:17:09 +0100
+Subject: bugs audit volunteers required
+In-Reply-To: <47798E0A.5010703@sprintpcs.com>
+References: <36bf289b0712311505n2b413183t9b5e2b3b6da7cdb5@mail.gmail.com>
+	<477984ED.7050408@codeweavers.com>
+	<36bf289b0712311626w52eb6339n7a433eeed74f326c@mail.gmail.com>
+	<36bf289b0712311627n1ca35d75ibd929dddd241824d@mail.gmail.com>
+	<b6bb06270712311638l3dab6c70g93bc332a1e137d9c@mail.gmail.com>
+	<47798E0A.5010703@sprintpcs.com>
+Message-ID: <20080101151709.GB3426@crissy.swd.zerebecki.de>
+
+On Mon, Dec 31, 2007 at 05:49:14PM -0700, James McKenzie wrote:
+> Austin English wrote:
+> > On Dec 31, 2007 6:10 PM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+> >> The situation isn't improved by the fact that bugs are reopened by those
+> >> persons after minimal additions. Perhaps we should have a bug
+> >> moderation? Only allow bugs that follow the criterion, then have a way
+> >> for bugzilla admins to accept bug reports and then a new bug report
+> >> entry is created in bugzilla.
+> >
+> > Does bugzilla support this? How about not allowing someone without
+> > higher bugzilla privileges to reopen bugs?
+> >   
+> It should.  Some of the other projects I work on will only allow a
+> person with admin level to change
+> the status of a submitted bug, including re-opening.   I would also like
+> to see this with bugzilla, even
+> though I am an ordinary 'user'.   This would prevent users from closing
+> a bug report and then opening
+> it again, even if the problem affects a different module.   IMHO, these
+> are two separate bugs.
+
+If you know how to configure bugzilla to prevent the bug creator
+from reopening it, I'd like to hear about it (AFAIK it's not
+possible). As far as I remember regular users who are not the
+creator are already disallowed from changing the resolution.
+
+
+Jan
+
+
+
+From alexd4 at inbox.lv  Tue Jan  1 19:16:13 2008
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Tue, 01 Jan 2008 17:16:13 -0800
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <200801011442.41388.stefan@codeweavers.com>
+References: <47784E12.1080800@inbox.lv>
+	<200712311351.13994.stefan@codeweavers.com>
+	<477A13C6.4030105@inbox.lv>
+	<200801011442.41388.stefan@codeweavers.com>
+Message-ID: <477AE5DD.4080702@inbox.lv>
+
+OK, thanks a lot. Regarding vertex structure - I'm afraid I can't reuse struct
+vertex/nvertex, because I need a very specific format for this test
+(D3DFVF_XYZRHW | D3DFVF_DIFFUSE). I could probably reuse sVertexT from fogtest,
+but then I'll also have to set specular, that I don't really need. I looks
+easier to declare a custom format that has just what I need.
+
+I'll make changes according to other suggestions.
+
+I've ran into some issues while trying to write a test for the old D3D
+TEXTUREMAPBLEND state AVP1 game uses. I hope you can help me a bit with it.
+
+The problem is, interfaces at least as recent as DX7 seem to be refusing this
+state (I can't make it work on XP). So I probably have to use something older.
+Unfortunately, so far I had no luck in creating interfaces that are older than
+IDirect3DDevice7, but less painful to use than the very first IDirect3DDevice: I
+don't have any DX6 docs and all working examples I can find including AVP1 use
+either IDirect3DDevice or something from DX7 or later, and trivial modifications
+to examples with IDirect3DDevice I've made fail on XP, usually on the step when
+I create IDirect3DDevice3 or something like that. So grudgingly I settled for
+IDirect3DDevice and I even have an almost complete test. But it's longer that it
+could be with DrawPrimitive calls, because of all that executebuffer horror.
+So the question is, is it ok if I submit it like this? From a certain point of
+view, there can even be benefits from using IDirect3DDevice, as it may also test
+some functions and codepaths not covered by other tests. Or do I have to
+continue to look for ways to write it with newer interfaces so that to make it
+more compact by getting rid of executebuffer? And, also, where to put it?
+ddraw/tests/visual.c seems mostly IDirect3DDevice7-centric, so, perhaps, visual
+tests involving earlier interfaces should go in a separate file? Or put it into
+visual.c and simply ignore / release DX7 interfaces?
+
+Stefan D?singer wrote:
+> It is likely that Alexandre was waiting for an OK from me or Henri. He is the 
+> only committer, but when someone he doesn't know sends a patch he usually 
+> waits for the OK from someone who is maintaining the part of Wine. I think I 
+> forgot to send an OK mail to the test when you submitted it.
+> 
+> A few minor suggestions for the test:
+> * The vertex structure should be declared somewhere else already, as part of 
+> the lighting test I think. You can reuse that instead of redeclaring it.
+> 
+> * You don't have to AND the color if 0xffffff, getPixelColor should do that 
+> already.
+> 
+> * You don't have to set the render states unless you need a different setting 
+> than the previous tests leave behind
+> 
+> * The "if(hr == D3D_OK)" after BeginScene should be changed 
+> to "if(SUCCEEDED(hr))"
+> 
+> 
+
+
+
+
+
+
+
+
+
+
+
+From jan.wine at zerebecki.de  Tue Jan  1 09:33:34 2008
+From: jan.wine at zerebecki.de (Jan Zerebecki)
+Date: Tue, 1 Jan 2008 16:33:34 +0100
+Subject: bugs audit volunteers required
+In-Reply-To: <b6bb06270712311649g2e382983t11e2684d503aca60@mail.gmail.com>
+References: <36bf289b0712311505n2b413183t9b5e2b3b6da7cdb5@mail.gmail.com>
+	<477984ED.7050408@codeweavers.com> <47798C5E.5070008@sprintpcs.com>
+	<b6bb06270712311649g2e382983t11e2684d503aca60@mail.gmail.com>
+Message-ID: <20080101153334.GC3426@crissy.swd.zerebecki.de>
+
+On Mon, Dec 31, 2007 at 06:49:56PM -0600, Austin English wrote:
+> On Dec 31, 2007 6:42 PM, James McKenzie <jjmckenzie51 at sprintpcs.com> wrote:
+> > I agree.  If you cannot find the application or a demo version to work
+> > with, how can you fix the
+> > bug.  Logs and other helpers go a long way.  Maybe an intro page as to
+> > what is needed and how
+> > to get it.  This will become more and more critical as the project
+> > approaches 'release' status (1.0).
+> > Also, marking bugs as having insufficient information to fix advises the
+> > reporter that the project
+> > needs more information to help or troubleshoot.
+> 
+> Maybe add a resolution of NEEDMOREINFO?
+
+We could add flags for "needs more information" and perhaps one
+for "reproducible bug report with enough initial information".
+
+(A flag is something that can be requested to be set and can then
+be granted or denied by someone who was given the required rights.)
+
+> > Clicking on the "NEW BUG" link should take a person to
+> > a web page with reporting
+> > criteria.  At this point, the reporter will read through a page of what
+> > should be done to report a
+> > bug.  After clicking a 'I read and understand the reporting
+> > requirements', then the reporter will be
+> > able to submit a bug.  After a few cycles of this, regular reporters
+> > will not be subject to this page and
+> > will be taken instead to the regular bug reporting page.  For the
+> > occasional reporter, this is a good way
+> > to handle bug reports, IMHO.
+
+Our bugzilla is in git, patches are welcome.
+
+I think a small and easy explanation on the new-bug form, that
+refers one to a wiki page for the full guide is a good thing.
+
+(I guess it's probably hard to filter bad bug reports
+automatically and even harder to not inconvenience our good bug
+reporters at the same time.)
+
+
+Jan
+
+
+
+From stefan at codeweavers.com  Tue Jan  1 09:47:57 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Tue, 1 Jan 2008 16:47:57 +0100
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <477AE5DD.4080702@inbox.lv>
+References: <47784E12.1080800@inbox.lv>
+	<200801011442.41388.stefan@codeweavers.com>
+	<477AE5DD.4080702@inbox.lv>
+Message-ID: <200801011647.57354.stefan@codeweavers.com>
+
+Am Mittwoch, 2. Januar 2008 02:16:13 schrieb Alexander Dorofeyev:
+> OK, thanks a lot. Regarding vertex structure - I'm afraid I can't reuse
+> struct vertex/nvertex, because I need a very specific format for this test
+> (D3DFVF_XYZRHW | D3DFVF_DIFFUSE). I could probably reuse sVertexT from
+> fogtest, but then I'll also have to set specular, that I don't really need.
+> I looks easier to declare a custom format that has just what I need.
+Ah, that's ok then. I forgot that the other vertex has a specular color, so a 
+new vertex type is fine.
+
+> I've ran into some issues while trying to write a test for the old D3D
+> TEXTUREMAPBLEND state AVP1 game uses. I hope you can help me a bit with it.
+Yeah, IDirect3DDevice(1) and IDirect3DExecuteBuffer are a royal pain in the 
+ass. Here's some popular rant about it to ease your pain:
+
+http://www.exaflop.org/docs/d3dogl/d3dogl_jc_plan.html
+
+I think that a test using execute buffers is a great thing. This interface is 
+terribly obscured and we have only one small test for it. You can add it to 
+visual.c if you want, or a new file(maybe executebuffer.c, or something), I 
+think both places are ok.
+
+You can also try to QueryInterface old IDirect3DDevice* versions from 
+IDirect3DDevice7, but I think this doesn't work as the COM theory says on 
+Windows. I haven't yet tested the restrictions and implemented them because I 
+haven't seen a game yet that depends on them.
+
+
+From jan.wine at zerebecki.de  Tue Jan  1 10:15:07 2008
+From: jan.wine at zerebecki.de (Jan Zerebecki)
+Date: Tue, 1 Jan 2008 17:15:07 +0100
+Subject: New bugzilla components (round 3)
+In-Reply-To: <476D5D59.8050809@kievinfo.com>
+References: <476D5D59.8050809@kievinfo.com>
+Message-ID: <20080101161507.GD3426@crissy.swd.zerebecki.de>
+
+I think I will be able to do the changes next weekend.
+
+If no one objects until Friday, I'll assume that everyone is fine
+with the changes as proposed in this thread.
+
+I'll furthermore assume that I can modify the descriptions of
+categories as I see fit (I explained in a previous mail on this
+topic on how those could be made to convey more exactly which
+parts of wine they cover).
+
+I just saw that there still are overlaping categories in at least
+one case, but that can be fixed in another step.
+
+
+Jan
+
+
+
+From jan.wine at zerebecki.de  Tue Jan  1 10:19:20 2008
+From: jan.wine at zerebecki.de (Jan Zerebecki)
+Date: Tue, 1 Jan 2008 17:19:20 +0100
+Subject: Where are the bugzilla admins?
+In-Reply-To: <477671A5.6040403@kievinfo.com>
+References: <477671A5.6040403@kievinfo.com>
+Message-ID: <20080101161920.GE3426@crissy.swd.zerebecki.de>
+
+On Sat, Dec 29, 2007 at 09:11:17AM -0700, Vitaliy Margolen wrote:
+> Where did our buzilla admins go? 3 weeks and nothing is changing!
+
+I'd assume you mean the category changes to bugzilla (I just sent
+a mail regarding that), otherwise please help me out on what I
+missed.
+
+
+Jan
+
+
+
+From hverbeet at gmail.com  Tue Jan  1 10:38:07 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Tue, 1 Jan 2008 17:38:07 +0100
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <200801011442.41388.stefan@codeweavers.com>
+References: <47784E12.1080800@inbox.lv>
+	<200712311351.13994.stefan@codeweavers.com>
+	<477A13C6.4030105@inbox.lv>
+	<200801011442.41388.stefan@codeweavers.com>
+Message-ID: <d658b69e0801010838u66d4ee18hb06a31865408939@mail.gmail.com>
+
+On 01/01/2008, Stefan D?singer <stefan at codeweavers.com> wrote:
+> It is likely that Alexandre was waiting for an OK from me or Henri. He is the
+> only committer, but when someone he doesn't know sends a patch he usually
+> waits for the OK from someone who is maintaining the part of Wine. I think I
+> forgot to send an OK mail to the test when you submitted it.
+I didn't see anything obviously wrong with the test, except perhaps
+checking hr against D3D_OK, but ddraw is more your area.
+
+> * You don't have to set the render states unless you need a different setting
+> than the previous tests leave behind
+>
+I don't think it's a bad thing to do though... it's pretty useful the
+be able to comment out the other tests without breaking the current
+test, especially when writing new tests. In general, we might want to
+consider using a new device for each test to prevent states from one
+test interfering with those from another test.
+
+
+From alexd4 at inbox.lv  Tue Jan  1 20:33:51 2008
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Tue, 01 Jan 2008 18:33:51 -0800
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <200801011647.57354.stefan@codeweavers.com>
+References: <47784E12.1080800@inbox.lv>
+	<200801011442.41388.stefan@codeweavers.com>
+	<477AE5DD.4080702@inbox.lv>
+	<200801011647.57354.stefan@codeweavers.com>
+Message-ID: <477AF80F.4040506@inbox.lv>
+
+Stefan D?singer wrote:
+> You can also try to QueryInterface old IDirect3DDevice* versions from 
+> IDirect3DDevice7, but I think this doesn't work as the COM theory says on 
+> Windows. I haven't yet tested the restrictions and implemented them because I 
+> haven't seen a game yet that depends on them.
+
+Yes, I think it doesn't run on Windows, IIRC that was the first thing I tried.
+At least this is so for XP, which itself is partly broken in DX6 and less
+support though, from what I see (e.g. AVP1 3D engine is broken).
+
+Just one more question - I'm looking into this hr==D3D_OK vs SUCCEEDED(hr) thing
+and there appears to be some problems with consistency. In ddraw/tests/visual.c
+I see both hr==D3D_OK and SUCCEEDED, in one place even result of BeginScene are
+checked as hr==D3D_OK, so it's somewhat confusing. How do I tell, generally,
+what to use for ok(), if() etc, hr==D3D_OK or SUCCEDED? Do all checks ultimately
+need to be turned into SUCCEEDED or it's just that some of the calls have been
+found to return undocumented values other than D3D_OK, but are no errors?
+
+
+
+
+From austinenglish at gmail.com  Tue Jan  1 12:54:54 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 1 Jan 2008 12:54:54 -0600
+Subject: bugs audit volunteers required
+In-Reply-To: <20080101153334.GC3426@crissy.swd.zerebecki.de>
+References: <36bf289b0712311505n2b413183t9b5e2b3b6da7cdb5@mail.gmail.com>
+	<477984ED.7050408@codeweavers.com> <47798C5E.5070008@sprintpcs.com>
+	<b6bb06270712311649g2e382983t11e2684d503aca60@mail.gmail.com>
+	<20080101153334.GC3426@crissy.swd.zerebecki.de>
+Message-ID: <b6bb06270801011054p4048eefdve6d7fb2bc5f6632@mail.gmail.com>
+
+On Jan 1, 2008 9:33 AM, Jan Zerebecki <jan.wine at zerebecki.de> wrote:
+> We could add flags for "needs more information" and perhaps one
+> for "reproducible bug report with enough initial information".
+>
+> (A flag is something that can be requested to be set and can then
+> be granted or denied by someone who was given the required rights.)
+
+That could work as well.
+
+> I think a small and easy explanation on the new-bug form, that
+> refers one to a wiki page for the full guide is a good thing.
+>
+> (I guess it's probably hard to filter bad bug reports
+> automatically and even harder to not inconvenience our good bug
+> reporters at the same time.)
+
+Maybe on the page for registering a bugzilla and/or on first login?
+
+
+-Austin
+
+
+From jjmckenzie51 at sprintpcs.com  Tue Jan  1 14:31:42 2008
+From: jjmckenzie51 at sprintpcs.com (James McKenzie)
+Date: Tue, 01 Jan 2008 13:31:42 -0700
+Subject: bugs audit volunteers required
+In-Reply-To: <20080101153334.GC3426@crissy.swd.zerebecki.de>
+References: <36bf289b0712311505n2b413183t9b5e2b3b6da7cdb5@mail.gmail.com>
+	<477984ED.7050408@codeweavers.com> <47798C5E.5070008@sprintpcs.com>
+	<b6bb06270712311649g2e382983t11e2684d503aca60@mail.gmail.com>
+	<20080101153334.GC3426@crissy.swd.zerebecki.de>
+Message-ID: <477AA32E.6010807@sprintpcs.com>
+
+Jan Zerebecki wrote:
+> On Mon, Dec 31, 2007 at 06:49:56PM -0600, Austin English wrote:
+>   
+>> On Dec 31, 2007 6:42 PM, James McKenzie <jjmckenzie51 at sprintpcs.com> wrote:
+>>     
+>>> I agree.  If you cannot find the application or a demo version to work
+>>> with, how can you fix the
+>>> bug.  Logs and other helpers go a long way.  Maybe an intro page as to
+>>> what is needed and how
+>>> to get it.  This will become more and more critical as the project
+>>> approaches 'release' status (1.0).
+>>> Also, marking bugs as having insufficient information to fix advises the
+>>> reporter that the project
+>>> needs more information to help or troubleshoot.
+>>>       
+>> Maybe add a resolution of NEEDMOREINFO?
+>>     
+>
+> We could add flags for "needs more information" and perhaps one
+> for "reproducible bug report with enough initial information".
+>
+> (A flag is something that can be requested to be set and can then
+> be granted or denied by someone who was given the required rights.)
+>
+>   
+A resolution is much better.  Using a flag of needsmoreinfo usually does
+not get answered.
+>>> Clicking on the "NEW BUG" link should take a person to
+>>> a web page with reporting
+>>> criteria.  At this point, the reporter will read through a page of what
+>>> should be done to report a
+>>> bug.  After clicking a 'I read and understand the reporting
+>>> requirements', then the reporter will be
+>>> able to submit a bug.  After a few cycles of this, regular reporters
+>>> will not be subject to this page and
+>>> will be taken instead to the regular bug reporting page.  For the
+>>> occasional reporter, this is a good way
+>>> to handle bug reports, IMHO.
+>>>       
+>
+> Our bugzilla is in git, patches are welcome.
+>
+> I think a small and easy explanation on the new-bug form, that
+> refers one to a wiki page for the full guide is a good thing.
+>
+>   
+I like the recommendation that a page be read before submitting bugs. 
+There are a growing number of duplicates (I'm responsible for at least
+one of them and I've been at the bug business for a long time) and
+incomplete reports points to the need for a readme type of page.  The
+regulars should not be subject to reading the page (this could be a
+cookie function that just counts the number of bugs submitted and should
+be a very simple cookie as far as name and function.)
+> (I guess it's probably hard to filter bad bug reports
+> automatically and even harder to not inconvenience our good bug
+> reporters at the same time.)
+>
+>   
++1 to this.  Automatic filtering can lead to some necessary reports
+being skipped or deleted when additional, useful information will make
+them usable.
+
+Thank you for taking time to read through my suggestions as well.
+
+One last comment, the OpenOffice.org project (I think) stopped the
+ability for anyone without the canconfirm permission to reopen a bug.  I
+might want to look at this in the future if time allows.
+
+James
+
+
+
+From hverbeet at gmail.com  Tue Jan  1 14:53:02 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Tue, 1 Jan 2008 21:53:02 +0100
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <477AF80F.4040506@inbox.lv>
+References: <47784E12.1080800@inbox.lv>
+	<200801011442.41388.stefan@codeweavers.com>
+	<477AE5DD.4080702@inbox.lv>
+	<200801011647.57354.stefan@codeweavers.com>
+	<477AF80F.4040506@inbox.lv>
+Message-ID: <d658b69e0801011253u542d5768t15942add91a3ad24@mail.gmail.com>
+
+On 02/01/2008, Alexander Dorofeyev <alexd4 at inbox.lv> wrote:
+> Stefan D?singer wrote:
+> > You can also try to QueryInterface old IDirect3DDevice* versions from
+> > IDirect3DDevice7, but I think this doesn't work as the COM theory says on
+> > Windows. I haven't yet tested the restrictions and implemented them because I
+> > haven't seen a game yet that depends on them.
+>
+> Yes, I think it doesn't run on Windows, IIRC that was the first thing I tried.
+> At least this is so for XP, which itself is partly broken in DX6 and less
+> support though, from what I see (e.g. AVP1 3D engine is broken).
+>
+> Just one more question - I'm looking into this hr==D3D_OK vs SUCCEEDED(hr) thing
+> and there appears to be some problems with consistency. In ddraw/tests/visual.c
+> I see both hr==D3D_OK and SUCCEEDED, in one place even result of BeginScene are
+> checked as hr==D3D_OK, so it's somewhat confusing. How do I tell, generally,
+> what to use for ok(), if() etc, hr==D3D_OK or SUCCEDED? Do all checks ultimately
+> need to be turned into SUCCEEDED or it's just that some of the calls have been
+> found to return undocumented values other than D3D_OK, but are no errors?
+>
+Unless you actually want to test the exact return value, you should
+use SUCCEEDED / FAILED. Some of the tests do get this wrong,
+unfortunately.
+
+
+From hans at it.vu.nl  Tue Jan  1 14:56:37 2008
+From: hans at it.vu.nl (Hans Leidekker)
+Date: Tue, 1 Jan 2008 21:56:37 +0100
+Subject: Commit stats
+In-Reply-To: <811b48bd0801011225t1b7dfa91x5e9cb20fa2d9b4e7@mail.gmail.com>
+References: <200801011437.02229.hans@it.vu.nl>
+	<811b48bd0801011225t1b7dfa91x5e9cb20fa2d9b4e7@mail.gmail.com>
+Message-ID: <200801012156.37196.hans@it.vu.nl>
+
+On Tuesday 01 January 2008 21:25:02 Clarence Risher wrote:
+
+> Because I like to nitpick, does your 2007 count include any commits to
+> your local tree that arent actually submitted/accepted?
+> 
+> On Jan 1, 2008 7:37 AM, Hans Leidekker <hans at it.vu.nl> wrote:
+> >
+> > $ for y in {2002..2007}; do \
+> >   n=$( git log | grep ^Date: | grep $y | wc -l ); \
+> >   echo "Number of commits in $y: $n"; \
+> >   done
+> > Number of commits in 2002: 3094
+> > Number of commits in 2003: 3283
+> > Number of commits in 2004: 3851
+> > Number of commits in 2005: 6006
+> > Number of commits in 2006: 8431
+> > Number of commits in 2007: 9526
+
+Oops, yes there were some local commits in that count, the correct
+upstream count for 2007 is 9513.
+
+ -Hans
+
+
+From stefan at codeweavers.com  Tue Jan  1 16:42:21 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Tue, 1 Jan 2008 23:42:21 +0100
+Subject: [5/6] ddraw: fix palette copying when destination palette is NULL
+In-Reply-To: <d658b69e0801011253u542d5768t15942add91a3ad24@mail.gmail.com>
+References: <47784E12.1080800@inbox.lv> <477AF80F.4040506@inbox.lv>
+	<d658b69e0801011253u542d5768t15942add91a3ad24@mail.gmail.com>
+Message-ID: <200801012342.21204.stefan@codeweavers.com>
+
+Am Dienstag, 1. Januar 2008 21:53:02 schrieb H. Verbeet:
+> Unless you actually want to test the exact return value, you should
+> use SUCCEEDED / FAILED. Some of the tests do get this wrong,
+> unfortunately.
+I usually test against the exact return value(D3D_OK) in the ok() statements, 
+and SUCCEEDED / FAILED when deciding the codepath the test takes(e.g. 
+if(SUCCEEDED(BeginScene())) )
+
+
+From guillaume.benny at sympatico.ca  Tue Jan  1 19:43:53 2008
+From: guillaume.benny at sympatico.ca (Guillaume B.)
+Date: Tue, 01 Jan 2008 20:43:53 -0500
+Subject: IDirectSound and Unknown IID
+References: <fl5tv2$kmn$1@ger.gmane.org>
+	<36bf289b0712310125iece5425p8b68a6ce6e1bbc5a@mail.gmail.com>
+	<200712311344.53047.stefan@codeweavers.com>
+	<flas4u$81o$1@ger.gmane.org>
+	<3f4fd2640712311216m69788544q1793962914e6ca6a@mail.gmail.com>
+Message-ID: <fleq8p$6fp$1@ger.gmane.org>
+
+Reece Dunn wrote:
+
+> On 31/12/2007, Guillaume B. <guillaume.benny at sympatico.ca> wrote:
+>> Stefan D?singer wrote:
+>>
+>> > Am Montag, 31. Dezember 2007 10:25:15 schrieb Vijay Kiran Kamuju:
+>> >> >  So the problem is that the interace
+>> >> > {2a8af120-e9de-4132-aaa5-4bdda5f325b8} is not supported by the
+>> >> > {current
+>> >> > Wine implementation. I've searched around but I couldn't find
+>> >> > anything about this IID. If I knew what interface it was, maybe I
+>> >> > could implement a stub and it might make the sound work.
+> 
+> I can't see it in the Vista and XP CLSID section of the registry.
+> 
+> Is it an interface that is being queried for internally by dmime or
+> dswave (as you are using the native versions)? That is, MS may not be
+> publicizing it (as it is not part of the DirectSound API), but are
+> using it to coordinate interaction between dswave and dsound.
+> 
+> It would be useful to find out if it is the game that is querying for
+> this interface, or if it is the native DLLs.
+> 
+
+ Hi,
+
+ I think you are right: the interface seems to be queried from dmime,
+although I can't confirm it since I can't make the debugger stop in my
+function to see the backtrace... and I can't see the assembly code that
+called my function.
+
+ I've tried to use the builtin dmime but it doesn't make a sound altough it
+seems to call DSound functions frequently with code executed in a timer.
+It's probably because IDirectMusicPerformance8Impl_PlaySegmentEx is not
+implemented. I've tried to add some code to make it work but since I don't
+really know how it works, my small hack doesn't play a sound!
+
+ So now I'm stuck. Thanks anyway for your help.
+
+ Guillaume
+
+
+
+
+
+From dmitry at codeweavers.com  Tue Jan  1 22:14:00 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Wed, 2 Jan 2008 12:14:00 +0800
+Subject: bugs audit volunteers required
+References: <36bf289b0712311505n2b413183t9b5e2b3b6da7cdb5@mail.gmail.com><477984ED.7050408@codeweavers.com>
+	<47798C5E.5070008@sprintpcs.com>
+	<b6bb06270712311649g2e382983t11e2684d503aca60@mail.gmail.com>
+Message-ID: <003e01c84cf5$e958f980$a600fea9@DMITRY>
+
+"Austin English" <austinenglish at gmail.com> wrote:
+
+>> Also, marking bugs as having insufficient information to fix advises the
+>> reporter that the project
+>> needs more information to help or troubleshoot.
+> 
+> Maybe add a resolution of NEEDMOREINFO?
+
+There is no need to add one more reason for a bug resolution IMHO,
+INVALID with appropriate comment does the job.
+
+-- 
+Dmitry.
+
+
+From gerald at pfeifer.com  Tue Jan  1 11:03:05 2008
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Tue, 1 Jan 2008 18:03:05 +0100 (CET)
+Subject: dlls/wintab32/context.c -- simpflication and HEADS UP!
+In-Reply-To: <Pine.LNX.4.64.0712010053550.19271@acrux.dbai.tuwien.ac.at>
+References: <Pine.LNX.4.64.0712010053550.19271@acrux.dbai.tuwien.ac.at>
+Message-ID: <Pine.LNX.4.64.0801011759560.25278@acrux.dbai.tuwien.ac.at>
+
+On Sat, 1 Dec 2007, Gerald Pfeifer wrote:
+> This change of mine is obvious since InExt and OutExt are DWORD, thus
+> unsigned, and thus always greater or equal zero so my patch should be
+> fine in any case.
+> 
+> However, looking at the else-part of the if-statement, I have some
+> doubts this is working as designed, and in general the abs() invocations 
+> are bogus.
+> 
+> Any expert who could help with a more extensive patch?
+
+Both the two <0 checks and the abs() invocations are needless since
+DWORDS are positive by definition.
+
+(I did not get _any_ response for my first mail a month ago and I still 
+believe the else-part looks bogus, but can we get at least this first 
+cleanup in?)
+
+Gerald
+
+ChangeLog:
+Simplify condition in ScaleForContext().
+
+Index: dlls/wintab32/context.c
+===================================================================
+RCS file: /home/wine/wine/dlls/wintab32/context.c,v
+retrieving revision 1.26
+diff -u -3 -p -r1.26 context.c
+--- dlls/wintab32/context.c	31 Dec 2007 18:34:43 -0000	1.26
++++ dlls/wintab32/context.c	1 Jan 2008 16:59:56 -0000
+@@ -160,10 +160,10 @@ int TABLET_PostTabletMessage(LPOPENCONTE
+ static inline DWORD ScaleForContext(DWORD In, DWORD InOrg, DWORD InExt, DWORD
+                                     OutOrg, DWORD OutExt)
+ {
+-    if (((InExt > 0 )&&(OutExt > 0)) || ((InExt<0) && (OutExt < 0)))
+-        return ((In - InOrg) * abs(OutExt) / abs(InExt)) + OutOrg;
++    if ((InExt > 0) && (OutExt > 0))
++        return ( (In - InOrg) * OutExt / InExt ) + OutOrg;
+     else
+-        return ((abs(InExt) - (In - InOrg))*abs(OutExt) / abs(InExt)) + OutOrg;
++        return ( (InExt - (In - InOrg)) * OutExt / InExt ) + OutOrg;
+ }
+ 
+ LPOPENCONTEXT AddPacketToContextQueue(LPWTPACKET packet, HWND hwnd)
+
+
+From msclrhd at googlemail.com  Tue Jan  1 15:58:06 2008
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Tue, 1 Jan 2008 21:58:06 +0000
+Subject: Is there any reason why these patches were not applied to the git
+	repository?
+Message-ID: <3f4fd2640801011358j46a505cj16ca5b06effad185@mail.gmail.com>
+
+I sent these patches to wine-patches, but they have not been applied.
+
+gdiplus: added the ProfileNotFound status
+code.	[0001-gdiplus-added-the-ProfileNotFound-status-code.patch]
+	30/12/2007
+
+?include: added the new Vista theme schema
+headers.	[0001-include-added-the-new-Vista-theme-schema-headers.patch]
+	30/12/2007
+
+include: added the BUTTON parts and
+states.	[0001-include-added-the-BUTTON-parts-and-states.patch]
+	30/12/2007
+
+?include: added the AEROWIZARD parts and
+states.	[0001-include-added-the-AEROWIZARD-parts-and-states.patch]
+	30/12/2007
+
+include: added the COMBOBOX parts and
+states.	[0001-include-added-the-COMBOBOX-parts-and-states.patch]
+	30/12/2007
+
+- Reece
+
+From taril_laszlo at yahoo.co.uk  Tue Jan  1 17:04:30 2008
+From: taril_laszlo at yahoo.co.uk (=?iso-8859-1?Q?L=E1szl=F3_Tari?=)
+Date: Tue, 1 Jan 2008 23:04:30 +0000 (GMT)
+Subject: Pixel Shader Problem in 0.9.52
+Message-ID: <38798.82856.qm@web26106.mail.ukl.yahoo.com>
+
+Hi,
+
+Problem occurs when Depth Of Filed is turned on in Tomb Raider Anniversary.
+
+I simply overwrote the 0.9.52 wined3d.dll.so file with the 0.9.44 wined3d.dll.so in /usr/lib/wine, it works, but a little bit slower.
+
+See attachment!
+
+Regards,
+
+Laszlo
+
+
+
+
+       Sent from Yahoo! - a smarter inbox.
+
+
+
+
+
+      __________________________________________________________
+Sent from Yahoo! Mail - a smarter inbox http://uk.mail.yahoo.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20080101/532c7947/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: DepthOfField0.9.44.jpg
+Type: image/jpeg
+Size: 123581 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080101/532c7947/attachment-0002.jpg 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: DepthOfField0.9.52.jpg
+Type: image/jpeg
+Size: 123213 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080101/532c7947/attachment-0003.jpg 
+
+From hverbeet at gmail.com  Wed Jan  2 02:21:14 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Wed, 2 Jan 2008 09:21:14 +0100
+Subject: [3/5] ddraw/tests: add test for D3DRENDERSTATE_TEXTUREMAPBLEND
+	state
+In-Reply-To: <477B85D7.3050405@inbox.lv>
+References: <477B85D7.3050405@inbox.lv>
+Message-ID: <d658b69e0801020021x62c6f5dxff152289ede679aa@mail.gmail.com>
+
+On 02/01/2008, Alexander Dorofeyev <alexd4 at inbox.lv> wrote:
+> Tests of behavior introduced by patches 4/5 and 5/5.
+> ---
+Going by the commit message, I assume this test would currently fail?
+You can't do that. You either have to send the patches that fix the
+problem first, or you have to wrap the failing tests in todo_wine
+blocks, and remove the todo_wine blocks in the patch that fixes the
+tests they wrap.
+
+
+From dank at kegel.com  Wed Jan  2 03:19:35 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Wed, 2 Jan 2008 01:19:35 -0800
+Subject: bugs audit volunteers require
+Message-ID: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+
+>> Maybe add a resolution of NEEDMOREINFO?
+>
+>There is no need to add one more reason for a bug resolution IMHO,
+>INVALID with appropriate comment does the job.
+
+INVALID seems harsh, it may scare away novice reporters.
+
+Do we want to make it easy to search for bugs stuck
+in a needmoreinfo kind of state?  If so, a keyword or state
+might be handy.
+
+Does anybody remember good old gnu gnats, the old bug
+tracking system?  It was great this way; it had an explicit
+notion of whose ball the court was in.  I miss that.
+- Dan
+-- 
+Wine for Windows ISVs: http://kegel.com/wine/isv
+
+
+From kai.blin at gmail.com  Wed Jan  2 03:22:42 2008
+From: kai.blin at gmail.com (Kai Blin)
+Date: Wed, 2 Jan 2008 10:22:42 +0100
+Subject: bugs audit volunteers required
+In-Reply-To: <003e01c84cf5$e958f980$a600fea9@DMITRY>
+References: <36bf289b0712311505n2b413183t9b5e2b3b6da7cdb5@mail.gmail.com>
+	<b6bb06270712311649g2e382983t11e2684d503aca60@mail.gmail.com>
+	<003e01c84cf5$e958f980$a600fea9@DMITRY>
+Message-ID: <200801021022.55325.kai.blin@gmail.com>
+
+On Wednesday 02 January 2008 05:14:00 Dmitry Timoshkov wrote:
+> "Austin English" <austinenglish at gmail.com> wrote:
+> >> Also, marking bugs as having insufficient information to fix advises the
+> >> reporter that the project
+> >> needs more information to help or troubleshoot.
+> >
+> > Maybe add a resolution of NEEDMOREINFO?
+>
+> There is no need to add one more reason for a bug resolution IMHO,
+> INVALID with appropriate comment does the job.
+
+As far as I've seen NEEDMOREINFO used in bugzilla, it is on the same level as 
+NEW, ACCEPTED and FIXED. So new bugs come in as new, and someone looks at 
+them and accepts the bug if the information is complete enough to work on the 
+bug, and sets it to FIXED INVALID or NEEDMOREINFO if it's invalid or doesn't 
+have enough information to reproduce it.
+
+So far I've always left a bug on NEW until I could reproduce it, NEEDMOREINFO 
+would be more clear, but I don't feel very strong about this either way.
+
+Cheers,
+Kai
+
+-- 
+Kai Blin
+WorldForge developer  http://www.worldforge.org/
+Wine developer        http://wiki.winehq.org/KaiBlin
+Samba team member     http://www.samba.org/samba/team/
+--
+Will code for cotton.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080102/2399142f/attachment.pgp 
+
+From po at danielnylander.se  Wed Jan  2 04:09:47 2008
+From: po at danielnylander.se (Daniel Nylander)
+Date: Wed, 02 Jan 2008 11:09:47 +0100
+Subject: Norwegian language files using wrong locale
+Message-ID: <1199268587.18345.16.camel@fatbastard>
+
+
+I noticed that the Norwegian (bokm?l) locale files are using the locale
+"no". Correct locale for Norwegian Bokm?l is "nb" (Nynorsk is "nn").
+
+-- 
+Daniel Nylander (CISSP, GCUX, GCFA)
+Stockholm, Sweden
+http://www.DanielNylander.se
+
+
+
+
+
+From dmitry at codeweavers.com  Wed Jan  2 04:29:38 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Wed, 2 Jan 2008 18:29:38 +0800
+Subject: Norwegian language files using wrong locale
+References: <1199268587.18345.16.camel@fatbastard>
+Message-ID: <036f01c84d2a$62c741d0$a600fea9@DMITRY>
+
+"Daniel Nylander" <po at danielnylander.se> wrote:
+
+> I noticed that the Norwegian (bokm?l) locale files are using the locale
+> "no". Correct locale for Norwegian Bokm?l is "nb" (Nynorsk is "nn").
+
+I don't see a lower cased "no" in dlls/kernel32/nls/nor.nls. Where did you
+notice that? Wine has the same data as for instance my XP SP2 reports:
+LOCALE_SISO3166CTRYNAME "NO"
+LOCALE_SISO639LANGNAME "nb"
+
+-- 
+Dmitry. 
+
+
+
+From po at danielnylander.se  Wed Jan  2 05:03:22 2008
+From: po at danielnylander.se (Daniel Nylander)
+Date: Wed, 02 Jan 2008 12:03:22 +0100
+Subject: Norwegian language files using wrong locale
+In-Reply-To: <036f01c84d2a$62c741d0$a600fea9@DMITRY>
+References: <1199268587.18345.16.camel@fatbastard>
+	<036f01c84d2a$62c741d0$a600fea9@DMITRY>
+Message-ID: <1199271802.18345.55.camel@fatbastard>
+
+On ons, 2008-01-02 at 18:29 +0800, Dmitry Timoshkov wrote:
+> "Daniel Nylander" <po at danielnylander.se> wrote:
+> 
+> > I noticed that the Norwegian (bokm?l) locale files are using the locale
+> > "no". Correct locale for Norwegian Bokm?l is "nb" (Nynorsk is "nn").
+> 
+> I don't see a lower cased "no" in dlls/kernel32/nls/nor.nls. Where did you
+> notice that? Wine has the same data as for instance my XP SP2 reports:
+> LOCALE_SISO3166CTRYNAME "NO"
+> LOCALE_SISO639LANGNAME "nb"
+
+I did see them in the git tree. The files include "LANGUAGE
+LANG_NORWEGIAN, SUBLANG_NORWEGIAN_BOKMAL" (which is correct) but what
+happens when Norwegian Nynorsk (no_NN) is added? The filenames should be
+changed according to ISO 639-1. But I could be wrong.
+
+Examples:
+./programs/wordpad/No.rc
+./programs/winemine/No.rc
+./programs/winecfg/No.rc
+./programs/winhelp/No.rc
+
+
+-- 
+Daniel Nylander (CISSP, GCUX, GCFA)
+Stockholm, Sweden
+http://www.DanielNylander.se
+
+
+
+
+
+From r.kalbermatter at hccnet.nl  Wed Jan  2 05:06:57 2008
+From: r.kalbermatter at hccnet.nl (Rolf Kalbermatter)
+Date: Wed, 2 Jan 2008 12:06:57 +0100
+Subject: dlls/wintab32/context.c -- simpflication and HEADS UP!
+In-Reply-To: <Pine.LNX.4.64.0801011759560.25278@acrux.dbai.tuwien.ac.at>
+References: <Pine.LNX.4.64.0712010053550.19271@acrux.dbai.tuwien.ac.at>
+	<Pine.LNX.4.64.0801011759560.25278@acrux.dbai.tuwien.ac.at>
+Message-ID: <006401c84d2f$978756d0$4001a8c0@NATERS>
+
+Gerald Pfeifer wrote on Tuesday, January 01, 2008 6:03 PM:
+
+This code obviously was written with signed operands in mind. I wonder if
+they could get signed somewhere and this function simply uses the wrong
+datatype.
+
+> (I did not get _any_ response for my first mail a month ago 
+> and I still believe the else-part looks bogus, but can we get 
+> at least this first cleanup in?)
+
+In the else statement InExt could be 0 (either that or OutExt would be 0)
+which would cause a division by 0 exception. Definitely doesn't sound right
+to me. But I have no idea what that code is supposed to do.
+
+> @@ -160,10 +160,10 @@ int TABLET_PostTabletMessage(LPOPENCONTE
+>  static inline DWORD ScaleForContext(DWORD In, DWORD InOrg, 
+> DWORD InExt, DWORD
+>                                      OutOrg, DWORD OutExt)  {
+> -    if (((InExt > 0 )&&(OutExt > 0)) || ((InExt<0) && (OutExt < 0)))
+> -        return ((In - InOrg) * abs(OutExt) / abs(InExt)) + OutOrg;
+> +    if ((InExt > 0) && (OutExt > 0))
+> +        return ( (In - InOrg) * OutExt / InExt ) + OutOrg;
+>      else
+> -        return ((abs(InExt) - (In - InOrg))*abs(OutExt) / 
+> abs(InExt)) + OutOrg;
+> +        return ( (InExt - (In - InOrg)) * OutExt / InExt ) + OutOrg;
+>  }
+>  
+>  LPOPENCONTEXT AddPacketToContextQueue(LPWTPACKET packet, HWND hwnd)
+
+Rolf Kalbermatter
+
+
+
+From stefan at codeweavers.com  Wed Jan  2 05:39:45 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Wed, 2 Jan 2008 12:39:45 +0100
+Subject: [3/5] ddraw/tests: add test for D3DRENDERSTATE_TEXTUREMAPBLEND
+	state
+In-Reply-To: <d658b69e0801020021x62c6f5dxff152289ede679aa@mail.gmail.com>
+References: <477B85D7.3050405@inbox.lv>
+	<d658b69e0801020021x62c6f5dxff152289ede679aa@mail.gmail.com>
+Message-ID: <200801021239.45336.stefan@codeweavers.com>
+
+Am Mittwoch, 2. Januar 2008 09:21:14 schrieb H. Verbeet:
+> On 02/01/2008, Alexander Dorofeyev <alexd4 at inbox.lv> wrote:
+> > Tests of behavior introduced by patches 4/5 and 5/5.
+> > ---
+>
+> Going by the commit message, I assume this test would currently fail?
+> You can't do that. You either have to send the patches that fix the
+> problem first, or you have to wrap the failing tests in todo_wine
+> blocks, and remove the todo_wine blocks in the patch that fixes the
+> tests they wrap.
+Appart of this issue I recommend to move the D3D1 creation into a separate 
+function. Eventually more D3D1 tests will be written, and we want to 
+discourage copypasting that huge block of code.
+
+
+From stefan at codeweavers.com  Wed Jan  2 05:44:24 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Wed, 2 Jan 2008 12:44:24 +0100
+Subject: [5/5] wined3d: change colorkey fixup for stage 0 alphaop /
+	alphaarg
+In-Reply-To: <477B85E1.40704@inbox.lv>
+References: <477B85E1.40704@inbox.lv>
+Message-ID: <200801021244.24329.stefan@codeweavers.com>
+
+Am Mittwoch, 2. Januar 2008 13:38:57 schrieb Alexander Dorofeyev:
+> In case of colorkey emulation for a texture, if the application wants to
+> select alpha from diffuse color at stage 0, a fixup to modulate with
+> texture alpha more closely matches what the application wants than fixup to
+> just select alpha from texture.
+I am not sure about this. From my understanding of color keying, the color 
+keying should only depend on the texture, not the diffuse color. 
+Unfortunately, this is mutually exclusive with always honoring the app's 
+blending settings. I have two games which use color keying, Moto Racer 2 and 
+Prince of Persia 3D. I'll test the patches with those two games.
+
+The problem is that our color keying is emulated, so we'll always have to 
+fiddle to get it working properly everywhere. The correct, but complex and 
+incomplete fix would be a replacement shader for the fixed function pipeline 
+which can implement color keying properly using 'KIL' or 'discard'. 
+Unfortunately that won't fix the problem for cards without fragment shader 
+support.
+
+The other patches look good to me
+
+
+From julliard at winehq.org  Wed Jan  2 06:28:49 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 02 Jan 2008 13:28:49 +0100
+Subject: [2/5][try 2] ddraw/tests: add test for rendering vertices with
+	zero rhw
+In-Reply-To: <477B85D3.10704@inbox.lv> (Alexander Dorofeyev's message of "Wed, 
+	02 Jan 2008 04:38:43 -0800")
+References: <477B85D3.10704@inbox.lv>
+Message-ID: <87zlvoe7i6.fsf@wine.dyndns.org>
+
+Alexander Dorofeyev <alexd4 at inbox.lv> writes:
+
+> Fixed some issues pointed out by Stefan D?singer.
+> ---
+>     dlls/ddraw/tests/visual.c |   41 +++++++++++++++++++++++++++++++++++++++++
+>     1 files changed, 41 insertions(+), 0 deletions(-)
+
+This is failing occasionally here:
+
+../../../tools/runtest -q -P wine -M ddraw.dll -T ../../.. -p ddraw_test.exe.so visual.c && touch visual.ok
+visual.c:797: Test failed: Got color 00000000, expected 00ffffff
+make: *** [visual.ok] Error 1
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Wed Jan  2 06:30:49 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 02 Jan 2008 13:30:49 +0100
+Subject: Norwegian language files using wrong locale
+In-Reply-To: <1199271802.18345.55.camel@fatbastard> (Daniel Nylander's message
+	of "Wed, 02 Jan 2008 12:03:22 +0100")
+References: <1199268587.18345.16.camel@fatbastard>
+	<036f01c84d2a$62c741d0$a600fea9@DMITRY>
+	<1199271802.18345.55.camel@fatbastard>
+Message-ID: <87ve6ce7eu.fsf@wine.dyndns.org>
+
+Daniel Nylander <po at danielnylander.se> writes:
+
+> I did see them in the git tree. The files include "LANGUAGE
+> LANG_NORWEGIAN, SUBLANG_NORWEGIAN_BOKMAL" (which is correct) but what
+> happens when Norwegian Nynorsk (no_NN) is added? The filenames should be
+> changed according to ISO 639-1. But I could be wrong.
+
+There's no reason to use a separate file for every variant. Both
+Norwegian locales should go into the same No.rc file.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Wed Jan  2 06:31:55 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 02 Jan 2008 13:31:55 +0100
+Subject: include: added the new Vista theme schema headers.
+In-Reply-To: <3f4fd2640712300246k71a7a58fk4cd5fc9cb5a35fa@mail.gmail.com>
+	(Reece Dunn's message of "Sun, 30 Dec 2007 10:46:03 +0000")
+References: <3f4fd2640712300246k71a7a58fk4cd5fc9cb5a35fa@mail.gmail.com>
+Message-ID: <87r6h0e7d0.fsf@wine.dyndns.org>
+
+"Reece Dunn" <msclrhd at googlemail.com> writes:
+
+> diff --git a/include/tmschema.h b/include/tmschema.h
+> index 910de19..3a3e3e3 100644
+> --- a/include/tmschema.h
+> +++ b/include/tmschema.h
+> @@ -20,6 +20,10 @@
+>  #ifndef __WINE_TMSCHEMA_H
+>  #define __WINE_TMSCHEMA_H
+>  
+> +#if defined(__WINE_VSSYM32_H)
+> +#  error tmschema.h (XP) cannot be included along side vssym32.h (Vista).
+> +#endif
+
+That's not the way it's done in the SDK.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Wed Jan  2 06:42:56 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 02 Jan 2008 13:42:56 +0100
+Subject: #4 msvcrt: Correct search strategy for the wide exec/spawn
+	functions.
+In-Reply-To: <200801011625.01038.hans@it.vu.nl> (Hans Leidekker's message of
+	"Tue, 1 Jan 2008 16:25:00 +0100")
+References: <200801011625.01038.hans@it.vu.nl>
+Message-ID: <87myroe6un.fsf@wine.dyndns.org>
+
+Hans Leidekker <hans at it.vu.nl> writes:
+
+> Changelog
+>  Correct search strategy for the wide exec/spawn functions.
+
+I don't think we want to duplicate all that code. The Ascii functions
+should convert their arguments and call the Unicode ones.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From stefan at codeweavers.com  Wed Jan  2 08:14:11 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Wed, 2 Jan 2008 15:14:11 +0100
+Subject: Pixel Shader Problem in 0.9.52
+In-Reply-To: <38798.82856.qm@web26106.mail.ukl.yahoo.com>
+References: <38798.82856.qm@web26106.mail.ukl.yahoo.com>
+Message-ID: <200801021514.11473.stefan@codeweavers.com>
+
+Am Mittwoch, 2. Januar 2008 00:04:30 schrieb L?szl? Tari:
+> Hi,
+>
+> Problem occurs when Depth Of Filed is turned on in Tomb Raider Anniversary.
+>
+> I simply overwrote the 0.9.52 wined3d.dll.so file with the 0.9.44
+> wined3d.dll.so in /usr/lib/wine, it works, but a little bit slower.
+This doesn't look like a pixel shader problem, more like a blitting or 
+offscreen rendering problem. Can you run a regression test and file a bug?
+
+
+
+From stefandoesinger at gmx.at  Wed Jan  2 09:53:18 2008
+From: stefandoesinger at gmx.at (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Wed, 2 Jan 2008 16:53:18 +0100
+Subject: [5/5] wined3d: change colorkey fixup for stage 0 alphaop /
+	alphaarg
+In-Reply-To: <200801021244.24329.stefan@codeweavers.com>
+References: <477B85E1.40704@inbox.lv>
+	<200801021244.24329.stefan@codeweavers.com>
+Message-ID: <200801021653.18803.stefandoesinger@gmx.at>
+
+Am Mittwoch, 2. Januar 2008 12:44:24 schrieb Stefan D?singer:
+> Am Mittwoch, 2. Januar 2008 13:38:57 schrieb Alexander Dorofeyev:
+> > In case of colorkey emulation for a texture, if the application wants to
+> > select alpha from diffuse color at stage 0, a fixup to modulate with
+> > texture alpha more closely matches what the application wants than fixup
+> > to just select alpha from texture.
+I tested pop3d and Moto Racer 2. Pop3d still works as expected, but moto racer 
+2 has some missing geometry. It draws some opaque parts of the scene with 
+color keying on, and a diffuse alpha of 0.0, so the alpha test kicks in and 
+the geometry is missing.
+
+The moto racer 2 demo is available online, e.g. 
+http://downloads.gamezone.com/demos/d1576.htm. Note that the installer 
+refuses to run, unless you set your X server's depth to 16. I also caused a 
+regression in that game when I fixed some bugs with native d3drm.dll, so you 
+need the attached hack.
+(I didn't have time and energy to write a test to test that, but I think that 
+BRANCHFORWARD tokens with offset 0 are special, and that the existing 
+executebuffer test in d3d.c just points out the special case, but the common 
+case is implemented incorrectly)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: moto2-hack.diff
+Type: text/x-diff
+Size: 655 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080102/230654e2/attachment.diff 
+
+From ovek at arcticnet.no  Wed Jan  2 12:29:14 2008
+From: ovek at arcticnet.no (Ove Kaaven)
+Date: Wed, 02 Jan 2008 19:29:14 +0100
+Subject: Norwegian language files using wrong locale
+In-Reply-To: <1199271802.18345.55.camel@fatbastard>
+References: <1199268587.18345.16.camel@fatbastard>	<036f01c84d2a$62c741d0$a600fea9@DMITRY>
+	<1199271802.18345.55.camel@fatbastard>
+Message-ID: <477BD7FA.1090605@arcticnet.no>
+
+Daniel Nylander skrev:
+> On ons, 2008-01-02 at 18:29 +0800, Dmitry Timoshkov wrote:
+>> "Daniel Nylander" <po at danielnylander.se> wrote:
+>>
+>>> I noticed that the Norwegian (bokm?l) locale files are using the locale
+>>> "no". Correct locale for Norwegian Bokm?l is "nb" (Nynorsk is "nn").
+>> I don't see a lower cased "no" in dlls/kernel32/nls/nor.nls. Where did you
+>> notice that? Wine has the same data as for instance my XP SP2 reports:
+>> LOCALE_SISO3166CTRYNAME "NO"
+>> LOCALE_SISO639LANGNAME "nb"
+> 
+> I did see them in the git tree. The files include "LANGUAGE
+> LANG_NORWEGIAN, SUBLANG_NORWEGIAN_BOKMAL" (which is correct) but what
+> happens when Norwegian Nynorsk (no_NN) is added?
+
+You've got it reversed. The proper locale setting is nn_NO.
+
+The Nynorsk is in non.nls.
+
+
+
+
+From kgbricola at web.de  Wed Jan  2 12:57:21 2008
+From: kgbricola at web.de (=?windows-1256?Q?Rico_Sch=FCller?=)
+Date: Wed, 02 Jan 2008 19:57:21 +0100
+Subject: Is there any reason why these patches were not applied to the
+	git	repository?
+In-Reply-To: <3f4fd2640801011358j46a505cj16ca5b06effad185@mail.gmail.com>
+References: <3f4fd2640801011358j46a505cj16ca5b06effad185@mail.gmail.com>
+Message-ID: <477BDE91.3070101@web.de>
+
+Reece Dunn wrote:
+> I sent these patches to wine-patches, but they have not been applied.
+> 
+> gdiplus: added the ProfileNotFound status
+> code.	[0001-gdiplus-added-the-ProfileNotFound-status-code.patch]
+> 	30/12/2007
+> 
+> ?include: added the new Vista theme schema
+> headers.	[0001-include-added-the-new-Vista-theme-schema-headers.patch]
+> 	30/12/2007
+> 
+> include: added the BUTTON parts and
+> states.	[0001-include-added-the-BUTTON-parts-and-states.patch]
+> 	30/12/2007
+> 
+> ?include: added the AEROWIZARD parts and
+> states.	[0001-include-added-the-AEROWIZARD-parts-and-states.patch]
+> 	30/12/2007
+> 
+> include: added the COMBOBOX parts and
+> states.	[0001-include-added-the-COMBOBOX-parts-and-states.patch]
+> 	30/12/2007
+> 
+> - Reece
+> 
+
+My patches from the 30/12/2007 haven't been applied, too.
+
+cabinet: Fix memory leak (found by Smatch)
+mshtml: Fix memory leak (found by Smatch)
+msi: Fix memory leak (found by Smatch)
+
+What's the reason?
+
+Cheers
+Rico
+
+
+From alexd4 at inbox.lv  Wed Jan  2 23:20:26 2008
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Wed, 02 Jan 2008 21:20:26 -0800
+Subject: [5/5] wined3d: change colorkey fixup for stage 0 alphaop
+	/	alphaarg
+In-Reply-To: <200801021653.18803.stefandoesinger@gmx.at>
+References: <477B85E1.40704@inbox.lv>	<200801021244.24329.stefan@codeweavers.com>
+	<200801021653.18803.stefandoesinger@gmx.at>
+Message-ID: <477C709A.1020501@inbox.lv>
+
+Stefan D?singer wrote:
+> Am Mittwoch, 2. Januar 2008 12:44:24 schrieb Stefan D?singer:
+>> Am Mittwoch, 2. Januar 2008 13:38:57 schrieb Alexander Dorofeyev:
+>>> In case of colorkey emulation for a texture, if the application wants to
+>>> select alpha from diffuse color at stage 0, a fixup to modulate with
+>>> texture alpha more closely matches what the application wants than fixup
+>>> to just select alpha from texture.
+> I tested pop3d and Moto Racer 2. Pop3d still works as expected, but moto racer 
+> 2 has some missing geometry. It draws some opaque parts of the scene with 
+> color keying on, and a diffuse alpha of 0.0, so the alpha test kicks in and 
+> the geometry is missing.
+Oh now I see this case I haven't thought about. For some reason, or maybe no
+reason at all, Moto racer sets alphaop to selectarg1 and alphaarg1 to current
+(diffuse)! That looks kind of strange (if it then gives vertices with diffuse
+alpha = 0), but maybe it's just "optimizing" by setting states it will need
+later. And it expects it to work despite diffuse alpha is 0 because it disables
+alpha blending and alpha test. In wine though the latter state is overriden by
+colorkey emulation so the result is bad. But I think this can be sorted out by
+checking ALPHABLENDENABLE, because it's probably a reasonable indicator for
+telling whether the app is going to give something meaningful in diffuse alpha
+or not. Do you think something along the lines of attached patch can be an
+acceptable solution? With it, AVP1 game works properly and it also seems to
+bring back geometry in moto racer, at least as far as I can tell.
+
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: colorkey_fixup2.diff.txt
+Url: http://www.winehq.org/pipermail/wine-devel/attachments/20080102/92394f5d/attachment.txt 
+
+From julliard at winehq.org  Wed Jan  2 13:57:35 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 02 Jan 2008 20:57:35 +0100
+Subject: Is there any reason why these patches were not applied to the
+	git	repository?
+In-Reply-To: <477BDE91.3070101@web.de> ("Rico =?utf-8?Q?Sch=C3=BCller=22's?=
+	message of "Wed, 02 Jan 2008 19:57:21 +0100")
+References: <3f4fd2640801011358j46a505cj16ca5b06effad185@mail.gmail.com>
+	<477BDE91.3070101@web.de>
+Message-ID: <87abnodmq8.fsf@wine.dyndns.org>
+
+Rico Sch?ller <kgbricola at web.de> writes:
+
+> My patches from the 30/12/2007 haven't been applied, too.
+>
+> cabinet: Fix memory leak (found by Smatch)
+> mshtml: Fix memory leak (found by Smatch)
+> msi: Fix memory leak (found by Smatch)
+>
+> What's the reason?
+
+You sent the 3 patches in a single mail. The rule is one patch per mail.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From jgardou at yahoo.fr  Wed Jan  2 14:25:56 2008
+From: jgardou at yahoo.fr (=?iso-8859-1?q?J=E9r=F4me_Gardou?=)
+Date: Wed, 2 Jan 2008 21:25:56 +0100
+Subject: wine gdiplus <-> mono gdiplus wrapper
+Message-ID: <200801022125.56920.jgardou@yahoo.fr>
+
+I wrote a little script in order to wrap gdiplus with the mono one;
+Here are the source file and the spec file (this one made with winedump), but 
+I have no idea how to compile it and/or include it in the wine source tree.
+
+Could you tell me what you think about it ? And if it has some utility ?
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gdiplus.c
+Type: text/x-csrc
+Size: 76543 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080102/3dbf08c0/attachment-0001.c 
+-------------- next part --------------
+# Generated from gdiplus.dll by winedump
+
+1 stdcall GdipAddPathArc( ptr long long long long long long ) wine_GdipAddPathArc
+2 stdcall GdipAddPathArcI( ptr long long long long long long ) wine_GdipAddPathArcI
+3 stdcall GdipAddPathBezier( ptr long long long long long long long long ) wine_GdipAddPathBezier
+4 stdcall GdipAddPathBezierI( ptr long long long long long long long long ) wine_GdipAddPathBezierI
+5 stdcall GdipAddPathBeziers( ptr long long ) wine_GdipAddPathBeziers
+6 stdcall GdipAddPathBeziersI( ptr long long ) wine_GdipAddPathBeziersI
+7 stdcall GdipAddPathClosedCurve2( ptr long long long ) wine_GdipAddPathClosedCurve2
+8 stdcall GdipAddPathClosedCurve2I( ptr long long long ) wine_GdipAddPathClosedCurve2I
+9 stdcall GdipAddPathClosedCurve( ptr long long ) wine_GdipAddPathClosedCurve
+10 stdcall GdipAddPathClosedCurveI( ptr long long ) wine_GdipAddPathClosedCurveI
+11 stdcall GdipAddPathCurve2( ptr long long long ) wine_GdipAddPathCurve2
+12 stdcall GdipAddPathCurve2I( ptr long long long ) wine_GdipAddPathCurve2I
+13 stdcall GdipAddPathCurve3( ptr long long long long long ) wine_GdipAddPathCurve3
+14 stdcall GdipAddPathCurve3I( ptr long long long long long ) wine_GdipAddPathCurve3I
+15 stdcall GdipAddPathCurve( ptr long long ) wine_GdipAddPathCurve
+16 stdcall GdipAddPathCurveI( ptr long long ) wine_GdipAddPathCurveI
+17 stdcall GdipAddPathEllipse( ptr long long long long ) wine_GdipAddPathEllipse
+18 stdcall GdipAddPathEllipseI( ptr long long long long ) wine_GdipAddPathEllipseI
+19 stdcall GdipAddPathLine2( ptr long long ) wine_GdipAddPathLine2
+20 stdcall GdipAddPathLine2I( ptr long long ) wine_GdipAddPathLine2I
+21 stdcall GdipAddPathLine( ptr long long long long ) wine_GdipAddPathLine
+22 stdcall GdipAddPathLineI( ptr long long long long ) wine_GdipAddPathLineI
+23 stdcall GdipAddPathPath( ptr long long ) wine_GdipAddPathPath
+24 stdcall GdipAddPathPie( ptr long long long long long long ) wine_GdipAddPathPie
+25 stdcall GdipAddPathPieI( ptr long long long long long long ) wine_GdipAddPathPieI
+26 stdcall GdipAddPathPolygon( ptr long long ) wine_GdipAddPathPolygon
+27 stdcall GdipAddPathPolygonI( ptr long long ) wine_GdipAddPathPolygonI
+28 stdcall GdipAddPathRectangle( ptr long long long long ) wine_GdipAddPathRectangle
+29 stdcall GdipAddPathRectangleI( ptr long long long long ) wine_GdipAddPathRectangleI
+30 stdcall GdipAddPathRectangles( ptr long long ) wine_GdipAddPathRectangles
+31 stdcall GdipAddPathRectanglesI( ptr long long ) wine_GdipAddPathRectanglesI
+32 stdcall GdipAddPathString( ptr long long long long long long long ) wine_GdipAddPathString
+33 stdcall GdipAddPathStringI( ptr long long long long long long long ) wine_GdipAddPathStringI
+34 stdcall GdipAlloc( long ) wine_GdipAlloc
+35 stdcall GdipBeginContainer2( ptr ptr ) wine_GdipBeginContainer2
+36 stdcall GdipBeginContainer( ptr long long long ptr ) wine_GdipBeginContainer
+37 stdcall GdipBeginContainerI( ptr long long long ptr ) wine_GdipBeginContainerI
+38 stdcall GdipBitmapGetPixel( ptr long long ptr ) wine_GdipBitmapGetPixel
+39 stdcall GdipBitmapLockBits( ptr long long ptr ptr ) wine_GdipBitmapLockBits
+40 stdcall GdipBitmapSetPixel( ptr long long long ) wine_GdipBitmapSetPixel
+41 stdcall GdipBitmapSetResolution( ptr long long ) wine_GdipBitmapSetResolution
+42 stdcall GdipBitmapUnlockBits( ptr ptr ) wine_GdipBitmapUnlockBits
+43 stub GdipClearPathMarkers
+44 stdcall GdipCloneBitmapArea( long long long long ptr ptr ptr ) wine_GdipCloneBitmapArea
+45 stdcall GdipCloneBitmapAreaI( long long long long ptr ptr ptr ) wine_GdipCloneBitmapAreaI
+46 stdcall GdipCloneBrush( ptr ptr ) wine_GdipCloneBrush
+47 stdcall GdipCloneCustomLineCap( ptr ptr ) wine_GdipCloneCustomLineCap
+48 stub GdipCloneFont
+49 stdcall GdipCloneFontFamily( ptr ptr ) wine_GdipCloneFontFamily
+50 stdcall GdipCloneImage( ptr ptr ) wine_GdipCloneImage
+51 stdcall GdipCloneImageAttributes( long ptr ) wine_GdipCloneImageAttributes
+52 stdcall GdipCloneMatrix( ptr ptr ) wine_GdipCloneMatrix
+53 stdcall GdipClonePath( ptr ptr ) wine_GdipClonePath
+54 stdcall GdipClonePen( ptr ptr ) wine_GdipClonePen
+55 stdcall GdipCloneRegion( ptr ptr ) wine_GdipCloneRegion
+56 stdcall GdipCloneStringFormat( long ptr ) wine_GdipCloneStringFormat
+57 stdcall GdipClosePathFigure( ptr ) wine_GdipClosePathFigure
+58 stdcall GdipClosePathFigures( ptr ) wine_GdipClosePathFigures
+59 stdcall GdipCombineRegionPath( ptr ptr long ) wine_GdipCombineRegionPath
+60 stdcall GdipCombineRegionRect( ptr long long ) wine_GdipCombineRegionRect
+61 stdcall GdipCombineRegionRectI( ptr long long ) wine_GdipCombineRegionRectI
+62 stdcall GdipCombineRegionRegion( ptr ptr long ) wine_GdipCombineRegionRegion
+63 stub GdipComment
+64 stdcall GdipCreateAdjustableArrowCap( long long long ptr ) wine_GdipCreateAdjustableArrowCap
+65 stub GdipCreateBitmapFromDirectDrawSurface
+66 stdcall GdipCreateBitmapFromFile( long ptr ) wine_GdipCreateBitmapFromFile
+67 stdcall GdipCreateBitmapFromFileICM( long ptr ) wine_GdipCreateBitmapFromFileICM
+68 stub GdipCreateBitmapFromGdiDib
+69 stdcall GdipCreateBitmapFromGraphics( long long ptr ptr ) wine_GdipCreateBitmapFromGraphics
+70 stdcall GdipCreateBitmapFromHBITMAP( ptr ptr ptr ) wine_GdipCreateBitmapFromHBITMAP
+71 stdcall GdipCreateBitmapFromHICON( ptr ptr ) wine_GdipCreateBitmapFromHICON
+72 stdcall GdipCreateBitmapFromResource( ptr long ptr ) wine_GdipCreateBitmapFromResource
+73 stdcall GdipCreateBitmapFromScan0( long long long ptr ptr ptr ) wine_GdipCreateBitmapFromScan0
+74 stub GdipCreateBitmapFromStream
+75 stub GdipCreateBitmapFromStreamICM
+76 stub GdipCreateCachedBitmap
+77 stdcall GdipCreateCustomLineCap( ptr ptr long long ptr ) wine_GdipCreateCustomLineCap
+78 stdcall GdipCreateFont( long long long long ptr ) wine_GdipCreateFont
+79 stdcall GdipCreateFontFamilyFromName( long ptr ptr ) wine_GdipCreateFontFamilyFromName
+80 stdcall GdipCreateFontFromDC() wine_GdipCreateFontFromDC
+81 stub GdipCreateFontFromLogfontA
+82 stub GdipCreateFontFromLogfontW
+83 stub GdipCreateFromHDC2
+84 stdcall GdipCreateFromHDC( ptr ptr ) wine_GdipCreateFromHDC
+85 stub GdipCreateFromHWND
+86 stub GdipCreateFromHWNDICM
+87 stdcall GdipCreateHBITMAPFromBitmap( ptr ptr long ) wine_GdipCreateHBITMAPFromBitmap
+88 stdcall GdipCreateHICONFromBitmap( ptr ptr ) wine_GdipCreateHICONFromBitmap
+89 stub GdipCreateHalftonePalette
+90 stdcall GdipCreateHatchBrush( long long long ptr ) wine_GdipCreateHatchBrush
+91 stdcall GdipCreateImageAttributes( ptr ) wine_GdipCreateImageAttributes
+92 stub GdipCreateLineBrush
+93 stub GdipCreateLineBrushFromRect
+94 stub GdipCreateLineBrushFromRectI
+95 stub GdipCreateLineBrushFromRectWithAngle
+96 stub GdipCreateLineBrushFromRectWithAngleI
+97 stub GdipCreateLineBrushI
+98 stdcall GdipCreateMatrix2( long long long long long long ptr ) wine_GdipCreateMatrix2
+99 stdcall GdipCreateMatrix3( long long ptr ) wine_GdipCreateMatrix3
+100 stdcall GdipCreateMatrix3I( long long ptr ) wine_GdipCreateMatrix3I
+101 stdcall GdipCreateMatrix( ptr ) wine_GdipCreateMatrix
+102 stub GdipCreateMetafileFromEmf
+103 stub GdipCreateMetafileFromFile
+104 stub GdipCreateMetafileFromStream
+105 stub GdipCreateMetafileFromWmf
+106 stub GdipCreateMetafileFromWmfFile
+107 stdcall GdipCreatePath2( long long long long ptr ) wine_GdipCreatePath2
+108 stdcall GdipCreatePath2I( long long long long ptr ) wine_GdipCreatePath2I
+109 stdcall GdipCreatePath( long ptr ) wine_GdipCreatePath
+110 stub GdipCreatePathGradient
+111 stub GdipCreatePathGradientFromPath
+112 stub GdipCreatePathGradientI
+113 stub GdipCreatePathIter
+114 stdcall GdipCreatePen1( long long long ptr ) wine_GdipCreatePen1
+115 stdcall GdipCreatePen2( ptr long long ptr ) wine_GdipCreatePen2
+116 stdcall GdipCreateRegion( ptr ) wine_GdipCreateRegion
+117 stub GdipCreateRegionHrgn
+118 stdcall GdipCreateRegionPath( ptr ptr ) wine_GdipCreateRegionPath
+119 stdcall GdipCreateRegionRect( long ptr ) wine_GdipCreateRegionRect
+120 stdcall GdipCreateRegionRectI( long ptr ) wine_GdipCreateRegionRectI
+121 stdcall GdipCreateRegionRgnData( long long ptr ) wine_GdipCreateRegionRgnData
+122 stdcall GdipCreateSolidFill( long ptr ) wine_GdipCreateSolidFill
+123 stub GdipCreateStreamOnFile
+124 stdcall GdipCreateStringFormat( long long ptr ) wine_GdipCreateStringFormat
+125 stub GdipCreateTexture2
+126 stub GdipCreateTexture2I
+127 stub GdipCreateTexture
+128 stub GdipCreateTextureIA
+129 stub GdipCreateTextureIAI
+130 stdcall GdipDeleteBrush( ptr ) wine_GdipDeleteBrush
+131 stub GdipDeleteCachedBitmap
+132 stdcall GdipDeleteCustomLineCap( ptr ) wine_GdipDeleteCustomLineCap
+133 stdcall GdipDeleteFont( ptr ) wine_GdipDeleteFont
+134 stdcall GdipDeleteFontFamily( ptr ) wine_GdipDeleteFontFamily
+135 stdcall GdipDeleteGraphics( ptr ) wine_GdipDeleteGraphics
+136 stdcall GdipDeleteMatrix( ptr ) wine_GdipDeleteMatrix
+137 stdcall GdipDeletePath( ptr ) wine_GdipDeletePath
+138 stub GdipDeletePathIter
+139 stdcall GdipDeletePen( ptr ) wine_GdipDeletePen
+140 stdcall GdipDeletePrivateFontCollection( ptr ) wine_GdipDeletePrivateFontCollection
+141 stdcall GdipDeleteRegion( ptr ) wine_GdipDeleteRegion
+142 stdcall GdipDeleteStringFormat( ptr ) wine_GdipDeleteStringFormat
+143 stdcall GdipDisposeImage( ptr ) wine_GdipDisposeImage
+144 stdcall GdipDisposeImageAttributes( ptr ) wine_GdipDisposeImageAttributes
+145 stdcall GdipDrawArc( ptr ptr long long long long long long ) wine_GdipDrawArc
+146 stdcall GdipDrawArcI( ptr ptr long long long long long long ) wine_GdipDrawArcI
+147 stdcall GdipDrawBezier( ptr ptr long long long long long long long long ) wine_GdipDrawBezier
+148 stdcall GdipDrawBezierI( ptr ptr long long long long long long long long ) wine_GdipDrawBezierI
+149 stdcall GdipDrawBeziers( ptr ptr long long ) wine_GdipDrawBeziers
+150 stdcall GdipDrawBeziersI( ptr ptr long long ) wine_GdipDrawBeziersI
+151 stub GdipDrawCachedBitmap
+152 stdcall GdipDrawClosedCurve2( ptr ptr long long long ) wine_GdipDrawClosedCurve2
+153 stdcall GdipDrawClosedCurve2I( ptr ptr long long long ) wine_GdipDrawClosedCurve2I
+154 stdcall GdipDrawClosedCurve( ptr ptr long long ) wine_GdipDrawClosedCurve
+155 stdcall GdipDrawClosedCurveI( ptr ptr long long ) wine_GdipDrawClosedCurveI
+156 stdcall GdipDrawCurve2( ptr ptr long long long ) wine_GdipDrawCurve2
+157 stdcall GdipDrawCurve2I( ptr ptr long long long ) wine_GdipDrawCurve2I
+158 stdcall GdipDrawCurve3( ptr ptr long long long long long ) wine_GdipDrawCurve3
+159 stdcall GdipDrawCurve3I( ptr ptr long long long long long ) wine_GdipDrawCurve3I
+160 stdcall GdipDrawCurve( ptr ptr long long ) wine_GdipDrawCurve
+161 stdcall GdipDrawCurveI( ptr ptr long long ) wine_GdipDrawCurveI
+162 stub GdipDrawDriverString
+163 stdcall GdipDrawEllipse( ptr ptr long long long long ) wine_GdipDrawEllipse
+164 stdcall GdipDrawEllipseI( ptr ptr long long long long ) wine_GdipDrawEllipseI
+165 stdcall GdipDrawImage( ptr ptr long long ) wine_GdipDrawImage
+166 stdcall GdipDrawImageI( ptr ptr long long ) wine_GdipDrawImageI
+167 stdcall GdipDrawImagePointRect( ptr ptr long long long long long long long ) wine_GdipDrawImagePointRect
+168 stdcall GdipDrawImagePointRectI( ptr ptr long long long long long long long ) wine_GdipDrawImagePointRectI
+169 stdcall GdipDrawImagePoints( ptr ptr long long ) wine_GdipDrawImagePoints
+170 stdcall GdipDrawImagePointsI( ptr ptr long long ) wine_GdipDrawImagePointsI
+171 stdcall GdipDrawImagePointsRect( ptr ptr long long long long long long long long long ptr ) wine_GdipDrawImagePointsRect
+172 stdcall GdipDrawImagePointsRectI( ptr ptr long long long long long long long long long ptr ) wine_GdipDrawImagePointsRectI
+173 stdcall GdipDrawImageRect( ptr ptr long long long long ) wine_GdipDrawImageRect
+174 stdcall GdipDrawImageRectI( ptr ptr long long long long ) wine_GdipDrawImageRectI
+175 stdcall GdipDrawImageRectRect( ptr ptr long long long long long long long long long long long ptr ) wine_GdipDrawImageRectRect
+176 stdcall GdipDrawImageRectRectI( ptr ptr long long long long long long long long long long long ptr ) wine_GdipDrawImageRectRectI
+177 stdcall GdipDrawLine( ptr ptr long long long long ) wine_GdipDrawLine
+178 stdcall GdipDrawLineI( ptr ptr long long long long ) wine_GdipDrawLineI
+179 stdcall GdipDrawLines( ptr ptr long long ) wine_GdipDrawLines
+180 stdcall GdipDrawLinesI( ptr ptr long long ) wine_GdipDrawLinesI
+181 stdcall GdipDrawPath( ptr ptr ptr ) wine_GdipDrawPath
+182 stdcall GdipDrawPie( ptr ptr long long long long long long ) wine_GdipDrawPie
+183 stdcall GdipDrawPieI( ptr ptr long long long long long long ) wine_GdipDrawPieI
+184 stdcall GdipDrawPolygon( ptr ptr long long ) wine_GdipDrawPolygon
+185 stdcall GdipDrawPolygonI( ptr ptr long long ) wine_GdipDrawPolygonI
+186 stdcall GdipDrawRectangle( ptr ptr long long long long ) wine_GdipDrawRectangle
+187 stdcall GdipDrawRectangleI( ptr ptr long long long long ) wine_GdipDrawRectangleI
+188 stdcall GdipDrawRectangles( ptr ptr long long ) wine_GdipDrawRectangles
+189 stdcall GdipDrawRectanglesI( ptr ptr long long ) wine_GdipDrawRectanglesI
+190 stdcall GdipDrawString( ptr long long long long long ptr ) wine_GdipDrawString
+191 stub GdipEmfToWmfBits
+192 stdcall GdipEndContainer( ptr long ) wine_GdipEndContainer
+193 stub GdipEnumerateMetafileDestPoint
+194 stub GdipEnumerateMetafileDestPointI
+195 stub GdipEnumerateMetafileDestPoints
+196 stub GdipEnumerateMetafileDestPointsI
+197 stub GdipEnumerateMetafileDestRect
+198 stub GdipEnumerateMetafileDestRectI
+199 stub GdipEnumerateMetafileSrcRectDestPoint
+200 stub GdipEnumerateMetafileSrcRectDestPointI
+201 stub GdipEnumerateMetafileSrcRectDestPoints
+202 stub GdipEnumerateMetafileSrcRectDestPointsI
+203 stub GdipEnumerateMetafileSrcRectDestRect
+204 stub GdipEnumerateMetafileSrcRectDestRectI
+205 stdcall GdipFillClosedCurve2( ptr ptr long long long ) wine_GdipFillClosedCurve2
+206 stdcall GdipFillClosedCurve2I( ptr ptr long long long ) wine_GdipFillClosedCurve2I
+207 stdcall GdipFillClosedCurve( ptr ptr long long ) wine_GdipFillClosedCurve
+208 stdcall GdipFillClosedCurveI( ptr ptr long long ) wine_GdipFillClosedCurveI
+209 stdcall GdipFillEllipse( ptr ptr long long long long ) wine_GdipFillEllipse
+210 stdcall GdipFillEllipseI( ptr ptr long long long long ) wine_GdipFillEllipseI
+211 stdcall GdipFillPath( ptr ptr ptr ) wine_GdipFillPath
+212 stdcall GdipFillPie( ptr ptr long long long long long long ) wine_GdipFillPie
+213 stdcall GdipFillPieI( ptr ptr long long long long long long ) wine_GdipFillPieI
+214 stdcall GdipFillPolygon2( ptr ptr long long ) wine_GdipFillPolygon2
+215 stdcall GdipFillPolygon2I( ptr ptr long long ) wine_GdipFillPolygon2I
+216 stdcall GdipFillPolygon( ptr ptr long long long ) wine_GdipFillPolygon
+217 stdcall GdipFillPolygonI( ptr ptr long long long ) wine_GdipFillPolygonI
+218 stdcall GdipFillRectangle( ptr ptr long long long long ) wine_GdipFillRectangle
+219 stdcall GdipFillRectangleI( ptr ptr long long long long ) wine_GdipFillRectangleI
+220 stdcall GdipFillRectangles( ptr ptr long long ) wine_GdipFillRectangles
+221 stdcall GdipFillRectanglesI( ptr ptr long long ) wine_GdipFillRectanglesI
+222 stdcall GdipFillRegion( ptr ptr ptr ) wine_GdipFillRegion
+223 stdcall GdipFlattenPath( ptr ptr long ) wine_GdipFlattenPath
+224 stub GdipFlush
+225 stdcall GdipFree() wine_GdipFree
+226 stdcall GdipGetAdjustableArrowCapFillState( ptr ptr ) wine_GdipGetAdjustableArrowCapFillState
+227 stdcall GdipGetAdjustableArrowCapHeight( ptr ptr ) wine_GdipGetAdjustableArrowCapHeight
+228 stdcall GdipGetAdjustableArrowCapMiddleInset( ptr ptr ) wine_GdipGetAdjustableArrowCapMiddleInset
+229 stdcall GdipGetAdjustableArrowCapWidth( ptr ptr ) wine_GdipGetAdjustableArrowCapWidth
+230 stub GdipGetAllPropertyItems
+231 stdcall GdipGetBrushType( ptr ptr ) wine_GdipGetBrushType
+232 stdcall GdipGetCellAscent( long long ptr ) wine_GdipGetCellAscent
+233 stdcall GdipGetCellDescent( long long ptr ) wine_GdipGetCellDescent
+234 stdcall GdipGetClip( ptr ptr ) wine_GdipGetClip
+235 stdcall GdipGetClipBounds( ptr ptr ) wine_GdipGetClipBounds
+236 stdcall GdipGetClipBoundsI( ptr ptr ) wine_GdipGetClipBoundsI
+237 stdcall GdipGetCompositingMode( ptr ptr ) wine_GdipGetCompositingMode
+238 stdcall GdipGetCompositingQuality( ptr ptr ) wine_GdipGetCompositingQuality
+239 stdcall GdipGetCustomLineCapBaseCap( ptr ptr ) wine_GdipGetCustomLineCapBaseCap
+240 stdcall GdipGetCustomLineCapBaseInset( ptr ptr ) wine_GdipGetCustomLineCapBaseInset
+241 stdcall GdipGetCustomLineCapStrokeCaps( ptr ptr ptr ) wine_GdipGetCustomLineCapStrokeCaps
+242 stdcall GdipGetCustomLineCapStrokeJoin( ptr ptr ) wine_GdipGetCustomLineCapStrokeJoin
+243 stub GdipGetCustomLineCapType
+244 stdcall GdipGetCustomLineCapWidthScale( ptr ptr ) wine_GdipGetCustomLineCapWidthScale
+245 stdcall GdipGetDC( ptr ptr ) wine_GdipGetDC
+246 stdcall GdipGetDpiX( ptr ptr ) wine_GdipGetDpiX
+247 stdcall GdipGetDpiY( ptr ptr ) wine_GdipGetDpiY
+248 stdcall GdipGetEmHeight( long long ptr ) wine_GdipGetEmHeight
+249 stub GdipGetEncoderParameterList
+250 stub GdipGetEncoderParameterListSize
+251 stub GdipGetFamily
+252 stdcall GdipGetFamilyName( long long long ) wine_GdipGetFamilyName
+253 stdcall GdipGetFontCollectionFamilyCount( ptr ptr ) wine_GdipGetFontCollectionFamilyCount
+254 stdcall GdipGetFontCollectionFamilyList( ptr long ptr ptr ) wine_GdipGetFontCollectionFamilyList
+255 stdcall GdipGetFontHeight( long long ptr ) wine_GdipGetFontHeight
+256 stdcall GdipGetFontHeightGivenDPI( long long ptr ) wine_GdipGetFontHeightGivenDPI
+257 stdcall GdipGetFontSize( ptr ptr ) wine_GdipGetFontSize
+258 stub GdipGetFontStyle
+259 stub GdipGetFontUnit
+260 stdcall GdipGetGenericFontFamilyMonospace( ptr ) wine_GdipGetGenericFontFamilyMonospace
+261 stdcall GdipGetGenericFontFamilySansSerif( ptr ) wine_GdipGetGenericFontFamilySansSerif
+262 stdcall GdipGetGenericFontFamilySerif( ptr ) wine_GdipGetGenericFontFamilySerif
+263 stdcall GdipGetHatchBackgroundColor( ptr ptr ) wine_GdipGetHatchBackgroundColor
+264 stdcall GdipGetHatchForegroundColor( ptr ptr ) wine_GdipGetHatchForegroundColor
+265 stdcall GdipGetHatchStyle( ptr ptr ) wine_GdipGetHatchStyle
+266 stub GdipGetHemfFromMetafile
+267 stdcall GdipGetImageAttributesAdjustedPalette( ptr ptr long ) wine_GdipGetImageAttributesAdjustedPalette
+268 stdcall GdipGetImageBounds( ptr ptr ptr ) wine_GdipGetImageBounds
+269 stdcall GdipGetImageDecoders( long long ptr ) wine_GdipGetImageDecoders
+270 stdcall GdipGetImageDecodersSize( ptr ptr ) wine_GdipGetImageDecodersSize
+271 stdcall GdipGetImageDimension( ptr ptr ptr ) wine_GdipGetImageDimension
+272 stdcall GdipGetImageEncoders( long long ptr ) wine_GdipGetImageEncoders
+273 stdcall GdipGetImageEncodersSize( ptr ptr ) wine_GdipGetImageEncodersSize
+274 stdcall GdipGetImageFlags( ptr ptr ) wine_GdipGetImageFlags
+275 stdcall GdipGetImageGraphicsContext( ptr ptr ) wine_GdipGetImageGraphicsContext
+276 stdcall GdipGetImageHeight( ptr ptr ) wine_GdipGetImageHeight
+277 stdcall GdipGetImageHorizontalResolution( ptr ptr ) wine_GdipGetImageHorizontalResolution
+278 stdcall GdipGetImagePalette( ptr ptr long ) wine_GdipGetImagePalette
+279 stdcall GdipGetImagePaletteSize( ptr ptr ) wine_GdipGetImagePaletteSize
+280 stdcall GdipGetImagePixelFormat( ptr ptr ) wine_GdipGetImagePixelFormat
+281 stdcall GdipGetImageRawFormat( ptr ptr ) wine_GdipGetImageRawFormat
+282 stdcall GdipGetImageThumbnail( ptr long long ptr long ptr ) wine_GdipGetImageThumbnail
+283 stdcall GdipGetImageType( ptr ptr ) wine_GdipGetImageType
+284 stdcall GdipGetImageVerticalResolution( ptr ptr ) wine_GdipGetImageVerticalResolution
+285 stdcall GdipGetImageWidth( ptr ptr ) wine_GdipGetImageWidth
+286 stub GdipGetInterpolationMode
+287 stub GdipGetLineBlend
+288 stub GdipGetLineBlendCount
+289 stub GdipGetLineColors
+290 stub GdipGetLineGammaCorrection
+291 stub GdipGetLinePresetBlend
+292 stub GdipGetLinePresetBlendCount
+293 stub GdipGetLineRect
+294 stub GdipGetLineRectI
+295 stdcall GdipGetLineSpacing( long long ptr ) wine_GdipGetLineSpacing
+296 stub GdipGetLineTransform
+297 stub GdipGetLineWrapMode
+298 stdcall GdipGetLogFontA( ptr ptr ptr ) wine_GdipGetLogFontA
+299 stdcall GdipGetLogFontW( ptr ptr ptr ) wine_GdipGetLogFontW
+300 stdcall GdipGetMatrixElements( ptr ptr ) wine_GdipGetMatrixElements
+301 stub GdipGetMetafileDownLevelRasterizationLimit
+302 stub GdipGetMetafileHeaderFromEmf
+303 stub GdipGetMetafileHeaderFromFile
+304 stub GdipGetMetafileHeaderFromMetafile
+305 stub GdipGetMetafileHeaderFromStream
+306 stub GdipGetMetafileHeaderFromWmf
+307 stdcall GdipGetNearestColor( ptr ptr ) wine_GdipGetNearestColor
+308 stdcall GdipGetPageScale( ptr ptr ) wine_GdipGetPageScale
+309 stdcall GdipGetPageUnit( ptr ptr ) wine_GdipGetPageUnit
+310 stdcall GdipGetPathData( ptr ptr ) wine_GdipGetPathData
+311 stdcall GdipGetPathFillMode( ptr ptr ) wine_GdipGetPathFillMode
+312 stub GdipGetPathGradientBlend
+313 stub GdipGetPathGradientBlendCount
+314 stub GdipGetPathGradientCenterColor
+315 stub GdipGetPathGradientCenterPoint
+316 stub GdipGetPathGradientCenterPointI
+317 stub GdipGetPathGradientFocusScales
+318 stub GdipGetPathGradientGammaCorrection
+319 stub GdipGetPathGradientPath
+320 stub GdipGetPathGradientPointCount
+321 stub GdipGetPathGradientPresetBlend
+322 stub GdipGetPathGradientPresetBlendCount
+323 stub GdipGetPathGradientRect
+324 stub GdipGetPathGradientRectI
+325 stub GdipGetPathGradientSurroundColorCount
+326 stub GdipGetPathGradientSurroundColorsWithCount
+327 stub GdipGetPathGradientTransform
+328 stub GdipGetPathGradientWrapMode
+329 stdcall GdipGetPathLastPoint( ptr ptr ) wine_GdipGetPathLastPoint
+330 stdcall GdipGetPathPoints( ptr ptr long ) wine_GdipGetPathPoints
+331 stdcall GdipGetPathPointsI( ptr ptr long ) wine_GdipGetPathPointsI
+332 stdcall GdipGetPathTypes( ptr ptr long ) wine_GdipGetPathTypes
+333 stdcall GdipGetPathWorldBounds( ptr ptr long long ) wine_GdipGetPathWorldBounds
+334 stdcall GdipGetPathWorldBoundsI( ptr ptr long long ) wine_GdipGetPathWorldBoundsI
+335 stdcall GdipGetPenBrushFill( ptr ptr ) wine_GdipGetPenBrushFill
+336 stdcall GdipGetPenColor( ptr ptr ) wine_GdipGetPenColor
+337 stdcall GdipGetPenCompoundArray( ptr ptr long ) wine_GdipGetPenCompoundArray
+338 stdcall GdipGetPenCompoundCount( ptr ptr ) wine_GdipGetPenCompoundCount
+339 stdcall GdipGetPenCustomEndCap( ptr ptr ) wine_GdipGetPenCustomEndCap
+340 stdcall GdipGetPenCustomStartCap( ptr ptr ) wine_GdipGetPenCustomStartCap
+341 stdcall GdipGetPenDashArray( ptr ptr long ) wine_GdipGetPenDashArray
+342 stdcall GdipGetPenDashCap197819( ptr ptr ) wine_GdipGetPenDashCap197819
+343 stdcall GdipGetPenDashCount( ptr ptr ) wine_GdipGetPenDashCount
+344 stdcall GdipGetPenDashOffset( ptr ptr ) wine_GdipGetPenDashOffset
+345 stdcall GdipGetPenDashStyle( ptr ptr ) wine_GdipGetPenDashStyle
+346 stdcall GdipGetPenEndCap( ptr ptr ) wine_GdipGetPenEndCap
+347 stdcall GdipGetPenFillType( ptr ptr ) wine_GdipGetPenFillType
+348 stdcall GdipGetPenLineJoin( ptr ptr ) wine_GdipGetPenLineJoin
+349 stdcall GdipGetPenMiterLimit( ptr ptr ) wine_GdipGetPenMiterLimit
+350 stdcall GdipGetPenMode( ptr ptr ) wine_GdipGetPenMode
+351 stdcall GdipGetPenStartCap( ptr ptr ) wine_GdipGetPenStartCap
+352 stdcall GdipGetPenTransform( ptr ptr ) wine_GdipGetPenTransform
+353 stub GdipGetPenUnit
+354 stdcall GdipGetPenWidth( ptr ptr ) wine_GdipGetPenWidth
+355 stdcall GdipGetPixelOffsetMode( ptr ptr ) wine_GdipGetPixelOffsetMode
+356 stdcall GdipGetPointCount( ptr ptr ) wine_GdipGetPointCount
+357 stdcall GdipGetPropertyCount( ptr ptr ) wine_GdipGetPropertyCount
+358 stdcall GdipGetPropertyIdList( ptr long ptr ) wine_GdipGetPropertyIdList
+359 stdcall GdipGetPropertyItem( ptr ptr long ptr ) wine_GdipGetPropertyItem
+360 stdcall GdipGetPropertyItemSize( ptr ptr ptr ) wine_GdipGetPropertyItemSize
+361 stdcall GdipGetPropertySize( ptr ptr ptr ) wine_GdipGetPropertySize
+362 stdcall GdipGetRegionBounds( ptr ptr ptr ) wine_GdipGetRegionBounds
+363 stub GdipGetRegionBoundsI
+364 stdcall GdipGetRegionData( ptr ptr long ptr ) wine_GdipGetRegionData
+365 stdcall GdipGetRegionDataSize( ptr ptr ) wine_GdipGetRegionDataSize
+366 stub GdipGetRegionHRgn
+367 stdcall GdipGetRegionScans( ptr ptr ptr ptr ) wine_GdipGetRegionScans
+368 stdcall GdipGetRegionScansCount( ptr ptr ptr ) wine_GdipGetRegionScansCount
+369 stub GdipGetRegionScansI
+370 stdcall GdipGetRenderingOrigin( ptr ptr ptr ) wine_GdipGetRenderingOrigin
+371 stdcall GdipGetSmoothingMode( ptr ptr ) wine_GdipGetSmoothingMode
+372 stdcall GdipGetSolidFillColor( ptr ptr ) wine_GdipGetSolidFillColor
+373 stdcall GdipGetStringFormatAlign( long ptr ) wine_GdipGetStringFormatAlign
+374 stdcall GdipGetStringFormatDigitSubstitution( long ptr ptr ) wine_GdipGetStringFormatDigitSubstitution
+375 stdcall GdipGetStringFormatFlags( long ptr ) wine_GdipGetStringFormatFlags
+376 stdcall GdipGetStringFormatHotkeyPrefix( long ptr ) wine_GdipGetStringFormatHotkeyPrefix
+377 stdcall GdipGetStringFormatLineAlign( long ptr ) wine_GdipGetStringFormatLineAlign
+378 stdcall GdipGetStringFormatMeasurableCharacterRangeCount( long ptr ) wine_GdipGetStringFormatMeasurableCharacterRangeCount
+379 stdcall GdipGetStringFormatTabStopCount( long ptr ) wine_GdipGetStringFormatTabStopCount
+380 stdcall GdipGetStringFormatTabStops( long long ptr ptr ) wine_GdipGetStringFormatTabStops
+381 stdcall GdipGetStringFormatTrimming( long ptr ) wine_GdipGetStringFormatTrimming
+382 stdcall GdipGetTextContrast( ptr ptr ) wine_GdipGetTextContrast
+383 stdcall GdipGetTextRenderingHint( ptr ptr ) wine_GdipGetTextRenderingHint
+384 stub GdipGetTextureImage
+385 stub GdipGetTextureTransform
+386 stub GdipGetTextureWrapMode
+387 stdcall GdipGetVisibleClipBounds( ptr ptr ) wine_GdipGetVisibleClipBounds
+388 stdcall GdipGetVisibleClipBoundsI( ptr ptr ) wine_GdipGetVisibleClipBoundsI
+389 stdcall GdipGetWorldTransform( ptr ptr ) wine_GdipGetWorldTransform
+390 stdcall GdipGraphicsClear( ptr long ) wine_GdipGraphicsClear
+391 stub GdipImageForceValidation
+392 stdcall GdipImageGetFrameCount( ptr long ptr ) wine_GdipImageGetFrameCount
+393 stdcall GdipImageGetFrameDimensionsCount( ptr ptr ) wine_GdipImageGetFrameDimensionsCount
+394 stdcall GdipImageGetFrameDimensionsList( ptr ptr long ) wine_GdipImageGetFrameDimensionsList
+395 stdcall GdipImageRotateFlip( ptr long ) wine_GdipImageRotateFlip
+396 stdcall GdipImageSelectActiveFrame( ptr long long ) wine_GdipImageSelectActiveFrame
+397 stdcall GdipInvertMatrix( ptr ) wine_GdipInvertMatrix
+398 stdcall GdipIsClipEmpty( ptr ptr ) wine_GdipIsClipEmpty
+399 stdcall GdipIsEmptyRegion( ptr ptr ptr ) wine_GdipIsEmptyRegion
+400 stdcall GdipIsEqualRegion( ptr ptr ptr ptr ) wine_GdipIsEqualRegion
+401 stdcall GdipIsInfiniteRegion( ptr ptr ptr ) wine_GdipIsInfiniteRegion
+402 stdcall GdipIsMatrixEqual( ptr ptr ptr ) wine_GdipIsMatrixEqual
+403 stdcall GdipIsMatrixIdentity( ptr ptr ) wine_GdipIsMatrixIdentity
+404 stdcall GdipIsMatrixInvertible( ptr ptr ) wine_GdipIsMatrixInvertible
+405 stdcall GdipIsOutlineVisiblePathPoint( ptr long long ptr ptr ptr ) wine_GdipIsOutlineVisiblePathPoint
+406 stdcall GdipIsOutlineVisiblePathPointI( ptr long long ptr ptr ptr ) wine_GdipIsOutlineVisiblePathPointI
+407 stdcall GdipIsStyleAvailable( long long ptr ) wine_GdipIsStyleAvailable
+408 stdcall GdipIsVisibleClipEmpty( ptr ptr ) wine_GdipIsVisibleClipEmpty
+409 stdcall GdipIsVisiblePathPoint( ptr long long ptr ptr ) wine_GdipIsVisiblePathPoint
+410 stdcall GdipIsVisiblePathPointI( ptr long long ptr ptr ) wine_GdipIsVisiblePathPointI
+411 stdcall GdipIsVisiblePoint( ptr long long ptr ) wine_GdipIsVisiblePoint
+412 stdcall GdipIsVisiblePointI( ptr long long ptr ) wine_GdipIsVisiblePointI
+413 stdcall GdipIsVisibleRect( ptr long long long long ptr ) wine_GdipIsVisibleRect
+414 stdcall GdipIsVisibleRectI( ptr long long long long ptr ) wine_GdipIsVisibleRectI
+415 stdcall GdipIsVisibleRegionPoint( ptr long long ptr ptr ) wine_GdipIsVisibleRegionPoint
+416 stdcall GdipIsVisibleRegionPointI( ptr long long ptr ptr ) wine_GdipIsVisibleRegionPointI
+417 stdcall GdipIsVisibleRegionRect( ptr long long long long ptr ptr ) wine_GdipIsVisibleRegionRect
+418 stdcall GdipIsVisibleRegionRectI( ptr long long long long ptr ptr ) wine_GdipIsVisibleRegionRectI
+419 stdcall GdipLoadImageFromFile( long ptr ) wine_GdipLoadImageFromFile
+420 stdcall GdipLoadImageFromFileICM( long ptr ) wine_GdipLoadImageFromFileICM
+421 stdcall GdipLoadImageFromStream() wine_GdipLoadImageFromStream
+422 stub GdipLoadImageFromStreamICM
+423 stdcall GdipMeasureCharacterRanges( ptr long long long long long long ptr ) wine_GdipMeasureCharacterRanges
+424 stub GdipMeasureDriverString
+425 stdcall GdipMeasureString( ptr long long long long long ptr ptr ptr ) wine_GdipMeasureString
+426 stub GdipMultiplyLineTransform
+427 stdcall GdipMultiplyMatrix( ptr ptr long ) wine_GdipMultiplyMatrix
+428 stub GdipMultiplyPathGradientTransform
+429 stdcall GdipMultiplyPenTransform( ptr ptr long ) wine_GdipMultiplyPenTransform
+430 stub GdipMultiplyTextureTransform
+431 stdcall GdipMultiplyWorldTransform( ptr ptr long ) wine_GdipMultiplyWorldTransform
+432 stdcall GdipNewInstalledFontCollection( ptr ) wine_GdipNewInstalledFontCollection
+433 stdcall GdipNewPrivateFontCollection( ptr ) wine_GdipNewPrivateFontCollection
+434 stub GdipPathIterCopyData
+435 stub GdipPathIterEnumerate
+436 stub GdipPathIterGetCount
+437 stub GdipPathIterGetSubpathCount
+438 stub GdipPathIterHasCurve
+439 stub GdipPathIterIsValid
+440 stub GdipPathIterNextMarker
+441 stub GdipPathIterNextMarkerPath
+442 stub GdipPathIterNextPathType
+443 stub GdipPathIterNextSubpath
+444 stub GdipPathIterNextSubpathPath
+445 stub GdipPathIterRewind
+446 stub GdipPlayMetafileRecord
+447 stdcall GdipPrivateAddFontFile( ptr long ) wine_GdipPrivateAddFontFile
+448 stdcall GdipPrivateAddMemoryFont( ptr long long ) wine_GdipPrivateAddMemoryFont
+449 stub GdipRecordMetafile
+450 stub GdipRecordMetafileFileName
+451 stub GdipRecordMetafileFileNameI
+452 stub GdipRecordMetafileI
+453 stub GdipRecordMetafileStream
+454 stub GdipRecordMetafileStreamI
+455 stdcall GdipReleaseDC( ptr ptr ) wine_GdipReleaseDC
+456 stub GdipRemovePropertyItem
+457 stdcall GdipResetClip( ptr ) wine_GdipResetClip
+458 stub GdipResetImageAttributes
+459 stub GdipResetLineTransform
+460 stub GdipResetPageTransform
+461 stdcall GdipResetPath( ptr ) wine_GdipResetPath
+462 stub GdipResetPathGradientTransform
+463 stdcall GdipResetPenTransform( ptr ) wine_GdipResetPenTransform
+464 stub GdipResetTextureTransform
+465 stdcall GdipResetWorldTransform( ptr ) wine_GdipResetWorldTransform
+466 stdcall GdipRestoreGraphics( ptr long ) wine_GdipRestoreGraphics
+467 stdcall GdipReversePath( ptr ) wine_GdipReversePath
+468 stub GdipRotateLineTransform
+469 stdcall GdipRotateMatrix( ptr long long ) wine_GdipRotateMatrix
+470 stub GdipRotatePathGradientTransform
+471 stdcall GdipRotatePenTransform( ptr long long ) wine_GdipRotatePenTransform
+472 stub GdipRotateTextureTransform
+473 stdcall GdipRotateWorldTransform( ptr long long ) wine_GdipRotateWorldTransform
+474 stdcall GdipSaveAdd( ptr long ) wine_GdipSaveAdd
+475 stdcall GdipSaveAddImage( ptr ptr long ) wine_GdipSaveAddImage
+476 stdcall GdipSaveGraphics( ptr ptr ) wine_GdipSaveGraphics
+477 stdcall GdipSaveImageToFile( ptr long long long ) wine_GdipSaveImageToFile
+478 stdcall GdipSaveImageToStream( ptr ptr long long ) wine_GdipSaveImageToStream
+479 stub GdipScaleLineTransform
+480 stdcall GdipScaleMatrix( ptr long long long ) wine_GdipScaleMatrix
+481 stub GdipScalePathGradientTransform
+482 stdcall GdipScalePenTransform( ptr long long long ) wine_GdipScalePenTransform
+483 stub GdipScaleTextureTransform
+484 stdcall GdipScaleWorldTransform( ptr long long long ) wine_GdipScaleWorldTransform
+485 stdcall GdipSetAdjustableArrowCapFillState( ptr long ) wine_GdipSetAdjustableArrowCapFillState
+486 stdcall GdipSetAdjustableArrowCapHeight( ptr long ) wine_GdipSetAdjustableArrowCapHeight
+487 stdcall GdipSetAdjustableArrowCapMiddleInset( ptr long ) wine_GdipSetAdjustableArrowCapMiddleInset
+488 stdcall GdipSetAdjustableArrowCapWidth( ptr long ) wine_GdipSetAdjustableArrowCapWidth
+489 stdcall GdipSetClipGraphics( ptr ptr long ) wine_GdipSetClipGraphics
+490 stdcall GdipSetClipHrgn( ptr ptr long ) wine_GdipSetClipHrgn
+491 stdcall GdipSetClipPath( ptr ptr long ) wine_GdipSetClipPath
+492 stdcall GdipSetClipRect( ptr long long long long long ) wine_GdipSetClipRect
+493 stdcall GdipSetClipRectI( ptr long long long long long ) wine_GdipSetClipRectI
+494 stdcall GdipSetClipRegion( ptr ptr long ) wine_GdipSetClipRegion
+495 stdcall GdipSetCompositingMode( ptr long ) wine_GdipSetCompositingMode
+496 stdcall GdipSetCompositingQuality( ptr long ) wine_GdipSetCompositingQuality
+497 stdcall GdipSetCustomLineCapBaseCap( ptr long ) wine_GdipSetCustomLineCapBaseCap
+498 stdcall GdipSetCustomLineCapBaseInset( ptr long ) wine_GdipSetCustomLineCapBaseInset
+499 stdcall GdipSetCustomLineCapStrokeCaps( ptr long long ) wine_GdipSetCustomLineCapStrokeCaps
+500 stdcall GdipSetCustomLineCapStrokeJoin( ptr long ) wine_GdipSetCustomLineCapStrokeJoin
+501 stdcall GdipSetCustomLineCapWidthScale( ptr long ) wine_GdipSetCustomLineCapWidthScale
+502 stdcall GdipSetEmpty( ptr ) wine_GdipSetEmpty
+503 stub GdipSetImageAttributesCachedBackground
+504 stdcall GdipSetImageAttributesColorKeys( ptr long long long long ) wine_GdipSetImageAttributesColorKeys
+505 stdcall GdipSetImageAttributesColorMatrix( ptr long long long long long ) wine_GdipSetImageAttributesColorMatrix
+506 stdcall GdipSetImageAttributesGamma( ptr long long long ) wine_GdipSetImageAttributesGamma
+507 stdcall GdipSetImageAttributesNoOp( ptr long long ) wine_GdipSetImageAttributesNoOp
+508 stdcall GdipSetImageAttributesOutputChannel( ptr long long long ) wine_GdipSetImageAttributesOutputChannel
+509 stdcall GdipSetImageAttributesOutputChannelColorProfile( ptr long long long ) wine_GdipSetImageAttributesOutputChannelColorProfile
+510 stdcall GdipSetImageAttributesRemapTable( ptr long long long long ) wine_GdipSetImageAttributesRemapTable
+511 stdcall GdipSetImageAttributesThreshold( ptr long long long ) wine_GdipSetImageAttributesThreshold
+512 stub GdipSetImageAttributesToIdentity
+513 stdcall GdipSetImageAttributesWrapMode( ptr long long long ) wine_GdipSetImageAttributesWrapMode
+514 stdcall GdipSetImagePalette( ptr long ) wine_GdipSetImagePalette
+515 stdcall GdipSetInfinite( ptr ) wine_GdipSetInfinite
+516 stub GdipSetInterpolationMode
+517 stub GdipSetLineBlend
+518 stub GdipSetLineColors
+519 stub GdipSetLineGammaCorrection
+520 stub GdipSetLineLinearBlend
+521 stub GdipSetLinePresetBlend
+522 stub GdipSetLineSigmaBlend
+523 stub GdipSetLineTransform
+524 stub GdipSetLineWrapMode
+525 stdcall GdipSetMatrixElements( ptr long long long long long long ) wine_GdipSetMatrixElements
+526 stub GdipSetMetafileDownLevelRasterizationLimit
+527 stdcall GdipSetPageScale( ptr long ) wine_GdipSetPageScale
+528 stdcall GdipSetPageUnit( ptr long ) wine_GdipSetPageUnit
+529 stdcall GdipSetPathFillMode( ptr long ) wine_GdipSetPathFillMode
+530 stub GdipSetPathGradientBlend
+531 stub GdipSetPathGradientCenterColor
+532 stub GdipSetPathGradientCenterPoint
+533 stub GdipSetPathGradientCenterPointI
+534 stub GdipSetPathGradientFocusScales
+535 stub GdipSetPathGradientGammaCorrection
+536 stub GdipSetPathGradientLinearBlend
+537 stub GdipSetPathGradientPath
+538 stub GdipSetPathGradientPresetBlend
+539 stub GdipSetPathGradientSigmaBlend
+540 stub GdipSetPathGradientSurroundColorsWithCount
+541 stub GdipSetPathGradientTransform
+542 stub GdipSetPathGradientWrapMode
+543 stdcall GdipSetPathMarker( ptr ) wine_GdipSetPathMarker
+544 stdcall GdipSetPenBrushFill( ptr ptr ) wine_GdipSetPenBrushFill
+545 stdcall GdipSetPenColor( ptr long ) wine_GdipSetPenColor
+546 stdcall GdipSetPenCompoundArray( ptr long long ) wine_GdipSetPenCompoundArray
+547 stdcall GdipSetPenCustomEndCap( ptr ptr ) wine_GdipSetPenCustomEndCap
+548 stdcall GdipSetPenCustomStartCap( ptr ptr ) wine_GdipSetPenCustomStartCap
+549 stdcall GdipSetPenDashArray( ptr long long ) wine_GdipSetPenDashArray
+550 stdcall GdipSetPenDashCap197819( ptr long ) wine_GdipSetPenDashCap197819
+551 stdcall GdipSetPenDashOffset( ptr long ) wine_GdipSetPenDashOffset
+552 stdcall GdipSetPenDashStyle( ptr long ) wine_GdipSetPenDashStyle
+553 stdcall GdipSetPenEndCap( ptr long ) wine_GdipSetPenEndCap
+554 stdcall GdipSetPenLineCap197819( ptr long long long ) wine_GdipSetPenLineCap197819
+555 stdcall GdipSetPenLineJoin( ptr long ) wine_GdipSetPenLineJoin
+556 stdcall GdipSetPenMiterLimit( ptr long ) wine_GdipSetPenMiterLimit
+557 stdcall GdipSetPenMode( ptr long ) wine_GdipSetPenMode
+558 stdcall GdipSetPenStartCap( ptr long ) wine_GdipSetPenStartCap
+559 stdcall GdipSetPenTransform( ptr ptr ) wine_GdipSetPenTransform
+560 stub GdipSetPenUnit
+561 stdcall GdipSetPenWidth( ptr long ) wine_GdipSetPenWidth
+562 stdcall GdipSetPixelOffsetMode( ptr ptr ) wine_GdipSetPixelOffsetMode
+563 stub GdipSetPropertyItem
+564 stdcall GdipSetRenderingOrigin( ptr long long ) wine_GdipSetRenderingOrigin
+565 stdcall GdipSetSmoothingMode( ptr long ) wine_GdipSetSmoothingMode
+566 stdcall GdipSetSolidFillColor( ptr long ) wine_GdipSetSolidFillColor
+567 stdcall GdipSetStringFormatAlign( ptr long ) wine_GdipSetStringFormatAlign
+568 stdcall GdipSetStringFormatDigitSubstitution( ptr long long ) wine_GdipSetStringFormatDigitSubstitution
+569 stdcall GdipSetStringFormatFlags( ptr long ) wine_GdipSetStringFormatFlags
+570 stdcall GdipSetStringFormatHotkeyPrefix( ptr long ) wine_GdipSetStringFormatHotkeyPrefix
+571 stdcall GdipSetStringFormatLineAlign( ptr long ) wine_GdipSetStringFormatLineAlign
+572 stdcall GdipSetStringFormatMeasurableCharacterRanges( ptr long long ) wine_GdipSetStringFormatMeasurableCharacterRanges
+573 stdcall GdipSetStringFormatTabStops( ptr long long long ) wine_GdipSetStringFormatTabStops
+574 stdcall GdipSetStringFormatTrimming( ptr long ) wine_GdipSetStringFormatTrimming
+575 stdcall GdipSetTextContrast( ptr long ) wine_GdipSetTextContrast
+576 stdcall GdipSetTextRenderingHint( ptr long ) wine_GdipSetTextRenderingHint
+577 stub GdipSetTextureTransform
+578 stub GdipSetTextureWrapMode
+579 stdcall GdipSetWorldTransform( ptr ptr ) wine_GdipSetWorldTransform
+580 stdcall GdipShearMatrix( ptr long long long ) wine_GdipShearMatrix
+581 stdcall GdipStartPathFigure( ptr ) wine_GdipStartPathFigure
+582 stdcall GdipStringFormatGetGenericDefault( ptr ) wine_GdipStringFormatGetGenericDefault
+583 stdcall GdipStringFormatGetGenericTypographic( ptr ) wine_GdipStringFormatGetGenericTypographic
+584 stub GdipTestControl
+585 stdcall GdipTransformMatrixPoints( ptr ptr long ) wine_GdipTransformMatrixPoints
+586 stdcall GdipTransformMatrixPointsI( ptr ptr long ) wine_GdipTransformMatrixPointsI
+587 stdcall GdipTransformPath( ptr ptr ) wine_GdipTransformPath
+588 stdcall GdipTransformPoints( ptr long long ptr long ) wine_GdipTransformPoints
+589 stdcall GdipTransformPointsI( ptr long long ptr long ) wine_GdipTransformPointsI
+590 stdcall GdipTransformRegion( ptr ptr ) wine_GdipTransformRegion
+591 stdcall GdipTranslateClip( ptr long long ) wine_GdipTranslateClip
+592 stdcall GdipTranslateClipI( ptr long long ) wine_GdipTranslateClipI
+593 stub GdipTranslateLineTransform
+594 stdcall GdipTranslateMatrix( ptr long long long ) wine_GdipTranslateMatrix
+595 stub GdipTranslatePathGradientTransform
+596 stdcall GdipTranslatePenTransform( ptr long long long ) wine_GdipTranslatePenTransform
+597 stdcall GdipTranslateRegion( ptr long long ) wine_GdipTranslateRegion
+598 stdcall GdipTranslateRegionI( ptr long long ) wine_GdipTranslateRegionI
+599 stub GdipTranslateTextureTransform
+600 stdcall GdipTranslateWorldTransform( ptr long long long ) wine_GdipTranslateWorldTransform
+601 stdcall GdipVectorTransformMatrixPoints( ptr ptr long ) wine_GdipVectorTransformMatrixPoints
+602 stdcall GdipVectorTransformMatrixPointsI( ptr ptr long ) wine_GdipVectorTransformMatrixPointsI
+603 stdcall GdipWarpPath( ptr ptr long long long long long long long long ) wine_GdipWarpPath
+604 stdcall GdipWidenPath( ptr ptr ptr long ) wine_GdipWidenPath
+605 stdcall GdipWindingModeOutline( ptr ptr long ) wine_GdipWindingModeOutline
+606 stub GdiplusNotificationHook
+607 stub GdiplusNotificationUnhook
+608 stdcall GdiplusShutdown( long ) wine_GdiplusShutdown
+609 stdcall GdiplusStartup( ptr ptr ptr ) wine_GdiplusStartup
+
+From dank at kegel.com  Wed Jan  2 16:18:38 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Wed, 2 Jan 2008 14:18:38 -0800
+Subject: wine gdiplus <-> mono gdiplus wrapper
+Message-ID: <a71bd89a0801021418r1aed6e70q689c26a8ed4840ff@mail.gmail.com>
+
+Jerome wrote:
+> I wrote a little script in order to wrap gdiplus with the mono one;
+> Here are the source file and the spec file (this one made with winedump), but
+> I have no idea how to compile it and/or include it in the wine source tree.
+> Could you tell me what you think about it ? And if it has some utility ?
+
+IIRC, the Mono gdiplus isn't so useful for us because it doesn't
+deal with GDI handles the way we need.
+That's one reason we have our own gdiplus now.
+It might be more useful if you would look at fixing bugs
+in our gdiplus rather than trying to wrap Mono's.
+- Dan
+
+
+From rob at codeweavers.com  Wed Jan  2 17:16:45 2008
+From: rob at codeweavers.com (Robert Shearman)
+Date: Wed, 02 Jan 2008 23:16:45 +0000
+Subject: comdlg32: Remove unneeded casts (Resend)
+In-Reply-To: <200801022310.52502.andrew.talbot@talbotville.com>
+References: <200801022310.52502.andrew.talbot@talbotville.com>
+Message-ID: <477C1B5D.5010505@codeweavers.com>
+
+Andrew Talbot wrote:
+>            if (fodInfos->ofnInfos->Flags & OFN_ALLOWMULTISELECT)
+>               size += 1;
+>            /* return needed size in first two bytes of lpstrFile */
+> -          *(WORD *)fodInfos->ofnInfos->lpstrFile = size;
+> +          *fodInfos->ofnInfos->lpstrFile = size;
+>            FILEDLG95_Clean(hwnd);
+>            ret = EndDialog(hwnd, FALSE);
+>            COMDLG32_SetCommDlgExtendedError(FNERR_BUFFERTOOSMALL);
+> @@ -763,7 +763,7 @@ static BOOL PRINTDLG_SetUpPaperComboBoxW(HWND hDlg,
+>      NrOfEntries = DeviceCapabilitiesW(PrinterName, PortName,
+>                                        fwCapability_Names, Names, dm);
+>      NrOfEntries = DeviceCapabilitiesW(PrinterName, PortName,
+> -				      fwCapability_Words, (LPWSTR)Words, dm);
+> +                                      fwCapability_Words, Words, dm);
+>  
+>      /* reset any current content in the combobox */
+>      SendDlgItemMessageW(hDlg, nIDComboBox, CB_RESETCONTENT, 0, 0);
+>   
+
+I think these two casts should stay as LPWSTR is compatible with WORD * 
+only by coincidence - one is intended to hold characters and the other 
+numbers.
+
+-- 
+Rob Shearman
+
+
+
+From dank at kegel.com  Wed Jan  2 17:28:20 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Wed, 2 Jan 2008 15:28:20 -0800
+Subject: wine gdiplus <-> mono gdiplus wrapper
+In-Reply-To: <3f4fd2640801021457padd93bdv63b583f18af6b494@mail.gmail.com>
+References: <a71bd89a0801021418r1aed6e70q689c26a8ed4840ff@mail.gmail.com>
+	<3f4fd2640801021457padd93bdv63b583f18af6b494@mail.gmail.com>
+Message-ID: <a71bd89a0801021528n4c76fed6rfc8bd0371b2d4dc@mail.gmail.com>
+
+On Jan 2, 2008 2:57 PM, Reece Dunn <msclrhd at googlemail.com> wrote:
+> Are there any plans to use cairo in the Wine gdiplus implementation
+> like mono does?
+
+Not that I know of.  But I don't think that's a problem.
+
+I think a more interesting question is, when are we going to
+buckle down and implement a DIB engine?
+- Dan
+
+
+From olympia at skydreams.org  Wed Jan  2 18:12:26 2008
+From: olympia at skydreams.org (olympia at skydreams.org)
+Date: Thu, 3 Jan 2008 01:12:26 +0100 (CET)
+Subject: TrackPopupMenu() and TPM_RECURSE 
+Message-ID: <51450.80.216.209.132.1199319146.squirrel@webmail01.one.com>
+
+Hi,
+
+According to the MSDN documentation (see below), TrackPopupMenu() should
+only display multiple popupmenus if TPM_RECURSE is used. At the moment,
+Wine always seems to allow this and in some applications this results in
+very confusing menu overlaps.
+
+Moreover, the old popup menus will never be closed. This seems to
+particularly be the case in applications that use TrackPopupMenuEx() for
+their application menus.
+
+I was looking at the code and was unsure of how existing popup menus in a
+window should be safely closed when the application calls TrackPopupMenu()
+a second or third time. Does anyone have a suggestion?
+
+Best regards,
+
+Nicholai
+
+
+
+Windows 98/Me, Windows 2000/XP: Use the TPM_RECURSE flag to display a menu
+when another menu is already displayed. This is intended to support
+context menus within a menu.
+
+
+
+From ovek at arcticnet.no  Wed Jan  2 20:42:32 2008
+From: ovek at arcticnet.no (Ove Kaaven)
+Date: Thu, 03 Jan 2008 03:42:32 +0100
+Subject: wine gdiplus <-> mono gdiplus wrapper
+In-Reply-To: <a71bd89a0801021528n4c76fed6rfc8bd0371b2d4dc@mail.gmail.com>
+References: <a71bd89a0801021418r1aed6e70q689c26a8ed4840ff@mail.gmail.com>	<3f4fd2640801021457padd93bdv63b583f18af6b494@mail.gmail.com>
+	<a71bd89a0801021528n4c76fed6rfc8bd0371b2d4dc@mail.gmail.com>
+Message-ID: <477C4B98.8000408@arcticnet.no>
+
+Dan Kegel skrev:
+> On Jan 2, 2008 2:57 PM, Reece Dunn <msclrhd at googlemail.com> wrote:
+>> Are there any plans to use cairo in the Wine gdiplus implementation
+>> like mono does?
+> 
+> Not that I know of.  But I don't think that's a problem.
+> 
+> I think a more interesting question is, when are we going to
+> buckle down and implement a DIB engine?
+
+Maybe use cairo there... an advanced GDI-like "DIB engine" is part of it.
+
+
+
+
+From damjan.jov at gmail.com  Thu Jan  3 02:41:44 2008
+From: damjan.jov at gmail.com (Damjan Jovanovic)
+Date: Thu, 3 Jan 2008 10:41:44 +0200
+Subject: wine gdiplus <-> mono gdiplus wrapper
+In-Reply-To: <477C4B98.8000408@arcticnet.no>
+References: <a71bd89a0801021418r1aed6e70q689c26a8ed4840ff@mail.gmail.com>
+	<3f4fd2640801021457padd93bdv63b583f18af6b494@mail.gmail.com>
+	<a71bd89a0801021528n4c76fed6rfc8bd0371b2d4dc@mail.gmail.com>
+	<477C4B98.8000408@arcticnet.no>
+Message-ID: <9e89675b0801030041t6a3edaa5x7f2f0e5077ca315a@mail.gmail.com>
+
+On Jan 3, 2008 4:42 AM, Ove Kaaven <ovek at arcticnet.no> wrote:
+> Dan Kegel skrev:
+>
+> > On Jan 2, 2008 2:57 PM, Reece Dunn <msclrhd at googlemail.com> wrote:
+> >> Are there any plans to use cairo in the Wine gdiplus implementation
+> >> like mono does?
+> >
+> > Not that I know of.  But I don't think that's a problem.
+> >
+> > I think a more interesting question is, when are we going to
+> > buckle down and implement a DIB engine?
+>
+> Maybe use cairo there... an advanced GDI-like "DIB engine" is part of it.
+
+It probably isn't pixel-for-pixel identical to the Windows GDI.
+
+Damjan
+
+
+From blake at mcbride.name  Thu Jan  3 03:54:54 2008
+From: blake at mcbride.name (Blake McBride)
+Date: Thu, 03 Jan 2008 03:54:54 -0600
+Subject: Can't figure out how tolink a program
+Message-ID: <477CB0EE.2040309@mcbride.name>
+
+
+I have a library built under Linux with Wine (mylib.a) that uses various 
+Windows API (mainly GUI) that built fine.  I compiled the main program 
+from .c to .o and from .rc to .res just fine.  My problem is I can't 
+figure our what command line to use to link:
+
+    myprogram.o
+    myprogram.res
+    mylib.a
+
+In other words, when I try to link it all together I get a bunch of 
+unresolved externals on things like:
+
+    ReleaseDC
+    GetDC
+    SendMessageA
+    MulDiv
+    GlobalAlloc
+    etc.......
+
+I don't know what gcc command line argument to load the normal API's.
+
+I checked all the online docs.  There are no examples and the docs that 
+do exist state that hey are out-of-date.
+
+I would really appreciate a few simple example command lines to link a 
+program with the normal API's AND my .res file.
+
+Thank you.
+
+Blake McBride
+blake at mcbride.name
+
+
+
+From msclrhd at googlemail.com  Wed Jan  2 16:57:12 2008
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Wed, 2 Jan 2008 22:57:12 +0000
+Subject: wine gdiplus <-> mono gdiplus wrapper
+In-Reply-To: <a71bd89a0801021418r1aed6e70q689c26a8ed4840ff@mail.gmail.com>
+References: <a71bd89a0801021418r1aed6e70q689c26a8ed4840ff@mail.gmail.com>
+Message-ID: <3f4fd2640801021457padd93bdv63b583f18af6b494@mail.gmail.com>
+
+On 02/01/2008, Dan Kegel <dank at kegel.com> wrote:
+> Jerome wrote:
+> > I wrote a little script in order to wrap gdiplus with the mono one;
+> > Here are the source file and the spec file (this one made with winedump), but
+> > I have no idea how to compile it and/or include it in the wine source tree.
+> > Could you tell me what you think about it ? And if it has some utility ?
+>
+> IIRC, the Mono gdiplus isn't so useful for us because it doesn't
+> deal with GDI handles the way we need.
+> That's one reason we have our own gdiplus now.
+> It might be more useful if you would look at fixing bugs
+> in our gdiplus rather than trying to wrap Mono's.
+
+Are there any plans to use cairo in the Wine gdiplus implementation
+like mono does? Or would that need a winecairo.drv?
+
+- Reece
+
+
+From jcmontes at cert.inteco.es  Thu Jan  3 01:01:53 2008
+From: jcmontes at cert.inteco.es (Juan Carlos Montes)
+Date: Thu, 03 Jan 2008 08:01:53 +0100
+Subject: Bow and question
+Message-ID: <fli191$69i$1@ger.gmane.org>
+
+Hi all,
+
+I am new in this list, so... Hello!!!
+
+Well, I work in a CERT and we are create a automatic malware detection tool with
+wine.
+
+On the first part the project we use the debug log to monitorize the file
+access, registry...
+
+I want know where can i find the option to WINEDEBUG.
+
+In this time, we are used trace+file, trace+reg.
+
+Can trace the sockets??
+
+Kind regards
+
+PD: Sorry for my english, :P
+
+_______________________________________________________________________________
+Juan Carlos Montes Senra
+INTECO-CERT
+Instituto Nacional de Tecnolog?as de la Comunicaci?n
+email: juancarlos.montes at inteco.es | jcmontes at cert.inteco.es
+Tlf. 0034 987 877 189 - ext. 532
+_______________________________________________________________________________
+
+
+
+
+From dmitry at codeweavers.com  Thu Jan  3 04:51:24 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Thu, 3 Jan 2008 18:51:24 +0800
+Subject: wine gdiplus <-> mono gdiplus wrapper
+References: <a71bd89a0801021418r1aed6e70q689c26a8ed4840ff@mail.gmail.com>
+	<3f4fd2640801021457padd93bdv63b583f18af6b494@mail.gmail.com>
+Message-ID: <023a01c84df6$974cb760$a600fea9@DMITRY>
+
+"Reece Dunn" <msclrhd at googlemail.com> wrote:
+
+> Are there any plans to use cairo in the Wine gdiplus implementation
+> like mono does? Or would that need a winecairo.drv?
+
+gdiplus is just a wrapper (mostly) around gdi32 APIs. IMHO spreding
+around ideas about introducing a Wine dependency on cairo missing
+the point of its usefulness.
+
+-- 
+Dmitry.
+
+
+From julliard at winehq.org  Thu Jan  3 04:56:50 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Thu, 03 Jan 2008 11:56:50 +0100
+Subject: [1/7] msxml3:  Implement setNamedItem
+In-Reply-To: <flestb$bg7$1@ger.gmane.org> (Alistair Leslie-Hughes's message of
+	"Wed, 02 Jan 2008 13:27:22 +1100")
+References: <flestb$bg7$1@ger.gmane.org>
+Message-ID: <87ir2bb2j1.fsf@wine.dyndns.org>
+
+Alistair Leslie-Hughes <leslie_alistair at hotmail.com> writes:
+
+> +    /* Must be an Attribute */
+> +    IUnknown_QueryInterface(newItem, &IID_IXMLDOMNode, (LPVOID*)&pAttr);
+> +    if(pAttr)
+> +    {
+> +        ThisNew = impl_from_IXMLDOMNode( pAttr );
+> +
+> +        IUnknown_Release(pAttr);
+> +        
+> +        if(ThisNew->node->type != XML_ATTRIBUTE_NODE)
+> +            return E_FAIL;    
+
+You shouldn't access the object after having released it.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From dank at kegel.com  Thu Jan  3 05:30:16 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Thu, 3 Jan 2008 03:30:16 -0800
+Subject: Bow and question
+Message-ID: <a71bd89a0801030330g3ae74a7uebc4e172b63bd65d@mail.gmail.com>
+
+Juan wrote:
+> I want know where can i find the option to WINEDEBUG.
+> In this time, we are used trace+file, trace+reg.
+> Can trace the sockets??
+
+When I need to figure out WINEDEBUG flags, I always use grep, e.g.
+
+dank at lappy:~/wine-git/dlls$ grep DEFAULT_DEBUG ws*/*.c
+ws2_32/async.c:WINE_DEFAULT_DEBUG_CHANNEL(winsock);
+ws2_32/protocol.c:WINE_DEFAULT_DEBUG_CHANNEL(winsock);
+ws2_32/socket16.c:WINE_DEFAULT_DEBUG_CHANNEL(winsock);
+ws2_32/socket.c:WINE_DEFAULT_DEBUG_CHANNEL(winsock);
+wsock32/service.c:WINE_DEFAULT_DEBUG_CHANNEL(winsock);
+wsock32/socket.c:WINE_DEFAULT_DEBUG_CHANNEL(winsock);
+
+So yes, try +winsock.
+
+So how well is Wine running the malware you're interested in?
+- Dan
+
+
+From saulius2 at ar.fi.lt  Thu Jan  3 06:03:37 2008
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Thu, 3 Jan 2008 14:03:37 +0200 (EET)
+Subject: I am at the Ubuntu Developer Summit, do we need anything from
+	other projects?
+In-Reply-To: <20071031033957.GA16097@tuzakey>
+References: <20071030225458.GB14718@tuzakey>
+	<1193801516.3040.458.camel@dimi.lattica.com>
+	<20071031033957.GA16097@tuzakey>
+Message-ID: <Pine.LNX.4.62.0801031359110.9676@tvarka.ar.fi.lt>
+
+* On Tue, 30 Oct 2007 scott at tuzakey.com wrote:
+> * On Tue, Oct 30, 2007 at 11:31:56PM -0400, Dimi Paun wrote:
+> > * On Tue, 2007-10-30 at 15:54 -0700, scott at tuzakey.com wrote:
+> > > 
+> > > The other day an X.org developer asked me if Wine needed anything 
+> > > from X.  Off the top of my head, all I could think to tell him was 
+> > > relative mouse movements.
+> > > 
+> > > There are people from many free software projects here, including 
+> > > the kernel and Samba.  Should I voice anything else?
+> > 
+> > http://wiki.winehq.org/FromOtherProjects
+> 
+> Heh, I did make that page after all ;)
+> 
+> If anyone has any updates to it, please do them now.
+
+I am probably too late, but a way to get exact amount of memory of active 
+graphics controller would be usefull for Wine too.
+
+
+From dank06 at kegel.com  Thu Jan  3 08:35:35 2008
+From: dank06 at kegel.com (Dan Kegel)
+Date: Thu, 3 Jan 2008 06:35:35 -0800
+Subject: So, you want to fix typos?
+In-Reply-To: <a71bd89a0712292148i394d4004habfca647842f3715@mail.gmail.com>
+References: <a71bd89a0712292148i394d4004habfca647842f3715@mail.gmail.com>
+Message-ID: <a71bd89a0801030635y6c051a09qde0dd6be73825f50@mail.gmail.com>
+
+On Dec 29, 2007 9:48 PM, Dan Kegel <dank at kegel.com> wrote:
+> That reminds me that I worked out some time ago how
+> to find such typos efficiently.  At the risk of encouraging lots
+> of silly typo-fixing patches, I've documented the process here:
+> http://kegel.com/wine/spellingpolice/
+
+It looks like Alexandre is accepting patches to fix typos in comments.
+See
+ http://www.winehq.org/pipermail/wine-cvs/2008-January/039273.html
+ http://www.winehq.org/pipermail/wine-cvs/2008-January/039274.html
+
+
+From julliard at winehq.org  Thu Jan  3 09:26:29 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Thu, 03 Jan 2008 16:26:29 +0100
+Subject: mshtml #1: Includes clean up. (resend)
+In-Reply-To: <477D009C.50608@codeweavers.com> (Jacek Caban's message of "Thu, 
+	03 Jan 2008 16:34:52 +0100")
+References: <477D009C.50608@codeweavers.com>
+Message-ID: <877iiraq1m.fsf@wine.dyndns.org>
+
+Jacek Caban <jacek at codeweavers.com> writes:
+
+> diff --git a/dlls/mshtml/mshtml_private.h b/dlls/mshtml/mshtml_private.h
+> index c981348..e0c94c3 100644
+> --- a/dlls/mshtml/mshtml_private.h
+> +++ b/dlls/mshtml/mshtml_private.h
+> @@ -16,6 +16,19 @@
+>   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+>   */
+>  
+> +#include "config.h"
+> +
+> +#include <stdarg.h>
+> +#include <stdio.h>
+
+You can't use config.h from a header file.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From stefandoesinger at gmx.at  Thu Jan  3 09:27:27 2008
+From: stefandoesinger at gmx.at (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Thu, 3 Jan 2008 16:27:27 +0100
+Subject: [5/5] wined3d: change colorkey fixup for stage 0 alphaop
+	=?iso-8859-1?q?/=09alphaarg?=
+In-Reply-To: <477C709A.1020501@inbox.lv>
+References: <477B85E1.40704@inbox.lv>
+	<200801021653.18803.stefandoesinger@gmx.at>
+	<477C709A.1020501@inbox.lv>
+Message-ID: <200801031627.27350.stefandoesinger@gmx.at>
+
+Am Donnerstag, 3. Januar 2008 06:20:26 schrieb Alexander Dorofeyev:
+> Oh now I see this case I haven't thought about. For some reason, or maybe
+> no reason at all, Moto racer sets alphaop to selectarg1 and alphaarg1 to
+> current (diffuse)! That looks kind of strange (if it then gives vertices
+> with diffuse alpha = 0), but maybe it's just "optimizing" by setting states
+> it will need later. And it expects it to work despite diffuse alpha is 0
+> because it disables alpha blending and alpha test. In wine though the
+> latter state is overriden by colorkey emulation so the result is bad. But I
+> think this can be sorted out by checking ALPHABLENDENABLE, because it's
+> probably a reasonable indicator for telling whether the app is going to
+> give something meaningful in diffuse alpha or not. Do you think something
+> along the lines of attached patch can be an acceptable solution? With it,
+> AVP1 game works properly and it also seems to bring back geometry in moto
+> racer, at least as far as I can tell.
+Yes, I think this idea is quite nice. It makes a bit of a hacky impression, 
+but the color keying emulation is a hack after all. Only one small 
+suggestion, I think you don't have to call tex_alphaop unconditionally in 
+state_blend, I think this is only needed if COLORKEYENABLE is on.
+
+On a sidenode, somewhere I've seen a document stating that the Nvidia Windows 
+driver emulates color keying with the alpha test as well:
+
+http://developer.nvidia.com/object/ColorKey_in_D3D.html
+
+It implements the alpha setting in a slightly different way, and I am not sure 
+if we can emulate that without a fragment shader. Still it's an interesting 
+read.
+
+
+From lich at math.spbu.ru  Thu Jan  3 09:39:46 2008
+From: lich at math.spbu.ru (Kirill K. Smirnov)
+Date: Thu, 3 Jan 2008 18:39:46 +0300
+Subject: missed patches
+Message-ID: <200801031839.47129.lich@math.spbu.ru>
+
+  Hi,
+Is there something wrong with these couple of patches?
+
+http://www.winehq.org/pipermail/wine-patches/2007-December/048436.html
+kernel32/console: convert newborn wineserver handle to kernel32 console 
+handle.
+This patch makes screenbuffer handle, returned by CreateConsoleScreenBuffer 
+function, be a really "console" handle (h&3 == 3). Fixes behaviour of 
+WriteFile function called upon this handle.
+
+and
+
+http://www.winehq.org/pipermail/wine-patches/2007-December/048291.html
+tools/wineshelllink: do not execute applications directly, use 'start' utility 
+instead
+This patch allows to create correct desktop/menu shortcuts for console 
+applications (e.g. Far Manager).
+I've caught on the idea suggested by Vitaliy (If console needs to be created 
+for those apps and there isn't one, then Wine should do it when starting an 
+app.), but I cannot understand how to check it - dumb console always present 
+(even redirected to /dev/null):
+http://www.winehq.org/pipermail/wine-devel/2007-December/061399.html
+
+If I missed something important just let me know.
+
+Thanks,
+--
+Kirill
+
+
+From jcmontes at cert.inteco.es  Thu Jan  3 05:48:50 2008
+From: jcmontes at cert.inteco.es (Juan Carlos Montes Senra)
+Date: Thu, 03 Jan 2008 12:48:50 +0100
+Subject: Bow and question
+In-Reply-To: <a71bd89a0801030330g3ae74a7uebc4e172b63bd65d@mail.gmail.com>
+References: <a71bd89a0801030330g3ae74a7uebc4e172b63bd65d@mail.gmail.com>
+Message-ID: <477CCBA2.6040902@cert.inteco.es>
+
+Dan Kegel escribi?:
+> So how well is Wine running the malware you're interested in?
+> - Dan
+
+
+Thanks, I found a lot options in the web but didnt know DEFAULT_DEBUG_CHANNEL
+const, :)
+
+So, we only try a few malware, [ 3 files ], but all ran correctly.
+Two files was compiled in VisualC, and the last one in VisualBasic. We was
+needed to install the visualbasic runtime, but it was the only problem.
+
+Well, if you need anything, tell me it, :)
+
+
+thanks another time,
+
+_______________________________________________________________________________
+Juan Carlos Montes Senra
+INTECO-CERT
+Instituto Nacional de Tecnolog?as de la Comunicaci?n
+email: juancarlos.montes at inteco.es | jcmontes at cert.inteco.es
+Tlf. 0034 987 877 189 - ext. 532
+_______________________________________________________________________________
+
+
+
+
+From taril_laszlo at yahoo.co.uk  Thu Jan  3 10:35:53 2008
+From: taril_laszlo at yahoo.co.uk (=?iso-8859-1?Q?L=E1szl=F3_Tari?=)
+Date: Thu, 3 Jan 2008 16:35:53 +0000 (GMT)
+Subject: Another Shader/Offscreenrender problem
+Message-ID: <419236.7924.qm@web26101.mail.ukl.yahoo.com>
+
+Tomb Raider Anniversary/Need 4 Speed Carbon
+When these fog-thing appear n the game, the frame rate suddenly decreased. (Depth of Field is on)
+
+
+
+
+
+      __________________________________________________________
+Sent from Yahoo! Mail - a smarter inbox http://uk.mail.yahoo.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20080103/e478e228/attachment-0001.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: fog.jpg
+Type: image/jpeg
+Size: 120192 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080103/e478e228/attachment-0001.jpg 
+
+From jcmontes at cert.inteco.es  Thu Jan  3 10:39:49 2008
+From: jcmontes at cert.inteco.es (Juan Carlos Montes Senra)
+Date: Thu, 03 Jan 2008 17:39:49 +0100
+Subject: Bow and question
+In-Reply-To: <a71bd89a0801030330g3ae74a7uebc4e172b63bd65d@mail.gmail.com>
+References: <a71bd89a0801030330g3ae74a7uebc4e172b63bd65d@mail.gmail.com>
+Message-ID: <477D0FD5.9040009@cert.inteco.es>
+
+Dan Kegel escribi?:
+> > So how well is Wine running the malware you're interested in?
+> > - Dan
+
+
+Thanks, I found a lot options in the web but didnt know DEFAULT_DEBUG_CHANNEL
+const,  :)
+
+So, we only try a few malware, [ 3 files ], but all ran correctly.
+Two files was compiled in VisualC, and the last one in VisualBasic. We was
+needed to install the visualbasic runtime, but it was the only problem.
+
+Well, if you need anything, tell me it,  :)
+
+
+thanks another time,
+
+_______________________________________________________________________________
+Juan Carlos Montes Senra
+INTECO-CERT
+Instituto Nacional de Tecnolog?as de la Comunicaci?n
+email: juancarlos.montes at inteco.es | jcmontes at cert.inteco.es
+Tlf. 0034 987 877 189 - ext. 532
+_______________________________________________________________________________
+
+
+
+
+
+From thestig at google.com  Thu Jan  3 12:50:39 2008
+From: thestig at google.com (Lei Zhang)
+Date: Thu, 3 Jan 2008 10:50:39 -0800
+Subject: What happened to the videos from WineConf?
+In-Reply-To: <47752A3A.7010704@codeweavers.com>
+References: <47752A3A.7010704@codeweavers.com>
+Message-ID: <558b2f5c0801031050h3ea3bb4aq35a696884ef68836@mail.gmail.com>
+
+On Dec 28, 2007 8:54 AM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+> I remember at wineconf there were some videos created, what happened
+> with those? I tried to look on youtube for wineconf, but I didn't find
+> anything. Are they online yet? Or will they be put online?
+>
+> -Maarten
+>
+>
+>
+
+Three videos were uploaded to Youtube last night:
+
+Alexandre's Keynote
+http://www.youtube.com/watch?v=GqEp8psjv5s
+
+Detlef Riekenberg - Printing in Wine
+http://www.youtube.com/watch?v=1-n6mClDdBQ
+
+Kai Blin - Wine and Samba
+http://www.youtube.com/watch?v=ToKeJbQ87c0
+
+- Lei
+
+
+From donpedro at tdcadsl.dk  Thu Jan  3 18:49:25 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Fri, 04 Jan 2008 01:49:25 +0100
+Subject: xrandx responds with too many modes.
+Message-ID: <1199407765.4321.21.camel@dhcppc4>
+
+The xrandx X11 extension is very handy.
+Using it for wine makes great sense.
+
+But... the extension also enumerates a whopping amount of modes.
+Each resolution has a multitude of frequencies and bit-depth variants.
+
+Some applications are simply not prepared for that magnitude of
+information when they call EnumDisplaySettings() (user32) or
+EnumDisplayModes (ddraw).
+
+When using "normal" windows, only a few modes are returned.
+
+I know its not a bug, as it could happen on Windows if someone published
+a driver which implemented tons of silly and crooked modes.
+
+Would it be acceptable to insert a filter in xrandx.c (X11-drv),
+which only allowed "normal" windows resolutions to be enumerated?
+Does anyone need those awkward ones? 
+
+The filter would look allot like the one in desktop.c (X11-drv) which is
+currently used by the desktop mode.
+
+I already fixed a portion of the bugs caused by this, as there was a 
+natural limitation which should be set by EnumDisplayModes() which was
+not honored. I sent in patch for this already. So at least now we can
+play the classic "Grand Theft Auto"....
+
+Thanks,
+
+/p
+
+
+
+From donpedro at tdcadsl.dk  Thu Jan  3 21:39:16 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Fri, 04 Jan 2008 04:39:16 +0100
+Subject: USER32 - SPI_GETMOUSE missing a default value.
+Message-ID: <1199417956.4321.30.camel@dhcppc4>
+
+I have an app which is bailing out because it cannot get valid data
+from SPI_GETMOUSE - and indeed this reg key does not exist.
+
+The key should be in "Control Panel\\Colors" under CURRENT_USER.
+
+There are similar values in the "Control Panel" folder in the registry.
+
+Is there a reason this value is not initialized ?
+
+If i want to fix it, then:
+
+1) Where is the best place to initialize values like these? I presume
+its during boot, where the mouse values should be read?
+
+2) Should i get the mouse data from X11 or just simulate something?
+
+/p
+
+
+
+From leslie_alistair at hotmail.com  Thu Jan  3 22:53:47 2008
+From: leslie_alistair at hotmail.com (Alistair Leslie-Hughes)
+Date: Fri, 4 Jan 2008 15:53:47 +1100
+Subject: Local file in Web Browser doesnt load
+Message-ID: <flke7u$lkt$1@ger.gmane.org>
+
+Hi,
+
+An application that I'm using contains a internal web browser based off the 
+IWebBrowser2 interface.
+
+Loading a webpage from a web server works as expected, but when I try to use 
+the
+"file://C:\myTestPage.html" syntax the file fails to load.
+
+NOTE: myTestPage.html has a single paragraph with one line of text
+
+Are local files supported in the web browser?
+Do I need to call a function besides Naviagate2() to load the file?
+
+Best Regards
+ Alistair Leslie-Hughes 
+
+
+
+
+From dmitry at codeweavers.com  Fri Jan  4 00:16:48 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Fri, 4 Jan 2008 14:16:48 +0800
+Subject: USER32 - SPI_GETMOUSE missing a default value.
+References: <1199417956.4321.30.camel@dhcppc4>
+Message-ID: <013001c84e99$665e5480$a600fea9@DMITRY>
+
+"Peter Dons Tychsen" <donpedro at tdcadsl.dk> wrote:
+
+> I have an app which is bailing out because it cannot get valid data
+> from SPI_GETMOUSE - and indeed this reg key does not exist.
+> 
+> The key should be in "Control Panel\\Colors" under CURRENT_USER.
+
+That's a wrong key name.
+
+> There are similar values in the "Control Panel" folder in the registry.
+> 
+> Is there a reason this value is not initialized ?
+
+SPI_GETMOUSE should work just fine, do you have a sample code which
+doesn't work? Is the app trying to read the registry directly without
+using SystemParametersInfo?
+
+-- 
+Dmitry.
+
+
+From hverbeet at gmail.com  Fri Jan  4 02:22:04 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Fri, 4 Jan 2008 09:22:04 +0100
+Subject: xrandx responds with too many modes.
+In-Reply-To: <1199407765.4321.21.camel@dhcppc4>
+References: <1199407765.4321.21.camel@dhcppc4>
+Message-ID: <d658b69e0801040022v16357fe6v5ced3696f315b6c6@mail.gmail.com>
+
+On 04/01/2008, Peter Dons Tychsen <donpedro at tdcadsl.dk> wrote:
+> The xrandx X11 extension is very handy.
+> Using it for wine makes great sense.
+>
+> But... the extension also enumerates a whopping amount of modes.
+> Each resolution has a multitude of frequencies and bit-depth variants.
+>
+> Some applications are simply not prepared for that magnitude of
+> information when they call EnumDisplaySettings() (user32) or
+> EnumDisplayModes (ddraw).
+>
+> When using "normal" windows, only a few modes are returned.
+>
+> I know its not a bug, as it could happen on Windows if someone published
+> a driver which implemented tons of silly and crooked modes.
+>
+> Would it be acceptable to insert a filter in xrandx.c (X11-drv),
+> which only allowed "normal" windows resolutions to be enumerated?
+> Does anyone need those awkward ones?
+>
+> The filter would look allot like the one in desktop.c (X11-drv) which is
+> currently used by the desktop mode.
+>
+> I already fixed a portion of the bugs caused by this, as there was a
+> natural limitation which should be set by EnumDisplayModes() which was
+> not honored. I sent in patch for this already. So at least now we can
+> play the classic "Grand Theft Auto"....
+>
+> Thanks,
+>
+> /p
+>
+Is this with a specific X driver? The binary nvidia driver only lists
+modes explicitly declared in xorg.conf.
+
+
+From hverbeet at gmail.com  Fri Jan  4 02:31:05 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Fri, 4 Jan 2008 09:31:05 +0100
+Subject: [PATCH] ddraw: Return a nullpointer as lpSurface in Lock() if the
+	rect is invalid.
+In-Reply-To: <1199395133.3581.2.camel@localhost>
+References: <1199395133.3581.2.camel@localhost>
+Message-ID: <d658b69e0801040031n15574e44h24b120ddfc59f40b@mail.gmail.com>
+
+On 03/01/2008, G?nther Brammer <GBrammer at gmx.de> wrote:
+> +            ok(!locked_desc.lpSurface, "IDirectDrawSurface_Lock did not set lpSurface in the surface desc\n");
+>
+That isn't the clearest message. It should probably say it didn't set
+lpSurface to NULL.
+
+
+From julliard at winehq.org  Fri Jan  4 05:05:51 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 04 Jan 2008 12:05:51 +0100
+Subject: mshtml #4: Includes clean up. (fixed)
+In-Reply-To: <477D82C7.9030202@codeweavers.com> (Jacek Caban's message of
+	"Fri, 04 Jan 2008 01:50:15 +0100")
+References: <477D82C7.9030202@codeweavers.com>
+Message-ID: <87hchtam0g.fsf@wine.dyndns.org>
+
+Jacek Caban <jacek at codeweavers.com> writes:
+
+> diff --git a/dlls/mshtml/install.c b/dlls/mshtml/install.c
+> index 731af60..2437797 100644
+> --- a/dlls/mshtml/install.c
+> +++ b/dlls/mshtml/install.c
+> @@ -18,33 +18,23 @@
+>  
+>  #include "config.h"
+>  
+> -#include <stdarg.h>
+> +#include "mshtml_private.h"
+> +#include "resource.h"
+> +
+>  #include <fcntl.h>
+>  #ifdef HAVE_UNISTD_H
+>  # include <unistd.h>
+>  #endif
+
+It's not a good idea to include Unix headers after the Windows ones,
+that can create trouble.
+
+I have to admit I'm not a big fan of that sort of one include to rule
+them all approach, I think it's better to have each file maintain
+control over what it includes and in which order. The global
+mshtml_private.h header should only include the stuff it itself depends
+on, not every single header that any source file may want to use.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Fri Jan  4 05:11:52 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 04 Jan 2008 12:11:52 +0100
+Subject: dlls/kernel32/task.c -- minor improvement
+In-Reply-To: <Pine.LNX.4.64.0801032234190.23403@acrux.dbai.tuwien.ac.at>
+	(Gerald Pfeifer's message of "Thu, 3 Jan 2008 22:46:56 +0100 (CET)")
+References: <Pine.LNX.4.64.0801032234190.23403@acrux.dbai.tuwien.ac.at>
+Message-ID: <87d4shalqf.fsf@wine.dyndns.org>
+
+Gerald Pfeifer <gerald at pfeifer.com> writes:
+
+> Index: dlls/kernel32/task.c
+> ===================================================================
+> RCS file: /home/wine/wine/dlls/kernel32/task.c,v
+> retrieving revision 1.2
+> diff -u -3 -p -r1.2 task.c
+> --- dlls/kernel32/task.c	13 Oct 2006 10:27:19 -0000	1.2
+> +++ dlls/kernel32/task.c	3 Jan 2008 21:33:44 -0000
+> @@ -57,7 +57,7 @@ typedef struct
+>      WORD  magic;      /* Thunks signature */
+>      WORD  unused;
+>      WORD  free;       /* Head of the free list */
+> -    WORD  thunks[4];  /* Each thunk is 4 words long */
+> +    WORD  thunks[];   /* Each thunk is 4 words long */
+>  } THUNKS;
+
+That syntax is not portable.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From Donnette39 at aol.com  Fri Jan  4 03:29:33 2008
+From: Donnette39 at aol.com (Donnette39 at aol.com)
+Date: Fri, 4 Jan 2008 04:29:33 EST
+Subject: DIB Driver code available
+Message-ID: <c7c.1e4030d5.34af567d@aol.com>
+
+Bonjour,
+ 
+Je cherche le "DIB Driver" qui me permettrait de faire fonctionner le  
+logiciel PSDWin.
+Pouvez-vous m'aider ?
+Merci,
+Lyonel Donnette
+
+
+
+   
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20080104/01982ad8/attachment.htm 
+
+From tony.wasserka at freenet.de  Fri Jan  4 06:46:22 2008
+From: tony.wasserka at freenet.de (tony.wasserka at freenet.de)
+Date: Fri, 04 Jan 2008 13:46:22 +0100
+Subject: d3dx implementation senseless?
+Message-ID: <E1JAlwM-0008Kq-96@www13.emo.freenet-rz.de>
+
+Hi,
+I enjoyed the current wine development of the D3DX libraries and also tried to implement an interface.
+However, while testing it I noticed that Wine seems to fully support everything when it has a native
+d3dx9.dll (though it even was able to run one of my games without any dll...). So I was asking myself
+if there's even a reason to implement anything other than the inlined functions of D3DX, when we only
+lose performance and development time with it. Also, what would we do at functions like
+D3DXCreateTextureFromFile which supports 9 file formats? Would we implement e.g. a BMP file
+loader ourselves or would we use a 3rd party library for that? Are there any patents regarding the
+DX specific file formats (.x/.dds)? Don't misunderstand me, I'd also like to help out at D3DX, but I
+really think we'd be better off by removing everything of D3DX but the inlined stuff.
+    Best regards,
+        Tony Wasserka
+
+
+(PS: if one argues that we need the implementation for WineLib, I _think_ it'd be enough to just
+stub all functions so that the program compiles fine and then use the native dll again)
+
+
+
+
+
+
+
+
+
+
+
+
+
+From marcus at jet.franken.de  Fri Jan  4 07:12:33 2008
+From: marcus at jet.franken.de (Marcus Meissner)
+Date: Fri, 4 Jan 2008 14:12:33 +0100
+Subject: d3dx implementation senseless?
+In-Reply-To: <E1JAlwM-0008Kq-96@www13.emo.freenet-rz.de>
+References: <E1JAlwM-0008Kq-96@www13.emo.freenet-rz.de>
+Message-ID: <20080104131232.GB11485@galeere>
+
+On Fri, Jan 04, 2008 at 01:46:22PM +0100, tony.wasserka at freenet.de wrote:
+> Hi,
+> I enjoyed the current wine development of the D3DX libraries and also tried to implement an interface.
+> However, while testing it I noticed that Wine seems to fully support everything when it has a native
+> d3dx9.dll (though it even was able to run one of my games without any dll...). So I was asking myself
+> if there's even a reason to implement anything other than the inlined functions of D3DX, when we only
+> lose performance and development time with it. Also, what would we do at functions like
+> D3DXCreateTextureFromFile which supports 9 file formats? Would we implement e.g. a BMP file
+> loader ourselves or would we use a 3rd party library for that? Are there any patents regarding the
+> DX specific file formats (.x/.dds)? Don't misunderstand me, I'd also like to help out at D3DX, but I
+> really think we'd be better off by removing everything of D3DX but the inlined stuff.
+>     Best regards,
+>         Tony Wasserka
+> 
+
+Well, does the d3dx* DLL license permit redistribution and use with 
+Wine?
+
+I pretty much doubt so.
+
+So this alone would be a reason to implement them.
+
+Ciao, Marcus
+
+
+From mstefani at redhat.com  Fri Jan  4 08:47:13 2008
+From: mstefani at redhat.com (Michael Stefaniuc)
+Date: Fri, 04 Jan 2008 15:47:13 +0100
+Subject: xrandx responds with too many modes.
+In-Reply-To: <d658b69e0801040022v16357fe6v5ced3696f315b6c6@mail.gmail.com>
+References: <1199407765.4321.21.camel@dhcppc4>
+	<d658b69e0801040022v16357fe6v5ced3696f315b6c6@mail.gmail.com>
+Message-ID: <477E46F1.3000004@redhat.com>
+
+H. Verbeet wrote:
+> On 04/01/2008, Peter Dons Tychsen <donpedro at tdcadsl.dk> wrote:
+>> The xrandx X11 extension is very handy.
+>> Using it for wine makes great sense.
+>>
+>> But... the extension also enumerates a whopping amount of modes.
+>> Each resolution has a multitude of frequencies and bit-depth variants.
+>>
+>> Some applications are simply not prepared for that magnitude of
+>> information when they call EnumDisplaySettings() (user32) or
+>> EnumDisplayModes (ddraw).
+>>
+>> When using "normal" windows, only a few modes are returned.
+>>
+>> I know its not a bug, as it could happen on Windows if someone published
+>> a driver which implemented tons of silly and crooked modes.
+>>
+>> Would it be acceptable to insert a filter in xrandx.c (X11-drv),
+>> which only allowed "normal" windows resolutions to be enumerated?
+>> Does anyone need those awkward ones?
+>>
+>> The filter would look allot like the one in desktop.c (X11-drv) which is
+>> currently used by the desktop mode.
+>>
+>> I already fixed a portion of the bugs caused by this, as there was a
+>> natural limitation which should be set by EnumDisplayModes() which was
+>> not honored. I sent in patch for this already. So at least now we can
+>> play the classic "Grand Theft Auto"....
+>>
+>> Thanks,
+>>
+>> /p
+>>
+> Is this with a specific X driver? The binary nvidia driver only lists
+> modes explicitly declared in xorg.conf.
+Huh? I don't declare any mode in the xorg.conf and i'm using the nvidia
+binary driver. The drivers can figure out nowadays what works or
+doesn't. I get 9 modes back but i have a max resolution of only 1280x1024.
+
+bye
+	michael
+-- 
+Michael Stefaniuc                           Tel.: +49-711-96437-199
+Consulting Communications Engineer          Fax.: +49-711-96437-111
+--------------------------------------------------------------------
+Reg. Adresse: Red Hat GmbH, Hauptst?tter Strasse 58, 70178 Stuttgart
+Handelsregister: Amtsgericht Stuttgart HRB 153243
+Gesch?ftsf?hrer: Brendan Lane, Charlie Peters, Michael Cunningham,
+                 Werner Knoblich
+
+
+From jonathan at ernstfamily.ch  Fri Jan  4 09:12:51 2008
+From: jonathan at ernstfamily.ch (Jonathan Ernst)
+Date: Fri, 04 Jan 2008 16:12:51 +0100
+Subject: French LTEXT correction
+In-Reply-To: <477E0943.9050100@gmail.com>
+References: <477E0943.9050100@gmail.com>
+Message-ID: <1199459571.6824.7.camel@jernst-desktop>
+
+
+On ven, 2008-01-04 at 11:24 +0100, Vincent Hardy wrote:
+> Regedit displays "Rechercher::". Now Regedit displays "Rechercher :" and 
+> so on...
+
+It doesn't here (?). Furthermore in French ":" should be preceded by an
+unbreakable space (like it's the case now) and not a normal space.
+
+
+
+
+From donpedro at tdcadsl.dk  Fri Jan  4 09:29:19 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Fri, 04 Jan 2008 16:29:19 +0100
+Subject: xrandx responds with too many modes.
+Message-ID: <1199460559.3032.9.camel@dhcppc4>
+
+On Thu, 2008-01-03 at 22:46 -0600, Clarence Risher wrote:
+> I regularly use 640x512 in wine, when that resolution wouldnt be
+> reported by the driver in windows.  Dunno if you consider that a
+> "normal" resolution.
+
+Just out of curiosity, what do you use this for?
+Whats wrong with the 640 x 480? Why do you need the extra 640x32 pixels?
+
+Another way of fixing the problem could be to limit the amount
+of frequency variants. Not sure if wine can use them for anything 
+useful anyway. Could we report all modes at just 60Hz, or
+would that be too naughty? 
+
+This is actually what is done for the desktop implementation, so it
+might work. This would also be easy to change in xrandx.c as the 
+frequencies are handled separately.
+
+/p
+
+
+
+From donpedro at tdcadsl.dk  Fri Jan  4 09:48:14 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Fri, 04 Jan 2008 16:48:14 +0100
+Subject: d3dx implementation senseless?
+In-Reply-To: <20080104130338.OYLI5833.fep27.mail.dk@wine.codeweavers.com>
+References: <20080104130338.OYLI5833.fep27.mail.dk@wine.codeweavers.com>
+Message-ID: <1199461694.3032.26.camel@dhcppc4>
+
+I do not think patents which are blocking your ability to use the DLLs
+in Wine. It is your Windows license.
+
+I believe that if you have a Windows license for your machine, you are
+free to use Windows or its DLLs. This includes all the "free" downloads
+from their web-pages. I think, if you do not have a license for that
+machine, you are in violation of the license, which is illegal.
+
+I am not sure i got all the details right but you can probably find more
+on their web-page.
+
+If i understand it correctly, it of course means that there are no
+really free downloads on their web-page, as they all rely on a purchase
+of Windows. This makes the "free" download kind of expensive. 
+
+For Wine it means that anything the user has to D/L from their homepage
+is a no-no.
+
+/p
+
+On Fri, 2008-01-04 at 13:46 +0100, tony.wasserka at freenet.de wrote:
+> Hi,
+> I enjoyed the current wine development of the D3DX libraries and also tried to implement an interface.
+> However, while testing it I noticed that Wine seems to fully support everything when it has a native
+> d3dx9.dll (though it even was able to run one of my games without any dll...). So I was asking myself
+> if there's even a reason to implement anything other than the inlined functions of D3DX, when we only
+> lose performance and development time with it. Also, what would we do at functions like
+> D3DXCreateTextureFromFile which supports 9 file formats? Would we implement e.g. a BMP file
+> loader ourselves or would we use a 3rd party library for that? Are there any patents regarding the
+> DX specific file formats (.x/.dds)? Don't misunderstand me, I'd also like to help out at D3DX, but I
+> really think we'd be better off by removing everything of D3DX but the inlined stuff.
+>     Best regards,
+>         Tony Wasserka
+> 
+> 
+> (PS: if one argues that we need the implementation for WineLib, I _think_ it'd be enough to just
+> stub all functions so that the program compiles fine and then use the native dll again)
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+
+
+
+From fgouget at free.fr  Fri Jan  4 09:58:15 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Fri, 4 Jan 2008 16:58:15 +0100 (CET)
+Subject: Some more spelling fixes.
+In-Reply-To: <b6bb06270801030956t40831340r666e5c76cb72874d@mail.gmail.com>
+References: <b6bb06270801030956t40831340r666e5c76cb72874d@mail.gmail.com>
+Message-ID: <alpine.DEB.0.99999.0801041651340.12546@amboise.dolphin>
+
+
+> -	       /* test has been removed 'coz MMSYSERR_BASE is 0, and gcc did emit
+> +	       /* test has been removed because MMSYSERR_BASE is 0, and gcc did emit
+
+I'd say "'coz" is not a typo, but was written that way intentionally to 
+give a 'slang-ish' tone to the comment by someone who knows full well 
+the standard spelling. As such it should not be modified.
+
+
+> -    /* wmd must be inserted in list before sending opening the driver, coz' it
+> +    /* wmd must be inserted in list before sending opening the driver, because it
+
+This one however should have its spelling fixed to "'coz".
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+     Linux, WinNT, MS-DOS - also known as the Good, the Bad and the Ugly.
+
+
+From sparr0 at gmail.com  Fri Jan  4 09:59:39 2008
+From: sparr0 at gmail.com (Clarence Risher)
+Date: Fri, 4 Jan 2008 09:59:39 -0600
+Subject: xrandx responds with too many modes.
+In-Reply-To: <1199460559.3032.9.camel@dhcppc4>
+References: <1199460559.3032.9.camel@dhcppc4>
+Message-ID: <811b48bd0801040759k317c6f8eid4428c348aaab24f@mail.gmail.com>
+
+On Jan 4, 2008 2:22 AM, H. Verbeet <hverbeet at gmail.com> wrote:
+> Is this with a specific X driver? The binary nvidia driver only lists
+> modes explicitly declared in xorg.conf.
+
+I would disagree.  I have only 3 modes in my xorg.conf, and am usinb
+the binary nvidia driver, but xrandr from the command line (which I
+assume mirrors the API function's output) offers the following:
+
+Screen 0: minimum 320 x 240, current 1280 x 1024, maximum 1280 x 1024
+default connected 1280x1024+0+0 0mm x 0mm
+   1280x1024      50.0*    54.0
+   1024x768       51.0     60.0     61.0     62.0
+   800x600        52.0     66.0     67.0     68.0     69.0
+   640x512        53.0     72.0
+   1280x960       55.0
+   1280x800       56.0
+   1280x768       57.0
+   1152x864       58.0
+   1152x768       59.0
+   960x600        63.0
+   840x525        64.0
+   832x624        65.0
+   800x512        70.0
+   720x450        71.0
+   640x480        73.0     74.0     75.0     76.0
+   640x400        77.0
+   640x384        78.0
+   576x432        79.0
+   576x384        80.0
+   512x384        81.0     82.0     83.0
+   416x312        84.0
+   400x300        85.0     86.0     87.0     88.0
+   320x240        89.0     90.0     91.0
+
+
+On Jan 4, 2008 9:29 AM, Peter Dons Tychsen <donpedro at tdcadsl.dk> wrote:
+> On Thu, 2008-01-03 at 22:46 -0600, Clarence Risher wrote:
+> > I regularly use 640x512 in wine, when that resolution wouldnt be
+> > reported by the driver in windows.  Dunno if you consider that a
+> > "normal" resolution.
+> Just out of curiosity, what do you use this for?
+> Whats wrong with the 640 x 480? Why do you need the extra 640x32 pixels?
+
+640x480 does not integer-scale to my 1280x1024 display.  With 640x512
+I have perfect pixel alignment (2x zoom), no blurriness from the
+scaling.  I'll take 640x512 over 800x600 even because of the graphical
+nicety of it, and there are plenty of games (with options turned all
+the way up) that I cannot run at a good framerate at 1024 or 1280.
+
+
+From donpedro at tdcadsl.dk  Fri Jan  4 10:05:22 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Fri, 04 Jan 2008 17:05:22 +0100
+Subject: USER32 - SPI_GETMOUSE missing a default value.
+In-Reply-To: <20080104061653.ZVYU5833.fep27.mail.dk@mail.codeweavers.com>
+References: <1199417956.4321.30.camel@dhcppc4>
+	<20080104061653.ZVYU5833.fep27.mail.dk@mail.codeweavers.com>
+Message-ID: <1199462722.3032.32.camel@dhcppc4>
+
+> SPI_GETMOUSE should work just fine, do you have a sample code which
+> doesn't work? Is the app trying to read the registry directly without
+> using SystemParametersInfo?
+> 
+
+The application is the game "World In Conflict".
+The application is reading correctly through SystemParametersInfo().
+
+The problem as i see it, is that there is no default value for the mouse
+parameters in the registry. You can see this by doing a clean wine
+install, and checking the registry. I think this value should have a
+default which should be set every time the DLL is loaded, so
+applications can read the value via SystemParametersInfo().
+Alternatively, the DLL could detect the missing info at runtime, but
+that would not handle the case where the app tries to read the key
+directly, so i still think the first version is the best.
+
+/p
+
+
+
+
+
+From tony.wasserka at freenet.de  Fri Jan  4 10:00:46 2008
+From: tony.wasserka at freenet.de (tony.wasserka at freenet.de)
+Date: Fri, 04 Jan 2008 17:00:46 +0100
+Subject: d3dx implementation senseless?
+Message-ID: <E1JAoyU-0003xr-6E@www9.emo.freenet-rz.de>
+
+> I do not think patents which are blocking your ability to use the DLLs
+> in Wine. It is your Windows license.
+> 
+> I believe that if you have a Windows license for your machine, you are
+> free to use Windows or its DLLs. This includes all the "free" downloads
+> from their web-pages. I think, if you do not have a license for that
+> machine, you are in violation of the license, which is illegal.
+> 
+> I am not sure i got all the details right but you can probably find more
+> on their web-page.
+> 
+> If i understand it correctly, it of course means that there are no
+> really free downloads on their web-page, as they all rely on a purchase
+> of Windows. This makes the "free" download kind of expensive.
+> 
+> For Wine it means that anything the user has to D/L from their homepage
+> is a no-no.
+
+Oh well, I didn't think about that, sorry.
+Then it of course is a good thing if we implement our own d3dx.
+
+
+
+
+
+
+
+
+
+
+
+
+From dank at kegel.com  Fri Jan  4 11:28:17 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Fri, 4 Jan 2008 09:28:17 -0800
+Subject: Some more spelling fixes.
+Message-ID: <a71bd89a0801040928j2cd85fc3l7a3d6e342ca586d@mail.gmail.com>
+
+Francois wrote:
+> I'd say "'coz" is not a typo, but was written that way intentionally to
+> give a 'slang-ish' tone to the comment by someone who knows full well
+> the standard spelling. As such it should not be modified.
+
+I've seen too many people who aren't
+even aware of the difference between slang and standard
+english.   So (without looking back at who committed it)
+I'm tempted to correct that kind of thing, just because
+it annoys me, and annoyance was my guide for what's
+worth fixing...
+- Dan
+
+-- 
+Wine for Windows ISVs: http://kegel.com/wine/isv
+
+
+From austinenglish at gmail.com  Fri Jan  4 11:35:42 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Fri, 4 Jan 2008 11:35:42 -0600
+Subject: Some more spelling fixes.
+In-Reply-To: <a71bd89a0801040928j2cd85fc3l7a3d6e342ca586d@mail.gmail.com>
+References: <a71bd89a0801040928j2cd85fc3l7a3d6e342ca586d@mail.gmail.com>
+Message-ID: <b6bb06270801040935s398a53f3hd74e821e1721dea4@mail.gmail.com>
+
+I changed that in two places. The first one had another typo in the
+same file, so I went ahead and fixed both typos. The second occurrence
+was in a separate file, but I corrected it for consistency.
+
+- Austin
+
+On Jan 4, 2008 11:28 AM, Dan Kegel <dank at kegel.com> wrote:
+> Francois wrote:
+> > I'd say "'coz" is not a typo, but was written that way intentionally to
+> > give a 'slang-ish' tone to the comment by someone who knows full well
+> > the standard spelling. As such it should not be modified.
+>
+> I've seen too many people who aren't
+> even aware of the difference between slang and standard
+> english.   So (without looking back at who committed it)
+> I'm tempted to correct that kind of thing, just because
+> it annoys me, and annoyance was my guide for what's
+> worth fixing...
+> - Dan
+>
+> --
+> Wine for Windows ISVs: http://kegel.com/wine/isv
+>
+>
+>
+
+
+From zgold550 at gmail.com  Fri Jan  4 11:48:30 2008
+From: zgold550 at gmail.com (Zachary Goldberg)
+Date: Fri, 4 Jan 2008 12:48:30 -0500
+Subject: DIB Driver code available
+In-Reply-To: <c7c.1e4030d5.34af567d@aol.com>
+References: <c7c.1e4030d5.34af567d@aol.com>
+Message-ID: <b050a5e70801040948rbeeb866w4e166f19e93afb17@mail.gmail.com>
+
+Translating his question:
+I'm looking for a DIB driver which will let me run the program "PSDWin"
+
+Donnette,
+
+Le plupart de personne qui travaille avec WINE parlent seulement
+anglais au cette listserv.  A respondre de ta question,
+malheureusement, cette driver n'exist pas maintenant.  Possible au
+future.  C'est un piece du wine tres difficile.
+
+"Most people who work with wine speak only english in this listserv.
+However to respond to your question, unfortunately there isn't a DIB
+driver yet.  Its a very hard part of wine to write."
+
+
+--ZGold
+
+
+On Jan 4, 2008 4:29 AM,  <Donnette39 at aol.com> wrote:
+>
+>
+> Bonjour,
+>
+> Je cherche le "DIB Driver" qui me permettrait de faire fonctionner le
+> logiciel PSDWin.
+> Pouvez-vous m'aider ?
+> Merci,
+> Lyonel Donnette
+>
+>
+>
+
+
+
+-- 
+Zachary Goldberg
+Computer Science & Engineering
+Electrical Captain of Penn Electric Race Team
+School of Engineering at the University of Pennsylvania
+
+
+From stefandoesinger at gmx.at  Fri Jan  4 11:51:50 2008
+From: stefandoesinger at gmx.at (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Fri, 4 Jan 2008 18:51:50 +0100
+Subject: d3dx implementation senseless?
+In-Reply-To: <E1JAoyU-0003xr-6E@www9.emo.freenet-rz.de>
+References: <E1JAoyU-0003xr-6E@www9.emo.freenet-rz.de>
+Message-ID: <200801041851.50778.stefandoesinger@gmx.at>
+
+Am Freitag, 4. Januar 2008 17:00:46 schrieb tony.wasserka at freenet.de:
+> Oh well, I didn't think about that, sorry.
+> Then it of course is a good thing if we implement our own d3dx.
+The directx license as far as I understand it, allows installing and using the 
+dx runtime, which d3dx* is a part of, on Wine, even if the user does not have 
+a Windows license. However, it does not allow shipping the DLLs with any 
+application that it intended to run on non-windows platforms. So we need the 
+d3dx DLLs if anyone wants to port an app that uses them using Wine.
+
+Appart of that, there's a usability argument. Since Windows XP SP2 and Windows 
+Vista ship many of those DLLs, apps forget to ship them. Even if apps ship 
+the dx runtime, there are some tricks needed to install it. Just having the 
+DLLs available helps the usability of Wine.
+
+> Would we implement e.g. a BMP file loader ourselves or would we use a 3rd
+> party library for that? Are there any patents regarding the DX specific file 
+> formats (.x/.dds)  
+just fyi, at least the .dds file format is well documented. I don't know 
+about .x, but I think it is just plain text as well. Applications like 
+kuickshow(the kde image viewer) have an implementation for it, and I think 
+Gimp supports it as well. DXTn makes problems, especially writing DXTn 
+images, but we can maybe use the Nvidia texture tools(MIT license) to solve 
+both technical and legal problems.
+
+
+From donpedro at tdcadsl.dk  Fri Jan  4 12:03:55 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Fri, 04 Jan 2008 19:03:55 +0100
+Subject: d3dx implementation senseless?
+In-Reply-To: <20080104161222.HZCU12098.fep26.mail.dk@wine.codeweavers.com>
+References: <20080104161222.HZCU12098.fep26.mail.dk@wine.codeweavers.com>
+Message-ID: <1199469835.3032.47.camel@dhcppc4>
+
+Now that i think of it, Marcus's point about redistribution is even
+more relevant than the problem with licensing.
+
+If one was was allowed (legally) to copy DLLs from Windows without a
+license, i could do it..... because i know how.... could my mother?....
+no way!
+
+The only people that i have any success in convincing to switch
+to Linux/Wine were in situations where it worked "out of the box".
+
+Having to download tons of redistributeables and DLLs from the web
+is not a good solution for "non technical users". Even on real Windows
+this is a problem.
+
+I cannot count the many times family & friends have
+called me saying: "Help! it says... Unable to find blabla.dll or blabla
+not installed" (using 2K/XP/Vista). Lets not copy this scenario. I want
+them to stop calling :-).
+
+/p
+
+
+On Fri, 2008-01-04 at 17:00 +0100, tony.wasserka at freenet.de wrote:
+> > I do not think patents which are blocking your ability to use the DLLs
+> > in Wine. It is your Windows license.
+> > 
+> > I believe that if you have a Windows license for your machine, you are
+> > free to use Windows or its DLLs. This includes all the "free" downloads
+> > from their web-pages. I think, if you do not have a license for that
+> > machine, you are in violation of the license, which is illegal.
+> > 
+> > I am not sure i got all the details right but you can probably find more
+> > on their web-page.
+> > 
+> > If i understand it correctly, it of course means that there are no
+> > really free downloads on their web-page, as they all rely on a purchase
+> > of Windows. This makes the "free" download kind of expensive.
+> > 
+> > For Wine it means that anything the user has to D/L from their homepage
+> > is a no-no.
+> 
+> Oh well, I didn't think about that, sorry.
+> Then it of course is a good thing if we implement our own d3dx.
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+
+
+
+From donpedro at tdcadsl.dk  Fri Jan  4 12:24:36 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Fri, 04 Jan 2008 19:24:36 +0100
+Subject: xrandx responds with too many modes.
+In-Reply-To: <20080104160024.YSDS10334.fep25.mail.dk@wine.codeweavers.com>
+References: <1199460559.3032.9.camel@dhcppc4>
+	<20080104160024.YSDS10334.fep25.mail.dk@wine.codeweavers.com>
+Message-ID: <1199471076.3032.52.camel@dhcppc4>
+
+> 640x480 does not integer-scale to my 1280x1024 display.  With 640x512
+> I have perfect pixel alignment (2x zoom), no blurriness from the
+> scaling.  I'll take 640x512 over 800x600 even because of the graphical
+> nicety of it, and there are plenty of games (with options turned all
+> the way up) that I cannot run at a good framerate at 1024 or 1280.
+
+Ah... yes of course. Damn those flat-panel screens :-)
+
+I have a similar monitor in 1280x1024 but only use 640x480 for games,
+where i don't notice the problem.
+
+Point taken. Scrap that idea!
+
+But what about sacking the variants with different frequencies?
+Would anyone have a problem with that idea? As mentioned, i doubt
+if Wine users can use the frequency adjustment for anything useful
+anyway? But then again i might have missed something again.
+
+/p
+
+
+
+From truiken at gmail.com  Fri Jan  4 12:30:10 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Fri, 4 Jan 2008 12:30:10 -0600
+Subject: Wiki account missing
+Message-ID: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+
+Hi,
+
+My Wiki account has gone missing:
+
+Unknown user name: "truiken at gmail.com". Please enter user name and password.
+
+Also, what's going on with the massive slew of wine-users spam?
+
+-- 
+James Hawkins
+
+
+From the3dfxdude at gmail.com  Fri Jan  4 12:36:22 2008
+From: the3dfxdude at gmail.com (Jesse Allen)
+Date: Fri, 4 Jan 2008 11:36:22 -0700
+Subject: DIB Driver code available
+In-Reply-To: <c7c.1e4030d5.34af567d@aol.com>
+References: <c7c.1e4030d5.34af567d@aol.com>
+Message-ID: <530468570801041036u78ba6904vee473edbbcd018ca@mail.gmail.com>
+
+On Jan 4, 2008 2:29 AM,  <Donnette39 at aol.com> wrote:
+>
+>
+> Bonjour,
+>
+> Je cherche le "DIB Driver" qui me permettrait de faire fonctionner le
+> logiciel PSDWin.
+> Pouvez-vous m'aider ?
+> Merci,
+> Lyonel Donnette
+>
+>
+>
+
+Vous avez essay? mon DIB driver?
+http://repo.or.cz/w/wine/dibdrv.git
+
+
+From dimi at lattica.com  Fri Jan  4 12:38:01 2008
+From: dimi at lattica.com (Dimi Paun)
+Date: Fri, 04 Jan 2008 13:38:01 -0500
+Subject: Wiki account missing
+In-Reply-To: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+References: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+Message-ID: <1199471881.4670.124.camel@dimi.lattica.com>
+
+
+On Fri, 2008-01-04 at 12:30 -0600, James Hawkins wrote:
+> My Wiki account has gone missing:
+> 
+> Unknown user name: "truiken at gmail.com". Please enter user name and
+> password.
+
+No, it's still there, I've double checked. Maybe you are not using
+the right password?
+
+-- 
+Dimi Paun <dimi at lattica.com>
+Lattica, Inc.
+
+
+
+From thestig at google.com  Fri Jan  4 12:40:51 2008
+From: thestig at google.com (Lei Zhang)
+Date: Fri, 4 Jan 2008 10:40:51 -0800
+Subject: Wiki account missing
+In-Reply-To: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+References: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+Message-ID: <558b2f5c0801041040r7e802b04vbe4f16f8e644f287@mail.gmail.com>
+
+On Jan 4, 2008 10:30 AM, James Hawkins <truiken at gmail.com> wrote:
+> Hi,
+>
+> My Wiki account has gone missing:
+>
+> Unknown user name: "truiken at gmail.com". Please enter user name and password.
+>
+> Also, what's going on with the massive slew of wine-users spam?
+>
+> --
+> James Hawkins
+>
+>
+>
+
+That person has been spamming mailing lists all over the place. [1]
+[2] Can someone unsubscribe the spammer from our mailing lists? I will
+file a complain with gmail.
+
+- Lei
+
+[1] http://www.gossamer-threads.com/lists/cisco/nsp/78038
+[2] http://www.opensolaris.org/jive/thread.jspa?threadID=48367&tstart=0
+
+
+From truiken at gmail.com  Fri Jan  4 12:44:11 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Fri, 4 Jan 2008 12:44:11 -0600
+Subject: Wiki account missing
+In-Reply-To: <1199471881.4670.124.camel@dimi.lattica.com>
+References: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+	<1199471881.4670.124.camel@dimi.lattica.com>
+Message-ID: <22821af30801041044p2704a060u9a23bf6a631158f@mail.gmail.com>
+
+On Jan 4, 2008 12:38 PM, Dimi Paun <dimi at lattica.com> wrote:
+>
+> On Fri, 2008-01-04 at 12:30 -0600, James Hawkins wrote:
+> > My Wiki account has gone missing:
+> >
+> > Unknown user name: "truiken at gmail.com". Please enter user name and
+> > password.
+>
+> No, it's still there, I've double checked. Maybe you are not using
+> the right password?
+>
+
+I'm using the same password I've always used, but it doesn't work anymore.
+
+-- 
+James Hawkins
+
+
+From jnewman at codeweavers.com  Fri Jan  4 14:39:07 2008
+From: jnewman at codeweavers.com (Jeremy Newman)
+Date: Fri, 04 Jan 2008 14:39:07 -0600
+Subject: Wiki account missing
+In-Reply-To: <558b2f5c0801041040r7e802b04vbe4f16f8e644f287@mail.gmail.com>
+References: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+	<558b2f5c0801041040r7e802b04vbe4f16f8e644f287@mail.gmail.com>
+Message-ID: <477E996B.3000702@codeweavers.com>
+
+I have removed that person from the mailing list and added that email to 
+the black list.
+
+Lei Zhang wrote:
+> That person has been spamming mailing lists all over the place. [1]
+> [2] Can someone unsubscribe the spammer from our mailing lists? I will
+> file a complain with gmail.
+> 
+> - Lei
+> 
+> [1] http://www.gossamer-threads.com/lists/cisco/nsp/78038
+> [2] http://www.opensolaris.org/jive/thread.jspa?threadID=48367&tstart=0
+
+
+
+From thestig at google.com  Fri Jan  4 16:32:50 2008
+From: thestig at google.com (Lei Zhang)
+Date: Fri, 4 Jan 2008 14:32:50 -0800
+Subject: What happened to the videos from WineConf?
+In-Reply-To: <558b2f5c0801031050h3ea3bb4aq35a696884ef68836@mail.gmail.com>
+References: <47752A3A.7010704@codeweavers.com>
+	<558b2f5c0801031050h3ea3bb4aq35a696884ef68836@mail.gmail.com>
+Message-ID: <558b2f5c0801041432pb71d6b3l9fc390db28357e28@mail.gmail.com>
+
+On Jan 3, 2008 10:50 AM, Lei Zhang <thestig at google.com> wrote:
+> On Dec 28, 2007 8:54 AM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+>
+> > I remember at wineconf there were some videos created, what happened
+> > with those? I tried to look on youtube for wineconf, but I didn't find
+> > anything. Are they online yet? Or will they be put online?
+> >
+> > -Maarten
+> >
+> >
+> >
+>
+> Three videos were uploaded to Youtube last night:
+>
+> Alexandre's Keynote
+> http://www.youtube.com/watch?v=GqEp8psjv5s
+>
+> Detlef Riekenberg - Printing in Wine
+> http://www.youtube.com/watch?v=1-n6mClDdBQ
+>
+> Kai Blin - Wine and Samba
+> http://www.youtube.com/watch?v=ToKeJbQ87c0
+>
+> - Lei
+>
+
+Two more videos:
+
+Martin Pilka - CxTest
+http://www.youtube.com/watch?v=VBZNOTngyeo
+
+Marteen Lankhorst - Wine and Sound
+http://www.youtube.com/watch?v=qKaYqsm4I_Q
+
+- Lei
+
+
+From dimi at lattica.com  Fri Jan  4 19:02:07 2008
+From: dimi at lattica.com (Dimi Paun)
+Date: Fri, 04 Jan 2008 20:02:07 -0500
+Subject: Wiki account missing
+In-Reply-To: <22821af30801041044p2704a060u9a23bf6a631158f@mail.gmail.com>
+References: <22821af30801041030n4c1e4497ofb530dc0742d34fa@mail.gmail.com>
+	<1199471881.4670.124.camel@dimi.lattica.com>
+	<22821af30801041044p2704a060u9a23bf6a631158f@mail.gmail.com>
+Message-ID: <1199494927.4670.131.camel@dimi.lattica.com>
+
+
+On Fri, 2008-01-04 at 12:44 -0600, James Hawkins wrote:
+> I'm using the same password I've always used, but it doesn't work anymore.
+
+Well, that's odd. Can you please try to reset your password?
+    http://wiki.winehq.org/UserPreferences
+
+-- 
+Dimi Paun <dimi at lattica.com>
+Lattica, Inc.
+
+
+
+From dank at kegel.com  Fri Jan  4 19:25:25 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Fri, 4 Jan 2008 17:25:25 -0800
+Subject: Jacek Caban : shdocvw: Use BindToObject to load document ...
+Message-ID: <a71bd89a0801041725o3dd5f64dyb9112cf822203833@mail.gmail.com>
+
+I'm seeing a new crash in shdocvw/tests/webbrowser.c since yesterday.
+I haven't verified this with bisect, but the stack traces
+seem to point to Jacek's set of changes.  Both can be seen here:
+http://kegel.com/wine/valgrind/logs-2008-01-04/vg-shdocvw_webbrowser-diff.txt
+
+The first one is a new valgrind warning:
++ Syscall param writev(vector[2]) points to uninitialised byte(s)
++    at  (within /lib/ld-2.5.so)
++    by  wine_server_call (server.c:244)
++    by  send_debug_event (exception.c:200)
++    by  raise_exception (exception.c:357)
++    by  __regs_RtlRaiseException (exception.c:388)
++    by  raise_segv_exception (signal_i386.c:1032)
++    by  ???
++    by  set_moniker (persist.c:326)
++    by  PersistMoniker_Load (persist.c:427)
++    by  report_data (binding.c:400)
++    by  InternetProtocolSink_ReportData (binding.c:1073)
++    by  BPInternetProtocolSink_ReportData (bindprot.c:518)
++    by  AboutProtocol_Start (protocol.c:275)
++    by  BindProtocol_Start (bindprot.c:192)
++    by  start_binding (binding.c:1446)
++    by  bind_to_object (binding.c:1513)
++    by  URLMonikerImpl_BindToObject (umon.c:490)
++    by  navigate_mon (navigate.c:563)
++    by  navigate_url (navigate.c:659)
++    by  WebBrowser_Navigate2 (webbrowser.c:695)
+
+And the second one is a new crash:
++Unhandled exception: page fault on read access to 0xffffffff in
+32-bit code (0x06ce27c6).
++=>1 0x06ce27c6 set_document_bscallback+0xb6(doc=0x7f018f80,
+callback=0x7f01b748) [dlls/mshtml/mshtml_private.h:563] in mshtml
+(0x7f22f488)
++  2 0x06cf732a set_moniker+0x6ba(This=0x7f018f80, mon=0x7f017e38,
+pibc=0x7f019570, bind_complete=0x7f22f628) [dlls/mshtml/persist.c:327]
+in mshtml (0x7f22f5e8)
++  3 0x06cf7a35 PersistMoniker_Load+0x45(iface=0x7f018f90,
+fFullyAvailable=0x1, pimkName=0x7f017e38, pibc=<?>, grfMode=0x12)
+[dlls/mshtml/persist.c:428] in mshtml (0x7f22f638)
++  4 0x06c088a1 report_data+0x761(This=0x7f018970, bscf=<?>,
+progress=<?>, progress_max=0x1e) [dlls/urlmon/binding.c:400] in urlmon
+(0x7f22f6d8)
++  5 0x06c08ba4 InternetProtocolSink_ReportData+0xb4(iface=0x7f018974,
+grfBSCF=0xd, ulProgress=0x1e, ulProgressMax=<?>)
+[dlls/urlmon/binding.c:1073] in urlmon (0x7f22f718)
++  6 0x06c0a23f
+BPInternetProtocolSink_ReportData+0x4f(iface=0x7f018e18, grfBSCF=0xd,
+ulProgress=0x1e, ulProgressMax=<?>) [dlls/urlmon/bindprot.c:518] in
+urlmon (0x7f22f758)
++  7 0x06cf8e1c AboutProtocol_Start+0x1cc(iface=0x7f018e48, szUrl=<?>,
+pOIProtSink=0x7f018e18, pOIBindInfo=0x7f018e0c, grfPI=0x0,
+dwReserved=0x0) [dlls/mshtml/protocol.c:279] in mshtml (0x7f22f808)
++  8 0x06c0b49e BindProtocol_Start+0x1ce(iface=0x7f018e08,
+szUrl=0x7f018540, pOIProtSink=<?>, pOIBindInfo=0x7f018978, grfPI=0x0,
+dwReserved=0x0) [dlls/urlmon/bindprot.c:192] in urlmon (0x7f22f888)
++  9 0x06c09881 start_binding+0xa91(mon=0x7f017e38, binding_ctx=0x0,
+url=<?>, pbc=0x7f018838, to_obj=0x1, riid=0x6bdfda8, ret=0x7f22f9ac)
+[dlls/urlmon/binding.c:1446] in urlmon (0x7f22f988)
++  10 0x06c099ca bind_to_object+0x3a(mon=0x7f017e38, url=0x7f018540,
+pbc=0x7f018838, riid=0x6bdfda8, ppv=0x7f22fc34)
+[dlls/urlmon/binding.c:1514] in urlmon (0x7f22f9b8)
++  11 0x06c17c88 URLMonikerImpl_BindToObject+0xe8(iface=0x7f017e38,
+pbc=<?>, pmkToLeft=0x0, riid=<?>, ppv=0x7f22fc34)
+[dlls/urlmon/umon.c:491] in urlmon (0x7f22fa18)
++  12 0x06bd1937 navigate_mon+0x507(This=0x7f0176d8, mon=0x7f017e38,
+post_data=0x0, post_data_len=0x0, headers=0x0)
+[dlls/shdocvw/navigate.c:563] in shdocvw (0x7f22fc58)
++  13 0x06bd1ec3 navigate_url+0xd3(This=0x7f0176d8, url=0x7f017e14,
+Flags=0x0, TargetFrameName=0x0, PostData=0x0, Headers=0x0)
+[dlls/shdocvw/navigate.c:659] in shdocvw (0x7f22fca8)
++  14 0x06bd98b9 WebBrowser_Navigate2+0x79(iface=<?>, URL=<?>,
+Flags=0x0, TargetFrameName=0x0, PostData=0x0, Headers=0x0)
+[dlls/shdocvw/webbrowser.c:696] in shdocvw (0x7f22fce8)
++  15 0x045e68d4 test_Navigate2+0x154(unk=<?>)
+[dlls/shdocvw/tests/webbrowser.c:1540] in shdocvw_test (0x7f22fd48)
++  16 0x045e7634 test_WebBrowser+0x934()
+[dlls/shdocvw/tests/webbrowser.c:1609] in shdocvw_test (0x7f22fe18)
++  17 0x045e8a6c func_webbrowser+0xac()
+[dlls/shdocvw/tests/webbrowser.c:1658] in shdocvw_test (0x7f22fe58)
++  18 0x045e8c98 run_test+0x128(name=0x7f0003f8)
+[include/wine/test.h:389] in shdocvw_test (0x7f22fea8)
+
+
+From dank at kegel.com  Fri Jan  4 19:57:32 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Fri, 4 Jan 2008 17:57:32 -0800
+Subject: Bugzilla preening status
+Message-ID: <a71bd89a0801041757j5e13b65cg628bb8ceb13022ef@mail.gmail.com>
+
+Bugzilla has some nice "Change Over Time" graphs.
+These show there's been a nice chunk of bugs
+moved into 'Fixed' state in the last week:
+
+http://bugs.winehq.org/reports.cgi?product=Wine&datasets=NEW%3A&datasets=UNCONFIRMED%3A&datasets=CLOSED%3A&datasets=FIXED%3A
+
+BTW somebody should give Jeff Zaroyko bugzilla
+privs, he's doing a nice job, and should be able
+to mark bugs fixed.
+
+
+From dmitry at codeweavers.com  Fri Jan  4 21:24:25 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sat, 5 Jan 2008 11:24:25 +0800
+Subject: USER32 - SPI_GETMOUSE missing a default value.
+References: <1199417956.4321.30.camel@dhcppc4><20080104061653.ZVYU5833.fep27.mail.dk@mail.codeweavers.com>
+	<1199462722.3032.32.camel@dhcppc4>
+Message-ID: <001101c84f4a$7a988810$a600fea9@DMITRY>
+
+"Peter Dons Tychsen" <donpedro at tdcadsl.dk> wrote:
+
+> The application is the game "World In Conflict".
+> The application is reading correctly through SystemParametersInfo().
+> 
+> The problem as i see it, is that there is no default value for the mouse
+> parameters in the registry. You can see this by doing a clean wine
+> install, and checking the registry. I think this value should have a
+> default which should be set every time the DLL is loaded, so
+> applications can read the value via SystemParametersInfo().
+> Alternatively, the DLL could detect the missing info at runtime, but
+> that would not handle the case where the app tries to read the key
+> directly, so i still think the first version is the best.
+
+SystemParametersInfo should already handle the case of missing settings
+in the registry providing default values. Unless you have an application
+which reads registry directly, so that's not a hypothetical case there is
+no need to fix it. Again, do you have a code snippet or a piece of relay
+log showing a failure?
+
+-- 
+Dmitry.
+
+
+From kgbricola at web.de  Sat Jan  5 05:05:53 2008
+From: kgbricola at web.de (=?ISO-8859-1?Q?Rico_Sch=FCller?=)
+Date: Sat, 05 Jan 2008 12:05:53 +0100
+Subject: Fix a memory leak in cabinet (try 2)
+Message-ID: <477F6491.2000306@web.de>
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-cabinet-Fix-memory-leak-found-by-Smatch.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080105/57dd96c7/attachment.patch 
+
+From kgbricola at web.de  Sat Jan  5 05:06:38 2008
+From: kgbricola at web.de (=?ISO-8859-1?Q?Rico_Sch=FCller?=)
+Date: Sat, 05 Jan 2008 12:06:38 +0100
+Subject: Fix a memory leak in mshtml (try 2)
+Message-ID: <477F64BE.3000003@web.de>
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-mshtml-Fix-memory-leak-found-by-Smatch.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080105/7608f049/attachment.patch 
+
+From kgbricola at web.de  Sat Jan  5 05:07:13 2008
+From: kgbricola at web.de (=?ISO-8859-1?Q?Rico_Sch=FCller?=)
+Date: Sat, 05 Jan 2008 12:07:13 +0100
+Subject: Fix a memory leak in msi (try 2)
+Message-ID: <477F64E1.50406@web.de>
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0003-msi-Fix-memory-leak-found-by-Smatch.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080105/75b1d493/attachment.patch 
+
+From kgbricola at web.de  Sat Jan  5 05:07:45 2008
+From: kgbricola at web.de (=?ISO-8859-1?Q?Rico_Sch=FCller?=)
+Date: Sat, 05 Jan 2008 12:07:45 +0100
+Subject: Fix a memory leak in msi (try 2)
+Message-ID: <477F6501.9030800@web.de>
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0005-msi-Fix-memory-leak-found-by-Smatch.patch
+Type: text/x-diff
+Size: 0 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080105/cbf70830/attachment.patch 
+
+From andrew.talbot at talbotville.com  Sat Jan  5 05:23:27 2008
+From: andrew.talbot at talbotville.com (Andrew Talbot)
+Date: Sat, 5 Jan 2008 11:23:27 +0000
+Subject: Fix a memory leak in msi (try 2), etc.
+Message-ID: <200801051123.27392.andrew.talbot@talbotville.com>
+
+Hi Rico,
+
+Please send your patches to wine-patches, not wine-devel.
+
+Thanks,
+
+-- 
+Andy.
+
+
+From kgbricola at web.de  Sat Jan  5 05:23:31 2008
+From: kgbricola at web.de (=?ISO-8859-1?Q?Rico_Sch=FCller?=)
+Date: Sat, 05 Jan 2008 12:23:31 +0100
+Subject: wrong mailing list
+In-Reply-To: <477F6501.9030800@web.de>
+References: <477F6501.9030800@web.de>
+Message-ID: <477F68B3.5090705@web.de>
+
+Sorry the last 4 patches were send to the wrong mailing list ;-).
+Ignore them.
+
+Cheers
+Rico
+
+
+From mjung at iss.tu-darmstadt.de  Sat Jan  5 07:40:48 2008
+From: mjung at iss.tu-darmstadt.de (Michael Jung)
+Date: Sat, 05 Jan 2008 14:40:48 +0100
+Subject: ImmNotifyIMM with CPS_CANCEL fully clears the composition string.
+	Also enable respective tests
+In-Reply-To: <477E794B.5010204@codeweavers.com>
+References: <477E794B.5010204@codeweavers.com>
+Message-ID: <477F88E0.20406@iss.tu-darmstadt.de>
+
+This fixes the hang in Excel 2003 Viewer for me. Thanks!
+--
+Michael Jung
+mjung at iss.tu-darmstadt.de
+
+
+From patrol at sinus.cz  Sat Jan  5 15:44:11 2008
+From: patrol at sinus.cz (Pavel Troller)
+Date: Sat, 5 Jan 2008 22:44:11 +0100
+Subject: Gates of Skeldal - d3d problem ?
+Message-ID: <20080105214411.GA19053@tangens.sinus.cz>
+
+Hi!
+  A classic Czech RPG game, Gates of Skeldal, has been released for free
+download.
+  I've tried the game for my children, but it seems to have a problem in wine.
+  Installation is perfect. Running the game basically works, intro video plays
+well, but then the problem occurs. Starting the game causes that every mouse
+move or other activity quickly swaps forth and back the correct window contents
+with a previous one, which should not be displayed anymore (like the in-game
+window and  main menu window). Not all the window is always swapped, sometimes
+just some areas flash forth/back. To be even worse, the mouse pointer is not
+properly erased, so the window begins filled with its traces. After a while,
+the window is totally garbled and playing is impossible.
+
+Synchronously with this problem, the wine console starts to be flooded with
+the following message:
+
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd58/0x33fd48
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd38/0x33fd28
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd4c/0x33fd3c
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd7c/0x33fd6c
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd80/0x33fd70
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd38/0x33fd28
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd4c/0x33fd3c
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd7c/0x33fd6c
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd38/0x33fd28
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd4c/0x33fd3c
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd7c/0x33fd6c
+fixme:d3d:IWineD3DSwapChainImpl_Present Unhandled present options 0x33fd38/0x33fd28
+
+Is it possible that this fixme refers to the real cause or the problem, or
+are these messages just harmless, not related to the problem ?
+
+Tested on a today's git.
+The game can be freely downloaded (cca 188 MB) there (it is in Czech, but the
+menu is easy and anybody can find how to control the game):
+
+http://www.napoleongames.cz/download/brany_skeldalu_setup.exe
+
+With regards, Pavel Troller
+
+
+From wine-devel at kievinfo.com  Sat Jan  5 16:23:53 2008
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sat, 05 Jan 2008 15:23:53 -0700
+Subject: bugs audit volunteers require
+In-Reply-To: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+References: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+Message-ID: <47800379.7030709@kievinfo.com>
+
+Dan Kegel wrote:
+>>> Maybe add a resolution of NEEDMOREINFO?
+>> There is no need to add one more reason for a bug resolution IMHO,
+>> INVALID with appropriate comment does the job.
+> 
+> INVALID seems harsh, it may scare away novice reporters.
+> 
+> Do we want to make it easy to search for bugs stuck
+> in a needmoreinfo kind of state?  If so, a keyword or state
+> might be handy.
+> 
+> Does anybody remember good old gnu gnats, the old bug
+> tracking system?  It was great this way; it had an explicit
+> notion of whose ball the court was in.  I miss that.
+> - Dan
+
+This is useless. Most bugs marked invalid are not Wine bugs. Only few are 
+those that reporters did not include enough information.
+
+Vitaliy
+
+
+From wine-devel at kievinfo.com  Sat Jan  5 16:32:10 2008
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sat, 05 Jan 2008 15:32:10 -0700
+Subject: Where are the bugzilla admins?
+In-Reply-To: <20080101161920.GE3426@crissy.swd.zerebecki.de>
+References: <477671A5.6040403@kievinfo.com>
+	<20080101161920.GE3426@crissy.swd.zerebecki.de>
+Message-ID: <4780056A.5060306@kievinfo.com>
+
+Jan Zerebecki wrote:
+> On Sat, Dec 29, 2007 at 09:11:17AM -0700, Vitaliy Margolen wrote:
+>> Where did our buzilla admins go? 3 weeks and nothing is changing!
+> 
+> I'd assume you mean the category changes to bugzilla (I just sent
+> a mail regarding that), otherwise please help me out on what I
+> missed.
+> 
+> 
+> Jan
+> 
+> 
+> 
+Yes that. If we have only one bugzilla admin and we can not get any response 
+from that admin for the 4!!! weeks - REGARDLESS what the reasons are, we 
+need more admins period.
+
+Sorry, but I expect more people to be involved and having appropriate 
+access. Also if some key person decides to take a vacation, then he/she 
+better notify the list.
+
+Vitaliy
+
+
+From jan.wine at zerebecki.de  Sat Jan  5 19:36:59 2008
+From: jan.wine at zerebecki.de (Jan Zerebecki)
+Date: Sun, 6 Jan 2008 02:36:59 +0100
+Subject: Where are the bugzilla admins?
+In-Reply-To: <4780056A.5060306@kievinfo.com>
+References: <477671A5.6040403@kievinfo.com>
+	<20080101161920.GE3426@crissy.swd.zerebecki.de>
+	<4780056A.5060306@kievinfo.com>
+Message-ID: <20080106013659.GG3426@crissy.swd.zerebecki.de>
+
+On Sat, Jan 05, 2008 at 03:32:10PM -0700, Vitaliy Margolen wrote:
+> Jan Zerebecki wrote:
+> > On Sat, Dec 29, 2007 at 09:11:17AM -0700, Vitaliy Margolen wrote:
+> >> Where did our buzilla admins go? 3 weeks and nothing is changing!
+
+> If we have only one bugzilla admin and we can not get any response 
+> from that admin for the 4!!! weeks - REGARDLESS what the reasons are, we 
+> need more admins period.
+
+In case of these component changes I felt that there was too much
+controversy (and no final proposal where the only response was
+"yes"; this paired with that some bugzilla admins wanted me to
+have an -devel approved list of changes) for me to do changes to
+bugzilla before waiting some more. (Though some delay can
+probably be attributed to the fact that I am currently without
+Internet on weekdays, outside of work.) Anyway no part of that
+was in any way urgent.
+
+> Sorry, but I expect more people to be involved and having appropriate 
+> access. Also if some key person decides to take a vacation, then he/she 
+> better notify the list.
+
+I feel honored to be titled a key person of the Wine project, but
+contrary to some belief I'm not the only bugzilla admin. Dan
+Kegel ( who according to a recent mail from himself might be
+unaware of his permissions ;) ), Jeremy Newman and Tony Lambregts are
+also bugzilla admins.
+
+If anyone would like to do things that need bugzilla admin
+permissions, one can post a reasonable request for those
+permissions to -devel.
+
+Usually one can get changes made to bugzilla that need admin by
+posting an _exact_ and detailed request to -devel and achieve
+general agreement. ( And I'll also probably stop ignoring
+component requests :) when the current component changes are
+done. )
+
+That being said, I do think that we don't need more bugzilla
+admins, there is just not that much work to be done that really
+needs those permissions.
+
+
+Jan
+
+
+
+From jjmckenzie51 at sprintpcs.com  Sat Jan  5 20:02:07 2008
+From: jjmckenzie51 at sprintpcs.com (James McKenzie)
+Date: Sat, 05 Jan 2008 19:02:07 -0700
+Subject: bugs audit volunteers require
+In-Reply-To: <47800379.7030709@kievinfo.com>
+References: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+	<47800379.7030709@kievinfo.com>
+Message-ID: <4780369F.6020303@sprintpcs.com>
+
+Vitaliy Margolen wrote:
+> Dan Kegel wrote:
+>   
+>>>> Maybe add a resolution of NEEDMOREINFO?
+>>>>         
+>>> There is no need to add one more reason for a bug resolution IMHO,
+>>> INVALID with appropriate comment does the job.
+>>>       
+>> INVALID seems harsh, it may scare away novice reporters.
+>>
+>> Do we want to make it easy to search for bugs stuck
+>> in a needmoreinfo kind of state?  If so, a keyword or state
+>> might be handy.
+>>
+>> Does anybody remember good old gnu gnats, the old bug
+>> tracking system?  It was great this way; it had an explicit
+>> notion of whose ball the court was in.  I miss that.
+>> - Dan
+>>     
+>
+> This is useless. Most bugs marked invalid are not Wine bugs. Only few are 
+> those that reporters did not include enough information.
+>   
+I disagree.  We need to have a method to let the reporter know that the 
+project needs more information in order to properly troubleshoot a 
+problem.  Closing a reported bug as INVALID is not applicable in this 
+case.  If the bug is outside of the scope of the project, it should be 
+marked as such.  The word invalid to me means that the bug could not be 
+reproduced or the information provided did not disclose a solvable 
+problem OR the bug has already been fixed and that the fix will be in 
+the next release.  It may be necessary to add a resolution of 
+NOTINPROJECT to handle those problems that are outside the scope of the 
+project. 
+
+Just my .02 dollars.
+
+James McKenzie
+
+
+
+From jan.wine at zerebecki.de  Sat Jan  5 20:02:23 2008
+From: jan.wine at zerebecki.de (Jan Zerebecki)
+Date: Sun, 6 Jan 2008 03:02:23 +0100
+Subject: bugs audit volunteers require
+In-Reply-To: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+References: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+Message-ID: <20080106020223.GH3426@crissy.swd.zerebecki.de>
+
+On Wed, Jan 02, 2008 at 01:19:35AM -0800, Dan Kegel wrote:
+> >> Maybe add a resolution of NEEDMOREINFO?
+> >
+> >There is no need to add one more reason for a bug resolution IMHO,
+> >INVALID with appropriate comment does the job.
+> 
+> INVALID seems harsh, it may scare away novice reporters.
+
+Yes if it's used without waiting for an answer (or even even more
+without requesting further clarification) it might make one feel
+shot down. And usually it's used too quickly. Most bug
+resolutions should probably be only done when some care or
+communication was done to check that it's the correct resolution,
+to avoid resolution ping-pong.
+
+> Do we want to make it easy to search for bugs stuck
+> in a needmoreinfo kind of state?  If so, a keyword or state
+> might be handy.
+
+I think a keyword would be appropriate. It would nicely fit with
+the "Abandoned?" keyword: first add needmoreinfo, if no answer
+for 6 month add "Abandoned?", after further 6 month resolve
+abandoned.
+
+
+Jan
+
+
+
+From truiken at gmail.com  Sat Jan  5 22:55:12 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Sat, 5 Jan 2008 21:55:12 -0700
+Subject: Where are the bugzilla admins?
+In-Reply-To: <20080106013659.GG3426@crissy.swd.zerebecki.de>
+References: <477671A5.6040403@kievinfo.com>
+	<20080101161920.GE3426@crissy.swd.zerebecki.de>
+	<4780056A.5060306@kievinfo.com>
+	<20080106013659.GG3426@crissy.swd.zerebecki.de>
+Message-ID: <22821af30801052055y40e073d9hcba7721a76d7ebd0@mail.gmail.com>
+
+On Jan 5, 2008 6:36 PM, Jan Zerebecki <jan.wine at zerebecki.de> wrote:
+> On Sat, Jan 05, 2008 at 03:32:10PM -0700, Vitaliy Margolen wrote:
+> > Jan Zerebecki wrote:
+> > > On Sat, Dec 29, 2007 at 09:11:17AM -0700, Vitaliy Margolen wrote:
+> > >> Where did our buzilla admins go? 3 weeks and nothing is changing!
+>
+> > If we have only one bugzilla admin and we can not get any response
+> > from that admin for the 4!!! weeks - REGARDLESS what the reasons are, we
+> > need more admins period.
+>
+> In case of these component changes I felt that there was too much
+> controversy (and no final proposal where the only response was
+> "yes"; this paired with that some bugzilla admins wanted me to
+> have an -devel approved list of changes) for me to do changes to
+> bugzilla before waiting some more. (Though some delay can
+> probably be attributed to the fact that I am currently without
+> Internet on weekdays, outside of work.) Anyway no part of that
+> was in any way urgent.
+>
+
+What controversy?  The final list proposed by me and Vitaliy was unchallenged.
+
+-- 
+James Hawkins
+
+
+From truiken at gmail.com  Sat Jan  5 22:59:52 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Sat, 5 Jan 2008 21:59:52 -0700
+Subject: bugs audit volunteers require
+In-Reply-To: <20080106020223.GH3426@crissy.swd.zerebecki.de>
+References: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+	<20080106020223.GH3426@crissy.swd.zerebecki.de>
+Message-ID: <22821af30801052059l5a086efdi89bf4c73f49e4c26@mail.gmail.com>
+
+On Jan 5, 2008 7:02 PM, Jan Zerebecki <jan.wine at zerebecki.de> wrote:
+> On Wed, Jan 02, 2008 at 01:19:35AM -0800, Dan Kegel wrote:
+> > >> Maybe add a resolution of NEEDMOREINFO?
+> > >
+> > >There is no need to add one more reason for a bug resolution IMHO,
+> > >INVALID with appropriate comment does the job.
+> >
+> > INVALID seems harsh, it may scare away novice reporters.
+>
+> Yes if it's used without waiting for an answer (or even even more
+> without requesting further clarification) it might make one feel
+> shot down. And usually it's used too quickly. Most bug
+> resolutions should probably be only done when some care or
+> communication was done to check that it's the correct resolution,
+> to avoid resolution ping-pong.
+>
+> > Do we want to make it easy to search for bugs stuck
+> > in a needmoreinfo kind of state?  If so, a keyword or state
+> > might be handy.
+>
+> I think a keyword would be appropriate. It would nicely fit with
+> the "Abandoned?" keyword: first add needmoreinfo, if no answer
+> for 6 month add "Abandoned?", after further 6 month resolve
+> abandoned.
+>
+
+12 months to close a bug as abandoned?  6 months is already too long
+for abandoned.  The policy has always been: if a reporter does not
+respond to an information request within X months, close the bug as
+abandoned.  We have 3843 bugs for Wine and the list is only getting
+larger.  This fear of closing bugs is only making the problem worse.
+People seem to forget that a user can always come back and reopen the
+bug report.
+
+-- 
+James Hawkins
+
+
+From truiken at gmail.com  Sat Jan  5 23:04:39 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Sat, 5 Jan 2008 22:04:39 -0700
+Subject: bugs audit volunteers require
+In-Reply-To: <4780369F.6020303@sprintpcs.com>
+References: <a71bd89a0801020119s45124968teb9fa036363d2b43@mail.gmail.com>
+	<47800379.7030709@kievinfo.com> <4780369F.6020303@sprintpcs.com>
+Message-ID: <22821af30801052104r2416533fl6735952a52e78703@mail.gmail.com>
+
+On Jan 5, 2008 7:02 PM, James McKenzie <jjmckenzie51 at sprintpcs.com> wrote:
+>
+> Vitaliy Margolen wrote:
+> > Dan Kegel wrote:
+> >
+> >>>> Maybe add a resolution of NEEDMOREINFO?
+> >>>>
+> >>> There is no need to add one more reason for a bug resolution IMHO,
+> >>> INVALID with appropriate comment does the job.
+> >>>
+> >> INVALID seems harsh, it may scare away novice reporters.
+> >>
+> >> Do we want to make it easy to search for bugs stuck
+> >> in a needmoreinfo kind of state?  If so, a keyword or state
+> >> might be handy.
+> >>
+> >> Does anybody remember good old gnu gnats, the old bug
+> >> tracking system?  It was great this way; it had an explicit
+> >> notion of whose ball the court was in.  I miss that.
+> >> - Dan
+> >>
+> >
+> > This is useless. Most bugs marked invalid are not Wine bugs. Only few are
+> > those that reporters did not include enough information.
+> >
+> I disagree.  We need to have a method to let the reporter know that the
+> project needs more information in order to properly troubleshoot a
+> problem.  Closing a reported bug as INVALID is not applicable in this
+> case.  If the bug is outside of the scope of the project, it should be
+> marked as such.  The word invalid to me means that the bug could not be
+> reproduced or the information provided did not disclose a solvable
+> problem OR the bug has already been fixed and that the fix will be in
+> the next release.  It may be necessary to add a resolution of
+> NOTINPROJECT to handle those problems that are outside the scope of the
+> project.
+>
+
+We do have a method: asking for information in a comment.  Why would
+you close a bug as invalid if it's fixed in the next release?
+NOTINPROJECT?  Invalid.  Why make this even more complicated than it
+already is.  Just say in a comment that the bug lies with another
+project and close it as invalid.  In this case, invalid means 'not a
+Wine bug.'
+
+-- 
+James Hawkins
+
+
+From thestig at google.com  Sun Jan  6 03:18:20 2008
+From: thestig at google.com (Lei Zhang)
+Date: Sun, 6 Jan 2008 01:18:20 -0800
+Subject: What happened to the videos from WineConf?
+In-Reply-To: <558b2f5c0801041432pb71d6b3l9fc390db28357e28@mail.gmail.com>
+References: <47752A3A.7010704@codeweavers.com>
+	<558b2f5c0801031050h3ea3bb4aq35a696884ef68836@mail.gmail.com>
+	<558b2f5c0801041432pb71d6b3l9fc390db28357e28@mail.gmail.com>
+Message-ID: <558b2f5c0801060118l6a1547acj1ddc622d61f04766@mail.gmail.com>
+
+On Jan 4, 2008 2:32 PM, Lei Zhang <thestig at google.com> wrote:
+>
+> On Jan 3, 2008 10:50 AM, Lei Zhang <thestig at google.com> wrote:
+> > On Dec 28, 2007 8:54 AM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+> >
+> > > I remember at wineconf there were some videos created, what happened
+> > > with those? I tried to look on youtube for wineconf, but I didn't find
+> > > anything. Are they online yet? Or will they be put online?
+> > >
+> > > -Maarten
+> > >
+> > >
+> > >
+> >
+> > Three videos were uploaded to Youtube last night:
+> >
+> > Alexandre's Keynote
+> > http://www.youtube.com/watch?v=GqEp8psjv5s
+> >
+> > Detlef Riekenberg - Printing in Wine
+> > http://www.youtube.com/watch?v=1-n6mClDdBQ
+> >
+> > Kai Blin - Wine and Samba
+> > http://www.youtube.com/watch?v=ToKeJbQ87c0
+> >
+> > - Lei
+> >
+>
+> Two more videos:
+>
+> Martin Pilka - CxTest
+> http://www.youtube.com/watch?v=VBZNOTngyeo
+>
+> Marteen Lankhorst - Wine and Sound
+> http://www.youtube.com/watch?v=qKaYqsm4I_Q
+>
+> - Lei
+>
+
+Stefan D?singer's talk on Direct3D
+http://www.youtube.com/watch?v=eJ-zyKR1N2A
+
+

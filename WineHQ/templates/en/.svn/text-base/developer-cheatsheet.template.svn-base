@@ -1,0 +1,569 @@
+<!--TITLE:[Developer cheatsheet]-->
+<!--BLURB:[5 minute intro to Wine development]-->
+
+    <h1 class="title">5 minute intro to Wine development</h1>
+    
+    <p>
+      This is a quick collection of tips and tricks that may be useful
+      for Wine hackers. It's loosely modelled after the
+      <a href="http://ooo.ximian.com">OpenOffice.org hackers guide</a>
+      though I'm afraid this document doesn't feature a comedy build
+      system :)
+    </p>
+
+    <p>
+      A great reference is the Wine Developer Guide, which goes into
+      far more depth than this document will, especially about the
+      architecture of Wine and information on the individual
+      components. However, if you want a getting started
+      guide, this is it.
+    </p>
+
+    <h1> Debug logging </h1>
+
+    <p>
+      The most powerful tool you have to find out why an app breaks
+      on Wine is the logging system. Using it is simple enough, each
+      part of the code (apart from the server) logs to a "debug
+      channel" and each channel has four classes: trace, warn, err
+      and fixme. By default ERR and FIXME messages are displayed,
+      whilst TRACE and WARN are not. To enable them:
+    </p>
+
+    <code> WINEDEBUG=+channel1,+channel2 wine myprogram.exe </code>
+
+    <p>
+      There are some channels which are particularly useful:
+    </p>
+
+    <ul>
+      <li><u>+seh</u> : Structured Exception Handling is invoked either when
+        an application performs an illegal operation (ie crashes) or
+        occasionally a program will throw their own exceptions. UNIX
+        signals are converted into SEH exceptions by Wine and you can
+        watch their propagation using this channel. It's handy because
+        often applications will trap their own crash to, for instance,
+        peform an emergency save. The most common exception to watch
+        for is STATUS_ACCESS_VIOLATION or <b>0xC0000005</b> which is
+        the closest equivalent in Win32 to a segfault. You may also
+        see codes which don't appear in the headers, these are
+        typically language-specific exceptions used by whichever
+        compiler was used to produce the EXE. <b>0xEEDFADE</b> is the
+        code for a Delphi internal exception. <b>0xE06D7363</b> is a
+        Microsoft Visual C++ exception. It has the magic
+        value <b>0x19930520</b> as the value of info[0], which is
+        easily memorable as it looks like a date (and probably is). If
+        you see these thrown it probably means a Win32 API call
+        returned a non-zero error code somewhere.  <p>
+      </li>
+
+      <li>
+        <u>+tid</u> : This prefixes each line of debug output with the
+        ID of the thread which generated it. It's invaluable for
+        debugging multithreaded applications as a context switch can
+        occur at any time. Without it there's often no way to tell
+        exactly what's going on inside the program. If you aren't sure
+        if a program is concurrent, enable it anyway (it's cheap but
+        not free).<p>
+      </li>
+
+      <li>
+        <u>+relay</u> : This is often your first port of call when you
+        aren't sure what's going wrong. It shows you each call into
+        and out of Wine modules at the DLL boundaries. This includes
+        calls between Wine DLLs: for instance, from GDI32 to
+        KERNEL32. Investigate the RelayInclude and RelayExclude string
+        values in [HKCU\Software\Wine\Debug] if you're being
+        overwhelmed by certain functions. A good initial value for
+        RelayExclude is:<p>
+
+        <code> RtlEnterCriticalSection;RtlLeaveCriticalSection;_EnterSysLevel;_LeaveSysLevel;
+        _CheckNotSysLevel;RtlAllocateHeap;RtlFreeHeap;LOCAL_Lock;LOCAL_Unlock 
+        </code><p>
+
+        Most of these functions are called a lot, but don't usually
+        give any clues as to why a program might be failing. <p>
+      </li>
+
+      <li>
+        <u>+snoop</u> : This does the same thing as relay but works
+        between two native DLLs. The information produced by this
+        channel is not as good as relay data, as there is no
+        information on the parameters used. Snoop inspects the stack
+        and disassembles function prologues to try and guess what the
+        parameters are, and so may destabilise the application. <p>
+      </li>
+
+      <li>
+        <u>+heap</u> : This gives a trace of all heap activity in the
+        program. It also switches on constant integrity checks: if
+        you have an app which is trashing the heap arenas, doing a
+        <code>+relay,+heap</code> trace will let you narrow down where it's
+        happening. When an inconsistency is detected the contents of
+        the arena will be dumped and the program terminated. Heap arena
+        trashing can be caused by a number of things, the most common
+        is Wine overrunning an internal buffer. Most new Wine code
+        uses the HeapAlloc/HeapFree APIs internally, and one of the reasons
+        is that Wines built in heap debugging is so useful. <p>
+      </li>
+
+      <li>
+        <u>+olerelay</u> : This channel dumps each call made through
+        the typelibrary marshaller. It's a bit like +relay but works
+        for a certain class of DCOM calls that wouldn't normally show
+        up. Unfortunately this isn't a generic COM relay mechanism. It
+        can be useful for debugging InstallShield problems, though
+        InstallShield/DCOM issues are quite advanced so it's
+        recommended you ask for help if you want to debug this. <p>
+      </li>
+
+      <li>
+        <u>+server</u> : This shows each wineserver RPC. You don't normally
+        need this but it may prove handy when tracking wineserver
+        interaction issues. See below for info on the wineserver.<p>
+      </li>
+
+      <li>
+        <u>+loaddll</u> : Let's you see a notification of each DLL as it's
+        loaded. A lightweight alternative to Dependency Walker
+        (depends.exe) if you don't have it available. <p>
+      </li>
+    </ul>
+
+    <hr>
+    
+    <h1> Basic debugging tips </h1>
+
+    <ul>
+      <li>
+        If a program is displaying a message box when it fails, and
+        you don't know what is causing the problem, try performing a
+        +relay,+msgbox trace. Then load up the log in your favourite
+        editor or text viewer (less is quite good) and search for
+        trace:msgbox. Now look at the relay data just before the
+        MessageBox API call. In particular, look for failing API
+        calls. The problem may not be caused by a call that happens
+        immediately before the error! Also remember that there's
+        little consistency in the Windows API as to what return codes
+        mean, you just have to get used to what they use. Many APIs
+        return non-zero for success and zero for fail, but for some
+        it's the opposite. <p>
+      </li>
+      
+      <li>
+        If a program is failing at startup, and you don't know why,
+        you can use a +all trace. If it seems to be failing a long
+        way from an API call, disassemble it and see if it's
+        accessing some of the parameters passed in to WinMain (for
+        instance, Dungeon Keeper crashes if you run it without an
+        absolute path for argv[0]). <p>
+      </li>
+
+      <li>
+        If you're finding the logs too big to work with try applying
+        the debug delay patch which is available in the wine-patches
+        archives. It lets you toggle logging on and off using the F12
+        key. You can also control the debug channels from within the
+        source by using the libwine APIs. <p>
+      </li>
+
+      <li>
+        Visual glitches are best debugged by looking at the styles
+        given by the application to the offending control then simply
+        reading the widget code by hand. There are no fancy tricks you
+        can use here, you just have to play with the drawing code and
+        see if you can figure out where the problem is. Fortunately,
+        native Windows 98 comctl32 works well, so you can always use
+        that as a reference. <p>
+      </li>
+
+      <li>
+        Don't be afraid to write a test case for a particular API if
+        you have doubts about its implementation. Even if you don't
+        have the tools on hand to compile a test EXE, somebody else
+        will. Often writing a test is the best way to check that a
+        bug is real (and not simply a symptom of a problem elsewhere)
+        as well as proving to Alexandre that your change is correct. <p>
+      </li>
+
+      <li>
+        The source tree is being cleaned up, but all code outside of
+        loader/, tools/, libs/ and programs/ is built by Makefiles inside
+        the dlls/ directory.  <p>
+      </li>
+
+      <li>
+        If a program is complaining about a debugger being present,
+        you need to find out why it thinks that and fix it. Wine does
+        not report a debugger by default, but unfortunately as
+        IsDebuggerPresent() is so easy to work around many programs,
+        especially games, use more devious techniques. Some contain
+        anti-disassembly code. You can find common anti-debugger
+        techniques by reading blackhat/warez cracking sites: just
+        don't do it at work. If you see attempts to load SICE.VXD or
+        NTICE.VXD then you're seeing a check for the popular SoftIce
+        debugger, you can ignore this. <p>
+      </li>
+
+      <li>
+        If you have a Windows license (ie, if you ever bought a
+        PC from a high street store) you can go grab native DLLs from
+        <a href="http://www.dll-files.com/">dll-files.com</a>. This
+        can also be handy if you're missing various runtime DLLs
+        smaller apps often assume are present. Using native DLLs is a
+        good way to check how an API behaves without doing a full
+        blown crosscompile.
+      </li>
+      
+    </ul>
+
+    <hr>
+    
+    <h1> Implementing Win32 </h1>
+
+    <ul>
+      <li>
+        <p> Try and stick to the code style in the surrounding file
+        when writing patches. The Wine developers are pretty relaxed
+        about code style, you'll see a wide variety in use in the
+        code. Don't make it more inconsistent than it already is,
+        though for large amounts of new code use whatever you feel
+        most comfortable with.
+      </li>
+      
+      <li>
+        <p> Microsoft implemented Unicode support by duplicating every
+          API call that accepts strings whether directly in a parameter
+          or via a structure, and then by having conversion functions to
+          map between them. Because Windows uses UCS-2 (16 bits per
+          character) for its Unicode strings, the functions which accept
+          unicode end with a W (for wide) and the ones that take
+          non-unicode (ie strings encoded in whatever the current
+          codepage is) end in A for ANSI. In Windows the compiler can
+          produce unicode constant strings but unfortunately on Linux we
+          can't rely on gccs equivalent support, as it doesn't produce
+          strings of the right format. So, you can't do this:  </p>
+          
+        <code> SomeRandomFunctionW( "Hello" ); </code> <p>
+
+          nor this: <p>
+
+        <code> SomeRandomFunctionW( L"Hello" ); </code> <p>
+        
+
+        <p>
+          Instead, you have to do this:
+        </p>
+
+        <code> 
+          static const WCHAR helloW[] = {'H','e','l','l','o',0};<br>
+          SomeRandomFunctionW( helloW );
+        </code>
+
+        <p>
+          Yes, it's a pain. Emacs users can define a keyboard macro to
+          turn automatically turn long strings into character arrays.
+        </p>
+        
+        <p>
+          Other things to watch with Unicode support are string sizes:
+          when allocating buffers for unicode strings
+          use <code>sizeof(string)*sizeof(WCHAR)</code>. Technically
+          even this is incorrect due to the possibility of bonded
+          pairs, however most Wine code ignores this possibility as
+          it's known ahead of time that no characters outside the
+          Basic Multilingual Plane will be used.
+        </p>
+
+        <p>
+          Because each character now takes 2 bytes instead of 1, you
+          also have to use the wide equivalents of every string
+          function, eg strlenW rather than strlen. Any function which
+          expects a null terminated string requires a wide
+          equivalent, as it's expected that wide strings will have null
+          bytes in them.
+        </p>
+
+        <p>
+          Messages that deal with strings also have A/W versions, and
+          there is a big chunk of infrastructure in both Windows and
+          Wine to convert between them as necessary. Make sure we
+          send the right type of message depending on the string
+          encoding of the target window. The mechanism used to decide
+          varies, some widgets use IsWindowUnicode, others send
+          messages asking the target what format it wants.
+        </p>
+
+        <p>
+          Final note on Unicode: because wide strings contain embedded
+          null bytes you can't print them with printf, which is what
+          the Wine debugging infrastructure uses. If you want to stick
+          a wide string in a debug log (TRACE, ERR, WARN etc) do this:
+        </p>
+
+        <code> TRACE("this is a wide string: %s\n", debugstr_w(widestr)); </code> <p>
+      </li>
+
+      <li>
+        There are several sets of error codes used throughout Windows,
+        in particular the NT "native" APIs use the values in
+        ntstatus.h which look like STATUS_ACCESS_DENIED - when passing
+        these results back up to the standard Windows functions they
+        must be converted to error codes in winerror.h. This
+        conversion is done by RtlNtStatusToDosError().  Others may
+        return HRESULTS, which is used throughout the COM APIs.  For
+        HRESULTs you can use the SUCCEEDED/FAILED macros to test
+        them.<p>
+      </li>
+
+      <li>
+        Speaking of which, the contents of ntdll are undocumented, so
+        don't bother attempting to find out what they do from
+        MSDN. Our current code represents a best guess, however when
+        working on code inside kernel32 or ntdll itself you should use
+        these APIs. Ask for help if you get stuck. Most are self
+        explanatory, a few are not. <p>
+      </li>
+
+      <li>
+        Be careful with error codes: unfortunately while MSDN
+        documents what error codes a function can return this
+        information is often wrong, and even when correct it usually
+        does not say exactly what conditions equate to which error
+        code. Many apps rely on particular codes being returned in
+        particular scenarios: the best way to be sure is to write a
+        test case. <p>
+      </li>
+
+      <li>
+        Don't make the mistake of trusting MSDN too much. It contains
+        incorrect information - it's usually not written by the same
+        people who wrote the code. <p>
+      </li>
+      
+      <li>
+        Win32 code uses HeapAlloc(GetProcessHeap(), 0, allocsize)
+        instead of malloc(allocsize) and therefore so does Wine. In
+        practice this rule isn't strictly enforced so you may see both. <p>
+      </li>
+    </ul>
+
+    <hr>
+
+    <h1> Using the debugger </h1>
+
+    <p> Winedbg has several useful abilities. The most important are
+      being able to get a backtrace of threads with Win32 and builtin
+      debugging info: usually Windows binaries are stripped so this
+      won't be helpful but it can prove handy when using native
+      DLLs. To get a backtrace use the <b>bt</b> command, to get a
+      backtrace of a particular thread postfix it with the thread id
+      in hex, eg <b>bt 0x9</b>. You can also specify "all" instead of
+      a thread id. </p>
+
+    <p> It supports a subset of the gdb commands. The most common
+      ones are all there, for instance you can use <b>info proc</b> and
+      <b>info thread</b>, and then attach to a given process. This is
+      useful for getting a backtrace of deadlocks. </p>
+    
+    <p> It can also disassemble code. Disassembly isn't something you
+      should be too enthusiastic to use, it often reveals no useful
+      information. However, at times it is the only way to move an
+      investigation forward - for instance, to find out why a program
+      is crashing. Use the <b>disas</b> command to disassemble a piece
+      of code. When working backwards from a particular address try
+      and choose aligned addresses, otherwise you risk starting the
+      disassembly from the middle of an instruction which will produce
+      garbage. If you aren't already familiar with x86 assembly, try
+      using the disassembly feature in gdb on ELF binaries you've
+      compiled yourself so you can get used to what it looks like. The
+      Intel instruction set is vast but very few instructions are used
+      frequently. If you know what to expect, you won't be tripped up
+      by bad disassembles or anti-disassembly tricks which can
+      corrupt the output. </p>
+
+    <p> Firstly, if you do decide to disassemble a program, be aware of what
+      you're doing. Obviously you can't take any code you find
+      there and use it in your own programs. Don't try submitting
+      decompiled code as part of patches, it's been tried before
+      and we know what it looks like. Alexandre will reject any
+      patches that look like they were decompiled or produced from
+      disassembly. </p>
+
+    <p> Secondly, understand what you're seeing. Here are some tips: </p>
+
+    <ul>
+      <li> Code which moves values into 0x0(%fs) is probably setting
+        up an SEH handler frame.  <p> </li>
+
+      <li> The return code of a function is stored in %eax on all
+        calling conventions used in Windows, so if you see a function
+        call followed by a check against this register, you're very
+        likely to be seeing a check for an error code. <p> </li>
+
+      <li> Call instructions which dereference a value like so: "call
+        *0x12345678" are usually calls into other DLLs (often API
+        calls). Winedbg should be able to show you which API the call
+        instruction is invoking. Instruction sequences that move a
+        value into a register from the stack and then dereference it in
+        a call instruction could well be COM method invocations. <p> </li>
+
+      <li> C++ applications compiled using Microsoft Visual C++ (the
+        most popular C++ compiler on Windows) use the thiscall calling
+        convention, in which the instance pointer is stored in
+        %ecx. If you get a crash dereferencing the value of %ecx in a
+        C++ program, you might be seeing a null pointer dereference on
+        an object instance. This is especially likely if the offset is
+        quite large, ie a crash accessing 0x36 is a pretty good
+        indication that it's a C++ object and not just a very large C
+        struct. <p> </li>
+
+      <li> Optimizing compilers do a lot of interesting things, such
+        as rearranging instructions to better match the internal
+        scheduling algorithms on superscalar processors. This can
+        seriously obfuscate the assembly stream, so don't be at all
+        surprised if you find it hard to read. A common trick is to
+        use "xorl %eax, %eax" to clear the %eax register rather than
+        the more intuitive "movl $0, %eax". Why? Because the
+        instruction is smaller, so it takes less space, so it uses
+        the CPU icache more effectively.  <p> </li>
+
+      <li> Disassembling native Windows DLLs is virtually always useless,
+        as a technique disassemly is usually used to find out why the
+        application is crashing in an otherwise unexplainable
+        way. <p> </li>
+    </ul>
+
+    <hr>
+
+    <h1> The wineserver </h1>
+
+    <p> What is the wineserver? Put simply, it's the equivalent of the
+      kernel in a real Windows system. It is the central nexus of an
+      emulated Windows system: all Win32 processes running as the same
+      user connect to the users copy of the wineserver. As an example
+      of state Win32 programs may wish to share, consider the
+      registry. Creating or setting a key in the registry is
+      immediately reflected in every other processes view of the
+      registry. This happens on Windows because the registry is a
+      large database held in kernel space. In Wine, registry accesses
+      are converted to remote procedure calls into the server, which
+      holds the canonical copy of the database.
+    </p>
+
+    <p>
+      Server communication takes place via a simple custom RPC
+      protocol. The protocol definition can be found
+      in <code>server/protocol.def</code>. This file is used to
+      generate others, each time the regeneration process takes place
+      the protocol version is bumped. Wine will refuse to start if the
+      client and server protocol versions don't match. If you modify
+      the protocol you have to do a full tree rebuild. To see what a
+      wineserver call looks like, grep for SERVER_START_REQ.
+    </p>
+
+    <p>
+      Here's a brief list of some of the things the wineserver does:
+      message routing, the registry, debugging API, sync primitives,
+      some window management, thread tracking, region manipulation. In
+      future it'll do a lot more (the windows kernel does a lot of stuff).
+    </p>
+    
+    <hr>
+
+    <h1> DLL layout </h1>
+
+    <p> Wine used to be organised by topic so each related area of API
+      had its own directory. Unfortunately this didn't work out too well as
+      Windows itself is rather badly organised, especially in the
+      older parts. So, here's a rundown of where the most important
+      code is kept. See the DEVELOPER-HINTS file for a one line
+      description of each DLL.
+
+      <ul>
+        <li> NTDLL - core of the Windows system. This DLL doesn't
+          exist in Windows 9x, it's something that is only present in
+          Windows NT/2000/XP. In the real Windows system this is
+          little more than a userspace to kernelspace shim, but in
+          Wine it's mostly an interface either to the wineserver or
+          to the underlying Unix kernel. It also contains things like
+          the PE (EXE/DLL format) dynamic linker. <p> </li>
+
+        <li> KERNEL32 - in NT many of these calls simply forward to
+          NTDLL. In Windows 9x, most of the code in NTDLL is
+          here. The thinking behind this split was that NT would be
+          able to support multiple modules for different operating
+          system APIs, ie there could be a POSIX module, an OS/2
+          module, and kernel32 would be the Win32 module. In practice
+          Microsoft wiped out the competition so effectively that
+          this abstraction was never really needed or used, so today
+          NT kernel32 has mostly just a set of forwarders. In Wine
+          the migration of code from kernel32 to ntdll isn't finished
+          yet, so we actually have a fairly even split. <p> </li>
+
+        <li> USER32 - the "user" code is responsible for most of the
+          core windowing/messaging code, as well as various other
+          random things like the clipboard and networking and a
+          wsprintf implementation. Originally user32 <i>was</i> the
+          Windows API, until it grew enough that it made sense to
+          have multiple DLLs hence the rather odd and unrelated
+          collection of code in this DLL. Basically, the very old
+          mechanisms that date from the Windows 3.1 era are likely to
+          be either in this DLL or kernel32. <p></li>
+
+        <li> OLE32, OLEAUT32, RPCRT4 - COM and DCOM are implemented
+          here. </li>
+      </ul>
+    
+    <hr>
+    
+    <h1> Common problems </h1>
+
+    <p> Some bugs are easier to fix than others. Here is a quick list
+      of the more persistent ones so you know what you're getting into: </p>
+    
+    <ul>
+      <li>
+        Anything related to DCOM/marshalling is quite tricky and
+        unlikely to be a quick fix. There are several hacks in our
+        builtin DLLs to satisfy InstallShield as that is the most
+        common program which needs DCOM functionality. If you modify
+        things there, make sure to test it against some InstallShields
+        first. <p>
+      </li>
+
+      <li>
+        Windows that don't accept keyboard focus (typical symptom:
+        what you type goes to the terminal) have been made unmanaged
+        for some reason. Each WM can treat this differently but the
+        most common response is that the window becomes always on
+        top, appears on every desktop and cannot accept
+        focus. Sometimes this is desirable: for menus and tooltips
+        it's what you want. Often it isn't. Managed vs unmanaged is a
+        rather difficult problem, ask on the wine-devel list for help
+        if you wish to change the mode heuristics. <p>
+      </li>
+
+      <li>
+        A program crashes with builtin comctl32 but works with
+        native: this can often indicate a missing notification/callback
+        or an out of order message stream. Most GUI apps are very
+        sensitive to callback ordering and if a callback is not run,
+        or run out of sequence, some software won't initialize
+        internal structures properly leading to a crash at some
+        unspecified future time. Solution? Write test cases to show
+        we have the message ordering right (or wrong) - there are
+        examples of how to do this in the user32 tests.<p>
+      </li>
+
+      <li>
+        An error printed to stderr by Wine which
+        mentions <code>RtlpWaitForCriticalSection</code> indicates a
+        deadlock. Occasionally this can be a bug in the app, more often
+        it's a bug in Wine. If a program is deadlocking on a critical
+        section, a good place to start is by attaching to it with
+        winedbg and getting a backtrace of all the threads. If you
+        don't have any idea what I'm on about, read the threading
+        section of the Wine developer guide.
+      </li>
+    </ul>

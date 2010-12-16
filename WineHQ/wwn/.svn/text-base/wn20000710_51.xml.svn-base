@@ -1,0 +1,306 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="51" date="10 Jul 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 51st release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="77" size="219" contrib="29" multiples="17" lastweek="17">
+<person posts="7" size="16" who="Wilbur N. Dale &lt;wilbur.dale@lumin.nl&gt;" />
+<person posts="6" size="42" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="18" who="Fowler &lt;fowler@indigo.ie&gt;" />
+<person posts="6" size="10" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="5" size="17" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="5" size="13" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="4" size="8" who="Francois Jacques &lt;francoisj@macadamian.com&gt;" />
+<person posts="4" size="7" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="10" who="Simon Harrison &lt;smh@sophos.com&gt;" />
+<person posts="3" size="7" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="3" size="6" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+</stats>
+
+
+<section 
+  title="Wine patches' policy"
+  subject="wine-patches problem"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-26.html"
+  posts="27"
+  startdate="03 Jul 2000 00:00:00 -0800"
+  enddate="07 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+Wilbur Dale unconsciously started an in-depth examination of patches
+submission policy with this simple question:
+
+<quote who="Wilbur Dale">
+Last week I submitted a patch to the wine-patches list and it did not show up on
+the list. 24 hours later I tried again and still no show. I have been receiving
+other peoples patches.
+
+<p />
+
+Today I sent a small test patch and it did show up on the list.
+
+<p />
+
+Everything seems to work OK except for my real patch.
+
+<p />
+
+The patch contains example programs including a windows dll and a windows exe.
+The net result is the tar file is about 2 meg. Is there a limit set someplace
+on the size of an email sent to wine-patches?
+</quote>
+
+
+<p />
+
+First of all, lots of people explained binaries files shouldn't be
+included in the source tree: even if CVS accepts binary files (with
+the -kb command line option), its diff mechanism is not well suited
+(in the tree every binary file evolution is stored, whereas for a text
+file, only the diffs are stored leading to a much smaller size, and
+also update time). This is the main reason for which every Wine
+resource is also stored as a text  unit, and converted when needed to
+a binary format (this holds true for bitmaps, cursors, icons...).
+
+<p />
+
+Later on, Wilbur gave some more explanations of his need of binary
+files: 
+<quote who="Wilbur Dale">
+I am writing the HOWTO-winelib. As part of this I want to present examples of
+<ol>
+	<li />A windows exe using a winelib dll.
+	<li />A winelib executable using a windows dll.
+	<li />A winelib executable using a winelib dll.
+</ol>
+
+<p />
+
+As I see it, I have two choices: either provide binaries or force the user to
+use Visual Studio to generate the windows exe and dll files. I think it is
+better to provide the binaries with the examples. The point of the examples is
+to show how to glue the pieces together. The user may not have Visual Studio.
+I think most winelib users will expect the HOWTO and the examples to which it
+refers to be in the wine tree. 
+</quote>
+
+
+<p />
+
+Lots of people objected the inclusion of generated executable files
+into CVS and asked for some other ways to do it. The most appealing
+answer seemed to be: provide only the source files (and generation
+scripts, like Makefile:s), and let the user compile the sources. If
+this is required, some tarball of all the binaries can be put on the
+web (like on www.winehq.org).
+
+<p />
+
+Uwe Bonnes and Ove K&#229;ven also reminded of some tools to generate under
+Linux some Windows executables:
+<ul>
+	<li />Cygwin/Mingw: as native Linux apps	<li />LCC-Win32: run with the help of Wine
+	<li />Borland C++ 5.5: command line version available for free
+(after registering to Borland users' database)
+</ul>
+
+<p />
+
+Francois Gouget was also very astonished to see a 2 MB compressed .tgz 
+file for only a small example, and asked how Wilbur got this figure
+(and what could explain this huge size - debug information, static
+link of some libraries...). It only turned out that Wilbur also
+included in the tarball generated files (like config out of config.in
+and libtool outputs) which greatly increased the overall size (like
+3/4).
+
+<p />
+
+Finally, no one gave an explanation on Wilbur's first question: why
+didn't the patches appear on wine-patches list. Well, it seems the
+majordomo of the mailing list has an upper limit for the size of a
+submission (the limit seems to be below 2 Meg).
+
+<p />
+
+</section>
+
+
+<section 
+  title="Corel and Wine CVS tree merge"
+  subject="Corel PHOTO-PAINT free download available"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-60.html"
+  posts="1"
+  startdate="05 Jul 2000 00:00:00 -0800"
+  enddate="05 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+In the heart of another discussion, Jeff Tranter, Project Leader for
+Linux Development (Wine team) at Corel, announced:
+
+<quote who="Jeff Tranter">
+CorelDRAW and PHOTO-PAINT are now released. It's not our only task,
+but we will be working on a merge of our code with WineHQ. We're
+starting to plan it now and expect to start in a week or two (a lot of 
+people are on vacation right now).
+</quote>
+
+
+<p />
+
+And later on, came the full announcement:
+<quote who="Jeff Tranter">
+In case you missed the announcement, Corel PHOTO-PAINT is now
+available as a free download. The press release can be found at
+<a href="http://pcbuyersguide.com/news/pressreleases/PR-Corel%20Photopaint%20for%20Linux.html">
+http://pcbuyersguide.com/news/pressreleases/PR-Corel%20Photopaint%20for%20Linux.html</a>
+
+<p />
+
+PHOTO-PAINT, as well as CorelDRAW, were ported to Linux
+using WINE. The source code for Corel's version of WINE
+is available from <a href="http://opensource.corel.com.">
+http://opensource.corel.com/</a>
+
+<p />
+
+Due to tight project schedules, the Corel WINE team
+has been working pretty much in isolation for the
+last few months. With the graphics release behind us,
+we're looking forward to working more closely with
+the WINE community. We're really excited about some
+of the recent WINE developments (like address space
+separation) and want to help WINE move towards a 1.0
+release. We will soon be actively working on merging
+our WINE changes back to the WineHQ public WINE
+source tree. We also hope to contribute where we can
+towards the 1.0 WINE release.
+
+<p />
+
+Again our thanks go to all of the WINE developers. The
+credits page for our applications list all of the
+WINE authors. Without WINE we would not have been
+able to port these applications to Linux in such
+a short period of time. It's also a testament to the
+maturity of WINE (and Linux) that these highly complex
+applications run with full functionality and
+good performance.
+</quote>
+</section>
+
+
+<section 
+  title="Jobs around Wine"
+  subject="Wine jobs"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-06/Subject/article-459.html"
+  posts="3"
+  startdate="30 Jun 2000 00:00:00 -0800"
+  enddate="30 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+Douglas Ridgway was looking for some volunteers:
+
+<quote who="Doug Ridgway">
+If anyone is potentially interested in Wine-related jobs, please let me
+know. Please specify your location, and, if relocation is an option, any
+restrictions on location.
+
+<p />
+
+Or, if you're interested in hiring, feel free to drop me a line. I'll try
+to put you in touch with people who might be appropriate.
+
+<p />
+
+There are also wonderful volunteer positions available:
+<ul><li />Run the Wine bug database
+
+<p />
+
+A valuable, important job! And because it's volunteer, you have complete
+freedom as to how you do it.
+
+<p />
+
+<li />Graphic redesign for WineHQ
+
+<p />
+
+Make pretty stuff which will be seen by hundreds of thousands of people.
+High profile.
+
+<p />
+
+<li />Run the party fund
+
+<p />
+
+Requires an ongoing commitment to partying.
+</ul>
+
+<p />
+
+If anyone is interested in taking one of these on, let me know.
+</quote>
+
+
+<p />
+
+Some people expressed interest in the first item, but the last two
+remain open. If you feel like doing it, don't hesitate to contact 
+<a href="mailto:ridgway@winehq.org">Doug</a>.
+
+<p />
+
+Later on, Jeremy White asked whether it was <quote who="Jeremy White">possible
+to formalize this process on WineHQ, perhaps with a mailing list or an
+official place for such requests? 
+
+<p />
+
+    Along the same lines, I've been wondering if the Wine community
+has a preference for/ideas on working with one of the project sites
+(e.g. sourcexchange or cosource)?  I believe that Ove had a positive
+experience with CoSource, but AFAIK, there hasn't been any
+other successful sponsorship of Wine projects through these sites.
+
+<p />
+
+    We (<i>EdNote: CodeWeavers</i>) would certainly be willing to
+sponsor projects listed there, and I'm sure there are many other
+people who feel the same way. </quote>
+
+<p />
+
+Doug agreed on the core of the proposal but not on the way to put it
+in place:<quote who="Doug Ridgway">A couple of people have suggested
+this. However, employment ads are particularly volatile pieces of
+information, and they are useless if stale, so you have to make sure
+that they are up to date. The big jobs sites do this, along with
+providing good search capabilities.
+
+<p /> current size of the industry, it's probably fine for job ads
+to just get posted to wine-devel. If the noise gets too high, that will
+have to change, but this isn't a danger just yet.
+</quote></section>
+
+</kc>

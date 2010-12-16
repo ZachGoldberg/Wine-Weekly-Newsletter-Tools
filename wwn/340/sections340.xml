@@ -1,0 +1,289 @@
+
+<section 
+	title="Theming WINE"
+	subject="WINE"
+	archive="http://tombuntu.com/index.php/2008/01/04/stop-wine-from-beating-your-windows-apps-with-the-ugly-stick/"
+	posts="0"
+>
+<topic>Wine</topic>
+<p>
+<a href="http://www.Tombuntu.com">Tombuntu.com</a> has an interesting <a href="http://tombuntu.com/index.php/2008/01/04/stop-wine-from-beating-your-windows-apps-with-the-ugly-stick/">article</a> on how to improve the look of wine.  
+</p>
+<p>
+The article mentions how to perform a simple and feasible update to make the colors mesh better:
+</p>
+<quote>
+<p>
+You can install this colour scheme by pasting the contents of <a href="http://tombuntu.com/wp-content/uploads/2008/01/winehumancolours.txt">this text file</a> into your ~/.wine/user.reg file.
+</p>
+</quote>
+<p>
+The above fix works just fine.  Tombuntu continues to describe how to actually theme windows (rounding the corners on the tabs etc.) however they warn against doing so as it results in terrible slow downs:
+</p>
+<quote>
+<p>
+However, in the current Wine versions full theming is too slow to be usable. (You can watch it draw individual lines in slow motion.) If the Wine developers fix this in time for Ubuntu 8.04, a matching Wine theme will be used by default.
+</p>
+</quote>
+<p>
+After talking to some devs on IRC nobody is exactly sure yet (without further investigation) as to the reason for the slowdowns.  Although some suspect the future DIB Engine (post 1.0) may likely improve the situation.
+</p></section>
+<section 
+	title="Wrong BugZilla Stats"
+	subject="BugZilla"
+	archive="#"
+	posts="0"
+>
+<topic>BugZilla</topic>
+<p>
+My sincerest apologies for the numbers on the bugzilla charts for the past 2 weeks.  The numbers were not entirely wrong; however they were rather mislabeled.  The numbers shown were describing other details about those categories.  The numbers were generated from <a href="http://bugs.winehq.org/query.cgi?format=report-table">this form</a> which did not output the data I thought it did.  The numbers now in the bugzilla chart (I am confident) do represent what they say they do.  My sincerest apologies.  
+</p>
+<p>
+Additionally, from my initial observations it does not appear to be able to generate the numbers we want after the fact; and hence I will be unable to go back and correct previous WWN's.  I am sure it will be discussed on the list what to do with those inaccurate charts.
+</p></section>
+<section 
+	title="Test Suite Failures"
+	subject="Tests"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061863.html"
+	posts="12"
+>
+<topic>Tests</topic>
+<p>Dan Kegel brings up a valid point that WINE 1.0 should really have no test failures on linux (<a href="http://bugs.winehq.org/show_bug.cgi?id=9916">bug 9916</a>).</p>
+<quote>
+<p>
+On my machine, we've been hovering between
+five and ten test suite failures for some time
+(see http://bugs.winehq.org/show_bug.cgi?id=9916 )
+</p><p>
+IMHO one of the hallmarks of 1.0 should be reliably
+getting zero test suite failures.
+That would make regressions stand out like sore thumbs
+instead of requiring developers to diff results
+before and after their changes, and might
+result in fewer regressions getting committed.
+</p><p>
+How 'bout folks spend some time tracking
+the current six odd failures down and cleaning them up?
+- Dan
+</p>
+</quote>
+<p>
+I responded mentioning also that <a href="http://test.winehq.org/data/200801121000/">the tests on windows</a> have many more than 5 failures.  However, Dan's point that clearing out the problems with WINE should take precedence.
+</p>
+<p>Reece Dunn:</p>
+<quote>
+<p>
+Ideally, all tests should pass on all platforms. However, there are
+issues with different service packs/hot fixes on each version of
+Windows, different user configuration (themes, UAC on/off, locale,
+etc.), different hardware and even different behaviour between
+different versions of Windows.
+
+I like the idea of getting the tests passing on Windows XP (SP2?) -
+that will then be the baseline for Wine. This should not cause
+regressions on other versions of Windows.
+</p>
+</quote>
+<p>And now the topic of setting the default version of windows in WINE to windows XP comes up.  Dan Kegel:</p>
+<quote>
+<p>
+Yep.  And at some point we should indeed make Windows XP
+the default personality in Wine.  Seems like a 1.0 kind of thing.
+</p>
+</quote>
+<p>
+Paul Vriens:
+</p>
+<quote>
+<p>
+But that should be done way before 1.0 to overcome any regressions.
+</p>
+</quote></section>
+<section 
+	title="Valgrinding large windows apps"
+	subject="Wine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061921.html"
+	posts="7"
+>
+<topic>Debugging</topic>
+<p>A new patch for valgrind from John Reiser has caused a bit of commotion because it has allowed some applications, previously un-grindable, to be run under valgrind for testing.  Dan Kegel experiments and reports:</p>
+<quote>
+<p>
+This script,
+<a href="http://kegel.com/wine/valgrind/valgrind-330-build.sh">http://kegel.com/wine/valgrind/valgrind-330-build.sh</a>
+builds a copy of valgrind-3.3.0 with
+John Reiser's forward port of the Wine support patch.
+With that, I can run Picasa for Windows under Wine under Valgrind.
+It takes 40 seconds to start up on my 1.3GHz Athlon 64,
+which is right in line with Valgrind's legendary ~10x overhead.
+</p><p>
+It seemed to find lots of little problems, but since there
+were lots of numeric addresses without symbolic info in the
+valgrind log, it wasn't directly useful to the Picasa developers.
+</p><p>
+The next step, I suppose, is to find a way to make the valgrind
+log contain symbolic identifiers for the functions in the Windows app.
+I looked at that for a few minutes; here are some notes that
+might provide a starting point.
+</p><p>
+- Dan
+</p>
+</quote></section>
+<section 
+	title="RunOnce support followup"
+	subject="Wine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061812.html"
+	posts="27"
+>
+<topic>wineboot</topic>
+<p>
+Alexandre Julliard has followed up on last weeks discussion of Auto Run/RunOnce support:
+</p>
+<quote>
+<p>
+Any change might break things, that has never stopped us before ;-)
+</p><p>
+I agree we need a way to configure the Run entries to be able to remove
+worms and other nuisances, but if running a legitimate app causes
+trouble we want to fix it, not just force users to disable it; and the
+way to find out about it is by running these entries and seeing what
+happens.
+</p><p>
+Still, we don't need to debug it all at once, so I've disabled the Run
+entries for now. This way we can first concentrate on fixing trouble
+caused by services and RunOnce entries; but once this is done we
+definitely want to enable them again.
+</p>
+</quote></section>
+<section 
+	title="PlayOnLinux"
+	subject="Third Party Applications"
+	archive="http://www.playonlinux.com/en"
+	posts="0"
+>
+<topic>Third Party Applications</topic>
+<p>
+Tom Wickline has had a chance to <a href="http://wine-review.blogspot.com/2008/01/playonlinux.html">review</a> one of <a href="http://wiki.winehq.org/ThirdPartyApplications">many third party applications</a> for WINE, <a href="http://www.playonlinux.com/en">PlayOnLinux</a>.  From the PlayOnLinux site:
+</p>
+<quote>
+<p>
+PlayOnLinux is a script written in bash, that uses Wine ( http://www.winehq.org/ ). Wine's aim is to install and run under a Linux distribution software that is designed for Microsoft Windows.
+</p><p>
+<b>What is PlayOnLinux's aim?</b>
+</p><p>
+After using Wine we realised that it sometimes needs complex commands. PlayOnLinux helps you to soften the processn making your life even easier in the Linux world.
+</p><p>
+More, some people who care about the games they own won't come to Linux simply because they want to be able to play them again. Our script will help them to move on Linux. 
+</p>
+</quote>
+<p>
+Tom Wickline has a lot to say about it:
+</p>
+<quote>
+<p>
+Each supported program is shown in a menu, and are either scripted (using bash) by the official developers, or contributed by community members.
+</p><p>
+There are interesting options in PlayOnLinux, and these include the following:
+</p><p>
+<ol>
+
+  <li> POL allows each installed program to be installed within it's own wineprefix and directory (similar to bottles in CrossOver).</li>
+  <li> It does simulated reboots for certain programs.</li>
+  <li> It has an option of installing Directx for a certain installed game.</li>
+  <li> It can run graphics tests/benchmarks for your video card (using Glxgears, Glxmux, etc.).</li>
+  <li> POL allows you to update install scripts from a central repository - this allows the supported games/programs to grow without you ever having to reinstall the program.</li>
+  <li>. You can assign specific wine versions to run your installed windows program from. If that Wine version is not available on your system, you can choose what version you want and POL downloads and installs the specifc wine version for you.</li>
+  <li> You can also assign the git version of Wine for the installed program. POL has a menu to automatically download the newest sources of Wine from the git repositories and compile them for you automatically.</li>
+   <li> POL can automatically put the installed windows programs shortcuts into the Desktop and/or KDE or Gnome PlayOnLinux menu.</li>
+</ol>
+</p><p>
+To sum it up, POL is a promising frontend installer for Windows and Dos programs. Although there are some scripts that are outdated (POL uses Wine 0.9.37 to run MSOffice 2003, and the IE6 installation script - which uses the IE4Linux script - doesn't work properly on the current 0.9.53), the advantage of POL online repositories (and consequently an active community contributing) gives it the upper end in updating installation scripts for supported programs.
+</p>
+</quote>
+<p>
+<center>
+
+<img src="http://img412.imageshack.us/img412/8251/playonlinux17ql0.jpg" />
+
+</center>
+</p>
+</section>
+<section 
+	title="Stubbing wmvcore.dll"
+	subject="wmvcore.dll"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061923.html"
+	posts="2"
+>
+<topic>wmvcore.dll</topic>
+<p>
+wmvcore.dll (responsible for wma/wmv playback and authoring) may be about to get a local WINE implementation.  Dan Kegel suspects its time it be done:
+</p>
+<quote>
+<p>
+<pre>
+There seem to be a large number of apps that don't
+start unless a wmvcore.dll is present:
+ TVersity
+ Phatnoise
+ Lost Planet
+ The Bard's Tale
+ WMA Workshop
+ MixMeister
+ ...
+So, how 'bout it?  Should we create a stub for wmvcore.dll and friends?
+- Dan
+</pre>
+</p>
+</quote>
+<p>
+Alexander Nicolaysen S&#248;rnes agrees:
+</p>
+<quote>
+<p>
+Sounds like a great idea.  Also some games require a WMA  codec in order to
+play their music.
+</p><p>
+Oh, and it would be nice for Wine to have its own version of the Media Player,
+too. :)
+</p><p>
+Alexander N. S&#248;rnes
+
+</p>
+</quote></section>
+<section 
+	title="Status of D3D Child Windows"
+	subject="Direct3D"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061920.html"
+	posts="4"
+>
+<topic>Direct3D</topic>
+<p>Mark Hatsell writes in to ask about the status of D3D child windows which have undergone some significant improvements recently:</p>
+<quote>
+<p>
+Hello All
+</p><p>
+I was just wondering what the status was of D3D in a child window. Looking
+back at the release info it seems that the OpenGL in a child window has been
+sorted and that D3D has been converted to use WGL. Is this not enough to get
+D3D in a child window going?
+</p><p>
+I have tried the mfctex sample but it draws the D3D child window in slightly
+the wrong place and doesn't render anything at all. I have also tried a
+couple of other apps which also exhibit similar behaviour.
+</p><p>
+Just wondered what else needed fixing before this would work?
+</p><p>
+Thanks<br />
+Mark
+</p>
+</quote>
+<p>
+Stefan D&#246;singer suspects that something might be fishy with Mark's setup; as D3D child windows should be pretty stable.  Roderick Colenbrander mentions the following:
+</p>
+<quote>
+<p>
+Second not all 'child window rendering issues' are over. OpenGL/Direct3D apps that have a file menu and for the rest a 3D view, still don't work. I hope to fix those cases in the near future but the patch will affect ALL graphical programs on Wine, so that's why it requires a lot of testing (the patch is close but not yet done).
+
+Roderick
+</p>
+</quote></section>

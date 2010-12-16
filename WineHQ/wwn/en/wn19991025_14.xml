@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="14" date="25 Nov 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the fourteenth release of the Wine's kernel cousin
+publication. Its main goal is  to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="41" size="135" contrib="22" multiples="9" lastweek="9">
+
+<person posts="6" size="15" who="'Francis Beaudet' &lt;francis@macadamian.com&gt;" />
+<person posts="5" size="18" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="4" size="17" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="3" size="5" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="2" size="7" who="Ulrich Czekalla &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="2" size="7" who="'Peter Hunnisett' &lt;hunnise@nortelnetworks.com&gt;" />
+<person posts="2" size="5" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="2" size="3" who="Ove Kaaven &lt;ovek@arcticnet.no&gt;" />
+<person posts="2" size="12" who="'Juergen Schmied' &lt;juergen.schmied@debitel.net&gt;" />
+
+</stats>
+
+<section
+  title="Anonymous unions"
+  subject="Anonymous unions"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-118.html"
+>
+<p />
+Patrik Stridval forwarded to wine-devel some good news from the gcc
+development mailing list. The anonymous struct and unions patches have
+finally made their way into the main CVS tree, and are very likely to be
+available with next official gcc release. As already explained, this
+will greatly help porting existing Windows code with WineLib without
+having to change the code; Wine code will still use the named
+unions/structs for some time.
+</section>
+
+<section
+  title="PESHiELD"
+  subject="PESHiELD"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-121.html"
+>
+<p />
+Uwe Bonnes reported failure while running a program (<a href="http://home.worldonline.dk/andersa/download/DeCSS.zip">
+<quote who="Uwe Bonnes">an obfuscated binary to rip CSS coded DVD Movie files to disk</quote></a>). Uwe felt that 
+the PESHiELD protection could be the cause of it. Ulrich Weigand took a look at it, and gave extented details on how  
+it worked, and what should be done to make it work under Wine:
+
+<quote who="Ulrich Weigand">
+<p />
+<ul>
+
+<li />Use Linux 2.2.x. (Linux 2.0.x won't work.)
+
+<li />Use libwine.so. (Statically linked Wine won't work; if you must
+use statically linked Wine, use -debugmsg +relay.)
+
+<li />Don't use the internal debugger. (If you do, remove all dangerous
+breakpoints, especially the automatically set start-of-task
+breakpoint, before you start the decryptor.)
+
+</ul>
+
+</quote>
+<p />
+Ulrich also provided a patch to fix the last issues. However,
+he was not sure that PESHiELD was widely used and wondered whether
+or not the patch shall be committed to Wine tree, and if it would be triggered
+on the command line.
+
+</section>
+
+</kc>

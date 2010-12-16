@@ -1,0 +1,564 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="155" date="01/31/2003" />
+
+<intro>
+<p>This is the 155th release of the Wine's kernel cousin publication. 
+Its main goal is to perpetuate the belief that this incredibly useful
+piece of software is somehow nearing beta quality.
+It also serves to inform you of what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+<stats posts="200" size="670" contrib="62" multiples="35" lastweek="34">
+
+<person posts="24" size="118" who="Dan Kegel" />
+<person posts="23" size="63" who="Dimitrie O. Paun" />
+<person posts="9" size="30" who="Tom Wickline" />
+<person posts="9" size="27" who="Sylvain Petreolle" />
+<person posts="9" size="23" who="Dmitry Timoshkov" />
+<person posts="9" size="23" who="Mike Hearn" />
+<person posts="7" size="21" who="Hans Christian Studt" />
+<person posts="7" size="16" who="Eric Pouech" />
+<person posts="6" size="13" who="Alexandre Julliard" />
+<person posts="5" size="55" who="Andrew John Hughes" />
+<person posts="5" size="14" who="Tony Lambregts" />
+<person posts="5" size="13" who="Shachar Shemesh" />
+<person posts="4" size="15" who="Raphael Junqueira" />
+<person posts="4" size="11" who="Waldeck Schutzer" />
+<person posts="4" size="10" who="Scott Jackson" />
+<person posts="4" size="13" who="Marcus Meissner" />
+<person posts="3" size="10" who="Thomas Mertes" />
+<person posts="5" size="12" who="Vincent Beron" />
+<person posts="3" size="6" who="Lionel Ulmer" />
+<person posts="3" size="6" who="Ferenc Wagner" />
+<person posts="2" size="6" who="Ove Kaaven" />
+<person posts="2" size="5" who="Duane Clark" />
+<person posts="2" size="5" who="Ulrich Weigand" />
+<person posts="2" size="5" who="Uwe Bonnes" />
+<person posts="2" size="5" who="Zsolt Rizsanyi" />
+<person posts="2" size="5" who="Joerg Mayer" />
+<person posts="2" size="4" who="Fabian Cenedese" />
+<person posts="2" size="4" who="Andreas Mohr" />
+<person posts="2" size="4" who="David Laight" />
+<person posts="2" size="4" who="Steven Edwards" />
+<person posts="2" size="4" who="liu spider" />
+<person posts="2" size="4" who="Gerald Pfeifer" />
+<person posts="2" size="3" who="Hetz Ben Hamo" />
+<person posts="1" size="23" who="Martin Wilck" />
+<person posts="1" size="6" who="Max" />
+<person posts="1" size="5" who="Dave Miller" />
+<person posts="1" size="4" who="Rolf Kalbermatter" />
+<person posts="1" size="3" who="Gregory M. Turner" />
+<person posts="1" size="3" who="Huw D M Davies" />
+<person posts="1" size="3" who="Francois Gouget" />
+<person posts="1" size="3" who="Robert Shearman" />
+<person posts="1" size="3" who="Greg Turner" />
+<person posts="1" size="3" who="Bill Medland" />
+<person posts="1" size="3" who="Dave Miller" />
+<person posts="1" size="3" who="Stefan Leichter" />
+<person posts="1" size="2" who="Gavriel State" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Johan Gill" />
+<person posts="1" size="2" who="Mike Hearn" />
+<person posts="1" size="2" who="Dave Pickles" />
+<person posts="1" size="2" who="Jason Algol" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Alberto Massari" />
+<person posts="1" size="2" who="Jeff Smith" />
+<person posts="1" size="1" who="Jon Bright" />
+<person posts="1" size="1" who="John K. Hohm" />
+<person posts="1" size="1" who="Auge Mike" />
+<person posts="1" size="1" who="Marko Kreen" />
+
+</stats>
+<section 
+	title="News: Install IE 6" 
+	subject="News"
+	archive="http://www.frankscorner.org/explorer_6.html" 
+	posts="1"
+	startdate="01/25/2003"
+	enddate="01/31/2003"
+>
+<topic>News</topic>
+<p>Seems like people have been asking how to install Internet Explorer
+6 for a few weeks.  I haven't tried this yet, but Frank's Corner has some
+<a href="http://www.frankscorner.org/explorer_6.html">
+short instructions</a> how to get it to work with CrossOver Office.</p>
+
+
+</section>
+
+
+
+<section 
+	title="Threading Problems with glibc 2.3" 
+	subject="Re: PATCH: glibc 2.3.x and errno"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/0971.html" 
+	posts="9"
+	startdate="01/24/2003"
+	enddate="01/25/2003"
+>
+<topic>Integration</topic>
+<p>If you've been following Linux kernel development lately you
+probably know about all the new thread implementations floating
+around.  Basically they offer significant threading improvements
+in order to solve the "<a href="http://www.kegel.com/c10k.html">
+C10K</a>" problem.  These changes have gone into the core of
+the new Linux kernel and glibc.  One of those changes has caused
+a problem with Wine described by Marcus Meissner:</p>
+<quote who="Marcus Meissner"><p>
+
+Beginning of this week, a colleague of mine walked up to me and said
+"Wine does not work.".
+Since this happens sometimes, I just walked to his office and
+checked it for myself. And yes, it did not work. It reported:
+<ul>
+	<tt>wineserver: lstat /tmp/.wine-coolo : No such file or directory</tt>
+</ul></p><p>
+
+Some straces later the problem became apparent:
+</p><p>
+He is using a glibc 2.3 headbranch snapshot (the one we will ship in SuSE
+8.2). Looking at the output of "nm", then looking at the sourcecode
+confirmed first suspicions.
+</p><p>
+__errno_location and __h_errno_location are no longer weak symbols
+and so cannot be overwritten any longer. The internal glibc systemcall
+wrappers no longer call the functions by reference, but directly.
+</p><p>
+Investigations and several talks to one of our glibc gurus (Andreas Schwab)
+gave following results:
+<ul>
+<li> This is intended behaviour and it will not be changed back.</li>
+<li> They are not meant to be overwritten.</li>
+<li> The functions are provided by the pthread implementation with which
+  glibc was compiled. (either linuxthreads, ngpt, nptl or none).
+  These are optimized for speed and do not support hooking.</li></ul>
+</p><p>
+I spend 2 days studying glibc and thinking on how to best solve this
+problem, to no avail:
+<ul>
+<li> Hooking into those functions is not possible, any approach
+  will most likely not be accepted by the glibc hackers.</li>
+<li> Using dietlibc or uClibc is not possible, since dietlibc does not
+  support shared libraries yet and for both C libraries libX11 and others
+  would need to be compiled with them too.</li>
+</ul></p><p>
+The afore mentioned glibc guru did not have any ideas either.
+</p><p>
+There however is a happy but messy end, which appeared to me 
+yesterday:
+	Overwrite those 2 functions with a jump to our implementations.
+</p><p>
+So I did. You can now mark me up for the dark side.
+</p></quote>
+
+<p>Whoa.. let's slow down.  Let me see if I can make a little more
+sense of this.  See, __errno_location simply returns the address
+of the errno variable.  That begs the question, what is the errno
+variable?  Simply, it's a value that gets set when a system-level
+call fails.  For example, there's values defined for things such
+as not enough memory, no space left on a device, or permission
+denied.  And by it's nature, glibc is the place where system calls
+live.  So the problem is with what Marcus said, <i>
+__errno_location and __h_errno_location are no longer weak symbols
+and so cannot be overwritten any longer</i></p>
+
+<p>But wait, why are we even in this mess?  Why doesn't Wine just
+use the standard Unix pthread implementation?  The last time the WINE 
+ developers checked, pthreads and
+ Win32 threads were not compatible enough to have Win32
+ threads implemented on top of them. As of the new glibc 2.3 
+ threading features the developers do not know yet.
+In Wine, Win32 threads are mapped 1:1 to kernel threads, which 
+under Linux is clone(2).  The
+"wineserver" process is what's responsible for waiting on those
+threads and it operates as a single process with a giant poll()
+loop.  So it seems we're back to the age-old question of whether Wine 
+can somehow graft Windows' threading into the pthreads model 
+or whether it needs to continue its own.</p>
+
+<p>This problem is going to be even more apparent in a few months
+when RedHat ships a version of glibc that won't work with Wine.</p>
+
+<p>Andi Mohr didn't like the patch and felt the problem needed to
+be fixed in glibc, not Wine:</p>
+<quote who="Andreas Mohr"><p>
+Excuse me, but somehow I think this is p*ss poor.
+(and yes, I'm now marking you up for the dark side ;-)
+</p><p>
+I mean, both Wine and glibc are successful (?) OSS projects,
+so they should be able to come up with something much better than this
+terribly embarrassing solution (after all everybody knew that
+OSS development was a "superiour" approach, didn't they ? ;-).
+</p><p>
+I for one would feel much better if we simply rejected that particular
+"broken" glibc version and supported a *new* glibc method of properly
+interfacing errno things in a newer glibc version...
+(maybe have some "advanced" setting in glibc that enables all sorts of
+funky interfacing capabilities in case a program needs it)
+</p><p>
+After all if Wine needs this errno support, then there's probably
+a need for it, so it's glibc's bloody obligation to make sure there's
+proper support IMHO.
+</p><p>
+BTW: why did they even choose to abandon a public errno_location ?
+</p><p>
+Anyway, thanks for tackling this severe issue !
+</p><p>
+P.S.: Do you really think that Alexandre would commit it like that ? ;-)
+</p></quote>
+
+<p>Alexandre did reject it and pointed out a flaw,
+<quote who="Alexandre Julliard">
+ I'm afraid that won't be enough. When using thread-local storage,
+ glibc doesn't even call __errno_location any more, it directly stores
+ errno into the thread storage using %gs. It seems the only solution is
+ to make Wine threads work on top of libc threads, but that will be
+ messy.</quote></p>
+
+<p>J&#246;rg Mayer thought that the Mono folks had requested that
+before in order for their System.Windows.Forms piece to work.
+(He's right - we covered that thread back in December 
+<a href="http://www.winehq.org/news/?view=148#Garbage%20Collection%20With%20Wine">
+in issue #148</a>.)  </p>
+
+
+
+<p>Francois Gouget wanted a better explanation of the problem
+that Wine faced.  Ulrich Weigand gave a short overview:</p>
+<quote who="Ulrich Weigand"><p>
+glibc has switched to using thread-local
+storage for errno (i.e. it is declared as 'extern __thread int errno')
+when the tool chain supports the __thread keyword.
+</p><p>
+This means that C source code compiled against the new headers will
+result in assembler code that *directly* accesses a thread-local
+variable as defined by the TLS ABI.  In the case of errno, this 
+will involve accessing the %gs segment using an offset from the GOT,
+without any function call being performed.  (errno is defined to use 
+the initial-exec TLS storage model.)
+</p><p>
+The __errno_location routine is provided only for backwards
+compatibility reasons, it is no longer guaranteed that every
+access to errno calls it.  Thus, if you overwrite the implementation
+of __errno_location, you will only catch *some* errno accesses,
+not all of them ...
+</p></quote>
+
+
+
+<p>Marcus replied in more detail:</p>
+<quote who="Marcus Meissner"><p>
+Lets have a small example:
+<ul>	
+	wine does:
+<ul><code>
+		#include &lt;errno.h&gt;<br />
+		...<br />
+		ret = mkdir("/blub/");<br />
+		if (ret == -1) {
+	<ul>
+			fprintf(stderr,"mkdir failed with errno %d\n",errno);<br />
+			exit(1);<br /></ul>
+		}
+</code></ul></ul></p>
+<p>
+In 1980 this was rather nice and worked all the time with the nice global 'errno'
+integer variable. However, someone had to invent multi threading.
+</p><p>
+After this, errno could not stay a global integer variable, since you could get
+into race conditions writing/accessing it. Sinc millions of lines of code
+could not be changed, the &lt;errno.h&gt; header was changed to defined it as:
+<ul><code>
+	extern int *__errno_location();<br />
+	#define errno *(__errno_location())</code></ul>
+</p><p>
+With __errno_location (or similar) a function that returns a pointer to an
+integer variable within the thread local storage area.
+</p><p>
+(The same goes for __h_errno_location and other internal functions.)
+</p><p>
+The glibc implementation basically does:
+<ul><code>		
+	... convert registers ... <br />
+	int 0x80<br />
+	jae error<br />
+	lret...</code></ul>
+</p><p>
+error:
+<ul><code>
+	...<br />
+	lcall __errno_location<br />
+	mov errorcode , ($eax)<br />
+	...<br />
+	lret</code></ul>
+</p><p>
+glibc follows the pthread style of threading, at the time WINE needed threading
+implemented by SIGALRM timers within a single process (clone(2) was not invented
+yet).
+</p><p>
+As WINE started Win32 threading the clone(2) handler was available for us and
+we implemented our own kind of threading, Windows style. glibc however does not
+know a single thing about that and still assumes there is no threading and
+had __errno_location return a single pointer. 
+</p><p>
+So we had to overwrite __errno_location(), which was easy possible, since libpthread
+also did so and it was exported as weak symbol meant to be overwritten.
+</p><p>
+However with glibc 2.3 the internal thread representation changed, most pthread
+libraries now use clone(2) too, and use a new way of Thread Local Storage, 
+using a segment register. Since WINE was using %fs, they chose to use %gs.
+</p><p>
+Now a system call looks like:
+<ul><code>
+	... convert registers ... <br />
+	int 0x80<br />
+	jae error<br />
+	lret...</code></ul>
+</p><p>
+error:
+<ul><code>
+	...<br />
+	mov errorcode , %gs:(offset)<br />
+	...<br />
+	lret</code></ul>
+</p><p>
+So we no longer can overwrite __errno_location to have our own errno storage, so
+we need to cooperate with the libc threading.
+</p></quote>
+
+<p>Gav State mentioned some uncompleted work that was started
+that might prove useful:</p>
+<quote who="Gavriel State"><p>
+We have a winethreads-on-pthread implementation that we did for some
+of our non-x86 work a while back.  It's pretty simple, and we haven't
+really tested it on an x86 machine recently - when we did so last, it
+definitely had some problems.  It is pretty similar to work that Andrew
+Lewycky did at Corel to support cprof and multithreaded profiling, and
+probably has some of the same caveats that were discussed on wine-devel
+in March of 2000.
+</p><p>
+The code (excluding some configure checks) is here - some updates will
+probably be required to get it working with a more recent tree.  WineHQ
+is welcome to use it.  It would be nice if any improvements made to
+it were donated to ReWind as well:
+<ul><a href="http://www.geocrawler.com/archives/3/9376/2001/12/50/7309863/">
+  http://www.geocrawler.com/archives/3/9376/2001/12/50/7309863/</a></ul>
+</p></quote>
+
+</section>
+
+
+
+
+
+
+<section 
+	title="User Interface Status" 
+	subject="[RFC] The Wine UI page"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/1102.html" 
+	posts="11"
+	startdate="01/30/2003"
+	enddate="01/31/2003"
+>
+<topic>Project Management</topic>
+<topic>Status Updates</topic>
+<p>Dimi put together another page on his web site to
+showcase the status of various user interface elements.  
+He received a bunch of feedback and revised it.  He
+announced:</p>
+<quote who="Dimitrie Paun"><p>
+There is a new page in my little Wine WWW -- the UI status page:
+<ul><a href="http://www.winehq.org/?page=status_ui">
+    http://www.winehq.org/?page=status_ui</a></ul></p><p>
+
+This is a page that I've been meaning to create for many months now.
+Please check it out, and let me know if you notice any inaccuracies.
+</p></quote>
+
+</section>
+
+
+
+
+
+
+<section 
+	title="RPC Data Marshalling" 
+	subject="RPC marshalling patch"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/01/0395.html" 
+	posts="8"
+	startdate="01/30/2003"
+	enddate="01/31/2003"
+>
+<topic>RPC / COM / OLE</topic>
+<p>Ove K&#229;ven dropped a large patch with the following notes:</p>
+<quote who="Ove Kaaven"><p>
+This one is sure to give Greg something to work with... all of this was
+implemented in a bit of a hurry, but since it's based on my research, it
+should be a good starting point in understanding how Microsoft's NDR
+engine works. It doesn't properly implement marshalling alignment or
+memory sizing, may not handle a number of fringe cases, does not conform
+to the DCE RPC wire protocol (mostly because I don't have a description of
+it... where did you find it, Greg?), and probably needs some cleanup, but
+it seems to do the job for me.
+</p><p>
+Log:
+<ul>
+Ove Kaaven<br />
+Implemented marshalling of pointers, simple and complex structures,
+conformant and complex arrays, and user-marshalled types.
+Improved marshalling of conformant strings and interface pointers a bit.
+</ul></p></quote>
+
+<p>By way of explanation, Greg Turner once wrote, 
+<quote who="Greg Turner">Data marshalling is the 
+means by which RPC represents data across process and machine boundaries. 
+MSRPC extends NDR format for this. The wire protocol is mostly documented, 
+but the MS API's to convert data-types in memory into NDR are not. </quote></p>
+
+<p>In reference to Ove's comment about Microsoft's RPC wire protocol,
+Greg provided some links:</p>
+<quote who="Greg Turner"><p>
+I think, I had to sign away my firstborn to OpenGroup for it.  If you feel 
+like spending money /and/ signing away your firstborn, this looks like the 
+definitive OpenGroup DCE package:
+<ul><a href="http://www.opengroup.org/products/publications/catalog/t151x.htm">
+http://www.opengroup.org/products/publications/catalog/t151x.htm</a></ul></p><p>
+
+and here is some free-as-in-beer RPC 1.1 stuff:
+<ul><a href="http://www.opengroup.org/products/publications/catalog/c706.htm">
+http://www.opengroup.org/products/publications/catalog/c706.htm</a></ul></p></quote>
+
+<p>And later,</p>
+<quote who="Greg Turner"><p>
+Of course, I was kidding about signing away your firstborn, although you do at 
+least sign away any redistribution rights by downloading the free stuff.  
+AFAIK OpenGroup/DCE controls the RPC spec -- expecting consumers to sign an 
+NDA or something would kind of defeat their stated purpose of enhancing 
+interoperability.
+</p><p>
+There is one really significant open question left by their documentation: 
+what is the gap between "MSRPC" and DCE RPC?  I still can't decide whether 
+this difference is just an API-level difference, or a full-blown 
+wire-protocol incompatibility....  Luckily, we probably don't care too much 
+-- ultimately, if we can make something that interoperates with Windows, we 
+win, regardless of how well MS complied with the spec.
+</p></quote>
+
+
+<p>J&#246;rg Mayer gave another tip for sorting it out,
+<quote who="Joerg Mayer">
+ You could take a look at the Ethereal sniffer software (
+ <a href="http://www.ethereal.com">www.ethereal.com</a>).
+ It has dissectors for some of Microsoft's rpc stuff.</quote></p>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section 
+	title="File Dialog Options" 
+	subject="common file dialogs"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/1125.html" 
+	posts="6"
+	startdate="01/31/2003"
+>
+<topic>Configuration</topic>
+<p>Mike Hearn wanted to know how to clean up his
+file dialogs:</p>
+<quote who="Mike Hearn"><p>
+
+Is there a reason that:
+<ol>
+<li> The Wine open/save dialog boxes don't show or follow symlinks and </li>
+<li> They show dotfiles?</li></ol></p><p>
+
+I seem to recall a discussion on wine-devel way back on the topic of
+dotfiles, but a quick archive search didn't turn up much of use. At the
+very least I think it should be a pref, wading through lots of dotfiles
+in your home dir makes it much harder to open files with wine, and
+obviously non-technical users will wonder what is going on with all
+these stranges folders that I never made......
+</p></quote>
+
+<p>Marcus Meissner pointed out:</p>
+<quote who="Marcus Meissner"><p>
+Check out the config file:
+<ul><code>
+[wine]<br />
+;"ShowDirSymlinks" = "1"<br />
+;"ShowDotFiles" = "1"
+</code></ul></p></quote>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section 
+	title="Windows API Database" 
+	subject="building a windows API database"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/01/1028.html" 
+	posts="6"
+	startdate="01/23/2003"
+	enddate="01/27/2003"
+>
+<topic>Documentation</topic>
+<p>Dave Miller wrote in with some questions about a project he
+wants to start:</p>
+<quote who="Dave Miller"><p>
+
+I am interested in taking on the "build a database of windows APIs and 
+dependencies" task.  I have started work on scripts to scan a windows 
+system and list import/export information.  So far I can gather a list 
+of dlls and run dumpbin on them, then parse imports (mostly, I think). 
+ I've started with simply printing the parsed output in three columns. 
+ The first is the DLL being scanned, the second is the DLL being 
+imported, and the third is API imported.  I am unsure of one thing. 
+ There is a 1 - 3 character hexadecimal number preceding almost every 
+API.  What is it, and should it be included in the output?  Here is an 
+example of what I am referring to:  The hexadecimal number, in the third 
+column.
+</p><p><table>
+<tr><td>c:\windows\system32/atiiiexx.dll</td><td>        KERNEL32.dll</td><td>    1AD</td><td> InterlockedDecrement</td></tr>
+<tr><td>c:\windows\system32/atiiiexx.dll</td><td>        KERNEL32.dll</td><td>    1B0</td><td> InterlockedIncrement</td></tr>
+<tr><td>c:\windows\system32/atiiiexx.dll</td><td>        KERNEL32.dll</td><td>    126</td><td> GetModuleHandleA</td></tr>
+<tr><td>c:\windows\system32/atiiiexx.dll</td><td>        USER32.dll</td><td>      2AC</td><td> wsprintfA</td></tr>
+<tr><td>c:\windows\system32/atiiiexx.dll</td><td>        USER32.dll</td><td>      1DE</td><td> PostMessageA</td></tr>
+<tr><td>c:\windows\system32/atiiiexx.dll</td><td>        USER32.dll</td><td>      15E</td><td> GetWindowTextA</td></tr>
+</table></p><p>
+Also I could use some direction on what the goals of this task are.  Do 
+we want text output?  That makes a very large text file when listing all 
+imported/exported APIs.  Do we actually want a database for this?
+</p></quote>
+
+<p>From there discussion delved into the format of the data and other
+ideas.</p>
+
+</section>
+
+
+</kc>

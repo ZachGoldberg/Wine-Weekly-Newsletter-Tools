@@ -1,0 +1,585 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="214" date="03/12/2004" />
+<intro> <p>This is the 214th issue of the Wine Weekly News publication.
+Its main goal is to eat leftovers. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="152" size="476" contrib="52" multiples="29" lastweek="24">
+
+<person posts="17" size="50" who="Christian Britz" />
+<person posts="14" size="34" who="Alexandre Julliard" />
+<person posts="9" size="23" who="Dimitrie O. Paun" />
+<person posts="8" size="20" who="Mike Hearn" />
+<person posts="7" size="18" who="Robert Shearman" />
+<person posts="6" size="19" who="Boaz Harrosh" />
+<person posts="6" size="17" who="Uwe Bonnes" />
+<person posts="6" size="16" who="Miguel de Icaza" />
+<person posts="5" size="71" who="Boaz Harrosh" />
+<person posts="5" size="15" who="Fabian Cenedese" />
+<person posts="5" size="14" who="Shachar Shemesh" />
+<person posts="4" size="10" who="Erik de Castro Lopo" />
+<person posts="4" size="9" who="Mike McCormack" />
+<person posts="4" size="7" who="Tom" />
+<person posts="3" size="10" who="Tom Williams" />
+<person posts="3" size="8" who="Jesse Allen" />
+<person posts="3" size="8" who="Ivan Leo Murray-Smith" />
+<person posts="2" size="10" who="Hans Leidekker" />
+<person posts="2" size="9" who="Rein Klazes" />
+<person posts="2" size="6" who="Bill Medland" />
+<person posts="2" size="6" who="Dmitry Timoshkov" />
+<person posts="2" size="6" who="Chris Morgan" />
+<person posts="2" size="5" who="(chmorgan)" />
+<person posts="2" size="5" who="Stefan Leichter" />
+<person posts="2" size="4" who="Jeremy Newman" />
+<person posts="2" size="4" who="Raphael" />
+<person posts="2" size="4" who="Santosh Siddheshwar" />
+<person posts="1" size="4" who="P. Christeas" />
+<person posts="1" size="3" who="David Miller" />
+<person posts="1" size="3" who="Peter Dennis Bartok" />
+<person posts="1" size="3" who="Ryan Underwood" />
+<person posts="1" size="2" who="Joerg Mayer" />
+<person posts="1" size="2" who="Bobby Bingham" />
+<person posts="2" size="4" who="Marcus Meissner" />
+<person posts="1" size="2" who="Peter Riocreux" />
+<person posts="1" size="2" who="Paul van Schayck" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="Joel Konkle-Parker" />
+<person posts="1" size="2" who="Vincent B&#233;ron" />
+<person posts="1" size="2" who="Robert Shearman" />
+<person posts="1" size="2" who="Jakob Eriksson" />
+<person posts="1" size="2" who="Ferenc Wagner" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="1" who="Jeremy White" />
+<person posts="1" size="1" who="Frank Hendriksen" />
+<person posts="1" size="1" who="(brian)" />
+<person posts="1" size="1" who="Santosh Siddheshwar" />
+<person posts="1" size="1" who="Andrew de Quincey" />
+
+</stats>
+<section 
+	title="News: Wine-20040309" 
+	subject="News"
+	archive="http://cvs.winehq.org/cvsweb/wine/ANNOUNCE?rev=1.86&amp;content-type=text/x-cvsweb-markup" 
+	posts="1"
+	startdate="03/06/2004"
+	enddate="03/12/2004"
+>
+<topic>News</topic>
+<p>The latest Wine snapshot is available; Alexandre released it 
+on Tuesday:</p>
+<quote who="Alexandre Julliard">
+<p>WHAT'S NEW with Wine-20040309: (see
+<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.81&amp;content-type=text/x-cvsweb-markup">ChangeLog</a>
+for details)
+<ul>
+        <li> Much improved winegcc tool, now used to build Wine itself.</li>
+        <li> VxDs are now separate libraries for better modularity.</li>
+        <li> Improvements and simplifications to the drive configuration.</li>
+        <li> New setupapi INF script to create the initial registry.</li>
+        <li> Many improvements to the various multimedia dlls.</li>
+        <li> Lots of bug fixes.</li></ul></p></quote>
+
+<p>A lot of the stuff that appeared in this release is a direct
+result of things discussed at this year's WineConf, although some of 
+them have been planned for longer.  Alexandre and Eric Pouech have
+been working extensively on filesystem reorganization and this
+release has the beginnings of that.  Alexandre's work thus far
+has mostly been focused on cleaning up things and simplifying
+others.  Some of the larger changes proposed by Eric haven't
+been implemented yet.  
+</p>
+
+<p>Vincent B&#233;ron pointed out that RedHat RPMs wouldn't
+be available for a few days.  Otherwise, 
+<a href="http://www.winehq.org/download">go download it</a>.
+</p>
+
+</section>
+
+<section 
+	title="Wine As A Shared Library &amp; Mono (con't)" 
+	subject="Re: Wine as shared library patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0074.html" 
+	posts="23"
+	startdate="03/04/2004"
+	enddate="03/09/2004"
+>
+<topic>Integration</topic>
+<p>Earlier this week more discussion went on about supporting 
+Mono with a generic Wine installation.  As it is right now, 
+the Mono community has two approaches for implementing Windows.Forms
+functionality.  The first is a community approach using Gtk
+as the backend.  The second approach by the Ximian/Novell guys
+uses  a separate, hacked version of Wine.  Obviously it
+would be much better if they could just tell someone to go
+download Wine itself; especially because it seems like not 
+too many people need that functionality.  Discussion occurred
+this week in irc (an increasingly more important venue for 
+development).  Alexandre suggested they could still use a
+generic Wine installation by shipping a separate Winelib
+program as an entry point:</p>
+<quote who="Alexandre Julliard"><p>
+ It seems to me that you could simply do a longjmp() out of your
+ WinMain, and then you wouldn't need to modify Wine at all. It would
+ require patching up the TEB a bit (for instance to remove the
+ exception handler chain), but nothing really complicated.
+</p></quote>
+
+<p>
+Miguel de Icaza mentioned that WinMain never gets called, which
+led Alexandre to wonder why.  Peter Bartok explained:</p>
+<quote who="Dennis Peter Bartok"><p>
+Our WinMain doesn't get called because our patch prevents it. If it were
+to get called, we'd be on a different (Wine-created) stack, with all kinds
+of things that are hard to undo, like the exception handling, etc.
+</p><p>
+The goal of my patch was to have minimal impact on Wine, and allow the
+*same* wine code/binaries to be used for regular use as well as shared
+library, so any future Wine version you create will automatically also
+support shared library use.
+</p><p>
+I modeled the global __wine_shared_lib variable after the __wine_main_argX
+globals you introduced last year, assuming that following that style would
+create the least resistance of getting my patch accepted.
+</p><p>
+Having Wine set up the TEB and stack environment and actually call our
+WinMain and us then trying to 'undo' that in WinMain creates potential for
+future breakage of our library, in case you change something related to
+the TEB &amp; stack. Having a variable in kernel that prevents creation of
+these, on the other hand, is easy to maintain, and really has no impact on
+performance or coding.
+</p><p>
+I will be happy to implement any suggestions you may have on how to solve
+it another way in a single codebase that doesn't intruce the potential of
+breaking it in the future. I may very well have overlooked something.
+</p></quote>
+
+<p>Alexandre still disagreed with that approach,
+<quote who="Alexandre Julliard">
+ The TEB &amp; stack layout are dictated by binary compatibility, and are
+ much less likely to change than the Wine init code. It's not clear to
+ me at all that this global variable hack is the right interface for a
+ proper shared library implementation, and I'm not going to commit to
+ supporting that interface in the future.  OTOH WinMain and the TEB
+ layout are not going to change, so you should build on top of that.
+</quote></p>
+
+<p>Miguel was unsure of the approach and didn't think resources
+were available to solve the problem:</p>
+<quote who="Miguel de Icaza"><p>
+It still makes the code too hard for us to maintain.
+</p><p>
+Our patch is simple, and we lack the experience to work on Wine, TEB and
+what not.    We just do not have the time to learn everything there is
+to Wine. 
+</p><p>
+For now, we will ship a different Wine RPM, and use a different prefix
+to avoid conflicting or something like that.  
+</p></quote>
+
+<p>About two hours later Alexandre showed them how to do it:</p>
+<quote who="Alexandre Julliard"><p>
+Something along these lines should do the trick:</p>
+<pre width="72">
+#include &lt;wine/library.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;winternl.h&gt;
+#include &lt;setjmp.h&gt;
+
+static jmp_buf jmpbuf;
+
+int WINAPI
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
+{
+    longjmp( jmpbuf, 1 );
+}
+
+int
+SharedWineInit(void)
+{
+    unsigned char Error[1024]="";
+    char *WineArguments[] = {"sharedapp", LIBPATH "/wine-sharedlib.exe.so", NULL};
+
+    if (!setjmp( jmpbuf ))
+    {
+        wine_init(2, WineArguments, Error, sizeof(Error));
+        printf( "should not get here\n" );
+    }
+    NtCurrentTeb()-&gt;Tib.ExceptionList = (void *)~0UL;
+    VirtualFree( NtCurrentTeb()-&gt;DeallocationStack, 0, MEM_RELEASE );
+    NtCurrentTeb()-&gt;DeallocationStack = NULL;
+    NtCurrentTeb()-&gt;Tib.StackBase = (void*)~0UL;  /* FIXME: should find actual limits here */
+    NtCurrentTeb()-&gt;Tib.StackLimit = 0;
+    return(0);
+}
+</pre>
+</quote>
+
+<p>So, with all of this being self contained, it's not
+necessary for Wine to do incorporate anything.  Boaz
+Harrosh wondered how general of a solution it is - tons
+of projects have wanted to utilize proprietary Windows
+libraries.  The general solution right now is to make
+a Winelib program that does it.  Writing a Winelib program
+is a bit of overhead though.  Most people would just like
+to dynamically load the library and rush off to use the
+API.  Boaz Harrosh wondered how general of a solution this
+was and Mike Hearn replied with some of the deficiencies of
+the approach:</p>
+<quote who="Mike Hearn"><p>
+ For the record there are still a ton of unresolved questions that Mono is
+ just choosing to ignore here (because they can). For instance,
+ multithreading won't always work correctly, but as S.W.F is not thread
+ safe this doesn't seem to matter too much. I think stuff like exception
+ handling and so on won't work either. So it really is not a general
+ solution.
+</p><p>
+ Being able to initialize winelib mid-flight is possible but a whole ton of
+ work that very few people understand enough to do (in fact maybe only AJ).
+</p></quote>
+
+<p>Miguel also wrote back to describe how they plan on using it:</p>
+<quote who="Miguel de Icaza"><p>
+The intention is to have a module wine-sharedlib.so that you can dlopen
+and call a method in there to have Wine initialize itself.  After this
+you can call the API as a library.
+</p><p>
+Now, this might not be as helpful to others as you might think, unless
+they dlopen/dlsym every symbol they want to import (this is what we do
+with Mono: every symbol we need has to be explicitly invoked).
+</p><p>
+MPlayer sounds like the perfect consumer for this though, and drivers as
+well.
+</p><p>
+Mono on CVS (mono and mcs modules) now have the capability of running
+Windows.Forms applications.  
+</p><p>
+Windows.Forms is basically an API to create GUI applications with .NET
+and its essentially a wrapper around Win32, hence our strong desire to
+use Wine as a runtime library.
+</p></quote>
+
+</section>
+
+<section 
+	title="Changes to Wine to Compile MFC" 
+	subject="1/4 patches for compilation of ATL &amp; MFC"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0180.html" 
+	posts="5"
+	startdate="03/11/2004"
+>
+<topic>Winelib</topic>
+<p>Boaz Harrosh was able to get the Microsoft Foundation Classes
+to compile with gcc and Wine.  Quite a bit of work was involved
+and he posted patches required by Wine for the process.</p><p>
+<a href="http://www.winehq.org/hypermail/wine-devel/2004/03/0180.html">Patch 1:</a></p>
+<quote who="Boaz Harrosh"><p>
+uuidof.diff - enable use of some ms extensions
+<dl>
+<dt> include/wine/uuidof.h (new)</dt>
+    <dd>Lets GCC compiler use the uuidof MSVC++ extension used in ATL. See comments inside the file</dd>
+
+<dt> include wine/pretty_com.h (new)</dt>
+    <dd>Lets any C++ compiler use the __decelspec( property () ) MSVC++ extension. See comments inside the file</dd>
+
+<dt> tools/pretty_com.pl</dt>
+    <dd>A Perl script that changes __decelspec( property () ) declarations to the proper macros from pretty_com.h. see comments inside the file</dd>
+
+<dt> include/unknwn.idl (updated)</dt>
+    
+    <dd>Adds a C++ only extension to the IUnknown Interface. This is to let ATL compile (use of uuidof.h)</dd>
+</dl></p></quote>
+
+
+
+
+<p><a href="http://www.winehq.org/hypermail/wine-devel/2004/03/0178.html">Patch 2:</a></p>
+<quote who="Boaz Harrosh"><p>ForAtlMfc.diff - some fixes and additional files needed by ATL/MFC
+<dl>
+ <dt>include/Makefile.in</dt>
+    <dd>Added some new .idl files, see below</dd>
+
+<dt> include/expdisp.idl</dt>
+    <dd>Add the DWebBrowserEvents + the IWebBrowser2 and events</dd>
+
+<dt> include/expdispid.h (new)</dt>
+    <dd>needed by expdisp.idl and ATL code</dd>
+
+<dt> include/olectl.h</dt>
+   <dd>The font constant will not compile. I think it should also be fixed for c but I can't be sure.
+   It was written like in MS headers, MSVC will compile it, but GCC will not. The way I did it works for both. </dd>
+
+<dt> include/mshtmhst.idl (new)</dt>
+    <dd>other Interfaces related to IE that are not present in expdisp.idl</dd>
+
+<dt> include/msstkppg.h (new)</dt>
+    <dd>some GUIDs used by MFC</dd>
+
+<dt> include/objsafe.idl (new)</dt>
+    <dd>common Interface also used by ATL</dd>
+</dl></p></quote>
+
+
+
+<p><a href="http://www.winehq.org/hypermail/wine-devel/2004/03/0179.html">Patch 3:</a></p>
+<quote who="Boaz Harrosh"><p>msvcrt.diff - minor fixes to msvcrt
+
+<dl>
+ <dt>include/msvcrt/limits.h</dt>
+    <dd>very much synced with MSVC, needed by MFC</dd>
+
+<dt>include/msvcrt/math.h</dt>
+    <dd>I'm not sure who submitted a broken empty math.h header. Just to show that no one is doing serious winlib work lately, or they are not reporting about it. This header is the one I have for use with STLPort, it will Just #include the standard lib one. If it is not acceptable than at least completely remove the one in now.</dd>
+
+<dt>include/msvcrt/mbctype.h</dt>
+    <dd>Some missing constants for the _setmbcp, used by MFC</dd>
+
+<dt>include/msvcrt/wchar.h</dt>
+    <dd>Some code was copy pasted from &lt;sys/stat.h&gt; and was protected by an #ifndef. The &lt;sys/stat.h&gt; added some newer definitions that where not added to wchar. This patch removes the old definitions and instead #includes &lt;sys/stat.h&gt;. It is the same way in ms-headers. In fact I had some code that presupposed stat.h included by wchar that would hence not compile under the old version.</dd>
+</dl></p></quote>
+
+
+
+
+<p><a href="http://www.winehq.org/hypermail/wine-devel/2004/03/0181.html">Patch 4:</a></p>
+<quote who="Boaz Harrosh"><p>
+warning_off.diff -
+    some of these might be controversial but would eliminate 17 tons off 
+warnings when compiling MFC/ATL and user code. I have found (the hard 
+way) that GCC in some cases would produce none working code but will 
+Just warn about it. Having thousands of warnings or turning warning off 
+will eliminate the ability to catch these cases. I have found that most 
+of the trivial warnings can be avoided with a few small tricks. here 
+they are below. (for complete discussion of GCC's bad code please post me)
+
+<dl>
+<dt>include/msvcrt/mbstring.h</dt>
+    
+    <dd>This one will eliminate 1000 warnings in MFC and any using code The 
+actual issue is definitely a mal-practice in the code of CString. But 
+since MSVC does not care it was never fixed by MS . In effect it does 
+nothing. ( I think code looks better, but that is subjective). It lets 
+me a way to avoid these warnings when compiling MFC with -D_MBCS. (I did 
+not currently managed to compile it with out it. And I did not even get 
+to Unicode). This single patch would be very hard to maintain outside of 
+wine. If any one has other suggestions I would be happy to hear them. 
+for now it is the best I could do.</dd>
+
+<dt>include/msvcrt/stddef.h</dt>
+    <dd>Lots of offsetof in MFC headers and code. GCC will automatically 
+warn on use of this macro on c++ objects. Regardless if it is right or 
+wrong to do so. (for a complete discussion of this topic just browse to 
+www.gcc.org and search for "offsetof"). this patch will eliminate the 
+warning. ( Maybe it is best to keep this patch separate)</dd>
+</dl></p></quote>
+
+
+
+<p><a href="http://www.winehq.org/hypermail/wine-devel/2004/03/0182.html">Patch 5:</a></p>
+<quote who="Boaz Harrosh"><p>
+winegcc.diff - I know I promised 4 but here is a 5th.
+<dl>
+
+<dt>include/wine/winegccdef.h (new)</dt>
+   <dd>
+   This is an exact replica of what winegcc is doing (extracted from 
+winegcc.c) it is for use by people like me that cannot use winegcc 
+directly. I hope that some day winegcc will just do: "-include 
+wine/winegccdef.h" and save space and time. One addition I have added is 
+an NO_NO_WARNING_MODE option that will eliminate lots off warnings. The 
+default is warning off.</dd>
+
+<dt>winegcc.c</dt>
+    <dd>
+    needed missing stuff</dd>
+</dl></p></quote>
+
+</section>
+
+<section 
+	title="Vino: A Small Script for Setting Options" 
+	subject="In Vino Veritas!"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0236.html" 
+	posts="3"
+	startdate="03/12/2004"
+>
+<topic>Utilities</topic>
+<p>A lot of Wine options are being moved into environment variables - 
+DLL overrides have been gone for a while and debug messages are next.
+Mike Hearn posted a small script to allow changing the options on the
+commandline more easily.  If you call the script "vino" as Mike suggested,
+you can invoke it with "vino +relay ole32=n [program.exe]" for example.
+The script:</p>
+<quote who="Mike Hearn">
+<pre width="72">
+#!/bin/bash
+# A wine wrapper script. In Vino Veritas!
+# v1.0 (C) Mike Hearn
+
+# Licensed under the GPL
+
+for a in $@; do
+
+    if [[ "${a:0:1}" == "+" ]] || [[ "${a:0:1}" == "-" ]]; then
+    	
+	if [[ "$WINEDEBUG" != "" ]]; then
+	    WINEDEBUG="$WINEDEBUG,$a"
+	    shift
+	else
+	    WINEDEBUG="$a"
+	    shift
+	fi
+    elif [[ "${a%=n}" != "$a" ]] || [[ "${a%=b}" != "$a" ]]; then
+	    WINEDLLOVERRIDES="$a $WINEDLLOVERRIDES"
+	    shift
+    fi
+    
+done
+
+red="\033[1;31m"
+normal="\033[0m"
+
+export WINEDEBUG WINEDLLOVERRIDES
+if [[ "$WINEDEBUG" != "" ]]; then
+    echo -e "${red}debug channels:${normal} $WINEDEBUG"; fi
+if [[ "$WINEDLLOVERRIDES" != "" ]]; then
+    echo -e "${red}dll overrides:${normal} $WINEDLLOVERRIDES"; fi
+wine $@
+</pre>
+</quote>
+
+</section>
+
+
+
+<section 
+	title="Patch Roundup" 
+	subject="Patch Roundup"
+	archive="http://www.winehq.org/hypermail/wine-patches/2004/03" 
+	posts="11"
+	startdate="03/06/2004"
+	enddate="03/12/2004"
+>
+<topic>News</topic>
+<p>A lot of development communication has moved from
+the wine-devel mailing list to irc on #winehackers.  
+It seems to be working well, however summarizing 
+development is a bit tougher now.  This week I thought
+I'd cover some of the patches that appeared.</p>
+
+<p>Robert Shearman has been doing a lot of work on
+controls lately.  He posted these patches (among others)
+this week.</p>
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0074.html">Implement Drag List Control:</a></p>
+<quote who="Robert Shearman"><p>
+This patch adds full support for drag list common controls. There are no
+known bugs, so as far as I am concerned this is 100% complete compared
+to ComCtl32 v5.81 and probably v6.0 too.
+</p><p>
+This patch also adds a new cursor, the copy cursor which is a normal
+cursor (copied from user32) with a + sign next to it. This is needed as
+the user can request the control to display this during dragging.
+I have also fixed the tabs in LBItemFromPt. Don't mix tabs and spaces!
+</p></quote>
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0091.html">Toolbar:
+ Drawing Code Rewrite:</a></p>
+<quote who="Robert Shearman"><p>
+This patch makes DrawButton a lot simpler. It splits out the drawing
+functions into DrawImage which draws the button image, DrawFrame which
+draws the frame around the button and DrawSepDDArrow which draws the
+entire separate drop-down arrow. Not only does this make the drawing
+functions easier to manage, it should also make it easier to add theming
+code in the future (they are now split up into the same parts as in the
+themes). We also now properly support the state CDIS_MARKED/BTNS_MARKED.
+Next on the agenda is to rewrite the button size calculation code,
+including integrating Dmitry's code.</p></quote>
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0091.html">Toolbar:
+ Improve Button Calculation</a></p>
+<quote who="Robert Shearman"><p>
+ This patch improves the code calculating how big a button should be and
+ where to draw the various parts. It adds support for a toolbar global
+ iListGap parameter (future patches will allow you to set this) and makes
+ the toolbar use padding supplied by applications.
+ It also fixes Internet Explorer's "Go" button and the Media Player
+ sidebar buttons. It is still not identical with the native version, but
+ that doesn't seem to be a problem.</p></quote>
+
+<p>Christian Costa has been working on Direct Show lately and some
+of the underlying infrastructure. </p>
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0036.html">
+ Add MultiMedia Streams:</a></p>
+<quote who="Christian Costa"><p>
+ Add amstream dll (MultiMedia Streams), part of Direct Show. 
+</p></quote>
+ 
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0030.html">
+ IFilterGraphImpl_EnumFilters and IEnumFilters interface:</a></p>
+<quote who="Christian Costa"><p>
+<ul><li>Implemented IFilterGraphImpl_EnumFilters and IEnumFilters interface. </li>
+ <li>Renamed contructor of IEnumRegFilters interface. </li>
+ <li>Small fix in IFilterMapper_EnumMatchingFilters. </li></ul>
+</p></quote>
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0042.html">
+ IMediaEventSink and IMediaEventEx interfaces:</a></p>
+<quote who="Christian Costa"><p>
+ Implemented IMediaEventSink and IMediaEventEx interfaces.
+</p></quote>
+
+<p>And finally, Dimi Paun has been doing a lot of work on winegcc.  </p>
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0062.html">
+ add support for -B prefix:</a></p>
+<quote who="Dimitrie Paun"><p>
+ Never used -B before, so I don't know if this is how it's
+ supposed to behave. Basically, if a prefix is given, I first
+ look there for the name of the executable. If I find a
+ file that's executable, I run that. If not, I default to
+ the original.</p></quote>
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0063.html">
+ add wine-specific mode:</a></p>
+<quote who="Dimitrie Paun"><p>
+    Add a wine specific mode. If is activated if the -B prefix
+    ends with /tools/winebuild. If you happen to have such a 
+    prefix, but you don't want this behaviour, simply add a
+    trailing '/'. In this special mode, no default Win32 DLLs 
+    are linked in, we don't force the short wchar_t, and the
+    standard dirs are not searched.
+</p></quote>
+ 
+ 
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0061.html">
+add support for CC="ccache gcc":</a></p>
+<quote who="Dimitrie Paun"><p> <ul>
+    <li> Support processors made up of different commands.</li>
+    <li>Rename some processor enums for consistency.</li></ul>
+</p></quote>
+
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0031.html">
+ preserve the relative order of files and libraries:</a></p>
+<quote who="Dimitrie Paun"><p>
+   Preserve the relative order of files and libraries.
+   We do so by maintaining a unique list of files and lib,
+   each marked with the appropriate metadata.
+</p></quote>
+
+
+<p><a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0011.html">
+support winebuild options:</a></p>
+<quote who="Dimitrie Paun"><p><ul>
+    <li>   Add support for passing options to winebuild via -Wb</li>
+    <li>Generate only the loader script when given just the .exe.so</li>
+    <li>Add function to delete element from a strarray.</li></ul></p></quote>
+    
+</section>
+</kc>

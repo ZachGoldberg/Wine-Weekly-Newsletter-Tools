@@ -1,0 +1,326 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+
+<issue num="162" date="03/21/2003" />
+
+<intro>
+<p>This is the 162nd release of the Wine's kernel cousin publication. 
+Its main goal is to keep me from passing out after skiing 4 feet of fresh
+powder.
+It serves to inform you of what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+
+<section 
+	title="News: Wine-20030318" 
+	subject="News"
+	archive="http://cvs.winehq.org/cvsweb/wine/ANNOUNCE?rev=1.73&amp;content-type=text/x-cvsweb-markup" 
+	posts="1"
+	startdate="03/15/2003"
+	enddate="03/21/2003"
+>
+<topic>News</topic>
+<p>We've seen CVS commits daily for the past week.  Then on
+Tuesday Alexandre released Wine-20030318:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20030318: (see 
+<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.69&amp;content-type=text/x-cvsweb-markup">ChangeLog</a> 
+for details)
+<ul>
+        <li> Many Direct Sound improvements.</li>
+        <li> File locking support.</li>
+        <li> Progress on kernel/ntdll dll separation.</li>
+        <li> Lots of bug fixes.</li></ul></p>
+</quote>
+
+<p>Download, compile, be happy: 
+
+ <a href="http://www.ibiblio.org/pub/Linux/ALPHA/wine/development/Wine-20030318.tar.gz">http</a>,
+ <a href="ftp://ftp.infomagic.com/pub/mirrors/linux/sunsite/ALPHA/wine/development/Wine-20030318.tar.gz">ftp #1</a>,
+ <a href="ftp://ftp.fu-berlin.de/unix/linux/mirrors/sunsite.unc.edu/ALPHA/wine/development/Wine-20030318.tar.gz">ftp #2</a>,
+ <a href="ftp://orcus.progsoc.uts.edu.au/pub/Wine/development/Wine-20030318.tar.gz">ftp #3</a></p>
+
+<p>There's been more CVS commits since it was released including
+the introduction of a new portability library, mostly a code
+reorganization so far.  The file locking support is a major
+addition that's been needed for a long time.  More on that in 
+the thread below.</p>
+</section>
+
+
+
+
+<section 
+	title="File Locking" 
+	subject="LockFile() and UnlockFile() are working"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0481.html" 
+	posts="8"
+	startdate="03/19/2003"
+	enddate="03/20/2003"
+>
+<topic>Filesystems</topic>
+<p>As noted above, Alexandre tossed in file locking at the last 
+minute to Wine-20030318.  We recently discussed this back in issue
+<a href="http://www.winehq.org/news/?view=151">#151</a>.  At the time Mike 
+Robinson needed it for
+MS Access and Paradox database access.  After the recent CVS commits,
+Paul McNett reported early success:</p>
+<quote who="Paul McNett"><p>
+As of yesterday, 3/18/2003, LockFile() and UnlockFile() are now implemented, 
+and seem to be working perfectly on my end, testing with the Visual FoxPro 
+native functions of flock(), rlock(), and unlock().</p><p>
+
+This resolution will make a ton of business apps based on desktop database 
+software that much closer to working.
+</p><p>
+Thanks Alexandre for slipping that one in to the 20030318 release!   :)
+</p></quote>
+
+<p>Tony Lambregts was also excited, 
+<quote who="Tony Lambregts">
+Yeah when I saw that I let out a loud WOOHOO, My wife asked me what it was 
+about,.so I had to explain. This is BIG. It seemed to me that there should 
+have been a parade and fireworks involved with this announcement. Oh well... 
+It's still cool... Thanks Alexandre.</quote></p>
+</section>
+
+
+
+
+<section 
+	title=".NET Success" 
+	subject="Success with Mono"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0502.html" 
+	posts="2"
+	startdate="03/20/2003"
+>
+<topic>Integration</topic>
+<p>Mike Hearn dropped a note to inform everyone of the
+status of Mono - Linux's .NET implementation:</p>
+<quote who="Mike Hearn"><p>
+I just thought I'd let you know that the mono team have succeeded in
+resolving their problems with wine and pthread, and here's a screenshot
+to prove it to you:
+<ul><a href="http://theoretic.com/mike/monowine.jpg">http://theoretic.com/mike/monowine.jpg</a></ul>
+</p><p>
+I had to jump through quite a few hoops, so I wouldn't bother
+experimenting until things are better integrated with the main mono
+tree. It shows a lot of potential for the future however!
+</p></quote>
+<p>Dan Kegel wanted a better explanation of what was needed to make
+it work, so Mike explained:</p>
+<quote who="Mike Hearn"><p>
+<ul>
+<li> You need the files from this post:
+<a href="http://lists.ximian.com/archives/public/mono-winforms-list/2003-March/000129.html">
+ http://lists.ximian.com/archives/public/mono-winforms-list/2003-March/000129.html</a>
+</li>
+<li> Get the mono source, I had to rebuild monostub. For some reason the
+binaries Alexandre (theirs, not ours ;) built didn't work for me.</li>
+
+<li> You need to edit the makefile if you don't install wine to /usr/local.
+I've put together a small pkg-config file for wine which I might submit
+at some point, should make this stage more automatic.</li>
+
+<li> monostub btw is a WineLib app that embeds the mono interpreter.
+Because winelib setup has to be done by wine itself at startup, you
+can't just dlopen the Wine libraries and begin using them. Therefore,
+you have to embed mono into wine.</li>
+
+<li> The runwine script LD_PRELOADs a smalls shlib that is somehow related
+to the pthread stuff (monowinehooks.so) but I'm not really qualified to
+talk about that.</li>
+
+<li> The SWF class hierarchy is rather stubby, the SWFTest app doesn't work
+for instance, due to stubs in the .NET code. I used the MenuTest app
+that was in Alexandres email.</li>
+
+<li> You need to have an entry for each DLL used in /etc/mono/config to map
+them, or do as I did and symlink kernel32.dll.so to libkernel32.dll.so
+and so on for each library.</li>
+
+<li> The pthread issue was, as discussed earlier on wine-devel, due to the
+fact that mono had to use Wines implementation of pthreads so Wine could
+keep track of them and do housekeeping. Mono now has some
+implementations of these functions, but I'm not sure if/when Alexandre
+will send them to wine-patches, the impression I got was that they were
+a bit hackish. Hopefully they'll be cleaned up and submitted soon
+though.</li>
+
+<li> You need a special version of the garbage collector (libgc).</li></ul>
+</p><p>
+ Hopefully once it's all integrated work on filling out the SWF class
+ hierarchy will pick up - it would be extremely cool to be able to run
+ Windows .NET apps. There aren't many (any?) in wide circulation at the
+ moment, but that's going to change fast in the next few years.
+</p></quote>
+</section>
+
+
+
+<section 
+	title="DPRINTF to TRACE Conversion" 
+	subject="Re: Oleaut32 Debug Messages"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0322.html" 
+	posts="31"
+	startdate="03/13/2003"
+	enddate="03/16/2003"
+>
+<topic>Debugging</topic>
+<p>Alexandre and Dimi got into a thread on converting DPRINTF
+calls to TRACE calls instead.  Dimi mentioned:</p>
+<quote who="Dimitrie Paun"><p>
+But since we're at the subject, maybe we could modify the
+debugging stuff to allow:
+<ul><code>
+    TRACE("you ");<br />
+    TRACE("can ");<br />
+    TRACE("do ");<br />
+    TRACE("this\n");</code></ul></p><p>
+
+If we detect that we're appending, we just have to skip
+over the class:channel:function preamble (that's trivial,
+the preamble ends at the first space (' ')).
+</p><p>
+This way we can eliminate the DPRINTF macro which is
+rarely used, and thus confusing. Alexandre?
+</p></quote><p>
+
+Alexandre replied, <quote who="Alexandre Julliard">
+
+No objection. Something like this should do the trick</quote>
+and with that he included a small patch.</p>
+
+<p>What exactly does all that mean?  Wine prints out several
+different types of messages.  Some of these are familiar to 
+Wine users - FIXME's fall into this category.
+For more details on the mechanics of DPRINTF, check out the 
+<a href="http://cvs.winehq.org/cvsweb/wine/include/wine/debug.h?rev=1.9&amp;content-type=text/x-cvsweb-markup">debug.h</a>
+header.  Also note, FIXME and ERR messages are enabled by default, 
+whereas TRACE and WARN are not.  So by converting DPRINTF calls into
+TRACE calls it's possible to get them compiled out. </p>
+
+<p>Dimi was pleased with the patch,
+<quote who="Dimitrie Paun">
+ There are 767 DPRINTFs, and 736 MESSAGEs. I think DPRINTFs should just die,
+ they are confusing, it's not clear what they output, etc. Your patch is just 
+ perfect, as it does the obvious thing the user expects. I think we can just
+ turn most of the DPRINTFs into TRACEs, but we need to do that manually. If we
+ do so, we could probably also simplify the code in certain places, so a manual
+ process is better (in fact, a search &amp; replace is the worse combination, as
+ we'd simply lose track of the places we need to audit).</quote></p>
+
+<p>Alexandre also cautioned against a simple search and replace,
+<quote who="Alexandre Julliard">
+I agree most of them can be replaced by TRACE, but not all of them.
+There are cases where we want to dump debug output without the
+standard header; relay output is the obvious example. So I think a
+DPRINTF that can be compiled out would still be useful.</quote></p>
+
+<p>Tony Lambregts got involved and posted a small patch.
+>From there he went on to submit 19 more patches converting various
+files.  Then he announced, 
+<quote who="Tony Lambregts">
+This completes the first stage of DPRINTF-&gt;TRACE. There are still a lot of 
+files that use DPRINTF. 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/03/0371.html">The 
+following is a list</a> of the files I where I did not 
+replace DPRINTF with TRACE along with a breif explanation. I would appreciate 
+any comments on this or any of the patches that I submitted over the last day.
+</quote>  Later he added, 
+<quote who="Tony Lambregts">
+I think that there is still work to be done on this. All I did was a quick 
+sweep with the broom. Some of the stuff that is left will require something 
+more like saws and hammers.&lt;g&gt;.</quote></p>
+</section>
+
+
+
+<section 
+	title="Finding DLL Imports" 
+	subject="Determining dll imports in dlls"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0347.html" 
+	posts="10"
+	startdate="03/13/2003"
+	enddate="03/17/2003"
+>
+<topic>Utilities</topic>
+<p>Brad Campbell needed some help determining what DLLs were
+imported by his app:</p>
+<quote who="Brad Campbell"><p>
+I'm using wine in a small control system to run a gui win32 program.
+I had an idea that I could determine what dlls this program used and 
+only including the wine.dll.so files that were required to run this program.
+</p><p>
+I started by doing a strings on the .exe file and using that to 
+determine which .dlls it referenced. I thought I could use the same 
+process to determine which dlls were then referenced by the dlls the 
+.exe pulled in. Plus including the core dlls by default.
+</p><p>
+Am I missing something, or will this work ?
+</p><p>
+I'm in the process of developing a batch file to do it for me, is there 
+a more accurate way of determining which dlls a dll references than 
+doing a text search for dll names in the binary?
+</p></quote>
+
+<p>Brad further explained that since this is an embedded program he's 
+trying to make it small enough to fit on a flash drive.  He knew he
+would need multimedia type stuff, but wasn't sure of other libraries
+Wine loads.  Francois Gouget suggested using some of Wine's tools to 
+figure it out:</p>
+<quote who="Francois Gouget"><p>
+A better way is to run your application with '--debumsg +loaddll'. This
+will generate a log enumerating all the libraries that your application
+loads (and also tell you whether it's using the native or builtin
+version).
+</p><p>
+Alternately, you can use 'tools/winedump/winedump dump -j imports'
+on your executable and recursively on each library. But it's more work
+(however you can use this method on applications that don't work on Wine
+yet, not your case I guess).
+</p></quote>
+
+<p>Winedump worked fine on Brad's executable, but he wasn't able to
+run it on Wine's own DLLs.  Since most DLLs import other ones 
+he couldn't determine the minimum ones he needed.  Rather than using
++loaddll he thought it might be better to just manually check the
+imports in each DLL makefile.  Dmitry Timoshkov offered another
+alternative: <a href="http://www.dependencywalker.com/">Dependency
+Walker</a>.</p>  
+</section>
+
+
+<section 
+	title="Completely Broken Test App" 
+	subject="shell + listview + imagelist great test program"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0489.html" 
+	posts="2"
+	startdate="03/19/2003"
+	enddate="03/20/2003"
+>
+<topic>Testing</topic>
+<p>Sometimes things that don't work are even better than things
+that do.  Vitaliy Margolen reported a damaged program:</p>
+
+<quote who="Vitaliy Margolen"><p>
+I think I struck gold! I found pretty simple yet _RELY_ broken program.
+Here are screen shots:
+<ul><a href="http://www.kievinfo.com/snapshot1.png">http://www.kievinfo.com/snapshot1.png</a><br />
+    <a href="http://www.kievinfo.com/snapshot2.png">http://www.kievinfo.com/snapshot2.png</a></ul>
+</p><p>
+It's one of the demo programs from Delphi 5. Source included.
+To download executable use this link:
+<ul><a href="http://www.kievinfo.com/virtuallistview.exe">http://www.kievinfo.com/virtuallistview.exe</a></ul>
+</p></quote>
+</section>
+
+
+</kc>
+

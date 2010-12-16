@@ -1,0 +1,348 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Interview</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="1" who="Ove K&#229;ven" date="01 April 2003" />
+
+<intro>
+<p>This is the first in a series of interviews with Wine developers.
+With a little luck, in a few months we'll have a nice collection showcasing
+the talent of the people behind Wine.</p><p>
+
+Ove K&#229;ven hails from Oslo, Norway.  He's been involved with
+Wine since 1997 and contributed to many different parts.  Lately much
+of the work has been COM related, but in the past Ove has worked on
+DOS support and graphics.  And if you've been reading WWN for a while
+you might remember there used to be a CVS summary section - Ove wrote
+all those. Nowadays he works for TransGaming while continuing to reside in Norway.  </p>
+</intro>
+
+<interview>
+
+<question><i>BV:</i> How did you get involved with Wine?</question>
+
+<answer><p><i>Ove:</i>
+Many years ago, back in the days Windows 3.11 was still relevant as a
+platform, and Linux was becoming a usable platform, I vowed never to
+turn over my soul to Bill by upgrading to Windows 95. For a professional
+like me, Windows 95 was nothing but pain. While my primary machine
+continued to run Windows 3.11, I planned to let its slow march to
+obsoletion give me sufficient motivation to research better operating
+systems than yet another Microsoft product.
+</p><p>
+I administered another machine that ran Linux, and while somewhat
+unpolished, I found it to work out for many things.
+</p><p>
+But on the Windows 3.11 machine, I had fun playing a MMORPG by Sierra,
+"The Realm", in my spare time. Then I thought, hmm, wouldn't it be nice
+if I could play this on the Linux machine, too? After considering it a
+bit, and finding the free time, I downloaded the Wine sources and
+started hacking. It took only a few weeks to get it to work, if I
+remember right. But by then, I was already hooked on the concept of
+Wine, and started trying to get Eudora to work, then Free Agent. Given
+that I had a level of experience with advanced Windows programming that
+few of the other contributors had at the time (and was able to fix the
+bugs that plagued Eudora and Free Agent), I soon decided to become a
+permanent member of the Wine team.
+</p></answer>
+
+<question><i>BV:</i> When was the last time you played "The Realm"?</question>
+
+<answer><p><i>Ove:</i>
+I don't remember. Maybe only a few months after that (after that my
+little brother inherited my account and characters).</p></answer>
+
+<question><i>BV:</i> So up until that point you'd been programming for DOS/Windows 3.1?
+Did you have any Unix experience?  Or did you just learn it as you needed to?</question>
+
+<answer><p><i>Ove:</i> Well, I had a dialup shell account on an ISP a couple of years before
+this (their PPP access was more expensive than the shell account). It
+was possible to write and compile programs on it. (Nowadays such
+accounts are mostly used to run IRC bots, of course.) I only needed
+shell access to do what I wanted (irc, pine, lynx), but I found I could
+compile and run a PPP emulator (slirp) (and rename it to irc so the
+admins wouldn't notice) if I really wanted to. Anyway, this was where I
+got my initial Unix experience before running my own Linux systems,
+which I also wrote a few things on before getting involved with Wine.</p>
+</answer>
+
+<question><i>BV:</i> Do you remember the first patch you submitted?</question>
+
+<answer><p><i>Ove:</i> 
+Not really. But I think some DIB fixes were among the first. Perhaps it
+was some palette stuff, too.
+</p><p>
+(looks in documentation/ChangeLog.OLD) Hmm, seems a winsock patch was
+first, makes sense since I'd have to get online before I'd see graphical
+glitches... and I'm pretty sure that the cursor fix was the last thing I
+had to fix before the game was playable.
+</p></answer>
+
+
+
+<question><i>BV:</i> What's your favorite area of Wine to work on?</question>
+
+<answer><p><i>Ove:</i> 
+
+Hmm, difficult, I've worked in many areas. But I think I used to favor
+the DOS support. I wanted to use Wine to run some DOS apps (particularly
+The Realm's patcher, in fact). I didn't like dosemu's model, it ran a
+real DOS in a virtual machine on a virtual hard disk. Since apps running
+in virtual machines are really hard to integrate seamlessly with the
+host OS (and with its other apps, like Wine), Wine's approach of
+implementing the emulated OS's API as a layer on top of the host OS,
+instead of running the original OS in a distinct virtual machine, was
+much more appealing. Unfortunately, Wine had no way to run DOS apps yet,
+but, you know, that was obviously nothing that couldn't be fixed... So
+Wine's support for running DOS apps became "my" part of Wine, and it was
+really fun to work on. Very challenging, yet not insurmountable.
+</p><p>
+Unfortunately I couldn't continue working on this part of Wine, as
+professional work took its toll on my time. Nowadays, I can't really
+point out anything that's really my favorite area. Almost anything can
+be fun to work on if it breaks new ground in some way, and I've worked
+on a lot of areas.
+
+
+</p></answer>
+
+<question><i>BV:</i> I think trying to get the original SimCity to run was my first experience
+with Wine.  So you worked on the MZ loader and stuff?  </question>
+
+<answer><p><i>Ove:</i> 
+Yes.</p></answer>
+
+<question><i>BV:</i> Over the last few months there's been some patches from Jukka Heinonen
+ (among others) moving interrupt handlers into winedos.  Do you know if 
+ this just part of DLL separation?  Or is some new functionality going
+ to come out of it?</question>
+
+<answer><p><i>Ove:</i>
+I think that this is just DLL separation, but he's also aiming at
+getting DPMI programs to work, which means that DPMI interrupts must
+also be available in 32-bit protected mode, so he'll also try to get
+some infrastructure in, I think.</p></answer>
+
+  
+
+<question><i>BV:</i> What's been the most challenging work you've done?</question>
+
+<answer><p><i>Ove:</i> 
+I think that has to be the InstallShield v6 support. It uses very
+advanced COM techniques, which needs very elaborate support from the COM
+framework (which has to be implemented in Wine since it's part of
+Windows), and implementing all of that is both very tedious work and
+very hard to get right. Though InstallShield v6 is functional now, after
+several months of work, Wine's COM support code is still not properly
+implemented (so e.g. repainting while installing is still a problem).
+</p><p>
+
+Unfortunately that work was also among the factors that drove the Wine
+project towards the license change; because that work was such a huge
+project, my employer, having ended up paying me a lot to do it, was
+trying to find someone to sponsor bringing it into Wine, instead of
+immediately donating it. But many Wine developers (including
+CodeWeavers, who had helped with the big InstallShield effort, so I can
+sympathesize with them) felt that this was a problem.
+</p><p>
+So, the Wine project eventually responded by trying to make it illegal
+to not donate code back. I suppose we could say that dealing with this
+unexpected situation was very challenging, too. For me personally too;
+if you dig up some old newsgroup archives, you can see that I was
+against Wine adopting the LGPL many years before I started to work for
+TransGaming.
+</p>
+
+<p>But, ironically, since then, my DCOM work has been sponsored through
+the voting choices of the TransGaming subscribers, and released under
+the X11 license; some of this code can now be found in both the ReWind
+and Wine trees.</p></answer>
+
+<question><i>BV:</i> I thought it was interesting so many non-CodeWeavers/TG people voted to
+go with LGPL, but then submitted their patches as X11 so ReWind could use
+them.  Is there anyone besides CodeWeavers who's really refused to license 
+their work under X11?</question>
+
+<answer><p><i>Ove:</i> 
+Apart from Alexandre Julliard himself? There are definitely some people who
+have chosen to submit their code under LGPL, but almost all have been
+willing to make deals when asked. You can see ReWind's list at 
+<a href="http://www.ping.uio.no/~ovehk/rewind/contrib-list.cgi">
+http://www.ping.uio.no/~ovehk/rewind/contrib-list.cgi</a></p></answer>
+
+<question><i>BV:</i> 
+I think I remember at one point there was a problem
+getting the new winsock stuff in.</question>
+
+<answer><p><i>Ove:</i> 
+Still is, there's a patch from Alexandre we haven't yet got around to
+reimplement.</p></answer>
+
+<question><i>BV:</i> One of your arguments last year for not supporting an LGPL
+license was you'd lose the ability to support proprietary
+hardware, such as Sony's Playstation.  Have you done any
+work on such systems?  How feasible would it be to run Wine
+on such a system?</question>
+
+<answer><p><i>Ove:</i> 
+
+TransGaming actually demonstrated WineX on PlayStation 2 a while ago
+(see <a href="http://www.transgaming.com/news.php?newsid=37">
+http://www.transgaming.com/news.php?newsid=37</a>), along with some
+state-of-the-art dynamic binary translation technology from Transitive
+Technologies. I didn't have anything to do with it myself, though (and
+if I did, I probably couldn't discuss the details anyway).
+</p></answer>
+
+
+<question><i>BV:</i> If there is one thing you'd like to see Wine do, what would
+it be?  Or has it already been done?</question>
+
+<answer><p><i>Ove:</i> 
+If it could run stuff like Monkey Island II, that would be cool. (Yeah,
+I did play MI2 recently with ScummVM, but you know what I mean.)
+</p></answer>
+
+<question><i>BV:</i> Never played it.. what's the problem with it?  </question>
+
+<answer><p><i>Ove:</i>
+It's a DOS game. Last time I tried, it had problems with keyboard input.
+Perhaps it's fixed now, but even if it runs, it wouldn't be quite the
+same without the sound.</p></answer>
+
+<question><i>BV:</i> How did you get involved with TransGaming?  </question>
+
+<answer><p><i>Ove:</i> 
+Simple. They asked me, and I said yes.
+</p><p>
+Well, the story is a little longer... I think it goes back to the days
+of Corel's Wine involvement, where Gavriel State, the CEO of
+TransGaming, worked at Corel as the project leader of the Linux
+application division. He had actually interviewed me and knew my
+qualifications, but couldn't hire me for Corel because of Canada's
+immigration system. When he left Corel to create TransGaming, though, it
+was a different story - he was now free to arrange me to work as an
+international contractor, working over the Internet, without setting
+foot in Canada. I could even continue attending university in Norway
+while working if I wanted, though I soon started working fulltime.
+
+</p></answer>
+
+
+<question><i>BV:</i> Do you get to spend much time working on Wine projects that
+interest you?  Or are you mostly working on resolving problems
+in WineX?</question>
+
+<answer><p><i>Ove:</i> 
+It depends. I can occasionally take the time to work on my own Wine
+projects if I want to, but it just doesn't fancy me as much as it used
+to. For one, Wine is now LGPL, which makes me less interested in working
+on it (I still occasionally submit code to it sometimes, but mostly for
+moral reasons, it doesn't feel as good as it used to). And working on
+WineX is usually enough, I can usually do the things that interest me
+with WineX, especially since they usually have no problems with me doing
+things far out of assigned priority order.
+</p></answer>
+
+
+
+
+<question><i>BV:</i> What are you mostly working on these days?  The recent RPC
+patch was quite large, is that your main area of interest?</question>
+
+<answer><p><i>Ove:</i> 
+No, RPC doesn't particularly interest me, it's just there to support
+cleaner COM framework code, which is needed for InstallShield v6 to
+repaint properly while installing. It's a priority for TransGaming since
+good-looking user interfaces are important these days. The COM framework
+itself has a somewhat interesting architecture, and is surprisingly well
+engineered considering who made it. Then again, most of the ugly details
+remains undocumented.
+</p><p>
+It's not fun, but I guess that's what taking most of my time right now.
+Other than that I mostly work on various DirectX issues in WineX.
+</p></answer>
+
+
+
+
+
+<question><i>BV:</i> Greg Turner has also done a lot of RPC work, what's the
+difference between what he's working on and what you've
+done?</question>
+
+<answer><p><i>Ove:</i> 
+RPC (Remote Procedure Call) is an architecture for calling a
+procedure/function, usually on another machine, across a network. IDL
+(Interface Definition Language) is used to describe such remotable
+functions, such as what parameters they take, what interface they belong
+to, and various other things. COM (Component Object Model) is a standard
+for letting components talk to each other in a vendor-independent manner
+(and typelibs also help make COM language-independent), and DCOM
+(Distributed COM) builds on both COM and RPC to create an architecture
+where any object can talk to any other object elsewhere on the system or
+the network. Plain RPC isn't object-oriented, but DCOM is.</p>
+<p>
+I'm not sure what goals he has, it looks like he's trying to implement
+plain RPC functionality, while I'm mostly interested in DCOM and the COM
+framework around it, needed by InstallShield. Since DCOM is designed as
+an extended RPC, we both have to work on RPC, but from different angles.
+</p></answer>
+
+
+
+
+
+<question><i>BV:</i> Recently people have been talking about adding stdole32.tlb 
+to get InstallShield installers to work.  How hard is it
+to make widl generate that typelib file from IDL?  Have you
+looked into it at all?</question>
+
+<answer><p><i>Ove:</i> 
+Sure. Given knowledge of the typelib format (which we have to some
+degree since Wine has code to parse such files), it shouldn't be too
+hard to add it. It may be somewhat tricky, and some care must be taken,
+but since widl has pretty much implemented the worst part, parsing the
+IDL, it just takes some data type conversions to generate the typelib. A
+typelib is basically a binary equivalent of a .h file, and widl can
+already generate .h files, so there shouldn't be any major hurdles in
+the way.
+</p></answer>
+
+
+
+
+<question><i>BV:</i>
+ I'm not too familiar with that stuff, but I imagine it's not just the
+ case of going out and downloading the IDL file for stdole32, wouldn't
+ that have to be reverse engineered too?</question>
+
+<answer><p><i>Ove:</i>
+Not really. It wouldn't be too hard to decompile a typelib into IDL,
+there's even a tool that comes with Microsoft Visual C++ that can do it,
+just point and click. Besides, Robert Shearman recently submitted usable
+IDL (or ODL in this case) sources for this to wine-patches.</p></answer>
+
+
+
+<question><i>BV:</i> How's ReWind doing?  </question>
+
+<answer><p><i>Ove:</i> 
+I haven't had time to tend to it much for a long time, so it's probably
+lagging a bit behind. But since there has been some interest in ReWind
+(even recently), I suppose I (or someone else) ought to start actively
+maintaining it again before it dies not of lack of interest, but of
+inefficient and unresponsive maintainers...
+</p></answer>
+
+
+
+
+
+</interview>
+
+</kc>

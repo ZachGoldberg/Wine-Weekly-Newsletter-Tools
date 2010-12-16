@@ -1,0 +1,706 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="217" date="04/02/2004" />
+<intro> <p>This is the 217th issue of the Wine Weekly News publication.
+Its main goal is to take apart electronic things not meant to be taken apart. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="199" size="678" contrib="66" multiples="34" lastweek="23">
+
+<person posts="27" size="87" who="Mike Hearn" />
+<person posts="12" size="33" who="Dimitrie O. Paun" />
+<person posts="12" size="31" who="Dmitry Timoshkov" />
+<person posts="11" size="25" who="Alexandre Julliard" />
+<person posts="9" size="30" who="Robert Reif" />
+<person posts="8" size="19" who="hatky" />
+<person posts="7" size="23" who="Paul Davis" />
+<person posts="7" size="19" who="Francois Gouget" />
+<person posts="6" size="69" who="Ivan Leo Murray-Smith" />
+<person posts="6" size="13" who="Martin Fuchs" />
+<person posts="4" size="13" who="Mike McCormack" />
+<person posts="4" size="12" who="&lt;greensh@knology.net&gt;" />
+<person posts="4" size="9" who="Lionel Ulmer" />
+<person posts="4" size="8" who="(tony_lambregts)" />
+<person posts="4" size="7" who="Tom" />
+<person posts="3" size="34" who="Santosh Siddheshwar" />
+<person posts="3" size="19" who="Chris Morgan" />
+<person posts="3" size="12" who="Rafael Avila de Espindola" />
+<person posts="3" size="12" who="Roderick Colenbrander" />
+<person posts="3" size="8" who="Joel Konkle-Parker" />
+<person posts="3" size="8" who="Brett I. Holcomb" />
+<person posts="3" size="7" who="(pvriens)" />
+<person posts="3" size="7" who="Boaz Harrosh" />
+<person posts="3" size="6" who="Vincent B&#233;ron" />
+<person posts="2" size="6" who="Tim Hentenaar" />
+<person posts="2" size="6" who="Uwe Bonnes" />
+<person posts="2" size="4" who="Jakob Eriksson" />
+<person posts="2" size="4" who="Hans Leidekker" />
+<person posts="2" size="4" who="Ge van Geldorp" />
+<person posts="2" size="4" who="Jon Griffiths" />
+<person posts="2" size="4" who="Blake Leverett" />
+<person posts="2" size="3" who="Steven Edwards" />
+<person posts="1" size="11" who="Charlie Lopez" />
+<person posts="1" size="9" who="Christian Costa" />
+<person posts="1" size="6" who="Sylvain Petreolle" />
+<person posts="1" size="5" who="James Perry" />
+<person posts="1" size="5" who="Brad Campbell" />
+<person posts="1" size="4" who="Robert Shearman" />
+<person posts="1" size="3" who="Sebastian Wain" />
+<person posts="1" size="3" who="Mike Kost" />
+<person posts="1" size="2" who="Ove Kaaven" />
+<person posts="1" size="2" who="Bill Medland" />
+<person posts="1" size="2" who="Felix Nawothnig" />
+<person posts="1" size="2" who="Robert van Herk" />
+<person posts="1" size="2" who="Joshua Walker" />
+<person posts="1" size="2" who="Bruce Mellows" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Guido Draheim" />
+<person posts="1" size="2" who="Steven Pignataro" />
+<person posts="1" size="2" who="(chmorgan)" />
+<person posts="1" size="2" who="(brettholcomb)" />
+<person posts="1" size="2" who="Warren Turkal" />
+<person posts="1" size="2" who="Eric Pouech" />
+<person posts="1" size="2" who="Troy Rollo" />
+<person posts="1" size="2" who="Sam" />
+<person posts="1" size="1" who="Maxime Bellenge" />
+<person posts="1" size="1" who="Jonathan Wilson" />
+<person posts="1" size="1" who="Andreas Mohr" />
+<person posts="1" size="1" who="Felipe W Damasio" />
+<person posts="1" size="1" who="Duane Clark" />
+<person posts="1" size="1" who="Ravi Kumar" />
+<person posts="1" size="1" who="Jakob Eriksson" />
+
+</stats>
+<section 
+	title="News: Onebase Linux &amp; Wine, WineTools Update" 
+	subject="News"
+	archive="http://www.ibiblio.org/onebase/" 
+	posts="1"
+	startdate="03/27/2004"
+	enddate="04/02/2004"
+>
+<topic>News</topic>
+
+<p>Earlier this week we posted a news item about 
+<a href="http://www.ibiblio.org/onebase/">Onebase Linux</a> and
+its new support for Wine.  Onebase is a new community-driven
+distribution.  It features an entirely new package management
+system, part of which includes the ability to interact with 
+Wine and Win32 programs.  They've put together 
+a gallery of applications that can be downloaded and installed
+using custom ".owm" installation scripts.  These scripts vary
+in complexity and at the most basic level just download and
+run an application installer.  At the other end of the spectrum
+it's possible to tell the script to manually extract cab files
+and use native DLLs (using Wine AppDefaults in the config
+file.)  From their about page:</p>
+<quote who="Onebase"><p>
+Onebase provides fine integration of WINE software for easier 
+and trouble-free installation and execution of Win32 applications 
+through the "Onebase WINe support". 
+</p><p>
+This support consists of the olm-wine master program and 
+individual preconfiguration scripts for error-prone Win32 
+apps called .owm. These scripts with the olm-wine automate 
+all the tasks and also dynamically notifies you of missing 
+.dlls
+</p><p>
+Also an exclusive gallery of well-known tested Win applications 
+has been provided to give you postive outcomes. It comes with 
+the following features 
+<ul>
+<li> Easy setup for integration of WINE</li>
+<li> Auto regeneration of configuration file</li>
+<li> The required missing DLLs for a program will be notified to you</li>
+<li> And not to mention its usage of .dlls through DLL cache specification</li>
+<li> Preconfigure scripts called .owms avoids manual &amp;
+trouble-prone configuration</li></ul></p></quote>
+
+<p>The original link to that news story was
+provided by <a href="http://www.frankscorner.org">Frank's
+Corner</a>.  </p>
+
+<p>Which, by the way, Frank released version 2.1.0 of his
+<a href="http://franksworld.net/winetools.html">WineTools</a>
+configuration program.  It provides support for
+the following:</p>
+<quote who="Frank Hendrickson"><p>
+Changes:
+<ul>
+<li> Updated Wine config</li>
+<li> Updated system.reg</li>
+<li> Fake Windows drive is now in $HOME/.wine/fake_windows</li>
+<li> Added option to install some applications that work well with Wine</li>
+<li> Fixed some bugs. </li>
+</ul></p></quote>
+
+</section>
+<section
+        title="CVS to Arch Gateway"
+        subject="ANNOUNCE: CVS to arch gateway"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/04/0002.html"
+        posts="5"
+        startdate="04/01/2004"
+>
+<topic>Project Management</topic>
+<p>A few weeks ago (in <a href="?issue=215">issue #215</a>) we
+alluded to setting up 
+<a href="http://www.gnu.org/software/gnu-arch/">arch</a>
+for revision control.  Mike Hearn
+has done all the work and now a CVS to arch gateway has been
+set up.  All commits are still done by Alexandre into CVS.  It's
+too soon to tell if arch will be adopted, but this is a good
+first step:</p>
+
+<quote who="Mike Hearn"><p>
+I'm pleased to announce the public availability of a gateway from WineHQ CVS
+to the GNU arch version control system. 
+</p><p>
+It marks the beginning of an experiment not just in new forms of source 
+control, but in new ways for the Wine project to be organized and
+function. Nobody knows if it will catch on, but a few of us (me, dimi and
+alexandre) have been discussing trying out arch for some time. Carpe diem!
+</p><p>
+For those who already know arch, here are the details:
+</p><p>
+archive coordinates:
+<ul>
+<a href="http://navi.cx/~mike/wine/archive">http://navi.cx/~mike/wine/archive</a><br />
+	mike@winehq.org--wine/wine--mainline--0.9</ul>
+</p><p>
+It is synchronised with CVS on the hour, every hour and a cacherev is
+generated once a week. There are a couple of useful scripts in the root
+directory, branch and merge which are described in the README.ARCH file.
+</p><p>
+It is mirrored here:
+ <ul>
+ <a href="http://mirrors.sourcecontrol.net/mike@winehq.org--wine/">
+ http://mirrors.sourcecontrol.net/mike@winehq.org--wine/</a></ul>
+</p><p>
+For your convenience, and for people who have never used arch before,
+here is an adapted form of the README file. It's available in pseudo-HTML
+here:
+<ul>
+<a href="http://navi.cx/%7Emike/wine/">http://navi.cx/~mike/wine/</a></ul>
+</p><p>
+README.ARCH<br />
+Mike Hearn &lt;mike_at_navi.cx&gt;
+</p><p>
+GNU arch is a distributed source control system. Unlike CVS, arch
+trees can be branched and branched again with no write access to the
+original archive. It has a variety of other interesting features -
+for instance, it uses atomic commits and can operate using a variety
+of network protocols. For more information see 
+<ul>
+<a href="http://wiki.gnuarch.org/">http://wiki.gnuarch.org</a></ul>
+</p><p>
+The rest of this readme is going to take the form of a tutorial on
+how to use arch with Wine. We'll start with the really basic tasks
+that even non-developers may wish to use, and work up to advanced
+usage (branching and merging). It will not answer every question you
+have, for that use the wine-devel mailing list for discussion :)
+</p><p>
+
+
+<u>Tracking Wine development</u>
+</p><p>
+
+You might not be reading this file from an actual arch project tree,
+so let's start with how to get a copy of the gateway tree. First of
+all you need to install "tla", the reference implementation of
+arch. You can get it from the gnuarch.org website, but a simpler way
+is to use the prebuilt binary available here:
+<ul>
+  <a href="http://www.navi.cx/%7Emike/wine/tla">
+  http://www.navi.cx/~mike/wine/tla</a></ul>
+</p><p>
+
+Download, chmod +x, copy to /usr/local/bin and you're set. The binary
+should work on any Linux distro. Yes, it's large, the arch build
+system contains local copies of various libraries.
+</p><p>
+
+Now it's installed, run the following command:
+     <ul><code>
+     tla register-archive http://www.navi.cx/~mike/wine/archive/
+     </code></ul></p><p>
+
+Once it's registered successfully (you get a message when that
+happens), you can run the following command to check out the tree:
+     <ul><code>
+     tla get mike@winehq.org--wine/wine--mainline--0.9 winehq
+     </code></ul></p><p>
+
+This will place a copy of the gateway tree into the winehq/
+directory. "winehq" is a good name to use, because you may later wish
+to download other branches or even make your own, but there will only
+ever be one WineHQ tree - the one controlled by Alexandre Julliard.
+</p><p>
+
+Yes, I know mike@winehq.org isn't a valid email address, it doesn't
+matter, the email is only for namespacing and identification reasons :)
+</p><p>
+
+The checkout will take a long time even on a fast link: the Wine
+sources are 10mb.
+</p><p>
+
+Once downloaded, updating the tree is easy:
+     <ul><code>
+     tla update</code></ul></p><p>
+
+So, now you have an arch project tree, what can you do? Arch has a
+lot of interesting commands, try "<tt>tla changelog | less</tt>" and "<tt>tla
+missing -s</tt>".
+</p><p>
+
+Have fun!
+</p><p>
+
+
+<u>Simple development</u>
+</p><p>
+    
+The easiest way to use arch for development is the same way we use
+CVS: by making changes in a tree, generating a diff from those
+changes, then emailing in the patch. Let's see how that works.
+</p><p>
+
+First of all, we make a change to the tree. Then we use:
+     <ul><code>
+     tla changes --diffs</code></ul></p><p>
+
+to get a patch. In fact, this will generate a lot of extra stuff
+that you don't really need - feel free to remove it, but it's not
+required; patch can strip out garbage from patches automatically.
+
+</p><p>
+You can get diffs for individual files with "<tt>tla file-diffs</tt>".
+</p><p>
+
+Be warned! These commands work against the last revision you updated
+to, they do *not* work against the latest version in the remote
+archive like CVS does. So you probably want to update first.
+</p><p>
+
+However, unlike people just tracking the tree, you DO NOT want to use
+update! What update does, roughly speaking, is reverse changes made
+to the tree, apply the missing patches in turn, then reapply the
+changes. If there are any conflicts they appear in patch style .rej
+and .orig files.
+</p><p>
+
+There is a better way. Arch has a very interesting and powerful
+command called "star-merge". Star-merge allows you to merge your tree
+with another tree (subject to certain rules), in a Just Works(tm)
+fashion. It will deal with repeated merges, and it works if the
+person you are merging from previously merged with you.
+</p><p>
+
+To make this simpler, I've written a script that figures out what you
+branched from (if anything), and then merges from it.
+In effect, this is like "cvs update".
+     <ul><code>
+     ./merge</code></ul></p><p>
+
+This operation can be quite slow (because it involves constructing
+multiple trees and comparing etc), but it is generic and will work
+both with the gateway tree and branches - and it gives 3-way merge
+inline conflict markers too.
+</p><p>
+
+If you want to do it faster, and you don't mind having patch style
+.rej files generated in the case of conflicts, try:
+     <ul><code>
+     tla replay</code></ul></p><p>
+
+which simply downloads and applies each patch in turn. "<tt>tla update</tt>"
+does work too, why not try them all to see which you prefer?
+</p><p>
+
+<u>More advanced development</u>
+</p><p>
+
+So, here comes the interesting part. Now we've covered the basics,
+it's time to find out how to make our own branches and commit to them.
+</p><p>
+
+You need to do a bit of setup. Firstly, you need to tell arch who you
+are:
+     <ul><code>
+     tla my-id 'Mike Hearn &lt;mike@navi.cx&gt;'</code></ul></p><p>
+
+You have to use an ID of this form, arch won't accept others. Now you
+need to create your own archive.
+</p><p>
+
+An archive is a rough equivalent of a CVS repository with one key,
+fundamental difference: an archive is a personal thing which can
+contain trees from many different projects. Typically a person has
+only one archive, though there's nothing to stop you having
+more. Archives are just directories and files, no special server
+software is required to run one. You just need some web space.
+</p><p>
+
+The basic workflow with arch goes something like this:
+<ol>
+<li> Write patch</li>
+<li> Commit to branch</li>
+<li> Upload to a mirror of your archive</li></ol>
+</p><p>
+
+Your actual archive is usually kept locally, which means you can work
+and commit offline. You then mirror the archive on a remote machine
+so others can access it. If people want to work on your tree, they
+branch it, set up their own archive and then you pull from that. In
+other words, only you have write access to your own archive.
+</p><p>
+
+So, you need to create a directory to hold your archive, like this:
+     <ul><code>
+    tla make-archive mike@navi.cx--2004 ~/Code/Arch/2004<br />
+    tla my-default-archive mike@navi.cx--2004</code></ul></p><p>
+
+The named directory should not exist, but its parents should. An
+archive name must have the form of an email address followed by two
+dashes followed by a name. I've named it after the year of creation
+which is pretty common, but it can be called anything.
+</p><p>
+
+Now, to speed things up, you probably want to create a revision
+library. This is basically a cache (using hard links to be space
+efficient) of revisions. You probably want it. Make one like this:
+     <ul><code>
+     mkdir ~/Code/Arch/RevLib<br />
+     tla my-revision-library ~/Code/Arch/RevLib<br />
+     tla library-config --sparse --greedy ~/Code/Arch/RevLib</code></ul></p><p>
+
+OK. Now you just need some web space. Arch can write to web space
+using ftp, sftp (ssh), or WebDAV. You probably want sftp. If you
+don't have any web space you can use talk to me and I'll put you in
+touch with people who can give you some space specifically for
+hosting archive mirrors.
+</p><p>
+
+For now, don't bother with a remote mirror. Just play with a local
+copy, that way you can delete things if you make a mistake (you can
+delete a branch with rm -rf inside the archive, nothing will break).
+</p><p>
+
+Let's say you wish to branch the WineHQ tree, and start work on the
+winecfg program. The simplest way to do this is to create a directory
+somewhere that you will keep all your wine trees in. I use
+/source/wine/arch. Then do this:
+     <ul><code>
+    tla get mike@winehq.org--wine/wine--mainline--0.9 winehq<br />
+    cd winehq<br />
+    ./branch winecfg</code></ul></p><p>
+
+The branch script is in the root of the gateway tree, and is written
+by me. It's designed to let you rapidly branch a given Wine tree. It
+works by "tagging" the new tree in arch, then duplicating the current
+tree using hard links before finally forcing the duplicate tree to
+the new branch.
+</p><p>
+
+WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
+</p><p>
+
+If you use the branch script you MUST use an editor that breaks hard links.
+emacs does by default, vim does if you :set bkc=no (though be warned, this will
+interfere with some programs that invoke vim like crontab -e). zile does not.
+</p><p>
+
+If you want to use an editor that does not break hard links you must
+remove the -l option from cp in the branch script so a real duplicate
+is made. This uses more disk space and is slower to copy, but is safer.
+</p><p>
+
+The result is a new directory called winecfg/ created as a sibling of
+the current directory. You can now commit to this tree however often
+you like. Running merge will update the branch from the tree you
+branched from (in this example, the gateway tree).
+</p><p>
+
+You can branch from that tree again, and so on. Other people can
+branch from your tree in the same way! Feeling giddy with power yet?
+No? Good. Remember that patches which aren't in the mainline tree
+aren't reaching 99.9% of the users - being able to branch is useful
+but don't use it as an excuse to not get patches upstreamed!
+</p><p>
+
+The new branch is put in the default archive and the name is derived
+from the current, for instance running branch in
+mike@winehq.org--wine/wine--mainline--0.9 with the parameter "winecfg"
+produces a branch with the name mike@navi.cx--2004/wine--winecfg--0.9
+</p><p>
+
+Now you need to publish a mirror:
+     <ul><code>
+    tla make-archive --mirror mike@navi.cx--2004 sftp://navi.cx/home/mike/public_html/archive</code></ul></p><p>
+
+and update it when you have done some commits
+     <ul><code>
+    tla archive-mirror</code></ul></p><p>
+
+which actually uploads the changes. If you are always connected, you
+can run the first make-archive command (back when you created your
+archive) with a remote location straight away, but doing it locally
+then mirroring is more common.
+</p><p>
+
+Finally, tell people the URL of your archive so they can register it
+and grab your tree. That's it!
+</p><p>
+
+Oh one other thing to mention is that hard linking trees together 
+like the merge script does is sort of experimental with Wine. I've tried
+it and not seen any big issues as long as you use an editor that breaks
+hard links, but if you spot wierdness related to that let me know.
+</p><p>
+
+Have fun! If you have any questions ask them on the wine-devel
+mailing list.
+
+</p></quote></section>
+<section
+        title="Possible Execshield / Prelink Solution"
+        subject="Call for kernel patch testing"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/03/0535.html"
+        posts="1"
+        startdate="03/26/2004"
+>
+<topic>Architecture</topic>
+
+<p>Do you like to compile your own kernels?  Do you like trying
+out new patches to see what breaks?  If so, we could use your
+assistance...</p>
+
+<p>Problems caused by Execshield and Prelinking still plague Wine
+development.  Thus far no good solutions have appeared.  Alexandre
+is pretty tired of constantly working around problems caused by
+other projects.  Mike Hearn explained the problem faced by Wine
+interacting with newer kernels:</p>
+<quote who="Mike Hearn"><p>
+Basically, we need to reserve address space. There are two ways to do
+that, the first is using my preloader (which is nearly turned into patch
+form to see us through the intermediate time), and the second is by
+using a linker script to define a new ELF section of the right size and
+location.
+</p><p>
+Because of a bug in the binfmt_elf module of the kernel, the linker
+script approach doesn't work. The kernel ignores the protection flags on
+the ELF section and doesn't make them restrictive enough - in other
+words, we will have the same problem that Alexandre's BSS hack had way
+back in the day.</p></quote>
+
+<p>But a solution might be on the horizon!  A kernel patch seems to
+solve all of the problems.  Mike asked for help testing it:</p>
+
+<quote who="Mike Hearn"><p>
+As part of the ongoing efforts to work nicely with execshield/prelink, the
+following kernel patch was developed (not by me I hasten to add):
+
+  <ul><a href="http://www.bitwagon.com/elfdiet/elfdiet.html">
+      http://www.bitwagon.com/elfdiet/elfdiet.html</a></ul>
+</p><p>
+However it needs testing so the kernel guys can be sure it'll not break
+stuff. If you are the type who runs their own kernel, please apply this
+patch and let us know the results! Everything should be fine, it's just a
+bugfix for the edge cases, but the elf loader is security critical so it
+needs widespread usage before it can be upstreamed.
+</p></quote>
+</section>
+<section 
+	title="Winelib Apps Redirecting stdout" 
+	subject="redirecting stdout with WineLib"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0504.html" 
+	posts="8"
+	startdate="03/25/2004"
+>
+<topic>Winelib</topic>
+<p>Ferenc Wagner ran into a problem with Winetest,
+<quote who="Ferenc Wagner">
+Hacking away on winetest I encountered the following
+problem: under Windows and Wine (running cross compiled
+binaries) it's possible to redirect the stdout of a child
+process with CreateProcess using STARTF_USESTDHANDLES.
+However, if I CreateProcess a .exe.so from the WineLib
+version, the redirection is ignored.  The create_process
+function in process.c acts on this option in both cases, but
+I didn't investigate further.  Does anybody have an idea why
+this happens?
+</quote></p>
+
+<p>Alexandre gave a brief explanation of what could
+and couldn't be redirected,
+<quote who="Alexandre Julliard">
+ The Windows std handles get redirected but not the Unix ones, so if
+ the Winelib app is using Unix stdio functions the redirection won't
+ have any effect.</quote></p>
+
+<p>Feri wondered what might need to be done to support it,
+<quote who="Ferenc Wagner">
+ Unfortunately this is exactly what the ok() and trace()
+ macros do in the tests.  In the light of this I'm surprised
+ that the cross compiled binaries work under Wine.  Is there 
+ a fundamental reason that it can't work under WineLib, or is
+ it a simple lack of code?  If the latter, what is missing?
+</quote></p>
+
+<p>Alexandre said,
+<quote who="Alexandre Julliard">
+ Cross-compiled binaries use msvcrt so they don't have that
+ problem. What's missing is to allow reading/writing to a Windows
+ console through a Unix fd; it's not exactly trivial to do.
+</quote></p>
+</section>
+<section 
+	title="Source Code Visualization" 
+	subject="Source code visualization tools?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0594.html" 
+	posts="6"
+	startdate="03/28/2004"
+	enddate="03/31/2004"
+>
+<topic>Utilities</topic>
+<p>Joel Konkle-Parker wanted to know if there was a good
+way to graphically show the layout of a program:</p>
+<quote who="Joel Konkle-Parker"><p>
+Is there such a thing as a source code visualization tool that makes a
+"map" of a program's source? Kind of like:
+<ul><tt>
+&#160;&#160;&#160;&#160;&#160;              main()<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;    |<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;    |<br />
+&#160;&#160;&#160;&#160;                   function1()<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;    /\<br />
+&#160;&#160;&#160;&#160;&#160;&#160;         /&#160;&#160;\<br />
+                                       func2()&#160;&#160;&#160;func3()<br />
+&#160;&#160;&#160;            |<br />
+&#160;&#160;&#160;            |<br />
+&#160;          func4()</tt></ul></p><p>
+
+I'm basically looking for something that will help me "see" how a
+program is laid out so that I can start working on it.
+</p></quote>
+
+<p>Lots of different solutions were given.  Martin Fuchs had
+the first suggestion,
+<quote who="Martin Fuchs">
+Try out Doxygen: 
+<a href="http://www.stack.nl/~dimitri/doxygen/">
+ http://www.stack.nl/~dimitri/doxygen/</a>
+It's a very nice source code documentation tool and can also display
+call graphs.</quote></p>
+
+<p>Joshua Walker knew of another tool:</p>
+<quote who="Joshua Walker"><p>
+You are looking for "Source Navigator" 
+It's here...
+<ul><a href="http://sourcenav.sourceforge.net/">
+http://sourcenav.sourceforge.net/</a></ul></p><p>
+
+It's pretty cool if you want to follow what goes
+where. All the pretty arrows too. (It's horizontal
+along the top of the screen, not vertical) You can
+follow functions, stucts, header files. I used it when
+I was a programmer... 
+</p></quote>
+
+<p>Blake Leverett thought emacs worked pretty good for just
+browsing through code:
+<quote who="Blake Leverett">
+ I was looking for a similar thing a while back.  One great tool for
+ navigating the wine source is the etags program.  In the wine source
+ directory, type 'make etags'.  This makes a file called TAGS.  Then, start
+ emacs, and type alt-x visit-tags-table, and load the tags file.  You can
+ navigate the source by function.  See the tags manpage and the emacs
+ manpage for the tags section for details.</quote></p>
+
+
+<p>It wasn't clear if Joel had meant to use one of these tools with
+Wine or not.  If so, Mike Hearn wasn't sure how useful it would
+be.  Instead, he offered a quick overview of how things related
+to each other:</p>
+<quote who="Mike Hearn"><p>
+I don't think an automatic tool would be very good at this with Wine. It's
+a ridiculously complicated codebase, not through choice mind you, that's
+just the way Windows is.
+</p><p>
+Really at some point we should provide better high level developer
+documentation like this - I remember finding it confusing too.
+</p><p>
+Basically, the most important code is all in the dlls/ directory. The
+other directories are either supporting code (for booting the emulator,
+unicode tables etc) or are holdovers from the old code layout (windows/)
+and is being slowly moved into the dlls/ directories. The code in windows/
+is a part of USER, basically.
+</p><p>
+Knowing the windows architecture helps. Basically in NT based systems you
+get:
+<ul>
+<li> NTDLL - low level OS services, threading, file io etc). the so called
+"native" API</li>
+<li> KERNEL - Win32 "layer", really mostly a set of forwarders to NTDLL </li>
+<li> USER - random stuff - core windowing mostly, as well as clipboard and a
+few widgets like the button control, edit box, menus etc</li>
+<li> COMCTL32 - Widget library. More advanced/modern controls like the
+toolbar, rebar, tree view etc. Pretty straightforward</li>
+<li> OLE* - Our COM/OLE implementation.</li>
+</ul>
+</p><p>
+Is that what you meant? Best way to learn the source is by reading it, and
+then asking about the parts you don't understand basically.
+</p></quote>
+</section>
+
+
+
+
+<section 
+	title="Testing Games" 
+	subject="Game support"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0606.html" 
+	posts="29"
+	startdate="03/29/2004"
+>
+<topic>Testing</topic>
+<p>James Perry tested some games with Wine and reported
+on what he found:</p>
+<quote who="James Perry"><p>
+I've been following Wine development for a while but
+now I think it's time to contribute something. I don't
+use Windows anymore (except for PowerPoint at work),
+but I decided it would be good to be able to play some
+games on Linux. So I grabbed Wine from CVS, compiled it
+up and tested some games, with the intention of finding
+where the problems were and hopefully fixing them. I
+have put my results on a web page at:
+<ul><a href="http://www.epcc.ed.ac.uk/~jamesp/wine-games.html">
+http://www.epcc.ed.ac.uk/~jamesp/wine-games.html</a></ul>
+</p><p>
+
+to avoid making this posting even longer. Note that I
+haven't looked in detail at most of these yet, I just
+tried them out once to see what would happen. I'm
+gradually working through the list, debugging them.
+</p><p>
+I've already submitted one patch (to solve a D3D blend
+mode problem that affected SonicR). I have traced a
+number of the other problems to specific aspects of
+Wine, but I'm not sure how to go about fixing them. Any
+advice on these points from experienced developers
+would be welcome
+</p></quote>
+
+<p>Of the 21 games he tested, 15 installers worked to
+some degree.  Of those, 6 games worked.  That gives us
+a 29% success rate out of the box.  Mike Hearn and Lionel
+Ulmer offered some suggestions.  Lionel pointed out that
+one of the games, Dungeon Keeper 2, had some workarounds
+that enabled it to run with Wine.</p>  
+
+</section></kc>

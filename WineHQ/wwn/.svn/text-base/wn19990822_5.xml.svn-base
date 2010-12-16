@@ -1,0 +1,460 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="5" date="22 Aug 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the fifth release of the Wine's Kernel Cousin
+publication. This is the first "official" issue after some
+experimental ones. Its main goal is to distribute widely what's
+going on around Wine (the UN*X Windows emulator).
+
+<p />
+
+Alexandre Julliard, Wine's project leader, is joining CodeWeavers for
+a full time job on Wine development.
+
+<p />
+
+<strong>Links:</strong>
+
+<p />
+
+A page regarding Open Source projects on Windows is now available at
+<a href="http://freshmeat.net/browse/216/?topic_id=216">
+http://freshmeat.net/browse/216/?topic_id=216</a> 
+
+<p />
+
+Juan Manuel Vioque pointed to an interesting Byte article on solutions to
+port programs between Windows and Unix (both ways) where Wine is
+mentionned: <a href="http://www.byte.com/feature/BYT19990811S0001">
+http://www.byte.com/feature/BYT19990811S0010</a>
+
+</intro>
+
+<section
+  title="Elfdlls are coming"
+  subject="Elfdlls are coming"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-269.html"
+>
+
+Bertho Stultiens sent out for comment a first and incomplete version
+of his elfdll tool.
+
+<p />
+
+Ulrich Weigand made the following comments:
+
+<ol>
+
+   <li />Multiple DLL implementations in one elfdll<br />
+
+<quote who="Ulrich Weigand">I'm not sure the current solution (exactly one
+NE plus exactly one PE module) is ideal. First of all, it is not strictly
+correct that the 16-bit buddy of the PE module is <b>identical</b> with the
+NE module: in Windows95,
+MapHModuleLS(&#160;GetModuleHandleA(&#160;"VERSION"&#160;) and
+GetModuleHandle16(&#160;"VER"&#160;) yield two different module handles, and
+GetModuleName16() returns "VERSION" for the first and "VER" for the second
+...
+
+<p />
+
+So I'd suggest that it might be better to allow an arbitrary number of
+either NE or PE headers to be within one elfdll; the elfdll could e.g.
+export a data structure containing pointers to all those headers. The loader
+would know to automatically load all these modules as soon as any of them is
+requested ...</quote>
+
+   <li />Makefiles and build process<br />
+
+<quote who="Ulrich Weigand">There's a lot of information that
+needs to be passed to dllglue, which leads to an IMO rather complex
+Makefile.in even for simple elfdlls...</quote> Ulrich proposed to
+extend to content of the .spec file to get the import files and even
+the resources not to garbage too much the Makefile.
+
+   <li />Relay debugging<br />
+
+Ulrich disliked the newly introduced relay debugging (because of 
+its size), but also because it will introduce lots of changes, and
+incremental changes is always better.
+
+</ol>
+   
+Bertho answered:
+
+<ol>
+
+   <li />Bertho really doesn't want to implement several PEs inside one 
+elfdll (for issues related to symbol relocalisation).
+
+   <li />Bertho agreed on the idea of not garbaging the Makefile, but
+pointed out that since the (current) .spec file (for the output
+section) will be spread across the directories containing the DLLs
+sources, the search algorithm at build time will be more
+complicated. Bertho also agreed to have a global list of symbol to
+ignore at elfdll build time (like for libc ones), but still wants to keep
+the ability to override those on a per DLL basis.
+
+   <li />Bertho explained it was an old and quick implementation and he
+will look into integrating the existing one.
+
+</ol>
+
+</section>
+
+<section
+  title="DIB sections"
+  subject="DIB sections"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-217.html"
+>
+
+Dan Langlois reported some problem regarding DIB sections: <quote who="Dan
+Langlois">My app creates a DIBsection, then uses a combination of GDI calls
+and bit manipulation on that DIBsection. I discovered the bug while examing
+a call to Rectangle from within my app. Rectangle is called to clear the
+image to a white background. My app then draws some images on this image
+using bit manipulating code. The resulting image I see on my screen is
+missing the white background.</quote> His interpretation is that the
+"segfault" handler wasn't called for the Rectangle() function call.
+
+<p />
+
+Ulrich Weigand gave the explanations:
+
+<p />
+
+<quote who="Ulrich Weigand">Yes, this is a bug.  The idea behind the synchronization is:
+
+<ul>
+
+   <li />if you touch the DIB, Wine gets informed via the segfault handler
+
+   <li />if you modify the Pixmap, Wine <b>is</b> already informed, because it
+       actually did the modification itself (within a GDI API routine)
+
+</ul>
+   
+Of course, the second step requires that <b>every</b> GDI API routine that
+modifies the Pixmap does call the UpdateDIBSection routine <b>before and
+after</b> the operation on the Pixmap. (Before, to copy any modifications
+that happened to the DIB in the meantime back to the Pixmap before using it,
+and after, to inform the synchronization layer that the Pixmap has changed,
+so that it will get copied back to the DIB the first time this is accessed
+afterwards ...)
+
+<p />
+
+[ Note that it is essential that in both directions, a 'lazy' update is
+performed: if you do a bunch of direct accesses to the DIB and then an
+access via GDI, the copy happens only once. Similarly, if you do a bunch of
+GDI accesses and then a direct update, the image will also be copied only
+once ... It gets problematic if you mix GDI and direct accesses; then it can
+get very slow rather quickly :-/ ]
+
+<p />
+
+When I initially implemented this mechanism, I put the UpdateDIBSection only
+into the BitBlt-like routines, because in the example programs I was testing
+at the time, these were the only routines used on the DIB (the apps
+typically would draw into the DIB directly and then BitBlt it onto the
+screen ...).
+
+<p />
+
+But of course, the other routines also need to do it; I've just never gotten
+around to fix it ... So, your solution isn't really a hack, but the Right
+Thing ;-)</quote>
+
+<p />
+
+Based on this, Dan then proposed a patch for this.
+
+<p />
+
+Huw Davies proposed as a more long term situation to <quote who="Huw
+Davies">write a memory DC driver to cope with DIBSections (and other
+things). Hmm I wonder if libggi2d can help us much here - I really don't
+want to write a 1/4/8/16/24/32 bpp graphics driver from scratch...</quote>
+
+<p />
+
+Editor's note: for more information on GGI, check out their <a
+href="http://www.ggi-project.org/">web site</a>
+
+<p />
+
+Ulrich Weigand reported some <quote who="Ulrich Weigand">toying</quote> he's
+done on the subject (and what Windows does):
+
+<p />
+
+<quote who="Ulrich Weigand">GDI gets called, determines the driver servicing
+the DC in question, and forwards the request (appropriately transformed).
+The driver is then supposed to handle the request by itself if it can, or
+else forward it again to DIBENG.DLL. Here, all the difficult stuff is
+implemented in software...
+
+<p />
+
+It's interesting that there is no real difference made between operating on
+DIBs and operating on the screen hardware at this level: BitBlt and the
+other routines implemented by the driver and/or DIBENG simply move bytes
+around, and the destination may happen to be the frame buffer or some memory
+image of a DIB ...</quote>
+
+<p />
+
+Ulrich disliked Huw's GGI proposal:
+
+<quote who="Ulrich Weigand">I'm not sure that we should mix GGI and X
+accesses. (E.g. output directly to the display should look the same as
+output to a DIB which is BitBlt'ed to the display afterwards ...)
+
+<p />
+
+While a GGI driver as such would be interesting, in should IMHO completely
+replace the X11 driver, both regarding display and DIB access. In this case,
+there would be no reason to remove the current X11 DIB support: this is even
+now local to the X11 driver, and the GGI driver is free to implement its
+support for DIBs completely independent of the X11 driver ...
+
+<p />
+
+Thus, you would be able to choose whether to run using the X11 or the GGI
+driver; if you need fast DIB section access, you might switch to GGI, if you
+don't have GGI, the X11 driver still works as before.
+
+<p />
+
+Regarding native GDI, maybe it might even be possible to adapt the interface
+of the Wine display drivers to conform to the DISPLAY interface? This way,
+selecting one of several display drivers could be done simply using
+LoadLibrary, without need for special constructs; plus we might be able to
+run native GDI ...</quote>
+
+<p />
+
+Huw disagreed on some points regarding windows implementation:
+
+<quote who="Huw Davies">
+
+<ul>
+
+   <li />The PBITMAPs that get passed to the DDI functions are device
+dependent bitmaps and not DIBs. I had assumed that DCs with a
+DIBsection selected into them were treated specially and did not get
+sent to the driver but went straight to dibeng.
+
+   <li />there's no guarantee of this (EN: same output of DIBs) in
+Windows either, this is obviously true for printer memory DCs and
+(assuming I'm right about what does the rendering onto DIBSections)
+DIBSections also. 
+
+</ul>
+
+</quote>
+
+<p />
+
+Ulrich's answered on the first point, <quote who="Ulrich Weigand">I think
+that the driver can set a flag in the GDIINFO structure whether it can cope
+with DIBs; if this flag is set, it gets also called for DIBs ... (Not
+completely sure about this, I'll check the DDK docs.)</quote>
+
+</section>
+
+<section
+  title="Multimedia reorganisation"
+  subject="Multimedia reorganisation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-286.html"
+>
+
+Some discussion araised around reorganizing the multimedia DLLs.
+
+<p />
+
+The final layout shall be:
+<ul><code>
+ dlls/winmm/     WINMM + MMSYSTEM<br />
+ dlls/mciavi/    MCIAVI.DRV<br />
+ dlls/mciwave/   MCIWAVE.DRV<br />
+ dlls/mcicda/    MCICDA.DRV<br />
+ dlls/mcimidi/   MCIMIDI.DRV<br />
+ dlls/mcianim/   MCIANIM.DRV<br />
+ dlls/wavemap/   MSACM.DRV<br />
+ dlls/midimap/   MIDIMAP.DRV<br />
+ dlls/wine_oss/  WINE_OSS.DRV    </code>(maybe other name ...)<code><br />
+ dlls/wine_ljoy/ WINE_LJOY.DRV   </code>(maybe other name ...)<code><br />
+ dlls/dsound/    DSOUND<br />
+ dlls/dplay/     DPLAY + DPLAYX<br />
+</code></ul>
+
+<p />
+
+Ulrich Weigand and Eric Pouech discussed on the case of OpenDriver
+(and the like) functions. Windows provides the 16 bit driver functions 
+in USER and the 32 bit in WINMM. Ulrich was willing to put all the
+code for the driver functions in WINMM and have USER transfer the
+calls to WINMM. After some mails, it turns out it would be better to
+stick with Windows implementation as Ulrich says:
+
+<quote who="Ulrich Weigand">Well, it would appear to be like this: the
+32-bit OpenDriver in WINMM first calls LoadLibraryA to try to load the
+driver as 32-bit module. If this fails, it thunks down to a routine in
+MMSYSTEM, which in turn calls the 16-bit OpenDriver from USER. If that
+succeeds, the 16-bit module handle of the driver is returned up to WINMM ...
+
+<p />
+
+So, the real implementation of loading 16-bit drivers does remain
+in USER, unfortunately.  Now what we can do depends on what we 
+want to achieve:  if we want to support running native WINMM with
+built-in USER, we'll have to leave the implementation in USER :-/
+
+<p />
+
+This is of course ugly due to the shared data structures.  Win95
+appears to maintain two sets of data structures, one within USER
+keeping track of the 16-bit drivers, and one within WINMM that
+keeps track of all drivers. (Not sure about the details ...)</quote>
+
+<p />
+
+Eric commented:
+
+<quote who="Eric Pouech">It really sounds like that MS did the following:
+
+<ul>
+
+   <li />Win 3.x had the 16 bit driver stuff in USER
+
+   <li />when creating Win 95, they also needed drivers. So they kept
+        untouched the 16 bit driver API in USER and added on top of it
+	the 32 bit interface in WINMM (standard MS behavior :-))
+
+   <li />but the interface has not been unified between 16 and 32 bits
+
+</ul>
+
+</quote>
+
+<p />
+
+Anyway, it seems that MMSYSTEM and WINMM in Windows only use 16 bit drivers
+(so only the drivers functions from USER), but <b>never</b> reference the 32
+bit driver functions from WINMM. Go figure why!
+
+<p />
+
+Marcus Meissner also discussed with Eric Pouech on ways to unify the access
+to system drivers (like OSS) between DirectSound and the wave forms
+functions of MMSYSTEM/WINMM. Marcus proposed to have the wave forms function
+call DirectSound ones (this would also enable to have a virtual mixer). Eric
+quite not agreed (regarding notification) and said <quote who="Eric
+Pouech">I'm not convinced of the faisability of implementing either waveXXX
+on top of DirectX or the other way around... so, I guess I'll leave it as it
+is, and wait for someone to have some time to investigate it further</quote>
+
+</section>
+
+<section
+  title="Registry rewrite"
+  subject="Registry rewrite"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-305.html"
+>
+
+Juergend Schmied opened a discussion on some new
+optimizations/features to be added to Wine's registry:
+
+<p />
+
+<quote who="Juergend Schmied">
+
+<ul>
+
+<li />we store the registry in a format that is only efficient for
+ascii text. storing binary data is a hack. I even if it has drawbacks
+I would prefer to use a non text format. The current code is a bit to 
+complicated in my opinion too.
+
+<li />there is more functionality needed for mapping single files to 
+subtrees of the registry, load, unload and flush these.
+
+<li />there is some mechanism like softlinks necessary. To make it 
+more complicated HCR should be a _merged_ view of 
+HKCU\Software\Classes and HKLM\Software\Classes. (This is new 
+starting from nt5 and I'm not yet sure where a write goes to)
+
+<li />I would let the server handle at least the handles of the registry. 
+since you can duplicate registry handles with DuplicateHandle and 
+inherit these, these are obviously K32 objects. This would enable us 
+to have change notitifications on keys. (It would be interesting to 
+test if CloseHandle() is working with registy handles to)
+
+<li />Let the server handling the values to would give us a durable 
+mechanism to have consistent data wint more than one process.
+
+</ul>
+
+</quote>
+
+<p />
+
+As Marcus Meissner reminded, Alexandre didn't like the binary version of
+saved registry: <quote who="Marcus Meissner">I think that having a registry
+that you can fix with vi is a big advantage. If the only reason for making
+it binary is that it is easier to load/save, it's not enough IMO.</quote>
+
+<p />
+
+Patrik Stridvall, to reduce time spent rewriting the entire registry
+at each time, pointed out that the registry was a type of file system, 
+and proposed a closer mapping between registry and OS file systems (up 
+to have a new registryfs).
+
+<p />
+
+J&#252;rgend expressed some drawbacks regarding access rights (and mount
+points), the HCR join from HLM and HCU in NT 5, which are not so
+common in file systems.
+
+<p />
+
+Alexandre Julliard proposed to:
+
+<p />
+
+<quote who="Alexandre Julliard">
+
+<ul>
+
+   <li />a possibility is to split the hierarchy into separate files.
+Mirroring the complete registry in the file system like Patrik suggested is
+probably too expensive in terms of space, but we could split the first few
+levels of the tree.
+
+   <li />The server must never block, so reading and writing has to be done in
+a separate process; you could probably make use of some service thread, but
+I think a separate process would be more robust.
+
+</ul>
+
+</quote>
+
+<p />
+
+A detailed discussion between J&#252;rgend and Patrik followed regarding
+the use of '\' as key
+
+</section>
+
+</kc>

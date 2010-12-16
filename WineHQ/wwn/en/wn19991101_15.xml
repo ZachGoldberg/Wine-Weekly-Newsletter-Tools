@@ -1,0 +1,242 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="15" date="01 Nov 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the fifteenth release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x
+Windows emulator).
+
+<p />
+
+There is also a new Wine version (991031). For very obscure reasons, this
+release has been dubbed HalloWine (go figure out why !). Here's the main
+changes:
+
+<ul>
+
+<li />Reimplementation of Winsock support.
+
+<li />Last part of multimedia reorganization in DLLs.
+
+<li />Many other multimedia improvements.
+
+<li />COM interfaces access cleaned up.
+
+<li />More features in common controls.
+
+<li />Lots of bug fixes.
+
+</ul>
+
+</intro>
+
+<stats posts="96" size="332" contrib="37" multiples="16" lastweek="14">
+
+<person posts="9" size="36" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="9" size="23" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="8" size="19" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="7" size="41" who="Space Frog &lt;c973502@student.dtu.dk&gt;" />
+<person posts="6" size="22" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="19" who="Ove Kaaven &lt;ovek@arcticnet.no&gt;" />
+<person posts="5" size="10" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="9" who="'Juergen Schmied' &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="8" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="4" size="8" who="Ian Schmidt &lt;ischmidt@cfl.rr.com&gt;" />
+
+</stats>
+
+<section
+  title="ICMP"
+  subject="ICMP"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-146.html"
+>
+
+Francois Gouget provided a first implementation of the ICMP DLL. Basically,
+this DLLs implements a raw socket access (useful for ping or traceroute
+commands). The Winsock 1.x DLLs do not provide such a feature, so Microsoft
+created this DLL. The Winsock 2.0 now provides the notion of raw socket,
+which could make ICMP obsolete, but Microsoft still ships for backward
+compatibility. Anyway some programs (like Turnpike) make use of it.
+
+<p />
+
+There was some discussion around the creation of a new DLL (some
+details have been proposed for DEVELOPERS-HINTS file), and also legal
+issues (to know whether or not the source could be included). As you
+may know, Wine licensing model is closer to BSD than to GPL; this
+implies that, for example, GPL source code cannot be included into
+Wine. Francois's code was based, according to him, on non copyrighted
+material, unlike some headers in his patch stated.
+
+</section>
+
+<section
+  title="Starting in Wine"
+  subject="Starting in Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-156.html"
+>
+
+Some people asked on methods to start hacking in Wine. So here are
+some hints for that (they shall make their way soon into Wine
+documentation). This is derived from a mail from Lionel Ulmer.
+
+<p />
+
+The best way to start is to take a Windows application and try to fix
+what doesn't work.
+
+<p />
+
+First of all, be sure you're familiar with the Wine's debugging and
+tracing facilities. You need to read and understand:
+
+<ul>
+
+<li />documentation/debugging and debugger/README for using Wine's
+internal debugger
+
+<li />the use of -debugmsg (including relay, snoop) and -debug wine's
+command line options (see wine.man for this)
+
+<li />DEVELOPERS-HINTS for some global indications on how to write code
+in Wine
+
+<li />and of course what's in documentation/ directory (but not
+everything at a first step).
+
+</ul>
+
+<p />
+
+Then, depending on the cause of the misbehavior, you have to adopt
+different strategies.
+
+<p />
+
+If the program crashes inside Wine (e.g. the last stack frame inside
+Wine's debugger lists a wine file), you can then directly look at the
+code, peek the variables... and get some idea of what goes wrong. You
+may also need to rerun the program with the correct -debugmsg switch
+(normally the one(s) used by the DLL that crashed). In most of the
+cases, crash is related to this DLL, so you will not have to dig
+elsewhere.
+
+<p />
+
+If the program crashes inside its code (e.g. the last stack frame
+inside program's code segment), then things are becoming
+trickier. What you can do (to start with), is to rerun the program
+with -debugmsg +relay enabled (and/or snoop) and to try to pinpoint is
+the faulty address appears somewhere in relay, but that's way trickier
+than the previous case.
+
+<p />
+
+If the program doesn't do what it is supposed to do (as in Windows),
+try to localize the DLL that is likely to behave incorrectly. Then,
+rerun with -debugmsg for the channels that this DLL uses and look at
+the calling parameters and return values. Try to find from that which
+function behaves incorrectly. Sometimes, if the trace generated from
+running the program spits out 'fixme:xxx:foo(...); stub', it means
+that function 'foo' is not correctly implemented, and you know where
+to look at.
+
+<p />
+
+There are many other failure cases (like critical section timeouts,
+other types of signals entering the debugger...), but which require
+some more knowledge of Wine internals, and are not the easiest ones to
+start with.
+
+<p />
+
+Anyway, when you think you have identified where a function is not
+correctly implemented, you can start fixing it. Of course, be sure to
+have all the related SDK material at hand (http://msdn.microsoft.com
+provides most of the SDK online, you just need a free
+registration). Beware, that some details have changed between
+Windows's version, and that a fix can apply to one version, but not to
+the other (and there are functions behaving differently on different
+versions, in particular between Windows 9x and NT).
+
+<p />
+
+If you're not 100% sure of what you shall be fixing (or how to do it),
+you can always ask you questions, or post RFC on the fix on wine-devel.
+
+</section>
+
+<section
+  title="Registry alert"
+  subject="Registry alert"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-142.html"
+>
+
+For those of you who have updated your CVS tree (or downloaded a Wine
+package) strictly older than Sunday, October 24th beware that there is some
+potential breakage of the registry. To fix it (and get all of Marcus
+Meissner fixes on your machine), get an older Wine version (older than
+Wednesday should be fine), and also check that your wine configuration files
+(~/.winerc, wine.conf...) do not contain comments (starting by ';') after a
+configuration line. For example,
+
+<p />
+
+<code>
+AltCurrentUserFile= ; alternate registry file name: HKCU
+</code>
+
+<p />
+
+should be changed into
+
+<p />
+
+<code>
+; alternate registry file name: HKCU<br />
+AltCurrentUserFile=
+</code>
+
+<p />
+
+in the whole [registry] section.
+
+</section>
+
+<section
+  title="VxD:s, Wine and FreeMWare"
+  subject="VxD:s, Wine and FreeMWare"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-165.html"
+>
+
+From Ulrich Weigand
+<a href="http://www.linux.ie/Interviews/Weigand/">interview</a> by the
+Irish Linux User Group came some questions regarding some convergence
+between FreeMWare and Wine (Ulrich contributes to both of
+them). (Note: <a href="http://www.freemware.org/">FreeMWare</a> is an
+open-source project to contribute something similar to VMware).
+
+<p />
+
+Patrik Stridval asked whether <quote who="Patrik Stridval">it will be
+possible to use FreeMWare with Wine in order to run VxD:s and/or NT
+drivers that requires running in ring 0?</quote>
+
+<p />
+
+Ulrich answered <quote who="Ulrich Weigand">as far as current plans go, FreeMWare
+won't touch the real hardware at all. There will be VxDs running
+inside the VM, if you run Windows, but those only access the emulated
+hardware... </quote>
+
+</section>
+
+</kc>

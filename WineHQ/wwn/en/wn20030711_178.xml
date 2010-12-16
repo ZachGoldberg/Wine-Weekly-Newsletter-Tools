@@ -1,0 +1,405 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="178" date="07/11/2003" />
+<intro> <p>This is the 178th release of the weekly Wine Weekly News publication.
+Its main goal is to just be thankful for warm summer days with bright blue skies. It also serves inform you of what's going on around Wine (the Un*x Windows emulator).</p> </intro>
+<stats posts="146" size="662" contrib="55" multiples="33" lastweek="28">
+
+<person posts="15" size="48" who="Mike Hearn" />
+<person posts="10" size="81" who="Tom Wickline" />
+<person posts="6" size="219" who="Ove Kaaven" />
+<person posts="6" size="29" who="Steven Edwards" />
+<person posts="7" size="19" who="Shachar Shemesh" />
+<person posts="6" size="14" who="Dustin Navea" />
+<person posts="5" size="11" who="Alexandre Julliard" />
+<person posts="5" size="10" who="Sylvain Petreolle" />
+<person posts="5" size="10" who="Lionel Ulmer" />
+<person posts="4" size="14" who="Troy Rollo" />
+<person posts="4" size="11" who="Dan Kegel" />
+<person posts="4" size="10" who="Moreno" />
+<person posts="4" size="8" who="BiGgUn" />
+<person posts="3" size="15" who="Kelly Leahy" />
+<person posts="3" size="11" who="dd jj" />
+<person posts="3" size="9" who="Dmitry Timoshkov" />
+<person posts="3" size="7" who="Jeff Smith" />
+<person posts="3" size="6" who="Gerald Pfeifer" />
+<person posts="3" size="5" who="Mike McCormack" />
+<person posts="2" size="8" who="Sundaranathan S" />
+<person posts="2" size="6" who="Uwe Bonnes" />
+<person posts="2" size="6" who="Huw D M Davies" />
+<person posts="2" size="5" who="Joerg Mayer" />
+<person posts="2" size="5" who="Rein Klazes" />
+<person posts="2" size="4" who="Alan Hargreaves" />
+<person posts="2" size="4" who="Andreas Mohr" />
+<person posts="2" size="4" who="Robert Reif" />
+<person posts="2" size="4" who="Brian Vincent" />
+<person posts="2" size="4" who="Francois Gouget" />
+<person posts="2" size="4" who="olivier" />
+<person posts="2" size="4" who="Marcus Meissner" />
+<person posts="4" size="9" who="Raphael Junqueira" />
+<person posts="1" size="3" who="Marcelo Duarte" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="2" who="Robert Shearman" />
+<person posts="1" size="2" who="Alan Hargreaves" />
+<person posts="1" size="2" who="E Lea" />
+<person posts="1" size="2" who="Jason Edmeades" />
+<person posts="1" size="2" who="Ferenc Wagner" />
+<person posts="1" size="2" who="faisal shah" />
+<person posts="1" size="2" who="Boaz Harrosh" />
+<person posts="1" size="2" who="Lars Segerlund" />
+<person posts="1" size="2" who="Saulius Krasuckas" />
+<person posts="1" size="2" who="Christian Costa" />
+<person posts="1" size="2" who="biggun from the sun" />
+<person posts="1" size="1" who="Chris Morgan" />
+<person posts="1" size="1" who="Vincent Beron" />
+<person posts="1" size="1" who="Jean-Eric Cuendet" />
+<person posts="1" size="1" who="Evalet Olivier" />
+<person posts="1" size="1" who="Eric Pouech" />
+
+</stats>
+<section 
+	title="News: Wine-20030709, AutoCAD Tips, Linux Refresher Course" 
+	subject="News"
+	archive="http://cvs.winehq.org/cvsweb/wine/ANNOUNCE?rev=1.77&amp;content-type=text/x-cvsweb-markup" 
+	posts="2"
+	startdate="07/05/2003"
+	enddate="07/11/2003"
+>
+<topic>News</topic>
+<p>It's that time of the month again.  Wine-20030709 is out:</p>
+<quote who="Alexandre Julliard"><p>
+ WHAT'S NEW with Wine-20030709: (see 
+ <a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.73&amp;content-type=text/x-cvsweb-markup">ChangeLog</a> for details)
+  <ul>
+        <li> Still more Direct3D and DirectSound improvements.</li>
+        <li> Inter-process clipboard support.</li>
+        <li> Locale handling improvements.</li>
+        <li> More progress on the kernel/ntdll separation.</li>
+        <li> Lots of bug fixes.</li>
+ </ul></p></quote>
+
+<p>I stumbled across some links last weekend that were interesting.  First,
+Stephanie Yoder figured out how to get AutoCAD LT 2000 to run on with
+Wine.  <a href="http://www.flatmtn.com/cad/linux-lt2k.html">Instructions</a>
+can be found on her web site.  Needless to say, it doesn't sound that
+intuitive.  I did find <a href="http://pages.sbcglobal.net/mycroft/linux/">another
+site</a> that describes a different set up.  Like many things in Wine, you
+can make it work if you're willing to put some time into it.</p>
+
+<p>Another site I ran across is "<a href="http://linuxrefresher.com/">Linux
+Refresher Course</a>".  Their top two pages reference Wine.  The first 
+discusses <a href="http://linuxrefresher.com/intro/migrate.htm">migrating
+from Windows</a> to Linux; the other is strictly 
+<a href="http://linuxrefresher.com/additional/wine.htm">
+an introduction</a> to Wine.</p>
+
+</section><section 
+	title="Viva la Kernel Module Idea" 
+	subject="Speeding up wineserver (again)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0149.html" 
+	posts="7"
+	startdate="07/07/2003"
+>
+<topic>Integration</topic>
+<topic>Architecture</topic>
+<p>About every six months or so someone brings up the
+topic of a kernel module for Wine.  This time, Troy
+Rollo brought forth some specific ideas how to do it:</p>
+<quote who="Troy Rollo"><p>
+I've been looking at the various efforts over the years to speed up wineserver 
+or eliminate it altogether (by substituting a kernel service). Certainly the 
+current degree of reliance on a separate process that is scheduled according 
+to the operating system's own priorities creates significant speed problems. 
+Some of this might be alleviated by boosting the priority of the wineserver 
+process or by making it a real time task, but there are still some operations 
+it appears to be performing some operations that result in a yield and hence 
+subject it to another wait in the queue for at least one time slice.
+</p><p>
+Even if the wineserver itself could be sped up in this way, individual 
+processes would still be subjected to time waiting in the queue after they 
+make a request of wineserver. The problem becomes more severe on a heavily 
+loaded system.
+</p><p>
+The approaches suggested so far:
+<dl>
+	<dt>Shared memory</dt>
+
+		<dd>Suffers from reliability problems which may allow one
+		process to put the system in an inconsistent state.</dd>
+
+	<dt>Kernel module</dt>
+
+		<dd>The only effort so far seemed to put way too much
+		into the kernel, and was abandoned over two years
+		ago.</dd>
+</dl></p><p>
+Other possible approaches that I haven't seen directly discussed on the 
+wine-devel list:
+<dl>
+	<dt>An exokernel using the x86 multi-ring capability</dt>
+
+		<dd>Not portable to non-x86 architectures.</dd>
+
+	<dt>Cross-process calls</dt>
+		<dd>Also referred to under other names. This mechanism would
+		allow one process to call into another process without
+		giving up part of its time slice. Would require modifications
+		to the kernel's scheduler and to standard kernel data
+	        structures, hence would have to be considered "rude". It
+		would have one advantage in that the interface
+		differences between this mechanism and the current
+		mechanism could be transparent.</dd>
+</dl></p><p>
+Have I missed any?
+</p><p>
+Anyway, I'm thinking that perhaps the kernel module approach was the right 
+basic approach, but that the particular attempt made was merely too broad. A 
+better approach would be to define a set of kernel calls that could be used 
+to implement all of the other stuff (and there are currently 176 types of 
+wineserver request, so I haven't taken the time to see if I've covered them 
+all yet) in an in-process library.
+</p><p>
+Transparency substitution for wineserver would, I guess, be achieved by having 
+the kernel module and its supporting library implement the wineserver 
+requests using the wineserver data structures, and perhaps having wineserver 
+use a non-kernel version of these facilities.
+</p><p>
+The following are things I could see immediately would be part of the kernel 
+module:
+  <ul>[ <i>see 
+    <a href="http://www.winehq.org/hypermail/wine-devel/2003/07/0149.html">original
+             email</a> for function definitions</i> ]</ul>
+</p><p>
+There would be other things that would be in the "nice to have" category too 
+(I'm thinking specifically about path name translation being done in a way 
+that requires less seeks through the file system).
+</p><p>
+The way I see this working is that Wine kernel objects are stored (strangely 
+enough) in kernel memory. This effectively amounts to a shared memory 
+approach but with the kernel module able to clean up after a misbehaving 
+process. In the event that cleanups after a misbehaving process were to be 
+too complex, there would still be room for a server process that does this, 
+and the kernel could simply assign ownership of the objects from the bad 
+process to the server process, which gets notified via another set of calls 
+when it receives the objects. The object name would be of the form 
+"namespace:name", so as to have:
+<ul><code>
+	window:0431a9c4<br />
+	file:/home/me/file.dat</code></ul></p><p>
+
+A process could allow the kernel to assign the name within the namespace, so 
+that, for example:
+<ul><code>
+	obj = winekernel_object_create("window", windowdata, windowdata_size);
+	winekernel_object_gername(obj, achHWND, 15);
+</code></ul></p><p>
+The idea behind the "wine_attach_to_kernel" call would be to allow for the 
+kernel to serve either multiple different users or multiple different Windows 
+operating system types without the objects from all of them being 
+intermingled.
+</p></quote>
+
+<p>His email was met with an underwhelming response.  I think at
+this point a lot of developers don't consider the speed up offered
+by a kernel module as being a high priority project.  The basic
+idea for what should be done has been outlined in the past as well
+as what not to do.
+If a kernel module dropped out of the sky and worked well
+enough it would probably be incorporated.  For more background on 
+a Wine kernel module see the following WWN issues, be sure to click
+on the WWN <i>Archive</i> link for a complete discussion:</p>
+<dl>
+ <dt><a href="http://www.winehq.org/index.phpwwn/59#A%20way%20to%20speed%20up%20Wine">#59</a>:
+ </dt><dd>Post by David Howells about a Wine kernel module he implemented</dd>
+ <dt><a href="http://www.winehq.org/index.phpwwn/60#A%20way%20to%20speed%20up%20Wine">#60</a>:
+ </dt><dd>Alexandre's thoughts on how a kernel module should work</dd>
+ <dt><a href="http://www.winehq.org/index.phpwwn/86#Wine's%20speed%20up%20(cont'd)">#86</a>:
+ </dt><dd>Discussion of David's kernel module and more ideas on communicating
+	with wineserver</dd>
+ <dt><a href="http://kt.zork.net/wine/wn20010415_91.html">#91</a>:
+ </dt><dd>Update on David's work</dd>
+ <dt><a href="http://kt.zork.net/wine/wn20010219_83.html">#83</a>:
+ </dt><dd>Initial idea for shared memory and preliminary design 
+ considerations.</dd>
+ <dt><a href="http://www.winehq.org/index.phpwwn/148#Shared%20Memory%20Wineserver">#148</a>:
+ </dt><dd>Announcement of a shared memory wineserver.</dd> 
+ <dt><a href="http://www.winehq.org/index.phpwwn/154#Kernel%20Module%20/%20Shared%20Memory%20Revisited">#154</a>:
+ </dt><dd>Discussion of the shared memory approach</dd>
+ <dt><a href="http://www.winehq.org/index.phpwwn/159#Threading%20Work">#159</a>:
+ </dt><dd>Why Alexandre doesn't like the shared memory idea.</dd>
+</dl>
+
+<p>Ove K&#229;ven replied to Troy's idea:</p>
+<quote who="Ove Kaaven"><p>
+Which operations are you really concerned about? Just synchronization
+(WaitFor*, SetEvent, etc), file requests (get_unix_fd), or "all of them"
+in general?
+</p><p>
+It seems that when trying to run some of the
+latest 3D games under WineX, about half of the cpu time is spent on
+wineserver communication, on average.
+</p><p>
+And then there's the approach that Alexandre suggested when he saw that
+big kernel module. Currently I have a design in mind that would
+implement something along those lines, but since Gav seems in love with
+the shared-memory approach, I don't know if I'd get that much time to
+work on it.
+</p><p>
+Basically this module I'd like to write would not change too much in the
+existing wineserver. But instead of unix sockets (AF_UNIX), we'd make
+the wineserver use a "wine socket" type (AF_WINE) implemented in the
+module, which would work a bit like unix sockets, but which would
+intercept wineserver requests from wine clients and process the most
+time-critical types straight in the kernel. It'd pass any request it
+doesn't implement on to the regular wineserver. The regular wineserver
+could do ioctls for stuff like "signal this object" to tell the module
+when it should satisfy wait requests handled by the module and such. And
+each wineserver listening socket would be its own namespace.
+</p><p>
+While it's probably going to be hard to get all the details and races
+right, this would accelerate many server requests while also avoiding
+any kind of user-space shared memory, which has always been the main
+concern. And it wouldn't be trying to do too much.
+</p></quote>
+	
+
+
+</section><section 
+	title="RPC Via Windows Messages and Other OLE Fun" 
+	subject="MS OLE questions"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0158.html" 
+	posts="14"
+	startdate="07/08/2003"
+	enddate="07/09/2003"
+>
+<topic>RPC / COM / OLE</topic>
+<p>Mike Hearn had some <s>rants</s> ..er.. questions about OLE:</p>
+<quote who="Mike Hearn"><p>
+I was wondering whether anybody with experience working with microsoft's
+ole implementation (win98 version) could answer these questions:
+</p><p>
+Firstly, does anybody know what it does during thread detach? Its
+behaviour seems to vary according to, i dunno, the alignment of Mars and
+Jupiter or something. With a test app it destroys the hidden windows it
+seems to use for IPC, and terminates cleanly. With my IE-in-java app, it
+goes into a message loop, processes some messages then blocks waiting.
+It never drops out of the message loop.
+</p><p>
+Secondly, does anybody know what is missing from Wine's built in OLE
+implementation for it to be used for IE embedded? I've tried using it,
+and other than a couple of bugs in the GIT (which I will try and send a
+patch for soon), it seems to get stuck in ITypeInfo::Dispatch() and ends
+up with an E_NOTIMPL exception.
+</p><p>
+Thirdly, why does MSOLE use hidden windows for communication? I've come
+across lots of gnashing of teeth in OLE/DCOM forums about this, people
+wondering why their app (and sometimes the whole system!) deadlocks if
+they don't service the message queue in threads that use OLE. Windows
+has had other forms of IPC for years, I can't see the logic behind using
+the limited and broken message passing scheme for it.
+</p><p>
+Weirdly enough, wine's built in OLE seems to work OK for iexplore.exe
+itself, which iirc simply embeds the ActiveX control like any other
+program. So, maybe it's just a strange little bug that is stopping it
+from working.
+</p><p>
+anybody got some insight?
+</p></quote>
+
+<p>With regard to the first question, Ove K&#229;ven replied,
+<quote who="Ove Kaaven">
+ I think it will also try to disconnect any proxies and stubs that were
+ created in the apartment about to be destroyed, but I don't remember
+ exactly. But I know it's mentioned somewhere, perhaps in the book I've
+ read.</quote>  Mike wanted to know which book (thus far no answer).  
+
+<p>Christian Costa took a stab at the third question,
+<quote who="Christian Costa">
+ IFAIK, this is how apartments are implemented and this comes from Windows 3.1.
+</quote> Mike researched a bit and came across an MSJ article describing
+<a href="http://www.microsoft.com/msj/0596/activex0596.aspx">when it's
+used</a>.  When the RPC connection is only on the local machine (that is,
+you're not doing RPC over the network) it uses private windows messages.
+Mike wanted to know why they would ever do it that way.  Ove had
+some thoughts:</p>
+<quote who="Ove Kaaven"><p>
+DCE RPC is in its heart an interprocess protocol, not an interthread
+protocol. This distinction does not necessarily matter, though, it can
+be used as both if done "right". RPC needs a transport layer, however,
+and which transport is used for communication depends on the context.
+Thread pools servicing network sockets is used for inter-machine (and
+perhaps inter-process) communication. For inter-process communication,
+NT LPC (something like that, don't remember anymore) is used. For
+inter-thread communication (including dispatching inter-machine requests
+to a particular thread), the most reliable system communication path
+with thread affinity is used: window messages.
+</p><p>
+Yes, Windows's implementation of DCE RPC implements window messages as a
+transport protocol. So they probably *did* move fully to DCE RPC, they
+just moved the old cruft in there too...
+</p></quote>
+
+<p>Kelly Leahy saw a potential problem,
+<quote who="Kelly Leahy">
+ in order
+ to avoid the blocking RPC system call, the thread enters a message loop and
+ makes the RPC system call on another worker thread (when a call is made
+ within the channel implementation).  If this pool of threads and
+ worker-made-call functionality is not currently implemented in the standard
+ IRpcChannelBuffer implementation in WINELIB, then we probably need to
+ implement it somehow.
+</quote></p>
+
+<p>Ove replied he'd already implemented that and posted 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/07/0179.html">a 
+rough patch</a>.  Mike worked on his project a more, but this
+is where the thread ended.</p>
+
+
+</p>
+
+
+
+
+</section><section 
+	title="Structured Exception Handling Support for GCC" 
+	subject="Fwd: [MinGW-dvlpr] Snapshot of SEH enabled GCC released"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0156.html"
+	posts="1"
+	startdate="07/07/2003"
+>
+<topic>Build Process</topic>
+<p>Steven Edwards forwarded an email to wine-devel about support for
+Structured Exception Handling in gcc:</p>
+<quote who="Casper Hornstrup"><p>
+A snapshot of GCC 3.4 20030701 with Structured Exception Handling
+support has been released. It can be downloaded from:
+<ul>
+<li><a href="http://reactos.wox.org/download.php?id=57">
+ http://reactos.wox.org/download.php?id=57</a> (i386 binary)</li>
+<li><a href="http://reactos.wox.org/download.php?id=58">
+ http://reactos.wox.org/download.php?id=58</a> (source)</li>
+<li><a href="http://reactos.wox.org/download.php?id=59">
+ http://reactos.wox.org/download.php?id=59</a> (diff)</li></ul>
+</p><p>
+ No new features. This is just a port to GCC 3.4.
+ The release includes only the C compiler.
+</p></quote>
+
+<p>Steven asked,
+<quote who="Steven Edwards">
+ Is there anyway this could be of use to WINEgcc? I figure not but I wanted to ask as it might not
+ ever get merged in to GCC-HEAD. I don't think so but if anyone is still interested in SEH for WINE
+ and Winelib its worth a look at least.</quote></p>
+
+
+
+
+</section>
+
+
+</kc>

@@ -1,0 +1,493 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="215" date="03/19/2004" />
+<intro> <p>This is the 215th issue of the Wine Weekly News publication.
+Its main goal is to glow in the dark. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="124" size="465" contrib="48" multiples="28" lastweek="28">
+
+<person posts="14" size="47" who="Uwe Bonnes" />
+<person posts="10" size="33" who="Mike Hearn" />
+<person posts="8" size="18" who="Alexandre Julliard" />
+<person posts="6" size="21" who="Christian Costa" />
+<person posts="5" size="24" who="Ivan Leo Murray-Smith" />
+<person posts="5" size="18" who="Rein Klazes" />
+<person posts="5" size="12" who="Dimitrie O. Paun" />
+<person posts="5" size="11" who="Dmitry Timoshkov" />
+<person posts="4" size="11" who="Shachar Shemesh" />
+<person posts="4" size="9" who="Mike McCormack" />
+<person posts="4" size="9" who="Tom" />
+<person posts="3" size="21" who="Kevin Koltzau" />
+<person posts="3" size="8" who="Ferenc Wagner" />
+<person posts="2" size="18" who="Chris Morgan" />
+<person posts="2" size="6" who="Michael Schluter" />
+<person posts="2" size="6" who="Huw D M Davies" />
+<person posts="2" size="6" who="Christian Britz" />
+<person posts="2" size="5" who="Steven Edwards" />
+<person posts="2" size="5" who="Peter Hyman" />
+<person posts="2" size="5" who="Marcus Meissner" />
+<person posts="2" size="5" who="Jakob Eriksson" />
+<person posts="2" size="4" who="Vincent B&#233;ron" />
+<person posts="2" size="4" who="Rolf Kalbermatter" />
+<person posts="2" size="4" who="Lionel Ulmer" />
+<person posts="2" size="4" who="Martin Fuchs" />
+<person posts="2" size="4" who="Robert Shearman" />
+<person posts="2" size="4" who="Jeremy Newman" />
+<person posts="2" size="3" who="Eric Pouech" />
+<person posts="1" size="77" who="Robert Shearman" />
+<person posts="1" size="7" who="Peter Riocreux" />
+<person posts="1" size="4" who="flyker" />
+<person posts="1" size="3" who="Erik de Castro Lopo" />
+<person posts="1" size="3" who="Filip Navara" />
+<person posts="1" size="3" who="Ove Kaaven" />
+<person posts="1" size="2" who="Gregory M. Turner" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Joerg Mayer" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="2" who="Phil Krylov" />
+<person posts="1" size="2" who="Paul van Schayck" />
+<person posts="1" size="2" who="Juan Lang" />
+<person posts="1" size="1" who="Ge van Geldorp" />
+<person posts="1" size="1" who="Gerald Pfeifer" />
+<person posts="1" size="1" who="Fabian Cenedese" />
+<person posts="1" size="1" who="Blake Leverett" />
+
+</stats>
+<section 
+	title="News: TransGaming Updates"
+	subject="News"
+	archive="http://www.transgaming.com/showthread.php?news=111" 
+	posts="2"
+	startdate="03/13/2004"
+	enddate="03/19/2004"
+>
+<topic>News</topic>
+<p>TransGaming's 
+<a href="http://www.transgaming.com/showthread.php?news=111">March
+Development Status</a> and Voting Report has been posted.  A lot
+of audio work is being tackled.  A new ALSA driver is being 
+developed and latency issues in games such as <i>Medal of Honor: 
+Allied Assault</i> have been fixed.  The top ranked technology
+items in February were:</p>
+<quote who="TransGaming"><p>
+<ul>
+    <li> Improved ALSA Support</li>
+    <li> DirectX 9</li>
+    <li> Improve 3D performance</li>
+    <li> Support Older Games</li>
+    <li> Non Graphical Performance Increase</li>
+</ul></p></quote>
+
+<p>It seems a recent editorial has caused a bit of a stir
+with TransGaming.  (We linked to it last week.)  The author of
+that editorial wondered why development of Mac titles using WineX
+should be supported with dollars coming from the pockets of
+Linux users.  
+<a href="http://www.transgaming.com/gavstates.php">Gavriel State</a>
+and <a href="http://www.transgaming.com/presmsg.php">Vikas Gupta</a>
+both updated their columns on TransGaming's website to address
+cross-platform development. Gav also went on to discuss a bit
+about their releasing their source code:</p>
+<quote who="Gavriel State"><p>
+ Another question that has come up recently is that of our original 
+ business model, which included a provision for relicensing our DirectX
+ source code if we sustained a membership of 20,000 users or above.
+ Unfortunately, the relicensing of the Wine project from a very open
+ X11 style license to the LGPL threw a wrench in those plans in April
+ 2002. We talked about those changes, and how they would affect us in a
+ Gavriel States column that same month, and removed mention of further
+ source code relicensing from our site at the same time.
+</p></quote>
+
+</section>
+
+<section 
+	title="Investigating Arch for Revision Control" 
+	subject="Branching/version control [was Re: cards.dll]"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0323.html" 
+	posts="5"
+	startdate="03/17/2004"
+>
+<topic>Project Management</topic>
+<p>This topic came up on IRC so I was quite happy when Mike
+Hearn mentioned it on the wine-devel list as well.  There has
+been a bit of discussion about moving from CVS to another
+revision control program.  CVS has definitely served it's 
+use over the years, but moving to something else may provide
+enough benefits to offset the change.  Mike briefly summarized
+what he was considering:</p>
+<quote who="Mike Hearn"><p>
+Perhaps Wine should start considering a kernel-like approach with some
+developers having their own trees where some experimental patches are
+tried out first then percolate up to Alexandre's tree?
+</p><p>
+Another thing I'd really like to see is a move to GNU arch version control
+- it makes distributed development and branching a *lot* easier. I
+talked to Alexandre a bit about this at WineConf, and he mentioned on IRC
+that when arch is supported by emacs he'd think about it. Well, I now see
+on arch-user that there is such support, and the arch tools are maturing
+rapidly (see zoomarch etc).
+</p><p>
+It might be worth doing an experiment on using arch for Wine development.
+</p><p>
+Maybe if I get some time this holiday I'll try reviving my program to
+parse CVS commit messages back into filesystem operations and begin
+keeping an arch archive in sync with CVS so people can try it out. The
+last time I tried it I found turning commit messages into FS ops reliably
+was a pain in the ass, but I'm better at shell scripting these days. 
+</p><p>
+I already parse commit messages in realtime for CIA (our irc commits bot)
+so I could easily extend this and put the results on navi.
+</p><p>
+What do people think?
+</p></quote>
+
+<p>The emacs tool that Alexandre prefers is pcl-cvs.  It's a 
+front-end to CVS that allows many things to be performed as a
+single keystroke.  Dimi cautioned against switching to a system
+people are less familiar with:</p>
+
+<quote who="Dimitrie Paun"><p>
+arch sure sounds interesting (except for the file naming conventions :)),
+but before we can consider switching we *must* have infrastructure
+available that's comparable to the CVS one. And here I mean:
+<ul>  
+  <li> cvsweb: for web browsing</li>
+  <li> cvsup: for fast synch</li>
+  <li> patch: for the winehq-cvs messages</li></ul></p>
+<p>
+Given that repositories are just files on FTP servers, maybe cvsup is
+not needed, but the patch facility we have is a must.
+</p><p>
+When all that is in place, we may consider looking into it, to see
+if the switch is worth the pain. Please remember that virtually
+everybody knows CVS, whereas almost no one knows arch, so for new
+(and existing developers) it's a big pain to switch. So we must
+have some pretty important reasons to go down this path, and 
+"arch is a cool concept" does not qualify :)
+</p></quote>
+
+<p>This led Mike to put together a really nice list of things
+that arch could do for Wine and how development could be improved.
+Some of the tools Dimi wanted replacements for already exist:</p>
+
+<quote who="Mike Hearn"><p>
+<ul>
+<li>ArchZoom: <a href="http://migo.sixbit.org/software/archzoom/">http://migo.sixbit.org/software/archzoom/</a></li>
+
+<li>ViewArch: <a href="http://arch.bluegate.org/cgi-bin/viewarch.cgi">http://arch.bluegate.org/cgi-bin/viewarch.cgi</a></li>
+</ul></p>
+<p><i>(and concerning cvsup...)</i>
+Arch already has this built in, effectively. Arch works in a
+fundamentally different way to CVS - it's based on applying changesets
+in order rather than keeping track of HEAD and working backwards.
+</p><p>
+i.e. running <tt>tla get wine</tt> or whatever actually downloads the first
+checkin then all the patches and applies them in turn. Obviously that's
+too slow for most projects so you can stow cached revisions (i.e. tree
+snapshots) along the way so it only downloads the last revision then
+works from there. That only occurs on initial checkout of course.
+</p><p>
+Arch works with changesets natively, so you can run the relevant command
+with the patch ID to get this sort of output at any time.
+</p><p>
+While everyone knows
+CVS the subset of commands we all use is tiny, mostly because only
+Alexandre commits. In fact I'd guess 99% of CVS usage on wine is:
+<ul>
+<li> cvs update</li>
+<li> cvs diff</li>
+<li> cvs log/status</li></ul>
+
+</p><p>
+The equivalents in arch are:
+<ul>
+<li> tla update OR tla replay (difference explained below)</li>
+<li> tla file-diffs</li></ul>
+</p><p>
+There is no equivalent for file-based log/status AFAIK as arch doesn't
+track files individually like CVS does. The upside is that arch
+understands things like file renames/moves/symlinks.
+</p><p>
+<u>OK, so why should we use arch?</u></p><p>
+
+Wine is a project that operates similarly to the Linux kernel. There is a
+benign dictator, who controls CVS. We all grab CVS, hack in our own
+branches, separate the changes out into a patch and email it to
+wine-patches. Normally, if we got it right, Alexandre will check it in
+forming a logical changeset, and we then all run cvs update which
+downloads everyone's changes.
+</p><p>
+This works OK but has a number of disadvantages:
+<dl>
+<dt> No branches. </dt>
+
+<dd>Some Wine work would be best done in parallel to the main tree. For
+instance, the filesystem work, the WM rewrite etc. Wine's current modus
+operandi makes this very hard, as effectively CVS HEAD must be at least
+dogfoodable at all times. This also makes it hard to do R&amp;D projects
+like the shared memory wineserver while keeping the results of that R&amp;D
+usable.</dd>
+
+<dt> Hard to work on locally</dt>
+<dd>Not every patch we write gets checked in, this is the reality of life
+working on Wine. Sometimes because those patches are incomplete or
+wrong, sometimes because they get forgotten or missed, sometimes because
+Alexandre doesn't agree that the code belongs in the main Wine tree
+(things like the system tray patch, delayed debug tracing patch, etc
+spring to mind).
+<br />
+Over time, a particular checkout of wine will accumulate debugging
+cruft, random unchecked in patches and so on. I already have one tree
+I've practically abandoned for new development because the differential
+got so large (11,000+ lines). It gets hard to separate out individual
+changes into atomic patches, especially when patches depend on each 
+other.
+<br />
+Yes you could say I should never have allowed the diff to get so large,
+and believe me I wish it hadn't happened, but in practice people still
+use and apply patches like systray/debug tracing and expect me (!) to
+maintain them, so I need to keep them around in some form. There are
+also patches in there that bounced pending extra work that I never got
+around to and so on.
+<br />
+Nowadays I simply use separate checkouts of CVS to try and manage it
+all.</dd>
+
+<dt> CVS is not changeset oriented.</dt>
+
+<dd>It's really hard to easily do regression checks because the closest CVS
+has to this is date based rewinds. We try and slap changesets on top
+using patch.py, which works well, but CVS is not naturally inclined
+towards it. Arch lets you say &quot;rewind to this changeset&quot; and it'll just
+do it. Binary searches become a lot simpler.</dd>
+
+<dt> Hard to get into <i>The Zone</i>
+<dd>
+Sometimes, some people or teams of people will have a mad coding session
+and produce a ton of patches. The Direct3D work by Jason, Raphael and
+Christian last year is one good example. My WineCfg work was another.
+Unfortunately our current model makes this a total pain in the ass
+because the patches are against CVS not your previous work. I ended up
+writing some scripts to help with this, by having two trees which I
+applied patches to in sequence then generated a diff against. It was
+annoying. This is especially true if AJ bottlenecks - for instance
+during some of the D3D work he was on holiday.</dd></dt>
+</dl></p><p>
+<u>Why does arch work better?</u></p><p>
+
+Arch is far from perfect, in particular it's rather quirky and has a
+ridiculously complex command line interface. However, it has one feature
+that is make or break : distributed branching/merging.
+</p><p>
+In arch you can have a tree in an archive somewhere up on the net, and
+others can make a branch of it in their own archive and start checking
+in changes. They can remerge periodically and arch will just deal with
+problems like multiple remerges (in both directions). The owner of the
+original tree can merge the branch into their own when the time is
+right, or cherrypick changesets and just apply them.
+</p><p>
+In other words, I could branch WineHQ, and make some changes, then you
+Dimi could branch *my* tree and make some changes yourself and so on.
+</p><p>
+
+<u>So how might Wine development look in a post-arch world?</u></p><p>
+
+Here's one vision. See what you think.
+</p><p>
+Alexandre of course remains the ultimate maintainer and dictator of
+Wine. His tree is the canonical one which we all work from, and he does
+releases of his tree a la Linus.
+</p><p>
+However, let's say I engage on a particular project (make WinFoo work).
+Maybe I'm doing it for a customer, maybe I just want to make people in
+#winehq happy. I can grab WineHQ, branch it, and start committing. Along
+the way, I can submit each changeset back to wine-patches with a very
+simple script: arch will generate a whole-tree changeset with one
+command. When I next commit of course the diff will be reset to zero so
+I don't end up with bits of other patches interfering.
+</p><p>
+Alternatively, if there are a lot of patches which depend on each other,
+Alexandre can pull the tree directly and use archs built in merging
+operations to synchronise the two. I can keep on working while this is
+going on by the way - AJ can merge with my tree as many times as he
+likes, and vice-versa.
+</p><p>
+Let's say only 90% of the patches I write to make this app work get
+checked into WineHQ. Users who only care about this app are still happy
+as they can just &quot;tla get mike_at_navi.cx--wine--winfoo&quot; and grab a version
+of Wine that works for their app. The community is happy because the
+bulk of the patches got back to the main tree anyway.
+</p><p>
+Let's say Jason, Raphael and Christian have another D3d codefest. The
+best way to work on this is for one of them to branch WineHQ and start
+work. The others branch this subtree *again* and begin work on their own
+trees. The temporary D3D &quot;maintainer&quot; merges with the other guys work,
+and so nobody bottlenecks on AJ or has to stop work for a few days while
+the patch queue clears so they can get clean diffs easily.
+</p><p>
+The end result of that work can be then trivially merged back into
+WineHQ. Alexandre can review the entire patch at once to get the
+zeitgeist of it, while still seeing the progression of the code if he
+wishes. Meanwhile the huge code churn doesn't impact others working on
+other parts of the codebase.
+</p><p>
+It'd also make it practical for Wine to split into subprojects for
+really huge pieces of work. For instance, currently MikeM is hacking on
+MSI alone. If he had the ability to setup a separate project for it, and
+invite others to begin work with him, it might be easier to get people
+involved. Once the work has matured the project can be terminated and we
+go back to the central peer-reviewed model.
+</p><p>
+So, what do people think? There are tools to sync CVS and arch, I can
+set one up over the holidays (starting for me on saturday) so we can get
+a flavour of it, if there is interest.
+</p></quote>
+
+<p>Greg Turner uses it for other work and likes it:</p>
+<quote who="Greg Turner"><p>
+I'm using it at my new job and it's pretty dope imho.  There are a few 
+downsides, some already have been mentioned (those--horrible--names, for 
+example).  Others I have noticed:
+<ul>
+<li> Too many VC files &amp; VC Files mixed in too liberally with your real source 
+("inventory" helps ameliorate this, but still...)</li>
+
+<li> Not the best win32 support AFAIK</li>
+
+<li> working in /x/y/z amazingly requires write permission at /x/y!  stupid.</li>
+
+<li> horrible, confusing error messages</li>
+
+<li> no fancy integration with your favorite GUI yet</li>
+</ul></p><p>
+Despite the above and a few other nits, I really like it.  Even 
+those--damn--names start to get comfortable once your ring finger builds up 
+the requisite strength &amp; dexterity :)
+</p></quote>
+
+<p>Erik de Castro Lopo also had good things to say about it.</p>
+
+</section>
+
+<section 
+	title="WineHQ AppDB Source Released" 
+	subject="WineHQ AppDB Source"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0274.html" 
+	posts="1"
+	startdate="03/15/2004"
+>
+<topic>WineHQ</topic>
+<p>Wine's AppDB has seen it's fair share of challenges.  
+Over the past week some volunteers have decided to put
+some time into cleaning it up.  To facilitate that, Jeremy
+Newman decided to open up the backend code that makes
+it all work:</p>
+
+<quote who="Jeremy Newman"><p>
+I have opened up the source to the WineHQ appdb. Anyone with spare time
+and some PHP skills is welcome to help improve it.
+</p><p>
+The tree has not been touched in over a year. I did some work to clean
+it up for this import, and that's about it. I will be available to answer
+any questions on it.
+</p><p>
+Check it out:
+<ul>
+<tt>cvs -d:pserver:cvs_at_cvs.winehq.org:/home/wine co appdb</tt></ul>
+</p><p>
+If there is interest, I plan to switch the online version to auto-update
+from CVS like the lostwages tree does.
+</p></quote>
+
+<p>Patches updating it have already started to appear.</p>
+
+</section>
+
+<section 
+	title="Win32 Packages of Wine on SF.Net" 
+	subject="Win32 packages released on sourceforge"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0330.html" 
+	posts="3"
+	startdate="03/17/2004"
+>
+<topic>Testing</topic>
+<p>Ivan Leo Murray-Smith announced that PE builds of Wine can
+be found on SourceForge:</p>
+<quote who="Ivan Leo Murray-Smith"><p>
+The win32 packages of wine are on sourceforge, you can get them from
+
+<ul><a href="http://sourceforge.net/project/showfiles.php?group_id=6241">
+http://sourceforge.net/project/showfiles.php?group_id=6241</a></ul></p><p>
+or to view the win32 packages only
+
+<ul><a href="http://sourceforge.net/project/showfiles.php?group_id=6241&amp;package_id=112520">
+http://sourceforge.net/project/showfiles.php?group_id=6241&amp;package_id=112520
+</a></ul></p></quote>
+
+<p>So if you're the type who likes to replace Windows system
+components, you might find it interesting to replace things 
+like notepad and comctl32.dll with the Wine equivalents.</p>
+
+</section>
+<section 
+	title="Delayed Debugging Patch Updated" 
+	subject="Updated debug delay patch"
+	archive="http://www.winehq.org/hypermail/wine-patches/2004/03/0134.html" 
+	posts="5"
+	startdate="03/13/2004"
+	enddate="03/14/2004"
+>
+<topic>News</topic>
+<p>Mike Hearn updated his 
+<a href="http://www.winehq.org/hypermail/wine-patches/2004/03/0134.html">delayed
+debugging</a> patch:</p>
+<quote who="Mike Hearn"><p>
+Here is the updated version of my debug delay patch, back by popular
+request (well, ok, one person asked for it :)
+</p><p>
+Usage is simple:
+<ul><tt>
+WINEDELAY=1 WINEDEBUG=+relay wine foobar.exe</tt></ul></p><p>
+
+Hit f12 in any window to switch debug tracing on/off
+</p></quote>
+</section>
+
+<section 
+	title="Creating the Registry Without x11drv" 
+	subject="Rundll32 needs X"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0296.html" 
+	posts="4"
+	startdate="03/15/2004"
+	enddate="03/17/2004"
+>
+<topic>Configuration</topic>
+<p>Vincent B&#233;ron ran into a problem with the new registry
+creation:</p>
+<quote who="Vincent Beron"><p>
+ Since wine.inf is now used as the source for the default values for the
+ registry (via rundll32), importing it absolutely needs X (whereas the
+ older regedit method didn't when importing a .reg file). This can be a
+ problem for people running wineinstall via ssh from a Windows box.
+</p><p>
+ Is there a reason rundll32 needs user32 and cannot delayimport it?
+</p></quote>
+
+<p>Ove K&#229;ven had a workaround for using the console driver, ttydrv,
+instead of X:</p> 
+<quote who="Ove Kaaven"><p>
+You're not going to gain anything by letting rundll32 not import user32,
+because it has to load all the dlls it's telling to self-register
+anyway, and many of them will import user32 themselves even if rundll32
+doesn't.
+</p><p>
+In my debian packages I go the ttydrv route, with the 
+<a href="http://www.winehq.org/hypermail/wine-devel/2004/03/0298.html">following
+patch</a> to make ddraw.dll load and self-register without crashing under ttydrv.
+</p></quote>
+</section>
+</kc>

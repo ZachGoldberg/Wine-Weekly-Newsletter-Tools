@@ -1,0 +1,473 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="270" date="04/15/2005" />
+<intro> <p>This is the 270th issue of the Wine Weekly News publication.
+Its main goal is to tear down the circus tent. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="222" size="1110" contrib="71" multiples="39" lastweek="30">
+
+<person posts="15" size="37" who="Alexandre Julliard" />
+<person posts="15" size="65" who="Robert Shearman" />
+<person posts="9" size="34" who="Robert Lunnon" />
+<person posts="9" size="27" who="Eric Pouech" />
+<person posts="8" size="42" who="Dimitrie O. Paun" />
+<person posts="8" size="28" who="Mike McCormack" />
+<person posts="8" size="25" who="Dmitry Timoshkov" />
+<person posts="7" size="106" who="Benjamin Cutler" />
+<person posts="7" size="34" who="Steven Edwards" />
+<person posts="6" size="140" who="Maarten Lankhorst" />
+<person posts="6" size="56" who="Jacek Caban" />
+<person posts="6" size="21" who="James Hawkins" />
+<person posts="6" size="18" who="Mike Hearn" />
+<person posts="5" size="38" who="Paul Vriens" />
+<person posts="5" size="24" who="Rein Klazes" />
+<person posts="4" size="25" who="Jose Alonso" />
+<person posts="4" size="17" who="Paul Millar" />
+<person posts="4" size="14" who="Ivan Leo Puoti" />
+<person posts="4" size="14" who="Rolf Kalbermatter" />
+<person posts="4" size="14" who="Vitaliy Margolen" />
+<person posts="4" size="13" who="Michael Jung" />
+<person posts="4" size="11" who="Hans Leidekker" />
+<person posts="4" size="11" who="Jakob Eriksson" />
+<person posts="4" size="11" who="Juan Lang" />
+<person posts="3" size="34" who="Robert Reif" />
+<person posts="3" size="14" who="Stefan D&#246;singer" />
+<person posts="3" size="13" who="Andrew Bartlett" />
+<person posts="3" size="9" who="Saulius Krasuckas" />
+<person posts="3" size="9" who="Dan Kegel" />
+<person posts="3" size="8" who="Duane Clark" />
+<person posts="2" size="21" who="William Poetra Yoga H" />
+<person posts="2" size="7" who="Detlef Riekenberg" />
+<person posts="2" size="7" who="Paul van Schayck" />
+<person posts="2" size="6" who="Peter Berg Larsen" />
+<person posts="2" size="6" who="Andrew Neil Ramage" />
+<person posts="2" size="5" who="Vincent B&#233;ron" />
+<person posts="2" size="5" who="Andreas Mohr" />
+<person posts="2" size="5" who="Lionel Ulmer" />
+<person posts="1" size="20" who="MediaHost (TM)" />
+<person posts="1" size="6" who="Terry Barnaby" />
+<person posts="1" size="4" who="Daniel Kegel" />
+<person posts="1" size="4" who="d13f00l" />
+<person posts="1" size="4" who="Joaquin Fernandez" />
+<person posts="1" size="4" who="Joris Huizer" />
+<person posts="1" size="4" who="(peter)" />
+<person posts="1" size="4" who="Dylan Taft" />
+<person posts="1" size="3" who="Boaz Harrosh" />
+<person posts="1" size="3" who="Tony Lambregts" />
+<person posts="1" size="3" who="Francois Gouget" />
+<person posts="1" size="3" who="Alban Browaeys" />
+<person posts="1" size="3" who="Uwe Bonnes" />
+<person posts="1" size="3" who="Daniel Remenak" />
+<person posts="1" size="3" who="Matthew Mastracci" />
+<person posts="1" size="3" who="Kees Cook" />
+<person posts="1" size="2" who="Michael Stefaniuc" />
+<person posts="1" size="2" who="Hiji" />
+<person posts="1" size="2" who="Brouard Nicolas" />
+<person posts="1" size="2" who="Jan Schiefer" />
+<person posts="1" size="2" who="luis lenders" />
+<person posts="1" size="2" who="Diego 'Flameeyes' Petten&#242;" />
+<person posts="1" size="2" who="Shachar Shemesh" />
+<person posts="1" size="2" who="Dustin Navea" />
+<person posts="1" size="2" who="Aaron Arvey" />
+<person posts="1" size="2" who=" &lt;linax@topol.dp.ua&gt;" />
+<person posts="1" size="2" who="Lars Segerlund" />
+<person posts="1" size="2" who="Thomas Weidenmueller" />
+<person posts="1" size="2" who="Martin Fuchs" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="Vitaly Lipatov" />
+
+</stats>
+<section 
+	title="Samba's NTVFS" 
+	subject="Borrowing NTVFS layer from Samba4 for Wine?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0267.html" 
+	posts="8"
+	startdate="04/13/2005"
+	enddate="04/14/2005"
+>
+<topic>Filesystems</topic>
+<p>Dan Kegel wondered if there was an opportunity for
+Wine to share some of Samba's work:</p>
+<quote who="Dan Kegel"><p>
+Tridge's remarks in his recent interview make me think
+maybe Wine should be using the same NTVFS layer that
+Samba4 does.   Who knows, maybe it'd be an easy fit...
+</p><p>
+<a href="http://software.newsforge.com/article.pl?sid=05/04/08/2132221&amp;from=rss">
+http://software.newsforge.com/article.pl?sid=05/04/08/2132221&amp;from=rss</a></p><p>
+
+NF: What are the biggest improvements that have come to fruition in Samba4 and what are the biggest ones that didn't make it or had to be significantly trimmed?
+</p><p>
+Tridge: From my point of view, the biggest improvement is in the code structure. Over half the code in Samba4 is now auto-generated using a new compiler we wrote for the task. That change alone would be worth the effort for me. The code that isn't 
+auto-generated is structured in a modular and very efficient manner. That point of view isn't what users care about, of course, but it does lead to lots and lots of user-visible improvements due to the ease of programming with the new structure. We 
+now commonly come across situations where we say, "OK, let's start on the following feature," and a couple of hours later it's finished, where we might have spent a week or more on the same feature in Samba3. The most user-visible changes in Samba4 
+will be those associated with the ADS support, and the additional file system features. The file system features are what started the whole Samba4 effort -- Samba4 was initially called the "Samba NTVFS" project, referring to the new virtual file 
+system layer that allows for NT semantics on top of both POSIX and non-POSIX file systems.
+</p><p>
+One simple but important example of how the new NTVFS layer helps is the addition of support for "NT file streams." A file in an NT filesystem can have multiple "streams," where the primary stream (called ":$DATA") is the normal file data that people 
+are used to thinking about, but there can be any number of other named streams containing other types of data, such as meta-data describing who wrote the file, or an audio stream, or even some data from an anti-virus scan of the file. Importantly, 
+recent updates to WindowsXP use streams to store security information about where a file came from, which allows Windows to display a warning when you try to execute a file that comes from an untrusted "security zone." POSIX file systems have no 
+concept of multiple streams, and as Samba was originally designed as a tool for representing a POSIX filesystem to Windows clients, there was no attempt to add stream support. The situation has now changed, with streams becoming a more essential 
+feature for a file server for Windows clients, and at the same time user expectations for compatibility with WindowsNT have risen. This means we really need to support streams, but in order to do that properly, a lot of the internals of Samba needed 
+to be updated. This is achieved in Samba4 using the new NTVFS layer, which allows streams to be represented either using an external database or using "file xattrs," which is an extension recently added to Linux, and which is also present in a number 
+of other, Unix-like systems
+</p></quote>
+
+<p>Andrew Bartlett had some thoughts:</p>
+<quote who="Andrew Bartlett"><p>
+ This is an idea I like, and while I don't think it will become the
+ default way wine operates ever, I wonder if a suitable abstraction layer
+ might assist us. 
+</p><p>
+ I see it this way - wine will need a full NTFS redirector at some point,
+ to correctly handle remote fileystems.  Why is the local disk any
+ different from a remote redirected filesystem?  Samba could be hooked in
+ at this point (and my even assist in providing access to those remote
+ files).
+</p><p>
+ I also don't know much about win32 programming, but anyway :-)
+</p></quote>
+
+<p>Dan replied,
+<quote who="Dan Kegel">
+ I suppose one could do it that way, but I was thinking
+ of turning Samba4's NTVFS layer into an ELF shared library
+ that could be used either by Samba or by Wine
+ (or both).  That way it'd be easier to simulate local
+ Windows disks accurately; doing it via Samba would make
+ them seem like network disks, which sometimes wouldn't be
+ good enough, I bet.</quote></p>
+
+<p>Mike McCormack pointed a problem doing that:</p>
+<quote who="Mike McCormack"><p>
+
+Without having a process wide lock of some kind, the only way to use a 
+shared library for the VFS would be in the Wine server.  Implementing 
+reading and writing via wineserver has pretty bad performance penalties.
+</p><p>
+IMO, the best way is to add what we need to the Linux kernel.
+</p><p>
+If we were to extend smbfs or cifs to allow access to the NTFS data that 
+the unix VFS doesn't allow, that would provide us with fast and atomic 
+access to remove NTFS filesystems.
+</p></quote>
+
+
+<p>Andrew thought adding mechanisms to the kernel would be
+difficult:</p>
+<quote who="Andrew Bartlett"><p>
+From the Samba perspective, I just don't see this as a viable way
+forward.  Perhaps it's best to provide a bit of history here, as to why
+Samba4 got started in the first place:
+</p><p>
+Samba4 was started, because tridge was working for IBM research on an
+advanced network storage solution, which included its own network file
+system, capable of providing full NTFS semantics.
+</p><p>
+While the file system clearly worked with Samba being a POSIX app, and
+the remote FS mounted in the kernel, providing proper NTFS semantics was
+simply not possible: so much information was lost on the POSIX
+transition.  Tridge then worked to construct a VFS layer for Samba that
+allowed a pluggable object to provide the full NTFS semantics.  It is
+this pluggable interface we are discussing here.  This interface has a
+CIFS backend, as well as the 'posix' backend we use for storing real
+files locally, and this does work.  
+</p><p>
+So, what I'm trying to say is this: why should wine lose all this
+information as it tries to push things through the POSIX interface of the
+kernel?  Even extended, I just don't see that interface providing
+consistent support for a remote filesystem in the way windows works, and
+for local filesystems, there is still the need for someone (Samba, Wine,
+the Linux kernel?) to provide all the other databases, like locking and
+share modes. </p></quote>
+
+</section>
+
+<section 
+	title="Safedisk Help Needed" 
+	subject="safedisk 1 update, get your safedisk 1 games out (Not running just yet, but getting there)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0305.html" 
+	posts="1"
+	startdate="04/14/2005"
+>
+<topic>Status Updates</topic>
+<p>Ivan Leo Puoti wanted to get some feedback on work
+he's been doing to get Safedisk copy protection to run.  He 
+hopes to gather more info about how other builds of the
+driver, secdrv.sys, behave.  If he's lucky, someone will
+figure out why it doesn't throw an exception.</p>
+<quote who="Ivan Leo Puoti"><p>
+
+OK, here is a little summary on where we are with safedisk, here by 
+safedisk I always mean safedisk 1.
+</p><p>
+Safedisk protected games are packed into an encrypted ICD file, in my 
+case the game executable is called EMPIRES2.ICD. Safedisk is actually 
+made up of a little loader, empires2.exe (But this depends on the name 
+of the game), and a kernel mode driver, Secdrv.sys. A safedisk service 
+is installed, and in windows a kernel mode service is just a driver. The 
+loader starts the secdrv service, so I've hacked advapi32 to call the NT 
+function NtLoadDriver when it detects a kernel mode service. This 
+function, after a couple of checks, passes the call to the ntoskrnl 
+program I've written, Microsoft has ntoskrnl&lt;-&gt;ntdll communication done 
+by a fancy exception rising/handling system, I have just gone for a 
+named pipe, as we don't use ntoskrnl as a real kernel (In windows 
+everything you do causes loads of calls to ntoskrnl, in wine ntoskrnl is 
+seldom used at all and only handles very few calls).
+</p><p>
+Ntoskrnl loads the driver, and it successfully initialises. At this 
+point  the safedisk loader communicates with its driver using 
+DeviceIoControl, it passes an input buffer, that contains some 
+instructions for the driver, and an output buffer that is meant to 
+receive some well defined values that are meant to tell the user mode 
+loader if everything is OK (For example a debugger isn't loaded). The 
+loader also tries to get device handles for well known debuggers, this 
+isn't an issue for us. DeviceIoControl passes the call to 
+NtDeviceIoControlFile, that passes the call on to ntoskrnl. A windows 
+driver handles user mode IO requests via a function called 
+DeviceDispatchControl, it's address is put in the member of the 
+DEVICE_OBJECT struct that the driver's initialisation function fills for 
+the system (This is the DriverEntry routine). In Wine currently a device 
+handle is a pointer to a DEVICE_OBJECT struct, guys in #reactos have 
+confirmed this is how things work in windows, and even if AJ thinks we 
+should have real file handles this approach makes no sense to me whatsoever.
+DeviceDispatchControl in safedisk 1 check the control code passed to 
+DeviceIoControl (It must always be 0xef002407), it then reads the input 
+buffer, if byte 0xc in the buffer is 0x3c it checks the debug registers, 
+other values trigger other checks. It also checks the length of both 
+input and output buffers. It should then read the debug registers, and 
+this should rise an exception that we will somehow handle. However for 
+some unknown reason this doesn't happen, and the status of the IO 
+operation is STATUS_UNSUCCESSFUL, note that this value is in the IRP 
+struct under Irp.IoStatus.Status, DispatchDeviceControl always returns 
+0. At this point I would like to know if other safedisk 1 protected 
+games yield different results. I would love to step through secdrv.sys 
+with winedbg, but it just hangs or crashes. The code in ntoskrnl prints 
+the interesting buffer values that secdrv.sys checks for, it currently 
+prints
+<ul><code>
+trace:ntoskrnl:NtDeviceIoControlFile 
+(0x40340ba8,(nil),(nil),(nil),0x4068d9c8,0xef002407,0x414e1498,0x00000514,0x414e19ac,0x00000610)<br />
+trace:ntoskrnl:driver_control driver_control is at 0x405cea80<br />
+trace:ntoskrnl:driver_control Handling IoContorl, handle is 0x40340ba8, 
+ControlCode is ef002407, OutputBufferLength is 610, InputBufferLength is 514<br />
+trace:ntoskrnl:driver_control InputBuffer[0xc] is 3c, InputBuffer[410] is 0
+fixme:ntoskrnl:IofCompleteRequest stub!<br />
+trace:ntoskrnl:driver_control IRP_MJ_DEVICE_CONTROL returned 0, IoStatus 
+it c0000001, Information is 0<br />
+trace:ntoskrnl:driver_control Irp.UserBuffer[0x410] is 0, 
+Irp.UserBuffer[0x40c] is 0</code></ul></p><p>
+
+In case of success Irp.UserBuffer[0x410] should be 0x00000500 and 
+Irp.UserBuffer[0x40c] should be 4.
+All that is needed to run safedisk up to the point where it can run ATM 
+is at <a href="http://spazioinwind.libero.it/nonsolomicrosoft/safedisk.html">http://spazioinwind.libero.it/nonsolomicrosoft/safedisk.html</a>
+Please get all your safedisk 1 games and try it out, the more people try 
+it the better.
+</p></quote><p>
+
+So if you're into patching Wine and testing some games, give it whirl.  
+Ivan would love to see some debug output and you'll get to see your game 
+crash in new ways.</p>
+
+</section>
+<section
+        title="Taking Out the Trash"
+        subject="Started on TrashCan implementation"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0261.html"
+        posts="5"
+        startdate="04/13/2005"
+	enddate="04/15/2005"
+>
+<topic>Integration</topic>
+<p>Steven Edwards began some work this week and covered 
+it as he went along.  He also mentioned some areas that
+would be useful for someone to jump in and help on. 
+In the first email he wrote:</p>
+<quote who="Steven Edwards"><p>
+This is my first real attempt to add a new feature so it's going to take quite some time. My long
+term goal is to implement the RecycleBin for ReactOS and for Wine to make it interface with the
+FreeDesktop.org draft trashcan spec. The latter might require an extension to Wine or some other
+process to move files out of the C:\Recycled folder and in to the users ~/Desktop/Trash
+</p><p>
+I have started by adding a little support for the FOF_ALLOWUNDO flag in SHFileOperationW. Windows
+can use either Drive:\Recycled or Drive:\Recycler depending on if the TrashCan is on an NTFS drive
+or not so I am not sure how we want to handle it in Wine. With my first patch if you delete a file
+with this flag it will move the file to C:\Trash which is a file not a directory.
+</p><p>
+I am using the sample programs here to reverse how its supposed to work
+<ul><a href="http://www.maddogsw.com/cmdutils/">http://www.maddogsw.com/cmdutils/</a></ul>
+</p><p>
+If anyone would like to help they can start working on the namespace stuff needed for the
+RecycleBin. 
+[ed note: <a href="http://www.winehq.com/hypermail/wine-devel/2005/04/att-0261/01-trashcan-4.13.05.patch">patch</a> attached]</p></quote>
+
+<p>The next day he wrote:</p>
+<quote who="Steven Edwards"><p>
+There are still a whole set of RecycleBin APIs that need to be implemented to query and empty the
+trash but this should work for explorer sending files to the trash. Also note someone else will
+need to implement the RecycleBin ShellFolder.  [ed. note: <a href="http://www.winehq.com/hypermail/wine-devel/2005/04/att-0288/01-trashcan-20050414-2.diff">patch</a>
+attached]
+</p></quote>
+
+
+<quote who="Steven Edwards"><p>
+Yes I know this [<a href="http://www.winehq.com/hypermail/wine-devel/2005/04/att-0324/01-trash-fd.diff">patch</a>] 
+does not look that nice atm. It's still a work in progress but you get the idea of
+where I am going with it. With this patch any SHFileOperation with the FOF_ALLOWUNDO flag will
+move files to the user's ~/.Trash. There is a draft spec on 
+<a href="http://www.freedesktop.org">www.freedesktop.org</a> on how the Trash is
+supposed to work but currently KDE does something totally different and GNOME is not compliant so
+I am not sure how I am going to deal with that yet.</p></quote>
+
+<p>Diego Petten&#242; mentioned that KDE 3.4 uses the spec.</p>
+
+</section>
+<section 
+	title="USB Support" 
+	subject="USB status ..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0314.html" 
+	posts="3"
+	startdate="04/15/2005"
+	enddate="04/16/2005"
+>
+<topic>IO</topic>
+<p>Lars Segerlund wanted to know about USB device and
+Wine:</p>
+<quote who="Lars Segerlund"><p>
+ What is the status of wine's USB support ?
+</p><p>
+I have an IDE for a development board and I really would like to flash it from
+Linux, ( I don't have windows), and this uses USB to talk to the board.
+Is there anything done yet or am I on my own ?
+</p><p>
+Can someone also give a hint on the feasibility, complexity of managing a USB
+implementation for Wine ? I am rather good at linux device drivers and such.
+</p></quote>
+
+<p>Hiji thought of another example where it's necessary,
+<quote who="Hiji">
+There's not much I can say in the way of development,
+but as a user, getting USB support (beyond what's
+supported in the kernel) would be a HUGE leap of
+improvement for Wine.  I think others have said before
+that there are a lot of apps out there that will run
+on Wine, but are useless because they depend on their
+hardware counterpart.  (In the music world, Guitarport
+comes to mind.)</quote></p>
+
+
+<p>Regarding development, Uwe Bonnes thought of a way someone
+could at least start on it:</p>
+<quote who="Uwe Bonnes"><p>
+Not much has been done, in my understanding. The first step needed, in my
+opinion, is to put much work into the SETUPAPI DLL to let USB Devices at
+least enumerate. Talking to the devices then is another big step. Not many
+windows programs will talk to the devices by using something like libusb. So
+either something like ndiswrapper for USB would be needed in the kernel to
+load windows drivers, with infrastructure in wine to to talk to the driver,
+or the windows driver need to be reengineered to expose an API to the
+user program like with windows driver, but internally use Linux means
+(libusb, etc).
+</p><p>
+Perhaps at WineConf a   BOF should be held to gather bits and pieces and
+ideas.</p></quote>
+
+</section>
+<section 
+	title="Multimedia Config Question"
+	subject="Multimedia Control Panel question"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0233.html" 
+	posts="2"
+	startdate="04/12/2005"
+>
+<topic>Multimedia</topic>
+<p>Robert Reif wanted to know the best way to change some audio
+configuration:</p>
+<quote who="Robert Reif"><p>
+The proper way to set the default sound card is to use the same
+registry keys as Windows and either use a native mmsys.cpl or
+devise a wine specific way of doing the same thing.
+</p><p>
+Creating a builtin  mmsys.cpl is one way of accomplishing this
+and another way is to add this capability to winecfg.  You could
+also have winecfg launch mmsys.cfg (native or builtin).
+</p><p>
+Any ideas on what would be the best way for wine?
+</p><p>
+Here are some of the registry keys and a link to some
+documentation: 
+<a href="http://www.cs.vu.nl/~pboon/md/indexold.htm">http://www.cs.vu.nl/~pboon/md/indexold.htm</a>
+</p></quote>
+
+<p>Paul van Schayck suggested:</p>
+<quote who="Paul van Schayck"><p>
+
+Just a single registry entry like Windows does is not going to work I
+think. We need at least a third to specify the sound system. We
+already do that but what prevents us from stop using Wine\Config and
+move the sound driver and sound device entries to
+HKCU\Software\Microsoft\Multimedia\Sound Mapper?
+</p><p>
+In my mind the best solution to all of our sound device selection
+problems would be to have winecfg handle the frontend. And drop
+especially the dsound and alsa specific selection methods in the
+config file.
+</p><p>
+Winecfg would offer the list of drivers. Each driver would detect the
+devices available. Winecfg would get the list of devices with
+waveOutGetDevCaps so we can keep device detection methods out of
+winecfg.
+Optionally we offer a text input field for those drivers where we can
+not discover all devices.
+</p><p>
+Winecfg would then store the driver and device (ID or name?) in
+Multimedia\Sound Mapper.
+Sounds doable?</p></quote>
+
+
+</section>
+
+<section 
+	title="Hexdump Function" 
+	subject="Hexdumping function?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0330.html" 
+	posts="2"
+	startdate="04/15/2005"
+>
+<topic>Debugging</topic>
+<p>Benjamin Cutler wanted to know if there was another way to dump
+raw hex output:</p>
+<quote who="Benjamin Cutler"><p>
+I'm writing a conformance test for my implementation of powrprof.dll
+that I've been working on, and something I'd like to do in the test is
+dump the contents of some structs to the screen without trying to make
+it pretty. I cobbled together the following function, but I'd like to
+know if there's something like this already so I don't reinvent the wheel:
+<ul><code>
+void hexdump(void *p, int len) {
+<ul><code>
+        int i;<br />
+        long *src = (long *)p;<br />
+        len /= 4;<br />
+        for(i = 0; i &lt; len; i++) {
+	<ul><code>
+                printf("%08lX", src[i]);</code></ul>
+        }</code></ul>
+}</code></ul></p></quote>
+
+<p>Benjamin appeared to find his answer on IRC in #winehackers.  That
+is, this really is the best way to do it.  Mike McCormack pointed out:
+</p><quote who="Mike McCormack"><p>
+ The conformance tests should have no output when they run correctly, so 
+ use this for your own debugging, but when you've got it right, delete 
+ the output.  It should only output stuff to complain about a problem.
+</p><p>
+ Silence is golden ... 
+ <a href="http://www.google.com/search?q=silence+golden+unix">http://www.google.com/search?q=silence+golden+unix</a>
+</p></quote>
+</section>
+</kc>

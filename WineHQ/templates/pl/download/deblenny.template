@@ -1,0 +1,46 @@
+<!--TITLE:[Wine for Debian Lenny]-->
+<!--BLURB:[Wine dla Debian Lenny]-->
+
+<h1 class="title"><a href="http://www.debian.org/" target="_new"><img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></a>
+Wine dla Debian Lenny, Squeeze i Sid
+<a href="http://www.debian.org/" target="_new"><img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></a></h1>
+
+<p>Dystrybucje bazujące na Debianie używają specjalnego narzędzia zwanego APT do zarządzania paczkami. APT jest zdolne automagicznie zainstalować wszystkie potrzebne zależności dla paczki z programem, jak również utrzymywać zawsze najnowsze wersje paczki, poprzez przeszukiwanie czegoś, co jest znane pod nazwą repozytoria APT. Dystrybucje bazujące na Debianie mają swoje własne repozytoria programów, które zawiera w sobie Wine, jednakże my utrzymujemy nasze własne repozytorium najnowszych dostępnych paczek beta, które można tutaj pobrać.</p>
+
+<p><b>Uwaga: To są paczki beta</b><br>
+<i>Te paczki są paczkami beta. Oznacza to, że okresowo mogą cierpieć z powodu <a href="http://wiki.winehq.org/Regression">regresji</a>, a aktualizacja do nich może popsuć funkcjonalność Wine. Jeżeli w twoim przypadku ostatnie stabilne wydanie Wine (aktualnie Wine 1.0.1)
+działa, to nie musisz używać paczek beta.</i></p>
+
+<p>To repozytorium zawiera paczki dla procesora o architekturze i386 i amd64.</p>
+
+<p>Paczki Wine możesz zainstalować na dwa różne sposoby: poprzez doddanie repozytorium lub poprzez pobranie paczki .deb i jej ręczną instalację, ale przed każdym musisz usunąć starą wersję Wine. Jeżeli użyjesz pierwszego sposobu to Wine będzie automatycznie aktualizowane poprzez apt, w każdym innym przypadku będziesz musiał ręcznie pobierać i instalować każdą nową wersję Wine.</p>
+
+<h2>Usuń starą wersję</h2>
+<div style="position:relative;left:20px">Otwórz terminal</div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#aby zalogować się jako root</font></div>
+<div style="position:relative;left:20px"><i>apt-get remove libwine wine</i> <font color="gray">#aby usunąć przestarzałą wersję Wine</font></div><p></p>
+<h2>Sposób 1: Dodaj repozytorium</h2>
+<div style="position:relative;left:20px">Otwórz terminal</div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#aby zalogować się jako root</font></div>
+<div style="position:relative;left:20px"><i>gedit /etc/apt/sources.list</i> <font color="gray">#aby otworzyć plik repozytorium edytorem tekstowym (możesz użyć gedit lub innego)</font></div>
+<div style="position:relative;left:20px">Dodaj tą linię dla Lenny: <i>deb http://www.lamaresh.net/apt lenny main</i></div>
+<div style="position:relative;left:20px">Dodaj tą linię dla Squeeze: <i>deb http://www.lamaresh.net/apt squeeze main</i></div>
+<div style="position:relative;left:20px">Dodaj tą linię dla Sid: <i>deb http://www.lamaresh.net/apt sid main</i></div>
+<div style="position:relative;left:20px">Zapisz i zamknij sources.list</div>
+<div style="position:relative;left:20px"><i>wget -O - http://www.lamaresh.net/apt/key.gpg | apt-key add - </i> <font color="gray">#aby dodać klucz gpg</font></div>
+<div style="position:relative;left:20px"><i>apt-get update</i> <font color="gray">#aby uaktualnić listę paczek</font></div>
+<div style="position:relative;left:20px"><i>apt-get install wine</i> <font color="gray">#aby zainstalować najnowszą wersję Wine</font></div><p></p>
+<h2>Sposób 2: Pobierz paczkę .deb i zainstaluj ją ręcznie</h2>
+<div style="position:relative;left:20px">Wybierz paczkę .deb z <a href="http://www.lamaresh.net/binary.php" target="_blank">listy binarek</a> i zapisz ją w twoim katalogu domowym</div>
+<div style="position:relative;left:20px">Otwórz terminal</div>
+<div style="position:relative;left:20px"><i>cd ~</i> <font color="gray">#aby przejść do twojego katalogu domowego</font></div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#aby zalogować się jako root</font></div>
+<div style="position:relative;left:20px"><i>dpkg -i wine_1.1.xxx.deb</i> <font color="gray">#zamień ciąg xxx na nazwę wybranej przez ciebie paczki, to zainstaluje Wine</font></div>
+
+<br><br><p style="font-size:12px;text-align:left;font-style: italic;">
+Strona domowa: <a href="http://www.lamaresh.net" target="_blank">http://www.lamaresh.net/</a><br>
+Opiekun repozytorium:  <a href="mailto:repository@lamaresh.net">Maurilio Genovese</a><br>
+Twórca paczek:  <a href="mailto:ben.klein@lamaresh.net">Ben Klein</a>
+</p>
+
+

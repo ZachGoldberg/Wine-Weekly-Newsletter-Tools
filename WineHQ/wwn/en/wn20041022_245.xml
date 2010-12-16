@@ -1,0 +1,563 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="245" date="10/22/2004" />
+<intro> <p>This is the 245th issue of the Wine Weekly News publication.
+Its main goal is to cough. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="164" size="730" contrib="61" multiples="30" lastweek="28">
+
+<person posts="12" size="31" who="Vincent B&#233;ron" />
+<person posts="12" size="30" who="Alexandre Julliard" />
+<person posts="10" size="32" who="Robert Shearman" />
+<person posts="10" size="29" who="Dmitry Timoshkov" />
+<person posts="7" size="23" who="Eric Pouech" />
+<person posts="6" size="44" who="Thorsten Kani" />
+<person posts="6" size="15" who="Dimitrie O. Paun" />
+<person posts="5" size="43" who="Raphael" />
+<person posts="5" size="14" who="Walt Ogburn" />
+<person posts="4" size="14" who="Shachar Shemesh" />
+<person posts="4" size="13" who="Peter Riocreux" />
+<person posts="4" size="12" who="Boaz Harrosh" />
+<person posts="4" size="12" who="Rein Klazes" />
+<person posts="4" size="12" who="Bill Medland" />
+<person posts="4" size="10" who="Mike McCormack" />
+<person posts="3" size="15" who="Chris Morgan" />
+<person posts="3" size="13" who="Eric Frias" />
+<person posts="3" size="9" who="Jason Edmeades" />
+<person posts="3" size="8" who="William Poetra Yoga H" />
+<person posts="3" size="8" who="Hans Leidekker" />
+<person posts="3" size="7" who="Devils Cry" />
+<person posts="2" size="44" who="Dan McGhee" />
+<person posts="2" size="7" who="N. Dahn" />
+<person posts="3" size="9" who="Marcus Meissner" />
+<person posts="2" size="5" who="James Hawkins" />
+<person posts="2" size="5" who="Juan Lang" />
+<person posts="2" size="5" who="Ivan Leo Puoti" />
+<person posts="2" size="5" who="Kenneth Porter" />
+<person posts="3" size="6" who="Mike Hearn" />
+<person posts="2" size="4" who="(Warren_Baird/CSI)" />
+<person posts="1" size="131" who="C. Andrews La Varre" />
+<person posts="1" size="17" who="Ge van Geldorp" />
+<person posts="1" size="5" who="Tony Lambregts" />
+<person posts="1" size="4" who="Sascha Hanse" />
+<person posts="1" size="4" who="David Welch" />
+<person posts="1" size="4" who="Jeremy Newman" />
+<person posts="1" size="4" who="Uwe Bonnes" />
+<person posts="1" size="3" who="sean" />
+<person posts="1" size="3" who="Dan Kegel" />
+<person posts="1" size="3" who="Wesley Parish" />
+<person posts="1" size="3" who="Daniel Marmier" />
+<person posts="1" size="3" who="Andreas Mohr" />
+<person posts="1" size="3" who="Robert Lunnon" />
+<person posts="1" size="2" who="Ross Quinlan" />
+<person posts="1" size="2" who="Glenn Wurster" />
+<person posts="1" size="2" who="Jeremy White" />
+<person posts="1" size="2" who="Jia L Wu" />
+<person posts="1" size="2" who="Huw D M Davies" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Gerald Pfeifer" />
+<person posts="1" size="2" who="Tobias Burnus" />
+<person posts="1" size="2" who="Kuba Ober" />
+<person posts="1" size="2" who="Vitaliy Margolen" />
+<person posts="1" size="2" who="Nicolai Kuntze" />
+<person posts="1" size="2" who="Chris Dodd" />
+<person posts="1" size="1" who="Francois Gouget" />
+<person posts="1" size="1" who="David Kredba" />
+<person posts="1" size="1" who="Gerald Pfeifer" />
+
+</stats>
+<section
+        title="News: Wine-20041019"
+        subject="News"
+        archive="http://www.winehq.com/announce/20041019"
+        posts="1"
+        startdate="10/16/2004"
+	enddate="10/22/2004"
+>
+<topic>News</topic>
+<p>A new version of Wine is out.  Alexandre noted the following
+changes in his announcement:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20041019: (see 
+<a href="http://cvs.winehq.com/cvsweb/wine/ChangeLog?rev=1.88&amp;content-type=text/x-cvsweb-markup">ChangeLog</a> 
+for details)
+<ul>
+        <li> Beginnings of an architecture for Direct3D 9 support.</li>
+        <li> Many debugger regressions fixed.</li>
+        <li> Improvements to the IDL compiler and the COM headers.</li>
+        <li> New MSCMS dll (color management support).</li>
+        <li> Lots of bug fixes.</li></ul></p>
+</quote>
+
+<p>It looks like our packaging crew has been at work and you can find
+updated versions of Wine on our 
+<a href="http://www.winehq.com/download">download page.</a>  It
+should also be pointed out that the FreeBSD and Debian packages haven't
+been updated in a while.  Gerald Pfeifer has reported problems with the
+FreeBSD port for a while and apparently those issues still haven't been
+resolved.  As far as the Debian package goes, I'm not sure why it
+hasn't been updated.  Thanks goes out to Vincent B&#233;ron, Marcus
+Meissner, Ivan Leo Puoti, Adam Schreiber, Ove K&#229;ven, and
+Gerald Pfeifer for maintaining those.</p>
+
+</section>
+<section
+        title="Porting C++ With Winelib and Loader Issues"
+        subject="How to port c++ program to linux using winelib"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0369.html"
+        posts="6"
+        startdate="10/18/2004"
+>
+<topic>Winelib</topic>
+<p>Winelib seems to have attracted some attention recently.  We've
+seen more questions than usual getting asked about it.  Of course,
+it doesn't help that our Winelib documentation is out of date, but
+that's a problem for another day (<i>hint, hint.. we need volunteers
+to update it</i>.)  This week Jia Wu asked about porting a large 
+application:</p>
+<quote who="Jia Wu"><p>
+I have a win32 program written in C++. I am trying to port it to linux
+using winelib. The software contanis one exe file and several dll files. I
+would like to keep this structure when moving them to linux. That is, I
+still would like to generate several corresponding shared libraries
+(instead of statically linking all files together) in linux and they will be
+loaded at the runtime.
+</p><p>
+However using winelib tools (winemaker, configure, make) for shared
+library generation, I get unresolved symbol errors.
+</p><p>
+It seems that I have to write a spec file for each dll to import(and
+export) functions provided by other dlls. However, since they are all written
+in c++ and what need to be imported can either be a class or a class method,
+and parameters can be class either. SO I don't know how to handle this in
+spec file. Beside each dll file exports  many functions or classes. It
+would be tedious to write a lengthy spec file manually.
+</p><p>
+My question is that if it is possible that linking is not invoked during
+shared library generation under wine (but during the runtime)? How should
+I do it?
+</p></quote>
+
+<p>Eric Frias described a similar situation:</p>
+<quote who="Eric Frias"><p>
+I don't have an answer, just tagging along here.  I'm curious what other
+people have come up with, both for the long-term solutions and the best way
+to get it working today.
+</p><p>
+I'm working on a large C++ application that is divided into many shared
+objects.  We are currently using a version of wine that is about a year old.
+With that version, we were able to get C++ shared libraries to link together
+by bypassing wine's DLL mechanism for all of the C++ symbols -- we just let
+the native linux loader resolve the C++ symbols.  We just created empty
+.spec files for all of the C++ DLLs we wrote.  When we called winebuild to
+generate the .spec.c file for each DLL, we would only tell winebuild that we
+were linking against DLLs that were part of wine (kernel32, user32, etc).
+Then when we did the actual linking for the DLL we were building, we would
+pass in the names of the other DLLs we depend on the typical way
+(-lour_library.dll), and the native linker would resolve those symbols for
+us.  This worked very well for us.  I suspect there are a few things that
+this would have broken, like calling GetProcAddress on one of our C++
+symbols, but that isn't a feature we ever used.
+</p><p>
+We got a rude surprise when we tried to update to a current version of wine a
+month or two ago.  The DLL loading mechanism had changed during that span,
+and the hack we were using would no longer work.  It looks like the current
+version of wine won't allow you to link to a wine DLL with the native
+linker.  It expects all linking between wine DLLs to be done through
+winebuild, and it gets confused when a DLL gets loaded (by the shared
+loader) that wine didn't explicitly load.  We haven't yet figured out what
+to do about this.
+</p><p>
+We could try to modify wine's loading mechanism to allow the kind of hackery
+we were doing before, but I don't know much about this part of wine and I'm
+not sure what the consequences of loding DLLs out-of-order are.  I guess the
+other option is to generate .spec files for all of our DLLs, which is an
+option that doesn't really appeal to me either.  It'd be pretty easy to
+write a script that will massage the output of nm(1) to generate a .spec
+file, but if you do that you're going to be exporting every symbol, most of
+which will probably be unused.
+</p><p>
+I seem to recall that there are experimental(?) modifications to gcc and
+binutils that understand declspec(__dllexport)-type annotations.  I think
+this was part of mingw.  IIRC, gcc would somehow mark the exported symbols
+in the object files, and a separate utility would scan the object files and
+create a .def file with all of the exported symbols.  I'm not sure this
+stuff even compiles on linux.
+
+Does anyone have a solution they're happy with?</p></quote>
+
+<p>Boaz Harrosh described an approach to the problem:</p>
+<quote who="Boaz Harrosh"><p>
+
+Do a .spec file for each C++ dll with one c function like:
+<ul><code>
+void mydll_export( )
+{<br />
+}<br />
+// you need real code + .spec declaration</code></ul></p><p>
+
+In your app or in the dlls that use the above dll do a function like:
+<ul><code>
+void using_ddls()
+{
+<ul><code>
+   mydll_export( ) ;<br />  
+   mydll2_export() ;</code></ul>
+}<br />  
+// this code forces the winebuild to pull-in listed dlls as well</code></ul>
+</p><p>
+link everything the regular wine way this way DLLs load in the right 
+order, get initialized, and their Windows "import tables", like calls to 
+kernel32 etc, gets initialized by the loader.
+But (and here is where I'm out of date) also specify the .so as a link 
+option to the gcc linker. (ld)
+</p><p>
+In the old system, before winegcc. One would do -lmydll on the winebuild 
+command line. And then in turn -lmydll on the ld command line - to 
+resolve the C++ symbols. Now that we use winegcc I'm not sure what is the 
+switch for additional libs like .so and static libs. Look maybe it is 
+documented. (Dimi how do you add external libs to a winelib link stage 
+under winegcc?)
+</p><p>
+But be careful with this approach. It is an order of a magnitude slower 
+at load time than DLL linkage on windows. I came to a dead end with one 
+of my projects, where I managed to compile and run everything but I had 
+to revert to PE compiled code because it took my app 4-6 minutes to 
+load. (PE takes 40 seconds). It was a 1.2 M lines of C++ code divided in 
+to 37 DLLs + MFC in a dll.
+</p><p>
+We have talked about the right solution with Alexander at Wineconf. What 
+he suggested was:
+<ol>  
+<li> make the __declspec( export ) macro expand to a gcc "section" 
+declaration. So the compilers put all of them in a special section. No 
+one knew how C++ classes behave with "sections" and we suspected each 
+member function has to be put into the section by hand. On windows a 
+__declspec( export ) on the class declaration automatically exports all 
+members. Maybe MinGW could help out here.</li>
+
+
+<li> Use a tool like nm or readelf to extract all symbols (including 
+C++), in above section, and with a script convert them to a .spec file.</li>
+
+
+<li> I think that current winebuild have problems with some variants of 
+the C++ mangled symbols like the use of the "@" character. So maybe a 
+new "C++" style function should be added to the .spec syntax, that will 
+not try to interpret the symbols.</li></ol></p></quote>  
+
+
+<p>Eric thought the approach was sound and described more of the project
+he's working on:</p>
+<quote who="Eric Frias"><p>
+
+Thanks for the suggestion!  Even if it isn't elegant, it sounds like it will
+work (and is very close to what we were doing with the older wine).  I might
+even be able to coax our build system into generating all of the *_export()
+and using_dlls() functions automatically.</p><p>
+
+I'm working on a large project too, well over a million lines as reported by
+'wc -l'.  We've got about 50 shared libraries, but only 10 of those use
+wine; the rest are entirely native.  We think our application takes too long
+to load, but not nearly 4-6 minutes.  On a fast machine if you run it a few
+times in a row, it takes around 8 seconds to load.  On a lesser machine that
+has been doing other things, it will often take 40 seconds or so.  I'm not
+really sure where all of the time is spent.  I've been assuming that the
+majority of it is spent by ld.so.  Most of the DLLs have 200-300 symbols
+imported from the standard wine libraries, so the whole application is doing
+about 3000 fixups in our project. I can't see that taking too long (but I've
+never timed it).  I think if I started using the method you suggested, it
+should add less than a hundred extra fixups for wine to perform -- we're
+really just changing what causes the libraries to load, not what they
+import.
+</p><p>
+Was all of the time your application took to load because of wine's DLL
+import mechanism, or because of the shared loader in linux?  One of the
+reasons we are trying to upgrade to a more recent version of winelib is so
+that we can try some of the 'prelinking' tools to try to make our app load
+faster, so I'm curious where all of the time is spent.
+</p></quote>
+
+<p>Boaz described what he found with the loader:</p>
+<quote who="Boaz Harrosh"><p>
+Most definitely the Linux-shared loader. It took ages. The code is heavy 
+C++ code full of templates with weak symbols, inline virtual functions, 
+and plain horizontal code structure. almost anything you can do to slow 
+a linker down. The PE export-import tables are much better in this 
+situation since there is no searching to do. (and no fixups) All 
+searching if any is done at link-time. (Run time on the other hand is 
+slower). Actually this app is very bad on Windows too. So we compile it: 
+"all libraries static" when doing "Release" code. We use DLLs in debug 
+because the static linking takes 15 minutes.
+</p><p>
+Speaking of which I was never able to statically link the winlib app on 
+Linux. I put up a machine with 2-Gg of ram + setup 2Gg of swap space. 
+The linker would work for 5-10 minutes than it would hit the swap space. 
+Memory would go up  and up until about 50 minutes where the kernel 
+starts to kill everything in sight including the Linker. MSVC++ does 
+not do that, it uses temporary files. Lots of them, to finish the link. 
+I did not even try non-debug builds because the whole point of the winelib 
+was that Developers could use full screen debugger (Kdevelop) to debug 
+Linux problems. If we only have traces and relays then PE is Just good 
+enough.
+</p><p>
+Thanks for letting me whine.  ;-)
+Please do post your results on how to Link the .so on the winegcc 
+command line. And also, most importantly, if you succeed with prelinking. I 
+think that is the best way to go but I'm not a Linux guru and didn't 
+manage to do it. </p></quote>
+
+</section>
+
+<section
+        title="Start Menu Brokenness"
+        subject="Startmenu"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0392.html"
+        posts="7"
+        startdate="10/18/2004"
+	enddate="10/20/2004"
+>
+<topic>Controls</topic>
+<p>
+Apparently Thorsten Kani has been testing out Wine's controls with
+Windows 2000.  He noticed some toolbar problems when run with Explorer
+and posted a patch.  There was some back and forth discussion with
+Rob Shearman and Rob also posted a patch to fix some issues.  Rob
+wondered how well the Start menu was rendered and Thorsten reported:</p>
+<quote who="Thorsten Kani"><p>
+I took a look at the Startmenu. It does its job except for the following 
+minor problems:
+<ul> 
+<li>Keyboard input is completely ignored</li>
+<li>Icon Backgrounds are white instead of grey</li>
+<li>All the Icons were drawn a few pixels below where they belong, which 
+makes them a bit overdrawn by the Icon below.</li>
+<li>The Strings above the separator were drawn next to the right border 
+which makes them partially overdrawn by the Buttons Icon.
+(Strings and Buttons beyond the separator are drawn right)</li>
+</ul></p><p>
+If the mouse hovers over the button, the text redraws at the right place
+</p></quote>
+
+<p>Rob asked for a screenshot and Thorsten provided two:
+<ul><li><a href="http://www.winehq.com/hypermail/wine-devel/2004/10/att-0417/02-menu_orig.png">native 
+      Windows comctl32.dll</a></li>
+    <li><a href="http://www.winehq.com/hypermail/wine-devel/2004/10/att-0417/01-menu.png">Wine's 
+      comctl32.dll on Windows</a></li>
+</ul></p>
+
+<p>Rob seemed to recognize the problems and worked on them:</p>
+<quote who="Robert Shearman"><p>
+
+
+Thanks. Could you try the attached patch which should fix the white 
+background issue?</p><p>
+Also, could you try setting both OFFSET_X and OFFSET_Y to 0 in 
+wine/dlls/comctl32/toolbar.c</p><p>
+The strings being in the wrong position is a bigger issue. If you are 
+interested, the problem is that we recalculate and redraw our toolbar 
+control too much so that the code to create the Start Menu expects that 
+it won't be refreshed until it has finished setting the various 
+properties of the toolbar. I have some unfinished work in the toolbar 
+control at the moment, but I plan to use controlspy to see which 
+messages should cause a redraw and which shouldn't.
+</p></quote>
+
+<p>Thorsten reported that it fixed some issues,
+<quote who="Thorsten Kani">
+ Nice Patch - looks good now!</quote>  Thorsten also made some other
+changes, but Rob didn't think they were correct.  Thorsten asked for
+any suggestions of how he could troubleshoot the problems.  Rob 
+gave a link to ControlSpy:</p>
+<quote who="Robert Shearman"><p>
+You can download controlspy here:
+<a href="http://www.microsoft.com/msj/0798/controlspy.aspx">
+http://www.microsoft.com/msj/0798/controlspy.aspx</a>
+</p><p>
+It is very useful for throwing messages at the common controls, but it 
+cannot test custom draw functionality and it is becoming dated (it is 
+missing new functionality from comctl32 v5.80 and new controls).
+</p></quote>
+
+</section>
+
+<section
+        title="When Optimizations Aren't"
+        subject="Re: Tiny optimizations of bit testing operations"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0424.html"
+        posts="5"
+        startdate="10/20/2004"
+>
+<topic>Project Management</topic>
+<p>Dmitry Timoshkov posted a small patch that changed
+about three different lines of code for optimization.
+For example, he changed this line:</p>
+<quote who="Dmitry Timoshkov"><p><ul><code>
+        if((wndPtr-&gt;dwExStyle &amp; WS_EX_LEFTSCROLLBAR) != 0)</code></ul></p></quote>
+<p>To this:</p>
+<quote who="Dmitry Timoshkov"><p><ul><code>
+        if (wndPtr-&gt;dwExStyle &amp; WS_EX_LEFTSCROLLBAR)</code></ul></p></quote>
+
+<p>Rein Klazes wrote back:</p>
+<quote who="Rein Klazes"><p>
+At any optimization level, gcc compiles this to identical code.	
+</p><p>
+From the C point of view these bit logics are identical. The compiler
+finds that out easy.</p></quote>
+
+<p>Dmitry explained it wasn't just about optimization,
+<quote who="Dmitry Timoshkov">
+Yes, I know. That's why the optimizations are "tiny". I believe that
+the code itself becomes more readable with my changes and makes it
+not depend on the optimizations a compiler is capable to perform.
+</quote></p>
+
+<p>Alexandre was skeptical and outlined how he usually handles 
+such changes,
+<quote who="Alexandre Julliard">
+Here it's not clear at all that one is more readable than the other;
+and in such a case the policy is that whoever writes the code in the
+first place gets to decide how it's done.</quote></p>
+
+</section>
+<section
+        title="Windows Catch-22"
+        subject="Re: Cleanup config"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0471.html"
+        posts="3"
+        startdate="10/21/2004"
+>
+<topic>Configuration</topic>
+<p>Here's a short thread I found amusing.
+</p><p>
+Dimi Paun went through the sample Wine config file
+and removed some of the options that have recently
+been moved into the registry.  As part of that, he
+removed the "Windows" parameter that let's you specify
+where Wine should expect to find the <tt>windows</tt>
+directory.  Most normal and sane people choose this
+to be the default <tt>c:\windows</tt>, but Microsoft
+does allow this to be configurable.  Alexandre committed
+the patch except for that one parameter and mentioned
+that it's still being used by the registry code.  
+Dimi wondered where specifically it was being read
+from the config file,
+<quote who="Dimitrie Paun">
+ Heh, that's not nice, now we define it in two places. I can't quite
+ find where it's been used, do you remember the filename?
+</quote></p>
+
+<p>Alexandre explained the catch-22 posed by the situation:</p>
+<quote who="Alexandre Julliard"><p>
+It's in misc/registry.c. And no, it's definitely not nice at all;
+unfortunately we can't use the value from the registry in the code
+that's supposed to load the registry ;-)  (well, we could, but that
+will require some serious restructuring of that code).
+</p></quote>
+
+
+</section>
+
+<section
+        title="Winedbg: Broken Watchpoints"
+        subject="Winedbg: watchpoints broken?"
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/10/0383.html"
+        posts="6"
+        startdate="10/18/2004"
+	enddate="10/21/2004"
+> 
+<topic>Debugging</topic>
+<p>Wine's debugger has seen quite a bit of work over the past 
+year.  At various times things have been broken, however overall
+Eric Pouech has done a great job working on it.  Walt Ogburn 
+ran into a problem this week:</p>
+<quote who="Walt Ogburn"><p>
+
+Winedbg's watchpoints don't seem to work for me: when I try to watch a
+memory location, winedbg responds that a watchpoint has been set at a
+different, always constant location (I suspect this is actually in
+winedbg's memory space).  Nothing happens when the location I was trying
+to watch changes.
+</p><p>
+Here is a cut-and-paste from my winedbg session.  I try to watch memory
+location 0x0041a5ec, but I can set other breakpoints and see that the
+value has changed without the watchpoint taking effect.
+<ul><code>
+Wine-dbg&gt;run<br />
+In 32 bit mode.<br />
+0x4049a81f start_process+0xcf
+[/home/reuben/project/wine/wine/dlls/kernel/../../include/winternl.h:1249]
+in kernel32: jmp   0x4049a815 start_process+0xc5<br />
+[/home/reuben/project/wine/wine/dlls/kernel/process.c:1022] in kernel32<br />
+1249    static inline void WINAPI DbgBreakPoint(void) { __asm__
+__volatile__("int3"); }<br />
+1249    static inline void WINAPI DbgBreakPoint(void) { __asm__
+__volatile__("int3"); }<br />
+Wine-dbg&gt;watch *0x0041a5ec<br />
+Watchpoint 1 at 0x405ae8c4<br />
+Wine-dbg&gt;x 0x0041a5ec<br />
+ 00000000<br />
+Wine-dbg&gt;break *0x004130ec<br />
+Breakpoint 2 at 0x004130ec<br />
+Wine-dbg&gt;cont<br />
+fixme:ole:CoRegisterMessageFilter stub<br />
+Stopped on breakpoint 2 at 0x004130ec<br />
+Wine-dbg&gt;x 0x0041a5ec<br />
+ 403e9d40<br />
+Wine-dbg&gt;cond 2 $ecx==0x10<br />
+Wine-dbg&gt;cont<br />
+Stopped on breakpoint 2 at 0x004130ec<br />
+Wine-dbg&gt;x 0x0041a5ec<br />
+ 00000000<br />
+Wine-dbg&gt;info break<br />
+Breakpoints:<br />
+2: y 0x004130ec (1)
+ <ul><code>
+                stop when  ($ecx == 16)</code></ul>
+Watchpoints:<br />
+1: y 0x405ae8c4 on 4 bytes (W)
+</code></ul>
+</p><p>
+The fact that winedbg thinks the watchpoint is 0x405ae8c4 is especially
+puzzling, but it's entirely possible that the confusion lies with me
+rather than winedbg.
+</p></quote>
+
+<p>Eric posted a patch and Walt tried it out:</p>
+<quote who="Walt Ogburn"><p>
+
+Thanks.  That fixes the watchpoints, but introduces a couple of small
+problems:
+<ol>
+<li> in dbg.y, break_add_watch_from_lvalue should take only one argument
+(drop second argument)</li>
+
+<li> in dbg.y, I have no minidump_write.  Should this be replaced with
+	<tt>dbg_printf("%s\n", $2);i</tt>	?</li></ol></p><p>
+
+After fixing these two things, breakpoints work, although the instruction
+pointer displayed is the one just after the watched address gets written
+to.  Perhaps this is the expected behavior, but it would be nice to have
+the instruction that makes the write instead.
+</p></quote>
+
+<p>Eric confirmed that Walt's fix for the first issue was correct.  The
+second issue required something a little different.  With regard to the
+instruction that gets displayed, Eric thought it would be difficult to fix,
+<quote who="Eric Pouech">
+in fact, it'll be hard to change it. ia-32 reports insn after the one 
+that triggers the watch. The rationale being that you must execute the 
+insn in order to know of the write change (unlike a seg fault where you 
+cannot know execute the insn).
+GDB behaves the same (it shows the line after the one that triggered the 
+watch).</quote>  </p>
+
+<p>Eric didn't send his fix to wine-patches and he alluded that it was
+part of a bigger patch.  In the meantime, you can find the 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/10/att-0435/01-wdbg5.diff">watchpoints 
+patch</a> in the wine-devel archives.</p>
+ 
+</section></kc>

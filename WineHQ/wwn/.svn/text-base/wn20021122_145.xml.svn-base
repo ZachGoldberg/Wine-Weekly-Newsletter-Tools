@@ -1,0 +1,947 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="145" date="11/22/2002" />
+
+<intro>
+<p>This is the 145th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+<stats posts="339" size="1233" contrib="73" multiples="47" lastweek="35">
+
+<person posts="58" size="164" who="Dimitrie O. Paun" />
+<person posts="27" size="65" who="Alexandre Julliard" />
+<person posts="22" size="69" who="Patrik Stridvall" />
+<person posts="17" size="54" who="Greg Turner" />
+<person posts="12" size="25" who="Sylvain Petreolle" />
+<person posts="10" size="37" who="Rick Romero" />
+<person posts="10" size="26" who="Eric Pouech" />
+<person posts="9" size="31" who="David Fraser" />
+<person posts="8" size="25" who="Mike Hearn" />
+<person posts="8" size="22" who="Dmitry Timoshkov" />
+<person posts="10" size="24" who="Vincent Beron" />
+<person posts="7" size="82" who="Tony Lambregts" />
+<person posts="7" size="20" who="Martin Wilck" />
+<person posts="6" size="15" who="Mark Hannessen" />
+<person posts="5" size="88" who="(ladies_man)" />
+<person posts="5" size="25" who="Fredrick P. Lackey" />
+<person posts="5" size="18" who="Shachar Shemesh" />
+<person posts="5" size="16" who="Steve Lustbader" />
+<person posts="14" size="35" who="Dustin Navea" />
+<person posts="5" size="11" who="Lionel Ulmer" />
+<person posts="4" size="63" who="Ove Kaaven" />
+<person posts="7" size="17" who="Marcus Meissner" />
+<person posts="4" size="10" who="Francois Gouget" />
+<person posts="6" size="11" who="yf" />
+<person posts="3" size="12" who="Aric Stewart" />
+<person posts="3" size="8" who="Jeff Smith" />
+<person posts="3" size="7" who="Kye Lewis" />
+<person posts="3" size="7" who="Duane Clark" />
+<person posts="3" size="7" who="Gerald Pfeifer" />
+<person posts="3" size="6" who="Steven Edwards" />
+<person posts="3" size="6" who="Ryan Cumming" />
+<person posts="2" size="79" who="Andrew John Hughes" />
+<person posts="2" size="9" who="Huw D M Davies" />
+<person posts="2" size="8" who="Francois Denis Gonthier" />
+<person posts="2" size="8" who="Michael Stefaniuc" />
+<person posts="2" size="7" who="Roderick Colenbrander" />
+<person posts="2" size="7" who="Gyorgy Jeney" />
+<person posts="2" size="5" who="Dan Kegel" />
+<person posts="2" size="5" who="Robert North" />
+<person posts="2" size="5" who="Thomas Wickline" />
+<person posts="2" size="5" who="Geoff Thorpe" />
+<person posts="2" size="4" who="Andrew Lynch" />
+<person posts="2" size="4" who="Anant Kabra" />
+<person posts="1" size="4" who="Ryan Reading" />
+<person posts="1" size="3" who="Adrian Bunk" />
+<person posts="1" size="3" who="Boris" />
+<person posts="1" size="3" who="Jukka Heinonen" />
+<person posts="1" size="3" who="Marcus Brubaker" />
+<person posts="1" size="2" who="Uwe Bonnes" />
+<person posts="2" size="4" who="Brian Vincent" />
+<person posts="1" size="2" who="Christian Costa" />
+<person posts="1" size="2" who="Juergen Schmied" />
+<person posts="1" size="2" who="Gustavo Junior Alves" />
+<person posts="1" size="2" who="David Laight" />
+<person posts="1" size="2" who="Daniel Walker" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="John K. Hohm" />
+<person posts="1" size="2" who="Dan Schwarz" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Rein Klazes" />
+<person posts="1" size="2" who="Michael Riedel" />
+<person posts="1" size="2" who="Martin Fuchs" />
+<person posts="1" size="1" who="Luca Rosellini" />
+<person posts="1" size="1" who="Fabian Cenedese" />
+</stats>
+
+
+
+
+
+
+
+<section 
+	title="News: Fun Projects Slashdotted, Screenshots (Send More!)" 
+	subject="News"
+	archive="http://www.theshell.com/~vinn/ss" 
+	posts="1" 
+	startdate="11/16/2002"
+	enddate="11/22/2002"
+>
+<topic>News</topic>
+<p>Dimitrie Paun's web site got 
+<a href="http://developers.slashdot.org/article.pl?sid=02/11/17/1648220&amp;mode=thread&amp;tid=125">Slashdotted</a> 
+on Sunday after someone pointed out he had a list of
+<a href="http://www.winehq.org/?page=fun_projects">Fun Wine Projects</a>. 
+Specifically they mentioned the virtualization projects.  A lot of the
+<a href="http://developers.slashdot.org/comments.pl?sid=45298&amp;cid=0&amp;pid=0&amp;startat=&amp;threshold=2&amp;mode=thread&amp;commentsort=0&amp;op=Change">discussion</a>
+(mod level 2) on Slashdot was actually geared more toward using Wine than
+anything else.   Last year or a few years ago most of the discussion would
+have been a flamewar between the "Wine sucks" and the "No it doesn't" camps.
+I found it interesting there wasn't much of that.  </p>
+
+<p>Also, thanks to everyone who's sent in screenshots!  Full
+credit will appear next week, but
+as sort of a preview of what I've
+gotten check out: <a href="http://www.theshell.com/~vinn/ss/">
+	http://www.theshell.com/~vinn/ss/</a>.  Authors are noted
+in the directory.  At this point I'd love to get some shots of
+the following:
+	<ul><li>any game</li>
+	   <li>anyone have a tax application running?  TurboTax would
+	   	be great to see</li>
+	   <li>any application <i>except</i> MS Office, Quicken, Visio, IE
+	   	or Lotus Notes</li>
+	   </ul>
+
+</p><p>Also, here's some guidelines to follow:
+	<ul><li>absolutely, positively has to be 800x600 resolution</li>
+      	    <li>try to show an action being performed - a
+			cool document open, a menu being opened, etc</li>
+	<li>check out the URL above if you think you might be
+		duplicating a shot someone else has done - I'll post
+		new pics as soon as I get them.</li>
+</ul>
+</p>
+<p>Send those to <i> vinn -at- theshell.com </i></p>
+</section>
+
+
+
+
+
+<section 
+	title="Porting PuTTY With Winelib" 
+	subject="PuTTY update"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/1214.html" 
+	posts="4" 
+	startdate="11/21/2002"
+>
+<topic>Winelib</topic>
+<p>Dimi Paun decided to try his hand at porting a Windows 
+application using Winelib.  The app he chose was
+<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/">PuTTY</a>,
+a free Win32 Telnet/SSH client who's 
+<a href="http://www.tartarus.org/~simon/putty-snapshots/putty-src.zip">
+source</a> is available under a BSD-like license.  Dimi
+wrote to the developers:</p>
+<quote who="Dimitrie Paun"><p>
+I'm one of the 
+<a href="http://www.winehq.org">Wine</a> developers,
+and I just managed to build Putty under Winelib. That
+is, Putty now runs as a native Linux application.
+</p><p>
+The interesting part is that I've managed to do so with
+virtually no changes to the source code, just a few
+changes to the makefile.cyg file.
+</p><p>
+Now, my question to you: are you interested in supporting
+Putty under Wine, as a Winelib app? If so, I can clean up
+my changes, and send you a patch for the build system to
+incorporate in your tree.
+</p><p>
+BTW, the resulting executable is about 500K, so it's not
+that large, compared to the Windows one at 360K.
+</p></quote>
+
+<p>To the wine-devel list he outlined the status in more detail:
+</p><quote who="Dimitrie Paun"><p>
+
+Here's a quick status update on PuTTY as a Winelib app:
+<ol>
+  <li> It compiles, links, and runs perfectly (Yay!)</li>
+  <li> I've talked to the PuTTY folks, and they agreed
+     to add Winelib as one of their targets in their
+     build process (provided I do the patch :))</li>
+  <li> I've modified they Makefile-generation Perl scrip
+     to do just that.</li>
+</ol></p></quote>
+
+<p>However, there were still a couple of problems using Wine's
+tool chain to build the app.  The first problem concerned compiling
+an app with different Wine source and build trees; that thread is 
+covered next.  The second problem concerned some linking semantics.
+</p>
+</section>
+
+
+
+
+
+<section 
+	title="Building Apps With Different Wine Source/Build Trees" 
+	subject="winewrapper"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/1212.html" 
+	posts="11" 
+	startdate="11/21/2002"
+>
+<topic>Winelib</topic>
+<p>Dimi outlined one of the problems he ran into while porting
+PuTTY using Winelib:
+</p><quote who="Dimitrie Paun"><p>
+Another problem developing Winelibs app while using your
+Wine tree. Say you have the following:
+<ul>
+  <li> a Winelib app you're working on</li>
+  <li> a Wine tree you're working on</li>
+  <li> you compile wine out-of-tree  </li>
+</ul></p><p>
+Now, say you build your myapp.exe.so OK, and you now want
+to create a symlink myapp -> winewrapper so you can start
+your Winelib app. Problem is that winewrapper resides in
+the source tree, and there is no way for it to figure out
+where the build tree is, and it needs that.
+</p><p>
+Possible solution:
+<ul>
+  <li> have winewrapper somehow in the Wine build tree.
+	One way to do that is to rename winewrapper to
+	winewrapper.in, and generate winewrapper at
+	build time</li>
+  <li> link to the winewrapper in the build tree</li>
+  <li> modify winewrapper slightly so that it looks
+	where is resides, and if it's in the wine tree,
+	is should try to use that to run the app.</li>
+</ul>	</p><p>
+Alexandre, what do you say?
+</p></quote>
+<p>Alexandre's first thought was Dimi should be launching
+the app in a different way,
+<quote who="Alexandre Julliard">
+You shouldn't use winewrapper, you should copy wineapploader and adapt
+it to your situation. This is what winemaker is supposed to do too,
+though I think it's somewhat broken right now.</quote> With that in
+mind, Dimi felt he could make some small modifications to deal with
+the location of the tree.  However, Alexandre didn't like that idea
+since the ultimate goal was to just have it work with a plain old
+installation of Wine and not some special developer configuration.
+Dimi explained why he thought it was important:</p>
+<quote who="Dimitrie Paun"><p>
+If Wine was a mature, stable project, I'd agree with you. But it's not.
+The ability to make a small change in Wine, go back to the Winelib app,
+and test it, is invaluable. I would have simply given up debugging PuTTY
+f I had to go through a wine install for every little test and experiment
+I was making.
+</p><p>
+But beyond that, the audience for these changes are *Windows* developers.
+These guys know Win32, and it's probably easier for them to fix a small
+header problem and submit a patch, rather than complain on wine-devel.
+These are exactly the guys we want experimenting with Wine to get their
+apps to work, and for this sort of thing, you have to work out of the
+tree. I know I always do, I'd waste way too much time to do an install
+every single time.
+</p></quote>
+
+<p>Alexandre was still unconvinced,
+<quote who="Alexandre Julliard">
+Sure, but as Wine developer it's easy for you to write a small wrapper
+script to run from inside the source tree. That doesn't mean we should
+encourage it or make that the default behavior. I think it's perfectly
+standard to expect that you need to install a library before building
+an app that uses it, all other libraries behave that way. And we are
+not going to stabilize our environment if nobody ever uses it the way
+it's intended to be used.</quote></p>
+
+<p>The discussion delved into the value of Winelib and the 
+importance of attracting Windows' developers.  At one point
+Alexandre discussed the status of porting with Winelib:</p>
+<quote who="Alexandre Julliard"><p>
+ If we ask
+ Windows developers to start porting their stuff now, they will run
+ into major problems and they will leave in disgust, with or without
+ your patch.
+</p><p>
+ I agree that fixing Winelib is not the number one priority, but we
+ have to recognize that we won't attract the Windows crowd until we fix
+ it properly. A couple of hacks here and there won't cut it.
+</p><p>
+ And really, I don't think it's necessarily that much work to fix it;
+ the main issue is identifying the problems and defining exactly what
+ we need it to do. And I think the right approach is to have Wine
+ developers like you try to port apps, because you know how to work
+ around the problems; giving that task to a Windows developer at this
+  point is not going to work IMO.
+</p></quote>
+
+<p>In the end, Alexandre agreed to accept a patch if there was
+a relatively clean way for it to work.  He also made it clear 
+it was not the proper way for this to work.</p>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section 
+	title="Implementing Import Libraries" 
+	subject="winspool.drv again"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/1241.html" 
+	posts="2" 
+	startdate="11/21/2002"
+	
+>
+<topic>Winelib</topic>
+<p>So the second problem Dimi ran into with porting PuTTY concerned
+how the app expected to link libraries.  PuTTY simply linked against
+"-lwinspool" while Wine expects "-lwinspool.drv".  Dimi explained:
+</p>
+<quote who="Dimitrie Paun"><p>
+ The winspool.drv issue is a lot more serious than the
+ in-tree execution. This one screws things up badly for
+ the PuTTY build system. Should we modify winebuild to
+ try to link with winspool.drv, and if that fails with
+ winspool.dll when -lwinspool is given? (or the other
+ way around, I don't know)
+</p></quote>
+<p>Alexandre already knew the solution,
+<quote who="Alexandre Julliard">
+The right approach would be to implement import libraries. This is
+already on my TODO list, I'll bump the priority a bit...
+</quote></p>
+
+</section>
+
+
+
+
+
+
+
+
+<section 
+	title="wintab.dll: Better Tablet Support" 
+	subject="Imporving support for graphics tablets in wine (wintab.dll)"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/1037.html" 
+	posts="3" 
+	startdate="11/18/2002"
+	enddate="11/20/2002"
+>
+<topic>IO</topic>
+<p>Rob North wanted some info on improving support
+for graphics tablets:
+</p><quote who="Robert North"><p>
+Modern graphics tablets also provide pressure and tilt information, 
+essential for quality graphics editors such as Painter &amp; Photoshop.
+Currently graphics tablets are treated as mice in wine, and so cannot 
+provide this information to a Win16/32 app.
+To access pressure &amp; tilt info in Windows, a programmer would use the 
+wintab.dll.
+</p><p>
+Has anyone attempted to build a wintab.dll for Wine?
+</p><p>
+I'm interested in attempting an extremely limited implementation for 
+Painter &amp; Photoshop, but
+don't want to reinvent the wheel.
+</p><p>
+Assuming nobody has done this what's the first step?
+</p></quote>
+<p>Tony Lambregts told him to go ahead and work on it since
+no one else appeared to be doing so.  Rob agreed and opened
+<a href="http://bugs.winehq.org/show_bug.cgi?id=1160">bug #1160</a>.</p>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<section 
+	title="Wineconsole Changes" 
+	subject="RFC: console &amp; curses"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/1082.html" 
+	posts="19" 
+	startdate="11/19/2002"
+	enddate="11/21/2002"
+>
+<topic>Status Updates</topic>
+<p>Eric Pouech asked for some comments on some planned
+changes to wineconsole:</p>
+<quote who="Eric Pouech"><p>
+I did send a couple of days ago a first patch about the (n)curses
+backend to wineconsole
+Alexandre commented a few implementation issues in it, which may change
+a bit what I started with and how the wineconsole should behave:
+</p><p>
+console creation can be invoked from different contexts:
+<ol>
+<li> the program calls AllocConsole</li>
+<li> the user starts wine thru wineconsole for his/her (favorite) CUI app
+(using from command line something like 'wineconsole foo')</li>
+<li> (N1) the program forks a child with CREATE_NEW_CONSOLE flags set in
+CreateProcess</li>
+<li> the program doesn't request anything</li></ol>
+</p><p>
+on the other hand, wineconsole is now able to handle two types of
+backend for the user interface:
+<dl>
+<dt> A. USER: the one already in place</dt>
+<dt> B. Curses: the new one using (n)curses and a regular term for display
+(N2)</dt>
+<dt> C. no wineconsole support => by default, the windows input &amp; output
+streams are hooked to stdin and stdout, but we don't provide full
+console support - cursor motion, screen reading...</dt>
+</dl></p><p>
+now the final question, how to choose between A, B and C. the proposal
+is to fix the choice with:
+<ul>
+1 =&gt; A<br />
+2 =&gt; B<br />
+3 =&gt; A<br />
+4 =&gt; C
+</ul>
+</p><p>
+why such a directive proposal ?
+<dl>
+<dt>4 =&gt; C</dt>
+<dd>is rather natural and doesn't need further explanation (one day,
+we could envisage to support it no longer, but that's another story)</dd>
+<dt>1 =&gt; A</dt><dd> greatly facilitates the console creation (ncurses requires both
+terminal control and moreover to keep the process group leader running
+as long as all the children - hooked to the same terminal - are
+running). Very few programs use AllocConsole (and even use it). The only
+issue may be with winedbg which may allocate its own console on startup
+(N3)</dd>
+<dt>2 =&gt; B</dt><dd> we could easily add 2 => A too (with some wineconsole
+parameters). Moreover, if the user wants to have the console in a
+specific xterm, it's doable with xterm -e 'wineconsole blablabla'</dd>
+<dt>3 =&gt; A</dt><dd> here again it's easier to deal with. if trying to run a curses
+backend, we should ensure that two different wineconsoles are not
+currently hooked to the same terminal</dd>
+</dl></p><p>
+If you have any comments, speak up now !!
+</p></quote>
+
+<p>Specifically, the 2=&gt;B addition is interesting.  Eric also
+pointed out that having the ability to spawn the curses backend
+didn't necessarily mean using the old user backend was impossible.
+A couple of
+people also requested to be able to start commandline apps without
+having X running.  </p>
+
+</section>
+
+
+
+
+
+
+
+<section 
+	title="Passing Commandline Arguments" 
+	subject="wine commandline options"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/1014.html" 
+	posts="7" 
+	startdate="11/18/2002"
+>
+<topic>Fixes</topic>
+<p>Rick Romero experienced a problem passing commandline arguments
+to a program:</p>
+<quote who="Rick Romero"><p>
+So, I tried to force Pegasus Mail to load winsock explicitly using the
+-Z 128 option:
+<ul><code>
+$wine winpm-32 -Z 128</code></ul></p><p>
+but wine comes back with 'Unknown option -Z'.
+</p><p>
+I'm not quite sure how these are getting parsed
+</p></quote>
+<p>Several people pointed out he needed to tell Wine that
+there were commandline arguments to be passed on.  Uwe
+Bonnes gave an example:</p>
+<quote who="Uwe Bonnes"><p>
+ Options for the win-programm should be given after a blank "--"
+ E.g.<ul><code>
+ $wine -- winpm-32 -Z 128</code></ul></p></quote>
+
+<p>After doing so, Rick reported success getting Pegasus Mail to
+work:</p>
+<quote who="Rick Romero"><p>
+Doh.  It's even in the Pmail KB article below, and I didn't see it.
+</p><p>
+Pegasus Mail TCP/IP works after reading the following KB article from pmail:
+[
+<a href="http://kbase.pmail.gen.nz/viewfull.cfm?ObjectID=E1D7B847-576A-4BA3-BEE13F10C9FF1D02">LINK</a> ]
+</p><p>
+I think if you don't start Pmail the first time with the -Z 128, it sets an option 
+to never load it.
+</p></quote>
+ 
+<p>The article referenced describes running Pegasus Mail with Wine.</p>
+</section>
+
+
+
+
+
+
+<section 
+	title="Terminal Based Apps" 
+	subject="Wine without any X11 environment"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0924.html" 
+	posts="5" 
+	startdate="11/15/2002"
+>
+<topic>Fixes</topic>
+<p>Michael Riedel asked a question
+that might be helpful for others,
+<quote who="Michael Riedel">
+ is it possible to use wine in a telnet session to start a (command line) 
+ windows application? I get the error that x11drv can't connect to  a 
+ display (which is correct). I'm also not very sure that the windows 
+ program itself does not perform some graphic related queries (there were 
+ some fixme messages when I tried to use 'ttydrv').
+ Any ideas? Is there any workaround to use a dummy display or whatever?
+</quote></p>
+
+<p>Patrik Stridvall explained a possible reason for the problem
+and possible alternative:</p>
+
+<quote who="Patrik Stridvall"><p>
+If the application directly or indirectly loads GDI32.DLL or USER32.DLL
+it also load the x11drv with the result above if DISPLAY isn't set.
+</p><p>
+In addition to the ttydrv (as you meantion above) you can use VNC like:
+<ul><code>
+vncserver :1<br />
+export DISPLAY=:1
+</code></ul></p></quote>
+
+<p>Other folks tried running some programs using the ttydrv graphics
+driver but ran into some problems with it bombing out.</p>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<section 
+	title="Assumptions with autoconf" 
+	subject="Configure question"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/1046.html" 
+	posts="10" 
+	startdate="11/19/2002"
+>
+<topic>Build Process</topic>
+<p>Martin Wilck posed a question about the configure process:</p>
+<quote who="Martin Wilck"><p>
+I am thinking about some netapi32 improvements where I'd need to call 
+the functions of the getpw/getgr family: getpwnam(), getpwent(),
+getgrent(), etc.
+</p><p>
+Configure checks for the "pwd.h" header and getpwuid(). Must I add more
+checks for all the functions I use, or is it ok to assume that
+getpwuid() presence implies getpwnam() presence?
+</p></quote>
+
+<p>Patrik Stridvall replied:</p>
+<quote who="Patrik Stridvall"><p>
+Good question. I'm don't think we have any policy concerning this.
+Perhaps we should have.
+</p><p>
+One thing that you shouldn't assume is for example that
+if a function exists its reentrant variant exists as well.
+</p><p>
+For example that fact getpwnam exists doesn't imply that
+getpwnam_r exists. And yes, you really should use the
+reentrent variant if present as well as having an
+alternative implementation if not.
+</p><p>
+As to the implicit existence question: I'm not sure.
+First of all, to answer the related question:
+Should you have a alternative implementation for 
+defined(HAVE_GETPWUID) &amp;&amp; !defined(HAVE_GETPWNAM)?
+</p><p>
+IMHO the answer is no. It is not worth the effort to
+support hypotetical platforms unless we can verify the
+existence of one.
+</p><p>
+To return to the original question:
+I suggest that we should detect the presence or absence
+of ALL function we use that is verified not to exist on
+some platform and have for example code 
+</p></quote>
+
+<p>Alexandre felt it was worth being cautious by making
+sure any called function was there,
+<quote who="Alexandre Julliard">
+ it's trivial to check for both. If you
+ use getpwnam() check for HAVE_GETPWNAM, if you use getpwuid() check
+ for HAVE_GETPWUID. Simple, logical, and works even on strange
+ platforms.</quote></p>
+
+
+
+</section>
+
+
+
+
+<section 
+	title="COM Objects Doc" 
+	subject="COM Enhancement patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0865.html" 
+	posts="10" 
+	startdate="11/13/2002"
+	enddate="11/21/2002"
+>
+<topic></topic>
+<p>Christian Costa wrote a note to wine-devel and ended it
+with, <quote who="Christian Costa">
+PS: I've joined a small doc that explains how to use objects with 
+multiple interfaces. This docs is based on what
+has been done before with the ddraw code plus the enhancement I did.
+</quote></p>
+
+<p>So I decided to take it and HTML-ify it:</p>
+<quote who="Christian Costa"><p>
+<center><h1>COM OBJECTS MANAGEMENT</h1></center>
+<ol>
+<u><li>Definitions</li></u>
+<ol>
+	<li>Object Classes
+	<p>	
+      An object class is a structure which defines the data of an object and
+      all the interfaces that act on the object data
+	</p><p>
+      Example :
+	<ul><code>
+        struct ObjectClass {<br />
+		<ul>
+			     INTERFACE 1;<br />
+                             INTERFACE 2;<br />
+                             ............<br />
+                             INTERFACE N;<br /><br />
+  
+                             DATA;<br />
+                           } ;<br />
+		</ul>
+        typedef struct ObjectClass ObjectClass;
+	</code></ul></p>
+	</li>
+
+	<li>Objects
+	<p>
+      An object is an instance of an object class.
+	</p><p>
+      Example :
+	<ul>
+        An object is created as follows :<br />
+	<ul><code>
+          ObjectClass* object = malloc(sizeof(ObjectClass),...)
+	</code></ul></ul></p>
+	</li>
+
+	<li>Interfaces
+	<p>
+      An interface is a way for an application to interact with an object.
+      It contains a pointer to a virtual table plus some other data than can help
+      objects management.
+	</p><p>
+      An interface is a structure, which is used internally, that can be defined with
+      the INTERFACE macro :
+	<ul><code>
+	      #define INTERFACE(iface) \<br />
+              struct { \<br />
+		<ul>
+		      iface interface; \   /* VTABLE */ <br />
+                       LPVOID object; \     /* pointer to the object the interface
+                                               belongs to */<br />
+		</ul>
+		}</code></ul></p><p>
+
+      To add a field to the interface, just add it in this macro.
+	</p><p>
+      For example, we could embed the version number inside an interface or a magic number
+      to check if the interface's pointer points to a real interface. And, off course, modify
+      some macros or create new ones to make use of them.
+	</p>
+	</li>	
+	
+</ol>	
+
+<u><li>Implementing COM objects</li></u>
+	<li>Declaring a COM object with multiple interfaces
+		<p>
+      To declare interfaces in a COM object the ICOM_VFIELD_MULTI must be
+      used for each interface as shown below:
+	<ul><code>
+        struct IDirect3DImpl<br />
+        {<br /><ul>
+            /* IUnknown fields */<br />
+            ICOM_VFIELD_MULTI(IDirect3D);<br />
+            ICOM_VFIELD_MULTI(IDirect3D2);<br />
+            ICOM_VFIELD_MULTI(IDirect3D3);<br />
+            ICOM_VFIELD_MULTI(IDirect3D7);<br />
+            DWORD                   ref;<br />
+            /* IDirect3D fields */<br />
+            IDirectDrawImpl*	ddraw;<br />
+            LPVOID		private;<br />
+	</ul>
+	}; 
+	</code></ul></p>
+	</li>
+  <li>Creating an object	<p>
+      Just declare a pointer to an object and allocate the memory for it.
+	Example:
+	<ul><code>
+
+        IDirect3DImpl* object = malloc(sizeof(IDirect3DImpl),...)
+	</code></ul></p>	</li>
+
+
+
+  <li>Initializing interfaces
+	<p>
+      It is done with the <tt>ICOM_INIT_INTERFACE(object_pointer, interface_name, virtual_table)</tt>
+	<ul><code>
+      ICOM_INIT_INTERFACE(object,IDirect3D, VTABLE_IDirect3D);<br />
+      ICOM_INIT_INTERFACE(object,IDirect3D2,VTABLE_IDirect3D2);<br />
+      ICOM_INIT_INTERFACE(object,IDirect3D3,VTABLE_IDirect3D3);<br />
+      ICOM_INIT_INTERFACE(object,IDirect3D7,VTABLE_IDirect3D4);
+	</code></ul></p>
+	</li>
+  <li>Retrieve an object from within an interface's function
+	<p>	
+      If we consider the function :
+	<ul><code>
+        IDirect3D_AddRef(IDirect3D iface,.......)
+	</code></ul></p><p>
+      To retrieve a pointer to an object within the function, both followings macro are used :
+	</p><p>	
+      1) <tt>ICOM_OBJECT(object_class,iface)</tt>
+	</p><p>  
+         This macro returns a pointer to the object, the value is of object_class* type 
+	</p><p>
+         Example:
+	<ul><code>
+           IDirect3DImpl* d3d = ICOM_OBJECT(IDirect3DImpl,iface);
+	</code></ul></p><p>
+      2) <tt>ICOM_THIS_OBJECT(object class,iface)</tt>
+	</p><p>
+         It simply declares a This pointer and initialize it with the object address.
+	<ul><code>	
+         IDirect3DImpl* This = ICOM_OBJECT(IDirect3DImpl,iface);
+	</code></ul></p>
+	</li>
+  <li>Sharing functions between multiple interfaces
+	<p>	
+      In the case where a function does no have to do specific actions depending on the interface,
+      you can share directly a function.
+ 	</p><p>
+      Example :
+	</p><p>
+        If we consider the function :
+	<ul><code>
+          IDirect3D_AddRef(IDirect3D iface,.......)
+        </code></ul></p><p>
+        The different virtual tables would be :
+	<ul><code>
+          VTABLE_IDirect3D  = {......,IDirect3D_AddRef,....);<br />
+          VTABLE_IDirect3D2 = {......,XCAST()IDirect3D_AddRef,....);<br />
+          VTABLE_IDirect3D3 = {......,XCAST()IDirect3D_AddRef,....);<br />
+          VTABLE_IDirect3D7 = {......,XCAST()IDirect3D_AddRef,....);
+	</code></ul></p><p>
+      Note that this is possible because the ICOM_OBJECT can retrieve the object's pointer without
+      knowing the interface involved.
+	</p>
+	</li>
+  <li>Thunking interface
+	<p>	
+      Interface thunking enable changing from one interface to another.
+	</p><p>
+      The following macro <tt>COM_INTERFACE_CAST(impltype, ifnamefrom, ifnameto, ifaceptr)</tt> performs
+      this task.
+	<ul>
+	<li>impltype   = object class</li>
+        <li>ifnamefrom = interface type we have</li>
+        <li>ifnamefrom = interface type we want</li>
+        <li>ifaceptr   = pointer to the interface to cast</li>
+        <li>return     = pointer to the casted interface</li>
+	</ul></p><p>
+      Interface thunking is a another way to shared a single function across different interfaces but as
+      shown below this is required only when structures must be translated, interfaces returned casted or
+      to handle prototype change :
+	</p><p>
+      Example:
+	</p><p>
+      You want to share the IDirect3D_CreateDevice across all IDirect3DX interfaces (with X above 1 because a
+      device in Direct3D is created in a different way).
+	</p><p>
+      <tt>IDirect3D2_CreateDevice(IDirect3D2* iface,.....)</tt> is the only one implementation of the function.
+	</p><p>
+      The others are thunks to the IDirect3D2_CreateDevice.
+	<ul><code>
+      IDirect3D3_CreateDevice(IDirect3D3* iface, .....,LPDIRECT3DDEVICE3 *lpdevice, LPUNKNOWN lpUnk)<br />
+      {<br />
+        IDirect3DDevice3 *dev;<br />
+        IDirect3D_CreateDevice(ICOM_INTERFACE_CAST(IDirect3DImpl,IDirect3D2,IDirect3D3,iface),.....,&amp;dev);<br />
+        *lpdevice = ICOM_INTERFACE_CAST((IDirect3DImpl,IDirect3D3,IDirect3D2,device)<br />
+      }<br />
+	<br />
+      IDirect3D7_CreateDevice(IDirect3D7* iface, .....,LPDIRECT3DDEVICE7 *lpdevice)<br />
+      {<br />
+        IDirect3DDevice2 *dev;<br />
+        IDirect3D_CreateDevice(ICOM_INTERFACE_CAST(IDirect3DImpl,IDirect3D2,IDirect3D7,iface),.....,&amp;dev);<br />
+        *lpdevice = ICOM_INTERFACE_CAST((IDirect3DImpl,IDirect3D7,IDirect3D2,dev)<br />
+      }</code></ul></p><p>
+
+      Here, we have to deal with a returned interface and a prototype change.
+	</p><p>
+      The VTABLE should be:
+	<ul><code>
+      VTABLE_IDirect3D2 = {......,IDirect3D2_CreateDevice,....);<br />
+      VTABLE_IDirect3D3 = {......,IDirect3D3_CreateDevice,....);<br />
+      VTABLE_IDirect3D7 = {......,IDirect3D7_CreateDevice,....);<br />
+	</code></ul></p><p>
+      Note that there are few functions that need this, for the others, thunks are not necessary and the way
+      described in e) must be preferred. 
+	</p>
+	</li>
+  <li>Getting an specific interface of an object
+	<p>
+      With the <tt>ICOM_INTERFACE(implobj, ifacename)</tt> macro, any interfaces can be retrieved from
+      an object.
+	<ul>
+      <li>implobj   = pointer to the object</li>
+      <li>ifacename = interface name we want</li>
+      <li>return    = pointer to an interface</li>
+	</ul></p><p>
+      Example:
+	<ul><code>
+      IDirect3DImpl* object;<br />
+	<br />
+      ............<br />
+        <br />
+      IDirect3D3* iface_d3d3 = ICOM_INTERFACE(object,IDirect3D3) 
+	</code></ul></p>
+	</li>
+  <li>Calling an COM object functions from another
+	<p>	
+      If a function is shared across multiple interfaces, you should write:
+	<ul><code>
+      IDirect3D3_CreateDevice(IDirect3D* iface,.....)
+      {
+         ICOM_THIS_OBJECT(iface);
+         .................
+         IDirect3D_AddRef(ICOM_INTERFACE(This,IDirect3D),.....);
+         .................
+      }
+	</code></ul></p><p>
+      If you know the nature of iface (i.e. thunking is used or the function is used in only
+      one interface), you can write :
+	<ul><code>
+      IDirect3D3_CreateDevice(IDirect3D* iface,.....)
+      {
+         ICOM_THIS_OBJECT(iface);
+         .................
+         IDirect3D3_AddRef(iface,.....);
+         .................
+      }
+	</code></ul></p>
+
+	</li>
+</ol></p></quote>
+
+
+</section>
+
+
+<section 
+	title="Threads and CoInitialize" 
+	subject="CoInitialize"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0866.html" 
+	posts="5" 
+	startdate="11/13/2002"
+	enddate="11/19/2002"
+>
+<topic>Memory Management</topic>
+<p>Steve Lustbader was running into a problem with
+a threaded app,
+<quote who="Steve Lustbader">
+ One of the threads in my app calls CoInitialize, expecting it
+ to return S_OK (in fact, it's followed by an assert statement
+ requiring that it returns S_OK).  When I run it in Wine, however,
+ CoInitialize returns S_FALSE, implying that this thread has
+ already initialized the COM library.  Other threads call
+ CoInitialize, but this is the first time that this thread calls it.
+ Does Wine initialize COM differently from Windows?  Are the other
+ threads' calls to CoInitialize screwing up this thread's call?
+</quote></p>
+
+<p>Ove K&#229;ven thought he recognized the problem and diagnosed
+it as something not in the Wine tree yet:</p>
+<quote who="Ove Kaaven"><p>
+Sort of, the problem is that Wine doesn't support apartments yet, so it
+doesn't try to keep track of the threads that has called CoInitialize.
+</p><p>
+Code to support apartments was part of a large code drop (sent to
+rewind-patches) a long time ago, along with a pile of rpcrt4 code, however
+this apartment code was never merged into Wine, and the rpcrt4 pieces was
+only merged recently when Greg Turner took an interest in it. And I don't
+really expect that COM apartment code to get merged in before proper
+interface marshalling (which is largely rpcrt4's job) is working either,
+though I suppose the pieces that keep track of them (so that CoInitialize
+gives the right return value) could be merged if someone wanted to.
+</p></quote>
+<p>Later he briefly explained a little more about the thread problem,
+<quote who="Ove Kaaven">
+COM functions still
+works, but only in a process-wide fashion, oblivious to which 
+thread calls them.</quote></p>
+
+</section>
+
+
+</kc>

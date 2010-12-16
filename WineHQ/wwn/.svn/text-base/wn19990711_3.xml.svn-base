@@ -1,0 +1,626 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="3" date="11 Jul 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the third release of the experimental Wine's kernel cousin publication. 
+Its main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).
+
+<p />
+
+<a href="http://www.winehq.org/News/">Wine Weekly News</a> has made its way
+to winehq.org. You'll find there the merge of Ove's effort and these KC
+cousin pages.
+
+<p />
+
+Jutta Wrage is currently updating the Wine <a
+href="http://www.westfalen.de/witch/wine-HOWTO.txt">HOWTO</a> with printing
+information.
+
+<p />
+
+Douglas Ridgway posted the Wine presentation intented for the O'Reilly Open Source Symposium, August
+21-24, in Monterey, CA.
+
+</intro>
+
+<section
+  title="DIBs rendering and speed up"
+  subject="XShmemdibs, Corel"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-373.html"
+>
+
+Alexander Larsson was seeing performance problems with Device Independent
+Bitmaps, and he inquired: <quote who="Alexander Larsson">I'm not very good
+at Win32, but i would like to add support for using MIT XShmem images for
+dibs. I've asked some core developers about this, and they said Corel was
+working on this. Is this true? How far from finished is it?</quote>
+
+<p />
+
+Gavriel State explained the current state of this patch (Karl Lessard had
+written it, but it had not yet been reviewed enough to be sent to
+wine-patches).
+
+<p />
+
+Zygo Blaxell, even though he was busy moving house, took the time to send
+the patch in its current state to wine-devel, with the following warning:
+<quote who="Zygo Blaxell">Disclaimer: I scraped this patch together in the
+last ~45 minutes or so. The following code appears to run 'sol.exe' without
+segfaulting. This is the _only_ thing I'm willing to say about it. This is
+the first time in a couple of weeks that this code has actually worked at
+all for me, so I don't know yet if it's still chock full o' bugs.</quote>
+
+<p />
+
+Alexander added the next day: <quote who="Alexander Larsson">Cool. After
+some minor changes i actually got a fairly large speedup. Went from maybe 10
+seconds per frame to about 1 second per frame. I'll do some further
+optimization, profiling and clean-up tomorrow.</quote>
+
+<p />
+
+Alexander Larsson then posted to wine-devel the <a
+href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/date/article-412.html">result
+of his first shot</a> at the patch, asking Corel if they wanted to clean it
+up and/or to submit to wine-patches.
+
+<p />
+
+Gavriel State answered that Alexander could do it if he had the time, Corel
+poeple were more concentrating on porting issues right now, and it'd be
+better (and quicker) if Alexander took care of the clean-up. The patch has
+not yet made its way to wine-patches.
+
+</section>
+
+<section
+  title="elfdll and binding"
+  subject="elfdll stuff"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-393.html"
+>
+
+Alexander Larsson proposed his experience in export symbol handling to be
+used in Wine (mainly by exporting symbols in a specific way (either in a non
+standard section or by marking them)).
+
+<p />
+
+Ulrich Weigand reminded that:
+
+<p />
+
+<quote who="Ulrich Weigand">one of the requirements of the elfdll
+import/export handling is that is should transparently work between elfdll
+and PE modules, so that within the whole executable, DLLs can be arbitrarily
+replaced by PE or elfdll versions, and all imports/export still work.
+
+<p />
+
+This means that not only the non-exported symbols should not be available
+for ELF linking, but rather *no* symbols at all should use ELF linking,
+because the side being linked to might be PE.
+
+<p />
+
+So, Bertho's current experimental dllglue works like this: link everything
+belonging to one elfdll into an object, use the symbol table of the object
+together with the .spec files defining the exports of the various DLLs to
+create a PE header containing both an exports and an imports table, link the
+PE header into the object (thereby resolving all symbols originally imported
+by the elfdll to IAT stubs) and finally localize all ELF symbols (except one
+symbol pointing to the PE header itself).
+
+<p />
+
+Thus, you get a .so file which the Wine loader loads using dlopen(),
+retrieves the PE header using dlsym(), and performs the usual PE
+import/export resolving.</quote>
+
+<p />
+
+Ulrich nevertheless pointed to some areas that could be enhanced:
+
+<quote who="Ulrich Weigand">
+
+<p />
+
+<ul>
+
+	<li />On the export side, it might be possible to avoid the necessity
+	for an specific .spec file if the symbols intended to be exported
+	could be marked in the source using a technique similar to the ones
+	you mentioned.
+
+	<li />On the import side, we could avoid the necessity for assembly
+	glue code stubs if the compiler could be told that calls to an
+	imported function should be coded as *indirect* calls, with the
+	imported symbol actually pointing to a *pointer* to the function.
+	This is exactly what the 'declspec(dllimport)' of MS compilers
+	does.
+
+</ul>
+
+</quote>
+
+<p />
+
+Alexander said that Mozilla and Cygnus were willing to add the needed
+support for "Export side" in egcs, but this wouldn't be present in egcs
+2.95.
+
+<p />
+
+On the "Import side", Alexander suggested to directly tweak with the GOT
+(Global Offset Table) [editor's note: the GOT is used to relocate symbols
+from an .so library on loading].
+
+<p />
+
+Both Ulrich and Bertho's Stultiens agreed this was not a very good solution
+because it was non portable (because use of assembly language and too much
+knowledge of .so internals were required) and it couldn't solve some elfdll
+specific issues (like importing two functions of same name from two
+different DLLs).
+
+</section>
+
+<section
+  title="controls and painting"
+  subject="scrollbar"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-394.html"
+>
+
+Dennis Bj&#246;rklund reported some issues he had (and provided a sample program
+to demonstrate them).
+
+<quote who="Dennis Bj&#246;rklund">
+
+<p />
+
+<ol>
+
+<li />The file selection dialog does not work. Nothing happens when I press OK
+    even if I have selected a file.<br />
+
+    (press left mouse button in my test example)
+
+<li />The scrollbar does not work when it is being draged. When I release the
+    scrollbar it jumps back to the top.
+
+<li />There is a graphical problem with the scrollbar. The edges of the
+    control is corrupted. I expected it to have a win95/98 look (I have
+    WineLook=Win98 in ~/.winerc). But it does not look like it does in
+    windows. Is it not implemented or do I do something wrong?
+
+<li />The application icon does not exist. All I get is a blank square. I
+    guess that it's just a bitmap that's missing but I report it anyways
+    since it is a bug.<br />
+
+    The code is: LoadIcon( NULL, IDI_APPLICATION )
+
+</ol>
+
+</quote>
+
+<p />
+
+G&#233;rard Patel answered point by point:
+
+<quote who="Girard Patel">
+
+<p />
+
+<ul>
+
+<li /> 1/ Yes it's hosed. The Wine code here is a bit difficult to understand,
+though. I am not sure than fixing it will not lead to worse problems. If I
+had all the time in the world I would like to rewrite it. I guess that the
+motivation to fix it is gone now than people can use the so-called 'native'
+(read : BillG) controls. I think (but I am not sure at all) that somewhere
+someone hinted to want to write a 32 bit version of these openfile controls,
+so maybe this will be fixed. Corel will need it anyway, so all hope is not
+lost.
+
+<li /> 2&amp;3/ It's a recent problem. I intend to attack some scrollbar problems
+real soon now. Whether I will win or the scrollbar will win is an open
+question. I will probably try your code while I'm at it. In a week or
+two.
+
+<li /> 4/ I have no intention to look at this problem soon, sorry.
+
+</ul>
+
+</quote>
+
+<p />
+
+Dennis then applied G&#233;rard's patches and replied: <quote who="Dennis
+Bjvrklund">My scrollbar problem that has been there for a long time has gone
+away with wine-990704.</quote>
+
+<p />
+
+But, he also noticed (after diving into the code) that <quote who="Dennis
+Bjvrklund">there is still a lot of (graphical) problems with the scrollbars
+in win9x mode. So I started to fix some small problems. And since I have
+some free weeks now in the sommer I could spend some time fixing the
+scrollbars for real.</quote> and asked whether someone else was also looking
+at those issues.
+
+<p />
+
+G&#233;rard answered he was focusing on some other areas, but reminded a 
+few guidelines:
+
+<quote who="Girard Patel">
+
+<p />
+
+<ul>
+
+<li />scrollbars are used everywhere, breaking something with them should be
+real easy. I don't know how much code there is in Wine, but it could be near
+one million of lines...Enough to make it difficult to find where is the
+change that broke something.
+
+<li />if you want  to pass just a few weeks on wine development and then pass
+to other things, please forget it. Problems could surface after you are gone
+and then who will be left to fix things you could have broken ??? Do changes
+only if you offer support :-)
+
+</ul>
+
+</quote>
+
+<p />
+
+Dennis agreed on the guidelines and went on, with G&#233;rard, on a more in depth
+discussion of the current state of the graphical behavior of scrollbars (and
+fixme:s in the code).
+
+</section>
+
+<section
+  title="DLLs loading"
+  subject="Your opinion"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-2.html"
+>
+
+Michele Petrovsky, the one who is writing the book regarding Wine admin,
+asked about a <quote who="Michele Petrovsky">a generalized statement of the
+impact of controlling load order of DLLs in creating the WINE runtime.
+Beyond, of course, the idea that loading native Windows DLLs before built-in
+ones can tweak application performance. Are there areas of app behavior (for
+example, multimedia or data communications) for which this rule-of-thumb
+*doesn't* hold true? Or are there types of apps which might benefit more
+from attempting, for instance, to load a special DLL first?</quote>
+
+<p />
+
+Ulrich Weigand gave a full answer regarding DLL loading, load order and al.
+
+<p />
+
+<quote who="Ulrich Weigand">Well, the problem is that you can *not* simply
+say 'native DLLs are better' or 'built-in DLLs are better'. There are
+basically two aspects to be considered that tend to contradict each other:
+
+<p />
+
+<ul>
+
+<li />On the one hand, native DLLs of course guarantee 100% compatibility for
+  those routines they implement. Examples: If you use native USER, the
+  visual appearance of window borders, dialog controls etc. is more-or-less
+  perfect, if you use built-in USER, it doesn't really look quite like
+  Windows 95 ... Same holds for the common controls (COMMCTRL) or the common
+  dialogs (COMMDLG). The native SHELL contains e.g. the routines used by
+  installers to create desktop shortcuts; since the file format of a
+  shortcut file is not documented, Wine doesn't correctly implement these
+  routines yet, hence some installers might fail when using built-in
+  SHELL.
+
+<li />On the other hand, a native DLL might try to access features of the rest
+  of the system which are not quite correctly implemented in Wine (e.g.
+  because they are undocumented). In this case, the native DLL might work
+  much worse than the built-in one, or even not all. Examples: The native
+  MPR requires shared PE sections to work, which is not yet supported by
+  Wine, hence it doesn't run. The native GDI requires a Windows display
+  driver to be present, which isn't the case under Wine. The native KERNEL
+  doesn't work at all because it directly accesses the Win95 core which
+  isn't there under Wine.
+
+<li />A probably minor point: In a few cases, the Wine built-in DLLs implement
+  *more* features than the original Windows DLLs; these features will not
+  work when using the native DLLs, of course. The one prime example of this
+  is the integration of Wine with X provided by built-in USER; if you use
+  native USER, you can only run Wine in -desktop mode, and using the
+  clipboard or drag-and-drop between Wine windows and X windows will not
+  work.
+
+</ul>
+
+<p />
+
+So, unfortunately, there is no rule-of-thumb which load-order to use; you'll
+have to have a certain knowledge of what the DLL in question does, which
+other DLLs/features it requires etc. to make a case-by-case decision. For
+most users, it will probably be best to simply stay with the load-order
+settings laid out the default wine.ini file. This default setting is
+determined as follows: for all DLLs where there is a proper Wine
+implementation at all (i.e. not just stubs), or where the native DLL is
+known *not* to work, use built-in first. All others, use native.
+
+<p />
+
+If you do want to experiment with variations of the load-order settings,
+there are two fixed rules that must be complied with:
+
+<p />
+
+<ul>
+
+<li />Always use the same setting for DLL pairs (i.e. the 16-bit and 32-bit
+  DLL that form a tightly integrated whole). You can use both native COMMDLG
+  and COMDLG32 or both built-in, but don't try to mix it. The same holds for
+  the other DLLs listed in the [DllPairs] section.
+
+<li />If DLL A calls routines of DLL B, and you use the native version of DLL
+  B, you *must* also use the native version of DLL A. [This will no longer
+  be required once the elf-dll mechanism works.] Normally, this is only a
+  concern when using native USER.
+
+</ul>
+
+<p />
+
+Some candidates where it might be worth-while to try deviating from the
+standard setting (built-in) and use the native version would be:
+
+<p />
+
+<ul>
+
+<li />SHELL/SHELL32
+
+<li />COMMCTRL/COMCTL32
+
+<li />COMMDLG/COMDLG32
+
+</ul>
+
+<p />
+
+The native versions of these seem to work quite well nowadays, and they tend
+to bring noticeable improvements over the built-in ones. But, of course,
+YMMV ;-)
+
+<p />
+
+If you are especially daring, you might also try to use native USER/USER32
+(if you do this, you *must* also use the native versions of the DLLs
+mentioned above). You'll have to live with the drawbacks (only -desktop
+mode, etc), but in some cases it does have advantages: e.g. some
+InstallShield apps run better with native USER, and if you are very lucky,
+you might even get Explorer to run a little ...</quote>
+
+<p />
+
+Lots of people were very happy with this description and requested it
+to be added to the documentation directory.
+
+</section>
+
+<section
+  title="Porting to non-Intel architectures"
+  subject="Non-Intel library fixes and Win64"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-2.html"
+>
+
+Patrik Stridvall sent a patch to wine-patches to let Winelib compile on
+non-Intel platforms (including 64 bit ones). (Editor note: Intel platform
+means i?86 and Pentium (I, II, III). Merced, when available, should be
+considered as non Intel in the following article :-/).
+
+<p />
+
+Alexander Larsson rejected it because <quote who="Alexander Larsson">Making
+it compile is good, but making it work would be better ;-) I'm not going to
+apply patches that simply remove everything that doesn't compile. This is
+especially important since few people have access to these other platforms,
+so if you don't do the job nobody else will.</quote>
+
+<p />
+
+So, Alexandre added <quote who="Alexander Larsson">a #error in the CONTEXT
+struct definition: to clearly mark that there is something here that you
+must think about when porting. I could have put in a dummy struct instead,
+it would have compiled just fine, and it would only have been fixed after
+someone spent hours trying to figure out why some obscure API function
+doesn't work right. I think a clear compile-time error is
+preferable.</quote>
+
+<p />
+
+Patrik asked why there wasn't any alike #error in the library part to bark
+at compile time when __i386__ was not defined.
+
+<p />
+
+Alexandre agreed and ended the thread with <quote who="Alexander Larsson"> all the
+places that need a portable CONTEXT (mostly the exception stuff) will
+eventually have a #error added.</quote>
+
+</section>
+
+<section
+  title="Porting to BeOS"
+  subject="A small step towards portability"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-93.html"
+>
+
+Howard Abrams sent to wine-patches some configuration stuff that helps Wine
+compile on BeOS.
+
+<p />
+
+Marcus Meissner provided some improvement on the patch and asked whether BeOS
+was supporting mmap().
+
+<p />
+
+Howard answered <quote who="Howard Abrams">there is talk about it for R5,
+not sure if it will happen.</quote>
+
+<p />
+
+Howard also explained that his previous attempts at porting show that Be was
+missing some important calls (like mmap, socketpair, select() on file
+descriptors, send/recvmsg). He now wants to tackle the porting issue on a
+step by step approach, and may be requiring some feedback from Be, which
+stated they'd tend to be more and more Posix compliant.
+
+<p />
+
+Ulrich and Howard then discussed the different points. mmap() could be
+implemented by reading all the file into memory (which would result in bad
+performances with MapViewOfFile on large files). mmap() is also now used as
+an improvement for passing data back and forth to the server (instead of
+sending them through the pipe); Ulrich asked whether a shared memory feature
+exists on Be? Howard said yes: Areas.
+
+<p />
+
+Ulrich reminded that the current server implementation requires <quote
+who="Ulrich Weigand">you need to be able to pass *file descriptors* over the
+pipe. This means that the server opens a file, passes the descriptor to the
+client, and the client then uses the descriptor to access the file. Of
+course, you cannot simply pass the numerical value of the descriptor,
+because the client is another process. Thus, we use a special feature of
+sockets that allows to pass open file descriptors ('access rights'). This is
+the reason for using sendmsg() instead of sendto() in the first
+place!</quote>
+
+<p />
+
+Ulrich pinpointed the known troubleshooter while porting to other Unices:
+thread support, address spaces,
+
+<p />
+
+Howard asked about using Be native synchronization methods. Ulrich
+listed all the objects Win32 sync methods were able to wait on:
+
+<p />
+
+<ul>
+
+<li />signalled synchronization objects (semaphores, events, mutexes)
+
+<li />process or thread termination
+
+<li />I/O activity (files, pipes, sockets, mailslots)
+
+<li />Console I/O
+
+<li />file-change notifications
+
+</ul>
+
+and explained how the Wine server did this job: <quote who="Howard Abrams">
+Thus, in Wine the thread calling WaitForMultipleObjects simply blocks on the
+socket to the server. It stays blocked until the server has decided that the
+wait condition is satisfied (it can do so because all actions relevant to
+the status of the objects waited on is reported to the server, either by the
+(other) clients or by the OS as a result of the main select() call), and
+then wakes the client up by sending the reply to the original
+message.</quote>
+
+<p />
+
+From a Unix stand point, WaitForMultipleObjects has to wait on:
+
+<p />
+
+<ul>
+
+<li />"real file" descriptors
+
+<li />pipes
+
+<li />connection to the X server
+
+<li />in a (near future) on network connections
+
+</ul>
+
+<p />
+
+Regarding the LDT (Local Descriptor Table), Ulrich said:
+
+<quote who="Ulrich Weigand">That's the Intel processor data structure used
+to define segments. Linux normally uses only one single data segment and a
+single code segment, both spanning the complete address space from 0 to 4
+GB. All segment registers are usually set up by the OS on process startup
+with these values and never changed by the program. Thus, the illusion of a
+non-segmented address space is created, although the Intel processor
+actually *always* uses a segmented address space ;-)
+
+<p />
+
+Wine, however, needs to define additional segments for its own use. This is
+obvious when executing 16-bit code, but is even necessary when executing
+Win32 processes (e.g. the TEB selector must be loaded into the %fs
+register).
+
+<p />
+
+As accessing the LDT directly is protected, we need to use special system
+calls to do so (modify_ldt() on Linux, i386_set_ldt() on *BSD, and
+sysi86(SI86DSCR, ...) on Solaris/x86). So, the question is:
+
+<p />
+
+<ul>
+
+<li />Does BeOS provide an analogous syscall at all?
+
+<li />Are the LDT settings shared for all threads in one address space (if
+  they aren't, Wine won't work. This is broken on Linux 2.0.*)
+
+<li />Does the BeOS environment survive if segments are actually used? This
+  means:
+
+<ul>
+
+<li />Can the libraries cope if they are called with segment registers %fs,%gs
+  set up different than usual (e.g. the Solaris/x86 thread libraries crashed
+  when the application modified the %gs segment register ...)
+
+<li />What happens when executing code in a 16-bit segment and/or with the
+  stack in a 16-bit segment at the time an interrupt/signal/... needs to be
+  processed by the OS? 
+
+<li />Are the values of the segment registers preserved over process
+switches?
+
+</ul>
+
+</ul>
+
+</quote>
+
+</section>
+
+</kc>

@@ -1,0 +1,203 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="">Brian Vincent</author>
+<issue num="91" date="04/15/2001" />
+<intro> <p>This is the 91st issue of the Wine Weekly News publication.
+Its main goal is to reminisce. It also serves to inform you of what's 
+going on around Wine. Wine is an open source implementation of the Windows 
+API on top of X and Unix.  Think of it as a Windows compatibility layer.  
+Wine does not require Microsoft Windows, as it is a completely alternative 
+implementation consisting of 100% Microsoft-free code, but it can optionally 
+use native system DLLs if they are available.   You can find more info 
+at <a href="http://www.winehq.org">www.winehq.org</a>
+</p><p>
+As most of you may have noticed, Eric Pouech has stepped down from writing 
+KC Wine / Wine Weekly News. I've enjoyed the updates for a long time, so I 
+decided to take it over. For the next few weeks the publication schedule 
+may be a little eratic as I work out the best days to get this out. I 
+anticipate a weekly Sunday/Monday update, but we'll see.
+</p><p> 
+Please pass along any comments / questions / concerns / gripes to vinn at 
+theshell.com. As always, if you have a particular thread you to see covered 
+let me know. I'd also appreciate any links to updated screenshots, 
+product reviews, or any other interesting stuff.</p> 
+</intro>
+
+<stats posts="72" size="232" contrib="22" multiples="11" lastweek="9">
+<person posts="14" size="33" who="Alexandre Julliard" />
+<person posts="10" size="37" who="eric pouech" />
+<person posts="6" size="26" who="Francois Gouget" />
+<person posts="6" size="19" who="James Hatheway" />
+<person posts="5" size="29" who="Ian Pilcher" />
+<person posts="5" size="15" who="Dmitry Timoshkov" />
+<person posts="4" size="13" who="davep" />
+<person posts="4" size="10" who="Uwe Bonnes" />
+<person posts="5" size="9" who="gerard patel" />
+<person posts="2" size="5" who="lawson_whitney@juno.com" /> 
+<person posts="1" size="9" who="Mike McCormack" />
+<person posts="1" size="3" who="Huw D M Davies" />
+<person posts="1" size="2" who="David Howells" />
+<person posts="1" size="2" who="Andreas Mohr" />
+<person posts="1" size="2" who="Joerg Mayer" />
+<person posts="1" size="2" who="Michael Stefaniuc" />
+<person posts="1" size="2" who="Elan Feingold" />
+<person posts="1" size="2" who="Psyon" />
+<person posts="1" size="1" who="Dimitrie O. Paun" />
+<person posts="1" size="1" who="Maurice van der Pot" />
+</stats>
+
+
+<section 
+    title="Wine speed-up (cont'd)" 
+    subject="Speeding up wineserver syncronization objects with shared memory" 
+    archive="http://www.winehq.com/hypermail/wine-devel/2001/04/0008.html" 
+    posts="1"
+    startdate="04/03/2001"
+>
+  <p>David Howells posted an update on his work designing the kernel module 
+  that will work with Wine. This thread has been covered in several past 
+  issues. The most recent addition is an API that will interpret wineserver 
+  messages. David writes:</p> 
+
+  <quote who="David Howells">
+  <p>I'm currently performing a major rearrangement of the files that comprise 
+  the module:</p><p>
+<ul>
+  <li>Splitting the current win32 API bits out of the same files that 
+      contain the actual object class implementations.</li> 
+  <li>Putting the core and the API's in separate subdirectories.</li> 
+  <li>Abstracting name support, so that the internal API takes an "object name" 
+      which the user API is responsible for extracting from userspace and 
+      converting from WCS/MBS as necessary.</li> 
+  <li>Fixing introduced bugs.</li> 
+  </ul>
+  </p>
+  <p>This does not mean that I'm getting rid of the Win32 API I've already 
+     got! It will just be optional.</p> 
+  </quote>
+  <p>
+  To see some of the other discussions concerning the kernel module refer to 
+  <a href="http://www.winehq.com/?issue=86#Wine's%20speed%20up%20(cont'd)">issue
+  #86</a>.
+  </p>
+</section>
+
+
+
+<section 
+   title="VxD Information" 
+   subject="VxD Information" 
+   archive="http://www.winehq.com/hypermail/wine-devel/2001/04/0054.html" 
+   posts="2" 
+   startdate="04/11/2001"
+>
+ <p>
+  Maurice van der Pot wrote, 
+  <quote who="Maurice van der Pot">I'd like to get started on VxD support, 
+  but I'm unable to find any useful documentation on how it's implemented in 
+  Wine. I've been looking through the sources (e.g. vxd.c, wprocs.spec) but I 
+  can't find the connection between a call to int 2F and a call to the 
+  functions in vxd.c.</quote> 
+  Alexandre Julliard responded, 
+<quote who="Alexandre Julliard">The connection is through int 2f ax=0x1684 (in 
+msdos/int2f.c), which does a GetProcAddress on wprocs and returns the vxd 
+entry point to the application. The app then calls the corresponding vxd 
+directly with a normal function call.</quote> 
+  </p>
+  <p>VxD support has thus far been a problem. In Windows VxD's run in Ring 0 
+  with all the associated privileges. So a badly behaving VxD could have the 
+  potential to crash a Linux box. This is no small undertaking. One work 
+  around is to find an NT version of the application requiring a certain VxD - 
+  then it will access a device through Windows APIs which can be added to 
+  Wine.</p> 
+</section>
+
+
+<section 
+   title="T@x2001: Linuxport via Wine" 
+   subject="T@x2001: Linuxport via Wine" 
+   archive="http://www.winehq.com/hypermail/wine-devel/2001/04/0015.html" 
+   posts="1" 
+   startdate="04/03/2001"
+>
+ <p>
+  Joerg Mayer was browsing SuSE's German portal and discovered a port of the 
+  program T@x2001 using wine. Here's an 
+  <a href="http://babel.altavista.com/translate.dyn?urltext=http%3A%2F%2Fportal.suse.de%2Fde%2Fcontent%2Freports%2Ftax2001.html&amp;lp=de_en">English translation</a> 
+ of 
+ <a href="http://portal.suse.de/de/content/reports/tax2001.html">German 
+  page</a> complete with screenshots. As Joerg notes, 
+  <quote who="Joerg Mayer">The program should be more stable and 
+  faster.</quote> After reading the translation, it's also apparent that it 
+  suffers from problems that some other Wine ports seem to have - the lack of 
+  security precautions that are necessary on a multiuser operating system. 
+  </p>
+  <editorialize who="Brian Vincent">Personally though, I just got done doing 
+  my taxes using a Windows-based product and I sure wish I had an option of 
+  doing it in Linux. I would have gladly forgiven some file permission 
+  problems in order not have to boot into that other OS. Any vendors out there 
+  listening? You've got 8 months to get your product ported..</editorialize> 
+</section>
+
+
+<section 
+  title="Debugger startup" 
+  subject="Debugger startup" 
+  archive="http://www.winehq.com/hypermail/wine-devel/2001/04/0031.html" 
+  posts="8" 
+  startdate="04/07/2001"
+  enddate="04/13/2001"
+>
+<p>Eric Pouech discovered some problems launching the debugger from a shell 
+  script. Namely, 
+  <quote who="Eric Pouech">someone (IIRC Gerard) had issues when starting the 
+  debugger when an exception occurred. The setup was that the AeDebug registry 
+  key pointed to a shell script, which in turn, launched the real debugger 
+  (used to set up different context options, and such)</quote>. 
+</p>
+<p>
+  After a short discussion with Alexandre the problem was found to lie in the 
+  way the arguments were passed. As Eric noted, 
+  <quote who="Eric Pouech">it's better to use the name from the server 
+  because it may be a windows style one (whereas argv[0] is always a unix 
+  one)</quote>. 
+
+Alexandre responded with a solution, 
+
+ <quote who="Alexandre Julliard">You can set WINEPRELOAD to make sure we load 
+ the right file; so the exec would be something like: WINEPRELOAD=winedbg.so 
+ exec wine $*</quote> 
+  </p>
+</section>
+
+
+
+<section 
+   title="Debugging using thread ID's" 
+   subject="Traces: fs -> tid" 
+   archive="http://www.winehq.com/hypermail/wine-devel/2001/04/0041.html" 
+   posts="13" 
+   startdate="04/10/2001"
+   enddate="04/11/2001"
+>
+<p>
+  Francois Gouget posted a patch against the debugging framework that 
+  <quote who="Francois Gouget">adds a debug channel called 'tid' which 
+  activates printing the tid as the first field of all traces. Actually, it 
+  might make sense to merge 'tid' with the 'thread' debug channel.</quote> 
+  The rationale being that it makes traces easier to read.</p>
+<p>
+  The discussion generated 13 posts in a day and quickly turned into what the 
+  debugger semantics should be and if or how the output of other traces should 
+  be affected. Alexandre ended it with, 
+
+  <quote who="Alexandre Julliard">I think we have now wasted enough bandwidth 
+  on this non-issue. The relay traces have always displayed the thread info, 
+  and will continue to do so. People who are morally offended by the extra 5 
+  characters needed for the tid can hack their local tree, or learn to use 
+  sed/awk/perl.</quote></p>
+</section>
+</kc>

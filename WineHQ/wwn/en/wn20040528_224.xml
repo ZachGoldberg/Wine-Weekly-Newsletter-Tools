@@ -1,0 +1,411 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="224" date="05/28/2004" />
+<intro> <p>This is the 224th issue of the Wine Weekly News publication.
+Its main goal is to perform switch cutovers. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="141" size="494" contrib="60" multiples="26" lastweek="23">
+
+<person posts="13" size="30" who="Alexandre Julliard" />
+<person posts="14" size="38" who="Mike Hearn" />
+<person posts="10" size="23" who="Rein Klazes" />
+<person posts="6" size="28" who="Ivan" />
+<person posts="5" size="16" who="Dimitrie O. Paun" />
+<person posts="5" size="14" who="Robert Reif" />
+<person posts="7" size="42" who="Eric Pouech" />
+<person posts="5" size="12" who="Dan Kegel" />
+<person posts="4" size="14" who="Steven Edwards" />
+<person posts="4" size="12" who="Shachar Shemesh" />
+<person posts="4" size="11" who="Uwe Bonnes" />
+<person posts="4" size="8" who="Christian Costa" />
+<person posts="3" size="16" who=" (=?utf-8?q?Andr=C3=A9_Johansen?=)" />
+<person posts="3" size="8" who="Dmitry Timoshkov" />
+<person posts="2" size="14" who="Pierre d'Herbemont" />
+<person posts="2" size="12" who="Krishna Murthy" />
+<person posts="2" size="8" who="(fenix)" />
+<person posts="2" size="5" who="David Purucker" />
+<person posts="2" size="5" who="Stefan Leichter" />
+<person posts="2" size="5" who="Hans Leidekker" />
+<person posts="2" size="4" who="Kevin Koltzau" />
+<person posts="2" size="4" who="William Lahti" />
+<person posts="2" size="4" who="Abby Ricart" />
+<person posts="2" size="3" who="hatky" />
+<person posts="1" size="38" who="Mike McCormack" />
+<person posts="1" size="12" who="David Hammerton" />
+<person posts="1" size="6" who="(Phillip.Ezolt)" />
+<person posts="1" size="5" who=" (=?utf-8?b?QW5kcsOpIEpvaGFuc2Vu?=)" />
+<person posts="1" size="5" who="(maillard.emmanuel)" />
+<person posts="1" size="4" who="emmanuel maillard" />
+<person posts="1" size="4" who="=?iso-8859-1?q?zeeshaan=20umer?=" />
+<person posts="1" size="3" who="Huw D M Davies" />
+<person posts="1" size="3" who="Robert Lunnon" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="Joshua Walker" />
+<person posts="1" size="3" who="Guido Draheim" />
+<person posts="1" size="2" who="Gianfranco Luceri" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="2" who="Bill Medland" />
+<person posts="1" size="2" who="Maurizio Monge" />
+<person posts="1" size="2" who="Scott W Gifford" />
+<person posts="1" size="2" who="Rok Mandeljc" />
+<person posts="1" size="2" who="Ferenc Wagner" />
+<person posts="1" size="2" who="Raphael" />
+<person posts="1" size="2" who="Fabian Cenedese" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Martin Fuchs" />
+<person posts="1" size="2" who="Lionel Ulmer" />
+<person posts="1" size="2" who="Vincent B&#233;ron" />
+<person posts="1" size="2" who="Marius Andreiana" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="RT" />
+<person posts="1" size="2" who="Jon Griffiths" />
+<person posts="1" size="1" who="Jakob Eriksson" />
+<person posts="1" size="1" who="Glen Kaukola" />
+<person posts="1" size="1" who="=?iso-8859-1?q?Simon=20Harvey?=" />
+
+</stats>
+<section 
+	title="News: Interviews Galore"
+	subject="News"
+	archive="http://www.orangecrate.com/article.php?sid=710" 
+	posts="1"
+	startdate="05/22/2004"
+	enddate="05/28/2004"
+>
+<topic>News</topic>
+<p>We published <a href="http://www.winehq.com/interview/14">an interview 
+with Steven Edwards</a> this week.  Steven has been working on Wine for about 
+three years and has been instrumental in getting Wine in a usable condition 
+for the <a href="http://www.reactos.org">ReactOS</a> project.  We ended up 
+getting
+ <a href="http://developers.slashdot.org/article.pl?sid=04/05/27/0030250">Slashdotted</a> for it.  
+The Slashdot comments were pretty positive too.  I think a large part
+of that is because Steven did an excellent job describing the motivations
+behind ReactOS.</p>
+
+<p><a href="http://www.orangecrate.com">Orange Crate</a> published
+<a href="http://www.orangecrate.com/article.php?sid=710">an
+interview</a> with Jeremy White.  Last week Slashdot had one, but
+I think this one is much better.  Jeremy talks more about the
+business side of things and has some interesting revelations:</p>
+<quote who="Orange Crate"><p>
+<b>Chuck Talk:</b> What is on the roadmap for continuing CrossOver development?</p>
+
+<p><b>Jeremy White:</b> Right now we are really going to focus on our 
+compatibility center. We've got a system where customers can vote for 
+what application support they want next; we're going to try to follow that.</p>
+
+<p>We do have some architectural issues we have to work on; for example, 
+iTunes is going to require some COM and MSI work before we get it working, 
+so we're starting in on those projects. </p></quote>
+
+<p>A few days later Mad Penguin 
+<a href="http://madpenguin.org/Article1512.html">also ran</a> an interview 
+with Jeremy to complement their
+<a href="http://madpenguin.org/Article1513.html">review of CrossOver 
+Office 3.0</a>.  (By the way, that's the first review of CXO 3.0 I've seen 
+so far and it has a lot of good things to say about the product.) </p> 
+
+</section>
+<section 
+	title="Testing - Volunteers Needed" 
+	subject="Request for winetesting volunteers"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/05/0486.html" 
+	posts="3"
+	startdate="05/28/2004"
+	enddate="05/29/2004"
+>
+<topic>Testing</topic>
+<p>Chris Morgan announced a call for volunteers to help
+with running Wine's testing framework.  The new framework
+downloads and runs nightly builds of the complete set of 
+Win32 API tests and runs them on Windows boxes.  So if you
+have a Windows computer laying around you can set it up
+to run Chris' Winrash program and it will automate the
+entire process.  Chris described the process:</p>
+
+<quote who="Chris Morgan"><p>
+Thanks to Brian Vincent, Paul Millar, Dimi Paun, Ferenc Wagner and Kevin 
+Koltzau the automated winetest suite is ready for more widespread testing.
+</p><p>
+Kevin and Paul build winetests each night if there were cvs commits since the 
+last time the tests were built.  The winetests are published to a script on 
+winehq that Brian and Dimi wrote.  The winrash service that I wrote sends its 
+current state to the service and receives a script to process that may direct 
+it to check in later, download a winetest and run it or upgrade itself.  
+Thanks to Ferenc the winetest results are sent back to winehq and can be 
+accessed via 
+<a href="http://test.winehq.org/data/">http://test.winehq.org/data/</a>  
+Pretty formatting of the results is coming soon ;-)
+</p><p>
+We need volunteers that are willing to participate in the winetesting process 
+by running the winrash service on their computers. The winrash installer can 
+be downloaded from:
+ <ul><a href="http://prdownloads.sourceforge.net/winrash/winrash-0007-chris-msvc.exe?download">
+ http://prdownloads.sourceforge.net/winrash/winrash-0007-chris-msvc.exe?download</a> </ul>
+</p><p>
+You can find out more about winrash at 
+ <ul><a href="http://winrash.sf.net">http://winrash.sf.net</a> </ul>
+</p><p>
+The installer will install winrash as a service and run Wine tests as 
+required.  It is IMPORTANT that you set the client id correctly.  Please use 
+your first and last name WITHOUT spaces, like JohnSmith.  Using the default 
+client id will cause your winetest results to be ignored.
+</p><p>
+The service is smart enough to autoupgrade as new versions are released.  To 
+uninstall just go to the Add/Remove programs and click 'remove' as you do for 
+many windows programs.  There is the ability to restrict the times when 
+winrash runs winetests but this requires manually adding some keys to the 
+registry.  I haven't finished testing this feature but if someone wants it I 
+can see about getting it polished up and in a release early this coming week.
+</p><p>
+We currently need testers for the whole range of windows versions, 
+win95/98/me, nt3/4, win2k, xp and 2003.
+</p><p>
+Please reply if you want to help out so that we know what kind of coverage
+we can expect. The more the merrier, so please sign up even if others have
+done so for your version of Windows.
+</p></quote>
+
+<p>Dimi described a few items that still remained to be completed, the
+biggest of which involved reorganizing the web pages a bit.  Also, you
+may want to note that
+up until a few weeks ago the winetest suite was failing under Win9x.
+I noticed there's been some recent patches in that area though, so perhaps
+it's fixed.  </p>
+
+</section>
+
+<section 
+	title="Mandrake 10 &amp; Corrupted Registries" 
+	subject="Crash and corrupted registry"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/05/0372.html" 
+	posts="5"
+	startdate="05/23/2004"
+	enddate="05/26/2004"
+>
+<topic>Fixes</topic>
+<p>Christian Costa reported a fairly serious problem,
+<quote who="Christian Costa">
+This is the second time I had to reboot when my box is stuck while 
+running a windows apps.  In both cases the registry had been corrupted. 
+This is very annoying.  Could we have the wineserver do a backup of 
+registry files at startup so we can retrieve the previous version if a 
+corruption occurs?  That would be very useful.</quote></p>
+
+<p>Alexandre wanted more info about the crash since it shouldn't be
+an issue,
+<quote who="Alexandre Julliard">
+ Well, a backup could be implemented, but the way the registry is saved
+ should prevent it from being corrupted, since we only replace the
+ previous one once the new one has been saved correctly. It would be
+ interesting to find out exactly how yours managed to get
+ corrupted. What sort of corruption do you see?</quote> </p>
+
+<p>Christian also wondered if anyone else was having the problem
+and mentioned he was using reiserfs on a Mandrake 2.4.21-0.13mdk kernel.
+That led Steven Edwards to mention some integration issues with Mandrake
+10,
+<quote who="Steven Edwards">
+ Do you have the LSB package installed in your Mandrake? There are two
+ bugs in Mandrake 10 that some of our users have spotted in CrossOver. I
+ don't know all of the details but there seems to be an issue with the 2.4
+ Mandrake kernel and the LSB package. Once the users have removed the
+ LSB package things seem to clear up.
+</quote></p>
+
+<p>Christian noticed that other files open when he rebooted experienced
+corruption.  Alexandre felt it wasn't a problem for Wine to solve,
+<quote who="Alexandre Julliard">
+Yes, it very much looks like a filesystem issue, I prefer that &lt;g&gt;
+If you feel like trying to reproduce it, maybe you could try to add an
+fsync() in the saving code and see if this makes a difference.</quote></p>
+
+</section>
+<section 
+	title="Internationalization of Calendars" 
+	subject="Calendars"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/05/0376.html" 
+	posts="4"
+	startdate="05/22/2004"
+	enddate="05/24/2004"
+>
+<topic>Internationalization</topic>
+<p>Internationalization issues can be fascinating for the insight
+they give on other cultures.  William Lahti asked for some info
+regarding calendars,
+ <quote who="William Lahti">I am trying to implement EnumCalendarInfo and would
+  like to know if any locales have multiple calendars, where the settings for 
+  the extra calendars would be in the nls file, and if any calendars have their 
+  own separate file.</quote></p>
+
+<p>Shachar Shemesh had some pointers for the Middle East region:</p> 
+<quote who="Shachar Shemesh"><p>
+I'm not familiar with the Windows API in that respect, but I can tell 
+you that both Jews and Muslims have their own calendars (as well as 
+Chinese, Hindus etc, IIRC). At least in Israel, the gregorian is the 
+main calendar, but having the ability to view Jewish dates would be nice.
+
+<ul><a href="http://libhdate.sourceforge.net/">
+http://libhdate.sourceforge.net/</a> (Hebrew dates)</ul>
+</p><p>
+There is (or used to be) also a project with the same name for Muslim 
+dates, but I can't seem to locate it. The best I can do is 
+<ul><a href="http://lists.arabeyes.org/archives/developer/2003/December/msg00049.html">
+http://lists.arabeyes.org/archives/developer/2003/December/msg00049.html</a></ul></p></quote>
+
+<p>Josh Walker then outlined how Japanese calendars worked, though the
+answer was a bit different than the question William originally asked,
+it was still interesting:</p>
+<quote who="Joshua Walker"><p>
+Japanese also use a different system to indicate the
+year. They use the year of the emperor. For example
+today's year is 14 Heisei (The current emperor has
+been in power since 1990.)  When Emperor Hirohito
+died in 1989, Japanese programmers had to reprogram
+their computers to deal with the new "year" as many
+were hard-coded for the old emperor. Y2K wasn't much
+of a problem because the Japanese had updated their
+computers ten years before.
+</p><p>
+Nowadays on computers, they simply list the julian
+year, then month, then day, and then the character of
+day of the week
+<ul>
+ 2002(sei)/05(getsu)/14(hi) (Getsuyobi) </ul></p><p>
+
+abbreviated, it looks like this --&gt; 04.05.24
+</p><p>
+Here's what the command "date" gave me as output
+<ul>
+2004&amp;#24180;  5&amp;#26376; 24&amp;#26085;<br />
+&amp;#26376;&amp;#26332;&amp;#26085; </ul></p><p>
+
+Here's what cal gives me...
+<ul>
+      5&amp;#26376; 2004<br />
+&amp;#26085; &amp;#26376; &amp;#28779; &amp;#27700; &amp;#26408; &amp;#37329;<br />
+&amp;#22303;<br />
+<tt>
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1<br />
+ 2&#160; 3&#160; 4&#160; 5&#160; 6&#160; 7&#160; 8<br />
+ 9 10 11 12 13 14 15<br />
+16 17 18 19 20 21 22<br />
+23 24 25 26 27 28 29<br />
+30 31</tt></ul></p>
+<p>
+Just remember, year comes first and  the date is
+separated by periods if you want to drop the
+characters.</p></quote>
+
+<p>That led Shachar to go into more detail:</p>
+<quote who="Shachar Shemesh"><p>
+Don't get me started about representation.
+</p><p>
+First - the dates. Arabic dates are a bit simpler - it's a lunar 
+calendar (from moon birth until moon birth), which means that the months 
+jump around the year. So, for example, Ramadan, the fasting month, can 
+happen during winter or summer.
+</p><p>
+As for the Hebrew calendar....
+It's a lunar calendar, with a leap MONTH added once every three to four 
+years, to make sure it doesn't drift too far away from the seasons. So 
+my birthday, which according to the Hebrew calendar happens on the 21st 
+of the SECOND Adar........
+</p><p>
+Then there is representation. Numerological letters are used. aleph 
+means 1, bet means 2, yod means 10, kaf (the next one) means 20, and so 
+on until 90, and then Kof means 100, and Taf (the last letter) means 400 
+(22 characters altogether). The numbers are added, so this year is
+ [<i>ed. note: 4 Hebrew characters</i>] 
+(Taf - 400 Shin- 300 Samech - 60 Daled -4, 764 altogether).
+</p><p>
+Of course, this is omitting the thousands. The real year is [<i>ed. note: more Hebrew characters</i>], or 
+5764. I was never sure what it's counting from. Naturally, the months 
+are also displayed like that.
+</p><p>
+Oh, and did I mention that a day ends at sunset? Sabbath is kept from 
+the sunset on Friday (actually, half hour before as a safty measure) 
+until sunset on Saturday (half hour after).
+</p></quote>
+
+
+
+</section>
+<section 
+	title="Serial Issues" 
+	subject="General serial communications issues"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/05/0389.html" 
+	posts="4"
+	startdate="05/24/2004"
+	enddate="05/25/2004"
+>
+<topic>IO</topic>
+<p>David Purucker ran into a problem with serial communication: </p>
+<quote who="David Purucker"><p>
+I have tried several terminal programs (Hyperterm and TeraTerm) under 
+several builds of
+Wine including Wine-20040505 and they seem to have the same generic problem.
+</p><p>
+They all exhibit the same situation, DATA seems to go OUT, but never seems 
+to come IN.
+Several other people have experienced the same thing, as seen in this bug 
+report:
+<ul><a href="http://bugs.winehq.org/show_bug.cgi?id=2115">
+http://bugs.winehq.org/show_bug.cgi?id=2115</a></ul>
+</p><p>
+By the way, TeraTerm does work fine in TCP/IP mode, so it's definitely a 
+serial problem.
+It's freeware available here:  
+<ul><a href="http://hp.vector.co.jp/authors/VA002416/teraterm.html">
+   http://hp.vector.co.jp/authors/VA002416/teraterm.html</a></ul>
+</p><p>
+It appears to be a fundamental problem in the serial/file code, which I 
+understand is now
+under the ntdll tree.  Obviously, I don't know much about it, but there is 
+definitely
+something wrong.
+</p><p>
+I was wondering if any developers were aware of this problem, as the 
+decreased general
+usage of serial communications may have caused this to slip under the 
+carpet, so to speak.
+</p></quote>
+
+<p>Scott Gifford offered some tips:</p>
+<quote who="Scott Gifford"><p>
+We are using serial ports under Wine for a current project, and they
+work OK (apart from a few warnings).  The machine I'm using doesn't
+have X, so I haven't tried HyperTerminal or TeraTerm, but our
+console-mode applications operate pretty much as expected.
+</p><p>
+I'm using two patches applied to a recent CVS.  The first is a patch
+Eric Pouech recently posted:
+
+    <ul><a href="http://www.winehq.org/hypermail/wine-devel/2004/05/0297.html">
+    http://www.winehq.org/hypermail/wine-devel/2004/05/0297.html</a></ul>
+</p><p>
+The second is a patch of my own to suppress warnings when using a
+pseudo-tty as a serial port:
+
+    <ul><a href="http://www.winehq.org/hypermail/wine-devel/2004/05/0278.html">
+    http://www.winehq.org/hypermail/wine-devel/2004/05/0278.html</a></ul>
+</p><p>
+But our apps worked OK before that; they just generated some warnings.
+Still, these patches might help, or at least cut down on the noise and
+help you find the real error.
+</p></quote>
+
+<p>David tried that, but still didn't have any luck.  Jakob Eriksson
+offered one more suggestion,
+<quote who="Jakob Eriksson">
+Teraterm worked almost 100% ok a few months back for me.
+There was some issue with buffer sizes or something, but I changed
+a setting in TeraTerm and it worked perfect for me.</quote></p>
+
+</section></kc>
+

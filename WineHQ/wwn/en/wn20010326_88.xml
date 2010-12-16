@@ -1,0 +1,192 @@
+<?xml version="1.0" ?> 
+<kc>
+<title>Wine Traffic</title> 
+<author>Eric Pouech and Brian Vincent</author> 
+<issue num="88" date="03/26/2001" /> 
+<intro>
+ <p>
+   This is the 88th release of the Wine's kernel cousin
+   publication. It's main goal is to distribute widely what's
+   going on around Wine (the Un*x  windows emulator).
+ </p>
+</intro>
+<stats posts="52" size="169" contrib="22" multiples="9" lastweek="7">
+  <person posts="13" size="37" who="Alexandre Julliard" /> 
+  <person posts="5" size="18" who="James Hatheway" /> 
+  <person posts="4" size="12" who="Andreas Mohr" /> 
+  <person posts="4" size="12" who="Dmitry Timoshkov" /> 
+  <person posts="3" size="9" who="Ulrich Weigand" /> 
+  <person posts="3" size="8" who="Jeremy White" /> 
+  <person posts="3" size="7" who="Lawson Whitney" /> 
+  <person posts="2" size="6" who="Ian Pilcher" /> 
+  <person posts="2" size="18" who="Francois Gouget" /> 
+</stats>
+
+<section 
+	title="Ports to OS/390 and Sparc Machines" 
+	subject="Port to OS/390 mainframe USS?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/03/0127.html" 
+	posts="7"
+	startdate="03/21/2001"
+	enddate="03/29/2001"
+>
+<topic>Ports</topic>
+<p>
+James Robinson asked whether there will 
+<quote who="Jame Robinson">be a port of WINE to OS/390 mainframe USS?
+LINUX runs fine under USS, so it would seem that WINE should run there
+as well. Has anyone done this yet?</quote>
+</p><p>
+Ulrich Weigand answered:</p>
+ <quote who="Ulrich Weigand"><p>
+To clear up a possible misunderstanding first: Linux for S/390 does
+*not* run under USS or under OS/390.
+</p><p>
+OS/390 is (one of) the standard operating system(s) used on S/390
+mainframes. One component of OS/390, the Unix System Services (USS),
+provides an environment that allows to run certain Unix
+applications. However, USS is not itself an operating system, just an
+ABI layer on top of OS/390 (somewhat similar to the POSIX subsystem of 
+Windows NT).
+</p><p>
+Linux for S/390, on the other hand, is a true port of the Linux
+operating system to the S/390 hardware. It runs directly on the S/390
+platform, *instead* of OS/390 or any other mainframe operating system.
+</p><p>
+This has the effect that while USS is much more integrated into the
+OS/390 environment, Linux on S/390 is much more similar to 'real' Unix
+platforms. Porting Unix or Linux applications to USS is often
+non-trivial (e.g. gcc does not run on USS at all), while porting to
+Linux on S/390 is most of the time just a recompile.
+</p><p>
+What I want to say by that is that a port of Wine to *USS* seems
+rather unlikely, given the difficulties I mentioned. However, a port
+to *Linux* on S/390 should really be possible, and some time ago I
+already did a proof-of-concept implementation.
+</p><p>
+Of course, a port of Wine to any non-Intel hardware means just a port
+of the Wine *library* at the moment, as Wine does not contain an Intel
+processor emulator and cannot run Windows/Intel binaries on non-Intel
+hardware.</p>
+</quote><p>
+
+Under the same subject of porting Wine, Jutta Wrag asked about Sparc
+support. Ulrich also answered:</p> 
+<quote who="Ulrich Weigand"><p>I did send my
+fixes to Alexandre; I think the current release should build on Sparc
+(unless it has been broken again in the meantime -- I haven't tried
+for some time).
+</p><p>
+In any case, that is a port to Sparc32; Sparc64 is another issue
+completely (and probably much more difficult)...</p></quote>
+
+</section>
+
+
+
+
+
+
+<section 
+	title="Removal of Commandline Options" 
+	subject="Re: wine/ dlls/x11drv/x11drv_main.c documentation/ ..."
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/03/0147.html" 
+	posts="9"
+	startdate="03/23/2001"
+	enddate="03/24/2001"
+>
+<topic></topic>
+<p>
+Alexandre Julliard committed a patch of his which heavily modified
+some command line options:</p>
+<quote who="Alexandre Julliard"><p>
+<ul>
+	<li>the <tt>--synchronous option</tt> is now only available from the
+~/.wine config file</li>
+	<li>The <tt>--desktop</tt>, <tt>--display</tt> and 
+	<tt>--language</tt> command-line options have been removed</li>
+</ul>
+</p></quote>
+<p>
+An astonished Andreas Mohr asked, <quote who="Andreas Mohr">Why would you
+consider <tt>--desktop</tt> to be "obsolete" ?</quote>
+</p><p>
+Alexandre explained it was the start of a larger modification (to move 
+towards 1.0), which would involve removing almost all command line
+options. Alexandre explained a bit his motivations: </p>
+<quote who="Alexandre Julliard"><p>
+Because with these command-line options kernel32 must know about and
+export information specific to x11drv.
+</p><p>
+Also there's a larger issue of mechanism vs. policy; if we want to be
+able to use the same set of Wine libraries for multiple usage (wine
+loader, Winelib apps, mp3 players loading Windows dlls, etc.) we need
+to move all policy decisions to the higher layers. We cannot have
+kernel32 enforce a specific command-line usage, since this doesn't
+apply in all cases.
+</p><p>
+For another instance of the same issue, see the discussion about the
+deferred debug trace a couple of weeks ago: we need the Wine libraries
+to provide the *mechanism* to display tracing and other information,
+but the *policy* of when and how to switch tracing on or off must be
+moved to higher layers (like the debugger) instead of hardcoding a
+magic key sequence in user32.</p></quote> <p>(see 
+<a href="wwn/87">issue #87</a> for the details.)
+</p><p>
+Alexandre explained also that another patch would allow those 
+options to be changed (like <tt>--managed</tt>, <tt>--desktop</tt>...) 
+in the config file, and also on a per application basis 
+(see <a href="wwn/83">issue #83</a> 
+for more details).</p><p>
+
+Lots of developpers felt unconfortable with the trends taken by this
+patch, and requested that the command line options to be still
+available. 
+</p><p>
+One potential solution would be to run Wine from a script which would
+support such command line options and set the configuration files
+accordingly. 
+</p>
+</section>
+
+
+
+
+
+<section 
+	title="WineX on SourceForge" 
+	subject="TransGaming &amp; SourceForge"
+	archive="http://www.winehq.org/hypermail/wine-devel/2001/03/0170.html" 
+	posts="1"
+	startdate="03/26/2001"
+>
+<topic>TransGaming</topic>
+<quote who="Gavriel State"><p>
+Just wanted to let everyone know that the TransGaming DirectX development is now
+being hosted at SourceForge.  You can get updates from our live CVS tree, discuss
+DirectX specific issues on the 'WineX-devel' mailing list, etc.  The SourceForge
+project page is at:
+  <ul><a href="http://sourceforge.net/project/winex">
+  http://sourceforge.net/project/winex</a></ul></p><p>
+
+The CVSROOT for CVS is:
+<ul>
+ <tt>:pserver:anonymous_at_cvs.winex.sourceforge.net:/cvsroot/winex</tt></ul></p><p>
+
+We're doing WineHQ merge-ins every week or two, so things should stay relatively
+up to date.  
+</p><p>
+Currently, we're undertaking a rearchitecture of the Direct3D work, along the
+lines of the DDraw HAL work we've been contributing to the WineHQ tree.  Basically,
+we're separating the glX code into the x11drv for device independence.  We're also
+redoing the front end interfaces to start supporting D3D APIs both older and newer
+than D3D 7.  
+</p><p>
+On the OpenGL front, we've done some work on the visual management code that 
+solves some problems we were seeing where you couldn't get a double-buffered
+visual on some cards without using -desktop mode.  I should be posting a patch
+for this back to wine-patches very soon.  There are still some kinks to be worked
+out...
+</p></quote>
+</section>
+</kc>

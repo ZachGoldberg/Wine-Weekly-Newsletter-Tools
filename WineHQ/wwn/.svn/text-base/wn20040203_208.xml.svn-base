@@ -1,0 +1,744 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="208" date="02/03/2004" />
+<intro> <p>This is the 208th issue of the Wine Weekly News publication.
+Its main goal is to recover from WineConf. It also serves to inform you of 
+what's
+going on around Wine. Wine is an open source implementation of the Windows 
+API on top of X and Unix.  Think of it as a Windows compatibility layer.  
+Wine does not require Microsoft Windows, as it is a completely alternative 
+implementation consisting of 100% Microsoft-free code, but it can optionally 
+use native system DLLs if they are available.   You can find more info at 
+<a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+
+<section
+        title="WineConf 2004 Summary"
+        subject="News"
+        archive="http://www.winehq.com"
+        posts="1"
+        startdate="01/30/2004"
+        enddate="02/01/2004"
+>
+<topic>WineConf 2004</topic>
+
+<p>WineConf 2004 was a rousing success!  Below is a summary of
+the events and discussions.  In this week's Wine Weekly News
+I'll include more information, such as URL's for photos, irc
+logs, and a list of who was in attendance.  For now I wanted to get
+out a nice update of what it was all about.  If you were at the
+conference you'll note that my summaries of the presentations
+don't exactly follow the format of the presenters.  In part 
+that's because bullet points don't translate well to paragraphs.
+If you feel I've left something important out, please contact
+me and I'll make sure to correct it (<i>vinn -at- theshell dot com</i>.)
+
+</p><p>
+
+I arrived in town late Friday afternoon.  My arrival was shortly
+before Boaz Harrosh, Shachar Shemesh, and Dimi Paun so I decided
+to rent a car and come back to the airport to pick them up.  We
+headed straight for CodeWeavers office downtown near the University
+of Minnesota.  About fifteen people had already gathered there, 
+including Alexandre and the rest of the CodeWeavers staff.  It was
+dinner, so we made plans to go out to a Mexican restaurant.  Afterwards
+we returned to our hotel and checked in.  A group of us gathered for
+drinks across the street.  The conversation varied from Wine and
+CodeWeavers development to current events.  The night ended after
+midnight.  
+
+</p><p>
+
+Everyone gathered at CodeWeavers' office the next day at 8:30. 
+Jeremy Newman, Jeremy White, and Joe Baker worked on getting the network and
+video stream set up.  The video needed to be streamed through
+CodeWeavers' ISP located five miles across town.  Newman and
+Jeremy ifdown'ed the network interface to reset it but
+realized after the fact they had effectively killed the network
+connection (kind of hard to ifup an interface on a server you can't
+talk to).  Hence, no
+video streaming in the morning.  Newman placed some phone calls
+to get someone to run over to the colo to bring it back up.  
+A few minor network issues later and things were back on schedule.
+
+</p><p>
+
+The fun began at 9:30.  Jeremy White thanked
+everyone for coming and outlined the format.  The idea was to 
+initiate discussion on a broad range of topics and keep presentations
+to a minimum.  Ample time for informal discussions was built into
+the schedule.  
+
+</p><p>
+
+Alexandre Julliard gave the keynote speech.  The topic of his talk
+covered the direction for Wine 0.9 and what had happened since
+WineConf 2002.  Alexandre half-joking explained, "I can just reproduce the
+slides from the last one."  
+
+</p><p>
+
+Of course, that's not quite true.  Several areas of Wine have
+seen remarkable improvement and Alexandre took the time to outline
+some of the major improvements:
+<ul>
+	<li>DLL separation</li>
+	<li>Winelib</li>
+	<li>ReactOS collaboration</li>
+	<li>Regression tests</li>
+	<li>DirectX, Direct3D, Direct*</li>
+	<li>Internationalization, especially Asian languages</li>
+	<li>IDL and RPC support</li>
+	<li>NPTL support</li>
+	<li>Interprocess window management</li>
+	<li>Code cleanups</li>
+</ul></p><p>
+
+Alexandre mentioned the NPTL support was an annoying problem to
+devote resources to because, "It's just a lot of work just so
+that it still works."  Jeremy White had another theory, "Microsoft
+is paying off the glibc guys to make our life hard."  Alexandre
+hoped that in the coming year more time of his could be devoted to
+developing Wine rather than working around problems introduced by
+other projects.  Unfortunately prelinking and exec shield issues
+loom on the horizon.  Alexandre reinforced that he wanted to spend
+more time on real Wine development.
+
+</p><p>
+
+Despite that, a lot of work has been done.  
+Wine is now compiled in STRICT mode.  Our header files are in
+good shape.  Wine is still quite portable.  (The night before
+Alexandre mentioned informally that portability is not exactly
+a strict requirement, but it's a nice benefit worth maintaining.)
+He pointed out that Microsoft Office now "just works.  You
+can use it all day long and you won't see the difference."  Then
+he added that wasn't 100% true because, "The Paperclip still doesn't
+work."
+
+</p><p>
+
+Alexandre identified installation and configuration as areas needing
+some attention, "We have all the tools, we're just not using them."
+In particular, we now have wineboot, winecfg, regedit, and DLLs
+that self-register.  The website is vastly improved compared to
+two years ago.  Documentation is in decent shape but needs some
+work.  One difficult problem is that the people who can write the
+documentation don't particularly know what people need from it.
+
+</p><p>
+
+Some interesting statistics appeared in the last slide.  In the
+first five years of Wine development, 1993 - 1998, there were
+approximately 200,000 lines of code written.  In the five years
+since then we've seen 1,000,000 more appear and since the last
+Wineconf we've seen the code size double.  Clearly the license
+change to LGPL, a hot topic in 2002, hasn't proven to be a hindrance.
+
+</p><p>
+
+Concerning future development, Alexandre put together a list quite
+similar to the To-Do list on WineHQ:
+<ul>
+	<li>Finish DLL separation</li>
+	<li>Merge Eric Pouech's new filesystem code</li>
+	<li>Finish interprocess window management</li>
+	<li>Easy installation, including finishing winecfg</li>
+	<li>Move the configuration into the registry</li>
+	<li>Handle the initial registry setup</li>
+	<li>Better command-line handling</li>
+	<li>Winelib improvements, including using winegcc to build Wine</li>
+	<li>Better OLE/COM infrastructure</li>
+</ul></p><p>
+
+At this point the discussion became more informal.  Alexandre 
+remarked, "Once we have 0.9, 1.0 is no problem."  Jeremy White wondered
+what, if anything, could be improved in the whole process.  Everyone
+agreed that Alexandre's judgement in what to include was excellent.  While
+he's the only one with CVS access, no one really cared.  As Dimi said,
+"The one thing I noticed about Linus is he makes a lot more mistakes than
+you."  Alexandre mentioned that although some patches get initially
+rejected, it's actually a compliment if a patch is in limbo.  It means
+it wasn't bad enough to be immediately rejected.  If it gets put aside
+there's a reasonable chance some changes can be made to get it included.
+His patch queue stretches about a week long, so if no feedback is given
+after a week it might be worth asking for an explanation why or send in
+a resubmission.
+
+</p><p>...</p><p>
+
+Alexandre's talk led nicely into Dimi's outline of what needs
+to be completed in order for Wine to have a 0.9 release and eventually
+reach version 1.0.  Dimi spent a lot of time picking through all 
+aspects of Wine searching for problems that needed to be resolved.  
+He classified everything into three areas, issues that affected Wine 
+developers, the problems faced by people interested in Winelib, and the
+interactions the end user has with Wine.  
+
+</p><p>
+
+Fortunately things on the user side are pretty good.  The new website 
+really seems to have helped things.  Right now it would be nice to
+improve the internationalization of it and that task is slated for the
+short-term as is the integration of a small Wine history page.  Adding
+in an automatic test framework also seems to be on track thanks to the
+work of Ferenc Wagner.  Documentation, overall, isn't in that bad of
+a shape and no one complained at all about the tools used for creating
+documentation.  Dimi hoped someone could adapt the Winelib Guide to
+include information about using winegcc.  In the worst shape is the
+Wine Developer's Guide. Currently it's lacking information on widl and
+the multimedia area needs updating.  Dimi also asked that the man pages
+get integrated into WineHQ so they can be indexed by search engines.
+
+</p><p>
+
+User interaction does have some problems as Alexandre identified.  The
+configuration needs to be completed.  Dimi pushed for doing this sooner
+rather than later.  The tools, namely winecfg and regedit, are nearly complete
+and it's time to just push for cutting over.  More difficult problems,
+such as window management and moving the visible regions into the server,
+need some work.  Dimi suspects some performance issues need to be
+investigated but it's not exactly clear where the bottlenecks are.  As
+always, Wine desires to have perfect controls but unfortunately we're 
+just not there yet.  
+
+</p><p>
+
+Dimi moved on to what needs to be done to improve Winelib and how
+people use it.  He was quite happy that a lot of things have been
+addressed in this area.  The .spec and .reg file formats are set and
+IDL is improving.  The tools have seen constant improvement
+including winebuild, winegcc, widl, and regedit.  One thing that
+needs to be added is one process to manage all the different desktop
+apps and that's tentatively called winedesktop. Work has not started
+yet but it goes hand in hand with Alexandre's planned window management
+changes.  Finally, Wine's API's are in good shape.  The first stage
+of DLL separation is complete and the second stage is ongoing.  
+Wineserver is stable to the point where it's taken for granted.
+
+</p><p>
+
+Finally the developers themselves have a to-do list that mainly affects
+the internal development of Wine (not that Wine is really developed
+in any sort of introverted way.)  The source code has seen a lot of
+cleanup over the past year and now it's down to just a few items that
+need to be moved around in order to complete the job.  Alexandre was
+against doing it all at once.  Right now things just need to be taken
+from controls/, misc/, and documentation/.  Concerning infrastructure, the
+testing framework needs to be more automated and rolled out to a large
+base of people who can do tests.  Dimi also felt internationalization efforts
+could be addressed better.
+
+</p><p>
+
+Between Alexandre and Dimi it was apparent just how much work has
+been done over the past two years.  Dimi pointed out that in the
+past when people asked what needed to be done the answer was typically
+like, "A lot of work."  We're now to the point where we can point to
+a definite set of items and a to-do list that shows things getting knocked off.
+As progress has happened on bigger items, such as DLL separation, other
+areas of Wine have seen parallel development and we're accomplishing things
+above and beyond what are critical.  Many of the remaining
+tasks can be parallelized which is also beneficial.  Unfortunately,
+the hardest things seem to require Alexandre and he only operates in
+serial mode.
+
+</p><p>...</p><p>
+
+At this point we all broke for a lunch provided by CodeWeavers.  
+After an hour break we resumed discussions at 1:30.
+
+</p><p>...</p><p>
+
+Next up, Tom Wickline put together a presentation about getting applications to
+run.  Tom has worked quite a bit with Wine and CrossOver Office and
+had some tricks for getting things to work.  The key to just getting
+something to run seems to be using native Windows DLLs.  He has a copy
+of Windows 98 to copy things to and from.  Generally he starts with
+CrossOver Office and adds the following things in this order:
+<ul>
+	<li>Internet Explorer</li>
+	<li>DCOM98 (as opposed to DCOM95)</li>
+	<li>MDAC.Type </li>
+	<li>MS Scripting update (SCR56.exe)</li>
+</ul></p><p>
+
+Lately he's even added native DirectX 8.1 to the mix.  Some form of
+this combination will get Wine to run about 85% of the applications
+and games he's tested.  
+
+</p><p>
+
+One problem with this approach is it relies on access to native
+versions of DLLs.  The goal of Wine is to not have this requirement
+which of course leads to the magnitude of the project.  It did however
+lead to an interesting revelation by Mark Tempel of a useful way to
+debug problems.  If you simply rename an executable it will first 
+search the local directory for all of the DLLs it needs to run.  This
+can lead to many useful scenarios:
+<ul>
+	<li>On Windows you can simply replace some of the major	
+	controls by copying Wine PE DLLs in the local directory.
+	It's probably a bad idea to replace any in c:\windows\system
+	because it may (and Mark said probably) would prevent Windows
+	from booting.  The ReactOS guys already maintain PE DLLs 
+	that Windows could use natively.</li>
+	<li>A trial and error process of replacing some DLLs will
+	definitely find shortcomings with Wine.  </li>
+</ul></p><p>...</p><p>
+
+Next up was Shachar Shemesh's presentation on internationlization.
+Shachar pointed out there are actually two different areas associated
+with this: internationalization and localization.  The real challenge
+to tackle in Wine is internationalization.  For me this is an area I
+don't know much about and it was quite interesting to hear exactly
+what issues needed to be dealt with.
+
+</p><p>
+
+First, a little background.  In regular old Latin-based languages
+we have it easy.  We write words formed into paragraphs that flow
+left to right across the page.  Quite frankly, that's a simple
+situation to deal with.  When you need to support languages like
+Hebrew or Chinese things get much more difficult.  Hebrew, besides
+using different letters, is written from right to left.  But not
+always - for instance, quoted Latin languages require a shift to left to right.
+So in the middle of assembling words from right to left you may
+need to anticipate changing to left to right.  For this reason
+we refer to the language as bi-directional, or BiDi for short.  
+When you start to do string parsing you introduce another set of
+problems.
+
+</p><p>
+
+That is a non-trivial problem to solve.  Shachar noted that no
+one has a universal standard for doing it.  Even Microsoft ships
+a different version of their bidi support with their own applications.
+No standard library seems to be used by everyone and instead there
+is a mix of implementations.  
+
+</p><p>
+
+Now, compound that with needing to support Unicode.  Years ago
+things were simple because we had an ASCII character set that
+consisted of one byte for each character.  The lower 7 bits can
+easily fit the US alphabet.  By extending this to the upper
+128 characters its easy to extend this to support most other
+locales that have special characters.  What is not possible is
+to support languages like Chinese, Japanese, or Korean (CJK)
+that require tens of thousands of characters.  Extending this
+further to multibyte characters represent a hurdle because of
+the number of different types of encodings.  Unicode attempts
+to solve the problem but introduces a number of challenges because
+of the various codepages.
+
+</p><p>
+
+Recent work has greatly improved internationalization in Wine.
+Shachar implemented bidi support by using the ICU library developed
+by IBM.  Aric Stewart has done a lot of work getting CJK support
+integrated.  My impression was that a lot of the really hard
+problems have been solved or worked around to the point where
+Wine is quite usable.  Most functions no longer make any assumptions
+about the strings they operate on and function correctly.  
+It was also clear we don't have many active Wine developers who
+have a need to tackle internationalization problems.  With most
+developers living in the US or western Europe it's not an issue.
+Shachar, a native Israeli, clearly needed Hebrew support and took
+the time to do that work.  
+
+</p><p>...</p><p>
+
+Gavriel State finished up the day by putting forth a proposal for
+a shared memory wineserver.  The basic idea is that an application
+has full access to all parts of memory used by Wine thereby reducing
+a lot of calls back and forth to the wineserver process.  This context
+switch is a very costly performance penalty.  Threading
+applications in particular can benefit by accessing the memory of
+another thread.  We've discussed this a bit in past
+WWN issues.  Most recently Alexandre shot down the whole idea because
+it introduces too many problems with an application (or applications)
+stomping on memory they shouldn't.  It also makes debugging extremely
+difficult.
+
+</p><p>
+
+Gav showed a dramatic demo of American McGee's Alice running under both
+WineX and WineX with shared memory.  In that particular game the sound
+and graphics threads needed to sync with each other at an astounding
+rate.  Typical WineX performance produced about 50 frames per second.
+By moving to shared memory the framerate nearly doubled to about
+95 a second.  
+
+</p><p>
+
+Threading is not the only area that might get a performance improvement.
+It might be possible to improve file IO by sharing file descriptors. 
+This approach could also be implemented on an API by API basis.  On
+one end of the spectrum you could not do it at all or it could be
+user configurable to have a lot of shared memory.  
+
+</p><p>
+
+There are other solutions to the performance problem besides using
+shared memory.  Alexandre mentioned that he prefers an approach where
+Linux kernel functionality is extended (note: this is not the same
+as the approach of moving wineserver functionality into a Linux kernel
+module.)  If you could extend the Linux kernel to handle things like
+similar Windows constructs such as WaitForMultipleObjects and semaphores 
+you could translate Windows primitives directly to Linux primitives.
+
+</p><p>
+	
+In the end, Alexandre conceded that he would consider an approach that
+used shared memory that was read-only from the client process.  Gav
+mentioned that TransGaming planned on investigating shared memory options
+within the next few months.
+
+</p><p>...</p><p>
+
+Day one ended wrapped up at about 4:30.  Jeremy White invited everyone to
+dinner at the Mall of America.  In the meantime Michael Stefaniuc,
+Dimi Paun, Marcus Meissner, Shachar Shemesh, and I decided to visit
+the Ice Palace - a big event in Saint Paul.  Unbeknownst to us, this
+attraction seemed to draw the entire population of Minnesota.
+Given the -20 degree F (about -29 C).  Needless to say, we only managed to see 
+the Ice Palace from outside.  Dinner and drinks kept us out till about
+midnight again.
+
+</p><p>
+
+I should note that the open ended schedule seemed to be working quite
+well.  Developers were able to meet face to face with each other and
+discuss many different architectural issues.  Informal discussions
+brought together a lot of knowledge sharing. 
+
+
+</p><p>
+
+Day two started much like the first.  Real time streaming of audio
+and video seemed to be a problem for irc participants.  Various people
+spent a lot of time on it but there didn't seem to be a good solution.
+However, the video recording was going well and we can get a good
+archive of presentations from that.  I'd definitely like to thank
+Joe Baker for taking the time to operate the camera and make technical
+adjustments.  The camera used was owned by Boaz Harrosh who plans
+on doing the final editing.  Aric Stewart manned the boom mike on
+the second day.
+
+</p><p>...</p><p>
+
+Dimi and Francois Gouget were up first to talk about Winelib and the changes to developing
+with it that have occurred over the past year.  Dimi advocates using a
+two-step approach.  The first step is to keep the application on Windows
+and switch to compiling with MinGW (which at its core uses a gcc compiler.)
+This gives you the ability to create Makefiles and adapt the build 
+process to autoconf.  The next step is to move the files over to Linux
+and begin using Winelib.  At this point problems like case-sensitive
+filenames, include statements, and line endings need to be adjusted.
+
+</p><p>
+
+Fortunately the tool chain is to the point where a lot of this works.
+Wine developers really only care about the second stage, and the tools
+doing the heavy lifting are winegcc and winemaker.  Previously, winemaker
+was used to do all of the things listed above.  It needed to guess about
+the source code structure of a Windows program, create Makefiles, reformat
+the code, etc.  This is a huge task and very complicated to automate.
+By porting to MinGW first we reduce the process to one that can be taken
+in small steps.  Each one is more controllable and allows for testing
+a smaller set of changes rather than the shotgun approach of dumping a
+bunch of alien code on Linux.  
+
+</p><p>
+
+Dimi began tackling winegcc about a year ago in a quest to get some
+applications running under Wine.  SourceForge's repository of Windows
+applications is quite large giving a large testbed.  As he explained,
+"I'm a lazy person.  I just wanted to take applications built on MinGW."
+As a result, several large applications do work now.  It's possible
+to compile a Winelib version of wxWindows just by doing <tt>./configure
+--with-wine</tt>.  (Although wxWindows is multi-platform, Dimi pointed
+out that several applications use other Win32 specific features.)
+
+</p><p>
+
+MinGW, winegcc, and winemaker appear to be an excellent combination.  
+Dimi, somewhat joking, said now with this porting system "we make
+half the problem someone else's problem."
+The MinGW resource compiler, windres, is now command-line compatible
+with Wine's wrc.  After moving to Linux, winemaker can automate most
+of the code reformatting.  Then Winegcc wraps the regular gcc on Linux
+with the necessary <s>arcane magic</s> requirements to link with Wine.  
+At some point in a Winelib port you to switch headers between MinGW 
+and Wine.  Dimi pointed out that this could be done while still working
+on Windows or when the code is moved to Linux.  
+
+</p><p>
+
+Future direction involves adding support for shared libraries and
+creating good documentation to help with the process.  Francois brought
+up the idea of adding Visual C++ project support to winemaker.  This
+would allow it to correctly identify the right include path, the right 
+set of libraries to link with, and the right list of source files for
+each exe/dll.  
+
+</p><p>...</p><p>
+
+This led into a presentation by Boaz Harrosh of the work he did recently
+to port a large application to Linux using Winelib.  He ran into 
+several obstacles and had a lot of suggestions for making the process
+better.  He really liked winemaker but felt it needed to be easily
+extensible to support more automated features.  The process needed
+to first accomplish some simple things such as:
+<ul>
+	<li>Have some form of project builder, such as dsw2make from the MinGW project</li>
+	<li>Run dos2unix against each file to properly convert carriage return/line feed</li>
+	<li>Fix-up case sensitivity problems</li></ul>
+</p><p>
+From there, the process needs to become more intelligent.  Boaz proposed a
+pluggable set of "code robots" that could be written to search for and
+correct problems in a large codebase.  The programs could be any combination
+of shell, perl, or C that did a specific task such as pragma packing.  
+Finally, a final set of Makefiles needs to be produced.  Right now Makefile
+generation is built into winemaker.  Boaz suggested adapting winemaker to start
+with a standard template (not the one built into winemaker) and making 
+changes to it as needed when it's copied throughout a source directory. 
+
+</p>...<p>
+
+Switching gears, the ReactOS guys took the stage next.  A lot of
+people were looking forward to see what they've been working on.
+Four of their developers were present: Steven Vizzini, Steven
+Edwards, Mark Tempel, and Art Yerkes.   It was clear they have
+a lot of interest in improving Wine.  Their goal is to produce a
+100% compatible Windows replacement.  Development began in 1998
+and after several years the kernel is taking shape.  It's been
+self-hosted for a while but now Windows drivers are beginning
+to work off-the-shelf.  The developers (at least those in attendance)
+have been primarily using VMware on Linux to develop and debug
+their operating system.  
+
+</p><p>
+
+Of course, the big question on everyone's mind was why you'd even
+want to bother creating a Windows replacement.  Quite simply,
+it's a free alternative for people who want to use Windows and it
+has a working environment that's known to most users.  In addition,
+some applications require kernel level components that can't be
+done with Wine.  Binary compatibility also provides a huge library
+of device drivers. 
+
+</p><p>
+
+It was quite impressive to see the operating system run.  Even
+though it looked like Windows, it was eerie to know nothing under 
+the hood was Microsoft.
+The latest 0.2 release that just came out last week now boots into
+a graphical explorer that looks just like the traditional Windows
+desktop.  A lot of the functionality required extensions to shell32
+and took a few months to develop.  That work is now being fed back
+into Wine.  
+
+</p><p>
+
+Steven went into a lot of detail about work that needed to be done,
+some of which is quite daunting.  They have some specific short
+term goals, such as GUI improvement, drivers, networking, etc.
+More long term projects include possible support for other platforms,
+including 64 bit, SMP, and more userland tools.
+
+</p><p>
+
+It was great to see their progress.  Everyone was in agreement
+that their involvement is a win-win situation for both the ReactOS
+and Wine projects.  As more and more of their development moves
+toward user-level functionality they'll be exercising more functionality
+of the Wine codebase and hopefully contribute back a lot of improvements.
+
+</p><p>...</p><p>
+
+One more thing was on the agenda before lunch.  Jan Kratochvil put 
+together a slideshow of his work creating Captive NTFS.  Captive
+lets you access an NTFS filesystem by using a native NT driver.   The 
+filesystem driver sits on top of the partition device and
+disk device.  In order to make it work, Jan needed to intercept various
+calls and pass them properly through native and emulated NT components.
+Jan had to reimplement about 300 functions in order to make the driver,
+NTFS.sys, work.  Jan used four different methods to implement the 
+necessary calls:
+<ul>
+	<li>Pass the call straight through to ntoskrnl.exe (yes, the
+	real WinXP ntoskrnl.exe)</li>
+	<li>Unix native implementation using ReactOS functions</li>
+	<li>Unix native implementation using custom Captive code</li>
+	<li>Wrap the passed function by Captive</li>
+</ul>
+
+</p><p>
+
+The details are pretty remarkable.  Jan has excellent 
+<a href="http://www.jankratochvil.net/project/captive/doc/">documentation
+about Captive</a> available on his website.  What seemed to interest
+everyone was not the fact that the native NT drivers can be used for
+filesystem access, but how it could be extended to support other drivers.
+In particular, native Windows printer drivers, serial drivers, video drivers,
+and networking drivers may be able to be implemented using a similar
+method.  All that special hardware using "Win" soft drivers might be 
+possible to get working.  
+
+</p><p>
+
+Jan also referred everyone to another project he developed in order
+to make Captive work: 
+<a href="http://www.jankratochvil.net/project/TraceFS/">TraceFS</a>.
+TraceFS lets you trace internal NT kernel API's.  By providing a set
+of function wrappers and using perl to patch into the original driver
+it's possible to look into what's being called internally using
+<a href="http://www.jankratochvil.net/project/captive/doc/Reverse.html.pl#WinDbg">Windbg</a>. 
+There was a discussion on using a technique similar to Captive to make 
+Safedisc copy protection work.  All games ship with a version of the 
+Safedisc driver and it might be possible do execute by providing a lower 
+level of emulation.  
+
+</p><p>
+
+We broke for lunch at this point.  Everyone gathered in the atrium 
+for a 
+<a href="http://www.winehq.com/wineconf/album/2004/p2010033.jpg">group photo</a>.  
+Marcus, coincidentally a gphoto hacker, had the picture annotated 
+and up on the web about an hour later.  
+
+</p><p>...</p><p>
+
+After lunch Tom Wickline, Boaz Harrosh, Mike Hearn, and Juan
+Lang got together and conducted a panel discussion of what it's like 
+to get involved with Wine and the barriers preventing others from doing it.
+All four of them are relatively new to the project but have made some
+substantial contributions in a short amount of time.  
+
+</p><p>
+
+The key really seems to be better communication.  The following problems
+were identified:
+<ul>
+	<li>We need to better identify tasks that need to be completed.</li>  
+	<li>The current communication methods are fairly high latency and 
+	    don't lend themselves well to have a good discussion.</li>
+	<li>Although we seem to be doing a good job communicating with the
+	    Linux community, we have virtually no contact with Windows
+	    developers.</li>
+	<li>Some patience is required when dealing with new developers. 
+	    People genuinely want to give back to the project so it's worth
+	    some hand holding to get them onboard.</li>
+	<li>The documentation doesn't keep up with development so we have
+	    some outdated "official" info out there.</li>
+</ul>
+
+</p><p>
+
+Therefore, the decision was made to tackle these items.  Mike Hearn agreed
+to work on setting up better IRC communication modeled after what the GNOME
+team does.  Boaz Harrosh will try to advertise Wine in some of the Windows
+forums, such as Codeguru.  Dimi Paun is already in the process of updating
+some documentation and that work will continue.  We agreed that volatile
+information does not need to go into the docs at this point because keeping
+it updated is realistically very difficult.  Juan Lang pointed out that the
+work he did (NetBIOS) was not listed as a to-do item yet it was something he
+could get involved with because he already understood it.  The moral of the
+story - even large tasks should go into a wishlist because for some people
+they may not be as difficult as we perceive.
+
+</p><p>...</p><p>
+
+Marcus Meissner got up next to discuss COM / OLE.  This is an area of Wine
+that sees very active development from time to time.  There is a general 
+desire to move away from
+native DCOM.  Marcus outlined the COM API's that have been implemented
+using named pipes for communication.  He explained the difference between
+in-process and out-of-process COM and how Wine is set up to work with it.
+
+</p><p>
+
+Two big action items are typelib generation and extending widl to handle
+more complex IDL files.  Typelib generation seems to be the more difficult
+of the two, but fortunately we're seeing active development on that right
+now by Alastair Bridgewater.  Ultimately, wire-level compatibility with
+Windows COM seems to be desired but it's a large task.
+
+</p><p>...</p><p>
+
+Lionel Ulmer had the honors of the final presentation showing off his work
+on DirectX.  Initial work began in 1997 by Marcus Meissner and led to
+an initial Direct3D implementation in 1998.  Over the past few years development
+has really picked up and we now have a decent Direct3D 8 implementation.
+Lionel had 3DMark2000 running and it was quite impressive to see all the 3D
+rendering.  Lionel outlined the most challenging problems facing DirectX 
+developers (in order of importance):
+<ul>
+	<li> Supporting copy protected games</li>
+	<li> Better installer support</li>
+	<li> More complete DirectX / OpenGL support</li>
+	<li> General Win32 API additions</li>
+</ul></p>
+
+<p>Lionel explained that most games are a mix of the DirectX API and
+plain old Win32.  However, DirectX on it's own is a great API to get
+involved with.  You don't have to know anything about the specifics of
+Win32 and it's not a horribly designed interface.  Only about 50% of
+the DirectX API's exist in Wine, but Lionel explained that's realistically
+all that's needed by most games.  Outside of the issues above, DirectX
+in Wine requires some work in a few areas, again in order of importance:
+<ul>
+	<li> Mapping X API's to DirectX, including being able to do
+	    direct surface locking, using auxiliary buffers, clipping issues
+	    in non-full screen apps, and getting relative mouse movement
+	    working</li>
+	<li> Getting the various GL headers cleaned up</li>
+	<li> Better OpenGL support (right now only Nvidia cards really work.)</li>
+	<li> There's no easy way to profile games and find out where the
+	     bottlenecks are</li>
+	<li>DirectDraw / Direct3D and GL are not done the 'Windows way'</li>
+</ul>
+
+</p><p>
+
+In the near-term, a lot of the work will be behind the scenes.  There
+are known optimizations to be done.  The GL back-end can be factorized
+to share code between the various Direct3D versions.  As always, support
+for more API's will be added.  
+
+</p><p>
+
+By far the biggest problem is getting copy protected games to work.  A big
+discussion about it ensued.  Steven Edwards agreed to contact various folks
+to iron out the issues.  Technically it seems possible but there were 
+differing opinions on whether we should support the secdrv.sys driver using
+something like a Captive NTFS implementation or if there's another means
+to get it working.
+
+</p><p>...</p><p>
+
+After that, it was over.  Jeremy thanked everyone for attending and offered to
+keep the facilities open for as long as anyone wanted to hang around.  Lionel's 
+presentation had stretched until about 3:45 so that gave Dimi, Vincent
+B&#233;ron, and I about an hour before we needed to leave for the airport.  We 
+spent the time talking to the few folks we hadn't talked to yet.  When we left 
+almost everyone was still hanging out.  In fact, a lot of  folks weren't 
+leaving until the next day so I'm sure discussions went on over dinner.  
+
+</p><p>
+
+All in all, things went well.  It was nice to be able to put faces with the
+names.  I can't say for sure there were any groundbreaking things discussed,
+but everyone did get to bounce around a lot of ideas that probably wouldn't
+have happened without all being in the same room.  I'd definitely like to
+thank CodeWeavers and all their staff for organizing this event.  
+
+</p>
+
+
+</section></kc>

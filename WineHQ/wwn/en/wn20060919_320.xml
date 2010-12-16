@@ -1,0 +1,431 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="320" date="09/19/2006" />
+<intro> <p>This is the 320th issue of the Wine Weekly News publication.  This
+special edition summarizes WineConf 2006 and all the presentations made.
+By the end of the week we should have some pictures gathered and other good
+stuff.  For now, grab a cup of coffee and read.
+</p><p>
+For those of you just tuning in,
+Wine is an open source implementation of the Windows API on top of X and Unix.
+Think of it as a Windows compatibility layer.  Wine does not require Microsoft
+Windows, as it is a completely alternative implementation consisting of 100%
+Microsoft-free code, but it can optionally use native system DLLs if they are
+available.   You can find more info at <a
+href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+
+<section
+        title="WineConf 2006 Summary"
+        subject="News"	
+        archive="http://www.winehq.org/wineconf"
+        startdate="09/14/2005"
+        enddate="09/18/2005"
+>
+<topic>WineConf 2006</topic>
+<p>
+<a href="/images/wineconf06_grp.jpg"><img src="/images/wineconf06_grp_thmb.jpg" align="right" /></a>
+WineConf 2006 wrapped up Sunday and as usual I spent my flight home writing a
+summary of the events.  </p><p>
+
+Rob Shearman organized this year's WineConf in Reading, England at the
+University of Reading.  We were fortunate this year to receive two large
+donations that paid for the event.  Lars Mathiassen and the <a
+href="http://www.tightpoker.com">Party Poker Strategy Guide</a> guys contributed
+to Wine and paid for the rental of the facilities and the lunch catering.  All
+in all, it came together really well and the entire Wine team was quite
+thankful.  
+</p><p>
+
+While the event officially started on Saturday morning, many people arrived on
+Friday and gathered at a local pub, the Queen's Head.  We wandered off to an Indian
+restaurant for dinner shortly thereafter and then back to the pub.  It was good
+to catch up with everyone and meet some of the new developers.  Click on the link
+above to see everyone in attendance.  Not pictured here were Oliver Stieber and Hans
+Leidekker.  </p><p>
+
+As usual, the highlight of Saturday morning was Alexandre's keynote to kick
+off the conference.  There's been a decent amount of changes since the last
+time we got together, although these days there are a lot less architectural
+changes.  One of the highlights since the last conference was the beta release,
+0.9, which led to a noticeable increase in users and bug reports.  Alexandre
+noted the month-long code freeze before the release was quite useful and a lot
+of bugs in Bugzilla were closed.  </p><p>
+
+A graph of the stats nicely illustrated the bug tracking situation.  In 2002
+and 2003 there were about 750 bugs created a year and about 250 of them would
+get closed.  In the past 9 months there's been around 2000 bugs opened and
+we'll likely end up closing around 800 of them.  While that might not sound too
+great, it's a pretty big improvement over past years.  </p><p>
+
+One of the biggest changes in the past year has been the switch to git.
+Alexandre now manages everything with it, although there's a CVS gateway that
+still allows CVS users to access the source code.  Alexandre noted that the
+change has been quite beneficial to Wine and he's pleased the patch format is
+more regular now.  It also changes his workflow a little and now he tends to
+commit patches first and then test them later.  The running monthly average
+commit rate has doubled in the past year and a half.  From 00-04 we were around
+200-300 commits a month and now we're just over 600 a month.  As far as lines
+of code, right now we're at about 1.6 million compared to about 1.4 million at
+WineConf 2005.  </p><p>
+
+One area of attention that hasn't been discussed much has been the involvement
+of the Software Freedom Law Center.  There's been work done with them, but it's
+not moving very quickly.  For example, there's a code audit in progress but
+there's still some work that needs to be done to interview some developers.
+Jeremy White pointed out the SFLC has also set up the necessary components so
+Wine can act as a non-profit organization.  </p><p>
+
+Delving into technical details, Alexandre began discussing the MacOS port.
+It's an area he's been involved in a lot over the past year and for the most
+part it works pretty well now.  With only a single vendor to deal with it's led
+to fewer compatibility headaches but Alexandre noted that Wine (CodeWeavers)
+"gets a lot of help from Apple, they listen to us, but we don't get a lot of
+fixes".  Their kernel is pretty buggy but perhaps part of that is because,
+"Wine is exercising parts of the code no one else is". Performance sucks and
+that's been a struggle as well.  As a rough guess, Wine is about 3 times slower
+on OS X compared to Linux.  Overall it's been a positive experience though and
+several developers were sporting shiny, new Mac notebooks.  </p><p>
+
+The goal is to make MacOS a first-class citizen.  Alexandre mentioned a couple
+of times that we need a good OS X package available on WineHQ.  It would also
+be nice to have a Quartz driver, but everyone agrees that would be a lot of
+work.  </p><p>
+
+Things are shaping up pretty nicely for a Wine 1.0 release.  The configuration
+mechanisms have been in place for a while and the initial registry set up works
+pretty good.  Several things have stabilized, such as the build system and
+libwine.  The last change with regard to libwine was the merge of Unicode
+support directly into it.  The wineserver protocol has mostly stabilized, but
+Alexandre doesn't feel it's as necessary as he once thought to have that set in
+stone.  Only a few core DLLs need it.  Speaking of core DLLs, Alexandre
+mentioned he was going to put together a graph showing the decrease in changes
+to things like kernel32, ntdll, and user32, but the graphs didn't exactly show
+the number decreasing.  A small part of that has to do with some of the
+remaining DLL separation work that took place over the past year, which has
+mostly wrapped up that task.  </p><p>
+
+As far as 1.0 goes, there's a lot of things that would be nice to have
+completed.  The default registry needs a bit of help, the IDL compiler (widl)
+needs to be more feature complete, and Win64 would benefit from printf format
+fixes.  Copy protection would be really nice to get in the tree and Ivan Leo
+Puoti reiterated that he had patches available.  Alexandre responded that there
+are some critical parts of the design that need to be fleshed out because "the
+Wine maintainer is a pain in the ass."  Finally, Alexandre called for more help
+with packaging.  Most developers don't use the packages and they really could
+use more eyes with more testing done.  </p><p>
+
+Despite that, a 1.0 release seems to be near (and yes, I should know better
+than to write such things.)  The current plan is to continue working on
+Direct3D and get it stabilized.  After that, a code freeze will begin and the
+plan is to have it last about 2 months.  The target date for that is
+approximately the end of this year.  Alexandre mentioned we have some projects
+going on right now that are rolling along nicely and it's probably worth
+letting those continue rather than lose momentum.  </p><p>
+
+Post-1.0, a stable branch will be maintained and new development will
+eventually begin on a development branch.  Using git will help a lot with this
+and fixes can be cherry-picked back in the stable branch.  As far as version
+numbering goes, there's no clear plan for how it will work, although Jeremy
+White jokingly suggested "Wine 2007" for the release instead of 1.0.  </p><p>
+
+Overall, I'd say the tone was quite positive this year.  After WineConf 2004 in
+St. Paul there was a general feeling Wine had <i>a lot</i> to get done, even
+more than most people thought.  After Stuttgart in 2005 everyone was excited
+because a beta release release seemed to be around the corner.  Now it seems
+like 1.0 will be following along shortly.  That's not to say Wine works
+flawlessly, but the architectural elements are all in place and no one seems to
+be worrying about things like a filesystem rewrite.  </p><p>
+
+Next up, Stefan D&#246;singer presented the Direct3D work.  He's been
+instrumental in organizing much of the work and led the way for a lot of
+improvements.  Stefan outlined what had been completed, where the current focus
+lies, and future improvements.  </p><p>
+
+Currently the rendering code is now shared between all versions of Direct3D
+from version 1 through version 9.  There's been a huge improvement in shader
+code with shaders implemented with GLSL and the GL_ARB_*_program extensions.
+There's support for up to shader model 3.0.  </p><p>
+
+But what would a Direct3D presentation be without some eye candy?  Stefan
+showed off screenshots of some games.  There was also a small contingent
+of DirectX folks in attendance with some really high-powered laptops that could
+show off the games.  It's quite impressive to see the latest and greatest games
+running on Linux.  Jon Parshall extensively, um, "tested" World of Warcraft
+throughout the conference (did you finally make it to level 48, Jon?)  Tom
+Wickline had 3DMark2000, 3DMark2001SE and 3DMark2003 running all of there test.  
+There is still some artifacts in the rendering of a couple of the test, but the 
+DirectX guys knew what was to blame for it. Stefan showed off the 
+Microsoft DirectX logo "proving" DirectX is being properly detected.  </p><p>
+
+Much of the current work surrounds context and state management.  It's known
+that better state management would improve performance and Wine is taking the
+dumb approach right now.  Other things on the to-do list include better
+offscreen rendering with FBOs and pbuffers and multithreading support.  In the
+OpenGL world, it seems the decision has been made to move Direct3D to the WGL
+framework.  This will also allow Wine's Direct3D code to run on Windows as
+well.  Talking with Stefan later, it doesn't sound like there will be much of a
+performance penalty by going through that layer since the OpenGL calls will
+mostly get passed straight through.  </p><p>
+
+While Direct3D looks pretty good, there are issues with other areas of DirectX.
+The DirectInput code still suffers from things like the mouse getting stuck.
+DirectSound continues to be a pain in the ass and there's a need for ALSA
+improvements.  DirectPlay has an undocumented network protocol that needs to be
+implemented for older games, though Stefan noted that native works fine.
+Licensing issues prevent the use of native, so unfortunately that's not an
+option.  Finally, OpenGL really needs to be abstracted a bit more, with part of
+the reason being better MacOS support.  </p><p>
+
+Direct3D10, which will ship with Windows Vista in a few months, doesn't seem to
+be a large cause for concern.  At first glance it appears to be more of an
+evolutionary change rather than revolutionary.  New shader support will be
+needed, but extending ours once OpenGL supports it should be pretty easy.
+Stefan mentioned Microsoft is currently offering a lot of incentives for
+Windows developers who develop D3D10-only games since they'll only be usable on
+Vista - there's no plan to backport D3D10 to XP.  Dan Kegel asked if that means
+we should port Wine's forthcoming D3D10 implementation to Windows, which would
+be relatively easy when we switch to WGL.  </p><p>
+
+To wrap things up, Stefan presented some of the obstacles they've run into.
+Most games ship with a set of Microsoft helper libraries named D3DX_##.dll.
+There are approximately 30 different versions of those right now.  They contain
+higher-level functions, such as a shader compiler.  There's no problem using
+the native ones, but they must be installed by the game.  Some games don't ship
+with them and that's a problem.  Another big issue is copy protection; but as
+we noted above there's work being done on that area.  </p><p>
+
+Phil Costin brought up another topic that needs to be addressed: figuring out
+how much video memory cards have.  Currently Wine just reports 64MB available,
+however games really need to know the true amount so they know how many
+textures can be uploaded.  One idea was to just stuff textures into memory
+until no more fit, however there's never a point with OpenGL where no more fit.
+If video memory runs out, it simply spills over to system memory and that just
+spills over to virtual memory.  </p><p>
+
+After a long break for lunch, Rob Shearman discussed the past, present, and
+future of COM.  Rob has been knee deep in COM work for two years and for the
+past year it's primarily been a solo effort.  
+</p><p>
+
+A lot of installers use COM and in the past that's been quite a problem.
+Things have gotten quite a bit better though and today many installers just
+work.  The focus has moved into other areas, such as getting RPC client calls
+to work over TCP/IP.  That's necessary for Outlook 2003 to talk to Exchange.
+Apparently Microsoft went out of their way to conform to the NDR spec, which
+has helped a lot.  </p><p>
+
+Support for Visual Basic apps has improved a lot too.  Benjamin Arai has worked
+through an entire VB book and all but one of the examples worked.  A lot of
+that lies in the OLE automation (oleaut32.dll) library.  </p><p>
+
+Future work involves a lot of bug testing.  More tests are needed to exercise
+the code since currently only about 50% of it is covered with tests.  Other
+hurdles include needing to implement MkParseDisplayName, message filters (the
+fact we don't have them could be obscuring other problems right now), and
+making the running object table accessible across process boundaries.  The hackish way to
+do the latter would be with shared memory, but since that approach won't be
+accepted by Alexandre it'll probably be necessary to create an rpcss.exe that
+acts as a controlling process for passing the RPC calls between processes.
+Finally, the typelib marshaler needs to be fully NDR-compliant.  </p><p>
+
+Basically, Rob needs some help but there's a fair amount of work that could be
+done by mere mortals.  Testing is a huge area where people could jump.  Rob
+fixes COM bugs based on the bugs in Bugzilla.  So if there's an entire class of
+related bugs stopping a bunch of different programs from working he tackles
+those problems first.  So simply creating Bugzilla entries with detailed bug
+reports could go a long way to improving things.  There are plenty of COM heavy
+programs, such as VB apps or installers.  Writing COM test cases would be
+another great way to help out.  There's also a lot of work that could be done
+on widl.  Rob mentioned a lot of stuff is within striking distance now and a
+big push on COM would probably eliminate COM-based installer errors (leaving
+other installer errors to MSI.) </p><p>
+
+Testing was a huge topic this year.  Nearly every discussion reiterated the
+need for tests.  It was brought up a few times that <i>make test</i> only ran
+cleanly on Alexandre's machine.  It was acknowledged there are bugs in the
+tests that need to be fixed, but for the most part things work well.  Mike
+McCormack suggested running make test about 3 times since the results actually
+improve.  That's not desirable of course, but it might help in some cases.  At
+the very least developers should be running the tests of the DLL they're
+working on before submitting patches.  </p><p>
+
+Martin Pilka got up next to show off the latest changes in CXTest.  CodeWeavers
+developed CXTest to test graphical applications but it's open for anyone to use
+to test applications.  There are a lot of great features, but there hasn't been
+much adoptance.  One of the huge advantages to CXTest lies in its ability to
+test across a wide range of distributions.  </p><p>
+
+To get started with CXTest, you first install an application.  Then you run it
+within the CXTest framework to record events, such as button presses and menu
+selections.  Once a test is created, it's possible to use CXTest to distribute
+it to a lot of different machines (assuming the application is installed there
+as well.)  The tests are run nightly and results are submitted to the CXTest
+website where the results are analyzed.  </p><p>
+
+There's still a few items CodeWeavers would like to add to it, such as
+automatically downloading nightly Wine builds, but for the most part it works
+pretty good.  CXTest was used during Picasa development and caught some of the
+regressions before they propagated.  If you and your friends have an
+application you'd like to see working on Wine, try downloading CXTest and
+building some tests for it.  </p><p>
+
+With that, the day was over.  Everyone lingered for a few hours having ad hoc
+discussions before we headed off to dinner.  I overheard a conversation between
+Ivan and Alexandre about copy protection that basically laid out a roadmap for
+getting it into Wine.  There's quite a bit of work involved since Alexandre
+would like to see a services.exe created that can be used to load the Safedisc
+drivers.  In turn, that means there needs to be some communication with it,
+most likely via RPC, and that will require quite a bit of interface design.
+</p><p>
+
+We all headed off to a pub for dinner and drinks.  CodeWeavers picked up the
+tab and thanked everyone for their efforts.  During dinner Jeremy White pulled
+out a donation he'd received several years ago from Tom Wickline as a bounty for
+getting DirectX working.  With the past year worth of efforts, Jeremy felt it
+was time to cash in on it.  </p><p>
+
+Day two commenced with a slightly more haggard Wine crew.  First up was Dan
+Kegel to discuss what it was like to be an ISV working with Wine.  Dan isn't
+exactly your typical ISV though, he's been actively involved with Wine
+development for quite a few years.  He took a position with Google a few years
+ago and has had an opportunity to work more closely with Wine because of that.
+</p><p>
+
+Dan helped organize the efforts to port Picasa to Linux using CodeWeavers and
+Wine.  Google had two programs to port, Google Earth and Picasa, and decided to
+do them in two different ways: the former as a native port and the latter with
+Wine.  The native port of Google Earth was mostly the result of Ryan Gordon's
+work.  CodeWeavers worked on the Picasa port.  To make things more interesting,
+Google refused to make a single change to Picasa to work better with Wine.
+</p><p>
+
+CodeWeavers ran into several areas it had to tackle for the port.  Picasa
+relies on web browsing functionality and that all had to be implemented using
+the new MSHTML library tied to Gecko.  Fortunately it was an area already under
+development by Jacek Caban.  Along the way several bugs were uncovered, such as
+having a lot of printers on the network will cause problems.  CUPS takes a long
+time to enumerate a list of printers, which in Google's case was over a
+hundred, and it caused Picasa to hang.  In the end, one or two features were
+impossible to support, such as CD burning.  Picasa makes use of a third-party
+burning utility that requires kernel mode code.  </p><p>
+
+Rather than worry about making a package that works everywhere, Google decided
+to simply provide a ton of different formats and let users decide what they
+wanted to use.  As a result, Picasa is available via a Debian repository, yum,
+regular .rpm and .deb packages, and a standalone installer.  Dan didn't have
+any numbers available regarding download stats, but the uptake seemed to be
+pretty good.  </p><p>
+
+Will Google use Wine again?  Maybe, in fact it's even likely.  It simply
+depends on the project and how well the features match up with Wine's
+capabilities.  Dan mentioned Google has a few projects in the pipeline right
+now but none of them use Wine since it simply wouldn't be a good fit for the
+technology.  I spoke with Dan quite a bit and was surprised to learn how much
+support Google has lent Wine over the past year.  The work on Picasa helped
+flesh out quite a few areas.  </p><p>
+
+The last formal presentation was given by Mike McCormack on git.  It was quite
+informative and more of a working session than the others.  Wine switched over
+to git about 9 months ago and it was a gradual transition since the CVS gateway
+is still available.  It seemed like most developers were already using git, but
+there were a few holdouts.  One thing that became apparent with Mike's talk was
+that a lot of people were using git, but almost everyone had their own way of
+working with it.  </p><p>
+
+Everyone agreed that working with git without understanding the underlying
+concept is futile.  You really can't just use the tools with canned recipes for
+doing things.  Mike explained that at the core of git lies a filesystem
+containing a series of objects representing the individual files and the
+changes to them over time.  git itself is a directory content manager that uses
+SHA1 signatures to manage a changed file or files.  </p><p>
+
+Wine's git tree takes up only 90MB of disk space, compared to over 200 for the
+old CVS tree.  That includes ancient versions of Wine that were added to git
+and never existed in CVS.  All in all, there's almost 13 years worth of meta
+data and files.  </p><p>
+
+As far as working with git, the general idea seems to be to branch and commit
+if you're in doubt.  It's relatively easy to move between branches and it'll
+help prevent losing work.  Eric Pouech mentioned he uses <a
+href="http://www.procode.org/stgit/">Stacked git</a>, which provides yet
+another way for working with git.  </p><p>
+
+It was around 11am when Mike concluded and there were no more presentations
+planned.  This year's format was quite a bit different than in the past and
+allowed for a lot more open discussion.  For the most part that seemed to have
+worked pretty good and a lot of people were able to spend time talking with one
+another about various parts of Wine.  Stefan D&#246;singer, Phil Costin, and
+Henri Verbeet were able to spend a bunch of time together discussing DirectX.
+There had been a few different topics that came up the previous day and it was
+decided some short sessions in the afternoon would take place in the lecture
+hall to discuss them.  </p><p>
+
+After lunch we gathered back together and Steven Edwards led discussion on
+governance.  A post on wine-devel coincided with some discussion the previous
+day.  There were several issues at the heart of the matter and seemed to center
+around the fact that Alexandre doesn't scale.  Or, at least he can't be
+expected to do everything and there's quite a bit the rest of the community
+could be doing to take the load off him.                  </p><p>
+
+We discussed moving code review practices outward a bit so Alexandre doesn't
+have to do as much.  Right now a lot of new developers get discouraged because
+patches just fall into the void (as a reminder, just keep bugging Alexandre if that
+happens to find out why.)  Ideally a patch for, say MSI, would get reviewed by
+someone knowledgeable in that area, such as Mike McCormack.  In the end we
+decided we probably already do that as good as we can and we sort of have de
+facto subsystem maintainers.  </p><p>
+
+However, there's another level of communication that we could definitely be
+doing a better job on.  Alexandre can't be expected to explain for the
+hundredth time C++ style comments aren't allowed and things like that need to
+be caught as much as possible by others.  We decided there are two things we
+could try doing to help things along.  First, Alexandre can notify everyone
+when he goes on vacation so we know patches aren't going into the void.
+Second, we can respond to first-time submitters to wine-patches notifying them
+of the development process, what to expect, and provide some hints.  Jeremy
+White was going to think up a somewhat automated system for doing that.
+</p><p>
+
+Finally, no matter what happens, there's going to be an impedence mismatch from
+time to time with Alexandre.  Sometimes it's necessary to rework other's
+patches.  A good example of that was with the recent systray work that finally
+made it in.  Patches existed for years, but Alexandre didn't approve of them.
+It took James Liggett quite a bit of time to adjust them to how Alexandre
+wanted it to work.  A tougher problem is when Alexandre knows a patch is wrong
+but doesn't know what the right solution is.  </p><p>
+
+After that, we had a short discussion on packaging.  There was a call to have
+the various packagers make their build scripts available in a central location
+so other people could work on them.  No consensus was reached other than the
+scripts wouldn't be in the git tree but perhaps they could be put on the
+SourceForge CVS.  In the end, no one really seemed to have a strong opinion
+whether or not it was necessary and most of the packagers in attendance felt
+the build scripts were part of the source RPMs anyway and could simply be
+pulled from there if needed.  </p><p>
+
+Quite a few people were interested in the MacOS work and up to that point it
+really hadn't been shown off.  Andrew Bogott went to the podium with his Mac
+loaded with the CrossOver Mac beta and it was quite impressive.  The
+interface with OS X was quite smooth and exactly like what you'd expect.  I had
+a new copy of MS Office 2003 lying around and Andrew popped it in and installed
+it.  Within a few minutes it was running and completely usable.  The
+integration has been done really well on the Mac and it would be interesting if
+someone could take the time to do the same work on Wine that CodeWeavers did
+for CrossOver.  </p>
+
+<p> With that, the day wrapped up.  A few people hung around discussing git
+usage, others tested World of Warcraft out.  Eventually we all straggled back.
+A few people left Sunday evening, but a large group stuck around.  All in all,
+it was a great experience.  </p>
+
+
+</section>
+
+
+
+
+</kc>

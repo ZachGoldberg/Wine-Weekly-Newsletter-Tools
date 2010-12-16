@@ -1,0 +1,241 @@
+
+<section 
+	title="News: Progress towards 1.2"
+	subject="News"
+	archive="#"
+	posts="0"
+>
+<topic>News</topic>
+<p>
+This WWN will be slightly shorter than usual.  This is in part due to inevitable lack of time on part of the editor, and WineConf coming up this week.  Expect an extensive coverage of that event in the WWN next week.
+</p>
+<p>
+Alexandre's summary's of recent developments in development release announcements:
+</p>
+<quote>
+<p>
+<pre>
+Wine 1.1.5
+    * Substantial JavaScript implementation.
+    * Partial support for layered windows.
+    * Support for Unicode file export in Regedit.
+    * Proper exception handling in widl-generated code.
+    * Asynchronous requests and cookies support in WinHTTP.
+    * Various bug fixes.
+
+Wine 1.1.4
+    *  Substantial chunks of WinHTTP are implemented.
+    * More JavaScript support.
+    * Beginnings of shell AppBar implementation.
+    * Several fixes for Google Chrome support.
+    * Chinese translations.
+    * Various bug fixes.
+
+</pre>
+</p></quote>
+<p>
+Theres a big push to get a solid WinHTTP running to support <a href="http://www.google.com/chrome">Chrome</a>, Google's new entry into the web browser market.
+</p>
+<p>
+<b>Dan Kegel Section</b>
+</p>
+<p>
+Dan put together an interesting <a href="http://kegel.com/linux/marketshare.html">summary of statistics</a> from various monitors for Linux adoption.
+</p><p>
+Dan has also written in with an interesting bit about some Wine praise.
+</p>
+<quote>
+<p>
+ <a href="http://forum.ubuntuusers.de/topic/softmaker-office-2008--eine-alternative--vora/">http://forum.ubuntuusers.de/topic/softmaker-office-2008--eine-alternative--vora/</a> 
+has a review of an office suite named Softmaker Office 2008,
+available for Windows and now also Linux.  The review says in part
+</p><p>
+[Translated] ("It irritated us that the Windows version runs better on Wine
+than the native Linux version.  If you have the Windows version
+already, save your money and run it on Wine.")
+</p><p>
+That's praise of sorts... although I hope it doesn't
+dissuade other vendors from doing native ports.<br />
+- Dan
+</p>
+</quote></section>
+<section 
+	title="WineConf 2008 Coming Up"
+	subject="WineConf"
+	archive="http://wiki.winehq.org/WineConf2008"
+	posts="1"
+>
+<topic>WineConf</topic>
+<p>
+WineConf 2008 is coming up, in St. Paul Minnesota, this weekend.  The big theme of the event is a gigantic celebration of Wine 1.0!  The <a href="http://wiki.winehq.org/WineConf2008">wiki page</a> has an outline of arrival times and a rough agenda of what will take place.  
+</p>
+<p>
+In addition WineConf traditionally has a mini hackathon -- in past years its been on the test suite in general.  This year it appears we may be working hard to fix the test suite on windows machines.
+</p>
+<p>
+Look forward to reading more (and lots of photos and stories) from this weekend in the next WWN!
+</p></section>
+<section 
+	title="Codeweavers Chromium"
+	subject="Chromium"
+	archive="#"
+	posts="2"
+>
+<topic>Chromium</topic>
+<p>
+Jeremy White from Codeweavers wrote an interesting <a href="http://www.codeweavers.com/about/people/blogs/jwhite/2008/9/15/fire-drills-and-proving-a-point">blog post</a> and email to Wine-devel about Codeweaver's story of getting chromium to work in Wine.  From the blog post first:</p>
+<quote>
+<p>
+(...) So today I am pleased to announce that we have shipped freely available versions of Chromium for both the Mac and Linux.  Not only does this give Mac and Linux users a chance to see what all the hype is about, it also lets the world see just how far Wine has come and how powerful it truly can be.  In just 11 days, we were able to bring a modern Windows application across to Mac and Linux. (...)
+</p>
+</quote>
+<p>
+And on the development side of things Jeremy writes to Wine-devel with how they did it:
+</p>
+<quote>
+<p>
+We've had a lot of fun hacking on Chromium these past few weeks.
+</p><p>
+We did have a few things that we rushed along to include in the
+CrossOver Chromium builds that haven't properly baked here on
+wine-devel.  I thought I'd share them in case anyone else wants to match
+what we did.
+</p><p>
+First of all, we were working against dev build 21 of Chromium,
+not Chrome.  Note that newer builds of Chromium now work (thanks to
+a patch by Alexandre), but they're pretty unstable.  We got our dev
+build from here:
+ <a href="http://build.chromium.org/buildbot/archives/chromium.tgz">http://build.chromium.org/buildbot/archives/chromium.tgz</a> 
+</p><p>
+We find we have to have both Times and Arial (or replacements in the
+registry) in order for it to run stably.
+</p><p>
+We have 3 winhttp patches we used that we're going to clean up and get
+into WineHQ properly, but here they are in raw form:
+ winhttp_reset_content_length.diff  fixes a glitch in winhttp on redirects.
+ winhttp_flags.diff fixes a fairly obvious mistake (and turns out to be
+the gating factor for gmail support)
+ winhttp_cookies.diff is the beginning of a cookie manager; Hans is
+still working on this one.
+</p><p>
+Also, we used the following ...er...patches:
+</p><p>
+ focus.diff (hack by Alexandre, makes single tabs work okay)<br />
+ gdi hack by Huw, makes the map hand on maps.google.com not a blob<br />
+</p><p>
+Cheers,
+<br />
+Jeremy
+</p></quote>
+<p>
+A bit of an editorial:<br />
+So I actually went and downloaded <a href="http://www.codeweavers.com/services/ports/chromium/">crossover chromium edition</a> and played with it for a bit.  I first tried GMail, no issues.  I said to myself alright, that is pretty impressive.  How about a real test: will flash work?  I went to youtube.com and sure enough I got the error "Flash isn't installed."  Aww poop.  Well, lets try installing it.  Clicked the "go to Adobe to get Flash" link, downloaded the executable which ran a really fast installer.  I went back to youtube.com and..... no luck.  At this point I had lost a bit of hope.  But then an idea struck me!  I closed the browser and re-opened it.  Off to youtube.com and... voila!  Working flash video!  I watched a rather cute video of a cat smacking a printer with its paw.  After about 45 seconds of this the cat hit it hard enough that the paper tray came lose and the cat went flying.  Perfect.
+</p>
+<p>
+As a Wine user of many years there are these occasional moments in using Wine when, after getting something seemingly outrageously complex to work, you sit back and go wow: that's really a miracle.  This was one of them for me, hats off to the entire Wine and Codeweavers team.
+</p></section>
+<section 
+	title="Coverity Run"
+	subject="Static Code Analysis"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-September/068892.html"
+	posts="12"
+>
+<topic>Static Code Analysis</topic>
+<p>
+In the aftermath of adding a static analysis tool 'Flawfinder' to the Wine patchwatcher Dan Kegel discussed Coverity, a commonly used code analysis tool.
+</p>
+<quote>
+<p>
+And they (Coverity) in fact do this for Wine.  We've fixed a number
+of issues it found, see e.g.
+ <a href="http://marc.info/?l=wine-patches&amp;w=2&amp;r=1&amp;s=coverity&amp;q=b">http://marc.info/?l=wine-patches&amp;w=2&amp;r=1&amp;s=coverity&amp;q=b</a> 
+There are lots more to fix.
+</p><p>
+The last scan they did was in late May, though.  They
+say they migrated to new servers and have been
+slowly bringing up all the OSS scans again.
+They haven't given a target date for having Wine's scan back online yet.
+- Dan
+
+</p>
+</quote>
+<p>
+Perhaps by coincidence 2 days later Marcus Meissner writes in saying that Coverity has finally re-added Wine to their periodic passes.
+</p>
+<quote>
+<p>
+Hi folks,
+</p><p>
+A new Coverity run (274) was done finally, so
+we can restart looking at issues ;)
+</p><p>
+Still a lot of NULL ptr migration issues which suck
+to fix, but well.
+</p><p>
+Ciao, Marcus
+</p>
+</quote>
+<p>
+Followed by Dan Kegel's (oddly) enthusiastic response about new errors!
+</p>
+<quote>
+<p>
+Yay!  Here are the new errors introduced since the end of May, sorted
+by source file.
+</p><p>
+There are only 23 not in test code:
+</p><p>
+(23 errors cut from quote)
+</p><p>
+Sure would be nice if Coverity could identify the cl which introduced
+each problem :-)
+</p>
+</quote></section>
+<section 
+	title="Running Linux Apps from within a Wine App"
+	subject="Common Development Questions"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-September/068950.html"
+	posts="4"
+>
+<topic>Development</topic>
+<p>
+Mike Engelhardt writes in with a question which is asked often enough I feel that the answer warrants being highlighted, as it may help many others.
+</p>
+<quote>
+<p>
+I write a Windows application that I want to be
+useful under Linux &amp; WINE.  (..) I want to simply launch
+xchm from my app whenever my app finds itself
+being run under WINE.  What I have is done so far
+is system() a command with path names of xchm
+and my .chm file that seem to basically be trying
+to outsmart WINE outsmarting Windows.  Clearly this
+is an ugly hack and is not a long term solution.
+
+Is there a supported/recommended manner of launching
+an X Window System executable with Linux absolute
+path arguments from a MS Windows application running
+under Linux &amp; WINE?
+
+--Mike
+</p>
+</quote>
+<p>
+Rob Shearman's response:
+</p>
+<quote>
+<p>
+Hi Mike,
+</p><p>
+You should you should just do "ShellExecute(helpfilepath)" and set the
+default value of HKCR\chm.file\shell\open\command to Z:\usr\bin\xchm
+on install and the user can change this if he or she wishes.
+</p><p>
+I think it is safe to assume that Z: will always map to "/" in Wine.
+You can always not install the association if Z: isn't mapped to
+anything.
+</p><p>
+-- <br />
+Rob Shearman
+</p>
+</quote></section>

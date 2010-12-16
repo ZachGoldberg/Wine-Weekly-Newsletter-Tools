@@ -1,0 +1,467 @@
+<kc>
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="12" who="Peter Hunnisett" date="3 October 2003" />
+ <intro>
+  <p>
+   This week Peter Hunnisett sheds a little different perspective
+   Wine - the gaming scene.  This is our 12th interview with Wine
+   developers. Check out the
+  <a href="http://www.winehq.org/?news=archive">news archive</a> for
+  past ones.
+  </p><p>Normally I write a little intro about the person being
+  interviewed.  Peter's response was pretty amusing, so we'll just
+  jump in with that as the first question.
+ </p>
+ </intro>
+<interview>
+<question><p><i>BV:</i>
+ Wanna tell us a little about yourself; what you do at TransGaming, etc?
+</p></question>
+
+<answer><p><i>Peter:</i>
+ I live in Toronto these days after stints in Ottawa and Harlow, England.
+And at the risk of sounding cosmopolitan, I grew up in Toronto, did all my
+public schooling in Toronto (including 3 schools right in a physical row)
+and took Engineering Science at the University of Toronto. 
+</p><p> Well
+Ove Kaaven, in jest, put it like this in #winex on IRC: " peteH is in
+charge so he can tell me to do all the hard work" In reality I just sort
+of fill in the gaps where required. I did most of the development for the
+3 Kohan titles we ported to Linux, and have helped out on various parts of
+WineX's technology as required; for example I did most of our recent
+pthread changes and installer improvements. 
+</p><p> 
+My old hobbies seem to
+have vanished and have been replaced with demolition - destroying a wall
+can be very therapeutic - and the other aspects of renovating my 3 story
+house. I haven't played Ultimate all summer and have only been running
+sparingly. </p></answer>
+
+<question><p><i>BV:</i>
+ How did you get involved with Wine? 
+</p></question>
+
+<answer><p><i>Peter:</i> Back in 1996 I bought a new computer and I didn't
+have a windows install for a while but I had a bunch of games, some spare
+time and one of these giant books that was basically not much more than a
+copy of every man page on the Linux system. I was flipping through looking
+for something on games. Lo and behold the Wine project. I downloaded the
+tarball and tried to run some of my games. It sucked something fierce and
+I couldn't quite grok the code - the lack of documentation didn't help
+much - so I ignored it for a while. 
+</p><p>
+
+A couple of years later I was bored and looking for a challenge which is
+when I thought of that really crappy Wine program. I bought a couple of
+bargain bin games and started banging my head against Wine. The rest would
+be not very exciting bedtime reading in the form of ChangeLog history.  
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+How did you end up working for TransGaming?  
+</p></question>
+
+<answer><p><i>Peter:</i> I guess I provided my first patch in 1998 and I
+didn't start work for TransGaming until 2001. I just sort of did a bunch
+of Winelib and DirectX stuff; mostly DirectPlay. I started working for Gav
+a while after he started up TransGaming. When he formed the company he had
+posted a message to the development mailing list talking about it. I got
+in touch with him to find out a little more about the company. With both
+of us being busy (I was working in England at the time), we never really
+got around to anything serious. 
+</p><p>
+ Then the telecom industry and Nortel
+imploded and I, an expensive ex-pat in England, was sent back to Ottawa
+where I had no job. One severance package later, I was enjoying my summer
+without work. When it was getting time to start looking for a job, I was
+thinking about things that I enjoyed doing or found challenging; Wine was
+one of them. I considered CodeWeavers, but decided that games were far
+more interesting. Talked with Gav and not too long later the rest was
+history.
+
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+What parts of Wine/WineX do you like to work on?
+</p></question>
+
+<answer><p><i>Peter:</i> Well for me anything game related is the only
+reason I'm interested in Wine so I guess I'll have to fess up that DirectX
+would be stuff I like to do and the major reason I'm working for
+TransGaming. The real rush is when you fix that last bug and the game
+works perfectly. That's when the "testing" begins.
+
+</p><p>
+
+I did like working on the DirectPlay stuff, it's too bad that the
+interaction between the DirectPlayLobby and DirectPlay stuff wasn't
+documented. It appears that they've at least changed their ways in that
+regard, but there are still several layers of interaction which are not
+documented so one would just have to go with a monolithic black box
+approach rather than exactly duplicating each of their dlls.  
+</p></answer>
+
+
+<question><p><i>BV:</i>
+  So, does that mean you're an avid game player? 
+</p></question>
+
+<answer><p><i>Peter:</i>
+ Games were the reason that I got into Wine, however, work and renovating
+my house keep me busy enough to generally not play man games in my spare
+time. Besides when you play the first minute of the Battlefield 1942 a
+thousand times, or install Grand Theft Auto Vice City for the umpteenth
+time they sort of wear a little thin. However, I did recently finish off
+DeusEx in a couple of marathon sessions. </p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Ah.. installation.  That's always a sore topic.  Have you guys
+ solved all of the COM problems with InstallShield? 
+</p></question>
+
+<answer><p><i>Peter:</i>
+ Not by a long shot. Most of the code changes tend to be "does it get this
+working? Good. Stop. Does it break anything? No? Done." TransGaming
+Technologies has certainly solved most of the pressing DCOM problems, but
+we don't have 100% compatibility. In general the only applications which
+use DCOM, that we deal with, are installers and this generation generally
+works. The next generation may not, but I've got my fingers crossed.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+There's a thread that pops up like clockwork on wine-devel:
+is speeding up wineserver something that needs
+to be done? 
+</p></question>
+
+<answer><p><i>Peter:</i> Well the question of speed, as with anything,
+depends on your perspective. For a random application it probably doesn't
+matter much especially when it doesn't work. But for applications which
+tend to make a lot of calls doing file I/O or synchronization the slowdown
+can become obvious. The paper that we produced, so the shared memory
+wineserver would have some documentation, gave some good examples. Quake
+3, for instance, saw no improvement, however Alice, which is based on the
+same graphics engine, but a different sound engine, got a 50% improvement
+in frames per second. So the old adage of "Your Mileage May Vary" applies
+here in spades. One thing to note, however, is that even office
+applications can be sped up; this isn't a multimedia specific
+optimization.
+
+</p><p>
+
+The basic approaches that have been discussed for reducing the expense of
+calling the wineserver are a kernel approach and a user space approach.
+
+</p><p>
+
+The kernel approach moves the functionality of the wineserver into a
+kernel module. This approach is obviously going to be fast but requires a
+rewrite of most of the wineserver and is by definition not particularly
+portable. A misbehaving application, or bug in the kernel module, could
+toast the whole machine.
+
+</p><p>
+
+The shared memory approach is entirely user space, shouldn't require many
+particular unusual software features and is reasonably portable like the
+rest of the code. A misbehaving application, or bug in the wineserver,
+could toast all windows applications running.
+
+</p></answer>
+
+
+<question><p><i>BV:</i>
+  Is WineX now using the shared memory approach?  
+</p></question>
+
+<answer><p><i>Peter:</i>
+ WineX is not yet using the shared memory approach. TransGaming was hoping
+that more people would be interested in helping, either through code or
+testing, resolving some of the problem areas with the prototype. We never
+got that once Alexandre gave it the thumbs down for Wine; however, I keep
+holding out hope every time the thread comes up. We still believe that
+it's the right approach for WineX and we will explore it in the future,
+perhaps for our WineX 4.0 release. </p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Alexandre has pretty much been against a shared memory wineserver
+ because it doesn't isolate processes.  Do you think that's a valid
+ argument?
+</p></question>
+
+<answer><p><i>Peter:</i> All that was donated was a proof of concept
+design. One thing that it was capable of doing was to only allow certain
+calls to be implemented through the shared memory mechanism. This is a
+good thing to be able to get the implementation up and running quickly
+with ease of extension - however, it also allows for individual process,
+or for only certain "safe" server calls, to be allowed to use the shared
+memory mechanism.
+
+</p><p> The concern over a particular process being able to crash other
+processes is a valid concern, but I'm not sure it's something that's going
+to be a problem in practice. The common reasons for such a crash would be
+either accidental or intentional scribbling. This can be avoided by simply
+protecting the shared memory against writes, except for the shared memory
+lock owner, as mentioned in the paper.
+
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ One thing I've never understood about that argument is it seems to assume 
+ people are running a lot of separate independent programs.  Yet, I don't
+ really know anyone who runs more than one Windows program under
+ Wine at a time.  Am I wrong on that? 
+</p></question>
+
+<answer><p><i>Peter:</i> For games, it's certainly the case that only 1
+visible program is really ever going to be running at once; it's intended
+to be an immersive experience and they're often just written to suck up
+100% of the CPU. However, I believe that the ultimate goal, for Wine, is
+to provide something like windows where multiple windows programs could be
+running at the same time. I guess the ultimate question that needs to be
+answered is: "will Wine be the technology that fills in the application
+gap or will it be the end solution?" </p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Gazing into your crystal ball, what's the answer to that question?
+</p></question>
+
+<answer><p><i>Peter:</i>
+ In my opinion, and that of my rather broken and hazy cubic zirconium
+crystal ball, Wine is going to be used to fill the gap. Given time, the
+Linux side of things will develop suitable clones for any of the
+interesting products and leave Wine working with the niche products.
+</p><p> Video games are a different story. Newer AAA titles cost between 7
+and 10 million US dollars to make. If people keep supporting the nascent
+Linux gaming market it will eventually be worth the notice of AAA title
+publishers. Unfortunately, I don't see this happening any time soon so I
+think that Wine is going to continue to play a major role in Linux gaming.
+
+</p></answer>
+
+
+<question><p><i>BV:</i>
+  Do you think there will ever be a
+  general purpose installation of Wine that will work for everything?
+</p></question>
+
+<answer><p><i>Peter:</i> Given time there will be, but in general it's not
+really required. If something runs the majority of the programs that
+people want, it'll be good enough. </p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Did you work on the SDL driver at all?  How could it be useful?
+</p></question>
+
+<answer><p><i>Peter:</i>
+ I only did a small amount of work with the sdldrv as it was mostly hacked
+out by Ove Kaaven one day. The sdldrv is useful in that it is a driver
+capable of graphics, unlike the ttydrv. Also SDL has the ability to use
+several different graphical backends like X11 or a framebuffer which means
+that it's useful in more situations than just machines with X. In fact
+TransGaming has made use of the SDL driver in a few situations where the
+X11 driver hasn't made sense. </p></answer>
+
+
+
+<question><p><i>BV:</i>
+ The new threading model coming out with new distributions gave a
+ lot of people headaches a few months ago.  How did you guys end up
+ solving it?  Was your approach different than the one Alexandre came
+ up with? 
+</p></question>
+
+<answer><p><i>Peter:</i> Headaches and sleepless nights :( TransGaming
+solved the issue in the same way that was done for the NPTL - embrace the
+fact that we couldn't override errno and use pthreads. TransGaming dusted
+off our old pthreads implementation that we had donated to WineHQ, and
+basically extended it so that it would work on both LinuxThreads - Wine
+does a runtime binary patch rather than using pthreads in this situation -
+and with NPTL without the user having to configure differently. They are,
+however, in essence the same. </p></answer>
+
+
+
+<question><p><i>BV:</i>
+ Since Wine and WineX diverged last year there's been some patches
+ that have floated back and forth between the two, notably some of
+ the ALSA stuff and Ove's DCOM work.  Are the two codebases quite
+ different now? 
+</p></question>
+
+<answer><p><i>Peter:</i>
+ The portions which represent our core technologies are incredibly
+different. Other areas depend on the volume of change on both sides. With
+every WineHQ and WineX patch they diverge a little more since relatively
+few people license their code for the ReWind project which is how we
+donate and receive patches. Another issue with ReWind patches is that
+often X11 patches depend on functionality of LGPL patches, so ReWind is
+not able to use them until the patch is available with an X11 license or a
+different patch with equivalent functionality is available. Another
+problem is that many LGPL patches are made to code we contributed so those
+improvements never come back. This just ends up making it more difficult
+for ReWind to be useful to Wine. </p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ One thing that's been quite necessary in WineX is support for 
+ all the copy protection mechanisms game manufacturers use.  What
+ problems have you run into there?
+</p></question>
+
+<answer><p><i>Peter:</i> There are a million and one ways to protect a
+game and all the solutions out there do it a little differently. The
+common thing that they all do is to make sure that no debuggers are
+present - which could figure out what they're checking - and then to
+attempt to verify that the CD-ROM in the drive was the specially
+manufactured one. This means that often the CD-ROMs have special
+information encoded on them that a standard reading of the disk will not
+pickup. For instance PS2 games are only manufactured by Sony so that they
+can do all sorts of special manufacturing tricks such as printing a logo
+onto one of the layers of the CD-ROM. </p><p> We have the problem of
+needing to support not only a wide variety of different copy protection
+systems, but also trying to support users with a number of different
+brands of CD-ROM drive, interfaced through the kernel in several different
+ways: straight IDE, IDE-SCSI, and SCSI.  We have to deal with subtle
+kernel and hardware bugs to get these working correctly.
+ 
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Is all of your copy protection code proprietary?
+</p></question>
+
+<answer><p><i>Peter:</i>
+ Yes. The companies which protect their games would not like it if their
+techniques were disclosed publicly in an obvious way like source code.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ Microsoft released DirectX 9 a while ago, are there any significant
+additions in it?  
+</p></question>
+
+<answer><p><i>Peter:</i> We've only started looking at and implementing
+DirectX 9 recently since the games that use the new technology tend to hit
+the streets about a year after release. In fact the first couple are just
+arriving on the shelves now - the first one actually didn't even use DX9
+it just had that as a requirement listed on the box. The things that
+present the largest challenge are those features which are not easily
+mappable into OpenGL features. Some of the features of the latest versions
+of vertex shaders and pixel shaders, for instance, in DX9 cannot be mapped
+into any functionality in OpenGL 1.4 - in fact their functionality may not
+even be in OpenGL 2.0 which is a ways from ratification. Fortunately, this
+functionality is presently in few graphics cards, so they are unlikely to
+be required for a game. </p></answer>
+
+
+<question><p><i>BV:</i>
+ For the longest time OpenGL seemed to languish with outdated features.
+ It seems like the high-end PC video cards being released the last few
+ years have changed that though.  How well does OpenGL map to the
+ capabilities of graphics cards? 
+</p></question>
+
+<answer><p><i>Peter:</i> Well I'm not really a graphics guru, but given
+the number of OpenGL extensions out there, it would seem obvious that the
+graphics card technology drives OpenGL. In general if something is missing
+it can be emulated in software, however, most times it's just way too
+computationally expensive. One exception can be vertex shaders which can
+be run effectively in software if the hardware is doing most of the hard
+graphics work. However, in general, these GPUs are pretty damm powerful,
+so they're almost always going to be faster. </p></answer>
+
+
+
+
+
+
+
+
+<question><p><i>BV:</i>
+  Distributions have included Wine from time to time.  I've always
+ been fairly disappointed that none have stepped up to provide even
+ usable integration with their product (at least not with the free
+ version of Wine.) 
+ Has TransGaming done anything special to integrate with 
+ distributions?
+</p></question>
+
+<answer><p><i>Peter:</i> Well there's not that much that really can be
+done other than putting some intelligence into the configuration of the
+package and ease into using the product. There are so many different
+flavours of distributions. each constantly changing their technology, that
+you don't really want to integrate too much otherwise you spend all your
+time keeping up to date. About the only thing that we do that might seem a
+little different is that we provide rpm, deb and slack tgz packages rather
+than using something like the loki installer; that's generally enough
+package integration for TransGamers.
+
+</p><p>
+
+One thing that distributions really should do is provide a more reasonable
+automounter type of functionality. Some distributions do have reasonable
+automount functionality, and others have just bizarre ones. And the fact
+that you can't eject a CD-ROM while it's mounted still bothers me, but
+that's a *nix mentality problem. Why it can't just return an IO error when
+attempting to access something on an eject CD-ROM I'll never quite
+understand; I seem to remember NFS effectively doing that.
+
+</p><p>
+
+The big thing that TransGaming has done is to develop a graphical user
+interface, called Point2Play, which resolves the issues of start menu
+icons and package management. Basically it'll let you keep track of all
+your versions of WineX, manage all your games and any particular options
+you like to run them with.
+
+
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+ If you could add one feature to Wine, what would it be?
+</p></question>
+
+<answer><p><i>Peter:</i>
+ I'd like to have time to finish off the shared memory wineserver - let's
+hope that the TransGamers vote it up! </p></answer>
+
+
+
+</interview></kc>

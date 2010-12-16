@@ -1,0 +1,2763 @@
+From m.b.lankhorst at gmail.com  Sat Mar  1 02:55:39 2008
+From: m.b.lankhorst at gmail.com (Maarten Lankhorst)
+Date: Sat, 1 Mar 2008 00:55:39 -0800
+Subject: iPod synced with iTunes v7.6!
+Message-ID: <b130c85e0803010055g19782baam34bc7e1301c884ed@mail.gmail.com>
+
+Hi all,
+
+I got an ipod I borrowed to sync: http://www.astro.rug.nl/~lankhorst/ipod.png
+
+There are, however, 3 separate issues to work out for this to work
+with an unpatched version of wine, minus the patches I sent to
+wine-patches, and one I still need to confirm with rob.
+
+1. I need to add detection in explorer (through hal detection) so that
+ipods are automatically mounted and appropiate registry keys are
+created (not that much work).
+2. The ioctl's from dlls/ntdll/cdrom.c should really be moved to
+dlls/mountmgr.sys, so that IOCTL_STORAGE_GET_DEVICE_NUMBER will always
+be called with a proper implementation.
+3. I need to add raw device access (access to /dev/sdb, if the ipod is
+mounted on /dev/sdb2), through CreateFile(\\USBSTOR#..........)
+
+1&3 won't be too hard to solve within a few days, but I'm not 100%
+sure how to do 2.
+
+Cheers,
+Maarten.
+
+
+From ono at java.pl  Sat Mar  1 09:10:24 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sat, 1 Mar 2008 16:10:24 +0100
+Subject: kernel32 & winex11: WaitForMultipleObjectsEx should ignore NULL
+	handles
+In-Reply-To: <47C839A8.10101@codeweavers.com>
+References: <B5DA0EA3-A343-4A4C-99EA-581A2F230874@java.pl>
+	<47C839A8.10101@codeweavers.com>
+Message-ID: <76BAF0EE-5450-482A-B1F3-D5B57DB89156@java.pl>
+
+> In this case, MSI should not be calling MsgWaitForMultipleObjects  
+> with an invalid handle and in fact that barring memory corruption,  
+> this can't happen:
+You're right, my patch was incorrect, I made bad assumption.
+
+I'm still not sure why this X11DRV_MsgWaitForMultipleObjectsEx is  
+testing for "(count || timeout)", rather than "(count && timeout)" or  
+just "count" at:
+
+>      if (process_events( data->display, mask )) ret = count - 1;
+>      else if (count || timeout)
+>      {
+>          ret = WaitForMultipleObjectsEx( count, handles, flags &  
+> MWMO_WAITALL,
+>                                          timeout, flags &  
+> MWMO_ALERTABLE );
+>>
+
+I can see that msi_dialog_run_message_loop calls  
+"MsgWaitForMultipleObjects( 0, NULL, 0, INFINITE, QS_ALLINPUT );"  
+which implies that
+"WaitForMultipleObjects( 0, NULL, 0, INFINITE, MWMO_ALERTABLE );" can  
+be called if precess_events returns FALSE.
+
+I'm pretty sure I saw in gdb some calls with NULL handles to  
+WaitForMultipleObjects related to MSI.
+
+Regards,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From ono at java.pl  Sat Mar  1 09:35:16 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sat, 1 Mar 2008 16:35:16 +0100
+Subject: kernel32 & winelib: Don't test string size in CompareStringW for
+	null	terminated strings
+In-Reply-To: <47C83B7A.7080208@codeweavers.com>
+References: <8027AB2D-A230-47B0-A07F-76B998446AE6@java.pl>
+	<47C83B7A.7080208@codeweavers.com>
+Message-ID: <11CF4451-91C9-40AF-BF7E-C2610CEF0A4C@java.pl>
+
+Hello,
+
+> You introduce a lot of complexity into the low-level helper  
+> routines. We don't want to put Win32 quirks, like -1 meaning "until  
+> the null terminator" being put into the low-level functions unless  
+> we have to. In this case, if this is the sole cause of the slowdown  
+> then you would be better off caching the length at the MSI level  
+> since the strings are bound to be accessed more than once.
+
+My intention was to fix performance of lstrcmpW, or CompareStringW  
+with null-terminated strings.
+Currently if we try to compare "1st very long string of blah blah blah  
+blah blah" with "2nd very long string of blah blah blah blah blah", we  
+call non-optimized strlenW (that is simple inline loop with null  
+checking) for both of them, which both do all together around 100  
+iterations.
+While 1 comparison (iteration) is enough to tell the result should be  
+-1.
+So counting length for both string in CompareStringW just because low- 
+lever wine_compare_string expects strings to have always specified  
+length is IMHO CPU hog, that makes impact on WINE MSI performance, on  
+other components using a lot of string comparing.
+
+> How do you know that the compiler isn't generating the same assembly  
+> for the functions as that used by msvcrt / glibc? Theories like  
+> these need numbers to back them up.
+
+I know that because those msvcrt or glibc routines are written  
+directly in assembler not C and optimized for the 32-bit (or 64-bit)  
+data aligning etc, and DWORD fetching. Visual Studio is shipping with  
+complete sources of C CRT so you may have a look.
+
+> ;***
+> ;strlen.asm - contains strlen() routine
+> ;
+> ;       Copyright (c) Microsoft Corporation. All rights reserved.
+> ;
+> ;Purpose:
+> ;       strlen returns the length of a null-terminated string,
+> ;       not including the null byte itself.
+> ;
+> ;*******************************************************************************
+
+
+Probably same thing happens with CompareStringW and lstrlenW of  
+kernel, but this time I can't be sure because I don't have the ASM  
+sources.
+
+So it has nothing to do with compiler, but care about performance of  
+some often used functions and programming habit to reuse existing far  
+better optimized low level code than cooking generic one believing  
+that GCC will do make it best.
+
+Cheers,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From dank at kegel.com  Sat Mar  1 09:38:36 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 1 Mar 2008 07:38:36 -0800
+Subject: kernel32 & winelib: Don't test string size in CompareStringW for
+	null terminated strings
+Message-ID: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com>
+
+Adam Strzelecki wrote:
+> Visual Studio is shipping with complete sources of C CRT so you may have a look.
+> ;***
+> ;strlen.asm - contains strlen() routine
+> ;
+> ;       Copyright (c) Microsoft Corporation. All rights reserved.
+
+No, we may not have a look!  And we sure as hell can't
+post copyrighted Microsoft source code on this mailing list!
+- Dan
+
+
+From ono at java.pl  Sat Mar  1 09:55:12 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sat, 1 Mar 2008 16:55:12 +0100
+Subject: kernel32 & winelib: Don't test string size in CompareStringW for
+	null terminated strings
+In-Reply-To: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com>
+References: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com>
+Message-ID: <5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl>
+
+> No, we may not have a look!  And we sure as hell can't
+> post copyrighted Microsoft source code on this mailing list!
+Argh... I meant you may have a look if you have Visual Studio  
+installed, I don't intend to post any copyrighted code there, but I  
+just post header copyright information from this file to prove that it  
+does exist:)
+However you can find with Google + "strlen.asm - contains strlen()  
+routine" on M$ forums some ppl that wisely did post full source ;P
+
+Regards,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From winehacker at gmail.com  Sat Mar  1 10:12:02 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sat, 1 Mar 2008 11:12:02 -0500
+Subject: kernel32 & winelib: Don't test string size in CompareStringW for
+	null terminated strings
+In-Reply-To: <5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl>
+References: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com>
+	<5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl>
+Message-ID: <19e31a080803010812q2a2e2748ma3dea3412e5dcfe4@mail.gmail.com>
+
+On Sat, Mar 1, 2008 at 10:55 AM, Adam Strzelecki <ono at java.pl> wrote:
+> > No, we may not have a look!  And we sure as hell can't
+>  > post copyrighted Microsoft source code on this mailing list!
+>  Argh... I meant you may have a look if you have Visual Studio
+>  installed, I don't intend to post any copyrighted code there, but I
+>  just post header copyright information from this file to prove that it
+>  does exist:)
+>  However you can find with Google + "strlen.asm - contains strlen()
+>  routine" on M$ forums some ppl that wisely did post full source ;P
+
+Wine kind of work on the honor system here. If you've looked at the
+CRT sources even though they come with the PSDK and MSVC please don't
+start implementing those functions. Ditto for ATL. MSVC ships with the
+source code for it also but the developers that work on the ATL don't
+go digging in to those sources.
+
+Thanks
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From ono at java.pl  Sat Mar  1 16:02:10 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sat, 1 Mar 2008 23:02:10 +0100
+Subject: msi: ACTION_RegisterProduct store all InstallProperties
+In-Reply-To: <22821af30803011158g219b93bbq4b660d43d96ffdae@mail.gmail.com>
+References: <2D73E93F-4E00-4493-8416-3238546EA3B9@java.pl>
+	<22821af30802290939q489b73d9n3c9c106604a49e8c@mail.gmail.com>
+	<C467D1FF-9F98-4A2F-869B-E51C31E17A71@java.pl>
+	<22821af30803011158g219b93bbq4b660d43d96ffdae@mail.gmail.com>
+Message-ID: <1D8C710E-D65D-4E87-865C-9BA7F8747B1F@java.pl>
+
+Hello,
+
+> I think you need to read through the implementation of
+> MSI_GetProductInfo more closely and also read the MsiGetProductInfo
+> tests in tests/msi.c and the test_publish:RegisterProduct tests in
+> tests/install.c.
+
+I think I did, and looking at the tests I see they are testing  
+properties only at Uninstall key, and I think this is wrong, or at  
+least incomplete, as quoted below:
+
+>     res = RegOpenKeyA(uninstall, prodcode, &prodkey);
+>     ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+>
+>     CHECK_REG_DWORD(prodkey, "Version", 0x1010001);
+>     CHECK_REG_DWORD(prodkey, "VersionMajor", 1);
+>     CHECK_REG_DWORD(prodkey, "VersionMinor", 1);
+>     CHECK_REG_DWORD(prodkey, "WindowsInstaller", 1);
+
+
+While MSI_GetProductInfo is reading VersionMajor, VersionMinor, ...  
+etc from InstallProperties key (from szInstallProperties_fmt or  
+szInstaller_LocalSystemProductCodes_fmt), but NOT from Uninstall key  
+as quotes below:
+
+>     if (classes)
+>         MSIREG_OpenLocalSystemProductKey(szProduct, &userdata, FALSE);
+>     else
+>         MSIREG_OpenInstallPropertiesKey(szProduct, &userdata, FALSE);
+>
+>     if (!lstrcmpW(szAttribute, INSTALLPROPERTY_HELPLINKW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_HELPTELEPHONEW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_INSTALLDATEW) ||
+>         !lstrcmpW(szAttribute,  
+> INSTALLPROPERTY_INSTALLEDPRODUCTNAMEW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_INSTALLLOCATIONW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_INSTALLSOURCEW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_LOCALPACKAGEW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_PUBLISHERW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_URLINFOABOUTW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_URLUPDATEINFOW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_VERSIONMINORW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_VERSIONMAJORW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_VERSIONSTRINGW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_PRODUCTIDW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_REGCOMPANYW) ||
+>         !lstrcmpW(szAttribute, INSTALLPROPERTY_REGOWNERW))
+>     {
+>         if (!prodkey)
+>         {
+>             r = ERROR_UNKNOWN_PRODUCT;
+>             goto done;
+>         }
+>
+>         if (!userdata)
+>             return ERROR_UNKNOWN_PROPERTY;
+>
+>         if (!lstrcmpW(szAttribute,  
+> INSTALLPROPERTY_INSTALLEDPRODUCTNAMEW))
+>             szAttribute = display_name;
+>         else if (!lstrcmpW(szAttribute,  
+> INSTALLPROPERTY_VERSIONSTRINGW))
+>             szAttribute = display_version;
+>
+>         val = msi_reg_get_value(userdata, szAttribute, &type);
+>         if (!val)
+>             val = empty;
+>     }
+
+
+So it does not find any of those properties in the registry, because  
+they're not written there by ACTION_RegisterProduct.
+And fixing this is the intention of my patch.
+
+Regards,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From truiken at gmail.com  Sat Mar  1 16:08:57 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Sat, 1 Mar 2008 16:08:57 -0600
+Subject: msi: ACTION_RegisterProduct store all InstallProperties
+In-Reply-To: <1D8C710E-D65D-4E87-865C-9BA7F8747B1F@java.pl>
+References: <2D73E93F-4E00-4493-8416-3238546EA3B9@java.pl>
+	<22821af30802290939q489b73d9n3c9c106604a49e8c@mail.gmail.com>
+	<C467D1FF-9F98-4A2F-869B-E51C31E17A71@java.pl>
+	<22821af30803011158g219b93bbq4b660d43d96ffdae@mail.gmail.com>
+	<1D8C710E-D65D-4E87-865C-9BA7F8747B1F@java.pl>
+Message-ID: <22821af30803011408pee462d1gcfc98723ca7c68ca@mail.gmail.com>
+
+On Sat, Mar 1, 2008 at 4:02 PM, Adam Strzelecki <ono at java.pl> wrote:
+> Hello,
+>
+>
+>  > I think you need to read through the implementation of
+>  > MSI_GetProductInfo more closely and also read the MsiGetProductInfo
+>  > tests in tests/msi.c and the test_publish:RegisterProduct tests in
+>  > tests/install.c.
+>
+>  I think I did, and looking at the tests I see they are testing
+>  properties only at Uninstall key, and I think this is wrong, or at
+>  least incomplete, as quoted below:
+>
+>  >     res = RegOpenKeyA(uninstall, prodcode, &prodkey);
+>  >     ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+>  >
+>  >     CHECK_REG_DWORD(prodkey, "Version", 0x1010001);
+>  >     CHECK_REG_DWORD(prodkey, "VersionMajor", 1);
+>  >     CHECK_REG_DWORD(prodkey, "VersionMinor", 1);
+>  >     CHECK_REG_DWORD(prodkey, "WindowsInstaller", 1);
+>
+>
+>  While MSI_GetProductInfo is reading VersionMajor, VersionMinor, ...
+>  etc from InstallProperties key (from szInstallProperties_fmt or
+>  szInstaller_LocalSystemProductCodes_fmt), but NOT from Uninstall key
+>  as quotes below:
+>
+>  >     if (classes)
+>  >         MSIREG_OpenLocalSystemProductKey(szProduct, &userdata, FALSE);
+>  >     else
+>  >         MSIREG_OpenInstallPropertiesKey(szProduct, &userdata, FALSE);
+>  >
+>  >     if (!lstrcmpW(szAttribute, INSTALLPROPERTY_HELPLINKW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_HELPTELEPHONEW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_INSTALLDATEW) ||
+>  >         !lstrcmpW(szAttribute,
+>  > INSTALLPROPERTY_INSTALLEDPRODUCTNAMEW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_INSTALLLOCATIONW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_INSTALLSOURCEW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_LOCALPACKAGEW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_PUBLISHERW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_URLINFOABOUTW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_URLUPDATEINFOW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_VERSIONMINORW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_VERSIONMAJORW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_VERSIONSTRINGW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_PRODUCTIDW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_REGCOMPANYW) ||
+>  >         !lstrcmpW(szAttribute, INSTALLPROPERTY_REGOWNERW))
+>  >     {
+>  >         if (!prodkey)
+>  >         {
+>  >             r = ERROR_UNKNOWN_PRODUCT;
+>  >             goto done;
+>  >         }
+>  >
+>  >         if (!userdata)
+>  >             return ERROR_UNKNOWN_PROPERTY;
+>  >
+>  >         if (!lstrcmpW(szAttribute,
+>  > INSTALLPROPERTY_INSTALLEDPRODUCTNAMEW))
+>  >             szAttribute = display_name;
+>  >         else if (!lstrcmpW(szAttribute,
+>  > INSTALLPROPERTY_VERSIONSTRINGW))
+>  >             szAttribute = display_version;
+>  >
+>  >         val = msi_reg_get_value(userdata, szAttribute, &type);
+>  >         if (!val)
+>  >             val = empty;
+>  >     }
+>
+>
+>  So it does not find any of those properties in the registry, because
+>  they're not written there by ACTION_RegisterProduct.
+>  And fixing this is the intention of my patch.
+>
+
+Which is wrong, which you'll see when I submit my next patch which
+tests your theory.
+
+-- 
+James Hawkins
+
+
+From ono at java.pl  Sat Mar  1 16:33:16 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sat, 1 Mar 2008 23:33:16 +0100
+Subject: msi: ACTION_RegisterProduct store all InstallProperties
+In-Reply-To: <22821af30803011408pee462d1gcfc98723ca7c68ca@mail.gmail.com>
+References: <2D73E93F-4E00-4493-8416-3238546EA3B9@java.pl>
+	<22821af30802290939q489b73d9n3c9c106604a49e8c@mail.gmail.com>
+	<C467D1FF-9F98-4A2F-869B-E51C31E17A71@java.pl>
+	<22821af30803011158g219b93bbq4b660d43d96ffdae@mail.gmail.com>
+	<1D8C710E-D65D-4E87-865C-9BA7F8747B1F@java.pl>
+	<22821af30803011408pee462d1gcfc98723ca7c68ca@mail.gmail.com>
+Message-ID: <A00C3432-7B22-4B69-81A5-AB643A2396AE@java.pl>
+
+> Which is wrong, which you'll see when I submit my next patch which
+> tests your theory.
+
+I don't mind you pointing me out my mistakes. So I kindly waiting for  
+your patch. However right now I presented my arguments quoting Wine  
+sources, but you just respond that I'm wrong without presenting yours.
+
+All I can say, I was testing this is MSXML 6.0 + Visual Studio 2005  
+installer, and current Wine trunk causes VS2005 installer think that  
+MSXML 6.0 is regardless of anything, just because VerionMajor &  
+VersionMinor fails on MsiGetProductInfo.
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From truiken at gmail.com  Sat Mar  1 16:38:38 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Sat, 1 Mar 2008 16:38:38 -0600
+Subject: msi: ACTION_RegisterProduct store all InstallProperties
+In-Reply-To: <A00C3432-7B22-4B69-81A5-AB643A2396AE@java.pl>
+References: <2D73E93F-4E00-4493-8416-3238546EA3B9@java.pl>
+	<22821af30802290939q489b73d9n3c9c106604a49e8c@mail.gmail.com>
+	<C467D1FF-9F98-4A2F-869B-E51C31E17A71@java.pl>
+	<22821af30803011158g219b93bbq4b660d43d96ffdae@mail.gmail.com>
+	<1D8C710E-D65D-4E87-865C-9BA7F8747B1F@java.pl>
+	<22821af30803011408pee462d1gcfc98723ca7c68ca@mail.gmail.com>
+	<A00C3432-7B22-4B69-81A5-AB643A2396AE@java.pl>
+Message-ID: <22821af30803011438v2633aa35s2459553825fb375d@mail.gmail.com>
+
+On Sat, Mar 1, 2008 at 4:33 PM, Adam Strzelecki <ono at java.pl> wrote:
+> > Which is wrong, which you'll see when I submit my next patch which
+>  > tests your theory.
+>
+>  I don't mind you pointing me out my mistakes. So I kindly waiting for
+>  your patch. However right now I presented my arguments quoting Wine
+>  sources, but you just respond that I'm wrong without presenting yours.
+>
+>  All I can say, I was testing this is MSXML 6.0 + Visual Studio 2005
+>  installer, and current Wine trunk causes VS2005 installer think that
+>  MSXML 6.0 is regardless of anything, just because VerionMajor &
+>  VersionMinor fails on MsiGetProductInfo.
+>
+
+Have some patience...I *just* wrote the tests, and I'm doing this on a
+Saturday.  You'll see them soon enough.
+
+-- 
+James Hawkins
+
+
+From juan.lang at gmail.com  Sat Mar  1 19:07:58 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Sat, 1 Mar 2008 17:07:58 -0800
+Subject: iPod synced with iTunes v7.6!
+In-Reply-To: <b130c85e0803010055g19782baam34bc7e1301c884ed@mail.gmail.com>
+References: <b130c85e0803010055g19782baam34bc7e1301c884ed@mail.gmail.com>
+Message-ID: <3a768c550803011707q5dbb1b92m57d76c8d425a511d@mail.gmail.com>
+
+>  I got an ipod I borrowed to sync: http://www.astro.rug.nl/~lankhorst/ipod.png
+
+W00t!  Well done, Maarten!
+--Juan
+
+
+From austinenglish at gmail.com  Sat Mar  1 19:23:04 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Sat, 1 Mar 2008 19:23:04 -0600
+Subject: Any graphics card y'all like to see tests run on?
+In-Reply-To: <47C62C2A.4010203@sprintpcs.com>
+References: <b6bb06270802261940q5120855al1822b2f4651e8019@mail.gmail.com>
+	<558b2f5c0802261955l72dfe40aj616b46b8a79a52f2@mail.gmail.com>
+	<b6bb06270802262049j6ae51a21v385707ea0bfc090b@mail.gmail.com>
+	<200802270857.56215.stefan@codeweavers.com>
+	<47C62C2A.4010203@sprintpcs.com>
+Message-ID: <b6bb06270803011723s3677cd1fp136333b447f30ff7@mail.gmail.com>
+
+On Wed, Feb 27, 2008 at 9:36 PM, James McKenzie
+<jjmckenzie51 at sprintpcs.com> wrote:
+>
+> Stefan D?singer wrote:
+>  > Am Mittwoch, 27. Februar 2008 05:49:57 schrieb Austin English:
+>  >
+>  >> Thanks Carl, and to the rest of the list, sorry for the noise/false
+>  >> hope to d3d/ddraw guys.
+>  >>
+>  > Just to answer your previous questions if someone else wonders the same: Some
+>  > ATI card would be useful. I have an X1600 and a radeon mobility 9000 myself,
+>  > but other cards would be good to test as well. In the codeweavers office we
+>  > have a few other cards too(older radeons and a bunch of macs)
+>  >
+>  >
+>  Testing on Macs, especially the newer laptops would be nice :)
+>
+>  I have a MacBookPro and a MacBook here (the latter is the other person
+>  who lives here's.)
+>
+>  James
+>
+>
+>
+>
+
+My roommate has a MacBook pro, so if testing anything specific is
+needed, drop me a line.
+
+-Austin
+
+From dmitry at codeweavers.com  Sat Mar  1 22:09:30 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 2 Mar 2008 12:09:30 +0800
+Subject: winmm/tests: Don't use 0x55 to avoid any confusion when running
+	with+heap.
+References: <alpine.DEB.1.00.0803012110480.16709@amboise.dolphin>
+Message-ID: <007001c87c1b$3bf91540$a600fea9@DMITRY>
+
+"Francois Gouget" <fgouget at free.fr> wrote:
+
+>     mmioSeek(hmmio, 0, SEEK_SET);
+> -    memset(&ck, 0x55, sizeof(ck));
+> +    memset(&ck, 0x66, sizeof(ck));
+>     ret = mmioDescend(hmmio, &ck, NULL, MMIO_FINDCHUNK);
+>     ok(ret == MMIOERR_CHUNKNOTFOUND ||
+>        ret == MMIOERR_INVALIDFILE, "mmioDescend returned %u\n", ret);
+> @@ -162,7 +162,7 @@ static void test_mmioDescend(void)
+>     ok(ck.dwDataOffset != 0x55555555, "wrong dwDataOffset: %04x\n", ck.dwDataOffset);
+
+The 'ok' above (and 2 tests before it) will fail with your changes.
+
+-- 
+Dmitry.
+
+
+From m.b.lankhorst at gmail.com  Sun Mar  2 01:56:48 2008
+From: m.b.lankhorst at gmail.com (Maarten Lankhorst)
+Date: Sat, 1 Mar 2008 23:56:48 -0800
+Subject: mountmgr.sys and ioctl's
+Message-ID: <b130c85e0803012356v2887045amb76936b576f0e5a2@mail.gmail.com>
+
+Hi Alexandre,
+
+In irc we discussed ioctl's with devices, and how ioctl's go to
+ntdll/cdrom.c if the drive is fd backed, and to mountmgr.sys if it
+isn't. For itunes it needs raw disk access, but also an ioctl from
+mountmgr.
+
+What if we always map access to \\.\X: is always mapped to mountmgr,
+and let mountmanager open \\.\X:: that would be mapped to
+/dosdevices/x::, any ioctl, and read/write stuff that mountmgr can't
+handle can then be forwarded to the raw device, if available.
+
+Do you think that would be an appropiate solution?
+
+Cheers,
+Maarten.
+
+
+From ono at java.pl  Sun Mar  2 08:10:24 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sun, 2 Mar 2008 15:10:24 +0100
+Subject: kernel32 & winelib: Don't test string size in CompareStringW for
+	null terminated strings
+In-Reply-To: <19e31a080803010812q2a2e2748ma3dea3412e5dcfe4@mail.gmail.com>
+References: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com>
+	<5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl>
+	<19e31a080803010812q2a2e2748ma3dea3412e5dcfe4@mail.gmail.com>
+Message-ID: <1E8FD512-6B85-4093-A474-FF91FB48010E@java.pl>
+
+I believe the further discussion is pointless. If you ever dared to  
+look how MSVCRT or GLIBC strlen function is implemented you would know  
+that it is exactly same algorithm (that just differs in the  
+implementation) using 4 byte fetching with magic bits matching, also  
+described in few books and articles, let me name one: "Write Great  
+Code, Volume 2: Thinking Low-Level, Writing High-Level" ISBN  
+1593270658, section 10.1.1.1 about using string manipulation routines,  
+so there's nothing about Microsoft's or anybody's else secret invention.
+
+However instead of decent discussion I was pushed aside and then  
+taught here not to copy copyrighted materials, so something that I'm  
+already very aware and careful about. IMHO this overwhelming paranoia  
+of being scared of Microsoft is against sober thinking, and this for  
+sure glads greediness of this company. My mistake was I just mentioned  
+MSVCRT, that raised your disquiet, while I could point you to GLIBC or  
+Linux kernel sources as well, or the book above. Too bad.
+
+To be clear, my only intention was to point you that Wine's  
+CompareStringW can be better. IMHO it is very respectable to not only  
+write code that is well organized and bug-free that Wine is in my  
+opinion, but also to write performance aware code, which IMHO Wine is  
+NOT.
+
+Finally I just want to point you there:
+http://www.ussg.iu.edu/hypermail/linux/kernel/9907.3/0434.html
+
+Note there that Linux kernel mailing list is bit less paranoiac :P
+
+Cheers,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From dmitry at codeweavers.com  Sun Mar  2 09:26:02 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 2 Mar 2008 23:26:02 +0800
+Subject: kernel32 & winelib: Don't test string size in CompareStringW
+	fornull terminated strings
+References: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com><5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl><19e31a080803010812q2a2e2748ma3dea3412e5dcfe4@mail.gmail.com>
+	<1E8FD512-6B85-4093-A474-FF91FB48010E@java.pl>
+Message-ID: <009a01c87c79$bb3d4160$a600fea9@DMITRY>
+
+"Adam Strzelecki" <ono at java.pl> wrote:
+
+> I believe the further discussion is pointless. If you ever dared to  
+> look how MSVCRT or GLIBC strlen function is implemented you would know  
+> that it is exactly same algorithm (that just differs in the  
+> implementation) using 4 byte fetching with magic bits matching, also  
+> described in few books and articles, let me name one: "Write Great  
+> Code, Volume 2: Thinking Low-Level, Writing High-Level" ISBN  
+> 1593270658, section 10.1.1.1 about using string manipulation routines,  
+> so there's nothing about Microsoft's or anybody's else secret invention.
+
+Wine already had at some point strlen along with some other string functions
+implemented in asm, however they have been removed after it was proved that
+gcc optimized C code outperforms it.
+
+> To be clear, my only intention was to point you that Wine's  
+> CompareStringW can be better. IMHO it is very respectable to not only  
+> write code that is well organized and bug-free that Wine is in my  
+> opinion, but also to write performance aware code, which IMHO Wine is  
+> NOT.
+
+You are welcome to show the results of the benchmark which show how much
+your patch improves performance.
+
+-- 
+Dmitry.
+
+
+From dank at kegel.com  Sun Mar  2 10:44:43 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 2 Mar 2008 08:44:43 -0800
+Subject: winmm/tests: Don't use 0x55 to avoid any confusion when running
+	with +heap.
+Message-ID: <a71bd89a0803020844u74ba2303mf7854d5f8bb14b0b@mail.gmail.com>
+
+Hey, on that topic, there are also a bunch of other possible suspects:
+
+./dlls/ntdll/tests/atom.c:    memset(abi->Name, 0x55, 255 * sizeof(WCHAR));
+./dlls/ntdll/tests/atom.c:    memset(abi->Name, 0x55,
+lstrlenW(testAtom1) * sizeof(WCHAR));
+./dlls/user32/tests/menu.c:    memset( bmfill, 0x55, sizeof( bmfill));
+./dlls/ntoskrnl.exe/ntoskrnl.c:    memset( &irp, 0x55, sizeof(irp) );
+./tools/wrc/utils.c:    memset(res, 0x55, size);
+./tools/widl/utils.c:    memset(res, 0x55, size);
+./tools/wmc/utils.c:    memset(res, 0x55, size);
+./server/object.c:    if (ptr) memset( ptr, 0x55, size );
+./server/window.c:    memset( win, 0x55, sizeof(*win) +
+win->nb_extra_bytes - 1 );
+
+And 0xaa can also interfere:
+
+./dlls/kernel32/tests/process.c:    memset(&info, 0xaa, sizeof(info));
+./dlls/ddraw/tests/d3d.c:    memset(outH, 0xaa, sizeof(outH));
+./dlls/comctl32/tests/listview.c:    memset(&column, 0xaa, sizeof(column));
+./dlls/comctl32/tests/listview.c:    memset(&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset (&item, 0xaa, sizeof (item));
+./dlls/comctl32/tests/listview.c:    memset(&column, 0xaa, sizeof(column));
+./server/object.c:        memset( obj, 0xaa, obj->ops->size );
+
+
+From dmitry at codeweavers.com  Sun Mar  2 10:55:19 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 Mar 2008 00:55:19 +0800
+Subject: winmm/tests: Don't use 0x55 to avoid any confusion when
+	runningwith +heap.
+References: <a71bd89a0803020844u74ba2303mf7854d5f8bb14b0b@mail.gmail.com>
+Message-ID: <001c01c87c86$34154450$a600fea9@DMITRY>
+
+"Dan Kegel" <dank at kegel.com> wrote:
+
+> Hey, on that topic, there are also a bunch of other possible suspects:
+> 
+> ./dlls/ntdll/tests/atom.c:    memset(abi->Name, 0x55, 255 * sizeof(WCHAR));
+> ./dlls/ntdll/tests/atom.c:    memset(abi->Name, 0x55,
+> lstrlenW(testAtom1) * sizeof(WCHAR));
+> ./dlls/user32/tests/menu.c:    memset( bmfill, 0x55, sizeof( bmfill));
+> ./dlls/ntoskrnl.exe/ntoskrnl.c:    memset( &irp, 0x55, sizeof(irp) );
+> ./tools/wrc/utils.c:    memset(res, 0x55, size);
+> ./tools/widl/utils.c:    memset(res, 0x55, size);
+> ./tools/wmc/utils.c:    memset(res, 0x55, size);
+> ./server/object.c:    if (ptr) memset( ptr, 0x55, size );
+> ./server/window.c:    memset( win, 0x55, sizeof(*win) +
+> win->nb_extra_bytes - 1 );
+> 
+> And 0xaa can also interfere:
+
+Perhaps we could agree on a common constant to mark not initialized data in
+tests? I'd suggest to use 0xCC (standard debugging trick) for that purpose.
+
+-- 
+Dmitry.
+
+
+From ono at java.pl  Sun Mar  2 10:59:21 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sun, 2 Mar 2008 17:59:21 +0100
+Subject: kernel32 & winelib: Don't test string size in CompareStringW
+	fornull terminated strings
+In-Reply-To: <009a01c87c79$bb3d4160$a600fea9@DMITRY>
+References: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com><5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl><19e31a080803010812q2a2e2748ma3dea3412e5dcfe4@mail.gmail.com>
+	<1E8FD512-6B85-4093-A474-FF91FB48010E@java.pl>
+	<009a01c87c79$bb3d4160$a600fea9@DMITRY>
+Message-ID: <533A2C2F-F929-4E69-B543-F168CE902BD8@java.pl>
+
+> Wine already had at some point strlen along with some other string  
+> functions
+> implemented in asm, however they have been removed after it was  
+> proved that
+> gcc optimized C code outperforms it.
+
+Let me ask this way, why Wine don't use standard C library functions  
+for lstringsomething kernel32 implementation? Current GLIBC, OSX LIBC  
+are Unicode libraries since quite long time. Is Wine supposed to work  
+on platforms where wchar_t is unimplemented or differs from unsigned  
+short? Anyway AFAIK Wine is only Intel (LittleEndian) 32-bit.
+So why Wine does re-implement all the string manipulation functions  
+that are already present in C runtimes (heavily optimized for GCC and  
+OS).
+I know that some of Windows functions differ, but Wine may keep just  
+the implementation of those that differ? What do you think?
+
+> You are welcome to show the results of the benchmark which show how  
+> much
+> your patch improves performance.
+
+Please have a look at my patch, is just an easiest try to remove IMHO  
+unnecessary requirement to count null-terminated string lengths before  
+comparison, as most of comparisons are made with null-terminated  
+strings (-1 length).
+
+I don't want anyone to accept my patch straight-ahead, but just to  
+review this string manipulation matter in Wine.
+Probably the best way it would be to have CompareStringW having to  
+versions (function branches), one for 2 null-terminated params (most  
+of cases), 2nd for one, or two strings with named length.
+
+Regards,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From ono at java.pl  Sun Mar  2 11:14:45 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sun, 2 Mar 2008 18:14:45 +0100
+Subject: winequartz.drv Mac OS X UI discontinued?
+Message-ID: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+
+Hi,
+
+I know that CodeWeavers supports quite nicely Mac builds of Wine, and  
+CrossOver for Mac, yet all of them are X11.
+There was also once Darwine - an effort to provide Carbon Wine UI  
+driver and Mac optimizations & L&F.
+Pretty many of those were merged back to Wine, but not winequartz.drv.
+
+Do you guys think about reviving winequartz.drv?
+
+This would greatly improve Wine on Mac as we could have native Mac  
+fonts handling that's faster than FreeType, Dock icons for Wine  
+applications, and few others.
+There's still old copy of the it hanging around, but it is abandoned,  
+and no longer compiles with Wine.
+
+Or I think it would be cool to write new winecocoa.drv or sthing like  
+that, as Apple officially states that Carbon is deprecated.
+
+While it is not well documented, it is pretty easy with Cocoa to make  
+console non-bundled process to be UI foreground process and handle  
+events and Dock:
+(This code is copyrighted by myself ;P)
+
+> int main(int argc, const char * argv[]) {
+>         ProcessSerialNumber psn = {0, kCurrentProcess};
+>         OSStatus returnCode = TransformProcessType(&psn,  
+> kProcessTransformToForegroundApplication);
+>         SetFrontProcess(&psn);
+>
+>         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+>         [NSApplication sharedApplication];
+>
+>         NSImage *icon = [NSImage imageNamed:@"NSApplicationIcon"];
+>         [NSApp setApplicationIconImage:icon];
+>
+>         [NSApp finishLaunching];
+>
+>         NSWindow *window = [[NSWindow alloc]  
+> initWithContentRect:NSMakeRect(0, 0, 100, 100)
+>                         styleMask:NSTitledWindowMask| 
+> NSClosableWindowMask|NSMiniaturizableWindowMask|NSResizableWindowMask
+>                         backing:NSBackingStoreBuffered defer:NO];
+>         [window center];
+>         [window setTitle:@"Test"];
+>
+>         NSButton *button = [[NSButton alloc]  
+> initWithFrame:NSMakeRect(10, 10, 80, 80)];
+>         [button setTitle:@"What?"];
+>         [button setBezelStyle:1];
+>         [[window contentView] addSubview:button];
+>         [button release];
+>
+>         [window makeKeyAndOrderFront:NSApp];
+>
+>         while(1) {
+>                 NSEvent *event = [NSApp  
+> nextEventMatchingMask:NSAnyEventMask
+>                                                                                         untilDate 
+> :[NSDate distantFuture]
+>                                                                                         inMode:NSDefaultRunLoopMode
+>                                                                                         dequeue:YES 
+> ];
+>                 if(event) [NSApp sendEvent:event];
+>         }
+>         [pool release];
+>         return 0;
+> }
+
+BTW. I heard that someone previously working for Wine project is now  
+in Apple, it is true?
+
+Regards,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From stefan at codeweavers.com  Sun Mar  2 11:50:02 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Sun, 2 Mar 2008 18:50:02 +0100
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+Message-ID: <200803021850.04583.stefan@codeweavers.com>
+
+Am Sonntag, 2. M?rz 2008 18:14:45 schrieb Adam Strzelecki:
+> I know that CodeWeavers supports quite nicely Mac builds of Wine, and
+> CrossOver for Mac, yet all of them are X11.
+> There was also once Darwine - an effort to provide Carbon Wine UI
+> driver and Mac optimizations & L&F.
+> Pretty many of those were merged back to Wine, but not winequartz.drv.
+>
+> Do you guys think about reviving winequartz.drv?
+I think everyone would greatly welcome efforts to continue it, and in fact 
+Steven Edwards is currently trying to bring the old driver up to date.
+
+So the short answer: We accept (well written) patches!
+
+The long answer: This isn't an easy undertaking. For one part, Wine's display 
+driver model(how gdi32, user32, opengl32 and d3d talk to winex11.drv) still 
+needs a bit of cleanup, currently some abstraction layers are at the wrong 
+place. The other issue is that *a lot* of implicit knowledge is encoded in 
+winex11.drv. To add to this, the gain of a native quartz/cocoa/whatever 
+driver is rather limited:
+
+* Faster font handling: Maybe, although I personally never had an app that had 
+font performance problems. My view is rather limited though
+* Dock integration: Crossover has that, despite using winex11.drv. This is an 
+entirely different story and comes down to the different ideas what 
+an "Application" is at user interface level.
+
+What we would gain:
+* No mess with X11 servers. Apple's X11 is rather broken. No Expos? 
+headbanging with quartz_wm. No messing with Apple X11's opengl
+* No need for a DIB engine on MacOS. MacOS can give us everything we need.
+* No troubles with relative mouse movements, like we have them on X11 even on 
+Linux
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080302/83dc4391/attachment.pgp 
+
+From wine-devel at kievinfo.com  Sun Mar  2 12:10:52 2008
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 02 Mar 2008 11:10:52 -0700
+Subject: kernel32 & winelib: Don't test string size in
+	CompareStringWfornull terminated strings
+In-Reply-To: <533A2C2F-F929-4E69-B543-F168CE902BD8@java.pl>
+References: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com><5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl><19e31a080803010812q2a2e2748ma3dea3412e5dcfe4@mail.gmail.com>	<1E8FD512-6B85-4093-A474-FF91FB48010E@java.pl>	<009a01c87c79$bb3d4160$a600fea9@DMITRY>
+	<533A2C2F-F929-4E69-B543-F168CE902BD8@java.pl>
+Message-ID: <47CAEDAC.5030307@kievinfo.com>
+
+Adam Strzelecki wrote:
+> Let me ask this way, why Wine don't use standard C library functions  
+> for lstringsomething kernel32 implementation? Current GLIBC, OSX LIBC  
+> are Unicode libraries since quite long time. Is Wine supposed to work  
+> on platforms where wchar_t is unimplemented or differs from unsigned  
+WCHAR is not the same as wchar_t.
+
+> short? Anyway AFAIK Wine is only Intel (LittleEndian) 32-bit.
+Wrong, it compiles and works (for winelib) on SUN.
+
+Vitaliy
+
+
+From winehacker at gmail.com  Sun Mar  2 12:53:31 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sun, 2 Mar 2008 13:53:31 -0500
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <200803021850.04583.stefan@codeweavers.com>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+Message-ID: <19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+
+Hi,
+
+On Sun, Mar 2, 2008 at 12:50 PM, Stefan D?singer <stefan at codeweavers.com> wrote:
+> Am Sonntag, 2. M?rz 2008 18:14:45 schrieb Adam Strzelecki:
+>  > Do you guys think about reviving winequartz.drv?
+>  I think everyone would greatly welcome efforts to continue it, and in fact
+>  Steven Edwards is currently trying to bring the old driver up to date.
+
+There is a public branch where the Wine quartzdrv will go even if its
+not accepted in to Winehq. I have been from time to time bringing in
+infrastructure changes from the old winequartzdrv however the current
+tree is empty as the developer of the prior editions, Emmanuel
+Maillard,  is in the process of overhauling it from recent changes to
+the Wine driver model.
+
+Keep an eye on
+
+http://wiki.winehq.org/MacOSX/QuartzDriver
+
+And hopefully in the next few weeks we will have a newer patch in the
+winequartzdrv tree for a more recent version of Wine. I am not sure
+what design changes Emmanuel is wanting to make but hopefully they
+will be more to Alexandre's liking and can eventually go in to normal
+winehq. If you want to work on quartzdrv with Emmanuel, send him an
+email to get an idea of what he needs and what the design will be,
+then apply for write access to http://repo.or.cz and I will add you to
+the winequartzdrv branch.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From stefan at codeweavers.com  Sun Mar  2 13:52:34 2008
+From: stefan at codeweavers.com (Stefan =?utf-8?q?D=C3=B6singer?=)
+Date: Sun, 2 Mar 2008 20:52:34 +0100
+Subject: Heading towards a fixed function pipeline replacement
+Message-ID: <200803022052.40028.stefan@codeweavers.com>
+
+Hi,
+
+Due to the bad weather I had some spare hacking time this weekend, and I've 
+done some work and investigation on a fixed function pipeline replacement. 
+The product of that is a hacky fixed function pipeline replacement via 
+GL_ATI_fragment_shader(*).
+
+Functionality wise the code is doing pretty good, it should support everything 
+the current GL_ARB_texture_env_combine supports on ATI cards, although I 
+didn't test it much yet and it is most likely buggy. However, 
+integration-wise it is a disaster at this point, as I've focused on the GL 
+functionality for now.
+
+However, I have some roadmap for integrating this in Wine now. Essentially I'm 
+going to modify the state table and shader backends a bit:
+
+-> Make the state table a property of the shader model: Each pipeline 
+implementation has its own state dependencies and ways to load states, so it 
+is pointless to use one static table. The table will remain static, but there 
+will be multiple tables, selected at device creation time
+
+-> As a consequence, make the current "none" shader backend a backend for the 
+current fixed function state table
+
+-> Different state implementations will be able to borrow code from each 
+other. E.g, the ATI_fragment_shader backend can borrow vertex processing from 
+the fixed function implementation or GL_ARB_*_program
+
+-> The current "fixed function" state table will still be able to handle d3d 
+shaders of all kinds, at least for now. Somewhen later we might want to split 
+fixed function and shaders up, so that whenever we have shaders we use them 
+for fixed function processing too. But for now we still have the problem that 
+e.g. GLSL has horribly slow shader compilation performance.
+
+On top of this work the mentioned SoC project to write a vertex shader 
+replacement pipeline might be doable because the general infrastructure is 
+there, and only the shader generator is needed.
+
+Feel free to comment,
+Stefan
+
+(*) Why this odd extension and not GLSL? We'll want it at some point anyway 
+for better support of r200 cards(radeon 8500-9250), and as a counterpart to 
+the GL_NV_register_combiner code on nvidia cards. GLSL has a few other tricky 
+aspects, like per shader uniforms, so this extension is easier for the start.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0032-WineD3D-Add-GL_ATI_fragment_shader.patch
+Type: text/x-diff
+Size: 9680 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080302/75b36fa5/attachment-0001.patch 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0033-WineD3D-Fixed-function-fragment-processing-with-GL_.patch.bz2
+Type: application/x-bzip2
+Size: 7600 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080302/75b36fa5/attachment-0001.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080302/75b36fa5/attachment-0001.pgp 
+
+From ono at java.pl  Sun Mar  2 14:53:09 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sun, 2 Mar 2008 21:53:09 +0100
+Subject: kernel32 & winelib: Don't test string size in
+	CompareStringWfornull terminated strings
+In-Reply-To: <47CAEDAC.5030307@kievinfo.com>
+References: <a71bd89a0803010738y65b9e90cve6e222d69adafe37@mail.gmail.com><5FFEB4AF-441F-47FA-87F4-7CE319CAC1D7@java.pl><19e31a080803010812q2a2e2748ma3dea3412e5dcfe4@mail.gmail.com>	<1E8FD512-6B85-4093-A474-FF91FB48010E@java.pl>	<009a01c87c79$bb3d4160$a600fea9@DMITRY>
+	<533A2C2F-F929-4E69-B543-F168CE902BD8@java.pl>
+	<47CAEDAC.5030307@kievinfo.com>
+Message-ID: <95229BD5-0E7D-484E-A15F-DCD74D538B11@java.pl>
+
+>> Let me ask this way, why Wine don't use standard C library functions
+>> for lstringsomething kernel32 implementation? Current GLIBC, OSX LIBC
+>> are Unicode libraries since quite long time. Is Wine supposed to work
+>> on platforms where wchar_t is unimplemented or differs from unsigned
+> WCHAR is not the same as wchar_t.
+You're right, it is means the same only in Windows.
+I just checked several discussions already done on this subject, now I  
+know that Windows 16-bit UNICODE isn't compatible with UNIX 32-bit one.
+Someone have mentioned in old Wine dev list archives also -fshort- 
+wchar GCC flag solution, but it seems this makes C library's UNICODE  
+function not work at all as expected. Nice to learn something new.
+
+> Wrong, it compiles and works (for winelib) on SUN.
+Good to know.
+
+Cheers,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From ono at java.pl  Sun Mar  2 15:00:31 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sun, 2 Mar 2008 22:00:31 +0100
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+Message-ID: <C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+
+> Keep an eye on
+> http://wiki.winehq.org/MacOSX/QuartzDriver
+
+Oh, that's awesome! How did I missed this.
+
+> And hopefully in the next few weeks we will have a newer patch in the
+> winequartzdrv tree for a more recent version of Wine. I am not sure
+> what design changes Emmanuel is wanting to make but hopefully they
+> will be more to Alexandre's liking and can eventually go in to normal
+> winehq. If you want to work on quartzdrv with Emmanuel, send him an
+> email to get an idea of what he needs and what the design will be,
+> then apply for write access to http://repo.or.cz and I will add you to
+> the winequartzdrv branch.
+
+There're very neat Wine Mac builds made on http://www.kronenberg.org/darwine/
+Do you have contact with the maintainer? I believe you can work out  
+great Mac distro together especially once quartz is ready.
+
+Cheers,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From ono at java.pl  Sun Mar  2 15:13:55 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Sun, 2 Mar 2008 22:13:55 +0100
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+Message-ID: <E8677747-DE7A-4E00-99AD-50815A863529@java.pl>
+
+>> Keep an eye on
+>> http://wiki.winehq.org/MacOSX/QuartzDriver
+>
+> Oh, that's awesome! How did I missed this.
+I know, I didn't looked there for over month, and it was recently  
+updated.
+I keep my fingers crossed for QuartzDriver!
+
+Good night,
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+
+
+From fgouget at free.fr  Sun Mar  2 17:28:59 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Mon, 3 Mar 2008 00:28:59 +0100 (CET)
+Subject: winmm/tests: Don't use 0x55 to avoid any confusion when running
+	with +heap.
+In-Reply-To: <a71bd89a0803020844u74ba2303mf7854d5f8bb14b0b@mail.gmail.com>
+References: <a71bd89a0803020844u74ba2303mf7854d5f8bb14b0b@mail.gmail.com>
+Message-ID: <alpine.DEB.1.00.0803030027080.8380@amboise.dolphin>
+
+On Sun, 2 Mar 2008, Dan Kegel wrote:
+
+> Hey, on that topic, there are also a bunch of other possible suspects:
+> 
+> ./dlls/ntdll/tests/atom.c:    memset(abi->Name, 0x55, 255 * sizeof(WCHAR));
+> ./dlls/ntdll/tests/atom.c:    memset(abi->Name, 0x55,
+[...]
+> And 0xaa can also interfere:
+> 
+> ./dlls/kernel32/tests/process.c:    memset(&info, 0xaa, sizeof(info));
+[...]
+
+Yes. I have a few other patches (though not for all of them) but I was 
+waiting to see if this one would go through before flooding 
+wine-patches.
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+                     Avoid the Gates of Hell - use Linux.
+
+
+From fgouget at free.fr  Sun Mar  2 17:32:49 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Mon, 3 Mar 2008 00:32:49 +0100 (CET)
+Subject: winmm/tests: Don't use 0x55 to avoid any confusion when
+	runningwith +heap.
+In-Reply-To: <001c01c87c86$34154450$a600fea9@DMITRY>
+References: <a71bd89a0803020844u74ba2303mf7854d5f8bb14b0b@mail.gmail.com>
+	<001c01c87c86$34154450$a600fea9@DMITRY>
+Message-ID: <alpine.DEB.1.00.0803030029060.8380@amboise.dolphin>
+
+On Mon, 3 Mar 2008, Dmitry Timoshkov wrote:
+[...]
+> Perhaps we could agree on a common constant to mark not initialized data in
+> tests? I'd suggest to use 0xCC (standard debugging trick) for that purpose.
+
+I'm open to suggestions. So 0xcc is commonly used for this purpose? 
+If it's used by debuggers wouldn't this be a reason to avoid it?
+
+If I remember correctly a couple of tests need two values and use both 
+0x55 and 0xaa. Do you have another constant to suggest for this case?
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+The nice thing about meditation is that it makes doing nothing quite respectable
+                                  -- Paul Dean
+
+
+From dank at kegel.com  Sun Mar  2 20:32:55 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 2 Mar 2008 18:32:55 -0800
+Subject: Free apps bundled with msvcp71?
+Message-ID: <a71bd89a0803021832m1a3ffda2m5402cf57f2264572@mail.gmail.com>
+
+Adobe Contribute 4, released in Nov 2006 or so, had a nice online trial at
+http://trials.adobe.com/Applications/Contribute/Adobe_Contribute_4_Win/Adobe_Contribute_4_Win.exe
+and still online, I think, at
+http://www.soft32.com/download/63-129953-1/Adobe_Contribute_4_Win.exe
+
+Starting it fails with
+
+err:module:import_dll Library MSVCP71.dll (which is needed by
+L"C:\\Program Files\\Adobe\\Contribute 4\\CoreTypes.dll") not found
+
+Wine has a nice implementation of msvcr71.dll, but not
+the C++-oriented msvcp71.dll, nor is it likely to get one soon.
+
+This brings back the question: what's a good place to
+legally and freely download an application bundled with a full set
+of msvcp71.dll et al?  Ideally something at Microsoft.com
+and/or something small and suitable for use in winetricks.
+Any ideas?
+- Dan
+
+
+From dmitry at codeweavers.com  Sun Mar  2 21:00:48 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 Mar 2008 11:00:48 +0800
+Subject: winequartz.drv Mac OS X UI discontinued?
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl><200803021850.04583.stefan@codeweavers.com><19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+Message-ID: <003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+
+"Adam Strzelecki" <ono at java.pl> wrote:
+
+> There're very neat Wine Mac builds made on http://www.kronenberg.org/darwine/
+> Do you have contact with the maintainer? I believe you can work out  
+> great Mac distro together especially once quartz is ready.
+
+"Neat" is what sense? It's not clear what additional functionality they provide,
+what's the status of quartz.drv in their sources, and why they don't send patches
+to WineHQ. Besides that sites claims that "Darwine and wine are released under
+the gpl", that's plain wrong.
+
+Could you please remove the "Reply-To:" header when posting to Wine lists?
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Sun Mar  2 21:24:04 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 Mar 2008 11:24:04 +0800
+Subject: winequartz.drv Mac OS X UI discontinued?
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl><200803021850.04583.stefan@codeweavers.com><19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com><C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+	<003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+Message-ID: <00d101c87cde$0b00b9c0$a600fea9@DMITRY>
+
+"Dmitry Timoshkov" dmitry at codeweavers.com wrote:
+
+>> There're very neat Wine Mac builds made on http://www.kronenberg.org/darwine/
+>> Do you have contact with the maintainer? I believe you can work out  
+>> great Mac distro together especially once quartz is ready.
+> 
+> "Neat" is what sense? It's not clear what additional functionality they provide,
+> what's the status of quartz.drv in their sources, and why they don't send patches
+> to WineHQ.
+
+The following notice in the upper right corner on that site makes it clear why :-)
+
+"Bevore You install, please make sure:
+Tiger users: install X11 from your Tiger Installation DVD"
+
+-- 
+Dmitry.
+
+
+From winehacker at gmail.com  Sun Mar  2 21:26:19 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sun, 2 Mar 2008 22:26:19 -0500
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+	<003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+Message-ID: <19e31a080803021926q75b327d9n9e628cce63d3b3a3@mail.gmail.com>
+
+On Sun, Mar 2, 2008 at 10:00 PM, Dmitry Timoshkov
+<dmitry at codeweavers.com> wrote:
+>  "Neat" is what sense? It's not clear what additional functionality they provide,
+>  what's the status of quartz.drv in their sources, and why they don't send patches
+>  to WineHQ. Besides that sites claims that "Darwine and wine are released under
+>  the gpl", that's plain wrong.
+>
+>  Could you please remove the "Reply-To:" header when posting to Wine lists?
+
+Dude chill with the hostility. Winehq currently provides no
+functionality for Mac users...see here
+
+http://www.winehq.org/site/download
+
+No one is currently offering officially blessed Winehq builds whenever
+Alexandre tags a release. There is no need in anyone to send patches
+to Winehq for code that we know Julliard is going to reject. He stated
+it to us during the Mac discussion at Wineconf in Redding that he
+viewed Darwine as a separate project and should do its only bundling.
+Basically anything done in Objective C he does not want in the tree
+which includes half of the current winequartzdrv, the Darwine launcher
+and Doc code and just about everything else.
+
+If you want to review a patch, look at the patch for 0.9.48
+
+http://sourceforge.net/tracker/?group_id=69890&atid=526089
+
+And help further abstract user32/x11drv like has been done for Window
+creation and Window positioning.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From dmitry at codeweavers.com  Sun Mar  2 21:45:48 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 Mar 2008 11:45:48 +0800
+Subject: winequartz.drv Mac OS X UI discontinued?
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl><200803021850.04583.stefan@codeweavers.com><19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com><C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl><003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+	<19e31a080803021926q75b327d9n9e628cce63d3b3a3@mail.gmail.com>
+Message-ID: <014b01c87ce1$13395770$a600fea9@DMITRY>
+
+"Steven Edwards" <winehacker at gmail.com> wrote:
+
+> On Sun, Mar 2, 2008 at 10:00 PM, Dmitry Timoshkov
+> <dmitry at codeweavers.com> wrote:
+>>  "Neat" is what sense? It's not clear what additional functionality they provide,
+>>  what's the status of quartz.drv in their sources, and why they don't send patches
+>>  to WineHQ. Besides that sites claims that "Darwine and wine are released under
+>>  the gpl", that's plain wrong.
+>>
+>>  Could you please remove the "Reply-To:" header when posting to Wine lists?
+> 
+> Dude chill with the hostility.
+
+I have no idea why you're treating asking the questions as a "hostility".
+This is the developers list, not the list for user complaints. Sending
+the patches is a usual activity here, not vague reasoning.
+
+> Winehq currently provides no
+> functionality for Mac users...see here
+> 
+> http://www.winehq.org/site/download
+> 
+> No one is currently offering officially blessed Winehq builds whenever
+> Alexandre tags a release.
+
+Feel free to provide/suggest one.
+
+> There is no need in anyone to send patches
+> to Winehq for code that we know Julliard is going to reject. He stated
+> it to us during the Mac discussion at Wineconf in Redding that he
+> viewed Darwine as a separate project and should do its only bundling.
+> Basically anything done in Objective C he does not want in the tree
+> which includes half of the current winequartzdrv, the Darwine launcher
+> and Doc code and just about everything else.
+> 
+> If you want to review a patch, look at the patch for 0.9.48
+> 
+> http://sourceforge.net/tracker/?group_id=69890&atid=526089
+> 
+> And help further abstract user32/x11drv like has been done for Window
+> creation and Window positioning.
+
+Aren't you supposed to work on that according to http://wiki.winehq.org/MacOSX/QuartzDriver?
+
+Looks like you overreacted, http://www.kronenberg.org/darwine/ has nothing
+to do with darwine except using its name.
+
+-- 
+Dmitry.
+
+
+From jjmckenzie51 at sprintpcs.com  Sun Mar  2 22:13:42 2008
+From: jjmckenzie51 at sprintpcs.com (James McKenzie)
+Date: Sun, 02 Mar 2008 21:13:42 -0700
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <014b01c87ce1$13395770$a600fea9@DMITRY>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+	<003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+	<19e31a080803021926q75b327d9n9e628cce63d3b3a3@mail.gmail.com>
+	<014b01c87ce1$13395770$a600fea9@DMITRY>
+Message-ID: <47CB7AF6.6070703@sprintpcs.com>
+
+Dmitry Timoshkov wrote:
+> Looks like you overreacted, http://www.kronenberg.org/darwine/ has nothing
+> to do with darwine except using its name.
+>
+>   
+Actually, I have Mike's code and it uses the Darwine build system and 
+applies two patches to it.  One brings in FontForge so that Apple Native 
+fonts will work in Wine, and this is discussed on the Building Wine for 
+MacOSX web page.  The other fixes a known problem for Leopard's handling 
+of screen location (it does not always use :0.0 for security 
+reasons).    I will suggest that he bring back into the Darwine project 
+his fixes.   I think he already has tried but received no response from 
+the Project.
+
+As to the rest, AJ has stated, repeatedly, that he wants no Obj-C in the 
+Wine tree.  This prevents bringing in some Mac specific code, and 
+completely eliminates the winequartz.drv project.  I'm not going to 
+argue with his reasoning, but this forces a Native version of Wine to be 
+a continuous fork with fixes in Wine requiring fixes (if winex11.drv is 
+changed) in the code.
+
+As to support for the Mac, I have been doing what some Mac users are 
+doing now:  Building my own.  Unfortunately, I do not have a place to 
+put my builds where the public can download them.  Also, they contain 
+code that has not been approved for the main Wine build and may contain 
+'dangerous' code.  I'm willing to risk my system's stability to test, 
+but not others.
+
+James McKenzie
+
+
+
+From winehacker at gmail.com  Sun Mar  2 22:47:53 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sun, 2 Mar 2008 23:47:53 -0500
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <014b01c87ce1$13395770$a600fea9@DMITRY>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+	<003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+	<19e31a080803021926q75b327d9n9e628cce63d3b3a3@mail.gmail.com>
+	<014b01c87ce1$13395770$a600fea9@DMITRY>
+Message-ID: <19e31a080803022047p4aab2e8eg3b2e9c292b7ac3a6@mail.gmail.com>
+
+On Sun, Mar 2, 2008 at 10:45 PM, Dmitry Timoshkov
+<dmitry at codeweavers.com> wrote:
+>  I have no idea why you're treating asking the questions as a "hostility".
+>  This is the developers list, not the list for user complaints. Sending
+>  the patches is a usual activity here, not vague reasoning.
+
+Sorry I misread one of your statements. There is no point in sending
+the patches when we already know they are going to be rejected.
+
+>  Feel free to provide/suggest one.
+
+There is a script posted here to make it less of a hassle to build a
+stock Winehq release on OS X.
+
+http://www.wine-forum.org/showthread.php?t=16
+
+I'm happy to start making builds of Winehq snapshots for OS X. I just
+don't see the point when the Darwine packages are better for the end
+user experience. With Winehelper you get Doc integration and a partial
+menu system. The stock X.org on OS X is broken and has inherit
+overhead that will always be present, being able to write directly to
+the native Windowing system seems like a much more logical long term
+solution rather than trying to keep Xorg from breaking and or
+developing hacks to work around X and its tricky interaction with
+Quartz.
+
+>  Aren't you supposed to work on that according to http://wiki.winehq.org/MacOSX/QuartzDriver?
+
+I have been but I've put my work on it on hold pending a new round of
+patches from Emmanuel. My point was that you asked for patches, there
+is one for your pleasure. I welcome your thoughts and I am sure
+Emmanuel does as well. I know Pierre seemed to get disappointed when
+he wanted to develop quartzdrv in winehq but could not get a clear
+idea of what Julliard really wanted. What do you want/think quartzdrv
+in winehq should look like? How should it be implemented? What
+infrastructure changes should be made?
+
+>  Looks like you overreacted, http://www.kronenberg.org/darwine/ has nothing
+>  to do with darwine except using its name.
+
+Sorry like I said I mis-read the other email. My point was that it
+does not seem that anyone wants to provide real solutions. I don't
+think Emmanuel or Pierre really knew what Julliard wants in Quartzdrv.
+I don't know know what you want in it. I know there is a certain level
+of abstraction that needs to be done in user32 and I was glad to see
+Julliard started working on it, thats what made me interested in
+bringing some life back in to quartzdrv. It would be nice if those
+people that are the experts on the Wine driver model would speak up
+and say would needs to be done before we can have this driver.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From jim at pagesmiths.com  Sun Mar  2 23:00:18 2008
+From: jim at pagesmiths.com (Jim White)
+Date: Sun, 02 Mar 2008 22:00:18 -0700
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <47CB7AF6.6070703@sprintpcs.com>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>	<200803021850.04583.stefan@codeweavers.com>	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>	<C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>	<003101c87cda$c9ceb0e0$a600fea9@DMITRY>	<19e31a080803021926q75b327d9n9e628cce63d3b3a3@mail.gmail.com>	<014b01c87ce1$13395770$a600fea9@DMITRY>
+	<47CB7AF6.6070703@sprintpcs.com>
+Message-ID: <47CB85E2.9050600@pagesmiths.com>
+
+Any developer that wants to maintain source and/or binaries on the 
+Darwine project at SF.net is welcome to do so.
+
+I have responded to every such request that I have seen, which isn't to 
+say of course that someone hasn't sent such a message that I haven't 
+seen.  Folks should be aware that you must subscribe to the list to post 
+(although I do manually review posts from non-subscribers and try to put 
+through any that are actually about Darwine and not male enhancement or 
+get rich quick...).  It is true that questions from users trying to run 
+application X may not get much help other than being told Darwine isn't 
+ready for end users.
+
+Of course folks are also welcome to host their own builds, and I'd be 
+happy if someone came along and just fixed the web site (which suffered 
+greatly in the move back to SF.net from opendarwin.org - I didn't want 
+to leave SF.net in the first place...), so we could point other folks to 
+those builds.
+
+It was never my intention that Darwine be a fork of Wine, but rather a 
+friendly haven for Mac developers working on Wine.  If that means doing 
+more for users such as hosting binaries, then I'm fine with that too.
+
+Geeze.  I just looked at the download stats and folks are pulling almost 
+300 copies a day (nearly 7GB).  It would be nice if they were using that 
+bandwidth to get something useful...
+
+Jim White
+http://darwine.sf.net/
+
+James McKenzie wrote:
+
+> Dmitry Timoshkov wrote:
+> 
+>>Looks like you overreacted, http://www.kronenberg.org/darwine/ has nothing
+>>to do with darwine except using its name.
+>>  
+> 
+> Actually, I have Mike's code and it uses the Darwine build system and 
+> applies two patches to it.  One brings in FontForge so that Apple Native 
+> fonts will work in Wine, and this is discussed on the Building Wine for 
+> MacOSX web page.  The other fixes a known problem for Leopard's handling 
+> of screen location (it does not always use :0.0 for security 
+> reasons).    I will suggest that he bring back into the Darwine project 
+> his fixes.   I think he already has tried but received no response from 
+> the Project.
+> 
+> As to the rest, AJ has stated, repeatedly, that he wants no Obj-C in the 
+> Wine tree.  This prevents bringing in some Mac specific code, and 
+> completely eliminates the winequartz.drv project.  I'm not going to 
+> argue with his reasoning, but this forces a Native version of Wine to be 
+> a continuous fork with fixes in Wine requiring fixes (if winex11.drv is 
+> changed) in the code.
+> 
+> As to support for the Mac, I have been doing what some Mac users are 
+> doing now:  Building my own.  Unfortunately, I do not have a place to 
+> put my builds where the public can download them.  Also, they contain 
+> code that has not been approved for the main Wine build and may contain 
+> 'dangerous' code.  I'm willing to risk my system's stability to test, 
+> but not others.
+> 
+> James McKenzie
+
+
+
+From dmitry at codeweavers.com  Sun Mar  2 23:04:17 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 Mar 2008 13:04:17 +0800
+Subject: winequartz.drv Mac OS X UI discontinued?
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl><200803021850.04583.stefan@codeweavers.com><19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com><C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl><003101c87cda$c9ceb0e0$a600fea9@DMITRY><19e31a080803021926q75b327d9n9e628cce63d3b3a3@mail.gmail.com><014b01c87ce1$13395770$a600fea9@DMITRY>
+	<19e31a080803022047p4aab2e8eg3b2e9c292b7ac3a6@mail.gmail.com>
+Message-ID: <01cc01c87cec$0a948210$a600fea9@DMITRY>
+
+"Steven Edwards" <winehacker at gmail.com> wrote:
+
+> I have been but I've put my work on it on hold pending a new round of
+> patches from Emmanuel. My point was that you asked for patches, there
+> is one for your pleasure. I welcome your thoughts and I am sure
+> Emmanuel does as well. I know Pierre seemed to get disappointed when
+> he wanted to develop quartzdrv in winehq but could not get a clear
+> idea of what Julliard really wanted. What do you want/think quartzdrv
+> in winehq should look like? How should it be implemented? What
+> infrastructure changes should be made?
+
+Alexandre has moved a lot of things to user32 that previously were needed
+to be implemented on the driver side (SetWindowPos, ShowWindow, DCE) which
+should greatly simplify the quartzdrv efforts.
+
+-- 
+Dmitry.
+
+
+From ono at java.pl  Mon Mar  3 03:39:06 2008
+From: ono at java.pl (Adam Strzelecki)
+Date: Mon, 3 Mar 2008 10:39:06 +0100
+Subject: winequartz.drv Mac OS X UI discontinued?
+In-Reply-To: <47CB7AF6.6070703@sprintpcs.com>
+References: <169F6047-C9D9-4C25-9E39-28AFE06C366D@java.pl>
+	<200803021850.04583.stefan@codeweavers.com>
+	<19e31a080803021053u74f564fo7b6a9fdd6676a37@mail.gmail.com>
+	<C6F397EE-31F0-43F8-837A-712D5ED29DBE@java.pl>
+	<003101c87cda$c9ceb0e0$a600fea9@DMITRY>
+	<19e31a080803021926q75b327d9n9e628cce63d3b3a3@mail.gmail.com>
+	<014b01c87ce1$13395770$a600fea9@DMITRY>
+	<47CB7AF6.6070703@sprintpcs.com>
+Message-ID: <1B8D4E96-4E8C-4117-82EE-768C69AF8E38@java.pl>
+
+James McKenzie wrote:
+> As to the rest, AJ has stated, repeatedly, that he wants no Obj-C in  
+> the
+> Wine tree.  This prevents bringing in some Mac specific code, and
+> completely eliminates the winequartz.drv project.  I'm not going to
+> argue with his reasoning, but this forces a Native version of Wine  
+> to be
+> a continuous fork with fixes in Wine requiring fixes (if winex11.drv  
+> is
+> changed) in the code.
+
+That means no good for Mac users. With Leopard release Carbon (pure C)  
+is more-less deprecated API, Apple pushes all new functionality only  
+to Obj-C Cocoa, also there's is no 64-bit Carbon at all.
+I don't want to argue what's wrong with Obj-C that it cannot go into  
+Wine code-base, but staying out of it won't ever bring full Wine  
+support for Mac users.
+
+Dmitry Timoshkov wrote:
+> This is the developers list, not the list for user complaints. Sending
+> the patches is a usual activity here, not vague reasoning.
+
+That's bizarre, but OK, every society has its own rules. I raised here  
+subject about implementation (or call it development) of some Wine  
+module (winequartz.drv), so I thought it is more adequate to post it  
+here, but if you call it user complaint alright, this list is "sending  
+patches" (even I thought wine-patches is the one) I cut this chit-chat.
+
+-- 
+Adam Strzelecki |: nanoant.com :|
+
+P.S. What was wrong with "Reply-To" header? I call it normal habit at  
+other lists.
+
+
+
+From rob at codeweavers.com  Mon Mar  3 04:07:19 2008
+From: rob at codeweavers.com (Robert Shearman)
+Date: Mon, 03 Mar 2008 10:07:19 +0000
+Subject: msi: Fix cast-qual warnings
+In-Reply-To: <22821af30803010009i56387b95j313566481ccce86e@mail.gmail.com>
+References: <22821af30803010009i56387b95j313566481ccce86e@mail.gmail.com>
+Message-ID: <47CBCDD7.6000404@codeweavers.com>
+
+James Hawkins wrote:
+>      module = LoadLibraryExW( file->TargetPath, NULL, LOAD_LIBRARY_AS_DATAFILE );
+>      if (module)
+>      {
+> -        LPCWSTR guid;
+> -        guid = MSI_RecordGetString(row,1);
+> -        CLSIDFromString((LPWSTR)guid, &tl_struct.clsid);
+> +        LPWSTR guid;
+> +        guid = strdupW(MSI_RecordGetString(row, 1));
+> +        CLSIDFromString(guid, &tl_struct.clsid);
+> +        msi_free(guid);
+>          tl_struct.source = strdupW( file->TargetPath );
+>          tl_struct.path = NULL;
+I can guarantee you that CLSIDFromString does not change the input string. We should not be adding extra performance costs in the form of extra memory allocations for the sake of getting rid of a fairly harmless warning. We should fix the ones that don't require an extra allocations or other performance penalty and leave the warning off.
+
+
+-- 
+Rob Shearman
+
+
+
+From rob at codeweavers.com  Mon Mar  3 04:10:11 2008
+From: rob at codeweavers.com (Robert Shearman)
+Date: Mon, 03 Mar 2008 10:10:11 +0000
+Subject: ntdll: Added support for Windows 2008
+In-Reply-To: <fqe2q8$c3m$1@ger.gmane.org>
+References: <fqe2q8$c3m$1@ger.gmane.org>
+Message-ID: <47CBCE83.8010103@codeweavers.com>
+
+Alistair Leslie-Hughes wrote:
+>          sizeof(RTL_OSVERSIONINFOEXW), 6, 0, 0x1770, VER_PLATFORM_WIN32_NT,
+>          {' ',0},
+>          0, 0, VER_SUITE_SINGLEUSERTS, VER_NT_WORKSTATION, 0
+> +    },
+> +    /* WIN2K8 */
+> +    {
+> +        sizeof(RTL_OSVERSIONINFOEXW), 6, 0, 0x1771, VER_PLATFORM_WIN32_NT,
+> +        {'S','e','r','v','i','c','e',' ','P','a','c','k',' ','1',0},
+> +        0, 0, VER_SUITE_SINGLEUSERTS, VER_NT_SERVER, 0
+>      }
+>  };
+>   
+
+I see Microsoft are using even more sneaky tactics these days to 
+increase sales. They are releasing new versions of Windows with the 
+first service pack already applied to satisfy the customers who always 
+wait for the first service pack of a version of Windows to come out 
+before upgrading to it.
+
+Or could this just be a copy and paste mistake?
+
+-- 
+Rob Shearman
+
+
+
+From leslie_alistair at hotmail.com  Mon Mar  3 04:23:47 2008
+From: leslie_alistair at hotmail.com (Alistair Leslie-Hughes)
+Date: Mon, 3 Mar 2008 21:23:47 +1100
+Subject: ntdll: Added support for Windows 2008
+References: <fqe2q8$c3m$1@ger.gmane.org> <47CBCE83.8010103@codeweavers.com>
+Message-ID: <fqgjj8$gl5$1@ger.gmane.org>
+
+"Robert Shearman" <rob at codeweavers.com> wrote in message 
+news:47CBCE83.8010103 at codeweavers.com...
+> Alistair Leslie-Hughes wrote:
+>>          sizeof(RTL_OSVERSIONINFOEXW), 6, 0, 0x1770, 
+>> VER_PLATFORM_WIN32_NT,
+>>          {' ',0},
+>>          0, 0, VER_SUITE_SINGLEUSERTS, VER_NT_WORKSTATION, 0
+>> +    },
+>> +    /* WIN2K8 */
+>> +    {
+>> +        sizeof(RTL_OSVERSIONINFOEXW), 6, 0, 0x1771, 
+>> VER_PLATFORM_WIN32_NT,
+>> +        {'S','e','r','v','i','c','e',' ','P','a','c','k',' ','1',0},
+>> +        0, 0, VER_SUITE_SINGLEUSERTS, VER_NT_SERVER, 0
+>>      }
+>>  };
+>>
+>
+> I see Microsoft are using even more sneaky tactics these days to
+> increase sales. They are releasing new versions of Windows with the
+> first service pack already applied to satisfy the customers who always
+> wait for the first service pack of a version of Windows to come out
+> before upgrading to it.
+>
+> Or could this just be a copy and paste mistake?
+No, its no mistake.
+osvi.szCSDVersion returns "Service Pack 1".
+
+I thought it was a mistake as well, when i first saw it, but I ran cpuz on 
+the server, and it
+
+is reported as "Windows Vista Service Pack 1" (It appears the cpuz doesnt 
+understand the
+
+its a server yet).
+
+
+
+Best Regards
+
+ Alistair Leslie-Hughes
+
+
+
+
+From leslie_alistair at hotmail.com  Mon Mar  3 04:55:50 2008
+From: leslie_alistair at hotmail.com (Alistair Leslie-Hughes)
+Date: Mon, 3 Mar 2008 21:55:50 +1100
+Subject: Regession tests
+References: <fq392s$69o$1@ger.gmane.org> <47C531C9.9050600@gmail.com>
+Message-ID: <fqglgm$n3u$1@ger.gmane.org>
+
+"Paul Vriens" <paul.vriens.wine at gmail.com> wrote in message 
+news:47C531C9.9050600 at gmail.com...
+> Alistair Leslie-Hughes wrote:
+>> Hi,
+>>
+>> Some of the regessions test are failing with errors in output file like
+>> msxml3:domdoc start dlls/msxml3/tests/domdoc.c 1.80
+>> msxml3:domdoc done (-1073741819)
+>>
+>> Is this due to a Seg Fault?
+>>
+>>
+> Yes, this usually is an indication that the test crashed. (You would see a
+> 'Failed' on test.winehq.org).
+>
+> -- 
+What is the best way to narrow down what is causing the crash?
+
+Best Regards
+ Alistair Leslie-Hughes 
+
+
+
+
+From dmitry at codeweavers.com  Mon Mar  3 05:03:28 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 Mar 2008 19:03:28 +0800
+Subject: winex11.drv: Add DefaultRefreshRates option to specify refresh
+	ratewhen application does not
+References: <47CB80F1.90300@ossguy.com>
+Message-ID: <028701c87d1e$37f6ef40$a600fea9@DMITRY>
+
+"Denver Gingerich" <denver at ossguy.com> wrote:
+
+> This patch allows the user to specify a list of default refresh
+> rates to use at particular resolutions to override the default
+> behavior that chooses the refresh rate based on whichever mode
+> is first in the list for a given resolution.  The list is specified
+> by populating the X11 Driver/DefaultRefreshRates registry key with
+> a semicolon-delimited list of resolution, refresh rate pairs.
+
+What's really needs to be done is writing the tests to investigate
+what Windows does in that case, and make the tests pass in Wine.
+
+-- 
+Dmitry.
+
+
+From julliard at winehq.org  Mon Mar  3 05:06:48 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 03 Mar 2008 12:06:48 +0100
+Subject: [1/3] shlwapi/tests: Move the function pointers to the string
+	test functions where they are initialized and used.
+In-Reply-To: <alpine.DEB.1.00.0803012113580.16709@amboise.dolphin> (Francois
+	Gouget's message of "Sat, 1 Mar 2008 21:16:09 +0100 (CET)")
+References: <alpine.DEB.1.00.0803012113580.16709@amboise.dolphin>
+Message-ID: <87prucnk1j.fsf@wine.dyndns.org>
+
+Francois Gouget <fgouget at free.fr> writes:
+
+> It makes no sense to declare the function pointers globally, but then 
+> only initialiaze them in one function or another. This is a recipe for 
+> adding code that calls the function pointer elsewhere... and before it 
+> has been initialized of course.
+
+Actually the reason for declaring them globally is that 2.x gcc versions
+sometimes crash on local WINAPI function pointers.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Mon Mar  3 05:18:09 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 03 Mar 2008 12:18:09 +0100
+Subject: mountmgr.sys and ioctl's
+In-Reply-To: <b130c85e0803012356v2887045amb76936b576f0e5a2@mail.gmail.com>
+	(Maarten Lankhorst's message of "Sat, 1 Mar 2008 23:56:48 -0800")
+References: <b130c85e0803012356v2887045amb76936b576f0e5a2@mail.gmail.com>
+Message-ID: <87ir04njim.fsf@wine.dyndns.org>
+
+"Maarten Lankhorst" <m.b.lankhorst at gmail.com> writes:
+
+> What if we always map access to \\.\X: is always mapped to mountmgr,
+> and let mountmanager open \\.\X:: that would be mapped to
+> /dosdevices/x::, any ioctl, and read/write stuff that mountmgr can't
+> handle can then be forwarded to the raw device, if available.
+>
+> Do you think that would be an appropiate solution?
+
+No, things that can be done locally through the fd shouldn't have to go
+through mountmgr, especially not read/writes.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Mon Mar  3 05:26:13 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 03 Mar 2008 12:26:13 +0100
+Subject: [PATCH 1/1] GDI+: Implement GdipGetImageEncoders.
+In-Reply-To: <1203868184-16476-1-git-send-email-nathan.beckmann@gmail.com>
+	(Nathan Beckmann's message of "Sun, 24 Feb 2008 07:49:44 -0800")
+References: <1203868184-16476-1-git-send-email-nathan.beckmann@gmail.com>
+Message-ID: <87ejasnj56.fsf@wine.dyndns.org>
+
+Nathan Beckmann <nathan.beckmann at gmail.com> writes:
+
+> +
+> +/*************************************************************************
+> + * Encoders -
+> + *   Implemented as dummy objects that let the user know which files are
+> + *   supported. Actual encoding is done by OLE.
+> + *
+> + *   This code is based heavily on libgdiplus (Mono):
+> + *
+> [...]
+
+What's the point of including such a large copyright notice if you are
+not actually copying any code?  You are just defining a couple of
+constants, you don't need to copy that from Mono.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Mon Mar  3 05:27:18 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 03 Mar 2008 12:27:18 +0100
+Subject: [PATCH 1/6] OLE: Remove tabs from olepicture.c test file.
+In-Reply-To: <1203868639-16623-1-git-send-email-nathan.beckmann@gmail.com>
+	(Nathan Beckmann's message of "Sun, 24 Feb 2008 07:57:14 -0800")
+References: <1203868639-16623-1-git-send-email-nathan.beckmann@gmail.com>
+Message-ID: <87ablgnj3d.fsf@wine.dyndns.org>
+
+Please don't do that.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From msclrhd at googlemail.com  Mon Mar  3 04:49:13 2008
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Mon, 3 Mar 2008 10:49:13 +0000
+Subject: ntdll: Added support for Windows 2008
+In-Reply-To: <47CBCE83.8010103@codeweavers.com>
+References: <fqe2q8$c3m$1@ger.gmane.org> <47CBCE83.8010103@codeweavers.com>
+Message-ID: <3f4fd2640803030249t49062983ybda517dcafb11ef@mail.gmail.com>
+
+On 03/03/2008, Robert Shearman <rob at codeweavers.com> wrote:
+>
+>  I see Microsoft are using even more sneaky tactics these days to
+>  increase sales. They are releasing new versions of Windows with the
+>  first service pack already applied to satisfy the customers who always
+>  wait for the first service pack of a version of Windows to come out
+>  before upgrading to it.
+>
+>  Or could this just be a copy and paste mistake?
+
+Windows 2008 is built on the Vista codebase, and is aligned with Vista
+SP1. When Vista SP2 ships, it will be Windows 2008 SP1. (Source: Paul
+Thurott's podcast on www.twit.tv).
+
+- Reece
+
+
+From martin at hinner.info  Mon Mar  3 06:16:46 2008
+From: martin at hinner.info (Martin Hinner)
+Date: Mon, 3 Mar 2008 13:16:46 +0100
+Subject: Getting apps running under Wine
+Message-ID: <24d1a1690803030416u128ff6a7i59ad69eeeb06f976@mail.gmail.com>
+
+Hello,
+
+   I would like to run some of our (win32-based) applications under
+Linux using Wine. At this time it is only for my personal use, but
+maybe someday some of our users will like to have it on Linux like me.
+
+   I have managed to get all of them running, showing at least first
+dialog/window. But there are some problems:
+
+1) User interface stuff. We are using dialogs (MFC CDialog) that have
+non-default font size (i.e.  Times New Roman, 12 ). The font is
+displayed correctly under Wine, but dialog window has wrong size (it's
+smaller and some parts of dialog, mainly buttons at bottom, are not
+visible). I can send more info on this. How to solve this problem
+(other way than detecting Wine and resizing window manually) ?
+
+2) Windows drivers. We use DLL that depends on some Win32 drivers.
+Linux driver is available with similar API, so it's not a big problem
+to change our application to use Linux library. I understand that
+clearest way how to solve this problem is to make .dll.so file, but
+it's quite complicated for this particular application and I would
+prefer much more to add few if conditions to our Windows code that
+would recognize Wine under Linux and load native .so file (not
+.dll.so!). Is this possible? How to deal with different calling
+conventions between gcc and Visual C++ 2003 ?
+
+3) Windows service. We use a windows NT service (which can easily be
+ported to Linux,btw), an application communicates with the service
+using named pipe. Is it possible to communicate from "wined"
+application with some Linux program using technique other than TCP or
+Unix socket ? If no - is it possible to open Unix socket from our win
+app ?
+
+-- 
+Martin Hinner
+
+http://martin.hinner.info
+http://www.auto-diagnostics.info
+
+
+From fgouget at free.fr  Mon Mar  3 07:27:07 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Mon, 3 Mar 2008 14:27:07 +0100 (CET)
+Subject: [1/3] shlwapi/tests: Move the function pointers to the string
+	test functions where they are initialized and used.
+In-Reply-To: <87prucnk1j.fsf@wine.dyndns.org>
+References: <alpine.DEB.1.00.0803012113580.16709@amboise.dolphin>
+	<87prucnk1j.fsf@wine.dyndns.org>
+Message-ID: <alpine.DEB.1.00.0803031426190.2379@amboise.dolphin>
+
+On Mon, 3 Mar 2008, Alexandre Julliard wrote:
+
+> Francois Gouget <fgouget at free.fr> writes:
+> 
+> > It makes no sense to declare the function pointers globally, but then 
+> > only initialiaze them in one function or another. This is a recipe for 
+> > adding code that calls the function pointer elsewhere... and before it 
+> > has been initialized of course.
+> 
+> Actually the reason for declaring them globally is that 2.x gcc versions
+> sometimes crash on local WINAPI function pointers.
+
+Then I think it's better to initialize them all in the test's 'main' 
+function. I'll submit a patch for that.
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+                  A black hole is just God dividing by zero.
+
+
+From julliard at winehq.org  Mon Mar  3 08:38:22 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 03 Mar 2008 15:38:22 +0100
+Subject: [PATCH 1/4] rpcss: Implement endpoint-mapper server using DCE/RPC.
+In-Reply-To: <47CBEB37.5040401@codeweavers.com> (Robert Shearman's message of
+	"Mon, 03 Mar 2008 12:12:39 +0000")
+References: <47CBEB37.5040401@codeweavers.com>
+Message-ID: <87skz7na8x.fsf@wine.dyndns.org>
+
+Robert Shearman <rob at codeweavers.com> writes:
+
+> ---
+>   include/Makefile.in            |    2 +
+>   include/sharedidl/dcetypes.idl |   88 ++++++++++++
+>   include/sharedidl/epm.idl      |  113 ++++++++++++++++
+>   programs/rpcss/Makefile.in     |    3 +
+>   programs/rpcss/epm.idl         |   19 +++
+>   programs/rpcss/epmp.c          |  291
+> ++++++++++++++++++++++++++++++++++++++++
+>   programs/rpcss/rpcss_main.c    |   54 +++++---
+>   7 files changed, 550 insertions(+), 20 deletions(-)
+>   create mode 100644 include/sharedidl/dcetypes.idl
+>   create mode 100644 include/sharedidl/epm.idl
+>   create mode 100644 programs/rpcss/epm.idl
+>   create mode 100644 programs/rpcss/epmp.c
+
+That sharedidl stuff is ugly, we really have to find a way to make this
+work with the idl files in include/wine.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From denver at ossguy.com  Mon Mar  3 09:04:53 2008
+From: denver at ossguy.com (Denver Gingerich)
+Date: Mon, 3 Mar 2008 10:04:53 -0500
+Subject: winex11.drv: Add DefaultRefreshRates option to specify refresh
+	ratewhen application does not
+In-Reply-To: <028701c87d1e$37f6ef40$a600fea9@DMITRY>
+References: <47CB80F1.90300@ossguy.com> <028701c87d1e$37f6ef40$a600fea9@DMITRY>
+Message-ID: <6defe8840803030704x1424f0ddu89c104565f40a516@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 6:03 AM, Dmitry Timoshkov <dmitry at codeweavers.com> wrote:
+> "Denver Gingerich" <denver at ossguy.com> wrote:
+>
+>  > This patch allows the user to specify a list of default refresh
+>  > rates to use at particular resolutions to override the default
+>  > behavior that chooses the refresh rate based on whichever mode
+>  > is first in the list for a given resolution.  The list is specified
+>  > by populating the X11 Driver/DefaultRefreshRates registry key with
+>  > a semicolon-delimited list of resolution, refresh rate pairs.
+>
+>  What's really needs to be done is writing the tests to investigate
+>  what Windows does in that case, and make the tests pass in Wine.
+
+The only way I could see of modifying the default refresh rate under
+Windows is to change it through Display Settings.  Unfortunately, not
+all Wine platforms have this option.  On my system, where the Nvidia
+binary driver automatically constructs a list of modes (there are no
+ModeLine entries in xorg.conf), there does not appear to be a
+mechanism for modifying the mode list.
+
+I suppose the proper solution would be to modify the Nvidia binary
+driver to allow for modification of the mode list (and modify any
+other drivers that don't provide that mechanism).  While I generally
+like proper solutions, I don't think that is a practical option
+because we don't have access to the Nvidia binary driver source code
+yet those with Nvidia cards have to use it for
+DirectDrawRenderer=opengl and RenderTargetLockMode=readtex.
+
+If I find the time, I will try to construct a test case in the next
+few days and run it on Windows and Wine to see what happens.  If
+someone on the list is interested, though, I would appreciate if they
+did it instead.  I don't have a development environment setup on
+Windows at this point.
+
+Regardless of the outcome of the test cases, I would still like to see
+DefaultRefreshRates implemented in Wine for the reasons above.  Unless
+someone can tell me how to change the mode ordering in the OS with the
+Nvidia driver, I can't see any way to choose different default refresh
+rates for the various resolutions.  I would appreciate if others could
+comment on whether their video card driver allows the mode ordering to
+be changed.
+
+Denver
+
+
+From dmitry at codeweavers.com  Mon Mar  3 09:25:18 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 Mar 2008 23:25:18 +0800
+Subject: winex11.drv: Add DefaultRefreshRates option to specify
+	refreshratewhen application does not
+References: <47CB80F1.90300@ossguy.com> <028701c87d1e$37f6ef40$a600fea9@DMITRY>
+	<6defe8840803030704x1424f0ddu89c104565f40a516@mail.gmail.com>
+Message-ID: <03e401c87d42$cb7a69d0$a600fea9@DMITRY>
+
+"Denver Gingerich" <denver at ossguy.com> wrote:
+
+> The only way I could see of modifying the default refresh rate under
+> Windows is to change it through Display Settings.  Unfortunately, not
+> all Wine platforms have this option.  On my system, where the Nvidia
+> binary driver automatically constructs a list of modes (there are no
+> ModeLine entries in xorg.conf), there does not appear to be a
+> mechanism for modifying the mode list.
+
+Why do you need to modify the modes list? You need to figure out how
+Windows chooses from the list of available modes when refresh rate is
+not specified. Does it select first/best/any from the list?
+
+-- 
+Dmitry.
+
+
+From dank at kegel.com  Mon Mar  3 10:09:44 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 3 Mar 2008 08:09:44 -0800
+Subject: Building dlls/oleaut32/tests/olepicture.c under Cygwin?
+Message-ID: <a71bd89a0803030809w2095b3f8s57b5029a2d21c7c7@mail.gmail.com>
+
+I tried building dlls/oleaut32/tests/olepicture.c
+on Windows using cygwin, but ran into a couple small problems.
+The main problem is:
+
+/cygdrive/c/DOCUME~1/Liz/LOCALS~1/Temp/ccXL7SF3.o:olepicture.c:(.text+0x18e5):
+undefined reference to `_IPictureDisp_Invoke'
+
+That sounds fishy - is that test using a wine-specific shortcut?
+If so, what's the kosher windows way to do what it's doing?
+
+Here's the procedure I followed:
+
+1. Download and run the installer from http://cygwin.com
+Use it to install gcc and git
+2. Open a cygwin window
+3. Grab a copy of the Wine sources using git as normal
+4. cd wine/dlls/oleaut32/tests
+5. to avoid conflicts between the win32 headers from wine and from cygwin,
+just use the cygwin ones.  But we do have to copy one header from wine:
+ mkdir -p include/wine
+ cp ../../../include/wine/test.h include/wine
+6. Try compiling and linking with
+$ gcc -DSTANDALONE -Iinclude olepicture.c -mwindows -loleaut32 -lole32 -luuid
+This fails with all sorts of errors about LOGFONTA.
+That's because the include lines in olepicture.c are in the wrong order!
+Edit olepicture.c and change the lines
+
+#include <winuser.h>
+#include <wingdi.h>
+
+to read
+
+#include <wingdi.h>
+#include <winuser.h>
+
+7. Try compiling again.  Now you fail with a handful of errors like
+/cygdrive/c/DOCUME~1/Liz/LOCALS~1/Temp/ccXL7SF3.o:olepicture.c:(.text+0x18e5): u
+ndefined reference to `_IPictureDisp_Invoke'
+
+Seems like a portability problem in tests/olepicture.c.
+
+
+From denver at ossguy.com  Mon Mar  3 10:10:50 2008
+From: denver at ossguy.com (Denver Gingerich)
+Date: Mon, 3 Mar 2008 11:10:50 -0500
+Subject: winex11.drv: Add DefaultRefreshRates option to specify
+	refreshratewhen application does not
+In-Reply-To: <03e401c87d42$cb7a69d0$a600fea9@DMITRY>
+References: <47CB80F1.90300@ossguy.com> <028701c87d1e$37f6ef40$a600fea9@DMITRY>
+	<6defe8840803030704x1424f0ddu89c104565f40a516@mail.gmail.com>
+	<03e401c87d42$cb7a69d0$a600fea9@DMITRY>
+Message-ID: <6defe8840803030810h3cea606ema4afa265dec35de@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 10:25 AM, Dmitry Timoshkov
+<dmitry at codeweavers.com> wrote:
+> "Denver Gingerich" <denver at ossguy.com> wrote:
+>
+>
+> > The only way I could see of modifying the default refresh rate under
+>  > Windows is to change it through Display Settings.  Unfortunately, not
+>  > all Wine platforms have this option.  On my system, where the Nvidia
+>  > binary driver automatically constructs a list of modes (there are no
+>  > ModeLine entries in xorg.conf), there does not appear to be a
+>  > mechanism for modifying the mode list.
+>
+>  Why do you need to modify the modes list?
+
+Using the current Wine code (without this patch), modifying the modes
+list so that a particular refresh rate appears first in the list is
+the only way that I can see to specify a default refresh rate for a
+given resolution.  This is because the current Wine code chooses the
+first mode that matches the resolution if no refresh rate is specified
+even if there are other modes with the same resolution but different
+refresh rates.
+
+I think what you're saying is that Wine's current behavior (pick the
+first mode with matching resolution) does not necessarily reflect
+Windows' behavior so testing needs to be done to see what algorithm
+Windows uses to determine the refresh rate when it isn't specified.
+Correct me if I'm wrong.
+
+> You need to figure out how
+>  Windows chooses from the list of available modes when refresh rate is
+>  not specified. Does it select first/best/any from the list?
+
+This test definitely needs to be done.  I will hopefully have time in
+the next few days but if someone else beats me to it, I won't
+complain.
+
+Denver
+
+
+From rob at codeweavers.com  Mon Mar  3 10:19:30 2008
+From: rob at codeweavers.com (Robert Shearman)
+Date: Mon, 03 Mar 2008 16:19:30 +0000
+Subject: Building dlls/oleaut32/tests/olepicture.c under Cygwin?
+In-Reply-To: <a71bd89a0803030809w2095b3f8s57b5029a2d21c7c7@mail.gmail.com>
+References: <a71bd89a0803030809w2095b3f8s57b5029a2d21c7c7@mail.gmail.com>
+Message-ID: <47CC2512.3040608@codeweavers.com>
+
+Dan Kegel wrote:
+> 7. Try compiling again.  Now you fail with a handful of errors like
+> /cygdrive/c/DOCUME~1/Liz/LOCALS~1/Temp/ccXL7SF3.o:olepicture.c:(.text+0x18e5): u
+> ndefined reference to `_IPictureDisp_Invoke'
+>
+> Seems like a portability problem in tests/olepicture.c.
+
+ From ocidl.h:
+#define 
+IPictureDisp_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) 
+(This)->lpVtbl->Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+Which headers are you using?
+
+-- 
+Rob Shearman
+
+
+
+From dank at kegel.com  Mon Mar  3 10:24:07 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 3 Mar 2008 08:24:07 -0800
+Subject: Building dlls/oleaut32/tests/olepicture.c under Cygwin?
+In-Reply-To: <47CC2512.3040608@codeweavers.com>
+References: <a71bd89a0803030809w2095b3f8s57b5029a2d21c7c7@mail.gmail.com>
+	<47CC2512.3040608@codeweavers.com>
+Message-ID: <a71bd89a0803030824q4af31a81hf613e7d79e25a5b4@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 8:19 AM, Robert Shearman <rob at codeweavers.com> wrote:
+>   From ocidl.h:
+>  #define  IPictureDisp_Invoke ...
+>
+>  Which headers are you using?
+
+The cygwin ones.  Think I can just add that one define to them?
+
+
+From dank at kegel.com  Mon Mar  3 10:29:44 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 3 Mar 2008 08:29:44 -0800
+Subject: Building dlls/oleaut32/tests/olepicture.c under Cygwin?
+In-Reply-To: <a71bd89a0803030824q4af31a81hf613e7d79e25a5b4@mail.gmail.com>
+References: <a71bd89a0803030809w2095b3f8s57b5029a2d21c7c7@mail.gmail.com>
+	<47CC2512.3040608@codeweavers.com>
+	<a71bd89a0803030824q4af31a81hf613e7d79e25a5b4@mail.gmail.com>
+Message-ID: <a71bd89a0803030829j30f6209cjb150b83ab0327121@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 8:24 AM, Dan Kegel <dank at kegel.com> wrote:
+> On Mon, Mar 3, 2008 at 8:19 AM, Robert Shearman <rob at codeweavers.com> wrote:
+>  >   From ocidl.h:
+>  >  #define  IPictureDisp_Invoke ...
+> >
+>  >  Which headers are you using?
+>
+>  The cygwin ones.  Think I can just add that one define to them?
+
+I bet not.  I guess I'll try the microsoft headers next.
+
+
+From winehacker at gmail.com  Mon Mar  3 10:51:26 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Mon, 3 Mar 2008 11:51:26 -0500
+Subject: Building dlls/oleaut32/tests/olepicture.c under Cygwin?
+In-Reply-To: <a71bd89a0803030829j30f6209cjb150b83ab0327121@mail.gmail.com>
+References: <a71bd89a0803030809w2095b3f8s57b5029a2d21c7c7@mail.gmail.com>
+	<47CC2512.3040608@codeweavers.com>
+	<a71bd89a0803030824q4af31a81hf613e7d79e25a5b4@mail.gmail.com>
+	<a71bd89a0803030829j30f6209cjb150b83ab0327121@mail.gmail.com>
+Message-ID: <19e31a080803030851r9bb7f5fy41cf5b4ee345d250@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 11:29 AM, Dan Kegel <dank at kegel.com> wrote:
+>  >  The cygwin ones.  Think I can just add that one define to them?
+>
+>  I bet not.  I guess I'll try the microsoft headers next.
+
+The default search order for the headers on cygwin/mingw is host then
+Wine so if you just remove or rename the w32api headers you will end
+up including the Wine headers which may fix the problem.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From juan.lang at gmail.com  Mon Mar  3 11:09:08 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Mon, 3 Mar 2008 09:09:08 -0800
+Subject: Getting apps running under Wine
+In-Reply-To: <24d1a1690803030416u128ff6a7i59ad69eeeb06f976@mail.gmail.com>
+References: <24d1a1690803030416u128ff6a7i59ad69eeeb06f976@mail.gmail.com>
+Message-ID: <3a768c550803030909q29647b57i704040f69b7dac72@mail.gmail.com>
+
+Hi Martin,
+
+>  1) User interface stuff. We are using dialogs (MFC CDialog) that have
+>  non-default font size (i.e.  Times New Roman, 12 ). The font is
+>  displayed correctly under Wine, but dialog window has wrong size (it's
+>  smaller and some parts of dialog, mainly buttons at bottom, are not
+>  visible). I can send more info on this. How to solve this problem
+>  (other way than detecting Wine and resizing window manually) ?
+
+Please open a bug at our bugzilla (bugs.winehq.org).  Attaching
+screenshots of the problem would help.  We discourage you from working
+around Wine bugs, because if we fix the bug, we'll break your app in
+the process.  Better to fix Wine.
+
+>  2) Windows drivers. We use DLL that depends on some Win32 drivers.
+>  Linux driver is available with similar API, so it's not a big problem
+>  to change our application to use Linux library. I understand that
+>  clearest way how to solve this problem is to make .dll.so file, but
+>  it's quite complicated for this particular application and I would
+>  prefer much more to add few if conditions to our Windows code that
+>  would recognize Wine under Linux and load native .so file (not
+>  .dll.so!). Is this possible? How to deal with different calling
+>  conventions between gcc and Visual C++ 2003 ?
+
+I'm not sure what you mean by different calling conventions; gcc
+supports the __stdcall convention, at least, and VC++ supports
+__cdecl.  If you're using __fastcall you'll need to change it to one
+of the others, I think.
+
+As far as detecting Wine, again we prefer you don't.  Would it be any
+great problem to ship a Linux version that called the Linux drivers,
+and a Windows version that called the Windows drivers?
+
+>  3) Windows service. We use a windows NT service (which can easily be
+>  ported to Linux,btw), an application communicates with the service
+>  using named pipe. Is it possible to communicate from "wined"
+>  application with some Linux program using technique other than TCP or
+>  Unix socket ? If no - is it possible to open Unix socket from our win
+>  app ?
+
+It's certainly possible to open a Unix socket from a winelib app.
+(Wine itself does so.)  Using a named pipe from a regular (not
+winelib) Linux app won't work.
+
+Hope that helps,
+--Juan
+
+
+From austinenglish at gmail.com  Mon Mar  3 12:59:03 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Mon, 3 Mar 2008 12:59:03 -0600
+Subject: Bugzilla's down again
+Message-ID: <b6bb06270803031059re473f98q55c916a64cb4b522@mail.gmail.com>
+
+Someone with access care to reset mysql?
+
+-Austin
+
+
+From kuba at mareimbrium.org  Mon Mar  3 13:47:09 2008
+From: kuba at mareimbrium.org (Kuba Ober)
+Date: Mon, 3 Mar 2008 14:47:09 -0500
+Subject: Next big app(s) to try?
+In-Reply-To: <47B8AFE0.6060509@diderot.org>
+References: <a71bd89a0802170115o7a7a7585o8462762cbda414ad@mail.gmail.com>
+	<47B87933.5090208@gmail.com> <47B8AFE0.6060509@diderot.org>
+Message-ID: <200803031447.09373.kuba@mareimbrium.org>
+
+On Sunday 17 February 2008, denis bonnenfant wrote:
+> Another major application that may be interesting to support is SolidWorks.
+> http://appdb.winehq.org/objectManager.php?sClass=version&iId=8983
+>
+> Why ?
+>
+> - It's one of the most popular CAD application for mechanical design and
+> engineering, and surely the most used for educationnal purposes. Although
+> the industrial version is quite expensive, thousands of $ or ?, it is
+> availiable for free for students in europe, and currently, it is the only
+> app that may prevent them from switching from Windows to Linux.
+
+In similar vein I'd add Alibre Design, which provides almost the same 
+functionality for 5-10x less money.
+
+Cheers, Kuba
+
+
+From dank at kegel.com  Mon Mar  3 13:52:48 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 3 Mar 2008 11:52:48 -0800
+Subject: Building dlls/oleaut32/tests/olepicture.c under Cygwin?
+In-Reply-To: <19e31a080803030851r9bb7f5fy41cf5b4ee345d250@mail.gmail.com>
+References: <a71bd89a0803030809w2095b3f8s57b5029a2d21c7c7@mail.gmail.com>
+	<47CC2512.3040608@codeweavers.com>
+	<a71bd89a0803030824q4af31a81hf613e7d79e25a5b4@mail.gmail.com>
+	<a71bd89a0803030829j30f6209cjb150b83ab0327121@mail.gmail.com>
+	<19e31a080803030851r9bb7f5fy41cf5b4ee345d250@mail.gmail.com>
+Message-ID: <a71bd89a0803031152j789a6be9u606ba4a94aa7436@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 8:51 AM, Steven Edwards <winehacker at gmail.com> wrote:
+>  The default search order for the headers on cygwin/mingw is host then
+>  Wine so if you just remove or rename the w32api headers you will end
+>  up including the Wine headers which may fix the problem.
+
+That did it.  So the full procedure, for the record, is:
+
+1. Download and run the installer from http://cygwin.com
+Use it to install gcc, git, make, flex, and bison.
+
+2. Open a cygwin window
+
+3. Grab a copy of the Wine sources using git as normal
+
+4. Configure wine, build widl, and use it to expand .idl files to .h files.
+$ cd wine
+$ ./configure
+$ cd libs/port; make; cd -
+$ cd libs/wpp; make; cd -
+$ cd tools/widl; make; cd -
+$ cd include; make; cd -
+
+5. cd wine/dlls/oleaut32/tests
+
+5. to avoid conflicts between the win32 headers from wine and from cygwin,
+just use the wine ones.  The easiest way to nuke the cygwin ones
+is to do
+$ mv /usr/include/w32api /usr/include/w32api.x
+
+6. Try compiling and linking your test.  e.g.
+$ cd wine/dlls/oleaut32/tests
+$ gcc -DSTANDALONE -I../../../include olepicture.c -mno-cygwin
+-loleaut32 -lole32 -luuid
+This fails with all sorts of errors about LOGFONTA.
+That's because the include lines in olepicture.c are in the wrong order!
+Edit olepicture.c and change the lines
+
+#include <winuser.h>
+#include <wingdi.h>
+
+to read
+
+#include <wingdi.h>
+#include <winuser.h>
+
+7. Try compiling again.  It should work now.  To run your standalone test, do
+$ ./a.exe
+If you need more verbose output, do
+$ WINETEST_DEBUG=1 ./a.out
+That will enable trace() statements.
+
+
+From jnewman at codeweavers.com  Mon Mar  3 14:23:08 2008
+From: jnewman at codeweavers.com (Jeremy Newman)
+Date: Mon, 03 Mar 2008 14:23:08 -0600
+Subject: Bugzilla's down again
+In-Reply-To: <b6bb06270803031059re473f98q55c916a64cb4b522@mail.gmail.com>
+References: <b6bb06270803031059re473f98q55c916a64cb4b522@mail.gmail.com>
+Message-ID: <47CC5E2C.6060002@codeweavers.com>
+
+It didn't go down that I'm aware of. At least not in the same way it had 
+been crashing before.
+
+Austin English wrote:
+> Someone with access care to reset mysql?
+> 
+> -Austin
+> 
+> 
+
+
+From ben at atomnet.co.uk  Mon Mar  3 14:26:42 2008
+From: ben at atomnet.co.uk (Ben Hodgetts)
+Date: Mon, 03 Mar 2008 20:26:42 +0000
+Subject: Bugzilla's down again
+In-Reply-To: <47CC5E2C.6060002@codeweavers.com>
+References: <b6bb06270803031059re473f98q55c916a64cb4b522@mail.gmail.com>
+	<47CC5E2C.6060002@codeweavers.com>
+Message-ID: <47CC5F02.4070701@atomnet.co.uk>
+
+Seems to work for me although initially loading it took a little longer 
+than it normally does.
+
+Ben H.
+
+Jeremy Newman wrote:
+> It didn't go down that I'm aware of. At least not in the same way it had 
+> been crashing before.
+>
+> Austin English wrote:
+>   
+>> Someone with access care to reset mysql?
+>>
+>> -Austin
+>>
+>>
+>>     
+>
+>
+>   
+
+
+From austinenglish at gmail.com  Mon Mar  3 15:07:31 2008
+From: austinenglish at gmail.com (Austin English)
+Date: Mon, 3 Mar 2008 15:07:31 -0600
+Subject: Bugzilla's down again
+In-Reply-To: <47CC5F02.4070701@atomnet.co.uk>
+References: <b6bb06270803031059re473f98q55c916a64cb4b522@mail.gmail.com>
+	<47CC5E2C.6060002@codeweavers.com> <47CC5F02.4070701@atomnet.co.uk>
+Message-ID: <b6bb06270803031307x4e6a6b1fpe33212b77150e05e@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 2:26 PM, Ben Hodgetts <ben at atomnet.co.uk> wrote:
+> Seems to work for me although initially loading it took a little longer
+>  than it normally does.
+>
+>  Ben H.
+>
+>
+>
+>  Jeremy Newman wrote:
+>  > It didn't go down that I'm aware of. At least not in the same way it had
+>  > been crashing before.
+>  >
+>  > Austin English wrote:
+>  >
+>  >> Someone with access care to reset mysql?
+>  >>
+>  >> -Austin
+>  >>
+>  >>
+>  >>
+>  >
+>  >
+>  >
+>
+>
+>
+
+Yeah, seems to be back up now, had been down for few minutes, but not
+as long as usual...
+
+-Austin
+
+
+From m.b.lankhorst at gmail.com  Mon Mar  3 15:22:30 2008
+From: m.b.lankhorst at gmail.com (Maarten Lankhorst)
+Date: Mon, 3 Mar 2008 13:22:30 -0800
+Subject: Summer of code 2008, looking for volunteers
+Message-ID: <b130c85e0803031322h253a5155m8f87d10140d39a66@mail.gmail.com>
+
+Hi all,
+
+I'm planning on being administrator for wine project with the summer
+of code 2008.
+
+I'm looking for mentor volunteers. If you don't know what that is read
+take some time to read through
+http://code.google.com/soc/2008/faqs.html
+If anyone is interested, please contact me privately.
+
+I'm also looking for project ideas, if anyone has an idea for a
+project for the summer of code, please update
+http://wiki.winehq.org/SummerOfCode . I would prefer projects that can
+be done by small changes at a time, like implementing changes to get
+an application to work, instead of something dractic like a dib
+engine. It should preferably be doable in 2 to 3 months by someone who
+doesn't have a lot of wine experience yet.
+
+I'm also looking for people who want to help out in other ways, like
+updating the wiki page and creating some additional information that
+would be useful to students.
+
+Cheers,
+Maarten.
+
+
+From us at edmeades.me.uk  Mon Mar  3 17:38:57 2008
+From: us at edmeades.me.uk (Ann & Jason Edmeades)
+Date: Mon, 3 Mar 2008 23:38:57 -0000
+Subject: Summer of code 2008 - cmd.exe compatibility?
+Message-ID: <000001c87d87$c445e0f0$1001a8c0@JasonsPC>
+
+Hiya, 
+
+Out of interest, what is meant by improving cmd.exe compatibility?
+
+Jason
+
+
+
+
+From thestig at google.com  Mon Mar  3 17:52:21 2008
+From: thestig at google.com (Lei Zhang)
+Date: Mon, 3 Mar 2008 15:52:21 -0800
+Subject: Summer of code 2008 - cmd.exe compatibility?
+In-Reply-To: <000001c87d87$c445e0f0$1001a8c0@JasonsPC>
+References: <000001c87d87$c445e0f0$1001a8c0@JasonsPC>
+Message-ID: <558b2f5c0803031552l6694951s1b90bbb4c0a75132@mail.gmail.com>
+
+On Mon, Mar 3, 2008 at 3:38 PM, Ann & Jason Edmeades <us at edmeades.me.uk> wrote:
+> Hiya,
+>
+>  Out of interest, what is meant by improving cmd.exe compatibility?
+
+Add support for all the cmd.exe switches and all the dos batch
+programming constructs?
+
+
+From donpedro at tdcadsl.dk  Mon Mar  3 18:40:41 2008
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Tue, 04 Mar 2008 01:40:41 +0100
+Subject: Request for comments on listview patch which was rejected.
+Message-ID: <1204591241.3700.4.camel@dhcppc1>
+
+Hello Devs.
+
+I sent in this listview patch some while ago,
+but it was silently rejected (like most of my patches :-)).
+
+Before i re-send it, could someone take a peak at it and tell me what is
+wrong?
+
+It looks quite sober to me...
+
+/p
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Fixed-listview-bug-when-client-sends-bogus-SETITEMS.patch
+Type: text/x-patch
+Size: 3664 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080304/2f4249e9/attachment.bin 
+
+From dimi at lattica.com  Mon Mar  3 18:45:09 2008
+From: dimi at lattica.com (Dimi Paun)
+Date: Mon, 03 Mar 2008 19:45:09 -0500
+Subject: Request for comments on listview patch which was rejected.
+In-Reply-To: <1204591241.3700.4.camel@dhcppc1>
+References: <1204591241.3700.4.camel@dhcppc1>
+Message-ID: <1204591509.5026.127.camel@dimi.lattica.com>
+
+
+On Tue, 2008-03-04 at 01:40 +0100, Peter Dons Tychsen wrote:
+> It looks quite sober to me...
+
+Looks good to me too...
+
+-- 
+Dimi Paun <dimi at lattica.com>
+Lattica, Inc.
+
+
+
+From stefan at codeweavers.com  Mon Mar  3 19:28:41 2008
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Tue, 4 Mar 2008 02:28:41 +0100
+Subject: Summer of code 2008, looking for volunteers
+In-Reply-To: <b130c85e0803031322h253a5155m8f87d10140d39a66@mail.gmail.com>
+References: <b130c85e0803031322h253a5155m8f87d10140d39a66@mail.gmail.com>
+Message-ID: <200803040228.46184.stefan@codeweavers.com>
+
+Am Montag, 3. M?rz 2008 22:22:30 schrieb Maarten Lankhorst:
+> I'm also looking for project ideas, if anyone has an idea for a
+> project for the summer of code, please update
+> http://wiki.winehq.org/SummerOfCode . I would prefer projects that can
+> be done by small changes at a time, like implementing changes to get
+> an application to work, instead of something dractic like a dib
+> engine. It should preferably be doable in 2 to 3 months by someone who
+> doesn't have a lot of wine experience yet.
+I think writing a (partial?) D3D pipeline replacement shader in either GLSL or 
+ARB is an idea. With the current state of the code this is rather hard, but I 
+am working on some general infrastructure to make this easier. Depending on 
+how far my work gets this could in the end be mainly a matter of translating 
+the D3D settings into a shader, without worrying too much how the shader is 
+then integrated into the rest of the pipeline.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20080304/b1d75ca6/attachment-0001.pgp 
+
+From epssyis at gmail.com  Mon Mar  3 19:53:13 2008
+From: epssyis at gmail.com (Edward Savage)
+Date: Tue, 4 Mar 2008 11:53:13 +1000
+Subject: Summer of code 2008 - cmd.exe compatibility?
+In-Reply-To: <558b2f5c0803031552l6694951s1b90bbb4c0a75132@mail.gmail.com>
+References: <000001c87d87$c445e0f0$1001a8c0@JasonsPC>
+	<558b2f5c0803031552l6694951s1b90bbb4c0a75132@mail.gmail.com>
+Message-ID: <d6c5d7290803031753k414d9b5l2c3cbb8e4f0f4a5e@mail.gmail.com>
+
+Does this also include applications that dump data to cmd.exe will
+have it show now instead of not as is current?
+
+(Ie Eve Online starts with a console, under windows it will list a
+bunch of starting information for the game in cmd, under wine the box
+remains empty unless their is a memory error.  The same is the case
+for several server applications.)
+
+On Tue, Mar 4, 2008 at 9:52 AM, Lei Zhang <thestig at google.com> wrote:
+> On Mon, Mar 3, 2008 at 3:38 PM, Ann & Jason Edmeades <us at edmeades.me.uk> wrote:
+>  > Hiya,
+>  >
+>  >  Out of interest, what is meant by improving cmd.exe compatibility?
+>
+>  Add support for all the cmd.exe switches and all the dos batch
+>  programming constructs?
+>
+>
+>
+
+
+From dank at kegel.com  Mon Mar  3 20:27:51 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 3 Mar 2008 18:27:51 -0800
+Subject: Wine preloader redux
+Message-ID: <a71bd89a0803031827x780cb57dv21f5426587af3eee@mail.gmail.com>
+
+Say, it looks like at some point in the past, an alternate
+approach was looked at for reserving special addresses:
+http://bugzilla.kernel.org/show_bug.cgi?id=2255
+If that kernel issue were resolved, would that let us get
+rid of the preloader?
+
+

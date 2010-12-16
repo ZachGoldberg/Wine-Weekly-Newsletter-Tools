@@ -1,0 +1,214 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="26" date="17 Jan 2000 00:00:00 -0800" />
+<intro>
+
+<p />
+
+This is the twenty sixth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+WineHQ is still having some trouble after the upgrade 2 weeks
+ago. Most of the servers are up and running, even the NNTP got back
+its posted articles; however the NNTP server is no longer
+updated. This is worked upon, but, unfortunately, not yet done.
+
+</intro>
+
+<stats posts="159" size="589" contrib="37" multiples="22" lastweek="20">
+<person posts="19" size="75" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="18" size="43" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="16" size="38" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="13" size="42" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="8" size="21" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="8" size="18" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="7" size="20" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="17" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="6" size="55" who="Fowler &lt;fowler@indigo.ie&gt;" />
+<person posts="6" size="33" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="6" size="18" who="Matthew J. Francis &lt;mfrancis@plus.net.uk&gt;" />
+</stats>
+
+<section 
+  title="WineLib apps, C++ and global constructors"
+  subject="Again WineLib problems"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-113.html"
+>
+
+<p />
+
+Matthew J. Francis reported a crash in GetCommandLine for a C++
+program he tried to make working using winelib. After some
+investigations by Ulrich Weigand, it turned out that this program
+has global objects whose constructors call into Windows APIs. While
+completely correct under Windows, this doesn't work under Wine.
+
+<p />
+
+The initialisation sequence of a Winelib program is:
+
+<p />
+
+<ol>
+   <li />Outer entry point
+   <li />main() which calls all the winelib initialisation code
+   <li />main calls WinMain() which contains all the program code.
+</ol>
+
+<p />
+
+The C++ global objects' constructors get called between step 1 and 2,
+and winelib isn't initialized, hence the error.
+
+<p />
+
+Matthew and Eric Pouech tried different methods to solve this issue,
+(like using a C++ global object to initialize winelib, or use GCC
+extensions like __attribute__((constructor)) functions) but none of
+them seemed conclusive. Matthew ended up rewriting part of the program
+to no longer have global objects, but instead pointers to those
+objects which would be allocated while in WinMain. 
+
+<p />
+
+This solution is, at least for now, the only known one. However,
+Bertho Stultiens proposed a GCC very specific hack (tweaking with GCC
+init sections) he had made when he worked on the import mechanism for
+DLLs in .so shared libs. This has not been further worked upon.</section>
+<section 
+  title="Odin project license change"
+  subject="Odin's changed license"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-172.html"
+>
+
+<p />
+
+This may be the latest license discussion with the Odin project (see 
+<a href="wn20000110_25.html#0">issue #25</a> and
+<a href="wn19991213_21.html#0">issue #21</a>) for the previous
+episodes. 
+
+<p />
+
+Rein Klazes reported some very good news coming from the Odin folks:
+<quote who="Rein Klazes">
+Project Odin Software License has been changed. Changes are not
+radical and are included only for the purpose of better compatibility
+with licenses of other open source projects and sharing of code with
+them. For example, the original license didn't allowed reuse of work
+done for Odin in Wine, even if the component was originally ported
+from Wine. 
+</quote>
+
+<p />
+
+Basically, Odin project now allows some directories to be governed by
+another license than the Odin's one. Rein also reported that,
+currently, the OLE directories contain such a license (which is the
+Wine's one), allowing to back port Odin's enhancement to OLE DLLs back 
+to Wine.
+</section>
+<section 
+  title=".spec files everywhere"
+  subject="RFC: Auto-registration of built-in DLLs"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-192.html"
+>
+
+<p />
+
+Alexandre Julliard and Ulrich Weigand stepped on each other toes this
+week. Ulrich proposed a mechanims to no loner use a global list of all 
+builtin modules (there are in fact two: one for the 16 bit modules,
+and another one for the 32 bit modules). According to Ulrich, there
+are lots of benefits:
+
+<quote who="Ulrich Weigand">
+
+<p />
+
+<ul>
+   <li />no need for global knowlegde about built-in DLLs
+   <li />could potentially be used for WineLib executable modules as well,
+removing the need to handle WineLib resources via strange special case
+constructions
+   <li />could be used as a first step to splitting into shared libraries
+(imports will need to be handled extra)
+   <li />it's simple (mostly removes code ;-)
+</ul></quote>
+
+The only known drawback is a dependency on a gcc feature, (the
+__attribute__((constructor)) telling that a function has to be called
+before main() is entered; this is used in this case to register the
+module). 
+
+<p />
+
+Alexandre then said he already implemented this very mechanism.
+
+<p />
+
+But, Ulrich continued on his idea and proposed also to use equivalent
+mechanism for WineLib apps. Basically, every WineLib should have a
+.spec file. From this .spec file, a winestub.c file would be
+constructed, allowing to:
+
+<quote who="Ulrich Weigand">
+<p />
+<ul>
+   <li />special-cased resource handling (LIBRES) could finally die
+   <li />WineLib apps would have standard PE (or maybe NE) module
+   <li />imports section could cause DLLs to be preloaded so that apps
+relying on GetModuleHandle(...) don't fail 
+   <li />complete unification of Wine and WineLib startup possible
+</ul>
+</quote>
+
+<p />
+
+Since Alexandre didn't start working on that, it's likely Ulrich will
+provide this feature very soon.
+</section>
+<section 
+  title="PCI access thru BIOS"
+  subject="Re: PATCH: ignore int in 32bit mode"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-254.html"
+>
+
+<p />
+
+Olivier Galibert asked why interrupts were not supported while
+executing 32 bit code. Ove K&#229;ven, Marcus Meissner and Ulrich Weigand
+mostly said this was not allowed. But, it turned out that all were
+considering the DOS interrupts. Olivier's problems came from the
+PowerDVD application, using int 1a / b101.
+
+<p />
+
+Ulrich gave more thought on this:<quote who="Ulrich Weigand">Argh! Those are the
+PCI BIOS calls...  If I read the specs correctly, those use 'lar' to
+check the big bit of the current stack selector, and perform a 16- or
+32-bit lret depending on the mode they were called from. I had
+thought, however, that this could only be used from, say, 32-bit
+DOS-extended apps, but if this call is performed by a Windows app, it 
+would appear that it is active under Win9x as well.</quote>
+
+<p />
+
+Running the application with an NT emulation (instead of a Win 9x) no
+longer shows this behavior.
+
+<p />
+
+There was then a discussion on how to get the relevant information on
+the PCI boards (by reading /proc/pci or /proc/bus/pci files under
+Linux). If the application only needs informative data (read only),
+then this can be supported by Wine. If the application also need write 
+access, it's likely it won't be supported.
+</section>
+</kc>

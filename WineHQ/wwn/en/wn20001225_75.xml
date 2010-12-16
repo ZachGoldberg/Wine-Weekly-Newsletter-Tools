@@ -1,0 +1,295 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="75" date="25 Dec 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 75th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine 20001222 has been released. Main changes include:
+<ul>
+	<li>Several DIB bitblt optimizations.</li>
+        <li>New configuration file format and location.</li>
+        <li>Faster initial registry loading.</li>
+        <li>Unicode edit control.</li>
+        <li>Lots of bug fixes.</li>
+</ul>
+
+</intro>
+
+<stats posts="89" size="353" contrib="35" multiples="14" lastweek="17">
+<person posts="13" size="53" who="Jon &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="9" size="32" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="6" size="44" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="6" size="19" who="lawson_whitney@juno.com" />
+<person posts="6" size="16" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="5" size="26" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="18" who="Nathan Neulinger &lt;nneul@umr.edu&gt;" />
+<person posts="3" size="8" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="3" size="8" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="3" size="7" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="3" size="40" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+</stats>
+
+
+<section 
+  title="Guaranteed vintage"
+  subject="Wine Certification Label"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0272.html"
+  posts="5"
+  startdate="19 Dec 2000 00:00:00 -0800"
+  enddate="19 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr reported that some people were looking for a 
+<quote who="Andreas Mohr"><i>"Wine certification" effort</i>, i.e. a sticker on
+their product that says something like "<i>yes, it runs on
+Wine</i>".</quote>
+
+<p />
+
+Andi proposed to use the Wine glass from the WineHQ site:
+<ul>
+<pre>
+   /                                            
+  /   /   Yes, it runs on Wine                  
+  |__/    [optionally mention Wine version here]
+\/                                              
+ \        www.winehq.org                        
+</pre>
+</ul>
+
+<p />
+
+Other slogans floated around:
+<ul>
+   <li>"Best Served With Wine"</li>
+   <li>"soberly runs on Wine"</li>
+   <li>
+<p />
+"Runs on Wine<p/>
+          Consume without moderation"</li>
+   <li>or with a general surgeon quote: "Warning: Prolonged use may
+cause allergy to Windows."</li>
+</ul>
+
+<p />
+
+There haven't been an agreement yet on the final quote (if you have
+some other proposals, feel free to send them), but lots of people
+found the idea appealing.</section>
+
+
+<section 
+  title="SpecMaker"
+  subject="Diffing Windows and Wine (part2)"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0281.html"
+  posts="23"
+  startdate="19 Dec 2000 00:00:00 -0800"
+  enddate="21 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+In some follow-up discussion on Windows' API coverage in Wine (see
+<kcref issuenum="74" sectionnum="2">for more details</kcref>), Jon Griffiths
+announced:
+<quote who="Jonathonm Griffiths">
+I have written a stub dll generator which will read a win dll, and 
+generate a compilable [dll].spec [dll]_main.c and [dll].h from it. I was 
+hoping to eventually add include directory parsing to allow generating the c 
+stubs as well, but haven't gotten around to that yet ;-)
+</quote>
+
+
+<p />
+
+Francois Gouget got a quick look at it and regretted that Jon's tool
+didn't support API exported by ordinal only. But, Francois felt it
+wouldn't be too difficult to add.
+
+<p />
+
+Jon thought it would be a bit more trickier:
+<quote who="Jonathonm Griffiths">
+What I'd really like to be able to do is scan a directory to get the 
+prototypes for functions out of headers. Once you have those you can 
+automatically write the prtotypes, the implementation, parse and dump the 
+arguments in a TRACE, and return a dummy value (of the correct type) if 
+needed. That would be cool.
+
+<p />
+
+Also you could LoadLibrary the real dll and have each function call through, 
+dumping its return value as well as the inputs. A nice, unobtrusive way to 
+see what a dll does, allowing you to re-implement the functions one at a time, 
+while your program keeps working (well, I can dream).
+
+<p />
+
+Only problem is, I suck at perl, and writing it in c would be a chore :-)
+</quote>
+
+
+<p />
+
+Jon required a C-function parse in perl. Patrik Stridval pointed out:
+<quote who="Patrik Stridvall">I have (almost) [written one]. Just look in
+wine/tools/winapi_check/winapi_parser.pm.</quote>, and proposed to
+adapt it to Jon's needs.
+
+<p />
+
+Patrik whips it out which let Jon announce:
+<quote who="Patrik Stridvall">
+After Patrik's quick work on writing function_grep.pl, things get a lot more 
+interesting :-)
+
+<p />
+
+Heres the current version of specmaker. It currently works in two basic modes:
+<ol>
+<li>Generate a stub-only dll suitable for winebuild to link to, so that a
+   Winelib app can call functions from a native DLL.</li>
+<li>Generate a compilable dll code base with code for function stubs,
+   Tracing arguments and correct return values (compiles 'out of the box').
+   This is for re-implementing a dll for Wine or a Winelib app.</li>
+</ol>
+
+<p />
+
+I am be adding the final mode now, which is to TRACE arguments, then call the
+native DLL through GetProcAddress and return the results. This is like 
+building a 'snooping' wrapper around the native DLL so the functions can be 
+implemented piecemeal, even if multiple functions depend on DLL internal 
+states to work.
+
+<p />
+
+For mode 2, specmaker takes an argument specifying a file or list of files 
+to search for prototypes (the fewer files to search, the faster, by an order 
+of magnitude). Using Patrik's script, any matched exports from the DLL are 
+converted into prototypes and stub code is generated. Before you can compile 
+the generated code, you'll either need to #include the dll headers you used 
+to generate the dll, or add the definitions of any DLL specific types used to 
+&lt;outputname&gt;_dll.h. If your DLL uses standard types you won't have to do 
+anything, except maybe add some windows includes. Generated code
+should build with -Wall,-W without any warnings.
+
+<p />
+
+As an example, running
+./specmaker -d imagehlp -t -I ~/develop/wine-new/include/imagehlp.h
+
+<p />
+
+Generates a compilable imagehlp with every function but one implemented 
+(because it has no prototype). I deleted dlls/imagehelp/* and copied the 
+generated files in. Then I added "#include imagehlp.h" to imagehlp_dll.h (to 
+get the definitions of imagehlp types), and could build it with a top level
+./configure, make. Total time, about 5 minutes :-)
+</quote>
+
+
+<p />
+
+Jon knew of some existing bugs, but asked for feedback on the current
+design (and implementation flaws).
+
+<p />
+
+SpecMaker (0.2) has been added to the Wine CVS tree under the
+tools/specmaker directory. The README file gives all the insight of
+using it (and also using existing DLLs in any WineLib program). Have
+fun using it. </section>
+
+
+<section 
+  title="Wine and fonts"
+  subject="XFree 4.x Render extension"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0313.html"
+  posts="3"
+  startdate="20 Dec 2000 00:00:00 -0800"
+  enddate="21 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Lionel Ulmer wrote:
+<quote who="Lionel Ulmer">
+Now that XFree 4.0.2 is out, the new Render extension will be available on many
+(most ?) Linux desktops.
+
+<p />
+
+What could be interesting for Wine is resumed in the X release note :
+<ul><li>
+   Unlike the core protocol, Render provides no font support for
+applications, rather it allows applications to upload glyphs for
+display on the screen. This allows the client greater control over
+text rendering and complete access to the available font information
+while still providing hardware acceleration."
+</li></ul>
+
+<p />
+
+This could solve many problems Wine has for font displaying. I know this
+argument (ie client-side font rendering) was already discussed at length
+(and rejected due to the 'remote displaying' argument). But now that the
+possibility of client-side glyphs is in the X protocol itself, we could have
+the argu^H^H^H^Hdiscussion again :-)
+</quote>
+
+
+<p />
+
+The font support in Wine is a long standing issue. Even is some X11
+font servers support True Type fonts, Wine needs the correct
+information on the loaded fonts (glyphs...), and also needs the
+ability to add on the fly new fonts to the server.
+
+<p />
+
+Corel had implemented this using a proprietary extension to X Font
+server they use in their CorelWine. Wine hadn't started a final
+implementation of this, waiting for a sufficient support from the X11
+site. 
+
+<p />
+
+Huw Davies replied: 
+<quote who="Huw Davies">
+Indeed, I've been looking into this. I don't think we ever rejected
+client-side rendering, it was just noted that there will be a slight
+hit for remote displays ['slight' because the server will cache the
+rendered glyph so it's not that bad]. In fact we were probably going
+to go down the client-side rendering route anyway, XRender now just 
+makes it rather easier.
+
+<p />
+
+In the next few weeks I'll try to get a Wine internal font-engine api
+evolved, once we have that we can get a XRender module into the
+x11drv.
+</quote>
+
+
+<p />
+
+So, don't hold your breath on it, but it seems that Wine is likely to
+have a fully working True Type support in the coming months (if you're 
+using XFree &gt;= 4.0.2). However, the question remains for non XFree
+powered desktops.</section>
+
+</kc>

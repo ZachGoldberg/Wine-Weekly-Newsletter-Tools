@@ -1,0 +1,239 @@
+
+<section 
+	title="News: Wine 0.9.51 Released"
+	subject="Wine"
+	archive="http://winehq.org/"
+	posts="1"
+>
+<topic>Release</topic>
+<p><b>*Editor's Note</b>: I apologize for the (somewhat) tardyness and brevity of this issue.  It was finals week here.  Fun fun.  Also, I'm still looking for suggestions/opinions on how to make the weekly 'AppDB Status Changes' section more meaningful/accurate/easier to look at.</p>
+<br />
+A new wine was released this week:
+<quote><p>
+<pre>
+This is release 0.9.51 of Wine, a free implementation of Windows on Unix.
+
+What's new in this release:
+  - A bunch of WinHelp improvements.
+  - Better Japanese font support.
+  - A ton of rpcrt4 fixes.
+  - Several Alsa capture fixes.
+  - Improved support for screen resolution changes.
+  - Lots of bug fixes.
+
+Because of lags created by using mirrors, this message may reach you
+before the release is available at the public sites. The sources will
+be available from the following locations:
+
+  <a href="http://ibiblio.org/pub/linux/system/emulators/wine/wine-0.9.51.tar.bz2">http://ibiblio.org/pub/linux/system/emulators/wine/wine-0.9.51.tar.bz2</a>
+  <a href="http://prdownloads.sourceforge.net/wine/wine-0.9.51.tar.bz2">http://prdownloads.sourceforge.net/wine/wine-0.9.51.tar.bz2</a>
+
+Binary packages for various distributions will be available from:
+
+  <a href="http://www.winehq.org/site/download">http://www.winehq.org/site/download</a>
+
+You will find documentation on
+
+  <a href="http://www.winehq.org/site/documentation">http://www.winehq.org/site/documentation</a>
+</pre>
+</p>
+</quote></section>
+<section 
+	title="HLSL/GLSL and DX10"
+	subject="Shaders"
+	archive="http://www.winehq.org/pipermail/wine-devel/2007-December/061061.html"
+	posts="9"
+>
+<topic>DirectX</topic>
+<p>So, this may be a different type of post for the WWN; I'm going to go for some educational content related to Wine.  I was reading the devel the other day when I stumbled upon <a href="http://www.winehq.org/pipermail/wine-devel/2007-December/061061.html">this thread</a>.  It seemed really interesting, DX10 stuff, shaders; all really cool.  But what the heck is HLSL and GLSL?  I could only half make sense of the actual conversation!</p>
+<p>
+So, a bit of background on these funky acronyms before we dive into the thread itself (Most of the info from <a href="http://wikipedia.org">wikipedia</a></p>
+<quote><p>
+<a href="http://en.wikipedia.org/wiki/GLSL">GLSL</a> (Open<b>GL</b> <b>S</b>hading <b>L</b>anguage): also known as GLslang, is a high level shading language based on the C programming language. It was created by the OpenGL ARB to give developers more direct control of the graphics pipeline without having to use assembly language or hardware-specific languages.
+</p></quote>
+<p>
+Essentially, when programmers want a certain effect on some pixels they can write small little programs that run on the GPU (shaders) which take a group of pixels, or a region of the screen and run some code on it. 
+</p>
+<quote><p>
+Shaders are used to allow a 3D application designer to program the GPU (Graphics Processing Unit) "programmable pipeline", which has mostly superseded the older "fixed-function pipeline", allowing more flexibility in making use of advanced GPU programmability features.
+</p></quote>
+<p>
+The issue is that writing shaders can often be complicated and difficult.  So GLSL was born, a higher level shading language to hopeuflly make programming these things easier.  HLSL is another lanuage, similar to GLSL, from Microsoft; and the translation of HLSL to something workable with Linux/BSD etc. will be necessary to continue WineD3D.  How this will happen is the subject of this wine devel discussion:
+</p>
+<quote>
+<p>
+hlsl2glsl is the good solution for implementing shaders on directX 10.
+Nevertheless, the hlsl compilation to tokens has to be done for d3d9. On
+the other hand, if we implement d3dx9_xx, it is likely that the
+application will be using the compile D3DX9CompileShader to get the
+tokens. Currently it works and we can use the libraries d3dx9_xx and get
+good results but the following transformations:<br />
+1. HLSL is compiled to tokens<br />
+2. Tokens are transformed to GLSL.<br />
+<br />
+...<br />
+<br />
+The aim would not be to gain compilation time but to be more loyal to the
+source HLSL. The final executable instead of making exactly what the ASM
+is meant to do, it would make exactly what the HLSL is meant to do and
+probably would be more optimized for the particular system.
+HLSL --> Tokens --> GLSL  --> Executable that performs the actions of the
+tokens
+HLSL --> GLSL --> Executable that performs the actions of the HLSL.
+<br /><br />
+Furthermore, taking into consideration the need of HLSL2GLSL for DirectX 10,
+the hlsl2glsl will have to be set anyway. Therefore, the code needs are
+not so big but just leaving the door open.
+What do you all think and in particular David?
+</p>
+</quote>
+<p>
+H. Verbeet responds that HLSL2GLSL might actually not be as useful as it seems:
+</p>
+<quote><p>
+[...], you'll need a proper implementation of the SM 4.0
+implementation either way, because D3D10 still allows binary shaders,
+and I expect the majority of games to ship those instead of actual
+source. So it would be an additional path that needs to be maintained,
+and the most feasible way to implement it I've heard so far would be
+to embed GLSL code a comment section inside the shader byte code,
+which would be rather ugly.<br /><br />
+<br /><br />
+And finally, the actual hardware has it's own hardware specific
+language for shaders. HLSL or D3D bytecode isn't really any closer to
+the actual hardware language than GLSL or ARB asm, so it isn't even
+guaranteed to gain us much.
+</p></quote>
+<p>Stefan Dosinger writes in with further information on the DX10 Pipeline:</p>
+<quote><p>
+
+Keep in mind that getting shaders translated into GLSL, which we can then send
+to the card, is only a small part of the whole dx10 topic. We will need our
+own codepath anyway(HLSL -> d3d asm -> GLSL). We have to investigate wether a
+direct HLSL -> GLSL path will gain us any performance. We can optimize the
+HLSL -> d3d asm ourselves, and the d3d asm->GLSL->card native code is
+lossless in theory. If the GLSL compiler is good, then it will recognise the
+assembler instructions in our GLSL code and essentially we have d3d asm ->
+card native then.
+</p><p>
+We will have to investigate what we gain with a 2nd direct HLSL->GLSL
+translation. I think we won't gain anything, and the effort is better spent
+elsewhere.
+</p></quote></section>
+<section 
+	title="Wine in Process List"
+	subject="Wine Executable Name"
+	archive="http://www.winehq.org/pipermail/wine-devel/2007-December/061114.html"
+	posts="12"
+>
+<topic>Process List</topic>
+<p>
+Gonzalo Martinez writes in with an interesting query about whether or not wine can change its name in the process list (ps).  This seems like a great idea, and immediatly caught my attention:
+</p>
+<quote>
+<p>
+Hello to all.<br />
+<br />
+I have something in mind that I would like to ask to Wine developers.
+Is it possible using a hack/trick or a hidden option to change the  
+name of wine in the proccess lists?
+I mean, Is it possible to list 'wine' proccess as, for example  
+'iexplorer' when I use Internet Explorer under Wine?
+<br />
+Thanks a lot for your work, hope my question find the answer here.
+</p>
+</quote>
+<p>
+Apparently this had been thought up of before:  Stefan Dosinger writes in:
+</p>
+<p><quote>
+This is done since quite some time. apps are usually called "iexplore.exe", or 
+they have the name of the file that was passed to wine, like C:\Program 
+Files\Internet Explorer\iexplore.exe
+
+If you still see "wine", "wineloader" or something similar you have a very 
+outdated version of wine.
+</quote>
+</p>
+<p>
+Apparently, this already existed!  Alright, so whats the deal?  Apparently it only works on linux!  Poor Gonzalo is on FreeBSD.  Stefan writes in with the unfortunate news:
+</p>
+<quote><p>
+Ow, ah, this is a different business. I think we use some Linux-only feature
+to set the name, and Alexandre told me that at least MacOS doesn't have it. I
+have no idea if there is a way to change the process name under BSD. If there
+is, feel free to implement it and send a patch
+</p></quote>
+<p>
+There are of course ways to do this on FreeBSD, Alex Juillard lets us know that it may be possible:
+</p>
+<quote><p>
+I wouldn't [accept a hack which involves copying the process to /tmp], but on FreeBSD you can use setproctitle() for this.
+</p></quote>
+<p>
+Another important point brought up later in this thread, is that its not wise to killall wineserver or killall explorer.exe.  Its much smarter to "wineserver -k".  L Rahyen writes:
+</p>
+<quote><p>
+wineserver -k
+<br /><br />
+       This kills all processes which belongs to current WINE prefix (as specified
+in WINEPREFIX environment variable or ~/.wine otherwise). For me this works
+in 100% of cases so I see no problem here.
+</p></quote>
+</section>
+<section 
+	title="Deleting old AppDB entries"
+	subject="AppDB"
+	archive="http://www.winehq.org/pipermail/wine-devel/2007-December/061084.html"
+	posts="4"
+>
+<topic>AppDB</topic>
+<p>
+There was some discussion this week as to why some applications seem to get removed from the AppDB after they get 'stale'.  Richard S wrote in with some concern:
+</p>
+<quote><p>
+Hi
+<br /><br />
+Im one of the maintainers of the iTunes 6.x (was)
+<br /><br />
+On Saturday I received this email
+<br /><br />
+'
+Subject: 	[AppDB] Version '6.x' of 'iTunes' deleted<br />
+Date: 	Sat, 08 Dec 2007 12:15:45 -0600 (18:15 GMT)<br />
+<br /><br />
+Version '6.x' of 'iTunes' deleted<br />
+-------------------------------------------------------<br />
+The action was performed by Wesley Hamel<br />
+Reasons given<br />
+Cleanup<br />
+'<br /><br />
+
+Is it standard practice to remove all old versions of a program except for the
+most recent?
+<br /><br />
+IF this is true, WHY?
+<br /><br />
+Rich
+</p></quote>
+<p>This indeed doesn't seem to make sense; alas we recieve the voice of reason and policy.  Bryan Haskins writes:</p>
+<quote><p>
+It really depends on the case, if a program is entirely superseded by
+another version, ie you can't use the old version at all anymore, totally.
+If it's still entirely possible to use an older version, and people have a
+reason too, I would personally not delete it. However it really is up to the
+management of the maintainers, and how they want to handle things.
+</p></quote>
+<p>
+Hm, this makes sense.  However, it still appears the iTunes removal was unnecessary.  Alex Sornes explains:
+</p>
+<quote><p>
+That's correct.  If a version is not usable anymore (because it connects to a 
+server etc.) it can be made obsolete so votes will be moved to a usable one.
+<br /><br />
+We are in the process of adding an un-delete system to the AppDB so issues 
+like the recent ones can be fixed.
+<br /><br />
+
+Alexander N. Sornes
+</p></quote></section>

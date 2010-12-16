@@ -1,0 +1,4458 @@
+From kai.blin at gmail.com  Sat May  1 01:56:57 2010
+From: kai.blin at gmail.com (Kai Blin)
+Date: Sat, 01 May 2010 08:56:57 +0200
+Subject: LinuxTag Berlin - call for projects
+In-Reply-To: <201004291012.50208.gerrit.moeltgen@itomig.de>
+References: <201002251212.41721.gerrit.moeltgen@itomig.de>
+	<201004291012.50208.gerrit.moeltgen@itomig.de>
+Message-ID: <1272697017.4639.26.camel@rumo>
+
+On Thu, 2010-04-29 at 10:12 +0200, Jan Gerrit M?ltgen wrote:
+> Hello together,
+> 
+> the Wine project is accepted for LinuxTag. I'm verry sorry, in the period of 
+> the day linux I have no time unexpectedly and at this moment my time looks 
+> bad, too. Is anyone here, who can manage the Wine on LinuxTag and would be at 
+> this time in Berlin.
+> If no one is there, I will discard the stand unfortunately.
+
+Until when do you need to know?
+
+Cheers,
+Kai
+
+
+
+
+From nsivov at codeweavers.com  Sat May  1 03:43:38 2010
+From: nsivov at codeweavers.com (Nikolay Sivov)
+Date: Sat, 01 May 2010 12:43:38 +0400
+Subject: Minor dlls/mshtml/htmlbody.c simplification (RESEND)
+In-Reply-To: <alpine.LSU.1.99.1005010043400.3481@pulcherrima.dbai.tuwien.ac.at>
+References: <alpine.LSU.1.99.1004281201460.19366@acrux.dbai.tuwien.ac.at>
+	<4BD82207.5040404@codeweavers.com>
+	<alpine.LSU.1.99.1005010043400.3481@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <4BDBE9BA.6030402@codeweavers.com>
+
+On 5/1/2010 04:04, Gerald Pfeifer wrote:
+> On Wed, 28 Apr 2010, Nikolay Sivov wrote:
+>    
+>> Please follow wine-devel comments:
+>>
+>> http://www.winehq.org/pipermail/wine-devel/2010-April/083175.html
+>>      
+> Ouch, I had missed this message -- certainly did not mean to ignore
+> the good feedback.
+>
+> Is the following what you had in mind?
+>
+> Gerald
+>
+>
+> ChangeLog:
+> Fix return value for HTMLBodyElement_get_text.
+>
+> ---
+>   dlls/mshtml/htmlbody.c |    4 ++--
+>   1 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/dlls/mshtml/htmlbody.c b/dlls/mshtml/htmlbody.c
+> index 5c66e65..65aa549 100644
+> --- a/dlls/mshtml/htmlbody.c
+> +++ b/dlls/mshtml/htmlbody.c
+> @@ -443,7 +443,7 @@ static HRESULT WINAPI HTMLBodyElement_get_text(IHTMLBodyElement *iface, VARIANT
+>       HTMLBodyElement *This = HTMLBODY_THIS(iface);
+>       nsAString text;
+>       nsresult nsres;
+> -    HRESULT hres;
+> +    HRESULT hres = S_OK;
+>
+>       TRACE("(%p)->(%p)\n", This, p);
+>
+> @@ -462,7 +462,7 @@ static HRESULT WINAPI HTMLBodyElement_get_text(IHTMLBodyElement *iface, VARIANT
+>
+>       nsAString_Finish(&text);
+>
+> -    return S_OK;
+> +    return hres;
+>   }
+>
+>   static HRESULT WINAPI HTMLBodyElement_put_link(IHTMLBodyElement *iface, VARIANT v)
+>    
+Yes, but you don't have to initialize it to S_OK.
+
+
+From bunglehead at gmail.com  Sat May  1 13:02:45 2010
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Sat, 01 May 2010 22:02:45 +0400
+Subject: Minor dlls/localspl/tests/localmon.c simplificiation
+In-Reply-To: <alpine.LSU.1.99.1005011928450.18670@pulcherrima.dbai.tuwien.ac.at>
+References: <alpine.LSU.1.99.1004231448010.24624@acrux.dbai.tuwien.ac.at>
+	<4BD2EB37.4040009@gmail.com>
+	<alpine.LSU.1.99.1005011928450.18670@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <4BDC6CC5.30407@gmail.com>
+
+On 5/1/2010 21:52, Gerald Pfeifer wrote:
+> On Sat, 24 Apr 2010, Nikolay Sivov wrote:
+>    
+>>> ChangeLog:
+>>> Remove variable res which is not really used from test_XcvClosePort.
+>>>        
+>> We should better test for return value than remove it.
+>>      
+> Okay.  Is this something you can look into (or do you have a hint
+> on how you'd like such a test to look like)?  It would be great
+> could you make this change, but if you have guidance I will do my
+> best to give it a try, too.
+>
+> Gerald
+>    
+This is a primitive thing, try it if you didn't before.
+All you need is to add some lines like:
+---
+ok(res == ERROR_SUCCESS /*a proper code here*/, "expected ERROR_SUCCESS, 
+got %d\n", res);
+---
+After that run a test on Windows and Wine (using a bot for example) and 
+make corrections if needed.
+
+
+
+From dank at kegel.com  Sat May  1 13:08:46 2010
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 1 May 2010 11:08:46 -0700
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+Message-ID: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+
+I did some apples-to-apples 3d benchmarking today on a dual boot system.
+It looks offhand like Windows is about twice as fast as Wine on these
+benchmarks on my system.
+
+ cpu:  e8400
+ ram: 4GB
+ video card: nvidia GT 240
+ Ubuntu 32 10.04 video drivers: 195.36.15
+ Vista 64 video drivers: 8.17.11.9713
+
+Test procedure:
+
+On Ubuntu, grab latest wine from git, apply patch from
+http://bugs.winehq.org/show_bug.cgi?id=9210
+so 3dmark06 will run.
+On Windows, install cygwin and a few of its packages (cabextract,
+wget, svn, etc.)
+Then on both systems do
+  svn checkout http://winezeug.googlecode.com/svn/trunk/ winezeug
+  sh winezeug
+  sh yagmarktest
+
+That will run the tests in a loop and save a report for each run in
+the current directory.
+
+Results at http://kegel.com/wine/yagmarkdata/e8400/
+
+Summary:
+Ubuntu: 6 runs
+3dmark2000:  min 4145, median 4154, max 4170
+3dmark2001:  min 18884, median 19261, max 19520
+3dmark2006:  min 17315, median 18154, max 18498
+
+Vista: 2 runs:
+3dmark2000:  8206,  8219
+3dmark2006:  30278, 32384
+
+Notes:
+1) 3dmark2001 hangs for me on vista 64 bits, so no results for that
+test on that OS, I had to
+edit yagmarktest to remove it from the loop.  Does it work for anyone else?
+2) nvidia drivers occasionally crash X when running or quitting
+3dmark2000 or 3dmark06; it's happened to me three times.
+3) test script is fragile, don't touch the mouse or keyboard while it's running
+4) shadows appear to be missing on wine in firefly forest in 3dmark06
+and giant mecha truck test in 3dmark01?
+5) format of my log files is ugly and will change.
+
+
+From paul.vriens.wine at gmail.com  Sat May  1 13:49:12 2010
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Sat, 01 May 2010 20:49:12 +0200
+Subject: user32: Focus editboxes when the context menu is opened. (try 3)
+In-Reply-To: <33F6268AA99B6C448F07F03B2B6497D34C0962@taz.CodeWeavers.local>
+References: <33F6268AA99B6C448F07F03B2B6497D34C0962@taz.CodeWeavers.local>
+Message-ID: <4BDC77A8.60003@gmail.com>
+
+On 04/24/2010 10:08 PM, Vincent Povirk wrote:
+> +        case WM_CAPTURECHANGED:
+> +            if (hWnd != (HWND)lParam)
+> +            {
+> +                got_wm_capturechanged = 1;
+> +                EndMenu();
+> +            }
+> +            break;
+
+Hi Vincent,
+
+EndMenu is not available on Win95 so no user32 tests are run on that 
+platform at the moment.
+
+Can we skip just this call to EndMenu on Win95, should we skip this 
+whole new test (test_contextmenu_focus) on Win95 or is there an alternative?
+
+-- 
+Cheers,
+
+Paul.
+
+
+From madewokherd at gmail.com  Sat May  1 13:52:43 2010
+From: madewokherd at gmail.com (Vincent Povirk)
+Date: Sat, 1 May 2010 13:52:43 -0500
+Subject: user32: Focus editboxes when the context menu is opened. (try 3)
+In-Reply-To: <4BDC77A8.60003@gmail.com>
+References: <33F6268AA99B6C448F07F03B2B6497D34C0962@taz.CodeWeavers.local>
+	<4BDC77A8.60003@gmail.com>
+Message-ID: <x2lced95fe1005011152nd1777628zd44bb57fa328119a@mail.gmail.com>
+
+We can't skip the EndMenu call because that would cause the test to
+hang waiting for the menu to finish.
+
+Unless there's some other way we can programmatically close the popup
+menu on win95, I think we'll have to skip the whole test.
+
+On Sat, May 1, 2010 at 1:49 PM, Paul Vriens <paul.vriens.wine at gmail.com> wrote:
+> On 04/24/2010 10:08 PM, Vincent Povirk wrote:
+>>
+>> + ? ? ? ?case WM_CAPTURECHANGED:
+>> + ? ? ? ? ? ?if (hWnd != (HWND)lParam)
+>> + ? ? ? ? ? ?{
+>> + ? ? ? ? ? ? ? ?got_wm_capturechanged = 1;
+>> + ? ? ? ? ? ? ? ?EndMenu();
+>> + ? ? ? ? ? ?}
+>> + ? ? ? ? ? ?break;
+>
+> Hi Vincent,
+>
+> EndMenu is not available on Win95 so no user32 tests are run on that
+> platform at the moment.
+>
+> Can we skip just this call to EndMenu on Win95, should we skip this whole
+> new test (test_contextmenu_focus) on Win95 or is there an alternative?
+>
+> --
+> Cheers,
+>
+> Paul.
+>
+>
+>
+
+
+From paul.vriens.wine at gmail.com  Sat May  1 13:56:22 2010
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Sat, 01 May 2010 20:56:22 +0200
+Subject: user32: Focus editboxes when the context menu is opened. (try 3)
+In-Reply-To: <x2lced95fe1005011152nd1777628zd44bb57fa328119a@mail.gmail.com>
+References: <33F6268AA99B6C448F07F03B2B6497D34C0962@taz.CodeWeavers.local>	
+	<4BDC77A8.60003@gmail.com>
+	<x2lced95fe1005011152nd1777628zd44bb57fa328119a@mail.gmail.com>
+Message-ID: <4BDC7956.6000503@gmail.com>
+
+On 05/01/2010 08:52 PM, Vincent Povirk wrote:
+> We can't skip the EndMenu call because that would cause the test to
+> hang waiting for the menu to finish.
+>
+> Unless there's some other way we can programmatically close the popup
+> menu on win95, I think we'll have to skip the whole test.
+
+I'll give the MSDN suggestion a try:
+
+"If a platform does not support EndMenu, send the owner of the active 
+menu a WM_CANCELMODE message."
+
+-- 
+Cheers,
+
+Paul.
+
+
+From scott at open-vote.org  Sat May  1 17:26:48 2010
+From: scott at open-vote.org (Scott Ritchie)
+Date: Sat, 01 May 2010 15:26:48 -0700
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+Message-ID: <4BDCAAA8.4090406@open-vote.org>
+
+One note of caution is that video card manufacturers have been known to
+blatantly cheat on these tests by rigging their drivers with special
+hacks when they detect 3dmark is running.  As far as I know the code may
+still be there.
+
+Since the Linux drivers probably don't have these hacks, if they are
+indeed still enabled you wouldn't get an Apples:Apples comparison even
+on the same hardware.
+
+Thanks,
+Scott Ritchie
+
+On 05/01/2010 11:08 AM, Dan Kegel wrote:
+> I did some apples-to-apples 3d benchmarking today on a dual boot system.
+> It looks offhand like Windows is about twice as fast as Wine on these
+> benchmarks on my system.
+> 
+>  cpu:  e8400
+>  ram: 4GB
+>  video card: nvidia GT 240
+>  Ubuntu 32 10.04 video drivers: 195.36.15
+>  Vista 64 video drivers: 8.17.11.9713
+> 
+> Test procedure:
+> 
+> On Ubuntu, grab latest wine from git, apply patch from
+> http://bugs.winehq.org/show_bug.cgi?id=9210
+> so 3dmark06 will run.
+> On Windows, install cygwin and a few of its packages (cabextract,
+> wget, svn, etc.)
+> Then on both systems do
+>   svn checkout http://winezeug.googlecode.com/svn/trunk/ winezeug
+>   sh winezeug
+>   sh yagmarktest
+> 
+> That will run the tests in a loop and save a report for each run in
+> the current directory.
+> 
+> Results at http://kegel.com/wine/yagmarkdata/e8400/
+> 
+> Summary:
+> Ubuntu: 6 runs
+> 3dmark2000:  min 4145, median 4154, max 4170
+> 3dmark2001:  min 18884, median 19261, max 19520
+> 3dmark2006:  min 17315, median 18154, max 18498
+> 
+> Vista: 2 runs:
+> 3dmark2000:  8206,  8219
+> 3dmark2006:  30278, 32384
+> 
+> Notes:
+> 1) 3dmark2001 hangs for me on vista 64 bits, so no results for that
+> test on that OS, I had to
+> edit yagmarktest to remove it from the loop.  Does it work for anyone else?
+> 2) nvidia drivers occasionally crash X when running or quitting
+> 3dmark2000 or 3dmark06; it's happened to me three times.
+> 3) test script is fragile, don't touch the mouse or keyboard while it's running
+> 4) shadows appear to be missing on wine in firefly forest in 3dmark06
+> and giant mecha truck test in 3dmark01?
+> 5) format of my log files is ugly and will change.
+> 
+> 
+
+
+
+From gerald at pfeifer.com  Sat May  1 12:52:45 2010
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Sat, 1 May 2010 19:52:45 +0200 (CEST)
+Subject: Minor dlls/localspl/tests/localmon.c simplificiation
+In-Reply-To: <4BD2EB37.4040009@gmail.com>
+References: <alpine.LSU.1.99.1004231448010.24624@acrux.dbai.tuwien.ac.at>
+	<4BD2EB37.4040009@gmail.com>
+Message-ID: <alpine.LSU.1.99.1005011928450.18670@pulcherrima.dbai.tuwien.ac.at>
+
+On Sat, 24 Apr 2010, Nikolay Sivov wrote:
+>> ChangeLog:
+>> Remove variable res which is not really used from test_XcvClosePort.
+> We should better test for return value than remove it.
+
+Okay.  Is this something you can look into (or do you have a hint
+on how you'd like such a test to look like)?  It would be great
+could you make this change, but if you have guidance I will do my
+best to give it a try, too.
+
+Gerald
+
+
+From nsivov at codeweavers.com  Sat May  1 18:47:07 2010
+From: nsivov at codeweavers.com (Nikolay Sivov)
+Date: Sun, 02 May 2010 03:47:07 +0400
+Subject: Remove variable doRecursive which is not really used from
+	WCMD_for.
+In-Reply-To: <20100501142446.127D494332@pulcherrima.dbai.tuwien.ac.at>
+References: <20100501142446.127D494332@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <4BDCBD7B.4080303@codeweavers.com>
+
+On 5/1/2010 18:24, Gerald Pfeifer wrote:
+> ---
+>   programs/cmd/builtins.c |    5 ++---
+>   1 files changed, 2 insertions(+), 3 deletions(-)
+>    
+Please use consistent naming for patches and mail subjects. It's 
+described in http://wiki.winehq.org/SubmittingPatches.
+
+I'm not sure it makes sense to resend all these, but GERALD: as a start 
+word is unacceptable of course.
+
+
+
+From testbot at testbot.winehq.org  Sat May  1 19:08:33 2010
+From: testbot at testbot.winehq.org (testbot at testbot.winehq.org)
+Date: Sun, 2 May 2010 02:08:33 +0200
+Subject: Destroy the window we created at the end of wait_idle_thread. 
+Message-ID: <201005020008.o4208Xab000624@v1.gse.nl>
+
+Hi,
+
+While running your changed tests on Windows, I think I found new failures.
+Being a bot and all I'm not very good at pattern recognition, so I might be
+wrong, but could you please double-check?
+Full results can be found at
+http://testbot.winehq.org/JobDetails.pl?Key=1857
+
+Your paranoid android.
+
+
+=== W7PROX64 (64 bit msg) ===
+Timeout
+
+
+From austinenglish at gmail.com  Sun May  2 02:48:22 2010
+From: austinenglish at gmail.com (Austin English)
+Date: Sun, 2 May 2010 02:48:22 -0500
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <4BDCAAA8.4090406@open-vote.org>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com> 
+	<4BDCAAA8.4090406@open-vote.org>
+Message-ID: <n2pb6bb06271005020048p661aff9fn24568dfa84939196@mail.gmail.com>
+
+On Sat, May 1, 2010 at 5:26 PM, Scott Ritchie <scott at open-vote.org> wrote:
+> One note of caution is that video card manufacturers have been known to
+> blatantly cheat on these tests by rigging their drivers with special
+> hacks when they detect 3dmark is running. ?As far as I know the code may
+> still be there.
+>
+> Since the Linux drivers probably don't have these hacks, if they are
+> indeed still enabled you wouldn't get an Apples:Apples comparison even
+> on the same hardware.
+
+Scott, please bottom post on wine mailing lists.
+
+As for the driver hacks, you might try renaming the executable (e.g.,
+3dmark.exe ->3dmarktest.exe). Some of those hacks only check the
+executable name, and renaming the executable restores the 'real'
+behavior. Quake 3 was well known for this..
+
+-- 
+-Austin
+
+
+From epssyis at gmail.com  Sun May  2 03:03:48 2010
+From: epssyis at gmail.com (Edward Savage)
+Date: Sun, 2 May 2010 18:03:48 +1000
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+Message-ID: <n2od6c5d7291005020103g853d0339y40fdcb161dd3fb36@mail.gmail.com>
+
+On Sun, May 2, 2010 at 4:08 AM, Dan Kegel <dank at kegel.com> wrote:
+> I did some apples-to-apples 3d benchmarking today on a dual boot system.
+> It looks offhand like Windows is about twice as fast as Wine on these
+> benchmarks on my system.
+>
+> ?cpu: ?e8400
+> ?ram: 4GB
+> ?video card: nvidia GT 240
+> ?Ubuntu 32 10.04 video drivers: 195.36.15
+> ?Vista 64 video drivers: 8.17.11.9713
+>
+
+Do you happen to have a 4k/5k series ATI card to attempt this test set
+with as well?
+
+I'd find it interesting to see their relative performance as well as
+the notable short comings (things not rendered) ATI still have under
+Wine. Some one asked me the other day how well they'd fair with a new
+ATI card under Wine and Linux and I had no idea about an answer.
+
+
+From thunderbird2k at gmail.com  Sun May  2 04:07:01 2010
+From: thunderbird2k at gmail.com (Roderick Colenbrander)
+Date: Sun, 2 May 2010 11:07:01 +0200
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+Message-ID: <q2lc8485d471005020207z380b9f10v24fb7da24bf9a18b@mail.gmail.com>
+
+When doing such benchmarks also try to write down the frame rates of
+the individual tests. The 3dmark score is some sort of weighted
+average (the result of the cpu test in it is also quite important).
+
+From dank at kegel.com  Sun May  2 09:46:17 2010
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 2 May 2010 07:46:17 -0700
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <n2od6c5d7291005020103g853d0339y40fdcb161dd3fb36@mail.gmail.com>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+	<n2od6c5d7291005020103g853d0339y40fdcb161dd3fb36@mail.gmail.com>
+Message-ID: <y2ia71bd89a1005020746n47a16dddn9a68b8d94a01c32c@mail.gmail.com>
+
+On Sun, May 2, 2010 at 1:03 AM, Edward Savage <epssyis at gmail.com> wrote:
+>> ?video card: nvidia GT 240
+>
+> Do you happen to have a 4k/5k series ATI card to attempt this test set
+> with as well?
+
+I have three nvidia cards: 8500gt, gt220, gt240.
+(I also have an old ati rage pro which probably isn't worth testing.)
+
+> I'd find it interesting to see their relative performance as well as
+> the notable short comings (things not rendered) ATI still have under
+> Wine. Some one asked me the other day how well they'd fair with a new
+> ATI card under Wine and Linux and I had no idea about an answer.
+
+Maybe someone with current ATI hardware can run yagmark following
+the steps I gave.  It's pretty easy.
+- Dan
+
+
+From dank at kegel.com  Sun May  2 09:46:40 2010
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 2 May 2010 07:46:40 -0700
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <q2lc8485d471005020207z380b9f10v24fb7da24bf9a18b@mail.gmail.com>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+	<q2lc8485d471005020207z380b9f10v24fb7da24bf9a18b@mail.gmail.com>
+Message-ID: <s2la71bd89a1005020746o5a1b6282zed966ebd530c5b41@mail.gmail.com>
+
+On Sun, May 2, 2010 at 2:07 AM, Roderick Colenbrander
+<thunderbird2k at gmail.com> wrote:
+> When doing such benchmarks also try to write down the frame rates of
+> the individual tests. The 3dmark score is some sort of weighted
+> average (the result of the cpu test in it is also quite important).
+> From what I remember the scores in 2000/2001/2003 were actually good
+> but 2005/2006 used to be quite slow for some reason.
+
+OK, I'll try to parse out the subscores.
+- Dan
+
+
+From kgbricola at web.de  Sun May  2 09:48:32 2010
+From: kgbricola at web.de (=?ISO-8859-1?Q?Rico_Sch=FCller?=)
+Date: Sun, 02 May 2010 16:48:32 +0200
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+Message-ID: <4BDD90C0.1010403@web.de>
+
+Am 01.05.2010 20:08, schrieb Dan Kegel:
+> Results at http://kegel.com/wine/yagmarkdata/e8400/
+>
+> Summary:
+> Ubuntu: 6 runs
+> 3dmark2000:  min 4145, median 4154, max 4170
+> 3dmark2001:  min 18884, median 19261, max 19520
+> 3dmark2006:  min 17315, median 18154, max 18498
+>
+> Vista: 2 runs:
+> 3dmark2000:  8206,  8219
+> 3dmark2006:  30278, 32384
+>
+>    
+It looks like you've mixed up the results somewhere. The score should be 
+higher on the lower 3Dmark version. (3dmark 2000 on vista has 30278 
+points - 
+http://kegel.com/wine/yagmarkdata/e8400/gt240/vista/yagmark-e8400-Vista-2010-04-30-18:30.txt)
+
+Cheers
+Rico
+
+
+From dank at kegel.com  Sun May  2 10:04:39 2010
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 2 May 2010 08:04:39 -0700
+Subject: 3dmark2000, 3dmark06 results on both Wine and Vista
+In-Reply-To: <4BDD90C0.1010403@web.de>
+References: <n2ka71bd89a1005011108z8d764a2bodc6f8d9398971e45@mail.gmail.com>
+	<4BDD90C0.1010403@web.de>
+Message-ID: <v2wa71bd89a1005020804kf86c2cfal509c195768b9291a@mail.gmail.com>
+
+2010/5/2 Rico Sch?ller <kgbricola at web.de>:
+> It looks like you've mixed up the results somewhere. The score should be
+> higher on the lower 3Dmark version. (3dmark 2000 on vista has 30278 points -
+> http://kegel.com/wine/yagmarkdata/e8400/gt240/vista/yagmark-e8400-Vista-2010-04-30-18:30.txt)
+
+That'll teach me to edit data tables manually.  Next one will be
+automatically generated.
+- Dan
+
+
+From johann at myrkraverk.com  Sun May  2 11:55:54 2010
+From: johann at myrkraverk.com (Johann "Myrkraverk" Oskarsson)
+Date: Sun, 2 May 2010 16:55:54 +0000
+Subject: Unable to start WoW from git 1.1.29 while 1.1.29 tarball works.
+Message-ID: <n2ocb59c2d11005020955l21dc9d6foed17b6ae7f04344a@mail.gmail.com>
+
+Hello all.
+
+I am unable to start WoW when I compile release 1.1.29 from the git
+repo, while compiling the 1.1.29 release tarball allows me to play
+WoW.
+
+System info:
+
+% uname -a; isainfo -k
+SunOS asuka 5.11 snv_115 i86pc i386 i86pc
+amd64
+
+Git compile steps taken:
+
+git checkout wine-1.1.29
+git clean -x -f
+./configure --prefix=/opt/myrkraverk/wine-git && gmake depend && gmake
+
+WoW now fails to start with some console output like:
+
+[johann at asuka]~/src/external/git/wine/wine% Can't attach process 0011: error 6
+wine: Call from 7fd69d43 to unimplemented function
+user32.dll.UserRegisterWowHandlers, aborting
+fixme:ntdll:RtlNtStatusToDosErrorNoTeb no mapping for 80000100
+err:module:DelayLoadFailureHook failed to delay load user32.dll.LoadStringW
+
+More pastes here: http://paste.lisp.org/display/98679
+
+I did not use any special flags or environment variables to compile
+the tarball, apart from the prefix.
+
+This is my showstopper to regression test bug 22033:
+
+http://bugs.winehq.org/show_bug.cgi?id=22033
+
+Any help apreciated.
+
+
+Johann
+
+
+From plr.vincent at gmail.com  Sun May  2 12:13:26 2010
+From: plr.vincent at gmail.com (Vincent Pelletier)
+Date: Sun, 2 May 2010 19:13:26 +0200
+Subject: new wisotool 20100424: new verbs 3dmark2000, 3dmark2001, 3dmark03,
+	3dmark05, 3dmark06, baldursgate2, gta_vc, pcmark04, pcmark05,
+	unigine_heaven
+In-Reply-To: <201005010040.09808.plr.vincent@gmail.com>
+References: <o2ta71bd89a1004241644ob600e000jdd54aecd281a3db4@mail.gmail.com>
+	<201004291257.51000.plr.vincent@gmail.com>
+	<201005010040.09808.plr.vincent@gmail.com>
+Message-ID: <201005021913.28278.plr.vincent@gmail.com>
+
+Patch updated.
+
+Notes:
+- Download urls and AHK scripts are *all* tested as of this patch (~5 hours to
+  install everything).
+- BAT scripts are *not* tested.
+
+Remaining issues:
+- url escaping when posting login & password (I'll work on this next)
+- possibly BAT scripting mistakes (verb definition)
+- possibly a yet unidentified auth bug which affected Dan Kegel
+- missing BAT scripts for bundles (not sure what to do for those)
+
+Changelog:
+- add cookie support in "download" (required as GOG.com requires auth
+  to download games)
+- add download support for gog verbs
+- Refresh against current svn head
+- _load_gog: added install_dir parameter (needed by a few games)
+- double all "\" meant to be literal backslashes
+- fix download path for verbs:
+  ut2004_gog
+  abes_oddysee_gog
+  abes_exoddus_gog
+  descent_1_2_gog
+- add verbs:
+  descent_3_gog
+  psychonauts_gog
+  ut_goty_gog
+  unreal_gold_gog
+  unreal_2_se_gog
+  battle_chess_gog
+  earth_2150_trilogy_gog
+  earth_2160_gog
+  empire_earth_gold_gog
+  earthworm_jim_1_2_gog
+  shogo_gog
+  settlers_2_gold_gog
+  robinson_requiem_collection_gog
+  redneck_rampage_gog
+  praetorians_gog
+  perimeter_gog
+  painkiller_black_gog
+  operation_flashpoint_goty_gog
+  neighbours_from_hell_compilation_gog
+  mdk_gog
+  mdk2_gog
+  ground_control_2_gog
+  ghost_master_gog
+  freespace_gog
+  freespace_2_gog
+  flatout_gog
+  earthworm_jim_3d_gog
+  fallout_gog
+  fallout_2_gog
+  fallout_tactics_gog
+
+-- 
+Vincent Pelletier
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gog_support_2.diff
+Type: text/x-patch
+Size: 15005 bytes
+Desc: not available
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20100502/f1881031/attachment.bin>
+
+From johann at myrkraverk.com  Sun May  2 13:09:55 2010
+From: johann at myrkraverk.com (Johann "Myrkraverk" Oskarsson)
+Date: Sun, 2 May 2010 18:09:55 +0000
+Subject: Unable to start WoW from git 1.1.29 while 1.1.29 tarball works.
+In-Reply-To: <n2ocb59c2d11005020955l21dc9d6foed17b6ae7f04344a@mail.gmail.com>
+References: <n2ocb59c2d11005020955l21dc9d6foed17b6ae7f04344a@mail.gmail.com>
+Message-ID: <t2pcb59c2d11005021109yf43a5ec9sbfb12863f2105dce@mail.gmail.com>
+
+Hi all,
+
+On Sun, May 2, 2010 at 4:55 PM, Johann "Myrkraverk" Oskarsson
+<johann at myrkraverk.com> wrote:
+
+> I am unable to start WoW when I compile release 1.1.29 from the git
+> repo, while compiling the 1.1.29 release tarball allows me to play
+> WoW.
+
+With help from #winehq: An out of tree build works.
+
+
+Johann
+
+
+From ehoover at mines.edu  Sun May  2 15:39:14 2010
+From: ehoover at mines.edu (Erich Hoover)
+Date: Sun, 2 May 2010 14:39:14 -0600
+Subject: Fullscreen Borderlands at Desktop Resolution
+Message-ID: <z2g4c1ac96d1005021339w25a56f5fv51c6be1187af95b8@mail.gmail.com>
+
+I've been playing the game Borderlands at less than my desktop resolution
+due to a strange bug and finally decided to try and track it down.  The
+issue is that whenever the resolution of Borderlands is set to the same
+resolution as the desktop then the game window does not appear in the upper
+left hand corner and the size of the window is about 1/2 of the display size
+for both the width and the height.  After some exploration, this appears to
+be two separate issues with the Wine's X11 driver.
+1) sync_window_position() will not move an iconified managed window, so the
+window is never repositioned to the upper left corner.
+2) set_size_hints() checks to see if a window is the size of the display (or
+larger) and does not resize the window if that is the case.
+
+Another interesting point is that these issues only occur when using compiz,
+when using metacity the following warnings are displayed:
+---
+Window manager warning: Window 0x4200005 (Borderland) sets an MWM hint
+indicating it isn't resizable, but sets min size 1 x 1 and max size
+2147483647 x 2147483647; this doesn't make much sense.
+Window manager warning: Treating resize request of legacy application
+0x4200005 (Borderland) as a fullscreen request
+---
+
+I've attached a patch that overcomes these issues, but I'm suspicious that
+there are unintended consequences.  I would appreciate it if someone could
+take a look.
+
+Erich Hoover
+ehoover at mines.edu
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20100502/ba3b6078/attachment.htm>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: borderlands-fullscreen.diff
+Type: text/x-diff
+Size: 1374 bytes
+Desc: not available
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20100502/ba3b6078/attachment.diff>
+
+From fgouget at free.fr  Sun May  2 16:48:41 2010
+From: fgouget at free.fr (Francois Gouget)
+Date: Sun, 2 May 2010 23:48:41 +0200 (CEST)
+Subject: Francois Gouget : winedbg: Fix compilation with gcc 2. 95 and
+	non-GNU compilers.
+In-Reply-To: <4BCF540B.1010800@orange.fr>
+References: <E1NwGPW-0006pO-0Y@wine.codeweavers.com>
+	<4BC95AB6.9050007@orange.fr>
+	<alpine.DEB.2.00.1004171343550.17941@amboise.dolphin>
+	<4BCF540B.1010800@orange.fr>
+Message-ID: <alpine.DEB.2.00.1005022345030.308@amboise.dolphin>
+
+On Wed, 21 Apr 2010, Eric Pouech wrote:
+
+> Francois Gouget a ?crit :
+> > There were two problems:
+> >  * the semi-colon was missing for non-GNUC compilers as you mentioned
+> >  * gcc 2.95 does not support __attribute__() on function pointers
+> > 
+> > Unfortunately your patch does not fix the second issue. A solution that
+> > would not require dbg_vprintf() would be to check the gcc version before
+> > trying to use __attribute__().
+[...]
+> does the attached patch works better ? (I tried your suggestion starting at
+> gcc 3.0)
+
+Yes, that works. It means that we won't get the benefit of printf format 
+checking on gcc 2.95 but that does not matter since pretty much everyone 
+will do these checks already. And your patch is simpler than mine (and 
+more importantly works).
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+                         Stolen from an Internet user:
+              "f u cn rd ths, u cn gt a gd jb n cmptr prgrmmng !"
+
+From nsivov at codeweavers.com  Sun May  2 17:21:30 2010
+From: nsivov at codeweavers.com (Nikolay Sivov)
+Date: Mon, 03 May 2010 02:21:30 +0400
+Subject: quartz: Properly return E_POINTER when ppFilters is null
+In-Reply-To: <h2x41eceb531005021517k69622245t53fa8893f9acbacf@mail.gmail.com>
+References: <h2x41eceb531005021517k69622245t53fa8893f9acbacf@mail.gmail.com>
+Message-ID: <4BDDFAEA.6080301@codeweavers.com>
+
+On 5/3/2010 02:17, Jerome Leclanche wrote:
+> Fixes bug 22563. Also fix broken indent right below.
+>
+> J. Leclanche
+>    
+Please, add a test for this, it looks trivial to test.
+
+
+From gerald at pfeifer.com  Sun May  2 15:07:44 2010
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Sun, 2 May 2010 22:07:44 +0200 (CEST)
+Subject: Minor dlls/dbghelp/dwarf.c simplification
+In-Reply-To: <alpine.LSU.1.99.1004232039410.24624@acrux.dbai.tuwien.ac.at>
+References: <alpine.LSU.1.99.1004232039410.24624@acrux.dbai.tuwien.ac.at>
+Message-ID: <alpine.LSU.1.99.1005022201100.18670@pulcherrima.dbai.tuwien.ac.at>
+
+Eric Pouech wrote:
+> this is wrong: dwarf_parse family set makes the pointer in the cxt 
+> advance by the size of the object which is being parse
+
+You're right.  I had, in fact, checked this very question, but doing
+so just again I see where I missed the += in the code.  Thanks for
+catching this, Eric!
+
+> and actually, the correct fix would be to make use of those variables 
+> (like checking if the version is a known one), instead of throwing 
+> things away
+
+Are you planning to go into that direction?  If not, I'd suggest the
+patch below.  (I'm not sure whether checking for the DWARF version is
+going to help -- do we want to abort for newer versions when these
+actually should be compatible?)
+
+
+Gerald
+
+
+
+From: Gerald Pfeifer <gerald at pfeifer.com>
+Date: Sun, 2 May 2010 22:05:20
+Subject: dbghelp: Remove two variables which are not really used in dwarf2_parse_line_numbers.
+
+---
+ dlls/dbghelp/dwarf.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/dlls/dbghelp/dwarf.c b/dlls/dbghelp/dwarf.c
+index 4be0f6a..99960d8 100644
+--- a/dlls/dbghelp/dwarf.c
++++ b/dlls/dbghelp/dwarf.c
+@@ -1920,7 +1920,7 @@ static BOOL dwarf2_parse_line_numbers(const dwarf2_section_t* sections,
+ {
+     dwarf2_traverse_context_t   traverse;
+     unsigned long               length;
+-    unsigned                    version, header_len, insn_size, default_stmt;
++    unsigned                    insn_size, default_stmt;
+     unsigned                    line_range, opcode_base;
+     int                         line_base;
+     const unsigned char*        opcode_len;
+@@ -1939,8 +1939,8 @@ static BOOL dwarf2_parse_line_numbers(const dwarf2_section_t* sections,
+     length = dwarf2_parse_u4(&traverse);
+     traverse.end_data = sections[section_line].address + offset + length;
+ 
+-    version = dwarf2_parse_u2(&traverse);
+-    header_len = dwarf2_parse_u4(&traverse);
++    dwarf2_parse_u2(&traverse);
++    dwarf2_parse_u4(&traverse);
+     insn_size = dwarf2_parse_byte(&traverse);
+     default_stmt = dwarf2_parse_byte(&traverse);
+     line_base = (signed char)dwarf2_parse_byte(&traverse);
+-- 
+1.6.6.2
+
+
+
+
+From gerald at pfeifer.com  Sun May  2 15:31:13 2010
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Sun, 2 May 2010 22:31:13 +0200 (CEST)
+Subject: Remove variable doRecursive which is not really used from
+	WCMD_for.
+In-Reply-To: <4BDCBD7B.4080303@codeweavers.com>
+References: <20100501142446.127D494332@pulcherrima.dbai.tuwien.ac.at>
+	<4BDCBD7B.4080303@codeweavers.com>
+Message-ID: <alpine.LSU.1.99.1005022054560.18670@pulcherrima.dbai.tuwien.ac.at>
+
+On Sun, 2 May 2010, Nikolay Sivov wrote:
+> Please use consistent naming for patches and mail subjects. It's 
+> described in http://wiki.winehq.org/SubmittingPatches.
+> 
+> I'm not sure it makes sense to resend all these, but GERALD: as a
+> start word is unacceptable of course.
+
+Indeed, four or so patches with that in the Subject sneaked through.
+This simply was a mistake on my side last month (and Alexandre was
+so kind to fix it up).
+
+As for prepending what basically seems to be `pwd | xargs basename`
+(but not exactly), I updated my script to take that into account.
+
+Thanks for the advise!
+
+Gerald
+
+PS: It's somewhat funny that after contributing for elven years,
+the first time someone complains about my mail subjects is a week
+or two _after_ I switch over to using git format-patch. ;-)
+
+
+From gerald at pfeifer.com  Sun May  2 17:17:29 2010
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Mon, 3 May 2010 00:17:29 +0200 (CEST)
+Subject: Minor dlls/comctl32/tests/listview.c simplification
+In-Reply-To: <4BD01D00.2070406@codeweavers.com>
+References: <alpine.LSU.1.99.1004211931350.24624@acrux.dbai.tuwien.ac.at>
+	<4BD01D00.2070406@codeweavers.com>
+Message-ID: <alpine.LSU.1.99.1005030015560.18670@pulcherrima.dbai.tuwien.ac.at>
+
+On Thu, 22 Apr 2010, Nikolay Sivov wrote:
+> You can't do this, subclassing is important thing here. And you will see 
+> it if you run a test (that you should do before sending patch actually).
+
+Thanks, Nikolay.  You're perfectly right, that was a silly mistake of
+mine, no way to put this differently.  I've had problems running the
+tests on my machine I primarily use for Wine work, but now managed to
+address this (which involved patching mmap.c, but seems to work now).
+
+Gerald
+
+
+From gerald at pfeifer.com  Sun May  2 18:43:11 2010
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Mon, 3 May 2010 01:43:11 +0200 (CEST)
+Subject: Minor dlls/localspl/tests/localmon.c simplificiation
+In-Reply-To: <4BDC6CC5.30407@gmail.com>
+References: <alpine.LSU.1.99.1004231448010.24624@acrux.dbai.tuwien.ac.at>
+	<4BD2EB37.4040009@gmail.com>
+	<alpine.LSU.1.99.1005011928450.18670@pulcherrima.dbai.tuwien.ac.at>
+	<4BDC6CC5.30407@gmail.com>
+Message-ID: <alpine.LSU.1.99.1005030127440.18670@pulcherrima.dbai.tuwien.ac.at>
+
+On Sat, 1 May 2010, Nikolay Sivov wrote:
+>>>> ChangeLog:
+>>>> Remove variable res which is not really used from test_XcvClosePort.
+>>> We should better test for return value than remove it.
+> This is a primitive thing, try it if you didn't before.
+> All you need is to add some lines like:
+> ---
+> ok(res == ERROR_SUCCESS /*a proper code here*/, "expected ERROR_SUCCESS, got
+> %d\n", res);
+> ---
+> After that run a test on Windows and Wine (using a bot for example) and make
+> corrections if needed.
+
+Aaactually, now that I was going to look into this, I recall why I didn't 
+consider this originally:  The entire code in that function is inside an
+if (0) { }... :-o
+
+But, since you asked for it, I added such tests across the board, made one 
+simplification, verified that it actually (if enabled) passes properly on 
+Wine and will submit this in a minute.  Then we have things in place when 
+the FIXME is addressed.  Plus a learned a thing or two in the process. ;-)
+
+Thanks for your continous feedbac, Nikolay!
+
+Gerlald
+
+
+From testbot at testbot.winehq.org  Sun May  2 23:40:23 2010
+From: testbot at testbot.winehq.org (testbot at testbot.winehq.org)
+Date: Mon, 3 May 2010 06:40:23 +0200
+Subject: localspl/tests: Improve the tests in test_XcvDataPort_AddPort by
+	properly checking return values and avoiding a duplicat
+Message-ID: <201005030440.o434eNTn031195@v1.gse.nl>
+
+Hi,
+
+While running your changed tests on Windows, I think I found new failures.
+Being a bot and all I'm not very good at pattern recognition, so I might be
+wrong, but could you please double-check?
+Full results can be found at
+http://testbot.winehq.org/JobDetails.pl?Key=1881
+
+Your paranoid android.
+
+
+=== WINEBUILD (build) ===
+Patch failed
+
+
+From dmitry at codeweavers.com  Mon May  3 03:45:47 2010
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 3 May 2010 17:45:47 +0900
+Subject: [PATCH] Fix Unicode escape string occurring when calling 
+	GetClipboardData(CF_TEXT).
+In-Reply-To: <p2rf02f616e1005010032m9b3031c0t3f6e84bc6e76537c@mail.gmail.com>
+References: <p2rf02f616e1005010032m9b3031c0t3f6e84bc6e76537c@mail.gmail.com>
+Message-ID: <20100503174547.237b6737.dmitry@codeweavers.com>
+
+Sin-ta Hsiea <ibmibmibm.tw at gmail.com> wrote:
+
+> Here's a patch that fetch UTF8 string, and convert to local codepage.
+
+> +            count = WideCharToMultiByte(CP_OEMCP, 0, lpwstr, -1, NULL, 0, NULL, NULL);
+> +            hText = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, count);
+> +
+> +            if (hText)
+> +            {
+> +                CHAR *text = GlobalLock(hText);
+> +                WideCharToMultiByte(CP_OEMCP, 0, lpwstr, -1, text, -1, NULL, NULL);
+> +                GlobalUnlock(hText);
+> +            }
+
+CP_OEMCP is not a local codepage.
+
+-- 
+Dmitry.
+
+
+From nsivov at codeweavers.com  Mon May  3 03:46:26 2010
+From: nsivov at codeweavers.com (Nikolay Sivov)
+Date: Mon, 03 May 2010 12:46:26 +0400
+Subject: gdi32/tests: Remove two variables which are not really used from
+	test_clipping.
+In-Reply-To: <20100502234810.E9E7394332@pulcherrima.dbai.tuwien.ac.at>
+References: <20100502234810.E9E7394332@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <4BDE8D62.5090206@codeweavers.com>
+
+On 5/3/2010 03:48, Gerald Pfeifer wrote:
+> ---
+>   dlls/gdi32/tests/bitmap.c |    4 ----
+>   1 files changed, 0 insertions(+), 4 deletions(-)
+>
+> diff --git a/dlls/gdi32/tests/bitmap.c b/dlls/gdi32/tests/bitmap.c
+> index 882d548..b570a8a 100644
+> --- a/dlls/gdi32/tests/bitmap.c
+> +++ b/dlls/gdi32/tests/bitmap.c
+> @@ -2810,9 +2810,7 @@ static void test_GdiAlphaBlend(void)
+>   static void test_clipping(void)
+>   {
+>       HBITMAP bmpDst;
+> -    HBITMAP oldDst;
+>       HBITMAP bmpSrc;
+> -    HBITMAP oldSrc;
+>       HRGN hRgn;
+>       LPVOID bits;
+>       BOOL result;
+> @@ -2830,11 +2828,9 @@ static void test_clipping(void)
+>
+>       bmpDst = CreateDIBSection( hdcDst,&bmpinfo, DIB_RGB_COLORS,&bits, NULL, 0 );
+>       ok(bmpDst != NULL, "Couldn't create destination bitmap\n");
+> -    oldDst = SelectObject( hdcDst, bmpDst );
+>
+>       bmpSrc = CreateDIBSection( hdcSrc,&bmpinfo, DIB_RGB_COLORS,&bits, NULL, 0 );
+>       ok(bmpSrc != NULL, "Couldn't create source bitmap\n");
+> -    oldSrc = SelectObject( hdcSrc, bmpSrc );
+>
+>       result = BitBlt( hdcDst, 0, 0, 100, 100, hdcSrc, 100, 100, SRCCOPY );
+>       ok(result, "BitBlt failed\n");
+>    
+Bitmap are useless after this change.
+
+
+From joakim.tjernlund at transmode.se  Mon May  3 02:15:29 2010
+From: joakim.tjernlund at transmode.se (Joakim Tjernlund)
+Date: Mon, 3 May 2010 09:15:29 +0200
+Subject: [Wine] Potential bug in RtlRegisterWait()
+In-Reply-To: <4BDE0841.7050502@mymail.mines.edu>
+References: <OFFB08212D.C1671B49-ONC1257717.00729C31-C1257717.0073913E@transmode.se>
+	<4BDE0841.7050502@mymail.mines.edu>
+Message-ID: <OFE3236711.C2BC695B-ONC1257718.002799D4-C1257718.0027DED6@transmode.se>
+
+Charles Davis <cdavis at mymail.mines.edu> wrote on 2010/05/03 01:18:25:
+>
+> On 5/2/10 3:02 PM, Joakim Tjernlund wrote:
+> >
+> > Noticed that RtlRegisterWait() will approve a zero timeout value(Milliseconds == 0)
+> >
+> > This makes ies4linux spin the CPU 100% when visiting a
+> > https page. The below crude patch fixes it:
+> >
+> > --- dlls/ntdll/threadpool.c.org   2010-05-02 22:37:08.000000000 +0200
+> > +++ dlls/ntdll/threadpool.c   2010-05-02 22:46:45.000000000 +0200
+> > @@ -427,6 +427,9 @@
+> >
+> >      TRACE( "(%p, %p, %p, %p, %d, 0x%x)\n", NewWaitObject, Object, Callback,
+> Context, Milliseconds, Flags );
+> >
+> > +    if (!Milliseconds)
+> > +   return RPC_NT_INVALID_TIMEOUT;
+> > +
+> >      wait_work_item = RtlAllocateHeap( GetProcessHeap(), 0, sizeof(*wait_work_item) );
+> >      if (!wait_work_item)
+> >          return STATUS_NO_MEMORY;
+> >
+> > On a related note, whitout this patch wineserver also goes into an endless
+> > loop, doing brk() calls over and over until memory is exausted. Seems
+> > like a bug that too.
+> This looks like something you should post to wine-devel.
+
+Right, posting there but with a new patch. I think the orginal fix was wrong.
+Here is a new one:
+
+
+From Joakim.Tjernlund at transmode.se  Mon May  3 02:03:09 2010
+From: Joakim.Tjernlund at transmode.se (Joakim Tjernlund)
+Date: Mon, 3 May 2010 09:03:09 +0200
+Subject: [PATCH] RegisterWaitForSingleObjectX(), fix tmo == 0
+Message-ID: <mailman.391.1272883091.27605.wine-devel@winehq.org>
+
+Timeout == 0 is special, from the manual:
+The time-out interval, in milliseconds. The function returns if the interval
+elapses, even if the object's state is nonsignaled. If dwMilliseconds is zero,
+the function tests the object's state and returns immediately. If
+dwMilliseconds is INFINITE, the function's time-out interval never elapses.
+
+1) Only call Callback iff signaled
+2) Implies WT_EXECUTEONLYONCE.
+3) Callback should be called before returning.
+
+This is a crude fix not impl. 3) but is enough to get
+ies4linux around the 100% CPU problem.
+Not sure tmo == 0 implies returning a NULL ptr for phNewWaitObject too.
+---
+ dlls/ntdll/threadpool.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/dlls/ntdll/threadpool.c b/dlls/ntdll/threadpool.c
+index 44afb01..159baee 100644
+--- a/dlls/ntdll/threadpool.c
++++ b/dlls/ntdll/threadpool.c
+@@ -373,11 +373,17 @@ static DWORD CALLBACK wait_thread_proc(LPVOID Arg)
+                     wait_work_item->Context );
+                 TimerOrWaitFired = TRUE;
+             }
+-            wait_work_item->CallbackInProgress = TRUE;
+-            wait_work_item->Callback( wait_work_item->Context, TimerOrWaitFired );
+-            wait_work_item->CallbackInProgress = FALSE;
++            /* Milliseconds == 0 is special, only call Callback iff
++               signaled and treat as WT_EXECUTEONLYONCE */
++            if (wait_work_item->Milliseconds || !TimerOrWaitFired)
++            {
++        	wait_work_item->CallbackInProgress = TRUE;
++        	wait_work_item->Callback( wait_work_item->Context, TimerOrWaitFired );
++        	wait_work_item->CallbackInProgress = FALSE;
++            }
+
+-            if (wait_work_item->Flags & WT_EXECUTEONLYONCE)
++            if (!wait_work_item->Milliseconds ||
++        	wait_work_item->Flags & WT_EXECUTEONLYONCE)
+                 break;
+         }
+         else
+--
+1.6.4.4
+
+
+
+From gerald at pfeifer.com  Mon May  3 04:29:23 2010
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Mon, 3 May 2010 11:29:23 +0200 (CEST)
+Subject: gdi32/tests: Remove two variables which are not really used from
+	test_clipping.
+In-Reply-To: <4BDE8D62.5090206@codeweavers.com>
+References: <20100502234810.E9E7394332@pulcherrima.dbai.tuwien.ac.at>
+	<4BDE8D62.5090206@codeweavers.com>
+Message-ID: <alpine.LSU.1.99.1005031127510.18670@pulcherrima.dbai.tuwien.ac.at>
+
+On Mon, 3 May 2010, Nikolay Sivov wrote:
+> Bitmap are useless after this change.
+
+Darn, I may have sent the wrong version of the patch.  Let me look
+into this tonight or tomorrow. 
+
+You have sharp eyes, Nikolay! :-)
+
+Gerald
+
+
+From jacek at codeweavers.com  Mon May  3 06:12:36 2010
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Mon, 03 May 2010 13:12:36 +0200
+Subject: mshtml/tests: Fix return value of ActiveScript_SetScriptState.
+In-Reply-To: <20100502191606.920AC94332@pulcherrima.dbai.tuwien.ac.at>
+References: <20100502191606.920AC94332@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <4BDEAFA4.1030101@codeweavers.com>
+
+Hi Gerald,
+
+On 5/2/10 9:16 PM, Gerald Pfeifer wrote:
+> IActiveScriptSite_OnStateChange is described to return S_OK upon
+> success, so instead of ignoring its return value and unconditionally
+> returning S_OK it strikes me that we should return its result instead.
+>    
+
+In this case returning S_OK is fine, but there is missing test for 
+OnStateChange return value.
+
+Jacek
+
+
+From stefandoesinger at gmx.at  Mon May  3 06:36:39 2010
+From: stefandoesinger at gmx.at (=?iso-8859-1?Q?Stefan_D=F6singer?=)
+Date: Mon, 3 May 2010 13:36:39 +0200
+Subject: [ddraw] Fix discrepancy in alpha mask for
+	WINED3DFMT_B2G3R3A8_UNORM.
+In-Reply-To: <201005020826.21640.plr.vincent@gmail.com>
+References: <201005020826.21640.plr.vincent@gmail.com>
+Message-ID: <E1356679-DF68-468D-9FB3-836D77CA7F85@gmx.at>
+
+
+Am 02.05.2010 um 08:26 schrieb Vincent Pelletier:
+
+> 
+> PixelFormat_DD2WineD3D returns WINED3DFMT_B2G3R3A8_UNORM when alpha mask
+> is 0xFF00, which is consistent with constant name (A8).
+The patch looks ok to me.
+
+
+
+From stefandoesinger at gmx.at  Mon May  3 06:39:07 2010
+From: stefandoesinger at gmx.at (=?iso-8859-1?Q?Stefan_D=F6singer?=)
+Date: Mon, 3 May 2010 13:39:07 +0200
+Subject: ddraw: Fix missing D3D misc caps
+In-Reply-To: <4BDDDB67.2050507@gmail.com>
+References: <4BDDDB67.2050507@gmail.com>
+Message-ID: <DD41ED60-5921-45C2-96C3-29E051267957@gmx.at>
+
+
+Am 02.05.2010 um 22:07 schrieb Ri?ardas Barkauskas:
+
+> Fixes missing D3D misc caps needed by Independence War 2: Edge Of Chaos (bug 7012)
+The patch seems ok
+
+
+
+From Joerg-Cyril.Hoehle at t-systems.com  Mon May  3 06:52:27 2010
+From: Joerg-Cyril.Hoehle at t-systems.com (Joerg-Cyril.Hoehle at t-systems.com)
+Date: Mon, 3 May 2010 13:52:27 +0200
+Subject: Valgrind's wine_cp_wcstombs warnings
+Message-ID: <47CC5ABB01651443A88DB8EC5B4D657B740352@S4DE8PSAANK.mitte.t-com.de>
+
+Hi,
+
+running the MCI tests with Valgrind generates a lot of output like follows
+
+==13170== Use of uninitialised value of size 4
+==13170==    at 0x4035369: wine_cp_wcstombs (wctomb.c:147)
+...[every line from 148 to 161]
+==13170== Use of uninitialised value of size 4
+==13170==    at 0x403550A: wine_cp_wcstombs (wctomb.c:162)
+
+I suspect the A<->W mapping is still not fully correct (I know at
+least one more case, but I'm not sure it gets triggered by the tests)
+but perhaps it's also the W->UNIX.UTF-8 conversions internal to Wine
+which cause these hits.  How do I tell?
+
+Is there any way to get more precise reporting for the above messages
+(e.g. a backtrace)?  The present output is not helpful at identifying
+the origin of the uninitialised read.
+
+Perhaps Valgrind is broken? Why does it mention "size 4" when all
+access in the offending function is either "char *" or "short *"
+according to the source
+http://source.winehq.org/source/libs/wine/wctomb.c#L145 ?
+
+Thanks for your help,
+	J?rg H?hle
+
+
+From dank at kegel.com  Mon May  3 08:32:19 2010
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 3 May 2010 06:32:19 -0700
+Subject: Valgrind's wine_cp_wcstombs warnings
+Message-ID: <u2ya71bd89a1005030632ndf33566g749325adb9a7da8e@mail.gmail.com>
+
+Hi Joerg,
+did you try the --track-origins option?  That can sometimes give more detail
+(see e.g. the traces in this old message):
+
+On Thu, Jul 31, 2008 at 10:14 AM, Dan Kegel <dank at kegel.com> wrote:
+> Hi Colin,
+> your change
+> http://source.winehq.org/git/wine.git/?a=commitdiff;h=c2c1a55f1c08f35ae02b811d1141acd6ec76fca6
+> seems to have triggered some valgrind warnings,
+> http://kegel.com/wine/valgrind/logs/2008-07-31-07.46/vg-kernel32_codepage-diff.txt
+> e.g.
+>
+> + Use of uninitialised value of size 4
+> + ? ?at ?wcstombs_sbcs (wctomb.c:186)
+> + ? ?by ?wine_cp_wcstombs (wctomb.c:457)
+> + ? ?by ?WideCharToMultiByte (locale.c:1936)
+> + ? ?by ?test_string_conversion (codepage.c:288)
+> + ? ?by ?func_codepage (codepage.c:351)
+> + ? ?by ?run_test (test.h:488)
+> + ? ?by ?main (test.h:537)
+> + ?Uninitialised value was created by a stack allocation
+> + ? ?at ?test_string_conversion (codepage.c:216)
+>
+> + Use of uninitialised value of size 4
+> + ? ?at ?wcstombs_sbcs_slow (wctomb.c:246)
+> + ? ?by ?wine_cp_wcstombs (wctomb.c:453)
+> + ? ?by ?WideCharToMultiByte (locale.c:1936)
+> + ? ?by ?test_string_conversion (codepage.c:288)
+> + ? ?by ?func_codepage (codepage.c:352)
+> + ? ?by ?run_test (test.h:488)
+> + ? ?by ?main (test.h:537)
+> + ?Uninitialised value was created by a stack allocation
+> + ? ?at ?test_string_conversion (codepage.c:216)
+>
+> Could you have a look?
+>
+
+
+From julliard at winehq.org  Mon May  3 10:19:05 2010
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 03 May 2010 17:19:05 +0200
+Subject: [2/5] rundll32: Fail if a rundll32 window cannot be created.
+In-Reply-To: <4BDCFAB2.8030109@codeweavers.com> (Andrew Nguyen's message of
+	"Sat, 01 May 2010 23:08:18 -0500")
+References: <4BDCFAB2.8030109@codeweavers.com>
+Message-ID: <87mxwhypw6.fsf@wine.dyndns.org>
+
+Andrew Nguyen <anguyen at codeweavers.com> writes:
+
+> ---
+>   programs/rundll32/rundll32.c |   16 +++++++++++++---
+>   1 files changed, 13 insertions(+), 3 deletions(-)
+
+This will prevent initializing the prefix without an X display. Why do
+you need this?
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From johann at myrkraverk.com  Mon May  3 12:10:40 2010
+From: johann at myrkraverk.com (Johann "Myrkraverk" Oskarsson)
+Date: Mon, 3 May 2010 17:10:40 +0000
+Subject: Why reserve space below 2G without preloader? wrt. patch 1aa749d & 
+	bug 22033
+Message-ID: <y2jcb59c2d11005031010hecfcef93y4e3acb4ab812b575@mail.gmail.com>
+
+Hi all,
+
+Out of sheer curiousity, why is it important to reserve space below 2G
+when there is no preloader?
+
+Patch 1aa749d, is
+
+    libwine: Reserve some low memory space even without a preloader.
+
+has the comment:
+
+/* if we don't have a preloader, try to reserve some space below 2Gb */
+
+and is the regression for bug 22033.
+
+http://bugs.winehq.org/show_bug.cgi?id=22033
+
+
+I will be trying to determine the excact cause of the bug later.
+
+
+Johann
+
+
+From epssyis at gmail.com  Mon May  3 12:51:23 2010
+From: epssyis at gmail.com (Edward Savage)
+Date: Tue, 4 May 2010 03:51:23 +1000
+Subject: Why reserve space below 2G without preloader? wrt. patch 1aa749d 
+	& bug 22033
+In-Reply-To: <y2jcb59c2d11005031010hecfcef93y4e3acb4ab812b575@mail.gmail.com>
+References: <y2jcb59c2d11005031010hecfcef93y4e3acb4ab812b575@mail.gmail.com>
+Message-ID: <r2ld6c5d7291005031051wa34d1199n5f78ef6710237725@mail.gmail.com>
+
+On Tue, May 4, 2010 at 3:10 AM, Johann "Myrkraverk" Oskarsson
+<johann at myrkraverk.com> wrote:
+>
+> Out of sheer curiousity, why is it important to reserve space below 2G
+> when there is no preloader?
+>
+
+Have to keep the Llamas some where...
+
+
+From julliard at winehq.org  Mon May  3 13:22:03 2010
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 03 May 2010 20:22:03 +0200
+Subject: Why reserve space below 2G without preloader? wrt. patch 1aa749d
+	& bug 22033
+In-Reply-To: <y2jcb59c2d11005031010hecfcef93y4e3acb4ab812b575@mail.gmail.com>
+	(Johann Oskarsson's message of "Mon, 3 May 2010 17:10:40 +0000")
+References: <y2jcb59c2d11005031010hecfcef93y4e3acb4ab812b575@mail.gmail.com>
+Message-ID: <87iq74zvzo.fsf@wine.dyndns.org>
+
+"Johann \"Myrkraverk\" Oskarsson" <johann at myrkraverk.com> writes:
+
+> Hi all,
+>
+> Out of sheer curiousity, why is it important to reserve space below 2G
+> when there is no preloader?
+>
+> Patch 1aa749d, is
+>
+>     libwine: Reserve some low memory space even without a preloader.
+>
+> has the comment:
+>
+> /* if we don't have a preloader, try to reserve some space below 2Gb */
+>
+> and is the regression for bug 22033.
+>
+> http://bugs.winehq.org/show_bug.cgi?id=22033
+>
+>
+> I will be trying to determine the excact cause of the bug later.
+
+It's needed for apps that look for free space before allocating, instead
+of simply accepting the VirtualAlloc return value. .NET is the main
+offender.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From philippe.casgrain at transgaming.com  Mon May  3 14:01:10 2010
+From: philippe.casgrain at transgaming.com (Philippe Casgrain)
+Date: Mon, 3 May 2010 15:01:10 -0400
+Subject: [1/2] dlls/crypt32: implement PFXImportCertStore()
+In-Reply-To: <3a768c551003251134j7c62fb2k6e4e258c1e6c7eb@mail.gmail.com>
+References: <3a768c551003221140w1dc9aa60hef85cb6e43226400@mail.gmail.com>
+	<7F39E826-56AE-4A6F-8AD3-0CEFF77F51E2@transgaming.com>
+	<3a768c551003250914x533e2673gb0db181da256eda2@mail.gmail.com>
+	<D2114FE9-C293-4FDA-AEB8-11EA47B16A49@transgaming.com>
+	<3a768c551003251134j7c62fb2k6e4e258c1e6c7eb@mail.gmail.com>
+Message-ID: <06F0A0A9-F7C7-44B8-B7B1-99562943A043@transgaming.com>
+
+[Finally have a little bit of downtime, can turn my attention back to this...]
+
+On 2010-03-25, at 2:34 PM, Juan Lang wrote:
+
+>> I don't have any password-protected certificates to test with, so I can't add such a test (it was not required for our implementation).
+> 
+> You can if you create one (on Windows.)
+
+I do not know how to do that. The motivation behind this patch is to get something of value inside WineHQ so that the implementation of this function can be started. It is possible that we may implement password-protection and private key extraction in the future, or someone else may do it. This would be great for the community. But it's not something that I can do right now.
+
+>> So what you want is to import two new functions (sk_X509_new_null() and sk_X509_free()) and use them to create a STACK_OF(X509) whose sole purpose is to detect if there are more certificates, and then ERR or TRACE if there are, and then dispose?
+> 
+> No, I suppose not.  A test marked todo_wine would be better.
+
+I don't disagree that this implementation is incomplete. It is, however, much less incomplete than what was there before in the sense of 
+> 
+>> Ah. In that case, it does not really matter what the string is, right? I can remove it if you don't want it.
+> 
+> Please do ;)
+
+Unnecessary strings will be removed in the next submission.
+
+The motivation behind this patch is/was to get *something* into WineHQ so that the next time we or someone else needs to work on this, there is a basic skeleton in place. As a bonus, this skeleton actually does something useful (get the certificate using OpenSSL). We know it works and is useful because a now-shipping game is using it.
+
+If the WineHQ community feels that an incomplete implementation is not good enough for a patch submission, that is entirely their prerogative. I would obviously prefer that my patch be (eventually) incorporated, but I understand the reasoning.
+
+Philippe Casgrain
+[Again, apologies for the delay, things are just crazy-busy around here...]
+
+From testbot at testbot.winehq.org  Mon May  3 17:25:39 2010
+From: testbot at testbot.winehq.org (testbot at testbot.winehq.org)
+Date: Tue, 4 May 2010 00:25:39 +0200
+Subject: [PATCH 4/5] d3d9/tests: Allow D3DFMT_A2R10G10B10 as supported
+	adapter mode. 
+Message-ID: <201005032225.o43MPdLq025142@v1.gse.nl>
+
+Hi,
+
+While running your changed tests on Windows, I think I found new failures.
+Being a bot and all I'm not very good at pattern recognition, so I might be
+wrong, but could you please double-check?
+Full results can be found at
+http://testbot.winehq.org/JobDetails.pl?Key=1890
+
+Your paranoid android.
+
+
+=== W7PRO (32 bit device) ===
+device.c:2442: Test failed: Expected foreground window 00020142, got 00010040.
+device.c:2578: Test failed: Expected foreground window 00030142, got 00010040.
+
+
+From hverbeet at gmail.com  Tue May  4 02:28:03 2010
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Tue, 4 May 2010 09:28:03 +0200
+Subject: wined3d: Fix some complaints in d3d9 texture test
+In-Reply-To: <4BDFCAFE.9060403@gmail.com>
+References: <4BDFCAFE.9060403@gmail.com>
+Message-ID: <t2jd658b69e1005040028r747f80a1w5d3a88b9eb33d8b7@mail.gmail.com>
+
+2010/5/4 Ri?ardas Barkauskas <miegalius at gmail.com>:
+> Fixes some GL_INVALID_ENUM fixmes in d3d9 texture tests and bug 11167.
+>
+Why are you setting GL_GENERATE_MIPMAP_SGIS?
+
+
+From miegalius at gmail.com  Tue May  4 03:25:32 2010
+From: miegalius at gmail.com (=?UTF-8?B?UmnEjWFyZGFzIEJhcmthdXNrYXM=?=)
+Date: Tue, 04 May 2010 11:25:32 +0300
+Subject: wined3d: Fix some complaints in d3d9 texture test
+In-Reply-To: <t2jd658b69e1005040028r747f80a1w5d3a88b9eb33d8b7@mail.gmail.com>
+References: <4BDFCAFE.9060403@gmail.com>
+	<t2jd658b69e1005040028r747f80a1w5d3a88b9eb33d8b7@mail.gmail.com>
+Message-ID: <4BDFD9FC.7040708@gmail.com>
+
+On 05/04/2010 10:28 AM, Henri Verbeet wrote:
+> 2010/5/4 Ri?ardas Barkauskas<miegalius at gmail.com>:
+>> Fixes some GL_INVALID_ENUM fixmes in d3d9 texture tests and bug 11167.
+>>
+> Why are you setting GL_GENERATE_MIPMAP_SGIS?
+>
+>
+
+Sorry for spam. Reading bug now gives completely new meaning than in a 
+middle of the night (and also enables finding old mails about it). Will 
+try to make it this evening to just set the hint and output fixme if app 
+sets two different modes. Doing this nicely with glGenerateMipmapEXT 
+will most likely be outside my ability.
+
+REalm
+
+
+From love.nystrom at gmail.com  Tue May  4 04:59:00 2010
+From: love.nystrom at gmail.com (Love Nystrom)
+Date: Tue, 04 May 2010 16:59:00 +0700
+Subject: A revision for common PageSetup dialog
+Message-ID: <4BDFEFE4.5020002@gmail.com>
+
+File: dlls\comdlg32\printdlg.c
+Function: static void subclass_margin_edits(HWND hDlg)
+
+Hi WineDevs,
+I have a revision for the common page setup dialog for You.
+
+I'm not a Wine dev, but a participant in ReactOS, and we synchronize
+ComDlg32 with You regularly, so this revision _should_ go to You.
+I'll submit the full function, not a patch, since I don't work in
+the Wine source tree. The ReactOS sync has a different path, and
+most likely line numbers too, so a patch merge would go astray.
+I've registered with the wine-patches and wine-devel mailing lists
+so You can notify in case You need something else from me.
+
+Since this is not a straight 'diff' mail-body I'll post it here on
+wine-devel first, as I'm unsure how You handle wine-patches mail.
+
+Now to the small revision:
+
+This revision adds an error check on the winproc pointer returned
+by SetWindowLongPtr(.. GWLP_WNDPROC ..) and fixes a build warning
+issued because GCC thinks 'old_proc' is computed but never used..
+
+I assume the reason for repeating the attempt to set 'edit_proc' is
+because we're not certain which editors will be present, so there
+_should_ be a fail-check on 'old_proc' anyway.
+
+If you _know_ 'edt4' will always be present, it would be better to
+move the assign for 'edit_proc' out of the loop, and avoid the
+repeated conditional assign.  Both variants are #if'ed in the patch.
+Just remove the variant you don't want.
+
+--- code begin ---
+static void subclass_margin_edits(HWND hDlg)
+    int id;
+    WNDPROC old_proc;
+#if 1
+    for(id = edt4; id <= edt7; id++)
+    {
+        old_proc = (WNDPROC)SetWindowLongPtrW(GetDlgItem(hDlg, id),
+                                              GWLP_WNDPROC,
+                                              
+(ULONG_PTR)pagesetup_margin_editproc);
+        /* InterlockedCompareExchangePointer((void**)&edit_wndproc, 
+old_proc, NULL); */
+        if ((edit_wndproc == NULL) && (old_proc != NULL))
+            edit_wndproc = old_proc;
+    }
+#else
+    old_proc = (WNDPROC)
+        SetWindowLongPtrW (
+            GetDlgItem( hDlg, edt4 ),
+            GWLP_WNDPROC, (ULONG_PTR) pagesetup_margin_editproc
+            );
+    if ((edit_wndproc == NULL) && (old_proc != NULL))
+        edit_wndproc = old_proc;
+
+    for( id = edt5; id <= edt7; id++ )
+        SetWindowLongPtrW (
+            GetDlgItem( hDlg, id ),
+            GWLP_WNDPROC, (ULONG_PTR) pagesetup_margin_editproc
+            );
+#endif
+--- code end ---
+
+The reason for the build warning is that the definition
+of InterlockedCompareExchangePointer() confuses GCC.
+It thinks 'old_proc' is computed but never used,
+and issues an over-sensitive, even misleading, warning.
+It seems like GCC doesn't realize that an intrinsic uses the value.
+It would be good to fix InterlockedCompareExchangePointer, or GCC.
+Sadly, I can't figure out how to do that.
+
+Best Regards
+  Love N
+
+
+
+From julliard at winehq.org  Tue May  4 05:56:48 2010
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 04 May 2010 12:56:48 +0200
+Subject: [3/3] rundll32: Recognize entry points passed as ordinal numbers.
+	(try 2)
+In-Reply-To: <4BDF2277.5000108@codeweavers.com> (Andrew Nguyen's message of
+	"Mon, 03 May 2010 14:22:31 -0500")
+References: <4BDF2277.5000108@codeweavers.com>
+Message-ID: <87hbmodjf3.fsf@wine.dyndns.org>
+
+Andrew Nguyen <anguyen at codeweavers.com> writes:
+
+> @@ -119,30 +119,43 @@ static FARPROC16 get_entry_point16( HINSTANCE16 inst, LPCWSTR entry )
+>  static void *get_entry_point32( HMODULE module, LPCWSTR entry, BOOL *unicode )
+>  {
+>      void *ret;
+> -    DWORD len = WideCharToMultiByte( CP_ACP, 0, entry, -1, NULL, 0, NULL, NULL );
+> -    char *entryA = HeapAlloc( GetProcessHeap(), 0, len + 1 );
+> -
+> -    if (!entryA)
+> -        return NULL;
+>  
+> -    WideCharToMultiByte( CP_ACP, 0, entry, -1, entryA, len, NULL, NULL );
+> +    /* determine if the entry point is an ordinal */
+> +    if (entry[0] == '#')
+> +    {
+> +        int ordinal = atoiW( entry + 1 );
+> +        if (ordinal <= 0)
+> +            return NULL;
+
+You don't set the unicode flag in this case.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From jordan.ayers at gmail.com  Tue May  4 08:23:30 2010
+From: jordan.ayers at gmail.com (Jordan Ayers)
+Date: Tue, 4 May 2010 08:23:30 -0500
+Subject: Valgrind's wine_cp_wcstombs warnings
+Message-ID: <w2v43830d551005040623mb0642af5m5702552a9032e5a8@mail.gmail.com>
+
+> Hi,
+>
+> running the MCI tests with Valgrind generates a lot of output like follows
+>
+> ==13170== Use of uninitialised value of size 4
+> ==13170==    at 0x4035369: wine_cp_wcstombs (wctomb.c:147)
+> ...[every line from 148 to 161]
+> ==13170== Use of uninitialised value of size 4
+> ==13170==    at 0x403550A: wine_cp_wcstombs (wctomb.c:162)
+>
+> I suspect the A<->W mapping is still not fully correct (I know at
+> least one more case, but I'm not sure it gets triggered by the tests)
+> but perhaps it's also the W->UNIX.UTF-8 conversions internal to Wine
+> which cause these hits.  How do I tell?
+>
+> Is there any way to get more precise reporting for the above messages
+> (e.g. a backtrace)?  The present output is not helpful at identifying
+> the origin of the uninitialised read.
+>
+> Perhaps Valgrind is broken? Why does it mention "size 4" when all
+> access in the offending function is either "char *" or "short *"
+> according to the source
+> http://source.winehq.org/source/libs/wine/wctomb.c#L145 ?
+>
+> Thanks for your help,
+> 	J?rg H?hle
+
+Joerg,
+    If you're on a 32-bit system, your pointers would be where the
+'size 4' is coming from.  It looks like Valgrind thinks a pointer
+being dereferenced isn't initialized.  (maybe src?)
+
+Jordan Ayers
+
+
+From Joerg-Cyril.Hoehle at t-systems.com  Tue May  4 08:34:49 2010
+From: Joerg-Cyril.Hoehle at t-systems.com (Joerg-Cyril.Hoehle at t-systems.com)
+Date: Tue, 4 May 2010 15:34:49 +0200
+Subject: Valgrind's wine_cp_wcstombs warnings
+References: <u2ya71bd89a1005030632ndf33566g749325adb9a7da8e@mail.gmail.com>
+Message-ID: <47CC5ABB01651443A88DB8EC5B4D657B740354@S4DE8PSAANK.mitte.t-com.de>
+
+Hi,
+
+Dan Kegel wrote:
+>did you try the --track-origins option?
+That looks like an exact fit, thank you.
+
+Well, this option is not present in Ubuntu Intrepid's Valgrind.
+In Ubuntu Lucid, the option is present but Valgrind does not
+ complain about wine_cp_wcstombs there.
+I conclude it was likely a false alarm due to a bug in old Valgrind.
+
+Regards,
+ J?rg H?hle
+
+
+From johann at myrkraverk.com  Tue May  4 11:17:55 2010
+From: johann at myrkraverk.com (Johann "Myrkraverk" Oskarsson)
+Date: Tue, 4 May 2010 16:17:55 +0000
+Subject: What is the point of mincore() in reserve_area() in libs/wine/mmap.c?
+Message-ID: <s2gcb59c2d11005040917u62432f8fvd49167bc4fbbe225@mail.gmail.com>
+
+Hi all,
+
+In the Solaris/BSD implementation of reserve_area() in libs/wine/mmap.c there is
+
+        for (i = 0; i < size; i += pagesize)
+            if (mincore( (caddr_t)addr + i, pagesize, &vec ) != -1) break;
+
+&vec is never used again in that function.  What is the point of mincore() ?
+
+I'm looking at this in reference to bug 22033.
+
+
+Johann
+
+
+From cdavis at mymail.mines.edu  Tue May  4 11:22:44 2010
+From: cdavis at mymail.mines.edu (Charles Davis)
+Date: Tue, 04 May 2010 10:22:44 -0600
+Subject: What is the point of mincore() in reserve_area() in
+	libs/wine/mmap.c?
+In-Reply-To: <s2gcb59c2d11005040917u62432f8fvd49167bc4fbbe225@mail.gmail.com>
+References: <s2gcb59c2d11005040917u62432f8fvd49167bc4fbbe225@mail.gmail.com>
+Message-ID: <4BE049D4.7010803@mymail.mines.edu>
+
+On 5/4/10 10:17 AM, Johann "Myrkraverk" Oskarsson wrote:
+> Hi all,
+> 
+> In the Solaris/BSD implementation of reserve_area() in libs/wine/mmap.c there is
+> 
+>         for (i = 0; i < size; i += pagesize)
+>             if (mincore( (caddr_t)addr + i, pagesize, &vec ) != -1) break;
+> 
+> &vec is never used again in that function.  What is the point of mincore() ?
+It's trying to see if the address is valid. From the manpage:
+
+RETURN VALUES
+     Upon successful completion, a value of 0 is returned.  Otherwise,
+     a value of -1 is returned and errno is set to indicate the error.
+
+ERRORS
+     [EINVAL]           addr is not a valid address for user mode.
+
+     [EFAULT]           an error occurred trying to copy to the output
+                        character array vec.
+
+vec is to make sure it failed because the address was invalid, not
+because it couldn't write the flags out.
+
+Chip
+
+
+From julliard at winehq.org  Tue May  4 11:34:41 2010
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 04 May 2010 18:34:41 +0200
+Subject: gdi32: Fix underline and strikeout for clipped to the rectangle
+	text
+In-Reply-To: <201004301438.18022.shpigor@etersoft.ru> (Ilya Shpigor's message
+	of "Fri, 30 Apr 2010 14:38:17 +0400")
+References: <201004301438.18022.shpigor@etersoft.ru>
+Message-ID: <87r5lrd3ry.fsf@wine.dyndns.org>
+
+Ilya Shpigor <shpigor at etersoft.ru> writes:
+
+> There is bug with underline and strikeout font in ExtTextOutW.
+>
+> The text is clipped if the ETO_CLIPPED flag have been set and rectangle 
+> smaller then needed for text. But underline and strikeout lines is drawed 
+> same as when text fit in the rectangle.
+>
+> The problem screenshot (wine below):
+> http://bugs.etersoft.ru/attachment.cgi?id=1678
+>
+> I suggest to check if the y coordinate of line is smaller then text rectangle 
+> bottom.
+
+That's of course not sufficient for correct clipping.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From austinenglish at gmail.com  Tue May  4 13:52:45 2010
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 4 May 2010 13:52:45 -0500
+Subject: [12/13]docs/wineusr: unix paths are supported
+In-Reply-To: <4BE06BE0.9060303@dawncrow.de>
+References: <4BE06BE0.9060303@dawncrow.de>
+Message-ID: <t2gb6bb06271005041152v12820c49y81000c1128c80735@mail.gmail.com>
+
+2010/5/4 Andr? Hentschel <nerv at dawncrow.de>:
+> ---
+> ?en/wineusr-running.sgml | ? ?8 ++++++--
+> ?1 files changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/en/wineusr-running.sgml b/en/wineusr-running.sgml
+> index f36383f..106be37 100644
+> --- a/en/wineusr-running.sgml
+> +++ b/en/wineusr-running.sgml
+> @@ -90,8 +90,8 @@ Usage: wine PROGRAM [ARGUMENTS...] ? Run the specified program
+> ? ? ? ? in the <parameter>Path</parameter> environment variable, you can
+> ? ? ? ? simply give the executable file name. However, if the executable
+> ? ? ? ? is not in <parameter>Path</parameter>, you must give the full path to
+> - ? ? ? ?the executable (in Windows format, not UNIX format!). ?For
+> - ? ? ? ?example, given a <parameter>Path</parameter> of the following:
+> + ? ? ? ?the executable. ?For example, given a <parameter>Path</parameter>
+> + ? ? ? ?of the following:
+> ? ? ? </para>
+> ? ? ? <screen>
+> ?Path="c:\windows;c:\windows\system;e:\;e:\test;f:\"
+> @@ -112,7 +112,11 @@ Path="c:\windows;c:\windows\system;e:\;e:\test;f:\"
+> ? ? ? </screen>
+> ? ? ? <para>
+> ? ? ? (note the backslash-escaped "\" !)
+> + ? ? ?or:
+> ? ? ? </para>
+> + ? ? ?<screen>
+> +<prompt>$</prompt> <userinput>wine ~/.wine/drive_c/myapps/foo.exe</userinput>
+> + ? ? ?</screen>
+> ? ? ? <para>
+> ? ? ? ?For details on running text mode (CUI) executables, read the
+> ? ? ? ?<link linkend="CUI-programs">section</link> below.
+> --
+
+A lot of programs break when using Unix paths. I don't think we should
+encourage it.
+
+Perhaps instead put an example using wine start /unix.
+
+-- 
+-Austin
+
+
+From julliard at winehq.org  Tue May  4 14:16:52 2010
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 04 May 2010 21:16:52 +0200
+Subject: [12/13]docs/wineusr: unix paths are supported
+In-Reply-To: <t2gb6bb06271005041152v12820c49y81000c1128c80735@mail.gmail.com>
+	(Austin English's message of "Tue, 4 May 2010 13:52:45 -0500")
+References: <4BE06BE0.9060303@dawncrow.de>
+	<t2gb6bb06271005041152v12820c49y81000c1128c80735@mail.gmail.com>
+Message-ID: <87k4rjcw9n.fsf@wine.dyndns.org>
+
+Austin English <austinenglish at gmail.com> writes:
+
+>> diff --git a/en/wineusr-running.sgml b/en/wineusr-running.sgml
+>> index f36383f..106be37 100644
+>> --- a/en/wineusr-running.sgml
+>> +++ b/en/wineusr-running.sgml
+>> @@ -90,8 +90,8 @@ Usage: wine PROGRAM [ARGUMENTS...] ? Run the specified program
+>> ? ? ? ? in the <parameter>Path</parameter> environment variable, you can
+>> ? ? ? ? simply give the executable file name. However, if the executable
+>> ? ? ? ? is not in <parameter>Path</parameter>, you must give the full path to
+>> - ? ? ? ?the executable (in Windows format, not UNIX format!). ?For
+>> - ? ? ? ?example, given a <parameter>Path</parameter> of the following:
+>> + ? ? ? ?the executable. ?For example, given a <parameter>Path</parameter>
+>> + ? ? ? ?of the following:
+>> ? ? ? </para>
+>> ? ? ? <screen>
+>> ?Path="c:\windows;c:\windows\system;e:\;e:\test;f:\"
+>> @@ -112,7 +112,11 @@ Path="c:\windows;c:\windows\system;e:\;e:\test;f:\"
+>> ? ? ? </screen>
+>> ? ? ? <para>
+>> ? ? ? (note the backslash-escaped "\" !)
+>> + ? ? ?or:
+>> ? ? ? </para>
+>> + ? ? ?<screen>
+>> +<prompt>$</prompt> <userinput>wine ~/.wine/drive_c/myapps/foo.exe</userinput>
+>> + ? ? ?</screen>
+>> ? ? ? <para>
+>> ? ? ? ?For details on running text mode (CUI) executables, read the
+>> ? ? ? ?<link linkend="CUI-programs">section</link> below.
+>> --
+>
+> A lot of programs break when using Unix paths. I don't think we should
+> encourage it.
+
+There's no difference between specifying the path in Windows or Unix
+format. The current directory may be an issue, but that's true in both
+cases.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From elanz1615 at yahoo.com  Tue May  4 14:30:19 2010
+From: elanz1615 at yahoo.com (eric lanz)
+Date: Tue, 4 May 2010 12:30:19 -0700 (PDT)
+Subject: Winebuild b0rken on Mac OS X?
+In-Reply-To: <4BCDFED4.40102@mymail.mines.edu>
+References: <4BCDFED4.40102@mymail.mines.edu>
+Message-ID: <521385.75257.qm@web63705.mail.re1.yahoo.com>
+
+FYI wine can be built again with the iphone sdk beta 3 that came out today.
+
+
+
+
+________________________________
+From: Charles Davis <cdavis at mymail.mines.edu>
+To: wine-devel <wine-devel at winehq.org>
+Sent: Tue, April 20, 2010 3:21:56 PM
+Subject: Winebuild b0rken on Mac OS X?
+
+While building Wine (latest git) on Mac OS X, I noticed this:
+
+/usr/bin/nm: object: amstream_test.MDsdpi.o malformed object (LC_SEGMENT
+command 0 filesize field greater than vmsize field)
+Undefined symbols:
+  "_GetDesktopWindow", referenced from:
+      _func_amstream in amstream.o
+  "_TlsGetValue", referenced from:
+      _get_tls_data in testlist.o
+  "_MultiByteToWideChar", referenced from:
+      _func_amstream in amstream.o
+      _func_amstream in amstream.o
+  "_CloseHandle", referenced from:
+      _func_amstream in amstream.o
+  "_TlsSetValue", referenced from:
+      _get_tls_data in testlist.o
+  "_DirectDrawCreate", referenced from:
+      _func_amstream in amstream.o
+  "_CoCreateInstance", referenced from:
+      _create_ammultimediastream in amstream.o
+  "_WaitForSingleObject", referenced from:
+      _winetest_wait_child_process in testlist.o
+  "_CoInitializeEx", referenced from:
+      _func_amstream in amstream.o
+  "_HeapAlloc", referenced from:
+      _get_tls_data in testlist.o
+  "_CoUninitialize", referenced from:
+      _func_amstream in amstream.o
+      _func_amstream in amstream.o
+  "_GetExitCodeProcess", referenced from:
+      _winetest_wait_child_process in testlist.o
+  "_GetEnvironmentVariableA", referenced from:
+      _main in testlist.o
+      _main in testlist.o
+      _main in testlist.o
+      _main in testlist.o
+  "_ExitProcess", referenced from:
+      _exit_process in testlist.o
+      ___wine_spec_exe_entry in libwinecrt0.a(exe_entry.o)
+  "_CreateFileA", referenced from:
+      _func_amstream in amstream.o
+      _func_amstream in amstream.o
+  "_TlsAlloc", referenced from:
+      _run_test in testlist.o
+ld: symbol(s) not found
+collect2: ld returned 1 exit status
+winegcc: gcc failed
+make[1]: *** [amstream_test.exe.so] Error 2
+make: *** [dlls/amstream/tests] Error 2
+
+Something's gone horribly wrong. Winebuild shouldn't be generating
+b0rken Mach-O files. What gives?
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20100504/783e30fe/attachment.htm>
+
+From julliard at winehq.org  Tue May  4 14:50:46 2010
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 04 May 2010 21:50:46 +0200
+Subject: [PATCH 1/2] tools: Added a script to build BMPs from SVGs
+In-Reply-To: <1273001113.30755.9.camel@joel-desktop> (Joel Holdsworth's
+	message of "Tue, 04 May 2010 20:25:13 +0100")
+References: <1273001113.30755.9.camel@joel-desktop>
+Message-ID: <87eihrcup5.fsf@wine.dyndns.org>
+
+Joel Holdsworth <joel at airwebreathe.org.uk> writes:
+
+> Signed-off-by: Joel Holdsworth <joel at airwebreathe.org.uk>
+> ---
+>  Make.rules.in     |    5 +--
+>  tools/buildbitmap |   90 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 92 insertions(+), 3 deletions(-)
+>  create mode 100755 tools/buildbitmap
+
+This could go in the buildicon script, most of the code is the same.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From dank at kegel.com  Tue May  4 17:01:49 2010
+From: dank at kegel.com (Dan Kegel)
+Date: Tue, 4 May 2010 15:01:49 -0700
+Subject: More benchmarks of 3d performance comparing windows and linux
+Message-ID: <j2ka71bd89a1005041501o9b32e046v14072e97f58a83b@mail.gmail.com>
+
+http://kegel.com/wine/yagmarkdata/ now has data from 3dmark2000, 2001, and
+06
+running on a beefy i7 960 with an equally beefy Nvidia GTX 295 with either
+Windows 7 or Linux+Wine
+(all tests run at 1024x768).
+
+Here are the results of one run for each plucked at random (sorry, no
+breakdown of 3dmark06 results yet):
+
+
+Win 7                Wine        units
+3dmark2000_3DMark_Result:                        39587       26278   3Dmarks
+3dmark2000_CPU_Speed:                            1269        1276
+CPU_3Dmarks
+3dmark2000_Game_1_Helicopter_Low_Detail:         689.7       415.2   FPS
+3dmark2000_Game_1_Helicopter_Medium_Detail:      526.8       319.4   FPS
+3dmark2000_Game_1_Helicopter_High_Detail:        412.1       260.1   FPS
+3dmark2000_Game_2_Adventure_Low_Detail:          981.2       648.4   FPS
+3dmark2000_Game_2_Adventure_Medium_Detail:       429.0       334.9   FPS
+3dmark2000_Game_2_Adventure_High_Detail:         260.2       211.8   FPS
+
+3dmark2001_3DMark_Score                          46297       28194   3DMarks
+3dmark2001_Game_1_Car_Chase_Low_Detail           551.3       314.6   fps
+3dmark2001_Game_1_Car_Chase_High_Detail          111.5       133.0   fps
+3dmark2001_Game_2_Dragothic_Low_Detail           678.0       462.2   fps
+3dmark2001_Game_2_Dragothic_High_Detail          399.6       184.2   fps
+3dmark2001_Game_3_Lobby_Low_Detail               602.7       371.5   fps
+3dmark2001_Game_3_Lobby_High_Detail              294.0       135.5   fps
+3dmark2001_Game_4_Nature                         593.9       382.9   fps
+
+3DMark06_result:                                 21519       6038    3dmarks
+
+This might not be all that useful on its own, but once I have daily
+automatic runs going,
+it ought to be helpful in looking for performance regressions.
+
+These results are probably only accurate to +- 5%.  Later on I'll do
+multiple runs
+and compute the median to reduce the noise level.
+
+Notes:
+
+On really big screens, at least under wine, 3dmark2000 seems to lose its
+mind and put up a warning
+dialog behind the main window (thus hanging the test).  I had to set the
+screen size down to something
+closer to 1024x768 for it to calm down and run the benchmark.
+
+3dmark2000 and 3dmark2001 need to be run in xp compatibility mode
+on Windows 7, or they complain of insufficient memory.
+
+Again, this was done by running
+http://code.google.com/p/winezeug/source/browse/trunk/yagmark
+- Dan
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20100504/cd38f762/attachment.htm>
+
+From anguyen at codeweavers.com  Mon May  3 10:48:24 2010
+From: anguyen at codeweavers.com (Andrew Nguyen)
+Date: Mon, 03 May 2010 10:48:24 -0500
+Subject: [2/5] rundll32: Fail if a rundll32 window cannot be created.
+In-Reply-To: <87mxwhypw6.fsf@wine.dyndns.org>
+References: <4BDCFAB2.8030109@codeweavers.com> <87mxwhypw6.fsf@wine.dyndns.org>
+Message-ID: <4BDEF048.9000609@codeweavers.com>
+
+On 05/03/2010 10:19 AM, Alexandre Julliard wrote:
+> Andrew Nguyen<anguyen at codeweavers.com>  writes:
+>
+>> ---
+>>    programs/rundll32/rundll32.c |   16 +++++++++++++---
+>>    1 files changed, 13 insertions(+), 3 deletions(-)
+>
+> This will prevent initializing the prefix without an X display. Why do
+> you need this?
+>
+
+I simply wrote this in the interest of "error checking"; there wasn't 
+any particular reason for this patch. You're right, I'll re-send the 
+series with this patch dropped.
+
+
+From Joakim.Tjernlund at transmode.se  Mon May  3 13:44:33 2010
+From: Joakim.Tjernlund at transmode.se (Joakim Tjernlund)
+Date: Mon, 3 May 2010 20:44:33 +0200
+Subject: [PATCH] RegisterWaitForSingleObject() fix special tmo == 0 case.
+Message-ID: <1272912273-29615-1-git-send-email-Joakim.Tjernlund@transmode.se>
+
+At http://msdn.microsoft.com/en-us/library/aa332406%28VS.71%29.aspx one
+can read:
+"If the timeOutInterval parameter is not zero (0) and the executeOnlyOnce
+parameter is false, the timer is reset every time the event is signaled
+or the time-out interval elapses."
+
+timeOutInterval == 0 makes the above false and the timer should NOT
+be reset, fix that.
+
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund at transmode.se>
+---
+
+ Forget the earlier patches, this feels like the right fix.
+
+ dlls/ntdll/threadpool.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/dlls/ntdll/threadpool.c b/dlls/ntdll/threadpool.c
+index 44afb01..f6c9fb4 100644
+--- a/dlls/ntdll/threadpool.c
++++ b/dlls/ntdll/threadpool.c
+@@ -377,7 +377,8 @@ static DWORD CALLBACK wait_thread_proc(LPVOID Arg)
+             wait_work_item->Callback( wait_work_item->Context, TimerOrWaitFired );
+             wait_work_item->CallbackInProgress = FALSE;
+ 
+-            if (wait_work_item->Flags & WT_EXECUTEONLYONCE)
++            if (!wait_work_item->Milliseconds ||
++                wait_work_item->Flags & WT_EXECUTEONLYONCE)
+                 break;
+         }
+         else
+-- 
+1.6.4.4
+
+
+
+From joakim.tjernlund at transmode.se  Tue May  4 05:09:44 2010
+From: joakim.tjernlund at transmode.se (Joakim Tjernlund)
+Date: Tue, 4 May 2010 12:09:44 +0200
+Subject: Trying again
+Message-ID: <OF8016F421.1FD40BF2-ONC1257719.0037A2DF-C1257719.0037D2AA@transmode.se>
+
+
+This didn't show up in the archives, so trying again.
+
+
+From Joakim.Tjernlund at transmode.se  Mon May  3 13:30:32 2010
+From: Joakim.Tjernlund at transmode.se (Joakim Tjernlund)
+Date: Mon, 3 May 2010 20:30:32 +0200
+Subject: [PATCH] RegisterWaitForSingleObject() fix special tmo == 0 case.
+Message-ID: <mailman.403.1273012205.27605.wine-devel@winehq.org>
+
+At http://msdn.microsoft.com/en-us/library/aa332406%28VS.71%29.aspx one
+can read:
+"If the timeOutInterval parameter is not zero (0) and the executeOnlyOnce
+parameter is false, the timer is reset every time the event is signaled
+or the time-out interval elapses."
+
+timeOutInterval == 0 makes the above false and the timer should NOT
+be reset, fix that.
+
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund at transmode.se>
+---
+ dlls/ntdll/threadpool.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/dlls/ntdll/threadpool.c b/dlls/ntdll/threadpool.c
+index 44afb01..f6c9fb4 100644
+--- a/dlls/ntdll/threadpool.c
++++ b/dlls/ntdll/threadpool.c
+@@ -377,7 +377,8 @@ static DWORD CALLBACK wait_thread_proc(LPVOID Arg)
+             wait_work_item->Callback( wait_work_item->Context, TimerOrWaitFired );
+             wait_work_item->CallbackInProgress = FALSE;
+
+-            if (wait_work_item->Flags & WT_EXECUTEONLYONCE)
++            if (!wait_work_item->Milliseconds ||
++                wait_work_item->Flags & WT_EXECUTEONLYONCE)
+                 break;
+         }
+         else
+--
+1.6.4.4
+
+
+
+
+From wylda at volny.cz  Tue May  4 13:12:05 2010
+From: wylda at volny.cz (wylda at volny.cz)
+Date: Tue, 04 May 2010 20:12:05 +0200 (CEST)
+Subject: Stack corruption in dsound.c
+Message-ID: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+
+Hi, for those of readers who don't know yet, i'm a "Hello word" programmer,
+so sorry for bad wording or speculation etc.
+
+I decided to look into a regression since wine 1.1.30, who nobody apparently
+not know what to do, otherwise it would be solved ;)
+
+The game freezes during sound initialization and i tracked it down by
+printf debugging to heap allocation in DirectSoundDevice_Create(). Game
+goes:
+
+...
+DirectSoundDevice_Create() //HeapAlloc OK
+...
+OpenAL Init
+...
+DirectSoundDevice_Create() //HeapAlloc returns insane values
+...
+fixme:dbghelp:validate_addr64 Unsupported address ffffffffb5e70000
+fixme:dbghelp:validate_addr64 Unsupported address ffffffffb5a60000
+fixme:dbghelp:validate_addr64 Unsupported address ffffffffb5a40000
+fixme:dbghelp:validate_addr64 Unsupported address ffffffffb5950000
+fixme:dbghelp:validate_addr64 Unsupported address ffffffffb5940000
+fixme:dbghelp:validate_addr64 Unsupported address ffffffffb5920000
+Frozen
+
+This happens only when builtin OpenAL is used. In this case HeapAlloc
+gives values always beginning with 0x234vwxyz.
+
+Builtin OpenAL example (*** BAD - Game freezes ***):
+device = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(DirectSoundDevice));
+
+First call of DirectSoundDevice_Create():
+0x0014f908 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4)
+
+Second call of DirectSoundDevice_Create():
+0x234228e0 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4)
+
+
+
+Native OpenAL example(*** OK - Game runs***):
+
+First call of DirectSoundDevice_Create():
+0x0014fa30 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4)
+
+Second call of DirectSoundDevice_Create():
+0x001566c0 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4)
+
+
+So how do i find out, why HeapAlloc does not return sane values like
+in first call of DirectSoundDevice_Create()?
+
+
+
+
+From cdavis at mymail.mines.edu  Tue May  4 17:31:22 2010
+From: cdavis at mymail.mines.edu (Charles Davis)
+Date: Tue, 04 May 2010 16:31:22 -0600
+Subject: RegisterWaitForSingleObject() fix special tmo == 0 case.
+In-Reply-To: <OF3E9548ED.26808B7B-ONC1257719.002123B6-C1257719.0021965B@transmode.se>
+References: <OF3E9548ED.26808B7B-ONC1257719.002123B6-C1257719.0021965B@transmode.se>
+Message-ID: <4BE0A03A.6050103@mymail.mines.edu>
+
+On 5/4/10 12:06 AM, Joakim Tjernlund wrote:
+> 
+> Here are two versions 
+Generally, it's a bad idea to put two patches in one mail. You should
+instead have two separate emails, one for each patch.
+
+Chip
+
+
+From juan.lang at gmail.com  Tue May  4 17:35:55 2010
+From: juan.lang at gmail.com (Juan Lang)
+Date: Tue, 4 May 2010 15:35:55 -0700
+Subject: Stack corruption in dsound.c
+In-Reply-To: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+Message-ID: <u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+
+> So how do i find out, why HeapAlloc does not return sane values like
+> in first call of DirectSoundDevice_Create()?
+
+Sounds like heap corruption.  Try using valgrind to see if there are
+memory errors before the second call to DirectSoundDevice_Create().
+--Juan
+
+
+From testbot at testbot.winehq.org  Tue May  4 19:06:16 2010
+From: testbot at testbot.winehq.org (testbot at testbot.winehq.org)
+Date: Wed, 5 May 2010 02:06:16 +0200
+Subject: kernel32/tests: Remove variable len which is not really used from
+	test_CommandLine. 
+Message-ID: <201005050006.o4506GEx028264@v1.gse.nl>
+
+Hi,
+
+While running your changed tests on Windows, I think I found new failures.
+Being a bot and all I'm not very good at pattern recognition, so I might be
+wrong, but could you please double-check?
+Full results can be found at
+http://testbot.winehq.org/JobDetails.pl?Key=1901
+
+Your paranoid android.
+
+
+=== W98SE (32 bit process) ===
+Failure running script in VM: Exceeded timeout limit of 315 sec
+
+
+From testbot at testbot.winehq.org  Tue May  4 19:17:14 2010
+From: testbot at testbot.winehq.org (testbot at testbot.winehq.org)
+Date: Wed, 5 May 2010 02:17:14 +0200
+Subject: user32/tests: Remove variable hdata which is not really used from
+	test_initialisation. 
+Message-ID: <201005050017.o450HE1j028502@v1.gse.nl>
+
+Hi,
+
+While running your changed tests on Windows, I think I found new failures.
+Being a bot and all I'm not very good at pattern recognition, so I might be
+wrong, but could you please double-check?
+Full results can be found at
+http://testbot.winehq.org/JobDetails.pl?Key=1902
+
+Your paranoid android.
+
+
+=== W98SE (32 bit dde) ===
+dde.c:586: Test failed: Expected TestDDEServer(, got TestDDEServer:(04dc)
+dde.c:588: Test failed: Got size 20 for TestDDEServer:(04dc)
+dde.c:934: Test failed: Expected 0, got 0000c1ae
+dde.c:737: Test failed: Expected '[BadCommand(Var)]', got [Command-2(Var)]
+dde.c:738: Test failed: Expected 18, got 32
+dde.c:714: Test failed: Expected 9 or 11, got 12
+dde.c:939: Test failed: Expected item atom, got 00000000
+dde.c:939: Test failed: Expected item atom, got 008307f4
+dde.c:812: Test failed: client failed with 14 error(s)
+dde.c:2040: Test failed: Expected 0xdeadbeef, got 00000083
+
+
+From jjmckenzie51 at earthlink.net  Tue May  4 22:41:20 2010
+From: jjmckenzie51 at earthlink.net (James McKenzie)
+Date: Tue, 04 May 2010 20:41:20 -0700
+Subject: Trying again
+In-Reply-To: <OF8016F421.1FD40BF2-ONC1257719.0037A2DF-C1257719.0037D2AA@transmode.se>
+References: <OF8016F421.1FD40BF2-ONC1257719.0037A2DF-C1257719.0037D2AA@transmode.se>
+Message-ID: <4BE0E8E0.8070903@earthlink.net>
+
+Joakim Tjernlund wrote:
+> This didn't show up in the archives, so trying again.
+>
+> >From 7882df972ec827f0e7b7b622c01be2644e54d122 Mon Sep 17 00:00:00 2001
+> From: Joakim Tjernlund <Joakim.Tjernlund at transmode.se>
+> Date: Mon, 3 May 2010 20:30:32 +0200
+> Subject: [PATCH] RegisterWaitForSingleObject() fix special tmo == 0 case.
+>
+> At http://msdn.microsoft.com/en-us/library/aa332406%28VS.71%29.aspx one
+> can read:
+> "If the timeOutInterval parameter is not zero (0) and the executeOnlyOnce
+> parameter is false, the timer is reset every time the event is signaled
+> or the time-out interval elapses."
+>
+> timeOutInterval == 0 makes the above false and the timer should NOT
+> be reset, fix that.
+>
+> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund at transmode.se>
+>
+>   
+[Patch removed ]
+
+Joakim:
+
+Do you want comments on your patch or do you want it incorporated into 
+the Wine base code?
+
+If you want it incorporated into the Wine base code, it needs to go to 
+Wine-Patches, not Wine-Devel.
+
+If you want comments on it, you should prefix the title with [RFC] and 
+in your message ask for comments.
+
+James McKenzie
+>
+>   
+
+
+
+From wylda at volny.cz  Tue May  4 18:39:42 2010
+From: wylda at volny.cz (wylda at volny.cz)
+Date: Wed, 05 May 2010 01:39:42 +0200 (CEST)
+Subject: =?iso-8859-2?Q?Re:_Stack_corruption_in_dsound.c?=
+In-Reply-To: <u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+Message-ID: <18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+
+
+So after next few hours of "debuging my way" (HeapAlloc + printf + HeapFree)
+and bisecting where HeapAlloc is OK and where isn't i come to conclusion,
+that there is someting bad with wined3d_mutex_unlock(), i.e. it looks
+like pure luck, that the game runs with native openal32 and freezes
+with builtin openal32.
+
+void WINAPI wined3d_mutex_unlock(void)
+{
+"HeapAlloc + printf_before + HeapFree"
+
+LeaveCriticalSection(&wined3d_cs);
+
+"HeapAlloc + printf_after + HeapFree" <--- ** BAD in #274 **
+}
+
+During the initialization, the game enters wined3d_mutex_unlock() a lot
+of time, but when the number of entering reaches 274, print_before says
+allocated OK, but printf_after shows the insane address.
+
+To be precise:
+
+#271 before wined3d_mutex_lock(), 0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#271 after wined3d_mutex_lock(),  0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#270 before wined3d_mutex_unlock(), 0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#270 after wined3d_mutex_unlock(),  0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#271 before wined3d_mutex_unlock(), 0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#271 after wined3d_mutex_unlock(),  0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#272 before wined3d_mutex_lock(), 0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#272 after wined3d_mutex_lock(),  0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#272 before wined3d_mutex_unlock(), 0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#272 after wined3d_mutex_unlock(),  0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#273 before wined3d_mutex_lock(), 0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#273 after wined3d_mutex_lock(),  0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#273 before wined3d_mutex_unlock(), 0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#273 after wined3d_mutex_unlock(),  0x0020a118=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#274 before wined3d_mutex_lock(), 0x0020a130=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#274 after wined3d_mutex_lock(),  0x0020a130=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#275 before wined3d_mutex_lock(), 0x0020a2b0=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#275 after wined3d_mutex_lock(),  0x0020a2b0=HeapAlloc(), &wined3d_cs=0x7e22fda0
+
+#274 before wined3d_mutex_unlock(), 0x0020a3f0=HeapAlloc(), &wined3d_cs=0x7e22fda0
+#274 after wined3d_mutex_unlock(),  0x18fa7048=HeapAlloc(), &wined3d_cs=0x7e22fda0
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Any suggestion?
+
+> Juan Lang:
+> 
+> Sounds like heap corruption.  Try using valgrind to see if there are
+> > memory errors before the second call to DirectSoundDevice_Create().
+> > --Juan
+
+It's bug 20799. I already attached several valgrind logs there, but unfortunately
+valgrind does not survives and dies under Mirror's Edge.
+
+
+
+
+From trisk at opensolaris.org  Tue May  4 19:20:55 2010
+From: trisk at opensolaris.org (Albert Lee)
+Date: Tue, 04 May 2010 20:20:55 -0400
+Subject: What is the point of mincore() in =?UTF-8?Q?reserve=5Farea=28?=
+	=?UTF-8?Q?=29=20in=20libs/wine/mmap=2Ec=3F?=
+In-Reply-To: <4BE049D4.7010803@mymail.mines.edu>
+References: <s2gcb59c2d11005040917u62432f8fvd49167bc4fbbe225@mail.gmail.com>
+	<4BE049D4.7010803@mymail.mines.edu>
+Message-ID: <b727fe55a3815e7f81d6b1efa0628ca3@quasarnet.org>
+
+On Tue, 04 May 2010 10:22:44 -0600, Charles Davis
+<cdavis at mymail.mines.edu> wrote:
+> On 5/4/10 10:17 AM, Johann "Myrkraverk" Oskarsson wrote:
+>> Hi all,
+>> 
+>> In the Solaris/BSD implementation of reserve_area() in libs/wine/mmap.c
+>> there is
+>> 
+>>         for (i = 0; i < size; i += pagesize)
+>>             if (mincore( (caddr_t)addr + i, pagesize, &vec ) != -1)
+>>             break;
+>> 
+>> &vec is never used again in that function.  What is the point of
+>> mincore() ?
+> It's trying to see if the address is valid. From the manpage:
+> 
+> RETURN VALUES
+>      Upon successful completion, a value of 0 is returned.  Otherwise,
+>      a value of -1 is returned and errno is set to indicate the error.
+> 
+> ERRORS
+>      [EINVAL]           addr is not a valid address for user mode.
+> 
+>      [EFAULT]           an error occurred trying to copy to the output
+>                         character array vec.
+> 
+> vec is to make sure it failed because the address was invalid, not
+> because it couldn't write the flags out.
+> 
+> Chip
+
+It's a clever, though stop-the-world expensive way to determine which
+areas of the address space already have mappings present so MAP_FIXED can
+be used without accidentally clobbering another mapping. The strategy
+probably should be revisited for OpenSolaris since mmap now accepts an
+address hint.
+
+-Albert
+
+
+
+From hverbeet at gmail.com  Wed May  5 03:26:47 2010
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Wed, 5 May 2010 10:26:47 +0200
+Subject: wined3d: Remove variable blue_shift which is not really used from
+	IWineGDISurfaceImpl_SaveSnapshot. (RESEND)
+In-Reply-To: <alpine.LSU.1.99.1005041715120.18670@pulcherrima.dbai.tuwien.ac.at>
+References: <alpine.LSU.1.99.1005041715120.18670@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <k2kd658b69e1005050126zf250b984qd88b37554ebfe6ce@mail.gmail.com>
+
+On 5 May 2010 00:24, Gerald Pfeifer <gerald at pfeifer.com> wrote:
+> I didn't see any response, directly or on wine-devel, so I assume
+> this one just fell through the cracks; thus resending (now in git
+> format-patch format and proper Subject).
+>
+It probably should be used. At first sight it looks like that's not
+the only issue with that function though.
+
+
+From julliard at winehq.org  Wed May  5 03:56:08 2010
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 05 May 2010 10:56:08 +0200
+Subject: wined3d: Remove variable blue_shift which is not really used from
+	IWineGDISurfaceImpl_SaveSnapshot. (RESEND)
+In-Reply-To: <alpine.LSU.1.99.1005041715120.18670@pulcherrima.dbai.tuwien.ac.at>
+	(Gerald Pfeifer's message of "Wed, 5 May 2010 00:24:14 +0200 (CEST)")
+References: <alpine.LSU.1.99.1005041715120.18670@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <8739y6n2vr.fsf@wine.dyndns.org>
+
+Gerald Pfeifer <gerald at pfeifer.com> writes:
+
+> I didn't see any response, directly or on wine-devel, so I assume
+> this one just fell through the cracks; thus resending (now in git
+> format-patch format and proper Subject).
+
+It's very unlikely that we'd want to use red and green but not blue...
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From m.b.lankhorst at gmail.com  Wed May  5 08:44:44 2010
+From: m.b.lankhorst at gmail.com (Maarten Lankhorst)
+Date: Wed, 5 May 2010 15:44:44 +0200
+Subject: [rfc] server: Use rtkit to set realtime priority, try 3
+Message-ID: <p2yb130c85e1005050644j6e126e1fwfe5aa94faa25eef1@mail.gmail.com>
+
+---
+
+Hi gus,
+
+Thought I'd try again :) This is a cleaned up version. The license on
+rtkit.c will still have to change, but since it's so heavily modified
+to get it into a shape for wine, that only a few lines in
+make_realtime are still original, so it would be easy to rewrite the
+remainder of that function to get it fully lgplv2.1.
+
+See also https://tango.0pointer.de/pipermail/pulseaudio-discuss/2010-May/007058.html
+
+Are there any issues left, or shall I submit this one to wine-patches
+after the patch linked above is merged into rtkit.git ?
+
+Cheers,
+Maarten
+-------------- next part --------------
+From 9e494e4a1587cc07752897a787f626b99f711756 Mon Sep 17 00:00:00 2001
+From: Maarten Lankhorst <m.b.lankhorst at gmail.com>
+Date: Fri, 23 Apr 2010 23:21:37 +0200
+Subject: [PATCH 03/10] server: Use rtkit to set realtime priority, try 3
+
+---
+ configure           |  117 ++++++++++++++++++++++++--------
+ configure.ac        |   41 +++++++++---
+ include/config.h.in |    3 +
+ libs/wine/loader.c  |   27 +++++++
+ server/Makefile.in  |    2 +
+ server/rtkit.c      |  187 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ server/thread.c     |   16 +++++
+ 7 files changed, 354 insertions(+), 39 deletions(-)
+ create mode 100644 server/rtkit.c
+
+diff --git a/configure b/configure
+index 52410fb..d732d9d 100755
+--- a/configure
++++ b/configure
+@@ -634,6 +634,7 @@ gphoto2_devel
+ SANEINCL
+ sane_devel
+ GNUTLSINCL
++DBUSINCL
+ HALINCL
+ XSLTINCL
+ XML2INCL
+@@ -772,6 +773,7 @@ with_cms
+ with_coreaudio
+ with_cups
+ with_curses
++with_dbus
+ with_esd
+ with_fontconfig
+ with_freetype
+@@ -1459,6 +1461,7 @@ Optional Packages:
+   --without-coreaudio     do not use the CoreAudio sound support
+   --without-cups          do not use CUPS
+   --without-curses        do not use (n)curses
++  --without-dbus          do not use dbus (will also disable HAL support)
+   --without-esd           do not use the EsounD sound support
+   --without-fontconfig    do not use fontconfig
+   --without-freetype      do not use the FreeType library
+@@ -2539,6 +2542,12 @@ if test "${with_curses+set}" = set; then :
+ fi
+ 
+ 
++# Check whether --with-dbus was given.
++if test "${with_dbus+set}" = set; then :
++  withval=$with_dbus;
++fi
++
++
+ # Check whether --with-esd was given.
+ if test "${with_esd+set}" = set; then :
+   withval=$with_esd;
+@@ -9260,39 +9269,40 @@ fi
+ 
+ HALINCL=""
+ 
+-if test "x$with_hal" != "xno"
++DBUSINCL=""
++
++
++if test "x$with_dbus" != "xno"
+ then
+     ac_save_CPPFLAGS="$CPPFLAGS"
+     if test "$PKG_CONFIG" != "false"
+     then
+-        ac_hal_libs="`$PKG_CONFIG --libs hal 2>/dev/null`"
+-        ac_hal_cflags="`$PKG_CONFIG --cflags hal 2>/dev/null`"
+-        CPPFLAGS="$CPPFLAGS $ac_hal_cflags"
++        ac_dbus_libs="`$PKG_CONFIG --libs dbus-1 2>/dev/null`"
++        ac_dbus_cflags="`$PKG_CONFIG --cflags dbus-1 2>/dev/null`"
++        CPPFLAGS="$CPPFLAGS $ac_dbus_cflags"
+     fi
+-    for ac_header in dbus/dbus.h hal/libhal.h
++    for ac_header in dbus/dbus.h
+ do :
+-  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+-ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+-eval as_val=\$$as_ac_Header
+-   if test "x$as_val" = x""yes; then :
++  ac_fn_c_check_header_mongrel "$LINENO" "dbus/dbus.h" "ac_cv_header_dbus_dbus_h" "$ac_includes_default"
++if test "x$ac_cv_header_dbus_dbus_h" = x""yes; then :
+   cat >>confdefs.h <<_ACEOF
+-#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
++#define HAVE_DBUS_DBUS_H 1
+ _ACEOF
+ 
+ fi
+ 
+ done
+ 
+-    if test "$ac_cv_header_dbus_dbus_h" = "yes" -a "$ac_cv_header_hal_libhal_h" = "yes"
++    if test "$ac_cv_header_dbus_dbus_h" = "yes"
+     then
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for dbus_connection_close in -ldbus-1" >&5
+-$as_echo_n "checking for dbus_connection_close in -ldbus-1... " >&6; }
+-if test "${ac_cv_lib_dbus_1_dbus_connection_close+set}" = set; then :
++        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for -ldbus-1" >&5
++$as_echo_n "checking for -ldbus-1... " >&6; }
++if test "${ac_cv_lib_soname_dbus_1+set}" = set; then :
+   $as_echo_n "(cached) " >&6
+ else
+-  ac_check_lib_save_LIBS=$LIBS
+-LIBS="-ldbus-1 $ac_hal_libs $LIBS"
+-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++  ac_check_soname_save_LIBS=$LIBS
++LIBS="-ldbus-1 $ac_dbus_libs $LIBS"
++  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+ /* Override any GCC internal prototype to avoid an error.
+@@ -9311,18 +9321,67 @@ return dbus_connection_close ();
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_dbus_1_dbus_connection_close=yes
+-else
+-  ac_cv_lib_dbus_1_dbus_connection_close=no
++  case "$LIBEXT" in
++    dll) ac_cv_lib_soname_dbus_1=`$ac_cv_path_LDD conftest.exe | grep "dbus-1" | sed -e "s/dll.*/dll/"';2,$d'` ;;
++    dylib) ac_cv_lib_soname_dbus_1=`otool -L conftest$ac_exeext | grep "libdbus-1\\.[0-9A-Za-z.]*dylib" | sed -e "s/^.*\/\(libdbus-1\.[0-9A-Za-z.]*dylib\).*$/\1/"';2,$d'` ;;
++    *) ac_cv_lib_soname_dbus_1=`$ac_cv_path_LDD conftest$ac_exeext | grep "libdbus-1\\.$LIBEXT" | sed -e "s/^.*\(libdbus-1\.$LIBEXT[^	 ]*\).*$/\1/"';2,$d'` ;;
++  esac
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+-LIBS=$ac_check_lib_save_LIBS
++  LIBS=$ac_check_soname_save_LIBS
++fi
++if test "x$ac_cv_lib_soname_dbus_1" = "x"; then :
++  { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found" >&5
++$as_echo "not found" >&6; }
++
++else
++  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_soname_dbus_1" >&5
++$as_echo "$ac_cv_lib_soname_dbus_1" >&6; }
++
++cat >>confdefs.h <<_ACEOF
++#define SONAME_LIBDBUS_1 "$ac_cv_lib_soname_dbus_1"
++_ACEOF
++
++       DBUSINCL="$ac_dbus_cflags"
++fi
++    fi
++
++    CPPFLAGS="$ac_save_CPPFLAGS"
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dbus_1_dbus_connection_close" >&5
+-$as_echo "$ac_cv_lib_dbus_1_dbus_connection_close" >&6; }
+-if test "x$ac_cv_lib_dbus_1_dbus_connection_close" = x""yes; then :
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for -lhal" >&5
++if test "x$ac_cv_lib_soname_dbus_1" = "x" -a "x$ac_cv_header_DiskArbitration_DiskArbitration_h" != "xyes"; then :
++  case "x$with_dbus" in
++  x)   as_fn_append wine_notices "|libdbus and libhal ${notice_platform}development files not found, HAL and rtkit support disabled" ;;
++  xno) ;;
++  *)   as_fn_error "libdbus and libhal ${notice_platform}development files not found, HAL and rtkit support disabled
++This is an error since --with-dbus was requested." "$LINENO" 5 ;;
++esac
++fi
++
++if test "x$with_hal" != "xno" -a "x$ac_cv_lib_soname_dbus_1" != "x"
++then
++    ac_save_CPPFLAGS="$CPPFLAGS"
++    if test "$PKG_CONFIG" != "false"
++    then
++        ac_hal_libs="`$PKG_CONFIG --libs hal 2>/dev/null`"
++        ac_hal_cflags="`$PKG_CONFIG --cflags hal 2>/dev/null`"
++        CPPFLAGS="$CPPFLAGS $ac_hal_cflags"
++    fi
++    for ac_header in hal/libhal.h
++do :
++  ac_fn_c_check_header_mongrel "$LINENO" "hal/libhal.h" "ac_cv_header_hal_libhal_h" "$ac_includes_default"
++if test "x$ac_cv_header_hal_libhal_h" = x""yes; then :
++  cat >>confdefs.h <<_ACEOF
++#define HAVE_HAL_LIBHAL_H 1
++_ACEOF
++
++fi
++
++done
++
++    if test "$ac_cv_header_hal_libhal_h" = "yes"
++    then
++        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for -lhal" >&5
+ $as_echo_n "checking for -lhal... " >&6; }
+ if test "${ac_cv_lib_soname_hal+set}" = set; then :
+   $as_echo_n "(cached) " >&6
+@@ -9372,16 +9431,14 @@ _ACEOF
+ 
+        HALINCL="$ac_hal_cflags"
+ fi
+-fi
+-
+     fi
+     CPPFLAGS="$ac_save_CPPFLAGS"
+ fi
+-if test "x$ac_cv_lib_soname_hal" = "x" -a "x$ac_cv_header_DiskArbitration_DiskArbitration_h" != "xyes"; then :
++if test "x$ac_cv_lib_soname_hal" = "x" -a "x$ac_cv_header_DiskArbitration_DiskArbitration_h" != "xyes" -a "x$ac_cv_lib_soname_dbus_1" != "x"; then :
+   case "x$with_hal" in
+-  x)   as_fn_append wine_notices "|libhal/libdbus ${notice_platform}development files not found, no dynamic device support." ;;
++  x)   as_fn_append wine_notices "|libhal ${notice_platform}development files not found, no dynamic device support." ;;
+   xno) ;;
+-  *)   as_fn_error "libhal/libdbus ${notice_platform}development files not found, no dynamic device support.
++  *)   as_fn_error "libhal ${notice_platform}development files not found, no dynamic device support.
+ This is an error since --with-hal was requested." "$LINENO" 5 ;;
+ esac
+ fi
+diff --git a/configure.ac b/configure.ac
+index 227dee5..179bcc3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -36,6 +36,7 @@ AC_ARG_WITH(coreaudio, AS_HELP_STRING([--without-coreaudio],[do not use the Core
+ AC_ARG_WITH(cups,      AS_HELP_STRING([--without-cups],[do not use CUPS]))
+ AC_ARG_WITH(curses,    AS_HELP_STRING([--without-curses],[do not use (n)curses]),
+             [if test "x$withval" = "xno"; then ac_cv_header_ncurses_h=no; ac_cv_header_curses_h=no; fi])
++AC_ARG_WITH(dbus,      AS_HELP_STRING([--without-dbus],[do not use dbus (will also disable HAL support)]))
+ AC_ARG_WITH(esd,       AS_HELP_STRING([--without-esd],[do not use the EsounD sound support]))
+ AC_ARG_WITH(fontconfig,AS_HELP_STRING([--without-fontconfig],[do not use fontconfig]),
+             [if test "x$withval" = "xno"; then ac_cv_header_fontconfig_fontconfig_h=no; fi])
+@@ -1113,9 +1114,32 @@ fi
+ WINE_WARNING_WITH(xslt,[test "x$ac_cv_lib_soname_xslt" = "x"],
+                  [libxslt ${notice_platform}development files not found, xslt won't be supported.])
+ 
+-dnl **** Check for libhal ****
++dnl **** Check for libdbus-1 and libhal ****
+ AC_SUBST(HALINCL,"")
+-if test "x$with_hal" != "xno"
++AC_SUBST(DBUSINCL,"")
++
++if test "x$with_dbus" != "xno"
++then
++    ac_save_CPPFLAGS="$CPPFLAGS"
++    if test "$PKG_CONFIG" != "false"
++    then
++        ac_dbus_libs="`$PKG_CONFIG --libs dbus-1 2>/dev/null`"
++        ac_dbus_cflags="`$PKG_CONFIG --cflags dbus-1 2>/dev/null`"
++        CPPFLAGS="$CPPFLAGS $ac_dbus_cflags"
++    fi
++    AC_CHECK_HEADERS([dbus/dbus.h])
++    if test "$ac_cv_header_dbus_dbus_h" = "yes"
++    then
++        WINE_CHECK_SONAME(dbus-1, dbus_connection_close,
++            [DBUSINCL="$ac_dbus_cflags"],,[$ac_dbus_libs])
++    fi
++
++    CPPFLAGS="$ac_save_CPPFLAGS"
++fi
++WINE_NOTICE_WITH(dbus,[test "x$ac_cv_lib_soname_dbus_1" = "x" -a "x$ac_cv_header_DiskArbitration_DiskArbitration_h" != "xyes"],
++                 [libdbus and libhal ${notice_platform}development files not found, HAL and rtkit support disabled])
++
++if test "x$with_hal" != "xno" -a "x$ac_cv_lib_soname_dbus_1" != "x"
+ then
+     ac_save_CPPFLAGS="$CPPFLAGS"
+     if test "$PKG_CONFIG" != "false"
+@@ -1124,17 +1148,16 @@ then
+         ac_hal_cflags="`$PKG_CONFIG --cflags hal 2>/dev/null`"
+         CPPFLAGS="$CPPFLAGS $ac_hal_cflags"
+     fi
+-    AC_CHECK_HEADERS([dbus/dbus.h hal/libhal.h])
+-    if test "$ac_cv_header_dbus_dbus_h" = "yes" -a "$ac_cv_header_hal_libhal_h" = "yes"
++    AC_CHECK_HEADERS([hal/libhal.h])
++    if test "$ac_cv_header_hal_libhal_h" = "yes"
+     then
+-        AC_CHECK_LIB(dbus-1, dbus_connection_close,
+-          [WINE_CHECK_SONAME(hal, libhal_ctx_new,
+-            [HALINCL="$ac_hal_cflags"],,[$ac_hal_libs])],,[$ac_hal_libs])
++        WINE_CHECK_SONAME(hal, libhal_ctx_new,
++            [HALINCL="$ac_hal_cflags"],,[$ac_hal_libs])
+     fi
+     CPPFLAGS="$ac_save_CPPFLAGS"
+ fi
+-WINE_NOTICE_WITH(hal,[test "x$ac_cv_lib_soname_hal" = "x" -a "x$ac_cv_header_DiskArbitration_DiskArbitration_h" != "xyes"],
+-                 [libhal/libdbus ${notice_platform}development files not found, no dynamic device support.])
++WINE_NOTICE_WITH(hal,[test "x$ac_cv_lib_soname_hal" = "x" -a "x$ac_cv_header_DiskArbitration_DiskArbitration_h" != "xyes" -a "x$ac_cv_lib_soname_dbus_1" != "x"],
++                 [libhal ${notice_platform}development files not found, no dynamic device support.])
+ 
+ dnl **** Check for libgnutls ****
+ if test "x$with_gnutls" != "xno"
+diff --git a/include/config.h.in b/include/config.h.in
+index 0faf127..60e12a4 100644
+--- a/include/config.h.in
++++ b/include/config.h.in
+@@ -1181,6 +1181,9 @@
+ /* Define to the soname of the libcurses library. */
+ #undef SONAME_LIBCURSES
+ 
++/* Define to the soname of the libdbus-1 library. */
++#undef SONAME_LIBDBUS_1
++
+ /* Define to the soname of the libfontconfig library. */
+ #undef SONAME_LIBFONTCONFIG
+ 
+diff --git a/libs/wine/loader.c b/libs/wine/loader.c
+index 37c603e..69a9292 100644
+--- a/libs/wine/loader.c
++++ b/libs/wine/loader.c
+@@ -669,6 +669,32 @@ static void set_max_limit( int limit )
+ 
+ 
+ /***********************************************************************
++ *           set_rttime_limit
++ *
++ * set a limit on the cpu time used
++ */
++static void set_rttime_limit(void)
++{
++#if defined(HAVE_SETRLIMIT) && defined(__linux__)
++#ifndef RLIMIT_RTTIME
++#define RLIMIT_RTTIME 15
++#endif
++    struct rlimit rlimit;
++
++    if (!getrlimit( RLIMIT_RTTIME, &rlimit ))
++    {
++        /* 50 ms realtime, then 10 ms to undo realtime */
++        if (rlimit.rlim_max > 60000000ULL)
++            rlimit.rlim_max = 60000000ULL;
++        rlimit.rlim_cur = rlimit.rlim_max - 10000000ULL;
++
++        setrlimit( RLIMIT_RTTIME, &rlimit );
++    }
++#endif
++}
++
++
++/***********************************************************************
+  *           wine_init
+  *
+  * Main Wine initialisation.
+@@ -687,6 +713,7 @@ void wine_init( int argc, char *argv[], char *error, int error_size )
+ #ifdef RLIMIT_AS
+     set_max_limit( RLIMIT_AS );
+ #endif
++    set_rttime_limit();
+ 
+     wine_init_argv0_path( argv[0] );
+     build_dll_path();
+diff --git a/server/Makefile.in b/server/Makefile.in
+index 7a67707..1197066 100644
+--- a/server/Makefile.in
++++ b/server/Makefile.in
+@@ -5,6 +5,7 @@ SRCDIR    = @srcdir@
+ VPATH     = @srcdir@
+ MODULE    = none
+ EXTRALIBS = @LIBPOLL@
++MODCFLAGS = @DBUSINCL@
+ 
+ C_SRCS = \
+ 	async.c \
+@@ -36,6 +37,7 @@ C_SRCS = \
+ 	region.c \
+ 	registry.c \
+ 	request.c \
++	rtkit.c \
+ 	semaphore.c \
+ 	serial.c \
+ 	signal.c \
+diff --git a/server/rtkit.c b/server/rtkit.c
+new file mode 100644
+index 0000000..890c8a6
+--- /dev/null
++++ b/server/rtkit.c
+@@ -0,0 +1,187 @@
++/*-*- Mode: C; c-basic-offset: 8 -*-*/
++
++/***
++  Copyright 2009 Lennart Poettering
++
++  Permission is hereby granted, free of charge, to any person
++  obtaining a copy of this software and associated documentation files
++  (the "Software"), to deal in the Software without restriction,
++  including without limitation the rights to use, copy, modify, merge,
++  publish, distribute, sublicense, and/or sell copies of the Software,
++  and to permit persons to whom the Software is furnished to do so,
++  subject to the following conditions:
++
++  The above copyright notice and this permission notice shall be
++  included in all copies or substantial portions of the Software.
++
++  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
++  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
++  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
++  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++  SOFTWARE.
++***/
++
++#include "config.h"
++#include "wine/port.h"
++#include "wine/library.h"
++
++#include <errno.h>
++#include <sys/types.h>
++#ifdef HAVE_SYS_SCHED_H
++#include <sys/sched.h>
++#endif
++#include <sys/resource.h>
++
++#if defined(HAVE_SETRLIMIT) && defined(__linux__) && defined(SONAME_LIBDBUS_1)
++
++#include <sched.h>
++#include <string.h>
++#include <unistd.h>
++#include <dbus/dbus.h>
++#include <sys/syscall.h>
++
++#ifndef RLIMIT_RTTIME
++#define RLIMIT_RTTIME 15
++#endif
++
++#define RTKIT_SERVICE_NAME "org.freedesktop.RealtimeKit1"
++#define RTKIT_OBJECT_PATH "/org/freedesktop/RealtimeKit1"
++
++#define FUNCPTR(fn) static typeof(fn) *p ##fn
++
++FUNCPTR(dbus_error_init);
++FUNCPTR(dbus_error_free);
++FUNCPTR(dbus_bus_get);
++FUNCPTR(dbus_message_new_method_call);
++FUNCPTR(dbus_message_append_args);
++FUNCPTR(dbus_connection_send_with_reply_and_block);
++FUNCPTR(dbus_message_unref);
++FUNCPTR(dbus_set_error_from_message);
++#undef FUNCPTR
++
++static int translate_error(const char *name) {
++    if (strcmp(name, DBUS_ERROR_NO_MEMORY) == 0)
++        return -ENOMEM;
++    if (strcmp(name, DBUS_ERROR_SERVICE_UNKNOWN) == 0 ||
++        strcmp(name, DBUS_ERROR_NAME_HAS_NO_OWNER) == 0)
++        return -ENOENT;
++    if (strcmp(name, DBUS_ERROR_ACCESS_DENIED) == 0 ||
++        strcmp(name, DBUS_ERROR_AUTH_FAILED) == 0)
++        return -EACCES;
++
++    return -EIO;
++}
++
++static void init_dbus(void) {
++#define FUNCPTR(fn) p ##fn = wine_dlsym(libdbus, #fn, NULL, 0);
++    char error[512];
++    void *libdbus = wine_dlopen(SONAME_LIBDBUS_1, RTLD_NOW, error, sizeof(error));
++    FUNCPTR(dbus_error_init);
++    FUNCPTR(dbus_error_free);
++    FUNCPTR(dbus_bus_get);
++    FUNCPTR(dbus_message_new_method_call);
++    FUNCPTR(dbus_message_append_args);
++    FUNCPTR(dbus_connection_send_with_reply_and_block);
++    FUNCPTR(dbus_message_unref);
++    FUNCPTR(dbus_set_error_from_message);
++#undef FUNCPTR
++}
++
++static DBusConnection *get_dbus(void) {
++    static DBusConnection *bus;
++    DBusError error;
++
++    if (bus)
++        return bus;
++    init_dbus();
++    pdbus_error_init(&error);
++
++    bus = pdbus_bus_get(DBUS_BUS_SYSTEM, &error);
++    return bus;
++}
++
++int rtkit_make_realtime(pid_t process, pid_t thread, int priority) {
++    DBusConnection *bus = get_dbus();
++    DBusMessage *m = NULL, *r = NULL;
++    dbus_uint64_t pid, tid;
++    dbus_uint32_t u32;
++    DBusError error;
++    int ret;
++
++    if (!bus)
++        return -ENOTSUP;
++
++    pdbus_error_init(&error);
++
++    if (!(m = pdbus_message_new_method_call(
++                          RTKIT_SERVICE_NAME,
++                          RTKIT_OBJECT_PATH,
++                          "org.freedesktop.RealtimeKit1",
++                          "MakeThreadRealtimeWithPID"))) {
++            ret = -ENOMEM;
++            goto finish;
++    }
++
++    pid = (dbus_uint64_t) process;
++    tid = (dbus_uint64_t) thread;
++    u32 = (dbus_uint32_t) priority;
++
++    if (!pdbus_message_append_args(m, DBUS_TYPE_UINT64, &pid,
++                                   DBUS_TYPE_UINT64, &tid,
++                                   DBUS_TYPE_UINT32, &u32,
++                                   DBUS_TYPE_INVALID)) {
++        ret = -ENOMEM;
++        goto finish;
++    }
++
++    if (!(r = pdbus_connection_send_with_reply_and_block(bus, m, -1, &error))) {
++        ret = translate_error(error.name);
++        goto finish;
++    }
++
++
++    if (pdbus_set_error_from_message(&error, r)) {
++        ret = translate_error(error.name);
++        goto finish;
++    }
++
++    ret = 0;
++
++finish:
++
++    if (m)
++        pdbus_message_unref(m);
++
++    if (r)
++        pdbus_message_unref(r);
++
++    pdbus_error_free(&error);
++
++    return ret;
++}
++
++int rtkit_undo_realtime(pid_t thread) {
++    struct sched_param parm;
++    int ret;
++    memset(&parm, 0, sizeof(parm));
++    ret = sched_setscheduler(thread, SCHED_OTHER, &parm);
++    if (ret < 0)
++        return -errno;
++    return ret;
++}
++
++#else
++
++int rtkit_make_realtime(pid_t process, pid_t thread, int priority) {
++        return -ENOTSUP;
++}
++
++int rtkit_undo_realtime(pid_t thread) {
++        return -ENOTSUP;
++}
++
++#endif
++
+diff --git a/server/thread.c b/server/thread.c
+index a6bc55a..40dd6f0 100644
+--- a/server/thread.c
++++ b/server/thread.c
+@@ -52,6 +52,8 @@
+ #include "user.h"
+ #include "security.h"
+ 
++extern int rtkit_make_realtime(pid_t process, pid_t thread, int priority);
++extern int rtkit_undo_realtime(pid_t thread);
+ 
+ #define CPU_FLAG(cpu) (1 << (cpu))
+ #ifdef __i386__
+@@ -455,7 +457,17 @@ static void set_thread_info( struct thread *thread,
+         if ((req->priority >= min && req->priority <= max) ||
+             req->priority == THREAD_PRIORITY_IDLE ||
+             req->priority == THREAD_PRIORITY_TIME_CRITICAL)
++        {
++            if (thread->unix_tid == -1)
++                {}
++            else if (thread->priority == THREAD_PRIORITY_TIME_CRITICAL &&
++                     req->priority != THREAD_PRIORITY_TIME_CRITICAL)
++                rtkit_undo_realtime(thread->unix_tid);
++            else if (thread->priority != THREAD_PRIORITY_TIME_CRITICAL &&
++                     req->priority == THREAD_PRIORITY_TIME_CRITICAL)
++                rtkit_make_realtime(thread->unix_pid, thread->unix_tid, 1);
+             thread->priority = req->priority;
++        }
+         else
+             set_error( STATUS_INVALID_PARAMETER );
+     }
+@@ -1167,6 +1179,10 @@ DECL_HANDLER(init_thread)
+     debug_level = max( debug_level, req->debug_level );
+     set_thread_affinity( current, current->affinity );
+ 
++    /* Raced with SetThreadPriority */
++    if (current->priority == THREAD_PRIORITY_TIME_CRITICAL)
++        rtkit_make_realtime(current->unix_pid, current->unix_tid, 1);
++
+     reply->pid     = get_process_id( process );
+     reply->tid     = get_thread_id( current );
+     reply->version = SERVER_PROTOCOL_VERSION;
+-- 
+1.7.0.4
+
+From wine-devel at kievinfo.com  Wed May  5 14:20:14 2010
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Wed, 05 May 2010 13:20:14 -0600
+Subject: A revision for common PageSetup dialog
+In-Reply-To: <4BDFEFE4.5020002@gmail.com>
+References: <4BDFEFE4.5020002@gmail.com>
+Message-ID: <4BE1C4EE.1090300@kievinfo.com>
+
+On 05/04/2010 03:59 AM, Love Nystrom wrote:
+> Since this is not a straight 'diff' mail-body I'll post it here on
+> wine-devel first, as I'm unsure how You handle wine-patches mail.
+Send all patches in git format to wine-patches mailing list. Plain text
+source file (not in diff format) is not a patch and won't be accepted.
+
+This is of course after you get an Ok from THE boss. Last time this topic
+came up (merging changes from ReactOS into Wine) the answer was "no without
+exceptions".
+
+Vitaliy.
+
+
+From nerv at dawncrow.de  Wed May  5 14:34:34 2010
+From: nerv at dawncrow.de (=?ISO-8859-15?Q?Andr=E9_Hentschel?=)
+Date: Wed, 05 May 2010 21:34:34 +0200
+Subject: Wine looses a bit gaming and wins mobility?
+Message-ID: <4BE1C84A.8030201@dawncrow.de>
+
+Hi Folks,
+Steam seems to add a Linux client in the near future, so maybe Wine will not be needed anymore for that. or did i get something wrong?
+That might reduce our "market share" a bit as i guess that many Wineusers play steam games.
+On the other hand Intel presented its Z600, which is basically x86 but without IDE, SATA or a BIOS. Thats the reason that it cant run Windows.
+So Linux runs and so should Wine i guess. So we might see some mobil advantures in the near future?
+-- 
+
+Best Regards, Andr? Hentschel
+
+
+From austinenglish at gmail.com  Wed May  5 14:42:00 2010
+From: austinenglish at gmail.com (Austin English)
+Date: Wed, 5 May 2010 14:42:00 -0500
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <4BE1C84A.8030201@dawncrow.de>
+References: <4BE1C84A.8030201@dawncrow.de>
+Message-ID: <z2xb6bb06271005051242ye77ea7dcuc2a5a48f4ebce9c8@mail.gmail.com>
+
+2010/5/5 Andr? Hentschel <nerv at dawncrow.de>:
+> Hi Folks,
+> Steam seems to add a Linux client in the near future, so maybe Wine will not be needed anymore for that. or did i get something wrong?
+> That might reduce our "market share" a bit as i guess that many Wineusers play steam games.
+
+The rumor is that Valve is porting the Source Engine and the Steam
+client. Not all games that come on Steam use the Source engine, and
+until their developers port to Linux natively, there will still be a
+need for Wine.
+
+And don't forget about Solaris/BSD users ;-).
+
+-- 
+-Austin
+
+
+From gerald at pfeifer.com  Wed May  5 07:02:15 2010
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Wed, 5 May 2010 14:02:15 +0200 (CEST)
+Subject: kernel32/tests: Remove variable len which is not really used
+	from test_CommandLine. 
+In-Reply-To: <201005050006.o4506GEx028264@v1.gse.nl>
+References: <201005050006.o4506GEx028264@v1.gse.nl>
+Message-ID: <alpine.LSU.1.99.1005051400330.18670@pulcherrima.dbai.tuwien.ac.at>
+
+On Wed, 5 May 2010, testbot at testbot.winehq.org wrote:
+> While running your changed tests on Windows, I think I found new failures.
+> Being a bot and all I'm not very good at pattern recognition, so I might be
+> wrong, but could you please double-check?
+> Full results can be found at
+> http://testbot.winehq.org/JobDetails.pl?Key=1901
+> 
+> Your paranoid android.
+> 
+> 
+> === W98SE (32 bit process) ===
+> Failure running script in VM: Exceeded timeout limit of 315 sec
+
+There is really no way this patch can have caused this test failure.
+So, I double-checked. :-) 
+
+What is the proper way to remark such a false positive?  Follow up
+here, on wine-devel as I am doing now?  Retrigger the test somehow?
+
+Gerald
+
+PS: I'm sorry if I missed something on the Wiki, I did check for it.
+
+
+From nsivov at codeweavers.com  Wed May  5 18:08:58 2010
+From: nsivov at codeweavers.com (Nikolay Sivov)
+Date: Thu, 06 May 2010 03:08:58 +0400
+Subject: comctl32/tests: Remove variable res which is not really used
+	from	test_monthcal_size.
+In-Reply-To: <20100505221106.097F394333@pulcherrima.dbai.tuwien.ac.at>
+References: <20100505221106.097F394333@pulcherrima.dbai.tuwien.ac.at>
+Message-ID: <4BE1FA8A.4070205@codeweavers.com>
+
+On 5/6/2010 02:11, Gerald Pfeifer wrote:
+> Also in other places don't we check the result of SendMessage, and that's
+> not really what we want to test here, either, from what I can tell.
+>
+>    
+
+> -    res = SendMessage(hwnd, MCM_GETMINREQRECT, 0, (LPARAM)&r1);
+> +    SendMessage(hwnd, MCM_GETMINREQRECT, 0, (LPARAM)&r1);
+>
+>    
+Actually it won't hurt to test for it here.
+
+
+From wine at eternaldusk.com  Wed May  5 19:01:43 2010
+From: wine at eternaldusk.com (Evil Jay)
+Date: Wed, 05 May 2010 19:01:43 -0500
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <4BE1C84A.8030201@dawncrow.de>
+References: <4BE1C84A.8030201@dawncrow.de>
+Message-ID: <4BE206E7.3000703@eternaldusk.com>
+
+On 05/05/2010 02:34 PM, Andr? Hentschel wrote:
+> Hi Folks,
+> Steam seems to add a Linux client in the near future, so maybe Wine will not be needed anymore for that. or did i get something wrong?
+> That might reduce our "market share" a bit as i guess that many Wineusers play steam games.
+> On the other hand Intel presented its Z600, which is basically x86 but without IDE, SATA or a BIOS. Thats the reason that it cant run Windows.
+> So Linux runs and so should Wine i guess. So we might see some mobil advantures in the near future?
+>   
+
+I would not hold my breath waiting for that Steam client, there's still
+been no official announcement and it could just as well be something
+they just play around with as a side project for the next half decade.
+
+Phoronix has been claiming Steam for Linux was imminent for 2 years...
+but for how many years did they (and even the developers) say that UT3
+was right around the corner?  A few 32-bit god-awfully incomplete
+binaries that can't even launch the actual GUI is not near enough to
+start me waiting in a virtual line.
+
+To take the Devil's advocacy a step farther:  For all we know, Steam for
+Linux is not even being actively developed;  They may have started it
+with the Mac port and abandoned it as too resource intensive for the
+expected payoff.  The few updates that we've seen (before the Linux
+build was pulled) may well be the result of of the automated package
+builder recompiling the Linux files due to changes in some shared
+upstream code (being changed for the benefit of the Mac or Windows client).
+
+Now, personally I am hoping like crazy that Steam for Linux does
+materialize in the next year or two.  But, if it does, it will hardly
+put a dent in Wine's use for gaming.  Steam's not a game, so naturally
+we must assume that Valve will port the Source engine too, so that they
+will have some games to sell.  That's great, but how many games in the
+AppDB are using the Source engine?  How many games sold through Steam
+even use it, and will the non-Valve developers take the time to build
+Linux packages?  Wine has plenty of gaming left in its future.
+
+-J
+
+
+From shacklein at gmail.com  Wed May  5 19:07:03 2010
+From: shacklein at gmail.com (Ben Klein)
+Date: Thu, 6 May 2010 10:07:03 +1000
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <4BE206E7.3000703@eternaldusk.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com>
+Message-ID: <h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+
+On 6 May 2010 10:01, Evil Jay <wine at eternaldusk.com> wrote:
+> On 05/05/2010 02:34 PM, Andr? Hentschel wrote:
+>> Hi Folks,
+>> Steam seems to add a Linux client in the near future, so maybe Wine will not be needed anymore for that. or did i get something wrong?
+>> That might reduce our "market share" a bit as i guess that many Wineusers play steam games.
+>> On the other hand Intel presented its Z600, which is basically x86 but without IDE, SATA or a BIOS. Thats the reason that it cant run Windows.
+>> So Linux runs and so should Wine i guess. So we might see some mobil advantures in the near future?
+>>
+>
+> I would not hold my breath waiting for that Steam client, there's still
+> been no official announcement and it could just as well be something
+> they just play around with as a side project for the next half decade.
+>
+> Phoronix has been claiming Steam for Linux was imminent for 2 years...
+> but for how many years did they (and even the developers) say that UT3
+> was right around the corner? ?A few 32-bit god-awfully incomplete
+> binaries that can't even launch the actual GUI is not near enough to
+> start me waiting in a virtual line.
+>
+> To take the Devil's advocacy a step farther: ?For all we know, Steam for
+> Linux is not even being actively developed; ?They may have started it
+> with the Mac port and abandoned it as too resource intensive for the
+> expected payoff. ?The few updates that we've seen (before the Linux
+> build was pulled) may well be the result of of the automated package
+> builder recompiling the Linux files due to changes in some shared
+> upstream code (being changed for the benefit of the Mac or Windows client).
+>
+> Now, personally I am hoping like crazy that Steam for Linux does
+> materialize in the next year or two. ?But, if it does, it will hardly
+> put a dent in Wine's use for gaming. ?Steam's not a game, so naturally
+> we must assume that Valve will port the Source engine too, so that they
+> will have some games to sell. ?That's great, but how many games in the
+> AppDB are using the Source engine? ?How many games sold through Steam
+> even use it, and will the non-Valve developers take the time to build
+> Linux packages? ?Wine has plenty of gaming left in its future.
+
+The other solution is they pull a Picasa/Google Earth manoeuvre and
+bundle Wine with Steam (or rely on Wine to play the games).
+
+> -J
+>
+>
+>
+
+
+From adys.wh at gmail.com  Wed May  5 21:56:51 2010
+From: adys.wh at gmail.com (Jerome Leclanche)
+Date: Thu, 6 May 2010 05:56:51 +0300
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com> 
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+Message-ID: <q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+
+Knowing that they are developing an opengl version of their engines
+(for mac os), I'm guessing porting it to linux will be trivial.
+
+
+J. Leclanche
+
+
+On Thu, May 6, 2010 at 3:07 AM, Ben Klein <shacklein at gmail.com> wrote:
+> On 6 May 2010 10:01, Evil Jay <wine at eternaldusk.com> wrote:
+>> On 05/05/2010 02:34 PM, Andr? Hentschel wrote:
+>>> Hi Folks,
+>>> Steam seems to add a Linux client in the near future, so maybe Wine will not be needed anymore for that. or did i get something wrong?
+>>> That might reduce our "market share" a bit as i guess that many Wineusers play steam games.
+>>> On the other hand Intel presented its Z600, which is basically x86 but without IDE, SATA or a BIOS. Thats the reason that it cant run Windows.
+>>> So Linux runs and so should Wine i guess. So we might see some mobil advantures in the near future?
+>>>
+>>
+>> I would not hold my breath waiting for that Steam client, there's still
+>> been no official announcement and it could just as well be something
+>> they just play around with as a side project for the next half decade.
+>>
+>> Phoronix has been claiming Steam for Linux was imminent for 2 years...
+>> but for how many years did they (and even the developers) say that UT3
+>> was right around the corner? ?A few 32-bit god-awfully incomplete
+>> binaries that can't even launch the actual GUI is not near enough to
+>> start me waiting in a virtual line.
+>>
+>> To take the Devil's advocacy a step farther: ?For all we know, Steam for
+>> Linux is not even being actively developed; ?They may have started it
+>> with the Mac port and abandoned it as too resource intensive for the
+>> expected payoff. ?The few updates that we've seen (before the Linux
+>> build was pulled) may well be the result of of the automated package
+>> builder recompiling the Linux files due to changes in some shared
+>> upstream code (being changed for the benefit of the Mac or Windows client).
+>>
+>> Now, personally I am hoping like crazy that Steam for Linux does
+>> materialize in the next year or two. ?But, if it does, it will hardly
+>> put a dent in Wine's use for gaming. ?Steam's not a game, so naturally
+>> we must assume that Valve will port the Source engine too, so that they
+>> will have some games to sell. ?That's great, but how many games in the
+>> AppDB are using the Source engine? ?How many games sold through Steam
+>> even use it, and will the non-Valve developers take the time to build
+>> Linux packages? ?Wine has plenty of gaming left in its future.
+>
+> The other solution is they pull a Picasa/Google Earth manoeuvre and
+> bundle Wine with Steam (or rely on Wine to play the games).
+>
+>> -J
+>>
+>>
+>>
+>
+>
+>
+
+
+From hverbeet at gmail.com  Thu May  6 01:33:03 2010
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Thu, 6 May 2010 08:33:03 +0200
+Subject: Stack corruption in dsound.c
+In-Reply-To: <18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+Message-ID: <w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+
+On 5 May 2010 01:39,  <wylda at volny.cz> wrote:
+> #274 before wined3d_mutex_unlock(), 0x0020a3f0=HeapAlloc(), &wined3d_cs=0x7e22fda0
+> #274 after wined3d_mutex_unlock(), ?0x18fa7048=HeapAlloc(), &wined3d_cs=0x7e22fda0
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Any suggestion?
+>
+What exactly is wrong with that address?
+
+
+From epssyis at gmail.com  Thu May  6 02:24:04 2010
+From: epssyis at gmail.com (Edward Savage)
+Date: Thu, 6 May 2010 17:24:04 +1000
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com>
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+Message-ID: <k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+
+It is a shame that it is just a rumor but really that's all it's been
+for the last half decade.  Plus, Phoronix refuses to release this
+binary their meant to have found which I tend to think means they
+don't have it.  Steam for Linux would really be a huge win for native
+gaming but from Valves point of view it might be too risky?
+
+A better solution which you'd hope they'd approach Codeweavers or the
+likes of Ubuntu about would be integrating Wine into a native Steam to
+run Win32 binaries of non-native games.  On top of native Source games
+that is.  This would be pretty easy, and using the Steam
+first-time-run script system we could actually make a native version
+support Win32 binaries via Wine ourselves (if it agreed to download
+and install them!).
+
+On the Steam topic I should note that Steam is now at the point where
+you can run it in the background 24/7.  There is a patch that allows
+you to buy things via the Steam store and using the latest Beta Client
+update from the opt-in menu removes the last couple of CPU intensive
+problems with running it (this is distinct from the new UI update).
+
+I've had it open for the last week just like a native program and it's
+great to catch up with friends playing various games instead of them
+having to tell you to login and join!
+
+
+From gerrit.moeltgen at itomig.de  Thu May  6 03:28:29 2010
+From: gerrit.moeltgen at itomig.de (Jan Gerrit =?utf-8?q?M=C3=B6ltgen?=)
+Date: Thu, 6 May 2010 10:28:29 +0200
+Subject: LinuxTag Berlin - call for projects
+In-Reply-To: <1272697017.4639.26.camel@rumo>
+References: <201002251212.41721.gerrit.moeltgen@itomig.de>
+	<201004291012.50208.gerrit.moeltgen@itomig.de>
+	<1272697017.4639.26.camel@rumo>
+Message-ID: <201005061028.29715.gerrit.moeltgen@itomig.de>
+
+Hello Kai,
+
+I've discard the stand already, but if someone would go to Berlin we could be 
+reaccepted for LinuxTag. However, if we want, we schould act as soon as 
+possible.
+
+A part of Mail from projects at linuxtag.org (06.05.'10):
+Falls doch noch die M?glichkeit besteht, jemand 
+anderes aus eurem Projekt zu mobilisieren, gib uns bitte baldm?glichst 
+Bescheid. Wir finden dann eine M?glichkeit.
+
+Greetings,
+Jan Gerrit
+
+
+Am Samstag, 1. Mai 2010, um 08:56:57 schrieb Kai Blin:
+>
+> Until when do you need to know?
+> 
+> Cheers,
+> Kai
+
+
+-- 
+Dipl.-Wirt.-Inf. Jan Gerrit M?ltgen . . . . . .gerrit.moeltgen at itomig.de
+ITOMIG GmbH . . . . . . . . . . . . . . . . . . Tel.: +49 7031 389 25 06
+Otto-Lilienthal-Str. 36 . . . . . . . . . . . . . . http://www.itomig.de 
+D-71034 B?blingen . . . . . . . . . . . . . . .  http://www.itomig.de/fr
+Gesch?ftsf?hrer: David G?mbel . . . . . HRB 728519 Amtsgericht Stuttgart
+Sitz der Gesellschaft: B?blingen . . . . . . . . . . . . . . . . . . . .
+
+
+From hverbeet at gmail.com  Thu May  6 03:34:05 2010
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Thu, 6 May 2010 10:34:05 +0200
+Subject: Stack corruption in dsound.c
+In-Reply-To: <dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+	<w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+	<dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+Message-ID: <n2nd658b69e1005060134h5ab00cdcvbb8c218cea104e3a@mail.gmail.com>
+
+2010/5/6  <wylda at volny.cz>:
+>> What exactly is wrong with that address?
+>
+> Hi Henri, to my understending, when i take real values:
+>
+> adr1 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4);
+> HeapFree (0x00110000, 0, adr1);
+>
+> adr2 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4);
+> HeapFree (0x00110000, 0, adr2);
+>
+> Allocates me 3E0 (rounded 3d4) bytes filled with zeros, begining at adr1
+> and this:
+> a) adr1 should be "relatively close" to the 0x00110000
+> b) adr1 should be same as adr2
+>
+You can't really make those assumptions, though I guess they may
+sometimes be true in practice.
+
+>> Stefan D?singer:
+>> There's HeapValidate which may be better than Alloc+Free in spotting
+>> > bugs.
+>
+> Hi, this kind of help i'm looking for... Furhter googling lead me to
+> nice articles about memory damage.
+>
+WINEDEBUG="warn+heap" also does some basic validation.
+
+> BTW: why it takes so long (cca 6 hours) a post to appear, when i send
+> mail to wine-devel? Some kind of mail graylist?
+>
+If you're not subscribed to wine-devel your mails will go through
+moderation, which means they won't come through until a moderator
+looks at them. If you *are* subscribed mail should generally arrive
+within a couple of minutes, if it doesn't something is wrong
+somewhere.
+
+
+From wylda at volny.cz  Thu May  6 02:57:55 2010
+From: wylda at volny.cz (wylda at volny.cz)
+Date: Thu, 06 May 2010 09:57:55 +0200 (CEST)
+Subject: Stack corruption in dsound.c
+In-Reply-To: <w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+	<w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+Message-ID: <dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+
+> > #274 before wined3d_mutex_unlock(), 0x0020a3f0=HeapAlloc(),
+> > #274 after wined3d_mutex_unlock(), ?0x18fa7048=HeapAlloc()
+> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >
+> What exactly is wrong with that address?
+
+Hi Henri, to my understending, when i take real values:
+
+adr1 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4);
+HeapFree (0x00110000, 0, adr1);
+
+adr2 = HeapAlloc(0x00110000, 0x00000008, 0x000003d4);
+HeapFree (0x00110000, 0, adr2);
+
+Allocates me 3E0 (rounded 3d4) bytes filled with zeros, begining at adr1
+and this:
+a) adr1 should be "relatively close" to the 0x00110000
+b) adr1 should be same as adr2
+
+Both these a) and b) perfectly works 273 times, when injected in funtion
+wined3d_mutex_unlock(). So that makes me believe, that there is memory
+on 274 entrance when calling LeaveCriticalSection(&wined3d_cs) inside
+wined3d_mutex_unlock().
+
+> Stefan D?singer:
+> There's HeapValidate which may be better than Alloc+Free in spotting
+> > bugs.
+
+Hi, this kind of help i'm looking for... Furhter googling lead me to
+nice articles about memory damage.
+
+BTW: why it takes so long (cca 6 hours) a post to appear, when i send
+mail to wine-devel? Some kind of mail graylist?
+
+
+
+
+From cdavis at mymail.mines.edu  Thu May  6 03:58:16 2010
+From: cdavis at mymail.mines.edu (Charles Davis)
+Date: Thu, 06 May 2010 02:58:16 -0600
+Subject: Stack corruption in dsound.c
+In-Reply-To: <dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>	<w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+	<dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+Message-ID: <4BE284A8.80109@mymail.mines.edu>
+
+On 5/6/10 1:57 AM, wylda at volny.cz wrote:
+> BTW: why it takes so long (cca 6 hours) a post to appear, when i send
+> mail to wine-devel? Some kind of mail graylist?
+If you're not subscribed to wine-devel, your messages are subject to
+moderation.
+
+Chip
+
+
+From wylda at volny.cz  Thu May  6 04:18:12 2010
+From: wylda at volny.cz (wylda at volny.cz)
+Date: Thu, 06 May 2010 11:18:12 +0200 (CEST)
+Subject: =?iso-8859-2?Q?Re:_Stack_corruption_in_dsound.c?=
+In-Reply-To: <n2nd658b69e1005060134h5ab00cdcvbb8c218cea104e3a@mail.gmail.com>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+	<w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+	<dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+	<n2nd658b69e1005060134h5ab00cdcvbb8c218cea104e3a@mail.gmail.com>
+Message-ID: <023778f18717425f609e61be0f5f8687@www3-mail.volny.cz>
+
+
+> > Allocates me 3E0 (rounded 3d4) bytes filled with
+> > zeros, begining at adr1 and this:
+> > a) adr1 should be "relatively close" to the 0x00110000
+> > b) adr1 should be same as adr2
+> >
+
+> You can't really make those assumptions, though I guess
+> they may
+> sometimes be true in practice.
+> 
+
+OK, i lets start from the beginning. I did +relay,+heap and found:
+
+trace:heap:RtlAllocateHeap (0x4df4000,70000062,00000413): returning 0x4edded0
+0018:Ret  ntdll.RtlAllocateHeap() retval=04edded0 ret=78134d83
+0023:Ret  KERNEL32.GetCurrentThreadId() retval=00000023 ret=016633ec
+0023:Call KERNEL32.GetTickCount() ret=016669e8
+0023:Ret  KERNEL32.GetTickCount() retval=00051289 ret=016669e8
+0023:Call KERNEL32.GetCurrentThreadId() ret=0166342f
+0023:Ret  KERNEL32.GetCurrentThreadId() retval=00000023 ret=0166342f
+0023:Call KERNEL32.InterlockedExchange(020876a8,00000001) ret=0166343b
+0023:Ret  KERNEL32.InterlockedExchange() retval=00000000 ret=0166343b
+0023:Call KERNEL32.GetCurrentThreadId() ret=01663472
+0023:Ret  KERNEL32.GetCurrentThreadId() retval=00000023 ret=01663472
+0023:Call KERNEL32.Sleep(00000032) ret=016632f9
+trace:heap:RtlAllocateHeap (0x4df4000,70000062,00000047): returning 0x4e93558
+0018:Ret  ntdll.RtlAllocateHeap() retval=04e93558 ret=78134d83
+0018:Call ntdll.RtlAllocateHeap(04df4000,00000000,00000113) ret=78134d83
+trace:heap:RtlAllocateHeap (0x4df4000,70000062,00000113): returning 0x4e744f8
+0018:Ret  ntdll.RtlAllocateHeap() retval=04e744f8 ret=78134d83
+0018:Call ntdll.RtlAllocateHeap(04df4000,00000000,00000047) ret=78134d83
+trace:heap:RtlFreeHeap (0x110000,70000062,0x164740): returning TRUE
+0022:Ret  ntdll.RtlFreeHeap() retval=00000001 ret=7e1d68e8
+0022:Call user32.WindowFromDC(00000534) ret=7e0f9ee7
+0022:Ret  user32.WindowFromDC() retval=00040056 ret=7e0f9ee7
+0022:Call KERNEL32.TlsGetValue(00000008) ret=7e0fa801
+0022:Ret  KERNEL32.TlsGetValue() retval=19dfcfe0 ret=7e0fa801
+0022:Call gdi32.wglGetCurrentContext() ret=7e0faeea
+0022:Ret  gdi32.wglGetCurrentContext() retval=19a66a00 ret=7e0faeea
+0022:Call KERNEL32.TlsGetValue(00000008) ret=7e0fa801
+0022:Ret  KERNEL32.TlsGetValue() retval=19dfcfe0 ret=7e0fa801
+trace:heap:RtlAllocateHeap (0x4df4000,70000062,00000047): returning 0x4e997d0
+0018:Ret  ntdll.RtlAllocateHeap() retval=04e997d0 ret=78134d83
+
+0018:Call ntdll.RtlAllocateHeap(04df4000,00000000,00000213) ret=78134d83
+err:heap:HEAP_ValidateInUseArena Heap 0x110000: block 0x19543568 tail
+overwritten at 0x1954356d (byte 0/19 == 0xcf)
+
+trace:heap:RtlAllocateHeap (0x110000,70000062,00000100): returning 0x19008c58
+err:heap:HEAP_ValidateInUseArena Heap 0x110000: block 0x19543568 tail
+overwritten at 0x1954356d (byte 0/19 == 0xcf)
+
+* The first 0022: and 0018: are thread numbers?
+* Can be the problem in 0018: be caused by different thread?
+* What is that 0/19?
+* Can i make assumption, that it was overwritten by gdi32.wglGetCurrentContext()?
+
+
+
+
+From hverbeet at gmail.com  Thu May  6 04:47:58 2010
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Thu, 6 May 2010 11:47:58 +0200
+Subject: Stack corruption in dsound.c
+In-Reply-To: <023778f18717425f609e61be0f5f8687@www3-mail.volny.cz>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+	<w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+	<dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+	<n2nd658b69e1005060134h5ab00cdcvbb8c218cea104e3a@mail.gmail.com>
+	<023778f18717425f609e61be0f5f8687@www3-mail.volny.cz>
+Message-ID: <k2sd658b69e1005060247tf4266e8fi306ef1af5fba2d7c@mail.gmail.com>
+
+On 6 May 2010 11:18,  <wylda at volny.cz> wrote:
+> * The first 0022: and 0018: are thread numbers?
+Yes
+
+> * Can be the problem in 0018: be caused by different thread?
+Yes
+
+> * What is that 0/19?
+That means the first of 19 tail bytes was overwritten. The message as
+a whole means that there's a block of memory at 0x19543568, 5 bytes
+large (which is pretty small for something allocated on the heap,
+actually), and something wrote past the end of that block. Finding out
+where that block was allocated may help with identifying where it was
+corrupted.
+
+> * Can i make assumption, that it was overwritten by gdi32.wglGetCurrentContext()?
+No, not necessarily.
+
+
+From julius.schwartzenberg at gmail.com  Thu May  6 05:04:00 2010
+From: julius.schwartzenberg at gmail.com (Julius Schwartzenberg)
+Date: Thu, 06 May 2010 12:04:00 +0200
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de>
+	<4BE206E7.3000703@eternaldusk.com>	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+Message-ID: <4BE29410.5070500@gmail.com>
+
+Edward Savage wrote:
+> It is a shame that it is just a rumor but really that's all it's been
+> for the last half decade.  Plus, Phoronix refuses to release this
+> binary their meant to have found which I tend to think means they
+> don't have it.
+
+It is just a rumor and the binaries there were available were for the 
+dedicated servers of some games. I made a copy here in case you're 
+really interested:
+http://haar.student.utwente.nl/~julius/steam_linux/
+
+
+From epssyis at gmail.com  Thu May  6 05:22:51 2010
+From: epssyis at gmail.com (Edward Savage)
+Date: Thu, 6 May 2010 20:22:51 +1000
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <4BE29410.5070500@gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com>
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+	<4BE29410.5070500@gmail.com>
+Message-ID: <v2gd6c5d7291005060322y94b85b79pea58864b1c06958c@mail.gmail.com>
+
+On Thu, May 6, 2010 at 8:04 PM, Julius Schwartzenberg
+<julius.schwartzenberg at gmail.com> wrote:
+>
+> It is just a rumor and the binaries there were available were for the
+> dedicated servers of some games. I made a copy here in case you're really
+> interested:
+> http://haar.student.utwente.nl/~julius/steam_linux/
+>
+>
+>
+
+I had wondered what was in those.
+
+Dedicated servers is nothing new though, most HL servers of all types
+have been running on Linux for a decade now.
+
+
+From remco47 at gmail.com  Thu May  6 05:40:35 2010
+From: remco47 at gmail.com (Remco)
+Date: Thu, 6 May 2010 12:40:35 +0200
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com> 
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com> 
+	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com> 
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+Message-ID: <o2t36a11a3a1005060340xf2c70c9iff7822b82c50481f@mail.gmail.com>
+
+On Thu, May 6, 2010 at 09:24, Edward Savage <epssyis at gmail.com> wrote:
+> It is a shame that it is just a rumor but really that's all it's been
+> for the last half decade. ?Plus, Phoronix refuses to release this
+> binary their meant to have found which I tend to think means they
+> don't have it. ?Steam for Linux would really be a huge win for native
+> gaming but from Valves point of view it might be too risky?
+
+The binary was not given to Phoronix. They found a link to the Linux
+version in a shell script for the Mac version. It is still available,
+and the binaries are periodically updated by Valve.
+
+http://store.steampowered.com/public/client/steam_client_linux
+
+If you run the following shell code in an empty directory, it will
+download and fix a bug the Linux Steam client so that it will actually
+show a (nonworking) GUI. You'll need bspatch installed for this to
+work.
+
+http://pastie.org/private/4ryiocqxbea8uq8dgexg
+
+All of this clearly shows that Valve is working on a Linux GUI of the
+Steam store, and not a Linux server tool. I ask that you don't do any
+further hacking on these binaries, nor host them yourself, because
+this is not free software. You can't just redistribute it. Besides,
+the goal was to investigate whether Valve was working on Steam for
+Linux, there's nothing more to see here.
+
+-- 
+Remco
+
+
+From remco47 at gmail.com  Thu May  6 05:47:52 2010
+From: remco47 at gmail.com (Remco)
+Date: Thu, 6 May 2010 12:47:52 +0200
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <o2t36a11a3a1005060340xf2c70c9iff7822b82c50481f@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com> 
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com> 
+	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com> 
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com> 
+	<o2t36a11a3a1005060340xf2c70c9iff7822b82c50481f@mail.gmail.com>
+Message-ID: <q2k36a11a3a1005060347l34dd673bx102580514406e7e5@mail.gmail.com>
+
+On Thu, May 6, 2010 at 12:40, Remco <remco47 at gmail.com> wrote:
+> If you run the following shell code in an empty directory, it will
+> download and fix a bug the Linux Steam client so that it will actually
+> show a (nonworking) GUI. You'll need bspatch installed for this to
+> work.
+>
+> http://pastie.org/private/4ryiocqxbea8uq8dgexg
+
+I'm sorry, that's the wrong (old) shell script. The following will do
+what you want:
+
+http://pastebay.com/96489
+
+-- 
+Remco
+
+
+From epssyis at gmail.com  Thu May  6 05:54:42 2010
+From: epssyis at gmail.com (Edward Savage)
+Date: Thu, 6 May 2010 20:54:42 +1000
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <o2t36a11a3a1005060340xf2c70c9iff7822b82c50481f@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com>
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+	<o2t36a11a3a1005060340xf2c70c9iff7822b82c50481f@mail.gmail.com>
+Message-ID: <s2kd6c5d7291005060354g877132b3wf7c212ef3d90f200@mail.gmail.com>
+
+On Thu, May 6, 2010 at 8:40 PM, Remco <remco47 at gmail.com> wrote:
+> The binary was not given to Phoronix. They found a link to the Linux
+> version in a shell script for the Mac version. It is still available,
+> and the binaries are periodically updated by Valve.
+>
+> http://store.steampowered.com/public/client/steam_client_linux
+>
+> If you run the following shell code in an empty directory, it will
+> download and fix a bug the Linux Steam client so that it will actually
+> show a (nonworking) GUI. You'll need bspatch installed for this to
+> work.
+>
+> http://pastie.org/private/4ryiocqxbea8uq8dgexg
+>
+> All of this clearly shows that Valve is working on a Linux GUI of the
+> Steam store, and not a Linux server tool. I ask that you don't do any
+> further hacking on these binaries, nor host them yourself, because
+> this is not free software. You can't just redistribute it. Besides,
+> the goal was to investigate whether Valve was working on Steam for
+> Linux, there's nothing more to see here.
+>
+
+Again, this is nothing new.  Valve ran a closed trial of a native
+Steam client back in 05 (iirc) and all this time there have been
+strings and Linux compiled object files included with the Win32 Steam.
+ It would be silly to assume they haven't had a hobby project of Steam
+natively on Linux since then as they have the team with the skills
+(for the server work).  Now that they have a client that works with
+Mac you can be sure they have one for Linux.  How ever a hobby and an
+actual release are two very different things.
+
+Phoronix has been on this dead horse so long there is no point getting
+our hopes up until Valve speak.
+
+As for your doom and gloom 'don't touch this golden goose' rubbish.
+The binaries are freely distributed under license and completely
+unrestricted to download and redistribute (without modification).  We
+can do what ever we want as long as there EULA isn't broken.  I can
+host it if I wish as can any one else.  Plus, for some reason you
+assume it's okay to 'hack' on these to take a sneak peak but after
+that you draw the line? Your morality is out of whack.
+
+
+From remco47 at gmail.com  Thu May  6 06:09:51 2010
+From: remco47 at gmail.com (Remco)
+Date: Thu, 6 May 2010 13:09:51 +0200
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <s2kd6c5d7291005060354g877132b3wf7c212ef3d90f200@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com> 
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com> 
+	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com> 
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com> 
+	<o2t36a11a3a1005060340xf2c70c9iff7822b82c50481f@mail.gmail.com> 
+	<s2kd6c5d7291005060354g877132b3wf7c212ef3d90f200@mail.gmail.com>
+Message-ID: <x2l36a11a3a1005060409m1f07f411t79b649d42b3c1578@mail.gmail.com>
+
+On Thu, May 6, 2010 at 12:54, Edward Savage <epssyis at gmail.com> wrote:
+> On Thu, May 6, 2010 at 8:40 PM, Remco <remco47 at gmail.com> wrote:
+>> The binary was not given to Phoronix. They found a link to the Linux
+>> version in a shell script for the Mac version. It is still available,
+>> and the binaries are periodically updated by Valve.
+>>
+>> http://store.steampowered.com/public/client/steam_client_linux
+>>
+>> If you run the following shell code in an empty directory, it will
+>> download and fix a bug the Linux Steam client so that it will actually
+>> show a (nonworking) GUI. You'll need bspatch installed for this to
+>> work.
+>>
+>> http://pastie.org/private/4ryiocqxbea8uq8dgexg
+>>
+>> All of this clearly shows that Valve is working on a Linux GUI of the
+>> Steam store, and not a Linux server tool. I ask that you don't do any
+>> further hacking on these binaries, nor host them yourself, because
+>> this is not free software. You can't just redistribute it. Besides,
+>> the goal was to investigate whether Valve was working on Steam for
+>> Linux, there's nothing more to see here.
+>>
+>
+> Again, this is nothing new. ?Valve ran a closed trial of a native
+> Steam client back in 05 (iirc) and all this time there have been
+> strings and Linux compiled object files included with the Win32 Steam.
+> ?It would be silly to assume they haven't had a hobby project of Steam
+> natively on Linux since then as they have the team with the skills
+> (for the server work). ?Now that they have a client that works with
+> Mac you can be sure they have one for Linux. ?How ever a hobby and an
+> actual release are two very different things.
+
+Since Steam was built around Internet Explorer, I very much doubt that
+it ran on Linux. Today, it clearly does. It may take a while before
+Valve decides on a release, but the emergence of the actual software
+makes this much more likely.
+
+> As for your doom and gloom 'don't touch this golden goose' rubbish.
+> The binaries are freely distributed under license and completely
+> unrestricted to download and redistribute (without modification). ?We
+> can do what ever we want as long as there EULA isn't broken. ?I can
+> host it if I wish as can any one else. ?Plus, for some reason you
+> assume it's okay to 'hack' on these to take a sneak peak but after
+> that you draw the line? Your morality is out of whack.
+
+All I'm saying is, don't go hacking the binaries or Valve is forced to
+take them down. My morality has been out of whack ever since some
+chick ate an apple.
+
+-- 
+Remco
+
+
+From wine at eternaldusk.com  Thu May  6 07:33:07 2010
+From: wine at eternaldusk.com (Evil Jay)
+Date: Thu, 06 May 2010 07:33:07 -0500
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com>
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+Message-ID: <4BE2B703.7060704@eternaldusk.com>
+
+On 05/05/2010 07:07 PM, Ben Klein wrote:
+> On 6 May 2010 10:01, Evil Jay <wine at eternaldusk.com> wrote:
+>   
+>> On 05/05/2010 02:34 PM, Andr? Hentschel wrote:
+>>     
+>>> Hi Folks,
+>>> Steam seems to add a Linux client in the near future, so maybe Wine will not be needed anymore for that. or did i get something wrong?
+>>> That might reduce our "market share" a bit as i guess that many Wineusers play steam games.
+>>> On the other hand Intel presented its Z600, which is basically x86 but without IDE, SATA or a BIOS. Thats the reason that it cant run Windows.
+>>> So Linux runs and so should Wine i guess. So we might see some mobil advantures in the near future?
+>>>
+>>>       
+>> I would not hold my breath waiting for that Steam client, there's still
+>> been no official announcement and it could just as well be something
+>> they just play around with as a side project for the next half decade.
+>>
+>> Phoronix has been claiming Steam for Linux was imminent for 2 years...
+>> but for how many years did they (and even the developers) say that UT3
+>> was right around the corner?  A few 32-bit god-awfully incomplete
+>> binaries that can't even launch the actual GUI is not near enough to
+>> start me waiting in a virtual line.
+>>
+>> To take the Devil's advocacy a step farther:  For all we know, Steam for
+>> Linux is not even being actively developed;  They may have started it
+>> with the Mac port and abandoned it as too resource intensive for the
+>> expected payoff.  The few updates that we've seen (before the Linux
+>> build was pulled) may well be the result of of the automated package
+>> builder recompiling the Linux files due to changes in some shared
+>> upstream code (being changed for the benefit of the Mac or Windows client).
+>>
+>> Now, personally I am hoping like crazy that Steam for Linux does
+>> materialize in the next year or two.  But, if it does, it will hardly
+>> put a dent in Wine's use for gaming.  Steam's not a game, so naturally
+>> we must assume that Valve will port the Source engine too, so that they
+>> will have some games to sell.  That's great, but how many games in the
+>> AppDB are using the Source engine?  How many games sold through Steam
+>> even use it, and will the non-Valve developers take the time to build
+>> Linux packages?  Wine has plenty of gaming left in its future.
+>>     
+> The other solution is they pull a Picasa/Google Earth manoeuvre and
+> bundle Wine with Steam (or rely on Wine to play the games).
+>   
+
+They didn't want that hassle with the Mac ports (they're native), so why
+would they do it for Linux?
+
+-J
+
+
+From wine at eternaldusk.com  Thu May  6 07:39:46 2010
+From: wine at eternaldusk.com (Evil Jay)
+Date: Thu, 06 May 2010 07:39:46 -0500
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de>
+	<4BE206E7.3000703@eternaldusk.com>	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+Message-ID: <4BE2B892.3040004@eternaldusk.com>
+
+On 05/06/2010 02:24 AM, Edward Savage wrote:
+> ...Plus, Phoronix refuses to release this binary their meant to have found which I tend to think means they don't have it.  
+>   
+
+What are you on about?  The binaries were up on Valve's servers for
+several days, and lots of us downloaded them.  They exist, they were
+just in an unusable pre-alpha state (when run, they fail connecting to
+the servers).  Someone on the Phoronix boards posted a binary patch that
+would allow it to bring up a single broken dialog.
+
+> A better solution which you'd hope they'd approach Codeweavers or the
+> likes of Ubuntu about would be integrating Wine into a native Steam to
+> run Win32 binaries of non-native games.
+>   
+
+I think you mean "slower" solution, that doesn't fix any of our problems
+like in-game chat.  Native is always the better solution when you're
+talking about something where performance is everything.
+
+-J
+
+
+From testbot at testbot.winehq.org  Thu May  6 08:10:31 2010
+From: testbot at testbot.winehq.org (testbot at testbot.winehq.org)
+Date: Thu, 6 May 2010 15:10:31 +0200
+Subject: usp10: implement mirroring for bidi support 
+Message-ID: <201005061310.o46DAVxr013955@v1.gse.nl>
+
+Hi,
+
+While running your changed tests on Windows, I think I found new failures.
+Being a bot and all I'm not very good at pattern recognition, so I might be
+wrong, but could you please double-check?
+Full results can be found at
+http://testbot.winehq.org/JobDetails.pl?Key=1920
+
+Your paranoid android.
+
+
+=== WINEBUILD (build) ===
+Patch failed
+
+
+From austinenglish at gmail.com  Thu May  6 08:44:05 2010
+From: austinenglish at gmail.com (Austin English)
+Date: Thu, 6 May 2010 08:44:05 -0500
+Subject: Stack corruption in dsound.c
+In-Reply-To: <dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz> 
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com> 
+	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+	<w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+	<dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+Message-ID: <y2ub6bb06271005060644t5ecd1b0dpea438ea9234618cd@mail.gmail.com>
+
+2010/5/6  <wylda at volny.cz>:
+> BTW: why it takes so long (cca 6 hours) a post to appear, when i send
+> mail to wine-devel? Some kind of mail graylist?
+
+If you are not subscribe to wine-devel, an administrator must approve
+your email before it is sent to the list.
+-- 
+-Austin
+
+
+From marco at mandrivaclub.nl  Thu May  6 09:48:37 2010
+From: marco at mandrivaclub.nl (Marco Meijer)
+Date: Thu, 06 May 2010 16:48:37 +0200
+Subject: How to change text on winehq.org ?
+Message-ID: <4BE2D6C5.7070307@mandrivaclub.nl>
+
+Hi WineDevs,
+
+If make the packages for mandriva on sourceforge. And the text on the 
+download page on the website (winehq,org) for mandriva is getting old.
+Who can I write a mail to change the text ? I already tried web-admin ad 
+winehq.org some weeks ago but no reaction so far.
+
+greetings
+
+Marco
+
+
+
+From Paul.Hampson at Pobox.com  Thu May  6 10:02:36 2010
+From: Paul.Hampson at Pobox.com (Paul "TBBle" Hampson)
+Date: Fri, 7 May 2010 01:02:36 +1000
+Subject: Wine looses a bit gaming and wins mobility?
+In-Reply-To: <k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+References: <4BE1C84A.8030201@dawncrow.de> <4BE206E7.3000703@eternaldusk.com>
+	<h2kd7e40be31005051707gdcbcc244h2a97d45acf9ac09@mail.gmail.com>
+	<q2g41eceb531005051956p2c644e83u2dba4c2c2d874076@mail.gmail.com>
+	<k2jd6c5d7291005060024gb3f81a4ene2af7b41481a2e21@mail.gmail.com>
+Message-ID: <p2s297c1a111005060802w187cf56fk2d98a58d63183af5@mail.gmail.com>
+
+On 6 May 2010 17:24, Edward Savage <epssyis at gmail.com> wrote:
+> A better solution which you'd hope they'd approach Codeweavers or the
+> likes of Ubuntu about would be integrating Wine into a native Steam to
+> run Win32 binaries of non-native games. ?On top of native Source games
+> that is. ?This would be pretty easy, and using the Steam
+> first-time-run script system we could actually make a native version
+> support Win32 binaries via Wine ourselves (if it agreed to download
+> and install them!).
+
+It's worth noting on this point that they already do roughly this for
+older games with DOSBox, and I think they bundle ScummVM too.
+
+So a native Linux Steam client would get both the ported Source engine
+games, and any other games that are emulated using a cross-platform
+backend, even before they look at integrating Wine for other games.
+
+Then again, I don't know if it's Valve doing the emulation
+integration, or the content owners...
+
+-- 
+Paul "TBBle" Hampson, Paul.Hampson at Pobox.com
+
+
+From andrew at brightnightgames.com  Thu May  6 10:54:50 2010
+From: andrew at brightnightgames.com (Andrew Eikum)
+Date: Thu, 06 May 2010 10:54:50 -0500
+Subject: How to change text on winehq.org ?
+In-Reply-To: <4BE2D6C5.7070307@mandrivaclub.nl>
+References: <4BE2D6C5.7070307@mandrivaclub.nl>
+Message-ID: <4BE2E64A.6040908@brightnightgames.com>
+
+On 05/06/2010 09:48 AM, Marco Meijer wrote:
+> If make the packages for mandriva on sourceforge. And the text on the
+> download page on the website (winehq,org) for mandriva is getting old.
+> Who can I write a mail to change the text ? I already tried web-admin ad
+> winehq.org some weeks ago but no reaction so far.
+
+I think you'll want to make a patch against the website git repository. 
+  See <http://source.winehq.org/git/website.git/>.  You can send the 
+patch to wine-patches as usual.  The file you probably want to edit is 
+templates/en/download.template.  I'm not sure how translation changes 
+get propagated.
+
+Make sure to note in the subject that it is for the [website] project. 
+That will help the maintainer pick it out of the patch stream.
+
+Andrew
+
+
+From wylda at volny.cz  Thu May  6 11:52:36 2010
+From: wylda at volny.cz (wylda at volny.cz)
+Date: Thu, 06 May 2010 18:52:36 +0200 (CEST)
+Subject: =?iso-8859-2?Q?Re:_Stack_corruption_in_dsound.c?=
+In-Reply-To: <k2sd658b69e1005060247tf4266e8fi306ef1af5fba2d7c@mail.gmail.com>
+References: <c30677fe3726c78303c3ac764b9c8bb7@www3-mail.volny.cz>
+	<u2h3a768c551005041535ic7275578rcf6d4421a31e82c4@mail.gmail.com>
+	<18d56ae9d31b56cd812448e48b5fcee6@www3-mail.volny.cz>
+	<w2zd658b69e1005052333oeb19614ay678e2c3307bf064c@mail.gmail.com>
+	<dd73892f2b6f703019080a8c2f510aea@www3-mail.volny.cz>
+	<n2nd658b69e1005060134h5ab00cdcvbb8c218cea104e3a@mail.gmail.com>
+	<023778f18717425f609e61be0f5f8687@www3-mail.volny.cz>
+	<k2sd658b69e1005060247tf4266e8fi306ef1af5fba2d7c@mail.gmail.com>
+Message-ID: <241901ddba20a9759d32ebbc5fe8a6bf@www3-mail.volny.cz>
+
+
+Thanks Henri... I think i got "heap headache" :-/
+
+* Can i make assumption, that log produced by wine is not buffered anywhere
+and is written to console sequentially and immediately when that event
+happened? (in other words log output doesn't outrun each other lines)
+
+* Is HEAP_ValidateInUseArena called automatically when HeapAlloc() or
+HeapFree() is called? Or where it comes from in the log?
+
+* If i have a log:
+
+0018:Call ntdll.RtlAllocateHeap(04df4000,00000000,00002813) ret=78134d83
+0022:trace:heap:RtlFreeHeap (0x110000,70000062,0x1f8aa0): returning TRUE
+0022:Ret  ntdll.RtlFreeHeap() retval=00000001 ret=7e1de8e8
+0022:Call user32.WindowFromDC(0000053c) ret=7e101ee7
+0009:err:heap:HEAP_ValidateInUseArena Heap 0x110000: block 0x190f3468
+tail overwritten at 0x190f346d (byte 0/19 == 0x8b)
+0018:trace:heap:RtlAllocateHeap (0x4df4000,70000062,00002813): returning
+0x4e53a08
+0018:Ret  ntdll.RtlAllocateHeap() retval=04e53a08 ret=78134d83
+0009:trace:heap:RtlAllocateHeap (0x110000,70000062,00000100): returning
+0x191d9648
+0018:Call ntdll.RtlAllocateHeap(04df4000,00000000,00001013) ret=78134d83
+0022:err:heap:HEAP_ValidateInUseArena Heap 0x110000: block 0x190f3468
+tail overwritten at 0x190f346d (byte 0/19 == 0x8b)
+0022:trace:heap:RtlAllocateHeap (0x110000,7000006a,00000040): returning
+0x191d9758
+
+I see corruption "0009:err:heap:HEAP_ValidateInUseArena..." which is
+caused by just calling the WindowFromDC()?? Otherwise two line above
+the WindowFromDC() would "0022:trace:heap:RtlFreeHeap" complained about
+corruption, because that FreeHeap has same heap handle (0x110000) like
+complaining HEAP_ValidateInUseArena.
+
+
+
+
+
+From dank at kegel.com  Thu May  6 12:47:59 2010
+From: dank at kegel.com (Dan Kegel)
+Date: Thu, 6 May 2010 10:47:59 -0700
+Subject: Stack corruption in dsound.c
+Message-ID: <r2va71bd89a1005061047k4310d72aj6963cf1091cddd3f@mail.gmail.com>
+
+>* Can i make assumption, that log produced by wine is not buffered anywhere
+>and is written to console sequentially and immediately when that event
+>happened? (in other words log output doesn't outrun each other lines)
+
+Sadly, not in a multithreaded program.
+
+>* Is HEAP_ValidateInUseArena called automatically when HeapAlloc() or
+>HeapFree() is called?
+
+When WINEDEBUG=+heap, it's called on HeapFree, HeapReAlloc, or HeapSize.  See
+http://source.winehq.org/ident?i=HEAP_ValidateInUseArena
+http://source.winehq.org/ident?i=validate_block_pointer
+
+Now that you know there is heap corruption, you may be able to
+pinpoint the line of code that causes it using Valgrind.
+See http://wiki.winehq.org/Wine_and_Valgrind
+(It's slow and uses lots of memory, so it's not practical for all apps,
+but when it works it's great.)
+
+
+From dylan.ah.smith at gmail.com  Thu May  6 13:26:02 2010
+From: dylan.ah.smith at gmail.com (Dylan Smith)
+Date: Thu, 6 May 2010 14:26:02 -0400
+Subject: [PATCH] wordpad: add units (in/inch/pt)
+In-Reply-To: <m2p342661341005051640mcf5665bbsc53728736cc8ce9b@mail.gmail.com>
+References: <m2p342661341005051640mcf5665bbsc53728736cc8ce9b@mail.gmail.com>
+Message-ID: <r2o5c6ee3b71005061126z822987b3zed58e510b3357b3@mail.gmail.com>
+
+>-    /* FIXME: Allow other units and convert between them */
+>     if(!lstrcmpA(endptr, units_cmA))
+>+    {
+>+        if (punit != NULL) *punit = UNIT_CM;
+>+        endptr += 2;
+>+    }
+>+    else if (!lstrcmpA(endptr, units_inA))
+>+    {
+>+        if (punit != NULL) *punit = UNIT_INCH;
+>+        endptr += 2;
+>+    }
+>+    else if (!lstrcmpA(endptr, units_inchA))
+>+    {
+>+        if (punit != NULL) *punit = UNIT_INCH;
+>+        endptr += 4;
+>+    }
+>+    else if (!lstrcmpA(endptr, units_ptA))
+>+    {
+>+        if (punit != NULL) *punit = UNIT_PT;
+>         endptr += 2;
+>+    }
+>
+>     return *endptr == '\0';
+> }
+
+You should really use strlen(units_*A) instead of a constant for
+incrementing endptr since these strings may be different lengths once
+localized.  For instance I believe inch in French is "pouce" which is
+5 characters so the null byte would truncate it to "pouc".
+
+This should have already been done with "cm" units even though no
+translation has made it different from 2 characters in length.
+
+
+From studiosg at giustetti.net  Thu May  6 13:49:14 2010
+From: studiosg at giustetti.net (Ing. Simone. Giustetti)
+Date: Thu, 06 May 2010 20:49:14 +0200
+Subject: How to change text on winehq.org ?
+In-Reply-To: <4BE2E64A.6040908@brightnightgames.com>
+References: <4BE2D6C5.7070307@mandrivaclub.nl>
+	<4BE2E64A.6040908@brightnightgames.com>
+Message-ID: <1273171754.4be30f2a46c5d@www.giustetti.net>
+
+Hi,
+
+There are 3 translation template files for the download page:
+(From the root directory of your local git repository)
+./templates/de/download.template
+./templates/pl/download.template
+./templates/en/download.template
+I think You should update all of them (That's what I did for the Slackware
+package description anyway ;) ).
+http://wiki.winehq.org/GitWine details how to create a local clone of the git
+repository and how to generate and format the patch.
+
+Simone
+
+
+> On 05/06/2010 09:48 AM, Marco Meijer wrote:
+> > If make the packages for mandriva on sourceforge. And the text on the
+> > download page on the website (winehq,org) for mandriva is getting old.
+> > Who can I write a mail to change the text ? I already tried web-admin ad
+> > winehq.org some weeks ago but no reaction so far.
+> 
+> I think you'll want to make a patch against the website git repository. 
+>   See <http://source.winehq.org/git/website.git/>.  You can send the 
+> patch to wine-patches as usual.  The file you probably want to edit is 
+> templates/en/download.template.  I'm not sure how translation changes 
+> get propagated.
+> 
+> Make sure to note in the subject that it is for the [website] project. 
+> That will help the maintainer pick it out of the patch stream.
+> 
+> Andrew
+> 
+> 
+> 
+
+
+-- 
+Ing. Simone Giustetti
+Tel: 340-3425647
+e-mail: studiosg at giustetti.net
+
+-------------------------------------------------
+This mail sent through IMP: http://horde.org/imp/
+
+
+
+From scott at open-vote.org  Thu May  6 19:27:18 2010
+From: scott at open-vote.org (Scott Ritchie)
+Date: Thu, 06 May 2010 17:27:18 -0700
+Subject: How to change text on winehq.org ?
+In-Reply-To: <1273171754.4be30f2a46c5d@www.giustetti.net>
+References: <4BE2D6C5.7070307@mandrivaclub.nl>	<4BE2E64A.6040908@brightnightgames.com>
+	<1273171754.4be30f2a46c5d@www.giustetti.net>
+Message-ID: <4BE35E66.5030302@open-vote.org>
+
+On 05/06/2010 11:49 AM, Ing. Simone. Giustetti wrote:
+> Hi,
+> 
+> There are 3 translation template files for the download page:
+> (From the root directory of your local git repository)
+> ./templates/de/download.template
+> ./templates/pl/download.template
+> ./templates/en/download.template
+> I think You should update all of them (That's what I did for the Slackware
+> package description anyway ;) ).
+> http://wiki.winehq.org/GitWine details how to create a local clone of the git
+> repository and how to generate and format the patch.
+
+It would be much nicer if the website knew when a translation became out
+of date.  As it is sometimes the translations get much older than the
+English version and become less useful than an untranslated document.
+
+Thanks,
+Scott Ritchie
+
+

@@ -1,0 +1,781 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="2" date="27 Jun 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the second release of the experimental Wine's kernel cousin
+publication. Its main goal is to distribute widely what's going on around
+Wine (the Un*x Windows emulator).
+
+<p />
+
+Bertho Stultiens (provider and sysop of the European winehq.org, among other
+stuff) warned about the fragility of the machine currently hosting
+www.winehq.org. Since, he won't be around next week (and won't be able to
+fix the hardware before), there may be some service interruption next week
+(I just hope there won't).
+
+<p />
+
+Don't forget for more high level information Wine Weekly News.
+
+<p />
+
+There is a book from IDG regarding system administration for Wine underway.
+James Sutherland is likely to be the <a
+href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-340.html">
+technical editor</a>.
+
+<p />
+
+Marcus Meissner reported some <a
+href="http://linuxtoday.com/stories/7017.html">press release</a> from
+Corel.
+
+<p />
+
+Despite the good feed-back from the first issue, I still haven't decided to
+really open Wine's Kernel Cousin. Thanks to Pascal Cuoq for his help
+crafting this KC.
+
+</intro>
+
+<section
+  title="DLL modref and instance data (Service thread cont'd"
+  subject="DLL instance data"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-301.html"
+>
+
+Last week, from a question of Eric Pouech regarding where to store data for
+a DLL to be instanciated for each attached process, Ulrich Weigand proposed
+to add a field to the WINE_MODREF structure to handle this.
+
+<p />
+
+Eric Pouech agreed and wrote the extension to WINE_MODREF as well as an use
+of this new field for the multimedia timers (implementation was bogus when
+two processes attached the multimedia DLL).
+
+<p />
+
+Bertho Stultiens disagreed <quote who="Bertho Stultiens">Noop. The patch is
+doing it at wine-kernel-level and I suggested that this is a user-level
+problem. I.e. IMO the DLL's implementation must deal with duplicate
+instantiation, not the *loader* (or the responsibility gets divided wrt
+instantiation and relocation).</quote>
+
+<p />
+
+Alexandre Julliard also disliked the proposal: <quote who="Alexandre
+Julliard"> IMO it is very ugly to hook that to the modref structure,
+especially since you have to retrieve it through the DLL name. As Bertho
+said, there is no need of any kernel support for this: you can simply have
+the DLL manage a list of its instances, indexed by process id or whatever.
+The list can be stored in a global variable, since they are shared; and when
+they are no longer shared, the global list will magically turn into a
+per-process list that will always contain a single instance.</quote>
+
+<p />
+
+Ulrich Weigand approved the comments:
+
+<p />
+
+<quote who="Ulrich Weigand">Well, yes; I just wanted to avoid having to
+implement this process ID indexed list in every DLL that needs it; that's
+why I thought to use the already present modref list.
+
+<p />
+
+If you prefer it this way, that's fine with me, too ...  Anyway, scaning a
+process list will typically be faster than scanning a module list, so it
+might even be more efficient ;-)</quote>
+
+<p />
+
+Eric Pouech then rewrote the multimedia timer patch according to the output
+of this thread (which requires several tries, but that's another story).
+
+<p />
+
+Patch has been committed to CVS, end of the thread. Anyway, this started
+another discussion about the correctness of global variables in DLLs wrt
+attached processes (is it a per process variable or a global variable ?)
+
+</section>
+
+<section
+  title="Global variables in Wine DLLs"
+  subject="Use of global variables in Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-322.html"
+>
+
+On the topic of global variables, Ulrich Weigand published an impressive
+list of them, gathered thru <code>nm</code>. He pointed out that the use of
+each of them will have to be at least analysed, and maybe changed, to make
+wine handle correctly multiple address spaces and threads.
+
+<p />
+
+Bertho Stultiens latter gave an explanation for a few of these variables:
+some belong to code that will have to be rewritten anyway, some will simply
+have to be made thread-specific, and many are harmless, since they are used
+only during initialization.
+
+</section>
+
+<section
+  title="elfdlls"
+  subject="Elfdlls"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-359.html"
+>
+
+Before getting to Ulrich Czekalla's question, a quick introduction to Wine
+and DLLs. When it comes to loading DLLs, Wine supports four types of DLLs:
+
+<p />
+
+<ul>
+
+<li /> builtin DLLs (embedded in Wine source code, with descriptors found in
+if1632/builtin.c or relay32/builtin.c)
+
+<li /> native DLLs (the one used by Windows, allowing Wine to dynamically load
+libraries built for Windows)
+
+<li /> .so DLLs (.so is the Linux (and some other Unices) functionally
+equivalent to Windows DLLs, exporting symbols - variables and functions -
+but no resources, nor importation of other DLLs (in a Wine
+understanding)
+
+<li /> elfdll: this is a wine specific library but that will provide on top of
+the normal .so functions, the same behavior as Windows DLLs. This will allow
+building under Unix DLLs to be loaded into Wine (it is likely that most of
+the current Wine builtin DLLs will move to elfdlls when the mechanism is in
+place)
+
+</ul>
+
+<p />
+
+Bertho Stultiens provided first versions of a new tool called dllglue
+allowing to built the elfdlls. The process requires to provide for each DLL
+the list of exported functions (the one you wish the other DLLs to see) and
+the imported functions (the one your DLL wishes to call).
+
+<p />
+
+So, Ulrich asked <quote who="Ulrich Czekalla">I thought it might be
+desirable for libwine apps to simply be able link the application without
+using the import/export tables and maintaining spec files for each module.
+One problem is that 'regular' linking does not 'register' the library with
+wine and thus cannot reference the library as a regular wine module. So the
+question is what are the pros/cons with simply having a LoadLibrary (or
+slightly modified) call in the module's initialization code. This would
+simplify the dllglue process. Of course we would have to ensure a certain
+library load order since wine itself must be initialized first. I realize
+that this is not an a alternative for wine itself when it's broken into its
+modules but for libwine apps it may be okay. Any thoughts?</quote>
+
+<p />
+
+Bertho Stultiens answered:
+
+<p />
+
+<quote who="Bertho Stultiens">You need the import/export mechanism to ensure
+proper linking. Only these references should be resolved. The whole point is
+to generate the specs automatically from the declspec() extensions as used
+in MS compilers. This requires either a home-made parser or a modification
+of the compiler.
+
+<p />
+
+Anyhow, you still need to genererate the import table references to ensure
+that libraries are loaded in a specific order. I'd prefer to stick to the
+current strategy of generating full tables over hacking the loader (which
+only will give problems).
+
+<p />
+
+Winelib apps will first benefit from elfdlls to the fullest extent when
+everything is modularized properly (i.e. the wine-startup equals wine-lib
+startup).</quote>
+
+<p />
+
+Gav State from Corel backed up Ulrich:
+
+<p />
+
+<quote who="Gav State"> Writing another compiler extension or parser is
+going to be a fair bit of work, for relatively little gain. The ELF loader
+already takes care of symbol resolution for us - the only thing having a
+full PE header gives us for WineLib apps is the load order for the dlls.
+Manually ensuring that your load order is correct isn't *that* big a deal,
+and it only has to be done once.
+
+<p />
+
+Think of this as a half-way mix between ELF-DLLs and plain ELF .so - it lets
+one write a Winelib app with proper handling of resources and other module
+stuff without having to write any more parsers or compiler extensions. It
+doesn't require any significant hacks to the loader - it's just a simple
+change to dllglue to add an explicit call to LoadLibrary into the ELF
+initialization section. This is controlled by an optional switch in dllglue,
+of course, so it wouldn't affect anything other than WineLib apps that want
+to use the half-way scheme.
+
+<p />
+
+We're using this technique internally now to get some of our test apps
+working. It works quite nicely - and we've been able to remove several hacks
+that we had put in place to get around our resource issues. Most
+importantly, we've got it working NOW. We don't have to wait for more
+compiler/linker level work.</quote>
+
+<p />
+
+Bertho fired back:
+
+<p />
+
+<quote who="Bertho Stultiens">The problem with ELF linking is that it does
+not discriminate between symbols from different libraries. You can have
+duplicate symbols from different libraries where only one is supposed to be
+imported from another lib. You cannot be sure which you get unless you
+introduce load-order dependencies. The importtable is supposed to deal with
+this problem (because there *are* duplicate names in the API).
+
+<p />
+
+Yet another problem with dangling symbols in plain ELF linking is that they
+can interfere with other symbols in unexpected ways due to copy relocation.
+That is why I have the localization step in the linking. This is just to get
+rid of these problems.</quote>
+
+<p />
+
+Gav also asked Bertho whether he could put the dllglue under CVS. Bertho
+agreed (with some questions regarding which version of his was the best...).
+Since current dllglue puts more constraints on regular tools (<quote
+who="Gav State">binutils >= 2.9.1 or at least "objcopy -L sym" working,
+alignment check of data with gcc/egcs. Gcc 2.7 refuses to align on 4096
+boundary and additional assembly is required to do the trick</quote>),
+Bertho also proposed to write before committing to CVS the proper extension
+to Makefile.in to check for those requirements.
+
+</section>
+
+<section
+  title="gcc-2.95 to support anonymous unions"
+  subject="gcc-2.95-19990609"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-357.html"
+>
+
+As the title says, Pavel Roskin reported that the latest gcc snapshot
+includes support for anonymous unions (i.e. an extension to C allowing to
+use anonymous, or nameless, unions in structure. Windows relies on this
+feature for some of its API structures.
+
+<p />
+
+This new feature will ease porting huge programs written with windows
+compiler (providing this feature) without having to change throughout the
+code the access to the anonymous unions (Wine systematically
+<strong>names</strong> <code>u</code> the anonymous unions).
+
+<p />
+
+Gav State (from Corel) was happy to see some of the extents that Corel
+subcontracted to Cygnus surface to gcc: <quote who="Gav State">Cool. It
+looks as though some of the compiler changes we've been working on with
+Cygnus are beginning to make it into gcc. There are several other changes
+that are still in progress, like precompiled headers, etc. Note that all the
+code you need for playing with COM interfaces in C++ Winelib applications is
+already there in wine/include/wine/obj_base.h. You just have to flip a
+couple of #defines...</quote>
+
+</section>
+
+<section
+  title="Sig11 and gcc"
+  subject="Sig11 with cvs990622 and --enable-dll"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-332.html"
+>
+
+Robert W. Hall reported another problem of sig11 when compiling with gcc.
+This was definitively not a hardware problem (some other people experienced
+it).
+
+<p />
+
+The known solution to this bug in gcc are:
+
+<p />
+
+<ul>
+
+<li /> Recompile, by hand, the faulty file without the -O2 option
+
+<li /> Ulrich Weigand said that one could also try this: <quote who="Ulrich
+Weigand">Another thing that often seems to work around this problem is
+fiddling with the #include statements: removing unneeded ones, or even just
+changing the sequence ... I have no idea why this helps, though
+:-/</quote>
+
+</ul>
+
+<p />
+
+Ove Kaaven reminded us: <quote who="Ove Kaaven">Didn't Alexandre have a good
+theory once? He thought that it's probably some internal tables in gcc
+that's overflowing, rather than the code sequence itself... (and with that
+explanation he rejected a patch that decreased efficiency in order to work
+around the sig11)</quote>
+
+</section>
+
+<section
+  title="Small implementation of win32 api"
+  subject="Light wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-262.html"
+>
+
+Greg Haerr copied wine-devel a message he's sent to Alexandre Juliard:
+
+<p />
+
+<quote who="Greg Haerr">I have created a small, completely working
+re-implementation of the win32 user and gdi api's in about 42k ram, which I
+call Micro-Windows. This project started out of a project I ran into called
+nanoGUI, which was based on a small implementation of X for linux, called
+mini-x. In any case, the project had just started, and I became the main
+contributor. I completely redesigned the lower-level drivers so that the
+mini-x api ran on top of linux 2.2 framebuffers, linux 2.0 svgalib, MSDOS,
+ELKS and raw VGA hardware. As well, bare hardware and multi-os device
+drivers for the keyboard and mouse were created.
+
+<p />
+
+My expertise though actually is windows api programming, not X, so I decided
+to take the nano-X graphics engine that I created and implement the win32
+graphics api on top of it. I have ended up with a small, portable, usable
+implementation. The idea was to build a small win32 source compatible
+implementation of a graphics engine that could be booted from floppy or run
+on a wide variety of devices.
+
+<p />
+
+I'm writing you because most of the linux graphics community seems centered
+around getting X or small versions of X moved forward. I am interested in
+your opinion as to the usefulness of Micro-Windows and whether there are any
+other developers that might be interested in this sort of thing. I've looked
+at wine, and think it's a great project. One of it's potential shortcomings
+is that it requires X. Perhaps I should work on getting it running on top of
+bare hardware or framebuffers... I have a lot of cool ideas for projects that
+center around getting the windows api's running on more machines.
+
+<p />
+
+Micro-Windows currently supports, in &lt; 64k, the following:
+
+<p />
+
+<ul>        
+
+<li />Exact win32 compatibility for api's that are implemented based on portable 
+    graphics engine
+
+<li />Win95/NT identical 3d overlapped window look-and-feel
+
+<li />WM_NCLBUTTONDOWN user window moves with real-time repaint
+
+<li />Full window area, client area, child window clipping
+
+<li />256 color palettized color implementation with 1, 4, 8 bpp bitmap drawing
+
+<li />Child windows
+
+<li />GetSysColor color schemes
+
+<li />Ability to run on any device supporting drawhorzline, drawvertline, drawpixel, 
+    and getpixel.
+
+<li />Driver support for linux 2.2 framebuffer, 2.0 svgalib, MSDOS,. ELKS and bare VGA 
+    hardware (currently planar mode only)
+
+<li />Truecolor and 256 color modes
+
+<li />Great architecture
+
+<li />Windows bmp and font file grabbers written
+
+</ul>
+
+</quote>
+
+Greg also gave the list of supported API.
+
+<p />
+
+This project is (of course) Open Source (licence is MPL) and can be found at
+<a href="ftp://microwindows.censoft.com/pub/microwindows">Censoft.com</a>
+
+<p />
+
+Patrick Stridvall, who is working on removing X11 dependency from Wine (and
+also allowing Wine to run on some other platforms) gave the current state of
+his effort: <quote who="Patrick Stridvall">Yes and no. I have been working
+on some kind of driver system for Wine and which moved all X code to special
+driver and make it possible to make other drivers. The work is almost done
+and most of the code is in the current distribution. I have a patch that
+does the rest and makes Wine _compile_ (but not work) completely without X.
+There are some untested/unsolved issues in that patch that I haven't yet
+fixed, so it was been put on ice when I found other interesting things to
+work on.</quote>
+
+<p />
+
+Patrick was very interested in Greg's work, and proposed a joint effort to
+reduce size of Wine, like <quote who="Patrick Stridvall">to add compilation
+flags to Wine that makes only the core USER, GDI, KEYBOARD, MOUSE and CRTDLL
+compile. Of course it is easily said but more hard to be done.</quote> This
+would allow the creation of a light Wine (in fact a subset of current Wine)
+that could mimic Windows CE, and also be ported to PDAs (running Linux).
+
+<p />
+
+In order to make this happen, Patrick Stridvall provided a TODO list:
+
+<quote who="Patrick Stridvall">
+
+<p />
+
+<ol>
+
+<li />There are dependencies that shouldn't exist between various parts of
+    Wine. This will eventually be needed to be done anyway.
+
+<li />All dependencies, in the core parts at least, to libc need to be
+    eliminated. This should IMO be done anyway all such call go through the
+    CRTDLL.
+
+<li />If we really want low memory footprint, the calls between the 16 and 32
+    bit parts of should only go in the 16 bit to 32 direction to make it
+    possible to disable the 16 bit parts. This should IMO be done anyway
+    some day.
+
+<li />If we really really want a low memory footprint, all dependencies
+    between GDI/USER and the KERNEL, that is not absolutely needed, must be
+    eliminated and/or #ifdef:ed. I am not sure Alexandre will like that, I
+    am not even sure if I like it.
+
+<li />Drivers for Linux Framebuffer etc need to be written.
+
+</ol>
+
+</quote>
+
+<p />
+
+The thread then forked in a more in-depth discussion of this <a
+href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-310.html">Wine
+dependencies</a> list.
+
+<p />
+
+Patrick Stridvall got his hands on Greg's source, and gave his first
+understanding of the situation:
+
+<p />
+
+<quote who="Patrick Stridvall">I think your original suggestion making Wine
+run on top off Micro-Windows driver is better.
+
+<p />
+
+It seems Micro-Windows driver systmem (graphics engine) is designed
+(optimized) with the assumption that the underlying drivers only can do very
+low-level operation like pixel drawing that is they are basically dumb frame
+buffers.
+
+<p />
+
+Wine's driver system (graphics engine) on the other hand is designed
+(optimized) with the assumption that most drivers are capable of very high
+level operations like polygon drawing, font rendering etc.
+
+<p />
+
+Each of these assumptions makes very much sense for the environments for which
+Wine and Micro-Windows was designed.
+
+<p />
+
+So having a unified (Wine/Micro-Windows) driver system (graphics engine)
+really doesn't make sense. However a Wine driver system frame buffer driver
+(fbdrv) using Micro-Windows graphics engine does. Which was what you
+proposed in the beginning IIRC.
+
+<p />
+
+However I think both Wine and Micro-Windows will have its place in the
+future.
+
+<p />
+
+Wine, I think, will probably always be optimized for speed, with a driver
+system that makes it possible to make underlying drivers that can use the
+hardware (X on local computer) or bandwith (X Window on remote computer)
+efficiently.
+
+<p />
+
+Micro-Windows, I assume, will probably be optimized for size with a driver,
+system that makes it possible to write small underlying drivers.
+
+<p />
+
+A lot of the code Wine and Micro-Windows code, could be probably be shared.
+There are serveral things that could be done at an early stage.
+
+<p />
+
+<ol>
+
+<li />Making the USER controls implementation in Wine indepent of Wine's core,
+   so that it could be used by Micro-Windows.
+
+<li />Starting on a Wine frame buffer driver (fbdrv) that uses Micro-Windows
+   graphics engine. This required that the concerned files in Micro-Windows
+   is organized so that they could be used by Wine. Not very difficult I
+   think."
+
+</ol>
+
+</quote>
+
+<p />
+
+Patrick and Greg agreed to keep on working: Patrick will be providing a
+frame buffer driver for Wine, and Greg will work on linking it to the
+Micro-Windows graphical engine and also to provide a portable controls
+implementation. Keep posted for more on this!
+
+</section>
+
+<section
+  title="Some musing about OpenGL support"
+  subject="Accelerated OpenGL in Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-262.html"
+>
+
+Lionel Ulmer fired a thread about architectural issues he's facing while
+trying to add support into Wine for different OpenGL libraries (and starting
+with accelerated OpenGl libraries: <quote who="Lionel Ulmer">Precision
+Insight's DRI source, nVidia's accelerated X server and the specs to both
+the G200 and the G400),</quote>).
+
+<p />
+
+Lionel proposed several architectural options (and issues with them):
+
+<p />
+
+<quote who="Lionel Ulmer">There are three kinds of functions in 'opengl32.dll':
+
+<p />
+
+<ol>
+
+<li />windowing-system specific OpenGL functions. On X11, they are the 'glX*'
+functions, 'wgl*' on Windows
+
+<li />'core' OpenGL functions. These functions are mostly 'hard linked' by the
+application
+
+<li />OpenGL extensions, that are queried by the application using the
+'wglGetProcAddress' function
+
+</ol>
+
+<p />
+
+For 'glu32.dll', there is only type (2) functions (I do not of know any
+extensions to GLU).
+
+<p />
+
+<ul>
+
+<li />(1) functions are emulated by Wine using the system's corresponding
+   windowing-system primitives. On Linux, it will be by using glX (to be
+   more portable, we would need to introduce 'drivers' (like for GDI) for
+   all these functions).
+
+<li />(2) functions are common to all OpenGL libraries, with one caveat :
+   there are three different 'versions' of the OpenGL core (1.0, 1.1 and
+   1.2). Most of Windows' OpenGL libraries are 1.1 (there is no device
+   driver interface for 1.2 AFAIK for Windows).
+
+<li />(3) functions have the same prototype for all implementations of OpenGL,
+   but may be present or not in the library.
+
+<li />all functions from (1), (2) and (3) need, when using the glX interface,
+   be protected by the X11 Critical Section (I experienced crashes with Mesa
+   when not protecting them). This could be checked at 'configure'
+   time.
+
+<li />for (2) and (3) functions, Wine does only stdcall -&gt; cdecl
+   translations (and Critical Section protection).
+
+</ul>
+
+<p />
+
+The different possibilities to implement all this:
+
+<p />
+
+<ul>
+
+<li />(a) the use of Marcus' ELF loader is impossible for three reasons :
+
+	<ul>	
+
+	<li />there is a mix between functions that are directly in the .so,
+	    other that need to be emulated by Wine code.
+
+	<li />as far as I understand Marcus' code, it gets the signature by
+       looking at the number after the @ in the function name. But when an
+       application calls wglGetProcAddress, there is no '@' in the function
+       name.
+
+	<li />there is no X11 Critical Section protecting done.
+
+	</ul>
+
+<li />(b) One solution proposed by Eric Pouech would have been to have a spec
+	.file for all the core functions (all the functions that
+	can be linked at program start) and autogenerate (as is done in the ELF
+	SO loader) a function wrapper on call of the wglGetProcAddress
+	function. The functions signatures would have been stored in a
+        special configuration file.
+
+<p />
+
+     One problem of this solution is that even the core functions can change
+     from one version to another. To solve this, one could at configure time
+     check which version of OpenGL is present and choose one of the 3
+     possible .spec file and wrapper files.
+
+<p />
+
+     This would have the same problem as (c) : a Wine binary compiled on a
+     1.2 OpenGL would not work on a box with 1.1 installed.
+
+<li /> (c) My original solutions would be to parse the 'GL/gl.h' and
+     'GL/glu.h' file that come with the GL.so and GLU.so libraries and
+     generate at configure or build time both a .spec file and a .c file
+     that would do the calling convention translation and crit. section
+     protection.
+
+<p />
+
+     The problem here is writing a .h parser versatile enough that it would
+     not choke on some special .h file that comes with some special OpenGL
+     libraries. Another problem is that it may rule out binaries
+     distributions of Wine (for example, suppose that the OpenGL library
+     from XFree4.0 for card A supports a specific extension not supported by
+     card B -&gt; a binary compiled for A would not work on card B).
+
+<li /> (d) A solution less complex would be to generate 'off-line' an easily
+     parsable configuration file that gives the prototype of all existing
+     OpenGL functions. This can be done with a simple script on the Mesa
+     include files for most of the standard extensions and all core
+     functions (up-to OpenGL 1.2). For example:
+
+<p />
+
+	<code>
+       GLboolean glIsEnabled(GLenum)
+       void glVertex3f(GLfloat, GLfloat, GLfloat)
+       </code>
+
+<p />
+
+     After that, using 'nm' on the lilbGL.so, one could know which of all
+     these functions are present on the system and generate a .spec file and
+     wrappers for all possible functions.
+
+<p />
+
+     The main advantage of this solution is that it would prevent having to
+     write a parser for the '.h' files (I have written one in Perl, but it
+     work only with Mesa 3.x header files).
+
+<p />
+
+     It has the same binary-compatibility problem as (b) and (c).
+
+<li /> (e) Creating a special loader just for this library could solve all the
+     problems, but I do not think that is the correct answer.
+
+</ul>
+
+For the moment, I think I will send a patch with option (d). The problem is
+that I will be unable to hack anything on Wine for the next 5 / 6 weeks and
+I would like this to be included in Wine before I leave (otherwise I fear
+the merging I need to do with the 15 files my patch changes :-/ ).</quote>
+
+<p />
+
+Patrick Stridvall, to help with the overview of the situation, discussed
+then some issues with Lionel, mainly regarding if Direct 3D should be
+implemented on top of OpenGL (or the other way around) and ways to store
+(and exchange contexts) within the two.
+
+<p />
+
+Some other issues are linked to the version of OpenGL provided by the
+accelerated OpenGL libraries (which may not be the same), and thus, the
+level of functions to reflect into Wine. Achim Kaiser proposed to use the
+OpenGL 1.2 (which is what's currently provided by Mesa 3.0).
+
+<p />
+
+Lionel quite not agreed and give the following arguments:
+
+<p />
+
+<quote who="Lionel Ulmer">I saw a mail by a guy from PI saying bascically
+that all open-sources drivers are based on Mesa, but there exists
+closed-source drivers that will be based on the SGI code base (it is
+understandable: if their engineers are familiar with this code by using it
+on Windows drivers, why change for Linux).
+
+<p />
+
+Moreover, even the Mesa code is not stable: for example, in one branch of
+the Mesa developpment tree, one set of extensions were removed because they
+were obsoleted... This means that if I base my work on the current 3.0 (or
+3.1b) code, it won't link for people using this branch.
+
+<p />
+
+I once made the mistake to have the assumption that everybody did upgrade
+its Mesa library to 3.0... I do not remember how many people did ask in the
+newsgroup why their Wine did not compile anymore. Now I always plan for the
+worst :-)</quote>
+
+</section>
+
+</kc>

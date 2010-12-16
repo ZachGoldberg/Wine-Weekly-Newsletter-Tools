@@ -1,0 +1,481 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+
+<issue num="177" date="07/04/2003" />
+
+<intro>
+<p>This is the 177th release of the weekly Wine Weekly News publication.
+  Its main goal is to inform you of what's going on around Wine
+  (the Un*x Windows emulator).</p>
+</intro>
+
+
+<stats posts="128" size="412" contrib="51" multiples="28" lastweek="20">
+
+<person posts="17" size="39" who="Alexandre Julliard" />
+<person posts="11" size="31" who="Mike Hearn" />
+<person posts="7" size="47" who="Tom Wickline" />
+<person posts="5" size="14" who="Raphael Junqueira" />
+<person posts="4" size="27" who="Ulrich Czekalla" />
+<person posts="4" size="14" who="Shachar Shemesh" />
+<person posts="4" size="13" who="Ferenc Wagner" />
+<person posts="4" size="11" who="Uwe Bonnes" />
+<person posts="4" size="11" who="Rein Klazes" />
+<person posts="4" size="9" who="Lionel Ulmer" />
+<person posts="3" size="10" who="Marcelo Duarte" />
+<person posts="3" size="9" who="Gerald Pfeifer" />
+<person posts="3" size="8" who="Dmitry Timoshkov" />
+<person posts="3" size="8" who="Vincent Beron" />
+<person posts="3" size="8" who="Marcus Meissner" />
+<person posts="3" size="7" who="Francois Gouget" />
+<person posts="5" size="12" who="Sylvain Petreolle" />
+<person posts="3" size="6" who="Moreno" />
+<person posts="2" size="31" who="giovannipid" />
+<person posts="2" size="5" who="Philipp Wollermann" />
+<person posts="2" size="5" who="Stefan Leichter" />
+<person posts="2" size="5" who="Robert Lunnon" />
+<person posts="2" size="4" who="Saulius Krasuckas" />
+<person posts="2" size="4" who="Eric Pouech" />
+<person posts="2" size="3" who="Robert Shearman" />
+<person posts="2" size="3" who="Gerhard W. Gruber" />
+<person posts="1" size="5" who="Lars Segerlund" />
+<person posts="1" size="4" who="Pierre d'Herbemont" />
+<person posts="1" size="3" who="Kevin DeKorte" />
+<person posts="1" size="3" who="hatky" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="2" who="Joel Carr" />
+<person posts="1" size="2" who="Boris" />
+<person posts="1" size="2" who="Vilppa Salt" />
+<person posts="1" size="2" who="Antti Palosaari" />
+<person posts="1" size="2" who="Dustin Navea" />
+<person posts="1" size="2" who="Oleg Prokhorov" />
+<person posts="1" size="2" who="Mike McCormack" />
+<person posts="1" size="2" who="Kristoffer Ericson" />
+<person posts="1" size="2" who="David Laight" />
+<person posts="1" size="2" who="olivier" />
+<person posts="1" size="1" who="Maxime Bellenge" />
+<person posts="1" size="1" who="BiGgUn" />
+<person posts="1" size="1" who="Juraj Hercek" />
+<person posts="1" size="1" who="Andreas Mohr" />
+<person posts="1" size="1" who="Robert Reif" />
+<person posts="1" size="1" who="Steven Edwards" />
+
+</stats>
+<section 
+	title="News: Updated DLL Status Page" 
+	subject="News"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0024.html" 
+	posts="1"
+	startdate="06/28/2003"
+	enddate="07/04/2003"
+>
+<topic>News</topic>
+<p>Happy 4th of July to everyone.  I hope everyone in the US 
+is enjoying a day off work.  If you're in the UK, I guess you
+can be thankful you got rid of those obnoxious colonies a few hundred
+years ago.
+
+</p><p>
+
+Tom Wickline updated the 
+<a href="http://www.winehq.org/?page=status_dlls">DLLs status page</a>
+on WineHQ.  If you've ever wondered what a particular DLL in Wine does
+check out the new links to MSDN info.  Tom has moved on to updating the
+"Core" status page.</p>
+
+
+</section><section 
+	title="DirectShow / Quartz Patches" 
+	subject="[DSHOW-01] Add Headers For DirectShow"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/06/0225.html" 
+	posts="4"
+	startdate="06/24/2003"
+	enddate="07/02/2003"
+>
+<topic>Multimedia</topic>
+<p>Tom Wickline suggested covering some of the recent Quartz
+developments.  (note: I don't get many requests for covering a specific
+topic, but I'm always willing to.  Just email me.)  
+This hasn't really caused any threads on Wine-devel, well, except for
+ones complaining about CVS breakage.  Here's the descriptions of the
+patches Robert Shearman submitted:
+
+</p><p>[DSHOW-01]</p>
+<quote who="Robert Shearman"><p>
+This marks the start of a series of patches from me adding support for
+DirectShow to Wine. This patch adds headers (both IDL and .h) required for
+development to start on the rest of DShow, removes some clashing IID's from
+uuids.h and fixes some compile warnings caused from the new headers
+interacting with Lionel's existing work in the quartz directory.
+Note that these headers are not complete at the moment, but I hope I've
+added enough to keep me (and other volunteers?) busy for a while. In
+particular axextend.idl only defines about a third of the stuff it should
+define.
+</p><p>
+Now a few apologies:
+<ol>
+<li> Sorry for the size of the patch</li>
+<li> Sorry for it being compressed (it is over 300Kb uncompressed)</li>
+<li> Lionel: Sorry for completely replacing your strmif.h!</li>
+</ol></p><p>
+Changelog:
+<ul>
+<li> Add DShow headers</li>
+<li> Remove IID's defined in uuids.h that should only be in strmif.h</li>
+<li>Add needed const's in FilterGraph implementation</li></ul>
+</p></quote>
+
+
+<p>[DSHOW-02]</p>
+<quote who="Robert Shearman"><p>
+ This patch is the implementation of IFilterMapper2 which will form the basis
+ for the IGraphBuilder interface. Naturally, it depends on DSHOW-01, the big
+ header patch.
+</p><p>
+Changelog:
+<ul>
+ <li>Implement IFilterMapper2</li></ul></p></quote>
+
+<p>[DSHOW-03]</p>
+<quote who="Robert Shearman"><p>
+This patch implements the DevEnum DLL. It doesn't depend on DSHOW-02, but 
+does depend on DSHOW-01.
+</p><p>
+Changelog:
+<ul>
+ <li> Implement DevEnum DLL</li></ul></p></quote>
+
+<p>[DSHOW-04]</p>
+<quote who="Robert Shearman"><p>
+This patch allows Graph Editor to start.
+</p><p>
+Changelog:
+<ul>
+ <li> Improve QueryInterface FIXME message</li>
+ <li>  Add stubs for IMediaFilter interface in IGraphBuilder</li>
+ <li> Implement some simple methods</li></ul></p></quote>
+
+<p>Let me attempt to explain a little bit about all this.  DirectShow
+uses a set of filters that perform specific tasks such as opening and
+closing a file, decompressing a stream, etc.  These filters are strung
+together forming a <i>filter graph</i>.  Part of the DirectX API specifies
+making calls into an interface that manages the filter graph (not surprisingly
+this is referred to as the Filter Graph Manager.)  </p>
+
+<p>So how does an application actually play a file?  First, an instance
+of the Filter Graph Manager is created.  The Filter Graph Manager then
+builds a filter graph for the file that pieces together all of the
+components necessary for playback of whatever media type is being
+referenced (that's a key point of DirectShow - it manages all sorts
+of file types.)  From there the filters start doing their thing,
+events get generated from the filter that get sent to the Filter
+Graph Manager.  Sometimes these events are handled directly, sometimes
+the events are placed in a queue for the application to deal with.</p>
+
+<p>
+That brings us to <a href="http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/dx81_c/directx_cpp/htm/usinggraphedit.asp">
+GraphEdit</a> utility that Robert mentioned.  Quite simply, 
+this is a tool Microsoft ships with the DirectX SDK.  
+It's a graphical way to work with filter graphs.  </p>
+
+</section><section 
+	title="Fix For Kazaa Lite" 
+	subject="[Patch] dlls/oleaut32/typelib.c - Via a CVS search, reverse regression to get Kazza working"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/06/0627.html" 
+	posts="1"
+	startdate="06/26/2003"
+>
+<topic>Fixes</topic>
+<p>I meant to include this last week but forgot.  A regression
+apparently caused KaZaa Lite to not work with Wine-20030618.  Stefan 
+Jones tracked down the problem:</p>
+<quote who="Stefan Jones"><p>
+On upgrading to Wine 20030618 I found that kazaa lite will no longer
+work
+and gave me the following error:
+<ul><code>
+No debug information in 32bit DLL 'C:\WINDOWS\SYSTEM\SHDOCVW.DLL'
+(0x71000000)<br />
+Unhandled exception: page fault on read access to 0x00000004 in 32-bit
+code (0x411ed9c9).
+In 32-bit mode.<br />
+0x411ed9c9 (ITypeInfo_fnGetContainingTypeLib+0x49 [typelib.c:4801] in
+oleaut32.dll.so): call     *0x4(%edx)<br />
+4802          TRACE("returning ppTLib=%p", *ppTLib);<br />
+Wine-dbg>WineDbg terminated on pid a<br /></code></ul></p><p>
+ 
+using in wine.config:
+<ul><code>
+[AppDefaults\\KazaaLite.kpp\\DllOverrides]<br />
+"*" = "builtin, native, so"<br />
+;"shdoclc" = "native"<br />
+"shdocvw" = "native"<br />
+"shlwapi" = "native"<br />
+"commctrl" = "native"<br />
+;"comdlg32" = "native"<br /></code></ul></p><p>
+ 
+I looked though the CVS logs and mail archives and I found the
+following:
+<ul><a href="http://www.winehq.org/hypermail/wine-devel/2003/06/0414.html">
+http://www.winehq.org/hypermail/wine-devel/2003/06/0414.html</a></ul></p><p>
+
+and 
+<a href="http://www.winehq.org/hypermail/wine-devel/2003/06/0627.html">the 
+patch below</a> which was applied to dlls/oleaut32/typelib.c
+</p><p>
+This caused the crash, reversing it fixes the error.
+</p><p>
+please fix / apply, or I will cry!!!</p></quote>
+
+
+
+</section><section 
+	title="Clipboard Problems" 
+	subject="Copy &amp; Paste doesn't work again"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/06/0652.html" 
+	posts="6"
+	startdate="06/29/2003"
+	enddate="06/30/2003"
+>
+<topic>Fixes</topic>
+<p>Gerhard Gruber reported a clipboard problem,
+<quote who="Gerhard Gruber">
+The last version (CVS from about two weeks ago I guess) supported Copy &amp; Paste
+from Agent to Linux apps. This doesn't work anymore.
+</quote></p>
+
+<p>Rein Klazes felt this was a deeper issue:</p>
+<quote who="Rein Klazes"><p>
+This has not worked here correctly, since 2.5 years ago the clipboard
+code was rewritten for unicode. 
+</p><p>
+Occasionally it seems to work again. Just restart Agent and then you
+find that it is not.
+</p></quote>
+
+<p>Gerhard reported that the issues he ran into were relatively new
+though.  It had worked for him in the past.  Rein dug through CVS and
+discovered the specific cause of the problem.  He diagnosed the 
+following</p>
+<quote who="Rein Klazes"><p>
+
+This is the commit:
+<ul><code>
+ Log message:<br />
+ 	Ulrich Czekalla <br />
+ 	<ul>
+	<li> use global atoms for the format ids</li>
+ 	<li> add timeout when calling XCheckTypedWindowEvent</li>
+ 	<li> fix broken IsClipboardFormatAvailable; it tried to do a trick with
+ 	EnumClipboardFormats by making incorrect assumptions</li>
+ 	<li> in X11DRV_IsClipboardFormatAvailable do a quick exit if no one owns
+ 	the selection</li>
+ 	<li> add 1 second *minimum* time lapse between XSelectionOwner calls</li>
+ 	<li> sync clipboard ownership between different wine processes</li>
+ 	<li> prevents apps from getting into weird state where they thought they
+ 	didn't own the selection but they did and as a result queried
+ 	themselves for available selection data</li></ul></code></ul></p><p>
+ 
+ Patch: <a href="http://cvs.winehq.org/patch.py?root=/home/winehq/opt/cvs-commit&amp;id=8573">
+  http://cvs.winehq.org/patch.py?root=/home/winehq/opt/cvs-commit&amp;id=8573</a>
+</p><p>
+Causing in Agent several problems:
+<ul>
+<li> copy&amp;paste from Agent to 'X' doesn't work, occasionally I see some
+rubbish characters;</li>
+<li> copy&amp;paste from 'X' to Agent doesn't work at all;</li>
+<li> copy&amp;paste within Agent does not always work. For instance I cannot
+copy Ulrich's email address from the text editor to the To:list at all.
+Copying within the editor or from the cc:list to the To:list is no
+problem.</li>
+</ul></p><p>
+Ulrich,I have never had much luck fixing things related to the
+clipboard. Do you have a suggestion how to find out what the problem is?
+</p></quote>
+
+<p>Ulrich wrote back and mentioned he would take a look at it,
+<quote who="Ulrich Czekalla">
+I need to look at this anyway to solve problems
+with klipper interactions. I probably won't get around to this for a
+couple of days since I'm really busy with other bugs but it is high on
+my priority list. If you could send me a trace log of Agent with
+<tt>+relay,+clipboard</tt> that would really help me out.
+</quote></p>
+
+<p>Ulrich posted a patch that fixed some things, but some things still
+didn't work for Rein:</p>
+<quote who="Rein Klazes"><p>
+With the patch copy &amp; paste from Agent to 'X', as well as as within Agent
+work fine again.
+</p><p>
+However if I select some text in an xterm, I get a couple of:
+<ul><code>
+| err:clipboard:X11DRV_CLIPBOARD_UpdateCache Failed to cache clipboard data owned by another process.
+</code></ul></p><p>
+and when trying to paste into Agent:
+<ul><code>
+| err:clipboard:X11DRV_CLIPBOARD_RenderFormat Failed to cache clipboard data owned by another process. Format=1
+</code></ul></p><p>
+Do you think another trace would be helpful?
+</p></quote>
+
+<p>Ulrich explained, <quote who="Ulrich Czekalla">
+ seems like we couldn't fetch
+ the TARGETS from the selection owner for some reason.</quote>  Ferenc
+Wagner took a quick look at the first patch and had some suggestions. 
+Ulrich replied that he would look at integrating the ideas into the clipboard.</p>
+
+</section><section 
+	title="Wine Keyboard Handling" 
+	subject="Word in Hebrew and Wine"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0042.html" 
+	posts="3"
+	startdate="07/03/2003"
+>
+<topic>Internatonalization</topic>
+<p>The long promised BiDi support is finally making it's way
+into Wine.  Since the good ol' ASCII character set suits my
+needs just fine, I don't really know about the specifics of
+keyboard handling and fancy character sets.  Shachar Shemesh
+began doing some testing and ran into problems:</p>
+<quote who="Shachar Shemesh"><p>
+ I have a pretty good estimate of what needs to be done to get Word 
+ supported in Hebrew. The current problems have to do with Word calling 
+ "GetKeyboardLang" after each character, and using the result as a basis 
+ for interpreting each received character. Currently, this function just 
+ returns the system locale, which causes Word to assume each and every 
+ letter is a Hebrew one, even the English ones. The results are pretty 
+ catastrophic, as people have reported (typing "Hi there everyone" 
+ typically results in the screen showing "Hthere everyone i", with "yone" 
+ highlighted with green to say it has syntax correction to suggest. The 
+ correct is to replace "there" with "they're").
+</p><p>
+I have been itching to do an overhaul of the Wine keyboard handling for 
+some time. I think the current scheme is overly complicated, and causes 
+problems. This is a major task, but I may be able to recrute some local 
+help. I am a bit worried, however, about the fact that some other people 
+may also working on a similar task at the moment. I know Dmitry said in 
+the past he is rennovating the keyboard a little, and I know codeweavers 
+still hold a patch that will allow UTF-8 input locale to work.
+</p><p>
+I would like to coordinate the effort. If anyone is working on the 
+keyboard right now, please let me know.
+</p></quote>
+
+<p>Dmitry Timoshkov, internationalization guru, replied:</p>
+<quote who="Dmitry Timoshkov"><p>
+Actually Alexandre didn't like that patch, and I reworked it and sent to
+wine-patches as "Add support for CP_UNIXCP". If you could try it and
+report whether it allows you to type with UTF-8 locale, it would be nice.
+</p><p>
+Once this patch is committed, all the base for keyboard layout support
+should be in place, and implementing kbd layout APIs should be a
+straightforward enough task.
+</p><p>
+Regarding the current implementation, I don't think that it's over
+complicated. We have to cope with different virtual key code layouts
+and should make an attempt to detect current X keyboard layout in order
+to assign correct keyboard map, and report correct VK_xxx key events.
+The CP_UNIXCP patch simplifies a bit current scheme by removing
+the codepage field from layout tables, which should avoid converting
+X key events to unicode using wrong code page, and therefore make
+it possible to make international keyboard input work even if we have
+made a mistake while detecting an X keyboard layout.
+</p><p>
+What exactly part of it you see could be simplified, and how?
+</p></quote>
+
+<p>Shachar described a process for handling keyboard events:</p>
+<quote who="Shachar Shemesh"><p>
+I was aiming for the following path:
+<ol>
+   <li> Detect current keymap. Try to do that independently for each
+      keymap group (i.e. - have an array - group0 - US, group1 - IL,
+      group2 - RU).
+      The keys will be stored inside the keyboard map in Unicode. I'm
+      not 100% sure how to do that stage yet, but I do have a relatively
+      non-efficient way of doing that to fall back to, if necessary.</li>
+   <li> Trap the X events that notify about group changes, and pass them
+      on as Windows messages to applications.</li>
+   <li> When an X event arrives, convert the raw virtual key to a raw
+      Windows key, and pass it on. Do not convert to ASCII, ANSI, or any
+      other non-layout information. In essence, the keyboard mapping is
+      not used at this stage at all.</li>
+   <li> When an application asks to convert the raw Windows key to
+      ANSI/Unicode, look up the result in the current keymap.</li>
+</ol></p><p>
+Saving the conversion to ANSI and back should detach us some way from 
+the current Unix locale. In particular, I want Unicode Windows 
+applications to work, with the same level of non-regard to current 
+locale as they have on Windows.
+</p></quote>
+
+</section><section 
+	title="Printing Out the Wine Version" 
+	subject="RE: [RESENT] Always print version on startup"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/07/0012.html" 
+	posts="4"
+	startdate="07/01/2003"
+>
+<topic>Debugging</topic>
+<p>Uwe Bonnes resent a patch that always printed out the version
+of Wine being used.  He explained the rationale,
+<quote who="Uwe Bonnes">
+ The recent posting about the Altera quartus installer not working seems to
+ be caused by an old version used. The poster shows the startup and
+ messages. If the version was printed by default, it could help debugging
+</quote>.  He also mentioned that the only person who had objected to
+it the first time had been Marcus Meissner.</p>
+
+<p>Wine's continual development makes something like this extremely
+helpful.  Most developer's initial reaction to debugging something
+is to have the user upgrade to the latest release (if not the current
+CVS.)   The last few months have seen patches for all different parts
+of Wine touching on a lot of usability issues.  This time, however, 
+Uwe's submission elicited more reaction.  Francois Gouget listed some
+reasons why shouldn't be added:</p>
+<quote who="Francois Gouget"><p>
+ This patch will break all scripts that use regedit to export part of the
+ registry to stdout. It will also break all applications that run
+ 'uninstaller --list' and then parse the output to determine what Windows
+ applications are installed. It will also break all Winelib applications
+ that print anything to stdout that then needs to be parsed by a script
+ or some other program.
+ Of course we have each of these cases in CrossOver.
+</p><p>
+Then it will break all Windows application that analyze the output of
+another Windows application. For instance I expect Visual C++'s nmake+cl
+will not work anymore (as well as other make+compiler cases). Even
+compiling from the Visual C++ IDE may stop working.
+</p><p>
+Finally it's a matter of what Wine is about. Wine is about transparently
+running Windows applications. Wine itself should be as invisible as
+possible, it should just get out of the way. We went out of our way
+(well iirc Alexandre did most of that work) to avoid having the Wine
+command line options interfer with the application's command line
+options. Printing garbage (from the Windows application point of vue) on
+stdout would be a step backwards.
+</p></quote>
+
+<p>Sylvain Petreolle felt it could be included another way,
+<quote who="Sylvain Petreolle">
+I think this can be avoided.
+Let use stderr to print this, this way you can use redirections with every
+program you want.
+</quote> </p> 
+<p>Francois didn't think that was a good idea though, 
+<quote who="Francois Gouget">
+ Actually, MESSAGE probably prints to stderr already. But still, some
+ programs will assume that an error occurred if something is printed on
+ stderr. For instance this will happen to any application written in tcl
+ unless the developper went to great lengths to avoid it. So such a
+ change would likely break WineSetupTk.</quote></p>
+
+<p>Thus far Alexandre hasn't committed the change.</p>
+
+</section></kc>
+

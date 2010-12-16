@@ -1,0 +1,661 @@
+
+<section 
+	title="News: Wine 1.0-rc1 and Wine 1.0-rc2 released!"
+	subject="Wine"
+	archive="http://www.winehq.org"
+	posts="1"
+>
+<topic>News</topic>
+<p>
+Wine is well on its way to hitting 1.0 with two release candidates already being published.  Alexandre's usual little blurb of changes is significantly shortened for both of these releases:
+</p>
+<quote>
+<p>
+<ul><li>Bug fixes only, we are in code freeze.</li></ul>
+</p>
+</quote></section>
+<section 
+	title="WWN Interview Series: Jeremy White"
+	subject="Wine 1.0"
+	archive="#"
+	posts="0"
+>
+<topic>Wine 1.0</topic>
+<p>
+<i>Brian Vincent and I have been conspiring to bring the Wine community some insights from some of the more well known and established members of the Wine Development community!  We're going to try and have at least one interview posted each week up until the 1.0 release!  We asked our targets the same set of 10 questions designed to try and get at some of their key thought processes and we present to you their responses each week.
+</i>
+</p>
+
+<p>
+1.  It's been a pretty long road to 1.0.  Do you think Wine should
+have tried to have a release based on any of the older versions over
+the years?  If so, at what point or points do you think Wine should
+have tried to have a release?  Why?  Do you think the actual 1.0
+release is at an appropriate time?
+</p>
+<quote who="Jeremy White">
+<p>
+I think we've gotten it about right.  There has been a lot of
+infrastructure work that hasn't been all that user visible that
+means that Wine is far more robust and capable than it ever used to be.
+</p><p>
+Arguably, we should wait until the DIB Engine is done, so maybe we're
+even a few months early *grin*.
+</p><p>
+The interesting side note is that releasing a 1.0 is going to create
+a new burden for Wine - backwards compatibility.  Historically, Wine developers
+have been free to make 'correct' changes, even if they broken many
+applications.  With 1.0, I think we will be honor bound to constrain
+that, if only on a stable 1.X branch.
+</p>
+</quote>
+<p>
+2.  What highlights do you think we should point out about 1.0?  I
+mean, now that we're here, shouldn't we be standing on the rooftops
+shouting, "We can do [this]!".  What is [this]?  If someone wanted to
+go take Wine for a spin, are there any Windows programs out there
+you'd recommend they try out?  There's still a ton of Windows apps
+with no comparable Linux version, are there any in particular you find
+useful that you'd suggest someone try?
+</p>
+
+<quote who="Jeremy White">
+<p>
+If I look back on my time with Wine (about 10 years now), this is the
+most exciting Wine has ever been.  When I first started, the only
+thing you could *always* run was Solitaire.  Other things could be
+made to work, but it took a lot of effort.
+</p><p>
+Contrast that with today when, with few exceptions, it's reasonable
+to hope that *any* application will work.  And, in practice, a substantial
+fraction of applications do install and run.  (I don't know what that number
+is; I don't have a good way to quantify it).  The WineHQ ratings page
+suggests it's close to 75% run at least as bronze:
+<a href="http://appdb.winehq.org/browse_by_rating.php">http://appdb.winehq.org/browse_by_rating.php</a>
+(I think that page over inflates things, but I think that 50% is not
+a bad rough estimate for applications that install and at least start
+to work).
+</p>
+</quote>
+<p>
+3a.  Looking ahead, what technical changes do you see Wine needing?
+Are there any large patch sets that are already sitting out there that
+haven't been merged because of the code freeze?
+</p>
+
+<quote who="Jeremy White">
+<p>
+
+The DIB Engine is the big one.  Huw is hard at work on that, but it will
+have to be a post 1.0 thing.
+</p><p>
+Beyond that, we need to get .NET taken care of, and GdiPlus needs some love.
+</p>
+</quote>
+<p>
+3b. We've had a few different groups driving Wine development for a Wine,
+namely Google and CodeWeavers.  What do you guys have planned for
+areas of focus? Over the years we've seen quite a few large changes that
+have moved Wine in very different directions - for example, D3D8
+development really ushered in a new era of gaming support for Wine,
+the port to OS X has really opened the door on portability, is there
+anything like that on the horizon?  Do you ever think someone will have
+ntoskrnl loading Windows drivers or hooking into the kernel or something
+like that?
+</p>
+
+<quote who="Jeremy White">
+<p>
+On the Mac side, the only really radical transformation will come
+from a Quartz driver - eliminating the use of X11 altogether.
+</p><p>
+That's a big, scary job, with a lot of testing requirements, so I don't
+think it's going to be particularly soon.
+</p><p>
+Other than that, I actually think the shift to 1.0 is going to be more
+trans formative than people realize.  For example, having make test
+fail for most people is interesting when we're in alpha mode.  But if we're
+shipping a release product I think it's nonsense, and we have to fix it.
+The work that Dan is doing with Valgrind is another such subtle, but
+important, change.  If we can get oprofile and maybe some cxtest work
+into the mix, I think the whole approach for Wine can change.
+</p><p>
+I guess the short, user visible way of saying that, is that with Wine 1.0
+I would hope that Wine would become less 'variable'; fewer occurrences of
+regressions from release to release.  And that will be a big deal.
+</p>
+</quote>
+<p>
+4.  What don't we want to do?  What technical things shouldn't we
+worry about?  Are there any parts of Windows that aren't worth trying
+to support?  For example, Win31 support hangs on tenuously at this
+point, is there ever a point where it's not worth supporting?  Or does
+Wine fill a valuable role in that it allows legacy applications to be
+usable?
+</p>
+
+<quote who="Jeremy White">
+<p>
+
+Well, what's beautiful about being open source is that we don't have to
+choose; if anyone has a passion for a given area, they can make it happen.
+</p><p>
+I think the core goal remains the same:  get just about all application
+level (i.e. not hardware related) applications to install and run.
+</p>
+</quote>
+<p>
+5.  Is Wine too ambitious?  Are we trying to tackle something too big?
+Will there ever be a point where the
+complexity of the project combined with the regression rate isn't
+manageable by the size of our developer community?  At one point about
+a decade ago it seemed like Microsoft was releasing new technologies
+and new API's every week.  Things seemed to have really slowed down,
+but do you think that that trend will continue? Do you think we'll be able
+to keep up with future APIs with Vista, Windows 7 etc?
+</p>
+<quote who="Jeremy White">
+<p>
+Yes, Wine is too ambitious, and what's worse, it's under appreciated.
+We're just like Rodney Dangerfield - we get no respect.
+</p><p>
+You show someone Wine running MS Office - which is a technological
+miracle, and the results of the incredible hard work of a small
+band of dedicated people - and they ho-hum, because it's something
+they see every day.
+</p><p>
+As far as keeping up, I'm not sure.  I think so, but only because
+we're not so much keeping up with MS as we're keeping up with the ISVs.
+</p><p>
+In theory, at some point, all new apps will be 'in the cloud', and
+then Wine will become an interesting retro technology, right?
+</p>
+</quote>
+
+<p>
+6a.  If you could wave your magic wand and change one thing about
+Wine, what would it be?
+</p>
+
+<quote who="Jeremy White">
+<p>
+I would want Wine to have simpler debugging tools.  That is,
+when application X fails, I want a simple way to go learn why.
+We can fix failures quickly when we understand them; all of our
+energy goes into understanding the failures, though.  That alone,
+I think, would double our rate of progress.
+</p>
+</quote>
+<p>
+6b.  If you could wave your magic wand and change one thing about
+Linux [or OS X], what would it be?
+</p>
+
+<quote who="Jeremy White">
+<p>
+For Linux, I want it to have 10x market share.  Then the demand
+for Wine would be 10x greater...
+
+
+</p>
+</quote>
+<p>
+6c.  If you could wave your magic wand and change one thing about
+Windows, what would it be?
+</p>
+
+<quote who="Jeremy White">
+<p>
+Let me tap my heels together, and wish that:<br />
+ When they hired David Cutler of Vax/VMS fame to write Windows NT
+that they had also gotten the same magic pixie dust that went into VMS
+documentation so that Windows had the same level of quality documentation
+that VMS had.
+</p>
+</quote>
+<p>
+7.  Now that Wine has hit 1.0, do you think the major distros will
+bundle Wine?  If not, why?  Are they scared of lawsuits?  If so,
+should they be?
+</p>
+
+<quote who="Jeremy White">
+<p>
+Gosh, I don't know; doesn't SuSE already bundle it, and it's trivial
+to get in Ubuntu, right?
+</p><p>
+ I think the key for the distros is that they really want to emphasize
+native Linux programs, and I think that's healthy.  If you can run a
+native Linux application, you really should, imho.
+</p><p>
+ So providing Wine as an option lets them provide it, but still stick
+with the message that their distro is all you really need.
+</p>
+</quote>
+<p>
+8.  We should ask this only because there's no better way to incite
+violence than to start a flamewar on licensing, but do you see any
+need to switch to LGPL3?  Most developers seem to be pretty happy with
+version 2.  Then again, most people seemed happy with the X11 license
+before we rather quickly changed our minds.  Is there anything within
+the LGPL3 license that would particularly be a problem for Wine?
+</p>
+
+<quote who="Jeremy White">
+<p>
+I don't have strong feelings on the matter.  I like that the LGPL v3
+tightens up the enforcement process (has specific mechanisms and timing);
+I think that's all good.  But again, I don't feel strongly on it.
+</p>
+</quote>
+<p>
+9.  With 1.0 out, do you see the need for any process changes?  Will
+patches still enter the Wine tree the way they have been?  Do you
+think anything will change after 1.0 with regards to development
+style?
+</p>
+
+<quote who="Jeremy White">
+<p>
+Good question.  Actually, I don't know what Alexandre is planning
+here.  Are we going to have a stable branch?  Hmm.  I don't really know!
+</p>
+</quote>
+<p>
+10.  If we could magically add all the developers in the world
+and have a Wine 2.0 this time next year, what would you want
+to be included?
+</p>
+
+<quote who="Jeremy White">
+<p>
+
+
+ Ah, I have a long list.  But this is more of a question I muse on,
+which is:  If I had a big bucket of money, what would I do?
+</p><p>
+And the reality is that a big bucket of money wouldn't solve the biggest
+problem - having talented Wine developers.  It might help, but good Wine
+developers are very rare, and I don't know that we can force them into
+existence.
+</p><p>
+ But there are a lot of things I *could* do that would help Wine:
+</p><p>
+   I want make test to work perfectly on every
+machine.  I want a perfect cxtest run for every freely downloadable
+.exe file on the net, and run against every single patch, so no patch
+goes in if it makes a regression.  I want valgrind and oprofile also
+run routinely, and any bad results caught immediately.
+
+</p>
+</quote></section>
+<section 
+	title="WWN Interview Series: Marcus Meissner"
+	subject="Wine 1.0"
+	archive="#"
+	posts="0"
+>
+<topic>Wine 1.0</topic>
+<p> 1.  It's been a pretty long road to 1.0.  Do you think Wine should
+ have tried to have a release based on any of the older versions over
+ the years?  If so, at what point or points do you think Wine should
+ have tried to have a release?  Why?  Do you think the actual 1.0
+ release is at an appropriate time?
+</p>
+<quote who="Marcus Meissner">
+<p>
+I think it is good the way it has worked out now.
+</p><p>
+That doing more releases might have worked we see with CrossOver Office,
+which did releases regulary.
+However this would have required all developers agreeing on doing so,
+which would have been more difficult in earlier times.
+</p><p>
+Also, we have only two years ago or so reached the point where we
+could admit Wine to be "BETA" quality, so earlier releases would likely
+have been disappointing to users which later would have shied away
+even more.
+</p><p>
+The good thing with 1.0 is now that we have a chance to convince
+people that Wine is working and useful, and that further versions
+are not "broken" but will improve.
+</p>
+</quote>
+<p>
+ 2.  What highlights do you think we should point out about 1.0?  I
+ mean, now that we're here, shouldn't we be standing on the rooftops
+ shouting, "We can do [this]!".  What is [this]?  If someone wanted to
+ go take Wine for a spin, are there any Windows programs out there
+ you'd recommend they try out?  There's still a ton of Windows apps
+ with no comparable Linux version, are there any in particular you find
+ useful that you'd suggest someone try?
+</p>
+<quote who="Marcus Meissner">
+<p>
+I would say that they should just try the program they fancy, or a
+program they run Windows for.
+</p><p>
+A friend of mine for instance tries all the MMORPG games he plays under
+Windows also under Wine, and I have to go and try to fix them (not always
+successful) before he goes playing the next one.
+</p><p>
+If they do not have any program the usually use, what about a
+fun Windows game. Today for instance I found that the Webcomic
+makers from Penny Arcade did a Game ... I downloaded it, installed
+it and played it under Wine, without any hacks necessary. It stuttered
+a bit and I usually do not like this realtime hack and slay, but
+it worked, out of the box! (<a href="http://www.playgreenhouse.com/">http://www.playgreenhouse.com/</a>)
+(And they have a Linux port too, I know ;)
+</p>
+</quote>
+<p>
+3a.  Looking ahead, what technical changes do you see Wine needing?
+ Are there any large patch sets that are already sitting out there that
+ haven't been merged because of the code freeze?
+</p>
+<quote who="Marcus Meissner">
+<p>
+.NET integration is one major thing which we need to implement.
+I see this with my Tax program that previously even had a Wine based
+Linux version but now no longer does since it is a mix between Win32
+and .NET code.
+</p><p>
+Win64 is slowly coming and we will need to take that up too.
+</p>
+</quote>
+<p>
+ 3b. We've had a few different groups driving Wine development for a Wine,
+ namely Google and CodeWeavers.  What do you guys have planned for
+ areas of focus? Over the years we've seen quite a few large changes that
+ have moved Wine in very different directions - for example, D3D8
+ development really ushered in a new era of gaming support for Wine,
+ the port to OS X has really opened the door on portability, is there
+ anything like that on the horizon?  Do you ever think someone will have
+ ntoskrnl loading Windows drivers or hooking into the kernel or something
+ like that?
+</p>
+<quote who="Marcus Meissner">
+<p>
+Don't forget Corel, but that was quite some years ago ;)
+</p><p>
+The group I belong to is probably the Distribution makers, working
+for Novell/SUSE. We are not driving Wine in any kind of direction,
+except perhaps just taking care of good integration into the distributions
+themselves.
+</p>
+</quote>
+<p>
+ 4.  What don't we want to do?  What technical things shouldn't we
+ worry about?  Are there any parts of Windows that aren't worth trying
+ to support?  For example, Win31 support hangs on tenuously at this
+ point, is there ever a point where it's not worth supporting?  Or does
+ Wine fill a valuable role in that it allows legacy applications to be
+ usable?
+</p>
+<quote who="Marcus Meissner">
+<p>
+We do not want to go all the way down to Windows kernel driver emulation.
+DOS support is not really necessary in my eyes, but Win31 support is.
+And yes, legacy applications are important too.
+</p>
+</quote>
+<p>
+ 5.  Is Wine too ambitious?  Are we trying to tackle something too big?
+ Will there ever be a point where the
+ complexity of the project combined with the regression rate isn't
+ manageable by the size of our developer community?  At one point about
+ a decade ago it seemed like Microsoft was releasing new technologies
+ and new API's every week.  Things seemed to have really slowed down,
+ but do you think that that trend will continue? Do you think we'll be able
+ to keep up with future APIs with Vista, Windows 7 etc?
+</p>
+<quote who="Marcus Meissner">
+<p>
+I do not think that we are too ambitious. Also regressions come and go,
+but the number of fixed bugs is higher than the number of regressions.
+And by adding more testcases we are making sure that regressions become
+less seldom and are easier to track down.
+</p><p>
+As for areas of improvement, people do things that they are interested in ...
+See the games support:  People were interested in Games, started hacking
+and improving on it and so it gained momentum.
+</p><p>
+Or developers get paid to do stuff, like the CodeWeavers work on DCOM/RPC or
+Googles work across the tree for specific targeted applications.
+</p>
+</quote>
+<p>
+ 6a.  If you could wave your magic wand and change one thing about
+ Wine, what would it be?
+</p>
+<quote who="Marcus Meissner">
+<p>
+Magically add .NET support. :)
+</p>
+</quote>
+<p>
+ 6b.  If you could wave your magic wand and change one thing about
+Linux [or OS X], what would it be?
+</p>
+<quote who="Marcus Meissner">
+<p>
+Get rid of the stupid patents and royalty setups that hinder Multimedia
+Codec adoption.
+</p>
+</quote>
+<p>
+ 6c.  If you could wave your magic wand and change one thing about
+Windows, what would it be?
+</p>
+<quote who="Marcus Meissner">
+<p>
+Less Virus/Worm/Trojan/Zombie problems, which would help the whole internet.
+</p>
+</quote>
+<p>
+ 7.  Now that Wine has hit 1.0, do you think the major distros will
+ bundle Wine?  If not, why?  Are they scared of lawsuits?  If so,
+ should they be?
+</p>
+<quote who="Marcus Meissner">
+<p>
+Novell/SUSE bundles it in the community product (SUSE Linux / openSUSE) for
+over 10 years now, which will of course continue.
+</p><p>
+We also shipped CrossOver Office with a enterprise desktop distribution
+4 years ago, but newer ones did not include.
+</p><p>
+For Enterprise products, yes there is a problem of lawsuits which
+might make most of the distributors afraid I guess.
+Also Distributors will point out that the native software they have
+is ready for all uses, and without a direct use for Wine it will
+be difficult to explain the costs.
+</p><p>
+Also up to now Wine was not really "supportable" in the way that
+people could call the distributor and get bugs fixed. This would
+have required contracts with companies like Codeweavers and would
+have made the products more expensive.
+</p>
+</quote>
+<p>
+ 8.  We should ask this only because there's no better way to incite
+ violence than to start a flamewar on licensing, but do you see any
+ need to switch to LGPL3?  Most developers seem to be pretty happy with
+ version 2.  Then again, most people seemed happy with the X11 license
+ before we rather quickly changed our minds.  Is there anything within
+ the LGPL3 license that would particularly be a problem for Wine?
+</p>
+<quote who="Marcus Meissner">
+<p>
+I see no need to change the license and have not thought about it further.
+</p><p>
+It was however necessary to change from X11 to LGPL to avoid more than
+just the one major fork we had and so not to hinder development.
+</p>
+</quote>
+<p>
+ 9.  With 1.0 out, do you see the need for any process changes?  Will
+ patches still enter the Wine tree the way they have been?  Do you
+ think anything will change after 1.0 with regards to development
+ style?
+</p>
+<quote who="Marcus Meissner">
+<p>
+There will be process changes, but mostly for the 1.0 stable tree
+I guess. I can't really predict how Alexandre will do that.
+</p><p>
+The unstable tree likely will continue to be handled as before.
+</p>
+</quote>
+<p>
+ 10.  If we could magically add all the developers in the world
+ and have a Wine 2.0 this time next year, what would you want
+ to be included?
+</p>
+<quote who="Marcus Meissner">
+<p>
+See above ...
+.Net support, even better games support, all Win32 applications
+running ... :)
+</p>
+</quote></section>
+<section 
+	title="Releases post 1.0"
+	subject="Post-1.0 Wine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-May/065388.html"
+	posts="5"
+>
+<topic>Releases</topic>
+<p>
+Dan Kegel began an interesting conversation on the mailing list about how to do Wine releases in the future.  There are a couple options, the two big ones being to do 'as before' and wait until we have a set of features that are solid and then release, or to release on a fixed schedule.  There are many pros and cons of both sides as discussed:
+</p>
+<p>
+Dan Kegel:
+</p>
+<quote who="Dan Kegel">
+<p>
+I just wrote up an idea related to release management for post-1.0
+wine releases.  It's online at
+<a href="http://wiki.winehq.org/TimeBasedReleases">http://wiki.winehq.org/TimeBasedReleases</a>
+Essentially, the idea is to release in March and September,
+in time for the April and October releases of Ubuntu.
+</p><p>
+For instance, following this strategy, we might plan to release
+wine-1.2.0 in September 2008 or March 2009.
+</p><p>
+The alternative is to propose a set of criteria that wine-1.2
+needs to meet, and working until they are met, which
+is what we did for wine-0.9 and wine-1.0 (I think; it's kind
+of hard to tell).
+</p><p>
+I look forward to discussing this idea... perhaps we shouldn't
+bother to until after 1.0 is released, but I wanted to get it out
+early so the discussion can begin in time for us to move on it
+if we want to.
+- Dan
+</p>
+</quote>
+<p>
+Austin English question's the validity of using Ubuntu as a pivot
+</p>
+<quote who="Austin English">
+<p>
+I don't think we should schedule our release schedule around Ubuntu's.
+Just because it's very popular (and possibly our most widely used
+target), doesn't mean we need to revolve around it. I'd say let's look
+at the 1.2 buglist (along with the 1.0's we can't fix), set a goal to
+get 1/2 of those fixed, test our 'supported' apps for regressions, and
+release then.
+</p><p>
+Also might consider waiting until 1.0's hit for a month or so and see
+what the biggest complaints are, and focus on fixing those for 1.2.
+</p>
+</quote>
+<p>
+Kai Blin writes in with more interesting considerations:
+</p>
+<quote who="Kai Blin">
+<p>
+I'm against September, as it means we'll go into code freeze _again_ just
+before Summer of Code finishes.
+</p><p>
+While I agree that bi-annual releases sound like a good thing, I'm opposed to
+forcing it just to make Ubuntu's 8.10 schedule with 1.2.
+</p><p>
+Also, I'm not really sure what this'll mean in terms of features and bug
+fixes. We certainly don't want to keep people hanging without fixes for bugs
+for half a year.
+</p><p>
+We also don't want to slow down development more than needed.
+</p><p>
+Now, as you state on the wiki page, a bi-weekly release schedule is good for
+early adopters and developers, as it's centered on "Get my new cool feature
+in!" rather than on "Will this break Photoshop?". But, and I see you mention
+that yourself, "Will this break Photoshop?" is a really hard question to
+answer, especially for developers who don't own photoshop.
+</p><p>
+Bi-annual releases are good for people who already have their apps working, as
+prior to a release we probably should make sure nothing breaks. But as fixing
+new bugs sometimes is a bit hit-and-miss, only being able to try for the
+wider public once every six months isn't too great.
+</p><p>
+So assuming we manage to get wine test failures down to 0 during this code
+freeze, I'm happy to make sure none of my patches breaks anything there. If I
+can get a similar website for the apps we really don't want to regress, I'll
+of course try the same for that. But before we don't have that, I don't think
+it's a good idea.
+</p><p>
+Cheers,<br />
+Kai
+</p>
+</quote></section>
+<section 
+	title="More SoC Introductions"
+	subject="Introductions"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-May/065465.html"
+	posts="1"
+>
+<topic>GSoC</topic>
+<p>
+In the last WWN we had introductions from each of the Google Summer of Code students.  Some students had not yet written in with introductions; here are the remaining hello worlds!
+</p>
+<p>
+Dylan Smith:
+</p>
+<quote>
+<p>
+Hello everyone,
+</p>
+<p>
+My name is Dylan Smith, and I will be working on implementing tables in rich
+edit controls as a Google Summer of Code project.  Any remaining time I have
+will also be focused on rich edit controls for this summer.
+</p><p>
+Forgive me for taking so long to introduce myself on the developers mailing
+list.  I ended up going straight for the code as soon as my exams finished. I
+just finished my last year of Software Engineering at Carleton University which
+is located in Ottawa, Canada.  I will be returning to Carleton University for
+my Masters after the summer.
+</p><p>
+I am thrilled that I am getting this opportunity to work on Wine for the summer.
+</p><p>
+Happy coding to you all,<br />
+Dylan
+</p>
+</quote></section>
+<section 
+	title="Wine Bug Research at Aalborg University"
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+</section>
+<section 
+	title="Wine Test Suite: Progress Report"
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+</section>

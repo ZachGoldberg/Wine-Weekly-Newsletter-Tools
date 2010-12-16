@@ -1,0 +1,224 @@
+<?xml version="1.0" ?>
+ 
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="zbrown@tumblerings.org">Zack Brown</author>
+
+<issue num="23" date="29 Dec 1999 00:00:00 -0800" />
+
+<intro>
+
+Eric Pouech couldn't write KC Wine this week, so I've whipped something up.
+
+</intro>
+
+<stats posts="57" size="201" contrib="26" multiples="" lastweek="14">
+
+<person posts="8" size="24" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="6" size="20" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="4" size="30" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="4" size="10" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="3" size="8" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="3" size="7" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="3" size="7" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+
+</stats>
+
+<section
+  title="New W2K APIs"
+  subject="new W2K APIs"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-409.html"
+  posts="1"
+  startdate="22 Dec 1999 00:00:00 -0800"
+  enddate="22 Dec 1999 00:00:00 -0800"
+>
+
+Andreas Mohr gave a pointer to an article by Mark Russinovich on <a
+href="http://www.numega.com/drivercentral/tech_tips/102199.stm">New Win2K
+Kernel APIs</a>. Mark is famous for an article <a
+href="http://www.winntmag.com/Articles/Content/5048_01.html">Linux And The
+Enterprise</a>, which stirred up a big discussion on the linux-kernel
+mailing list, covered in <a
+href="http://kt.zork.net/kernel-traffic/kt19990513_18.html#3">Kernel Traffic #18,
+article 3</a>.
+
+</section>
+
+<section
+  title="Windows To Wine Makefile Converter"
+  subject="Windows to Wine makefile converter?"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-413.html"
+  posts="2"
+  startdate="21 Dec 1999 00:00:00 -0800"
+  enddate="22 Dec 1999 00:00:00 -0800"
+>
+
+Francois Gouget recalled that some months ago, someone had said they were
+working on a tool to convert Windows/Visual C++ makefiles, into makefiles
+that would work with 'make' and 'wine'. He couldn't find the original
+message in the mailing list archives, and wanted to know the status. He
+explained, <quote who="Francois Gouget">I'm asking
+this because I'm trying to write some wrapper code so that one can take the
+sample programs from "Programming Windows 95" and compile them with Winelib.
+I currently use a script that will build correct makefiles for most of the
+80 programs. But using a makefile converter may be more flexible. In
+particular, if I'm successful adapting the programs in this book I have two
+others to work on: "MFC Programming windows 95" and "Developping for Windows
+95 and NT" (french titles approximately translated to english).</quote>
+
+<p />
+
+Todd Osborne replied that he'd also considered taking on such a project, as
+part of porting VWCL to WINElib, and volunteered to help any such effort.
+
+<p />
+
+End Of Thread.
+
+</section>
+
+<section
+  title="16- Vs 32-Bit mmioinfo Fixes"
+  subject="16 vs 32 bit mmioinfo fixes"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-416.html"
+  posts="1"
+  startdate="22 Dec 1999 00:00:00 -0800"
+  enddate="22 Dec 1999 00:00:00 -0800"
+>
+
+Bradley Baetz announced that he and Eric Pouech, over the course of a few
+weeks, patched up the mmio functions to work with 32 bit custom mmio io
+procedures. He posted their patches, adding that there were still some
+unresolved issues. For one, pointer conversion problems had forced them to
+keep the 16-bit version of the internal lpmmioinfo structure. Another issue
+was that the patch did not distinguish between local and global procedures.
+They had also had trouble identifying the WAVEFORM mci type, as it didn't
+appear in either the Win95 or Win98 registries.
+
+</section>
+
+<section
+  title="GCC problems"
+  subject="gcc woes"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-418.html"
+  posts="7"
+  startdate="22 Dec 1999 00:00:00 -0800"
+  enddate="22 Dec 1999 00:00:00 -0800"
+>
+
+Eric Pouech had finally tracked an elusive bug to the compiler. Using gcc
+2.91 would cause the Wine binary to set a window's y-position to 0, whenever
+the window was moved. Switching to the 2.95.1 compiler cleared the problem
+right up. He added that he had a workaround for the 2.91 problem, but wasn't
+sure whether to submit it because he didn't like circumventing compiler
+bugs.
+
+<p />
+
+Peter Hunnisett asked for confirmation that the code causing the problem was
+actually valid, and Eric replied that he had compiled the snippet as its own
+standalone program, without any problem. This told him the bad code was
+elsewhere, but he hadn't tried to find it. He also noticed that compiling
+with gcc 2.91 but without -O2, cured the problem.
+
+<p />
+
+Elsewhere, Patrik Stridvall pointed out that even though the code might be
+perfectly valid, it mixed Win16 and Win32 data structures. He added that
+while this was sometimes needed because of Win16/Win32 intercalls, in this
+case it definitely was not. He suggested changing the type of the pointer
+from POINT16 to POINT.
+
+<p />
+
+Eric was not sure at first whether Patrik's suggestion would work, but he
+tried it and it did. He also suggested a couple other possible solutions.
+
+</section>
+
+<section
+  title="Some Explanation For A Rejected Patch"
+  subject="Why was my BiDi16 patch rejected?"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-421.html"
+  posts="2"
+  startdate="22 Dec 1999 00:00:00 -0800"
+  enddate="22 Dec 1999 00:00:00 -0800"
+>
+
+Several days before, Erez Volk had posted a patch related to win16
+bidirectional functions, that had stubs for 3 new functions and names and
+prototypes for over 30 others. It seemed that the patch had not been
+accepted, and he asked why not, as it allowed sol.exe and winmine.exe from
+hebrew windows 98 to run.
+
+<p />
+
+Patrik Stridvall replied:
+
+<p />
+
+<quote who="Patrik Stridvall">I am not sure it really
+was rejected, since Alexandre has applied very few patches lately.
+
+<p />
+
+However, I just looked at it and there is at least one possible ground of
+rejection AFAICS.
+
+<p />
+
+You have put implementations of USER and GDI functions in wine/if1632 where
+they do not belong IMHO.
+
+<p />
+
+I guess you did that because of the fact that the previous stubs where in
+wine/if1632/dummy.c.
+
+<p />
+
+Nether the less, I would recomend that you
+
+<p />
+
+<ul>
+
+<li />Move the GDI functions in wine/if1632/bidi16.c to wine/graphics/bidi.c
+(possibly bidi16.c)
+
+<li />Move the USER functions in wine/if1632/bidi16.c to wine/windows/bidi.c
+(possibly bidi16.c)
+
+<li />Remove (do not add) wine/if1632/bidi16.c
+
+</ul>
+
+<p />
+
+I am not sure whether the file should be called bidi16.c or bidi.c. Wine
+currently mixes Win16 and Win32 functions but perhaps it shouldn't.</quote>
+
+</section>
+
+<section
+  title="Bug In A Comment"
+  subject="splitpath"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-434.html"
+  posts="3"
+  startdate="22 Dec 1999 00:00:00 -0800"
+  enddate="23 Dec 1999 00:00:00 -0800"
+>
+
+Michael Cardenas noticed that a comment in tchar.h claimed that splitpath
+was not implemented; and asked if this was still the case. Patrik Stridvall
+replied that splitpath had (as far as he knew) been available for a long
+time, and Francois Gouget added, <quote who="Francois Gouget">I wrote the
+initial version of tchar.h and it is _very_ possible that I overlooked the
+implementation of splitpath. If Patrik says it is implemented then it must
+be</quote>
+
+</section>
+
+</kc>

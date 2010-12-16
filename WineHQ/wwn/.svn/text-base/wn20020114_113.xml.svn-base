@@ -1,0 +1,774 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="113" date="01/14/2002" />
+
+<intro>
+
+<p>This is the 113th release of the Wine's kernel cousin publication. Its main goal 
+is to distribute widely what's going on around Wine (the Un*x Windows emulator). 
+</p>
+
+<p>The folks over at <a href="http://www.thelinuxshow.com">The Linux Show</a>
+did a piece about Wine in their January 8th show.  It covers some basics, such as 
+what Wine is, how to get it, and a brief introduction about apps that work with Wine.
+I listened to the Real Audio version.  The beginning of the show is about Linux
+PDA's, if you want to skip to the Wine stuff start listening at about 44 minutes
+into the show.  They used CodeWeavers' rpm's which automates most of the install.
+In the coming weeks they plan on reviewing various applications that run under
+Wine.  Next week they plan on reviewing IBM's 
+<a href="http://www-3.ibm.com/software/webservers/hpbuilder/">Homepage Builder</a>
+running under Wine.  (There is a native Linux version of that application available,
+it might be interesting to see how the native app compares to running it under
+Wine.)</p>
+
+<p>TransGaming 
+<a href="http://www.transgaming.com/news.php">
+announced</a> a new WineX test release a few weeks ago.  They noted the
+following changes:
+<ul>
+ <li>Auto-detection of CD-ROM devices and mount-points from your /etc/fstab file.  This will remove the need to do manual configuration of the config file to get copy protected games to work.  If you have more than one CD-ROM device, you may need to put the disk in the first drive listed in your /etc/fstab file. Also, please make sure that your CD-ROM devices are world-readable.</li>
+ <li>Some issues with the latest release of the NVidia 3D drivers (2313) are now fixed.  Users of some distributions had experienced immediate crashing with the previous WineX build and these drivers - that is now fixed.  Note that not all problems are solved: see below for more information.</li>
+ <li>Simplifying InstallShield multi-cd installs by including the latest InstallShield engine in the default configuration. We still recommend SuperMount as well, as described previously.  Kudos to InstallShield Software Corporation for allowing us to redistribute their engine code. </li>
+<li>Issues with Diablo II's copy protection and certain DVD drives should now be solved. </li>
+</ul></p>
+
+<p>Lindows.com is knee-deep in a trademark dispute with Microsoft.  Michael
+Robertson posted <a href="http://www.lindows.com/lindows_michaelsminutes.php">
+an update</a> concerning several details of the case.  To briefly summarize:
+<ul><li>They had to disclose email addresses collected on the web site as
+   well as email content.  Microsoft will not "use or disclose your address 
+   for any purpose beyond this case"</li>
+    <li>They are compiling a list of products with the word "windows" in it.
+   check out the link above for more details of how to submit materials to
+   them.</li>
+</ul></p>
+  
+<p>It should also be noted that there has been a lot of work by Martin Wilck
+and Mike McCormack to change the IO behavior.  If anyone is interested
+in those threads, let me know and I'll try to summarize them all.  (Martin 
+submitted 9 patches just this week.)
+</p>
+</intro>
+
+<stats posts="198" size="1105" contrib="56" multiples="28" lastweek="26">
+
+<person posts="27" size="76" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="19" size="137" who="Martin Wilck &lt;Martin.Wilck@fujitsu-siemens.com&gt;" />
+<person posts="15" size="138" who="Andriy Palamarchuk &lt;apa3a@yahoo.com&gt;" />
+<person posts="13" size="209" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="13" size="37" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="8" size="25" who="Roland &lt;roland@netquant.com.br&gt;" />
+<person posts="7" size="17" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="60" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="6" size="19" who="Mike McCormack  &lt;mike_mccormack@start.com.au&gt;" />
+<person posts="5" size="40" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="25" who="David Elliott &lt;dfe@tgwbd.org&gt;" />
+<person posts="5" size="13" who="Bill Medland &lt;medbi01_1@accpac.com&gt;" />
+<person posts="6" size="15" who="Lawson Whitney &lt;lawson_whitney@juno.com&gt;" />
+<person posts="5" size="13" who="Dan Kegel &lt;dank@kegel.com&gt;" />
+<person posts="3" size="9" who="Mark G. Adams &lt;mgadams@sympatico.ca&gt;" />
+<person posts="3" size="7" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="6" size="11" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+<person posts="2" size="24" who="Waldek Hebisch &lt;hebisch@math.uni.wroc.pl&gt;" />
+<person posts="2" size="23" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="8" who="Dmitry Timoshkov &lt;dmitry@baikal.ru&gt;" />
+<person posts="2" size="7" who="Travis Michielsen &lt;tjmichielsen@yahoo.com&gt;" />
+<person posts="2" size="5" who="Martin Hoffman &lt;ma.hoff@t-online.de&gt;" />
+<person posts="2" size="5" who="Andreas Mohr &lt;andi@rhlx01.fht-esslingen.de&gt;" />
+<person posts="2" size="5" who="Tommy Schultz Lassen &lt;tlassen@tlassen.dk&gt;" />
+<person posts="2" size="4" who="Shane Shields &lt;locutusenterprises@yahoo.com&gt;" />
+<person posts="2" size="4" who="Medland, Bill &lt;Bill.Medland@accpac.com&gt;" />
+<person posts="2" size="4" who="Gerard Patel &lt;gerard.patel@nerim.net&gt;" />
+<person posts="1" size="80" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+<person posts="1" size="6" who="Christopher Morgan &lt;chmorgan@speakeasy.net&gt;" />
+<person posts="1" size="4" who="Luke Kenneth Casson Leighton &lt;lkcl@samba-tng.org&gt;" />
+<person posts="1" size="4" who="David.Goodenough@DGA.co.uk" />
+<person posts="1" size="4" who="degs &lt;lists@giantblob.com&gt;" />
+<person posts="1" size="3" who="Martin Wilck &lt;mwilck@freenet.de&gt;" />
+<person posts="1" size="3" who="Bret Mogilefsky &lt;mogul-wine@gelatinous.com&gt;" />
+<person posts="1" size="3" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="1" size="3" who="Joerg Mayer &lt;jmayer@loplof.de&gt;" />
+<person posts="1" size="3" who="ccrayne@crayne.org" />
+<person posts="1" size="2" who="Paul Clarke &lt;pacman@us.ibm.com&gt;" />
+<person posts="1" size="2" who="dschwarz@bellatlantic.net" />
+<person posts="1" size="2" who="Steve Langasek &lt;vorlon@dodds.net&gt;" />
+<person posts="1" size="2" who="David D. Hagood &lt;wowbagger@sktc.net&gt;" />
+<person posts="1" size="2" who="SAM . &lt;sam_00@hotmail.com&gt;" />
+<person posts="1" size="2" who="James Tabor &lt;jimtabor@adsl-64-217-116-74.dsl.hstntx.swbell.net&gt;" />
+<person posts="1" size="2" who="J.Brown (Ender/Amigo) &lt;ender@enderboi.com&gt;" />
+<person posts="1" size="2" who="Johan Gill &lt;johane@lysator.liu.se&gt;" />
+<person posts="1" size="2" who="Geoff Thorpe &lt;geoff@geoffthorpe.net&gt;" />
+<person posts="1" size="2" who="James Juran &lt;jamesjuran@alumni.psu.edu&gt;" />
+<person posts="1" size="1" who="Bang Jun-Young &lt;junyoung@mogua.com&gt;" />
+<person posts="1" size="1" who="Sylvain Petreolle &lt;spetreolle@yahoo.fr&gt;" />
+<person posts="1" size="1" who="Ian Pilcher &lt;ian.pilcher@home.com&gt;" />
+<person posts="1" size="1" who="Hetz Ben Hamo &lt;hetz@kde.org&gt;" />
+
+</stats>
+
+
+
+<!-- ################################################################ -- />
+ 
+
+
+<section
+  title="Building a Test Suite (con't)"
+  subject="Babystep: Testing framework"
+  topic1="Debugging"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/01/0179.html"
+  posts="17"
+  startdate="01/09/2002"
+  enddate="01/10/2002"
+>
+
+<p>More work was done this week to be able to get a regression
+testing suite in place.  Andriy Palamarchuk and Alexandre Julliard
+posted some details on adding some functionality to what was already
+in place.  Jeremy White started a new thread with:</p>
+<quote who="Jeremy White"><p>
+ The attached revision to Alexandres patch modifies the Wine makefiles
+such that a Linux developer can:<br />
+<ul>
+     <code>make test</code>       (to confirm all regression tests)<br />
+     <code>make clean-test</code> (to clear the tests and try again)<br />
+</ul>
+</p><p>
+It also creates three sample tests in
+programs/winetest/samples which hopefully demonstrate
+to a test author how to write a test.
+(The *.test files are human readable).
+</p><p>
+It has provisions for Perl and Winelib/C tests, as
+well as allowing for the arbitrary execution of
+any other command (which should allow any other
+test tools to be plugged in).
+</p><p>
+It has many flaws, but is intended as a possible
+jumpstart to get this process rolling.
+</p><p>
+Flaws:
+<ol>
+     <li>  It has no provision for use on Windows.
+         IMO the right way to fix this is to
+         go through the effort of making Wine's
+         ./configure script be intelligent enough
+         to build 'Winelib' programs, so that
+         in Windows a 'make test' should just work.
+	 </li>
+     <li>  I really don't like that a C/Winelib
+         test requires its own directory
+         (see samples/sample3).  However, AFAICT,
+         that was the only way to create a simple
+         and clean build environment for the Winelib app.
+	 </li>
+     <li>  No doco.</li>
+</ol></p><p>
+Thoughts?  Comments?</p></quote>
+
+<p>Alexandre felt some changes were in order, 
+<quote who="Alexandre Julliard">
+ I can't say I like your *.test files; I think this should be taken
+ care of by the makefile directly. Also it seems the consensus is that
+ we should simply check the exit status of the test, not compare the
+ test output.</quote>  Alexandre also didn't like that it couldn't
+ be used on Windows, <quote who="Alexandre Julliard">
+ I think it would be preferable to have a
+ simple, self-contained environment. Running configure would require a
+ lot of stuff to be installed on the Windows side.</quote></p>
+
+<p>Jeremy replied that the default behavior was, in fact, to just
+check the exit code and not actually look at the test output.  A
+few posts then debated how to structure the C/Winelib tests - the
+Winelib apps would make a horrible mess if they were all built in
+the same directory.  Alexandre wasn't really in favor of creating
+separate directories for each.  As the thread went on, Jeremy 
+wrote:</p>
+<quote who="Jeremy White"><p>
+    Finally, the more I think about my structure of using
+ the '.test' files, the more I believe it is the right solution,
+ because I think it gives us great long term flexibility.
+</p><p>
+    For example, say we have 70 Winelib/C tests that are big
+ and bloated and we want to fix that.  We could define a
+ new make target, say a '.test.so'.  We could modify winetest
+ to be able to load a .test.so file and call main() with
+ the right parameters and suddenly all of our bloat is gone.
+ We'd just need a rule to build a .test.so file from
+ a .test.c file, and then we'd need to tweak our foo.test
+ file to add a new command 'so_test=foo.test.so' instead
+ of 'invoke=foo' and we're done.  We could probably even
+ eliminate the .spec file (only for console apps, obviously).
+</p></quote>
+
+<p>Alexandre still disagreed with that approach,
+ <quote who="Alexandre Julliard">
+ But without your .test file it's even easier to do, all you have to do
+ is to hack the makefile. Plus you can get the dependencies right (how
+ can make guess what file your .test is referencing?)</quote>  Jeremy 
+replied:</p>
+<quote who="Jeremy White"><p>
+ I think the bottom line question is whether or not the test scripts
+ should be built such that we depend on a shell script (runtest)
+ and a configuration file for each test (foo.test), or whether we
+ rely completely on the Makefiles to hold the test configuration information.
+</p><p>
+ I think either choice is valid, but let me lay down the gauntlet:
+ replace my 'winetest/samples' directory with a Make based equivalent
+ that allows for the same sorts of tests, and makes it similarly obvious
+ to a newcomer how to add a new test.  You are better with
+ Make than I am; you may persuade me readily with a patch.
+</p></quote>
+<p>Alexandre whipped up a 
+<a href="http://cvs.winehq.org/patch.py?id=1010633423852603475097567">
+little patch</a> and noted:</p>
+<quote who="Alexandre Julliard"><p>
+ Just replace this:
+<ul>
+ <code>TESTS = sample1.test sample2.test sample3.test</code>
+</ul>
+ in your makefile by:
+<ul>
+ <code>PLTESTS = sample2.pl<br />
+ CTESTS = sample3.c</code>
+</ul>
+ and delete the .test files (there is no SHTESTS for shell tests, but I
+ think that's a feature if we want portability). 
+</p><p>
+ Creating a new test involves simply adding its name on the right line;
+ no .test to write, no .spec file, no new Makefile.
+</p><p>
+ (if you'd like to try it I have committed the rules for PLTESTS so
+ this should work now; CTESTS will still need a bit more work)
+</p></quote>
+
+
+
+
+
+
+
+</section>
+
+
+
+<!-- ################################################################ -- />
+ 
+
+
+<section
+  title="Getting Support from IBM"
+  subject="How about sponsoring from IBM?"
+  topic1="Commercial Development"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/01/0211.html"
+  posts="18"
+  startdate="01/10/2002"
+  enddate="01/12/2002"
+>
+
+<p>Roland threw out a question that had a large response,
+ <quote who="Roland">
+ It seems that IBM is becoming a major Linux advocate. What would be the 
+ possibilities of having it sponsor the WINE project?
+ I mean 1 million dollars is not much for IBM, but it certainly would mean a 
+ lot to the development of WINE. IBM would also profit of this. Since Linux 
+ runs on their supercomputers, it would be nice if you could run all Windows 
+ programs there(you need another Pentium emulator then, but that would not 
+ be a big problem, would it?).
+ </quote></p>
+
+<p>Francois Gouget sarcastically replied, <quote who="Francois Gouget">
+  Let's write a pentium emulator with just in time compilation over the
+  week-end. (sorry, the way you present things I just couldn't resist)
+</quote>.  Andreas Mohr didn't feel the commitment from IBM was very 
+sincere.  Last year IBM announced they were making an investment of
+a billion dollars in Linux, both technology and support.  Paul Clarke
+responded to Andreas with:</p>
+<quote who="Paul Clarke"><p>
+ My attempt to convince you otherwise:
+ </p><p>
+ <a href="http://oss.software.ibm.com/developer/opensource/linux">
+ http://oss.software.ibm.com/developer/opensource/linux</a>
+ <a href="http://www.ibm.com/linux">
+ http://www.ibm.com/linux</a>
+ </p><p>
+ Paul Clarke, IBM
+ </p></quote>
+<p>A few people were surprised to see someone from IBM subscribed
+ to to the list.  Jeremy White brought up some good points about
+ why IBM might have reservations about supporting Wine:</p>
+<quote who="Jeremy White"><p>
+ Many people at IBM know about Wine; in fact a lot of developers
+ there depend on it everyday (IBM is standardized on Notes
+ for messaging...).
+ </p><p>
+ Many non developers also know about it, if for no other reason
+ that I've been a pest.&lt;grin&gt;
+ </p><p>
+ One senior manager at IBM explained it to me as follows:
+ Most senior management at IBM has been with the company for a long time.
+ Most of those went through the OS/2 era.  Many people may not realize it,
+ but IBM put their heart and soul into OS/2 - and were
+ burned very, very badly by it.  As a consequence, many
+ people at IBM are understandably very reluctant to contemplate
+ another attack on Windows dominance of the desktop.
+ </p><p>
+ This doesn't mean that I think helping Wine would be bad for IBM
+ (or I wouldn't have been such a pest), but it may help folks
+ to understand why IBM isn't very focused on Linux as a desktop OS.
+ </p></quote>
+<p>Along the same lines, Joerg Mayer felt, <quote who="Joerg Mayer">
+ It looks like IBM spends its money on the products they themselvs use
+ heavily, as well as training and making the name of Linux more popular
+ (aka advertising/PR). I may have missed it but I haven't seen IBM spend
+ money on a Linux(related) project just to further the project. If they
+ wanted to spend $10e7 just to improve programs/tools just for the "good"
+ of it I would be sad to see this money spent on wine. I'd like to see
+ it spent on the development/improvement of *native* Linux apps that
+ fulfill the need of current Windows users.</quote></p>
+
+<p>David Elliott elaborated on both Jeremy and Joerg's posts:</p>
+<quote who="David Elliott"><p>
+ OS/2 ran Windows apps, and from about version 2 upwards ran all DOS and 
+ Windows stuff perfectly (except for the Win32s stuff).  I am sure IBM does 
+ <i>not</i> want to make the same mistake again.
+</p><p>
+ However WinOS/2 actually was running Windows 3.x.  In fact, the technology 
+ was extremely similar to SCO Merge (which now has offspring-- Win4Lin).  
+ One nice thing it could do that win4lin could not was actually put 
+ toplevel windows onto the desktop directly (though they still had the 
+ win31 look).  This would look similar to running Wine in non-desktop and 
+ non-managed mode, although the windows actually were managed by OS/2.
+</p><p>
+ Some people would argue that had IBM committed to supporting Win32 stuff 
+ that OS/2 would still be around.  Of course the bottom line is that the 
+ way they were doing this meant MS got the money for a copy of Windows 
+ every time someone bought OS/2.  Not good.  Wine wouldn't have that 
+ problem assuming it would be using all wine DLLs.
+</p><p>
+ As for IBM investing in Wine.  I suppose there are a couple things they 
+ could do.  For one, they could somehow use the $10e6 you suggest but who 
+ would they pay it to.  What might be more helpful is if some of the guys 
+ and gals that wrote OS/2 would help out with Wine.  They would probably be 
+ extremely familiar with Win32 seeing as how OS/2 was originally a joint 
+ MS/IBM project which MS got out of when they hacked Win3.0 to support 
+ virtual memory on a 386 and decided to make NT.  Now while the NT kernel 
+ was developed by former VMS guys and gals from DEC, some of Win32 
+ resembles OS/2 because some of those developers went on to work on NT.  
+ Which by the way no-one has confirmed that MS ever said it actually stood 
+ for New Technology.. more likely it stands for Nice Tits, but that's 
+ another story.
+</p><p>
+ Anyway, the bottom line is that IBM is not going to start throwing money 
+ at stuff.  They made that mistake with OS/2 and look where that got 'em.  
+ No, IBM spends money when and where it helps their bottom line.  Taking 
+ down MS does not help their bottom line.  Building their own services does 
+ help their bottom line.  IBM could care less if everyone could run Windows 
+ software on Linux.  They are in the business of providing the totally 
+ integrated system.  Running 3rd party stuff is usually not a top priority.
+</p><p>
+ Note that IBM has already caught the eye of MS with IBMs ad campaign for 
+ moving onto 390 systems running Linux.  Some of those internal MS memos 
+ recently released are really anti-IBM.  Right now I think MS is at the 
+ point where they have competitors.  They can go after companies using 
+ Linux just like they have gone after companies in the past.  They are also 
+ going after various IT admins who use Linux for certain tasks suggesting 
+ that MS software is better for everything.  Of course anybody that tells 
+ you that one system is better than all others is full of shit, but hey, it 
+ sounds good to some managers who don't want to listen to the people they 
+ have working for them.  Let 'em waste their money on MS.  When it breaks, 
+ let 'em waste more money on moving it back to what worked.  MS is going to 
+ shoot itself in the foot soon enough, no need to bring out your own 
+ shotgun.
+</p></quote><p>
+However, there was also a lot of sentiment toward asking IBM for support.  
+Several people felt it was exactly the type of thing that could really help 
+IBM.  Geoff Thorpe threw out some ideas, 
+<quote who="Geoff Thorpe">
+ One of the better ways to show the potential to IBM would be to find one of 
+ their apps that *does* work under WINE and get it demoed to their 
+ management. Although it sounds like some of them are already (internally) 
+ using Notes under Linux? Hmm ... I have one or two leads I can try to 
+ follow, but it's a sure thing that a "wrapper" company would have more joy 
+ getting something to stick, eg. a redhat, mandrake, codeweavers, etc.
+</quote></p>
+<p>Perhaps the most interesting part of this thread was noticing that folks
+from IBM read the development list.  Which, shouldn't really come as a 
+surprise since there have been posts in the past originating from ibm.com.</p>
+
+</section>
+
+
+
+<!-- ################################################################ -- />
+ 
+
+
+<section
+  title="Euro Support"
+  subject="RE: PATCH: Euro"
+  topic1="Patches"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/01/0096.html"
+  posts="5"
+  startdate="01/06/2002"
+  enddate="01/06/2002"
+>
+
+<p>Marcus Meissner submitted a patch to wine-patches with the note:</p>
+<quote who="Marcus Meissner"><p>
+ This patch changes the NLS currency of all Euro countries to use the "EUR" 
+ as international currency and the euro-sign (iso-8859-15, character 164).
+</p><p>
+ I am a bit unsure if we can just specify the character that way, but it
+ should work.
+</p></quote>
+
+<p>Patrik Stridvall wondered:</p>
+<quote who="Patrik Stridvall"><p>
+ Hmm. While I'm do not doubt that some users of Wine might find this useful,
+ Wine is supposed to do what Windows does and if Windows does something
+ wrong Wine usually should as well.
+</p><p>
+ If I'm not mistaken the .nls contains that default values. It is
+ entirely possible to change the currency and such in the registry
+ to specify things differently for each user.
+</p><p>
+ That said I would find it unlikely that this patch would cause any
+ serious problem. After all, as I said, the user can specify whatever
+ currency it likes after the defaults have been set and every application
+ is supposed to be able to handle it.
+</p><p>
+ So I do not really oppose the patch. It is more the principle I'm interested
+ in:  Under what circumstances should Wine change the behavior
+ if Windows does something in the wrong way?
+</p></quote>
+
+<p>Ove K&aring;ven didn't see anything wrong with it,
+<quote who="Ove Kaaven">
+ Wrong? Microsoft has released Euro updates for Windows, which seems like
+ it's supposed to change the Windows NLS files to use the new currency. It
+ should be available on the Windows Update site. I don't see anything wrong
+ here.</quote></p>
+
+<p>Alexandre committed the patch to CVS.</p>
+
+
+</section>
+
+
+<!-- ################################################################ -- />
+ 
+
+
+<section
+  title="NT Named Pipes"
+  subject="RFC: NamedPipes emulation API"
+  topic1="Integration"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/01/0142.html"
+  posts="1"
+  startdate="01/08/2002"
+  enddate="01/08/2002"
+>
+
+<p>(Alright, don't flame me for posting this.)  Luke Leighton
+of Samba fame posted a RFC (or rant or diatribe or whatever
+you want to call it) about implementing NT Named Pipes:</p>
+<quote who="Luke Kenneth Casson Leighton"><p>
+ this is an RFC document describing an API that may be
+ used to provide Windows NT Style "NamedPipe" functionality.
+ it will be of interest to samba, wine, freedce and win32
+ developers wishing to port applications to unix (via the
+ wine win32 implementation of NamedPipes).
+</p><p>
+ the functionality described in this document is equivalent
+ to, if you have access to the MSDN, the following 
+ (incomplete list of) Win32 functions:
+<ul>
+ <li>CreateNamedPipe (returns a file handle)</li>
+
+ <li>TransactNamedPipe</li>
+
+ <li>a read operation on the named pipe file handle, above</li>
+
+ <li>a write operation on the named pipe file handle, above</li>
+
+ <li>a close operation on the named pipe file handle, above</li>
+
+ <li>WaitNamedPipe</li>
+</ul>
+</p><p>
+ there follows a list of function declarations.
+</p><p>
+ these are samba-specific functions that are only of use
+ to SAMBA 3 developers.  
+</p><p><code>
+ int named_pipe_create(<br /><ul>
+		connection_struct *connection, /* contains all info needed, e.g. user security context */<br />
+		const char *pipe_name, /* e.g. \\server\PIPE\pipe_name or \\.\PIPE\pipe_name */</ul>
+ );</code>
+</p><p>
+ this function returns -1 on failure or an SMB file index
+ (fnum) on success.
+</p><p>
+ it is called when an SMBopenX or NTcreateX is received.
+</p><p>
+ from memory, the access point is api_pipe_open(), in pipe.c
+ or reply.c.
+</p><p><code>
+
+ STATUS named_pipe_transact(connection_struct *connection,<br /><ul>
+		int fnum, /* the SMB file index from the named_pipe_create */<br />
+		const char *transact_data_to_send, /* smb data received, to send to NamedPipe service */<br />
+		int transact_data_length, /* zero or more bytes */<br />
+		char *transact_receive_buffer, /* NamedPipe data received, to be sent over SMB */<br />
+		int *transact_receive_length); /* zero or more bytes */</ul>
+</code></p><p>
+ this function returns an NT status code.
+</p><p>
+ if there is more data to be received, then the function
+ must return ERROR_MORE_DATA.  NT_STATUS_OK is returned
+ on success.
+</p><p>
+ from memory, the access point is api_pipe_readwrite() or
+ reply_trans2(), or maybe reply_pipe_trans().  i don't recall
+ which.  again, it'll be in pipe.c or reply.c.
+</p><p><code>
+ STATUS named_pipe_read(connection_struct *connection,<br /><ul>
+		int fnum, /* the SMB file index from the named_pipe_create */<br />
+		char *transact_receive_buffer, /* NamedPipe data received, to be sent over SMB */<br />
+		int *transact_receive_length); /* zero or more bytes */</ul>
+
+ </code>
+ this function returns an NT status code.
+</p><p>
+ NT_STATUS_OK is returned on success.
+</p><p>
+ this one's to be called by pipe_read() (api_pipe_read()?)
+</p><p><code>
+
+ STATUS named_pipe_write(connection_struct *connection, <br /><ul>
+		int fnum, /* the SMB file index from the named_pipe_create */<br />
+		const char *transact_data_to_send, /* smb data received, to send to NamedPipe service */<br />
+		int transact_data_length); /* zero or more bytes */<br /></ul>
+</code></p><p>
+ this function returns an NT status code.
+</p><p>
+ NT_STATUS_OK is returned on success. 
+</p><p>
+ this one's to be called by pipe_write() (api_pipe_write()?)
+</p><p>
+
+ the use of this API is quite simple, and provides a clean
+ "cut-off" point between samba and all NamedPipe transactions.
+</p></quote>
+
+<p>This is the type of IO stuff Mike McCormack has been working towards.
+There have been several discussions in the past of integrating with
+Samba to provide access to lots of underlying NT services.  One problem,
+and particularly with Luke's post, is that a lot of that development
+has been a moving target.  In this case, Luke refers to the TNG
+fork of Samba.  Now, it is possible that code Luke develops will
+be accepted by the main Samba branch.  Features do get fed back and
+forth.  Right now Named Pipes are something being discussed on the
+Samba TNG mailing lists.  Many of the pieces necessary for such NT/Wine
+integration exist, and have existed, for a while.  But none of it is
+really integrated together and they span many different open source
+projects.  Luke 
+<a href="http://samba.cadcamlab.org/lists/tng-technical/Jan2002/00112.html">
+posted</a> this message to the tng-technical list:</p>
+<quote who="Luke Kenneth Casson Leighton"><p>
+ the transport that SMB implements is
+ called "Named Pipes".  look up the MSDN starting with
+ CreateNamedPipe.
+</p><p>
+ Named Pipes are basically the following features:
+<ul>
+ <li> the caller's user security context may be transferred
+  to the server application, for the server application
+  to use as it sees fit</li>
+
+ <li> guaranteed, ordered transaction-based message passing,
+  where the maximum message size is negotiable.</li></ul>
+</p><p>
+ basically, it's an incredibly powerful system, and unix
+ has ***nothing*** remotely resembling it.
+</p><p>
+ unix doesn't even support the concept of a remote user
+ in order for a remote user to be relevant over a named pipe,
+ for pity's sake!
+</p></quote>
+<p>
+Note: Jeremy Allison pointed out that things like NFS do have
+concepts like that.  Luke agreed, but pointed out the lack of POSIX API
+support.  Luke continued:</p>
+<quote who="Luke Kenneth Casson Leighton"><p>
+ unix supports TCP (guaranteed and ordered data delivery)
+ and it supports UDP (guaranteed message sizes) but it doesn't
+ support both.
+</p><p>
+ and NT "Named Pipes" do.
+</p><p>
+ which is why microsoft decided to use them as a transport
+ for dce/rpc.
+</p><p>
+ and it's worthwhile pointing this out again:  that's the
+ *only* relationship between named pipes and dce/rpc.
+</p><p>
+ one uses the other.
+</p><p>
+ there _is_ no special MSRPC-namedpipe-interdependent-
+ transport-thing.
+</p><p>
+ in other words, it is possible to implement NamedPipes
+ in SAMBA-3, knowing absolutely _nothing_ about dce/rpc
+ _whatsoever_, and then to give the API functions to
+ a dce/rpc developer and say, "write a transport plugin
+ module for your dce/rpc runtime environment that uses
+ _this_ api", and they can.
+</p><p>
+ but - and i'll say it again - without that "Named Pipe"
+ API in SAMBA-3, there's absolutely _no_ point in any
+ further discussion, as no progress can be made.
+</p></quote>
+
+
+
+
+</section>
+
+
+
+
+
+<!-- ################################################################ -- />
+ 
+
+
+
+<section
+  title="Support For ADPCM Wave Files"
+  subject="ADPCM and Wine"
+  topic1="Multimedia"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/01/0243.html"
+  posts="5"
+  startdate="01/11/2002"
+  enddate="01/11/2002"
+>
+
+<p>David Hagood needed some pointers on supporting ADPCM wave files
+in Wine:</p>
+ <quote who="David Hagood"><p>
+ Is anybody working on support for playing ADPCM wave files under Wine? 
+ If not, I'd like to take a crack at it.
+ </p><p>
+ I have an app that I use (Delorme's AAA MapNGo 4.0) that uses ADPCM wave 
+ files to contain spoken information on attractions. I know that Wine can 
+ access my sound system to play normal PCM wave files, as MN4 also has 
+ speech synthesis that does work. However, any attempt to play a ADPCM 
+ file results in the program pausing for a length of time, then 
+ continuing. I infer that this is because the lower levels of Wine don't 
+ know how to handle ADPCM.
+ </p><p>
+ ADPCM isn't rocket science - several programs, including sox, understand 
+ the protocol.
+ </p><p>
+ So, is anybody working on this (outside of TG and Lindows)? Any 
+ (non-null) pointers to useful information on how Wine has put together 
+ the sound subsystem? I'm not a Windows programmer, I'm an embedded 
+ systems and DSP person, but if I can find a block of code to hook into I 
+ can make this happen.
+ </p></quote>
+<p>Andreas Mohr suggested running a test with, 
+ <quote who="Andreas Mohr">
+ <code>--debugmsg +driver,+mmsys,+mci,+mmio,+mmtime,+mciwave,+msacm,+wave,+midi,+
+ mmaux,+relay</code> (they're all inside dlls/winmm/*).
+ That should help a lot in finding what's missing.</quote></p>
+<p>Eric Pouech, who's done a lot of work on the sound subsystem, replied:</p>
+ <quote who="Eric Pouech"><p>
+ well, to make things a bit harder, (at least) two ADPCM exist:<br />
+ - IMA and MS<br />
+ basic algorithm are quite the same, coeff tables differ a bit.
+ </p><p>
+ I did start a while ago an IMA ADPCM driver for wine
+ it's not finished yet (basically, didn't find time to look at in depth
+ docs for some details, like coding/decoding of stereo vs mono)
+ it's far from being finished and tested, but the framework (wine
+ integration, driver infrastructure) is in place, there's just some need to
+ concentrate on codec code
+ </p><p>
+ so, if you're ready to go for it, I can send you the code and give you
+ the directions to end up the job
+ </p></quote>
+
+
+</section>
+
+
+
+
+<!-- ################################################################ -- />
+ 
+
+
+<section
+  title="Setting Breakpoints in the Debugger"
+  subject="Debugger set breakpoint with full filename"
+  topic1="Debugging"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/01/0212.html"
+  posts="8"
+  startdate="01/10/2002"
+  enddate="01/10/2002"
+>
+
+<p>Bill Medland had some questions about using the Wine debugger,
+ <quote who="Bill Medland">
+ I've spent time looking for the answer and trying the (to me) obvious
+ options and now I give in. How, in the debugger, do I specify "Set a 
+ break point at <code>DllMain</code> of <code>E:\BIN.50A\..MYDLL.DLL</code>"
+ without the debugger complaining about syntax etc.?
+ If someone answers then I am prepared to add the info to debugger.sgml
+ </quote></p>
+
+<p>Bill either figured it out, or received a direct reply because a few
+hours later he reposted a reply to himself:</p>
+ <quote who="Bill Medland"><p>
+ OK.  To break at function <code>foo</code> of 
+  <code>dll E:\somepath\MyDll.DLL</code>
+ </p><p>
+  <code>break MYDLL.DLL.foo</code>
+ </p><p>
+ I'll update the file.
+ </p><p>
+ NOW the real question.
+ </p><p>
+ I am chasing a bug which makes no sense.  I want to single-step through the
+ DLL's DllMain but since it isn't exported the debugger can't get its address
+ (I presume) so I can't set it as a break point.
+ Is there a way to figure out what it's address is?
+ </p></quote>
+
+<p>This turned into a stairstep thread with Eric Pouech.  Eric initially 
+replied, 
+ <quote who="Eric Pouech">
+ another solution is to ask the debugger to break on each DLL loading.
+ <code>set $BreakOnDllLoad = 1</code>
+ then, you would be able to add a breakpoint on <code>DllMain</code> 
+ (which, I assume would be exported from the DLL, meaning its symbol 
+ will be known to the debugger)</quote>.  Bill said that didn't work.
+ Eric clarified, <quote who="Eric Pouech">try MyDLL.EntryPoint, it should 
+ work</quote>.  That seemed to be exactly what Bill was looking for with
+the caveat that he had to explicitly add the extension ".DLL" for the DLL, so it
+looked like: <code>break MyDll.DLL.EntryPoint</code>.  Bill updated the
+debugger documentation on how this works.</p>
+
+</section>
+
+
+
+
+</kc>

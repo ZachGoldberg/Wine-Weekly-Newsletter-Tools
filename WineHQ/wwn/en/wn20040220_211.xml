@@ -1,0 +1,486 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="211" date="02/20/2004" />
+<intro> <p>This is the 211th issue of the Wine Weekly News publication.
+Its main goal is to slouch. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="170" size="543" contrib="58" multiples="30" lastweek="24">
+
+<person posts="26" size="80" who="Dimitrie O. Paun" />
+<person posts="11" size="27" who="Mike Hearn" />
+<person posts="9" size="20" who="Alexandre Julliard" />
+<person posts="8" size="19" who="Fabian Cenedese" />
+<person posts="7" size="14" who="Ivan Leo Murray-Smith" />
+<person posts="6" size="14" who="Kevin Koltzau" />
+<person posts="6" size="12" who="Zimler Attila" />
+<person posts="5" size="65" who="Chris Morgan" />
+<person posts="5" size="16" who="Troy Rollo" />
+<person posts="5" size="12" who="Eric Pouech" />
+<person posts="5" size="12" who="Dmitry Timoshkov" />
+<person posts="5" size="11" who="Boaz Harrosh" />
+<person posts="4" size="11" who="Robert Shearman" />
+<person posts="4" size="10" who="Vincent Pelletier" />
+<person posts="3" size="8" who="Enrico Weigelt" />
+<person posts="3" size="8" who="Uwe Bonnes" />
+<person posts="3" size="6" who="Mike McCormack" />
+<person posts="3" size="6" who="Steven Edwards" />
+<person posts="3" size="6" who="hatky" />
+<person posts="3" size="5" who="Robert van Herk" />
+<person posts="2" size="28" who="(chmorgan)" />
+<person posts="2" size="8" who="Hans Leidekker" />
+<person posts="2" size="8" who="Michael Stefaniuc" />
+<person posts="2" size="7" who="Shachar Shemesh" />
+<person posts="2" size="6" who="Tom" />
+<person posts="2" size="5" who="John Birrell" />
+<person posts="2" size="4" who="Vizzini" />
+<person posts="2" size="4" who="Robert Shearman" />
+<person posts="2" size="4" who="Francois Gouget" />
+<person posts="1" size="13" who="r00d00" />
+<person posts="1" size="6" who="saravanan" />
+<person posts="1" size="6" who="Erik Dekeyser" />
+<person posts="1" size="5" who="Brian Vincent" />
+<person posts="1" size="3" who="Jakob Eriksson" />
+<person posts="1" size="3" who="Tim Teulings" />
+<person posts="1" size="3" who="(rael)" />
+<person posts="1" size="3" who="Peter Hunnisett" />
+<person posts="1" size="3" who="David Goodenough" />
+<person posts="1" size="3" who="pooja  barmola" />
+<person posts="1" size="3" who="Carlos Lozano" />
+<person posts="1" size="2" who="grant williamson" />
+<person posts="1" size="2" who="Robert Lunnon" />
+<person posts="1" size="2" who="Florian Schanda" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="KappaM KappaM" />
+<person posts="1" size="2" who="Willie Sippel" />
+<person posts="1" size="2" who="Mike Kost" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Samuel Herzog" />
+<person posts="1" size="2" who="Joshua Hudson" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="hatky" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="Chris Seaton" />
+<person posts="1" size="1" who="Justin Chevrier" />
+
+</stats>
+<section 
+	title="News: WineHQ Updates, WineX 3.3" 
+	subject="News"
+	archive="http://www.winehq.org/"
+	posts="3"
+	startdate="02/14/2004"
+	enddate="02/20/2004"
+>
+<topic>News</topic>
+<p>WineHQ saw quite a few site updates this week.  A
+<a href="http://www.winehq.com/history">history of Wine</a>
+has been added.  For the most part it's the same as what appeared
+in <a href="http://www.winehq.org/wwn/183">WWN #183</a>. The
+<a href="http://www.winehq.org/status">status pages</a>
+were updated, including two new pages for 
+<a href="http://www.winehq.com/status_porting">porting status</a> and
+<a href="http://www.winehq.com/status_options">Winecfg options</a>.
+The <a href="http://www.winehq.com/about">introduction page</a>
+now has a short index of resources that were previously buried a
+few links deep.  Lastly, the 
+<a href="http://www.winehq.com/who">Who's Who</a> page has been
+completely rewritten and includes new bios of Wine developers.</p>
+
+<p>All of those items are on the
+<a href="http://www.winehq.com/todo_lists">To Do</a> list.  It
+was updated to reflect the changes.  I guess now is as good of a
+time as any to start keeping track of how progress is going on
+the To Do items:
+<ul>	<li>Green (completed): 11</li>
+	<li>Yellow (in progress): 31</li>
+	<li>Red (unstarted): 20</li>
+</ul></p>
+
+<p>Some newsworthy items came out of TransGaming this week.
+The biggest story is the release of WineX 3.3:</p>
+<quote who="TransGaming"><p>
+The majority of the technical improvements in WineX 3.3 have been
+driven by the implementation of support of Steam. Support for its
+online games has resulted in improved socket and pipe support as well
+as a major enhancement to font support. In addition to Steam, this
+release contains copy protection enhancements and support for Dark Age
+Of Camelot as well some success in making a number of other titles
+functional with workarounds, although not yet to a point where we can
+say that they are supported. You will find some of these titles 
+listed in the Known Problems section below.
+</p></quote>
+
+<p>Steam is Valve's peer to peer network designed to keep
+games such as CounterStrike and Half-Life up-to-date with
+the latest versions.  It also has an instant messaging
+client that works while you're playing a game.
+Their <a href="http://downloads.transgaming.com/files/winex-3.3_releasenotes.txt">
+release notes</a> have a lot of technical detail about new additions.
+On a side note, Point2Play was updated to 
+<a href="http://downloads.transgaming.com/files/point2play-1.2.1_releasenotes.txt">release
+1.2.1</a> and now supports joystick and font configuration.
+</p>
+
+<p>TransGaming's 
+<a href="http://www.transgaming.com/showthread.php?news=107">February
+Development Status and Voting Report</a> outlines a lot of
+work in many diverse areas.  In fact, there's so many things
+they're working on I'd have to copy the whole report to do it
+justice.  So rather than do that, I'll let you follow the link
+and instead I'll just give the results of the top-ranked technology
+poll items:
+<ul>
+    <li> Improved ALSA Support</li>
+    <li> DirectX 9</li>
+    <li> Non Graphical Performance Increase</li>
+    <li> Improve 3D performance</li>
+    <li> Support Older Games</li>
+</ul></p>
+
+<p>I should also note that an article by InfoWorld, 
+<i>
+<a href="http://www.infoworld.com/article/04/02/13/HNlinuxoffice_1.html">
+"IBM to launch MS Office for Linux"</a></i>, caused a bit of a
+stir.  No one really knew what to make of it but Wine is the first thing 
+that comes to mind when you read their objectives.  Late in the
+week another article came out 
+<a href="http://searchenterpriselinux.techtarget.com/originalContent/0,289142,sid39_gci951306,00.html">refuting</a>
+the original claims.  Whether or not something is going on behind
+closed doors remains to be seen, but you can bet that the technical 
+manager that leaked the original story got his ass handed to him on a platter. 
+</p>
+
+</section>
+
+<section 
+	title="Theming Update" 
+	subject="Re: uxtheme: drawing functions"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0348.html" 
+	posts="4"
+	startdate="02/16/2004"
+>
+<topic>Configuration</topic>
+<p>Kevin Koltzau is making progress on adding theming to Wine. 
+In a patch on Sunday he remarked,
+<quote who="Kevin Koltzau">
+With this some apps may start looking partly themed (e.g. the toolbar buttons 
+in newer versions of mIRC are themed), and we can start adding theming code 
+to widgets</quote></p>
+
+<p>Mike Hearn asked,
+<quote who="Mike Hearn">
+Presumably this is only if you have a native luna theme lying around
+somewhere, right? Do you know what files we need?</quote></p>
+
+<p>Kevin answered:</p>
+<quote who="Kevin Koltzau"><p>
+Luna would work yes, but that's not the only theme out there
+Many skinning sites have sections for msstyle themes, you could check out
+<ul><a href="http://www.skinbase.org/section.php?sections=msstyles">
+http://www.skinbase.org/section.php?sections=msstyles</a></ul></p><p>
+for example. 
+Many themes are shipped with a ton of files, right now only the *.msstyles files are useful
+I've done the majority of my testing with the Luna theme, so bug reports on other themes would be appreciated
+</p><p>
+I'm working on a winelib app that will let you properly install themes,
+but for now you can set the following reg keys (replacing the filename to your selected theme)
+<ul><code>
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ThemeManager]<br />
+"ThemeActive"="1"<br />
+"LoadedBefore"="1"<br />
+"DllName"=str(2):"%SystemRoot%\\resources\\Themes\\Luna\\Luna.msstyles"<br />
+ColorName"="NormalColor"<br />
+"SizeName"="NormalSize"</code></ul></p></quote>
+
+<p>Later he posted a 
+<a href="http://www.winehq.org/hypermail/wine-patches/2004/02/0213.html">sample
+app</a> to query, install, and uninstall a theme.  Alexandre asked that he merge
+it into Winecfg rather than leave it as a standalone program.</p>
+
+</section>
+<section 
+	title="Embedding Mozilla's ActiveX Control" 
+	subject="Re: SHDOCVW: Mozilla Active X control embedding done right"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0304.html" 
+	posts="4"
+	startdate="02/14/2004"
+>
+<topic>Integration</topic>
+<p>A few weeks ago we mentioned Mike McCormack had gotten Mozilla
+Active X embedding to work 
+(<a href="http://www.winehq.org/wwn/206#MSHTML%20Changes">issue #206</a>).
+Well, that attempt went awry and Mike went back and worked on it 
+some more.  This week he announced:</p>
+<quote who="Mike McCormack"><p>
+OK, this time I've done it the right way, and it at least works for one 
+or two apps, with a screen shot to prove it.
+</p><p>
+Screen shot was produced by installing an older version of WinAmp 
+(winamp281_full.exe) and the Mozilla ActiveX control version 1.6 from
+<ul><a href="http://www.iol.ie/~locka/mozilla/mozilla.htm">
+http://www.iol.ie/~locka/mozilla/mozilla.htm</a></ul></p><p>
+
+It would be nice if we could build Mozilla as a winelib app... ;)
+</p></quote>
+
+<p>To see the screenshot Mike mentions, see the
+<a href="http://www.winehq.org/hypermail/wine-patches/2004/02/0176.html">post
+on wine-patches.</a>  Dimi wondered,
+<quote who="Dimitrie Paun">
+ Very cool indeed Mike! One thing that I've noticed is that the code
+ uses a lot of Mozilla dependent names, but the only thing that's
+ actually Mozilla specific is the CLSID. Shouldn't we just read that
+ info from the registry (from some sort of HtmlControl key), so that
+ people can experiment with other things as well (e.g. IE) just by
+ changing the configuration?</quote></p>
+ 
+<p>Mike felt switching to native IE was just a simple config file
+change:</p>
+<quote who="Mike McCormack"><p>
+Well, the way to experiment with IE is to do:
+<ul><code>
+"shdocvw" = "native"</code></ul></p><p>
+since shdocvw is part of Internet Explorer itself.
+</p></quote>
+
+</section>
+
+<section 
+	title="Winetest Parser Committed" 
+	subject="tools/winetest README builds.txt dissect gathe ..."
+	archive="http://www.winehq.org/hypermail/wine-cvs/2004/02/0244.html" 
+	posts="2"
+	startdate="02/19/2004"
+>
+<topic>News</topic>
+<p>Ferenc Wagner has been working for quite a while on integrating
+the test results from Wine's test suite into the web site.  This
+way a bunch of tests can be performed on real Windows boxes to
+make sure we have a baseline to measure Wine against.  Once we 
+get the test results they need to be parsed and organized in some
+fashion.  That's what Ferenc's been working on.  An initial commit
+was done this week, although it's not working yet. The basic framework
+is complete and you can find it in the 
+<a href="http://cvs.winehq.org/cvsweb/tools/winetest/">tools</a>
+module in CVS.  Ferenc wrote the following README file about it:</p>
+<quote who="Ferenc Wagner"><p>
+This machinery is for receiving and analysing the reports resulting
+from running programs/winetest.  The winetest program is a single-
+executable version of all the DLL conformance test programs suitable
+for unattended testing and report submitting.  This package provides
+the destination for that and presents the results in an ordered form.
+<br />
+<li> winetest.conf
+<ul>
+Configuration file, sets the following variables:<br />
+$queuedir - queue incoming submissions here<br />
+$datadir  - processed data get served from here<br />
+$builds   - list of allowed build tags</ul></li>
+
+<li> winetest.cgi
+<ul>
+A CGI script, which receives uploads from winetest and provides manual
+uploading facility.  Asks the CGI.pm module to create its temporary
+file in $queuedir, then renames it to repXXXXX/report.</ul></li>
+
+<li> winetest.cron
+<ul>
+Sample crontab entry illustrating the intended use of the tools.
+</ul></li>
+
+<li> dissect
+<ul>
+This program looks for a file matching $queuedir/rep*/report, takes it
+apart in its directory while also creating summary.txt.  If an error
+occurs the directory is renamed to errXXXXX to avoid future attempts
+at processing this report.  If everything goes flawlessly the whole
+directory is renamed (based on the information learnt in the process)
+to $datadir/BUILD/VERSION_TAG_DIGIT where DIGIT is for resolving name
+clashes and $datadir/BUILD/outdated is created to signal the change in
+the given build.  Allowed builds are those in $builds.  See also the
+head of the file.
+</ul></li>
+
+<li> gather
+<ul>
+This program is intended to run as a second stage.  See the sample
+crontab file, races and concurrency problems must be dealt with on
+that higher level.  The program looks for a file matching
+$datadir/*/outdated, creates index.html in the same directory and
+removes the outdated file.  See also the head of the file.
+</ul></li>
+
+<li> summary.css, summary.js, resultform.html
+<ul>
+These files are referenced by the index.html files created by gather.
+</ul></li>
+
+<li> builds.txt
+<ul>
+The file to have $builds point to.
+</ul></li>
+</p></quote>
+
+</section>
+<section 
+	title="Kernel Driver (SafeDisc) Initial Support " 
+	subject="Re: PATCH: ntoskrnl.exe"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0351.html" 
+	posts="4"
+	startdate="02/16/2004"
+	enddate="02/17/2004"
+>
+<topic>Patches</topic>
+<p>Marcus spent some time this week getting Windows kernel
+drivers loading.  Specifically, he tried to get SafeDisc working
+so that copy protection on games would be supported.  This was
+discussed a bit at WineConf and various ideas were kicked
+around.  SafeDisc isn't working yet, and it's not even clear
+it's possible to support it, but Marcus took a stab at it.
+From his changelogs:</p>
+<p>#1:</p>
+<quote who="Marcus Meissner"><p>
+This implements some very basic and functional kernel driver loading
+and execution.
+</p><p>
+Currently only tested with one driver and with just DeviceIoControl
+support.
+</p><p>
+Changelog:
+<ul>	
+	Added a possibility to load Windows WDM kernel drivers,
+	a bit hackish.
+        <br />
+	Implemented a separate PE loader for WDMs, but reuse
+	common functionality from normal PE loader (relocation
+	fixup, relay handling, module override.) Uses NtLoadDriver.
+	<br />
+	Implemented DeviceIoControl passing to kernel drivers. 
+</ul></p></quote>
+
+<p>#2:</p>
+<quote who="Marcus Meissner"><p>
+This is sufficient to support the first windows kernel driver.
+</p><p>
+Note the lack of fastcall support (I just ignore the IofCompleteRequests
+arguments anyway).
+</p><p>
+Run necessary tools for dll adding ;)
+</p><p>
+Changelog:
+<ul>
+	Very first (partially hackish) implementation of ntoskrnl.exe.
+</ul>
+</p></quote>
+
+<p>This led Uwe Bonnes to ask what was working and what was still
+unsupported.  Marcus explained, although in theory the
+SafeDisc driver should be working, it wasn't:</p>
+<quote who="Marcus Meissner"><p>
+There is no need for any setup.
+</p><p>
+secdrv.sys of InstallShield just requires some functions of ntoskrnl.exe, which
+I have implemented to a degree it that it functions.
+</p><p>
+As of working, in Need for Speed v4 from Electronic Arts I now see the SafeDisc[tm]
+Splashscreen, then it is seeking on the CD pretty heavily, then the program terminates.
+</p><p>
+So consider the first step towards SafeDisc support done as soon as they are 
+merged to CVS.
+</p></quote>
+
+<p>The driver, secdrv.sys, ships with each game using SafeDisc copy
+protection.  It gets loaded when the game starts up, and until
+now wasn't supported at all.  Mike Hearn theorized why it still
+wasn't working:</p>
+<quote who="Mike Hearn"><p>
+ For the record (we already discussed this a bit on IRC) this is probably
+ SafeDisc taking seek-time profiles from the CD drive. SafeDiscs contain
+ certain blocks in unusual widely-spaced ordering that is not possible to
+ recreate using standard CD burners. By reading each block in turn and
+ checking that the seek times are high enough they can verify the CD has
+ not been copied using consumer-grade equipment.
+</p><p>
+ This test, in other words, should pass - as long as the Linux/Wine CD
+ subsystems have similar timing profiles to Windows (gulp)
+</p></quote>
+
+<p>"Similar timing profiles" means the Linux driver for the CD-ROM
+and the Windows driver must operate in almost the exact same manner.
+If the driver expects a certain amount of time to read blocks on
+Windows it must take the same amount of time on Linux.  
+Carlos Lozano pointed out things are further complicated by the 
+fact that several different versions of SafeDisc exist and they
+operate in different ways.
+</p>
+
+</section>
+<section 
+	title="Registry Setup Script" 
+	subject="Setup .inf files"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/02/0315.html" 
+	posts="7"
+	startdate="02/14/2004"
+	enddate="02/15/2004"
+>
+<topic>Configuration</topic>
+<p>One of the big to-do items is to cut over to the new
+configuration tools - winecfg and regedit.  Both of them
+are now usable to the point where all of the wine config
+items can be stored in the registry.  Right now we have
+some items in the default registry and other items still
+in .wine/config.  The idea is to make the config file go
+away.  </p>
+
+<p>That leads to the question, how do you set up a registry
+if you don't have one?  This isn't too unlike trying to
+get a config file if you don't have one.  Except, Windows
+already has a mechanism for setting up and changing a
+registry - 
+<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/setupapi/setup/about_inf_files.asp">INF
+ files.</a>  There is a caveat though.  In order to install
+a registry you need to have the proper directory structure
+in place so Wine knows where "Windows" (c:\windows) is.
+For now, we won't worry about that little detail and just
+go on to cover Chris Morgan's work in this area.  Chris
+announced an initial implemention of setting up the registry
+from an INF file:</p>
+<quote who="Chris Morgan"><p>
+Here is a first pass at replacing winedefault.reg with a windows inf file and 
+dll registration.  The registry entries in the inf file are not complete.  
+Other than quite a few missed entries I've also left out the keys for 
+Codepages and the Country List entries as these are pretty large (lots of 
+typing, I'm lazy).  
+</p><p>
+setupregistry is a shell script that registers dlls with regsvr32 and then 
+installs the inf file using rundll32.  Registering ddraw.dll results in a 
+crash on my machine even though regsvr32 says it was registered successfully.
+</p><p>
+The best documentation I've found thus far for inf files, 
+<a href="http://www.leeos.com/infdoc.html#Top">
+http://www.leeos.com/infdoc.html#Top</a>,
+doesn't have anything about running 
+programs from inside of an inf file.  If this is possible it would probably 
+make more sense to have the inf file register the dlls.  
+</p><p>
+I've also attached a patch to implement InstallHinfSectionW() which passes the 
+inf file to lower level setupapi functions for installation.  Wasn't sure 
+what the root key parameter to SetupInstallFromInfSectionW() should be, set 
+it to \\HKEY_CURRENT_USER for now.
+</p></quote>
+
+<p>Some folks suggested using the RunOnce registry key entries to
+execute the DLL self registration.  I mentioned to Chris that two
+INF sections seem to exist that would do the same thing:
+RunPreSetupCommands and RunPostSetupCommands.  Chris looked into it
+and confirmed they exist even though they're highly undocumented.
+Steven Edwards mentioned the ReactOS tree was also working on 
+implementing those sections but they weren't completed yet.  Chris
+decided to work on them on his own.  </p>
+
+</section>
+</kc>

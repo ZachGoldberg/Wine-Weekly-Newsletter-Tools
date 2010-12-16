@@ -1,0 +1,553 @@
+<kc>
+<title>Interview</title>
+<author email="vinn@theshell.com">Brian Vincent</author>
+<issue num="15" who="Lionel Ulmer" date="15 June 2004" />
+ <intro>
+  <p>This is our 15th interview with Wine developers. Check out the 
+  <a href="http://www.winehq.org/interview">Interviews</a>
+  page for previous ones.
+  </p>
+  <p>
+  Lionel Ulmer's work was actually the impetus for the original
+  interview series.  Last year a significant amount of DirectX
+  work prompted an email to get more information about it.  Now
+  it's time to dig into more of his work and find out about
+  Wine's DirectX support.  Lionel lives in Toulouse, France
+  and works as a software engineer.  You can often find him on
+  irc helping people with various problems.  Yet, somehow he 
+  still manages to climb, hike, snowboard, or virtually anything
+  else that involves the outdoors.</p>
+ </intro>
+<interview>
+
+<question><p><i>BV:</i>
+ Do you remember the first work you did on Wine?
+</p></question>
+<answer><p><i>Lionel:</i>
+I started to 'test' Wine pretty early in its development phase, not very
+long after installing my first Linux distribution (it was Slackware in late
+1994 - my current development box is still a derivative of this early
+install). At that time, it was just "oh a new Wine is out, let's try it" and
+I was running <i>Solitaire</i>, <i>Winmine</i>, and <i>Notepad</i> on it.
+</p><p>
+One day just for fun I decided to try two recent games I bought, <i>Fallout</i>
+and <i>Curse of Monkey Island</i>, to see how far they went ...
+and I was surprised to see something appearing on screen. I was hooked
+for the next few years :-)
+</p><p>
+Basically, Marcus did all of the groundwork to get the games to at least
+start and display something.  The only work remaining was to improve what
+was already there instead of starting from scratch, which is a LOT more
+difficult to get around doing.
+</p><p>
+As to the question that was really asked, my first patch (in late 1998) was
+about adding mouse support to DInput.  It was needed for <i>Fallout</i> as 
+<i>CMI</i> used standard Win32 mouse and not DInput.
+</p></answer>
+<question><p><i>BV:</i>
+ What's some of the major stuff that's been added to DirectX over the past year?
+</p></question>
+<answer><p><i>Lionel:</i>
+Well, I can mostly only speak about DDraw and D3D as it's been a long time
+since I did any real DSound or DInput work.
+</p><p>
+So, in the D3D case, the biggest recent improvements have been done by Jason,
+Raphael and Christian on the D3D8/9 code.  I really need to find more time, a
+new GPU and start looking at something else than D3D1/7. :-) For example,
+the recent hardware shader support patch is a prime example of Wine
+progressing nicely in this domain. But I cannot really comment more as 
+I do not follow in detail the D3D8/9 code as hacking on D3D1/7 already takes 
+much more free time than I actually have.
+</p><p>
+On the D3D7 side, it all started by a full rewrite of the COM object code to
+have a basic framework that ran most games even if nothing was actually
+displayed on screen.  That was the most boring part of the job as it's an
+all-or-nothing type of job, you cannot progress iteratively. After that, we
+'just' had to flesh out all the stubs to get things displayed on screen.
+Major things added are, for example, framebuffer locking, multi-texturing
+support and stuff like that.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ You brought up some terms people might be familiar with.  Could you explain
+ some of them?
+</p></question>
+<answer><p><i>Lionel:</i>
+I won't start to explain what COM is otherwise it would fill a whole
+interview, and I am not really an expert in that domain.
+</p><p>
+So to come back to more graphic-oriented terms, what I call framebuffer
+locking is when an application wants to access directly the 2D framebuffer
+without doing any 3D processing. In Windows, this only incurs a little
+performance hit (as the 3D pipeline of the graphic card needs to be
+flushed), but as this framebuffer is memory-mapped into the application's
+memory space, the latter can directly write to it.
+</p><p>
+This is not so in OpenGL for which the framebuffer is 'out of bounds' for
+the application which cannot access it directly. So basically the only 
+way to have access to the framebuffer is via the 'glReadBuffer' call which
+is often not really optimized in the drivers as it is frowned upon by any
+serious GL coder.  Moreover, as
+we often do not run in the BPP asked by the game, there is also some colour
+conversion to be done.  There are some recent extensions that may replace 
+the 'glReadBuffer' call, but to experiment with them, I would need first 
+to replace my old 3D card by a real modern GPU.
+</p><p>
+In conclusion, compared to Windows which directly writes to the video card
+memory, we need first to copy from the video card to main memory (possibly
+with colour conversion).  Then we have the application write on the buffer
+there. Finally, we re-blit this buffer (with again colour conversion) to the
+graphic card again.
+</p><p>
+Some people often ask, 'Well, if it slows stuff down, can we disable it to
+get more speed?'  The answer is pretty easy: 90% of all D3D1/7 games
+use this in some critical part of the games, like drawing the mouse cursor,
+some in-game 2D stuff like HUDs, etc.  You won't be able to play any games
+without it.
+</p><p>
+Multi-texturing is
+pretty important to get a speed boost as you process your geometry only once
+to draw multiple textures (instead of drawing the same geometry multiple
+times). This is nice for Wine considering the fact that we often need to
+convert D3D's vertex formats into GL's format and thus it prevents us from
+doing this conversion twice. Of course, support for it in the hardware is
+needed, but even my TNT2U has it.   Another option is to simulate support
+for it in our driver when the hardware doesn't have it.  This might
+prevent extra processing of the vertices.
+</p><p>
+For shaders, I am not really the best person to answer this question as they
+do not exist at all in D3D1/7. This is the realm of Jason, Raphael and
+Christian. Basically, the idea is to be able to change attributes (like
+vertices, pixels, etc) via a program that is executed on the graphic card
+instead of changing them on the CPU and re-loading these to the card. And to
+get good speed, hardware support is a must. It's a bit like the difference
+between interpreted and compiled languages.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ How do you go about developing this stuff?
+</p></question>
+<answer><p><i>Lionel:</i>
+ The methods depend on the developer. In my case, I started first with some 
+ demos from Microsoft's DirectX SDK. When I implemented some very tricky 
+ cases, like those in the Twist.exe demo, I found out that nobody ever used 
+ them in any game. So I switched track and my current way of is to take an 
+ application and fix all the bugs I find up until the time I am either 
+ blocked or the game runs perfectly.
+</p><p>
+ This means that the code in the D3D1/7 is far from complete according to 
+ what it can do in the MSDN, but it implements most of the stuff needed by 
+ games.
+</p><p>
+ Jason, on the other hand, developed D3D8 based on MSDN samples. This means 
+ that the breadth of the support will be better, but maybe some optimizations 
+ may be missing.
+</p><p>
+ As for the hardest game I got to run, it's certainly <i>DungeonSiege</i>. 
+ During my last D3D hacking spree, 75 % of all the patches must have come from 
+ my work on this game. This does not work anymore in Wine due to a threading 
+ issue and which will lead to another set of heavy hacking. 
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ So, once you spend so much time on a game like <i>DungeonSiege</i> getting
+ it to work, do you every get sidetracked playing them?
+</p></question>
+<answer><p><i>Lionel:</i>
+I get less and less side-tracked playing games. I actually have more fun
+getting games to work in Wine than playing them once they work.  This may
+explain also why Wine gaming is not a very 'streamlined' experience: once
+it works enough for me, I switch to something else and I do not spend a lot
+of time polishing it up. I still remember the day I got my first polygons
+on screen when working on <i>TombRaider2</i>, it was much better than actually
+playing the game to completion :-)
+</p><p>
+To show you how long it has been since I seriously played any game, the last
+ones I must have finished must be <i>Grim Fandango</i> and <i>Tomb Raider 2</i>.
+</p><p>
+As for my favourite game, I think my fondest gaming memories are on
+adventure games like the <i>Monkey Island</i> series, <i>Day of the 
+Tentacle</i> or <i>Grim Fandango</i> I also have fond memories of <i>Tomb 
+Raider</i> (on my brand new top-of-the-line 3DFx card).
+</p><p>
+Currently I am sometimes playing with <i>GeneRally</i> (under Wine of course.) 
+It's a nice free racing car game, like <i>SkidMarks</i> for those who remember 
+it. It's exactly the kind of game that I can still play: you start it up and 
+can just play it for 5 minutes. You do not have all the investment that you 
+need to put in other kinds of games just to progress. I once loved roleplaying 
+games like <i>Eye of the Beholder</i> and <i>Dungeon Master</i> but I just do 
+not have the time anymore to play them.
+</p></answer>
+
+
+
+<question><p><i>BV:</i>
+ I vowed not to ever own a good video card after losing six months of my
+ life to Diablo.  I'm much more productive with my Matrox G200.
+ Given all the different areas of DirectX and Wine, are there parts you like 
+ to work on more than others?
+</p></question>
+<answer><p><i>Lionel:</i>
+I've worked on almost all DirectX libraries except DirectPlay and QUARTZ
+(a.k.a. DirectShow). For some, like DSound, the code has changed so much
+since I last worked on it that I don't even know how they work anymore. So,
+basically, the parts of DirectX I prefer is DirectDraw and Direct3D.
+</p><p>
+As for other parts of Wine, there is, of course OpenGL.  But when I see the
+number of questions we receive on the #WineHQ channel due to <i>Half-Life</i>
+and <i>CounterStrike</i> I almost regret having ever started doing it. :-) 
+</p><p>
+In 'core' Wine, I've fixed some bugs here and there but nothing fundamental. I
+am currently trying to work on the Edit control to get a bit more knowledge
+of real Win32 programming.  The BIG advantage of working on the various
+DirectX APIs is that you only need a very limited knowledge of Win32.
+</p></answer>
+
+<question><p><i>BV:</i>
+ What are the problems with <i>Half-Life</i>?  
+</p></question>
+<answer><p><i>Lionel:</i>
+ Basic <i>Half-Life</i>, the game itself, runs fine in Wine and has for a long 
+ time now. The problems we have are either:
+<ol>
+ <li> clueless newbies who do not know to read FAQs and have the 'Please
+    switch to 65535 colour mode' message box at start-up.</li>
+
+ <li> problems with 'anti-cheat' devices that break Wine</li>
+
+ <li> problems with <i>Steam</i></li>
+</ol></p><p>
+ I do not follow the <i>HL</i> story at all, so I have no idea what the status 
+ on #2 and #3 are currently. But if I had a nickel each time we got a 'Please
+ help me, <i>HL</i> is the only application which still makes me use Windows' 
+ plea on #WineHQ, I would now sport a better graphic card.
+</p><p>
+(and, no, I do not code on Wine for you to be able to ditch Windows, I code
+ on it because it's fun, so you are free to use Windows if it runs your games
+ fine :-) )
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ You brought up OpenGL.  Why is that such a problem?  It seems like
+ any time someone touches the headers everything starts to break.
+</p></question>
+<answer><p><i>Lionel:</i>
+Well, the problem with OpenGL headers is that there are too many sources for
+them. Basically, NVIDIA ships one set of headers with their drivers, then
+you have the XFree headers, the Mesa headers, the ones you can download on
+SGI's OpenGL site, etc.
+</p><p>
+After that, the problem we face is that we do not want to check at 'configure'
+time for the presence of all the extensions we plan to use.  Otherwise the
+code would be even more of an #ifdef mess than it is currently. And this is
+perfectly fine with OpenGL as you have all the tools to detect at run-time
+the features that are actually available (and you know that the constants
+you use are 'normalized' in the extension and won't change from one
+implementation to the other).
+</p><p>
+So our half-assed solution for now is to add in Wine's internal GL header
+files all the constants / prototypes for the list of (recent) extensions we
+use in the code. A clean, but overkill, solution would have been to ship in
+Wine our own private version of gl_ext.h - the reference file with all GL
+extensions defined.
+</p><p>
+Note that this problem is only relevant to Wine's D3D and D3D8 code as our
+GL thunking layer does not need any problematic OpenGL headers.
+</p><p>
+As for Wine's GL headers, we do not ship any (except for wgl.h).
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Everyone involved in Wine's DirectX seems fairly distributed.  Is there
+ anything special you do to keep in touch? 
+</p></question>
+<answer><p><i>Lionel:</i>
+Well, the distribution is not that widespread for DDraw / D3D as you have
+three Frenchies and a Brit'.
+</p><p>
+To be more serious, at the time we wanted to resurrect the D3D code
+in Wine, I created a private mailing list called wine-d3d to be able to
+discuss a bit less formally than on wine-devel. The list is pretty quiet now,
+but it still helped us some times to share ideas, pre-versions of patches and
+to do some self-motivation.
+</p><p>
+So there is not really any formal coordination between people. Usually, I
+work on D3D1/7, with Christian chiming in sometimes to add some features and
+fixes. On D3D8/9, it's Raphael, Jason and Christian who manage it between
+themselves.  As is the case for the vertex shader patch : started by Jason,
+sent to wine-d3d and finished by Christian. On DSound, we have Robert
+working on it.
+</p><p>
+But it's still in my goals to try to do a DirectX Wine summit in Europe
+(we are not <i>that</i> far one from the other).
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Rok Mandeljc did some DSound work too, right?
+</p></question>
+<answer><p><i>Lionel:</i>
+Well, since the DirectSound code has changed so much since last I hacked on
+it, I did not follow all the changes... But yeah, Rok also worked on DSound
+recently and now on DMusic with Raphael.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Have you met any of these guys in person?
+</p></question>
+<answer><p><i>Lionel:</i>
+ Actually no. I was the only DirectX guy at the last WineConf and I missed
+ the first one.  I had to choose between WineConf and a week of snowboarding
+ and I choose the latter.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ You've been working on the same areas as the TransGaming guys.  Do
+ you have any contact with them?  Is there any tension there?
+</p></question>
+<answer><p><i>Lionel:</i>
+ Well, we often interact on IRC, but we do not speak that often of
+ Wine-related subjects :-). We sometimes discuss tricky points, like
+ possible solutions for the <font color="red">aforementioned</font> multi-threading problem or about
+ some debugging sessions on some games.
+</p><p>
+ As for tensions, except when we go down the classical licensing flame war, I
+ never did really feel any. And they perfectly know my opinion on all this:
+ that it's perfectly OK for them to do what they do and the only thing that
+ I resent somewhat is the 'free' WineX CVS that could lure potential
+ developers from our tree.
+</p></answer>
+
+ 
+<question><p><i>BV:</i>
+ From what I understand, their approach is quite a bit different than
+ Wine's.  However, you've talked of redesigning everything to use a
+ middle layer to consolidate OpenGL calls
+ between the different versions of Direct3D.  Are you still planning on
+ doing that? 
+</p></question>
+<answer><p><i>Lionel:</i>
+Yes, it's still in our plans to create this layer. At least it's in
+Raphael's plans as I am not very motivated right now to work on it.
+</p><p>
+The goal of this layer would be multiple:
+<ol>
+ <li> share code between the various Direct3D implementations. In the
+    beginning it would mostly be between D3D8 and 9, but the ultimate goal
+    would be also to layer D3D1/7 over it.
+    For example, in the current code we have two almost identical parts of
+    code handling the mapping between D3D and OpenGL texture states. By
+    sharing this, any improvement in any version of D3D would benefit all
+    others.</li>
+
+ <li> it's the way Windows does it... And it would also help DLL
+    separation as there would be neither X11 nor OpenGL calls at all in any
+    of the DDraw / D3D8 / D3D9 libraries. This wined3d library would just
+    be another driver like the X11DRV, which could lead to easier support on
+    other platforms for example.</li>
+
+ <li> it would ease packaging as we would only have two libraries that really
+    depend on OpenGL being present in the system: our OpenGL wrapper and
+    this shared D3D low-level library.</li></ol>
+</p><p>
+Then, the obstacles... The biggest one we have is derived from goal #2. We
+have basically a choice: do the separation as Windows does it (this is how
+TransGaming is doing it) or devise our own API. The pros and cons of the two
+options...
+</p><p>
+ <dl>
+ <dt>Windows way:</dt>
+ 
+   <dd>Pros:
+   <ul>
+      <li> We could then run Wine's DDRAW.DLL / D3D8.DLL and D3D9.DLL in
+        ReactOS using real Windows device drivers.</li>
+	
+      <li> The API is already there and works, using Windows is a proof of 
+           that.</li>
+	
+      <li> We could use native DDRAW.DLL over our own low-level driver.</li>
+      
+      <li> It's the way Windows does it.</li></ul></dd>
+      
+   <dd> Cons:
+   <ul>
+      <li> The API, while documented, is not really easy to understand and may
+	change on each DirectX revision. Microsoft, after all, controls both
+	the DLL and the driver side.</li>
+	
+      <li> It's an all or nothing solution.  We cannot really incrementally
+        go with the driver solution.</li>
+
+      <li> We could use native DDRAW.DLL over our own low-level driver. I put
+	this here as a con because, if ever this would work,  most of the
+	people would use this solution. It should work best of course; which
+	could lead to our DDRAW / D3D DLLs being largely untested.</li>
+   </ul></dd>   
+
+ <dt>Our own API:</dt>
+ 
+   <dd>Pros:
+   <ul>
+
+      <li> We control the API and may decide however we want to go forward. For
+	example, only use the common API for texturing while all the
+	geometry is still separated.</li>
+
+      <li> As we write it ourselves, we are mastering the API and are not
+	limited by the 'bad' design decisions of others.</li>
+   </ul></dd>
+   <dd> Cons:
+   <ul>
+      <li> We need to invent the API ourselves, which means that it will take a
+	lot more time to have something defined ... which may at the end
+	prove to be badly designed.</li>
+
+      <li> It's not Microsoft's way, so maybe 'ugly' APIs doing direct HAL
+        calls would not work on our implementation.</li>
+   </ul></dd> </dl>
+</p><p>
+Once we decide how we do it, the work after is to first write the code in
+the driver (which would mostly be a copy paste of what is in the various
+code already present in Wine) and then rewrite all the current code using
+the API. Which is why I am not really motivated to do it as it's something
+that is not sexy to do. 
+</p><p>
+Anyway, at the moment we are still in the 'let's try to decide what to do'
+phase of stuff.
+</p></answer>
+
+<question><p><i>BV:</i>
+ It seems like OpenGL adds some overhead to the whole process.  Or
+ am I wrong?
+</p></question>
+<answer><p><i>Lionel:</i>
+ Well, the overhead when going through OpenGL is mostly when we cannot 
+ directly use the data sent by the application and we need to first translate it
+ into something usable by OpenGL.  Like, for example, projected vertices.
+ This can incur significant overhead, especially because applications are
+ not written with Wine's limitations in mind.
+</p><p>
+ Apart from that, in my opinion, as the granularity of the API is getting
+ more and more coarse, the overhead is starting to get smaller. What I
+ mean by that is, before one API call would be done pretty fast by the
+ driver (basically, just draw one triangle). Now, with shaders, vertex
+ buffers and all that, one API call sends a lot more work to the driver. So I 
+ think the part spent in Wine is less and less important in time compared to
+ the part spent in the driver and graphic card itself.
+</p><p>
+ I may be wrong though as I never measured anything :-)
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ You demoed <i>3DMark2000</i> at WineConf.  Does that give any insight 
+ on Wine's performance versus Windows?
+</p></question>
+<answer><p><i>Lionel:</i>
+ For this too I have no idea. On my main development box, I do not have a
+ version of Windows anymore so I cannot compare. The problem of the laptop I
+ demoed <i>3DMark2000</i> on is that the GL driver on the Linux side is not 
+ really stable so I was not able to do any real measurements. Moreover, we would
+ not be able to separate what is due to Wine's code and what is due to a
+ sub-optimal OpenGL driver. The best would be to test on an NVIDIA hardware
+ where the core driver is supposedly the same between Windows and Linux.
+</p><p>
+ As for optimizations, I have some ideas for them - mostly on some games who
+ do surface locking.  But there are so many problems to fix first, like the
+ dreaded multi-threaded D3D games issue, that I never find the motivation to
+ hack on them.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Recently there's been some people who have performed tests by taking
+ a ton of games and trying to run them.  The results have been somewhat
+ mediocre.  What's the single biggest problem that prevents Wine from
+ playing games?  
+</p></question>
+<answer><p><i>Lionel:</i>
+Well, I think it's still as explained in my slides during WineConf 2004:
+<ol>
+ <li> InstallShield support: all games / demos should install out of the box
+    for the user. This is certainly not the case yet.</li>
+
+ <li> Copy protection support: games should run out of the box without having
+    to download a crack. This is always chancy as most of the times a
+    crack is not available for exactly the game patch level / language you
+    are using. This does not block me that much as I work mostly on game
+    demos.
+    So, for that, Marcus' work is certainly a good thing. Now we just need
+    it to get committed to CVS and to really get it working without getting
+    afoul of the various laws out there.</li>
+
+ <li> Generic Win32 support: this is what blocks stuff like <i>Steam</i> 
+    from working. We need a lot more than just implementing DirectX to
+    get games running.  Another perfect example of this trend is the game
+    using Internet Explorer to draw its menus.</li>
+
+ <li> DirectX itself. This is really the easiest as DX is mostly only a
+    'command' API. What I mean by that is if you stub almost all of the
+    APIs and implement only some important parts, you have a good chance of
+    having games run as they do not really rely on anything returned
+    by the API.</li></ol>
+</p><p>
+ So when you ask, 'Will <i>EverQuest</i> work as it uses DX9?' I would answer, 
+ 'Does <i>EverQuest</i> really crash due to the missing DX9 support or due to 
+ other non-DirectX related problems?' 
+</p><p>
+ To be more serious, the current plan is to not start on DX9 support as long
+ as the 'wined3d' layer is not finalized. If it really takes too long, the
+ back-up plan is to copy the complete D3D8 code in the D3D9 library and to
+ modify it to add D3D9. It would be messy but would have a chance to work
+ pretty fast.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Is there any special combination of hardware that seems to work better
+ than others for games? 
+</p></question>
+<answer><p><i>Lionel:</i>
+ Most of the people (except Jason) use NVIDIA hardware for their 3D card.
+ Despite the fact that it's closed source, it's still one of the most stable
+ and feature-full OpenGL driver out there. On the audio / input side, actual
+ hardware is a bit less important. Except, of course, if you have a SB16 and
+ are hit by the kernel bug that leads to a nice kernel freeze when using
+ Wine.
+</p><p>
+ In my case, I have an old TNT2U as my graphic card and an Emu10k1 audio
+ card.
+</p><p>
+ As for driver issues, an example that comes to mind are problems I had on
+ my laptop using DRI drivers. For example, problems with alpha channel in 32
+ bit RGB textures. On the other hand, these 'bugs' are often problems in
+ Wine for which I use a special Mesa library built with debugging on.  It's
+ REALLY slow on my box, but is a must for debugging any OpenGL errors
+ lurking in the code.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV:</i>
+ Thanks for taking the time for this interview.
+</p></question>
+<answer><p><i>Lionel:</i>
+ While I am under the spotlights right now thanks to
+ my work on DirectX, all this would be for nothing if the rest of Wine did
+ not work. Basically, you can have the best DirectX implementation in the
+ world, if the rest of Wine does not get you the game at least starting and
+ up until the point where it actually uses DirectX, it's all for nothing.
+
+ So we are just standing on the shoulders of giants (who are doing jobs that are
+less 'sexy' and 'glamorous' than DirectX but absolutely necessary).</p></answer>
+
+</interview></kc>

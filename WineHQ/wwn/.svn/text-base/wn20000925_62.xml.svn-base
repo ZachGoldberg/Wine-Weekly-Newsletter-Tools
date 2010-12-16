@@ -1,0 +1,225 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="62" date="25 Sep 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 62nd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="73" size="186" contrib="30" multiples="16" lastweek="16">
+<person posts="7" size="27" who="David Howells &lt;David.Howells@nexor.co.uk&gt;" />
+<person posts="7" size="24" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="7" size="12" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="6" size="12" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="12" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="11" who="Damyan Ognyanoff &lt;Damyan@rocketmail.com&gt;" />
+<person posts="4" size="10" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="3" size="7" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="2" size="6" who="Bang Jun-Young &lt;bangjy@dreamwiz.com&gt;" />
+<person posts="2" size="5" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="2" size="5" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="2" size="5" who="James Hatheway &lt;james@macadamian.com&gt;" />
+<person posts="2" size="4" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="4" who="Douglas Ridgway &lt;ridgway@winehq.org&gt;" />
+<person posts="2" size="4" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="2" size="3" who="Martin Pilka &lt;mpilka@codeweavers.com&gt;" />
+</stats>
+
+
+<section 
+  title="Wine documentation"
+  subject="RFC: Wine Documentation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-182.html"
+  posts="5"
+  startdate="15 Sep 2000 00:00:00 -0800"
+  enddate="18 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jeremy White put out for comment an RFC covering the Wine
+documentation aspects. This follows the first steps already made (see
+<kcref issuenum="49" sectionnum="2">previous issue</kcref>). Jeremy wrote:
+
+<quote who="Jeremy White">
+As part of the Wine 1.0 effort, we've been working on improving the
+Wine documentation. 
+
+<p />
+
+We have a proposal for a way to overhaul the documentation system,
+and we'd like some feedback.
+
+<p />
+
+We start with the following goals:
+<ol>
+	<li>Documentation should be easy to find</li>
+	<li>Documentation should be clear (the user should quickly see 
+        the thing that he or she wants, and there should be no confusion
+        as to which document is 'right')</li>
+	<li>Documentation should be consistent (the documentation should
+        look the same whether it is on winehq or on a mirror, or in
+        a tarball).</li>
+	<li>Documentation should be easy to change.</li>
+</ol>
+
+<p />
+
+We propose the following visible changes:
+<ol>
+	<li>Entry documentation page should be simplified
+        and prioritized</li>
+	<li>Many multiple disconnected (but similar and/or redundant)
+        documents should be merged under a consistent format.</li>
+	<li>Centralize all of the documentation under one CVS point,
+        possibly as a new CVS tree, possibly just as the
+        documentation/ branch of the Wine CVS tree.</li>
+	<li>Switch the FAQ to use a FAQ-O-MATIC, to facilitate
+        updates and changes to it, and to allow the creation of a 
+        world editable late breaking bugs section.</li>
+</ol>
+</quote>
+
+
+<p />
+
+Jeremy then provided a link to such an experimental 
+<a href="http://www.winehq.org/?page=documentation">page</a>
+
+<p />
+
+Then, Jeremy proposed some changes in the way documentation is
+handled; basically, he was keen on having a separate CVS tree
+dedicated to documentation. Alexandre Julliard strongly preferred to
+keep the source and documentation trees together, so that changes to
+the code are reflected to the documentation. 
+
+<p />
+
+Dimitrie O. Paun even suggested to move documentation related to a
+given DLL into a specific subdirectory of the DLL source. Dimi felt
+this had several advantages:
+<ul>
+	<li>greater probability of having the docs maintained</li>
+	<li>easier for people to get into the project</li>
+	<li>possibility to maintain the dll separately</li>
+</ul>
+
+<p />
+
+No final agreement seems to have been reached.</section>
+
+
+<section 
+  title="Network broadcast issues"
+  subject="sendto() broadcast works on Windows without a Gateway..."
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-237.html"
+  posts="3"
+  startdate="18 Sep 2000 00:00:00 -0800"
+  enddate="18 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+James Hatheway ran into some networking issues:
+
+<quote who="James Hatheway">
+The app that I am debugging from time to time sends broadcast
+(255.255.255.255) UDP packets using the winsock function sendto(). On
+Windows, if the default gateway is not configured, the sendto()
+function still sends the UDP packet onto the local network. In Linux,
+if no default gateway is set, sendto() fails with a "network
+unreachable". Since it is possible to have an isolated local network
+that isn't connected to the internet, I guess it is possible to not
+have a gateway configured, so I want to fix  WSOCK32_sendto() to be
+like Windows and handle this.
+</quote>
+
+
+<p />
+
+Alexandre Julliard didn't like the proposed fix, and rather suggested to
+report an explicit error to the user, asking him/her <editorialize>I do
+need to be politically correct</editorialize> to add an explicit route from
+255.255.255.255 to the local network.</section>
+
+
+<section 
+  title="New Wine configuration tool"
+  subject="wine-cfg 0.3b available"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-264.html"
+  posts="4"
+  startdate="19 Sep 2000 00:00:00 -0800"
+  enddate="19 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Martin Pilka announced:
+
+<quote who="Martin Pilka">
+wine-configuration wizard 0.3beta is now available at
+<a href="http://www.winehq.org/docs/wine-user/config-helper-programs#CONFIG-HELPER-WINECFG">
+http://www.winehq.org/docs/wine-user/config-helper-programs#CONFIG-HELPER-WINECFG</a>
+</quote>
+
+
+<p />
+
+It's still an early beta version, so all your comments are welcomed.
+This is the first implementation of the tool defined earlier on (read
+<kcref issuenum="52" sectionnum="1">previous issue</kcref> for the details).</section>
+
+
+<section 
+  title="Bug tracking"
+  subject="bug tracking system"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-290.html"
+  posts="1"
+  startdate="21 Sep 2000 00:00:00 -0800"
+  enddate="21 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Douglas Ridgway announced:
+
+<quote who="Doug Ridgway">
+CodeWeavers has been kind enough to set up a new bug tracking system
+for Wine using Bugzilla. This will replace the old system. You can see
+a preview at <a href="http://bugs.winehq.org/">
+http://bugs.winehq.org/</a>, which is supposed to be
+fully live and the official bug database by the end of this week.
+
+<p />
+
+The old system is currently only accessible at
+http://ursula.gmcl.com/Bugs/ and has 500+ existing reports. I can't 
+guarantee that this system will remain accessible beyond the end of 
+the week. It might be worthwhile trying to make sure that important 
+reports are copied into the new system before they are lost / made inaccessible.
+
+<p />
+
+A big thank you to CodeWeavers for setting up and maintaining this new 
+system. Good bug tracking is a crucial part of making Wine great, and
+this system promises to be a significant improvement over what it's
+replacing. 
+</quote>
+
+
+<p />
+
+Even if it's not fully operational yet, you can still have a look at it.</section>
+
+</kc>

@@ -1,0 +1,434 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="43" date="15 May 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 43rd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+<correction date="08 May 2000 00:00:00 -0800">Ove K&#229;ven pointed out in previous
+edition (<confer edition="19" item="0">IsBadPtr and such </confer>)
+that another solution, as Ulrich Weigand also proposed, was to make
+use of the stack boundaries (as define with the ulimit, or even in
+Wine core with setrlimit call). Thanks for the correction Ove.
+</correction>
+
+</intro>
+
+<stats posts="114" size="411" contrib="38" multiples="22" lastweek="17">
+<person posts="12" size="43" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="11" size="23" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="10" size="22" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="7" size="16" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="6" size="30" who="Jeff Tranter &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="6" size="17" who="michael cardenas &lt;mbc@deneba.com&gt;" />
+<person posts="6" size="17" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="6" size="15" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="5" size="15" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+</stats>
+
+
+<section 
+  title="Packaging WineLib apps (and .so files)"
+  subject="dll separation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-104.html"
+  posts="5"
+  startdate="11 May 2000 00:00:00 -0800"
+  enddate="11 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Some latest changes from Alexandre Julliard split the big libwine.so
+file into smaller .so file. The final goal is to have each DLL in its
+own .so file (except for some core DLL like KERNEL32,
+TOOLHELP... which all sit  in libwine.so).
+
+<p />
+
+This change impacted Michael Cardenas' project:
+<quote who="Michael Cardenas">
+I just picked up the latest cvs tree and made the necessary changes to
+my project for the dll separation. To get my project to link I had to
+explicitly link a number of dlls including:
+<ul>
+<li />libcomdlg32.so
+<li />libcomctl32.so
+<li />libole32.so
+<li />libshell32.so
+</ul>
+
+<p />
+
+My question: is why are we doing this? Does this mean that to ship a
+Winelib app we're going to have to ship a bunch of little .so files?
+Wine worked just fine as one big .so and all this means is that we're
+going to have to spend more time on linker errors.
+</quote>
+
+
+<p />
+
+(Ed Note: Michael's project consist of porting Canvas from Windows to
+Linux using WineLib. Michael work at <a href="http://www.deneba.com">
+Deneba</a>)
+
+<p />
+
+Eric Pouech first proposed to use 'configure --disable-dll' which
+would build any WineLib program as a big executable, but Michael
+didn't like it: <quote who="Michael Cardenas">That's no good. I'll figure out how to
+make a unified .so, that's what I need.</quote>
+
+<p />
+
+Eric Pouech went in greater details:
+<quote who="Eric Pouech">
+I assume that you want to ship a configuration by its own of your
+program where you don't rely/mess with any other installed software
+(and you're afraid of the 20 or so .so files embedding DLLs)
+
+<p />
+
+If you package your app like ELF-main executable + libwine.so, then
+there's still a risk that some of your users, installing some other
+wine packages overwrite/erase/modify/put before in shared lib load
+order another libwine.so file. That's not safe either.
+
+<p />
+
+Anyway, issues with .so file will appear as soon as you use .so file
+(no matter you use 1 of them or 20 of them)
+
+<p />
+
+Solutions that come to my mind are:
+<ol>
+   <li /> build your app as a single exec (libwine.a comes into play)
+   <li /> build your app as an exec plus a libwine.so file.
+   <li /> build your app as an exec plus a bunch of .so files
+</ol>
+
+<p />
+
+>From a distribution stand point:
+1/ is the easiest one. 2/ and 3/ can cause trouble if users change the
+.so files somehow... You can in 2/ use another name for libwine.so,
+like libwine_for_my_app_no_one_can_use_it.so, but there's no gain
+with solution 1 (except if you have several execs sharing this .so
+file)
+ 
+>From an execution speed point of view:
+3/ is the best one (less memory: only loads needed code), less time
+(because less things to do) 
+ 
+>From a memory allocation point of view:
+3/ is also the best (only needed .so files are loaded into memory)
+
+<p />
+
+No, I'm not so convinced 2/ (which is, AFAIU, what you request) is the
+best solution. 1/ or 3/ seem better to me.
+ 
+Obviously, 3/ is not a valid solution today. As every day brings its
+load of bug fixes, enhancements... people willing to ship need to
+build their apps on something more rock solid. That's definitively a
+limitation for 3/ (until wine 1.0 is ready).
+
+<p />
+
+So my proposal would be:
+<ul>
+   <li />use 1/ until wine 1.0 ships
+   <li />use 3/ as soon as wine 1.0 exists, and build your apps on top
+of it (as it's done with XFree, KDE...)
+</ul>
+</quote>
+
+
+<p />
+
+Michael then explained that Deneba ships canvas as an executable +
+libcv7.so. Here  libcv.so is just libwine with the name and the soname
+changed (in the configure scripts...), <quote who="Michael Cardenas">
+I think that having a ton of little dlls all over for wine is probably not
+good for developers since it will introduce a bunch of linking problems,
+and cause more hassles creating installers for new apps and worrying about
+.so files loading properly, etc. This approach would introduce a benefit
+though, because we won't have to include all the extra dlls in our
+distribution, which will allow for smaller installers and faster downloads.
+It also allows us to fix a problem in a particular dll and distribute just
+that dll.
+
+<p />
+
+In our case, we only need 4 .so so it would probably be perfectly
+acceptable to have them all separate and name each one something like
+libcomdlg32cv7.so
+
+<p />
+
+Actually, I think that 3 is the best solution for today because it allows
+you to easily distribute the fixes to your app.
+</quote>
+And Michael changed his mind for the proposal 3/.
+
+<p />
+
+</section>
+
+
+<section 
+  title="Wine 1.0"
+  subject="RFC: Wine 1.0"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-118.html"
+  posts="42"
+  startdate="11 May 2000 00:00:00 -0800"
+  enddate="15 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jeremy White fired a great discussion:
+<quote who="Jutta Wrage">
+Given the amount of progress Wine has made over the past year, it
+seems (to me anyway) that the time may be appropriate to try for Wine
+version 1.0. 
+
+<p />
+
+I was hoping to spark a conversation on this topic, in two basic
+areas:
+<ul>
+   <li />Should we do it?  (If not, why not, and when?)
+   <li />What needs to be done before we can release Wine 1.0?
+</ul>
+
+<p />
+
+I'll start with my personal list:
+<ul>
+   <li /> All apps listed as a '5' work perfectly with Wine
+        (revising the apps database so that it's accurate
+         is a fine way to accomplish this, IMO).
+   <li /> Many sample applications compile and work with Winelib 'out of
+        the box' (along the lines of the work that Francois Gouget is doing).
+   <li /> The installation and configuration stuff is cleaner
+        (I think it's mostly there; I just think it needs a
+         little spit and polish).
+   <li /> The wine server interface is standardized so that
+        Wine version 1.01 and version 1.1 and version 2.0
+        will be able to interoperate with the Wine 1.0 server.
+</ul>
+</quote>
+
+
+<p />
+
+Several parallels discussion spread from this first post.
+
+<p />
+
+Many contributed to the wish list:
+<ul>
+   <li />Process (or address space) separation must be done (Marcus Meissner)
+   <li />Efficient printing (Marcus Meissner)
+   <li />CommDlg, Comdlg32 pair in working state (Marcus Meissner)
+   <li />Shell, Shell32 pair in working state (Marcus Meissner)
+   <li />Support and compilation of MFC available (Vivek Dasgupta,
+Michael Cardenas). On this, Jeff Tranter (from Corel, replacing Gav
+State who left Corel), announced that <quote who="Jeff Tranter">The g++
+enhancements that we contracted Cygnus to do are now complete and
+should show up in the public release (I'm not sure when,
+though).</quote>, and Jeremy White <quote who="Jutta Wrage">further, we have
+successfully built MFC after making only a modest set of changes to
+it, even with older versions of g++.</quote> 
+   <li />Merging back the Wine and Corel CVS tree (to ship their various 
+applications, Corel decorelate its own tree from Wine's, even if
+modifications in both ways took place in the past six months).
+   <li />a proper Windows' free environment (J&#246;rg Mayer)
+   <li />a complete wrc (Wine resource compiler) (Michael Cardenas had
+issues with huge resources and wrc).
+   <li />better font support (which triggered again the discussion on
+the True Type integration).
+</ul>
+
+<p />
+
+Alexandre Julliard gave his point of view:
+
+<quote who="Alexandre Julliard">
+I think we definitely want to make a 1.0 release. Not because of
+marketing reasons, but because our end goal is an emulator that works
+for everybody, not only for developers; and this will require at some
+point that we stop adding features and concentrate for a while on
+stabilizing the code.
+
+<p />
+
+As to the features we want in 1.0, here is my personal list:
+<ul>
+   <li />(surprise) address space separation
+   <ul>
+      <li />NT-like WOW VDMs for Win16 processes
+      <li />dll shared sections
+      <li />if possible no system structures allocated on the system heap
+   </ul>
+   <li />better window management
+   <ul>
+      <li />update regions calculation will get broken by address space
+       separation
+      <li />rewrite of -managed mode support
+   </ul>
+   <li />correct interfaces between dlls
+   <ul>
+      <li />dlls only use exported APIs
+      <li />no more global variables
+      <li />functions exported from libwine.so reduced to a minimum
+      <li />proper separation of GDI and USER
+   </ul>
+   <li />backwards compatibility
+   <ul>
+      <li />an app built against Winelib 1.0 should work with Wine 1.1 dlls
+      <li />the other way around is not necessary (i.e. if you upgrade an
+    app/dll you may have to upgrade the Wine core too)
+   </ul>
+   <li />thread-safe GDI (merge from Corel tree)
+   <li />a set of "certified" applications that work correctly
+   <ul>
+      <li />all apps based on InstallShield should at least get
+installed right
+   </ul>
+   <li />some kind of automated regression testing, at least for
+     non-graphical APIs
+   <li />better font handling would be nice, but this depends a lot on the X
+  server, so it may have to wait until more infrastructure is in place
+</ul>
+
+<p />
+
+The major point for the release after 1.0 should IMO be a better
+desktop integration by making it possible to use a standard toolkit;
+ideally a modular toolkit interface, but even support for only a
+single toolkit (probably GTK) would be good enough.
+</quote>
+
+
+<p />
+
+Another threadlet discussed the development process to be used:
+Alexandre Julliard explained the Wine 1.0 release process:
+
+<quote who="Alexandre Julliard">
+The release process I envision would be like this: once all the
+features that we want in 1.0 are in place, I'll make a 0.9 release
+which marks the feature freeze; from then on, only bug fixes will be
+allowed into the tree, until we consider it stable enough to call 1.0.
+There will _not_ be a separate unstable branch until after 1.0 is out;
+otherwise developers will continue working on the unstable branch and
+the bugs won't get fixed.
+</quote>
+
+and answered for later versions (some people - Patrik Stridvall, Ove
+Kaaven - discussed different strategies for core DLLs (like kernel...)
+and non core DLLs - like commctrl):
+<quote who="Alexandre Julliard">
+The stable version is maintained as a CVS branch, where only bug fixes
+are accepted. Once enough changes have been committed we can make
+1.0.1, 1.0.2 etc. releases while development continues on the 1.1
+(main) branch.
+
+<p />
+
+I'm not sure what you mean about core/non-core dlls; all dlls will be
+part of the same release process (i.e. stabilized at the same time),
+though of course changes to non-core dlls have a better chance of
+being accepted in the stable release, simply because they can break
+less things.
+</quote>
+
+
+<p />
+
+Another important threadlet included the discussion of what the
+driving factor(s) for Wine 1.0 shall be. Some folks asked rather for:
+<ul>
+   <li />a end-user oriented release (it runs application X from company
+A, Y from company B and Z from company C), 
+   <li />a software editor release: let companies use Wine to port their
+products to Wine
+   <li />a technical oriented release: put in place the correct
+foundation to build upon?
+</ul>
+
+<p />
+
+Alexandre Julliard gave his interpretation of it:
+
+<quote who="Alexandre Julliard">
+In fact a solid Wine 1.0 is more important for companies than
+end-users; most users will be happy if their favorite app works, no
+matter how ugly the underlying implementation is, and no matter
+whether it is called 1.0 or not. But companies that want to ship their
+apps on top of Wine need a solid foundation to build upon, and this is
+what 1.0 must mean. Of course this will also mean less bugs for
+end-users, because it will be easier to fix bugs without breaking
+everything; but the goal of 1.0 is not to run 100% of the apps out
+there, nor even 50%. It is to run a few apps well enough to show that
+our design will allow adding support for more apps later on.
+
+<p />
+
+You'll notice that there are no high-level features like common
+controls or OLE in my list. This is not because they are not
+important; but they are not mandatory for 1.0. We can perfectly ship
+1.0 with, say, a broken treeview control, as long as this doesn't
+impact our set of "certified" apps; we can always put a corrected
+version in 1.0.1. But we cannot ship 1.0 with broken window management 
+or address space separation, because this is not something you can
+retrofit after 1.0; so it has to go in before.
+</quote>
+
+
+<p />
+
+Another threadlet covered the tools to be used to help the effort
+towards Wine 1.0. Lots of people requested solid WineHQ, CVS and
+mailing list servers (you bet!), and some people suggested the use of
+BitKeeper. The BitKeeper's "your privacy or your money" motto offended 
+Alexandre:<quote who="Alexandre Julliard">My problem with their license is that I
+consider that privacy is a right, not something that you should have
+to buy. A tool that is designed to publish a trace of everything you
+do is IMO wrong from a moral standpoint, and so I refuse to use
+it. For me it's a question of principle.</quote></section>
+
+
+<section 
+  title="WineHQ application database"
+  subject="Application Database"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-128.html"
+  posts="2"
+  startdate="12 May 2000 00:00:00 -0800"
+  enddate="12 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Christopher Michael Morgan asked about the status of the application
+database on WineHQ.
+Douglas Ridgway answered:<quote who="Doug Ridgway">
+It broke during an upgrade. I turned it off to stop the flood of CGI
+errors in my inbox, and was hoping to have it up again within a couple of
+days. Unfortunately, as you know, it's been longer than that. I'll try and
+work something out so that at least queries function.
+</quote>
+Which he did, you can no again browse the application database
+(however writing to it is still disabled).
+</section>
+
+</kc>

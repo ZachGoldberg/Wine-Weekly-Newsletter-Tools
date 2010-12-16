@@ -1,0 +1,294 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="84" date="26 Feb 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 84th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="67" size="246" contrib="32" multiples="12" lastweek="14">
+<person posts="9" size="20" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="26" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="6" size="23" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="5" size="28" who="Ian Pilcher &lt;pilcher@concentric.net&gt;" />
+<person posts="4" size="12" who="FT Rathore &lt;mawali@news.icns.com&gt;" />
+<person posts="3" size="7" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="3" size="10" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="3" size="0" who="Robert O'Callahan &lt;roc+@cs.cmu.edu&gt;" />
+<person posts="2" size="7" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="2" size="6" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="2" size="5" who="David.Goodenough@dga.co.uk" />
+<person posts="2" size="23" who="Martin Pilka &lt;mpilka@codeweavers.com&gt;" />
+</stats>
+
+
+<section 
+  title="local IP and registry"
+  subject="TCP/IP networking and registry keys"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0244.html"
+  posts="2"
+  startdate="19 Feb 2001 00:00:00 -0800"
+  enddate="21 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Alan Chandler wrote: <quote who="Alan Chandler">I spent most of the
+weekend trying to get Grand Prix Legends GPL to work. I achieved my
+first goal of getting it to run in server mode.
+
+<p />
+
+One of the things I needed to get the game to do, was to recognize
+that there where some interfaces it could talk TCP/IP out of. It took
+me some time to realize that under windows it was doing this by
+looking for the key <code>
+[System\\CurrentControlSet\\Services\\Class\\NetTrans]</code>
+and was then enumerating the keys under it to establish an IP address
+ie the following:
+<pre><code>
+[System\\CurrentControlSet\\Services\\Class\\NetTrans\\0000]
+"IPAddress"="10.0.10.100"
+</code></pre>
+
+<p />
+
+The thought occurred to me that maybe the tool the builds the registry 
+during wine install could actually create these keys - since it is
+essentially a key part of the system (and other similar keys are also
+built in the same way). 
+</quote>
+
+<p />
+
+Ove Kaaven agreed on the utility of the key itself, but noted that 
+<quote who="Ove Kaaven">the IP address can change between Wine invocations
+(PPP, DHCP, and things like that), so it would have to be a dynamic
+key, generated at Wine startup or something like that.</quote>
+
+<p />
+
+There is already some keys which are dynamically generated (like the
+processor information - Pentium, stepping... - or copying the contents 
+of the init files into Wine specific registry keys to ease the reading 
+of those configuration afterwards), so the approach could be extended.
+
+<p />
+
+However, Ove wondered how the network interfaces could be gotten from
+the OS in a portable way ? There hasn't been any answer so far.
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Setting up a Wine's test harness"
+  subject="Perl/Wine extension for perusal"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0189.html"
+  posts="12"
+  startdate="14 Feb 2001 00:00:00 -0800"
+  enddate="23 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+John Sturtz (re)-opened the long awaited issue of bringing up a test
+harness for Wine (and its implementation of the Windows API).
+
+<quote who="John F Sturz">
+I work for CodeWeavers here in St Paul. A while back, I was set to the
+task of working on winetest, a Wine application which provided a
+flex/bison-based parser for a little scripting language from which
+Wine API functions could be called. The idea was that one could write
+test scripts which would call Wine API functions and examine the
+results, and the scripts could be used for regression testing of Wine.
+
+<p />
+
+The scripting language began life with a rather Perl-ish syntax, and
+as functionality got added, it got more so. Eventually (about the time
+I had implemented a pack function, and wanted an unpack), I decided to
+see if I could write a Perl extension that provided a gateway for
+calling Wine API functions. That way, scripts for regression testing
+could be written directly in Perl instead.
+</quote>
+
+
+<p />
+
+John then provided a first implementation of this (you can find it
+at <a href="ftp://wine.codeweavers.com/pub/other/perlwine.tar.gz">
+ftp://wine.codeweavers.com/pub/other/perlwine.tar.gz</a>).
+
+<p />
+
+Basically, what you can do with this is invoke some tests like:
+<pre><code>
+    $atom = kernel32-&gt;GlobalAddAtomA("bark");
+</code></pre>
+
+<p />
+
+Joshua Thielen pointed out that some existing Perl modules for Win32
+(from the <a href="http://www.activestate.com/">ActiveState</a> site)
+allowed to provide the same interface as John's work (which was Linux
+based only). Alan Gonzalez also noted that this 
+<quote who="Alan Gonzalez">will work out of the box on cygwin for
+windows using the perl 5.6.1 that is bundled with it.</quote>
+				   
+Jeremy White then started to figure out what the test harness should
+contain: <quote who="Jeremy White">I think it would be great if we could start
+to define (and build) a test harness. I think that there are a lot of
+people who would help write test scripts, who might otherwise be
+unable to help with Wine development. The more the merrier, I always
+say... </quote>
+
+<p />
+
+Jeremy started to split out the test cases into two categories:
+<ul>
+   <li>non-interactive: no user interaction is needed</li>
+   <li>interactive: user interaction is needed</li>
+</ul>
+
+<p />
+
+As already covered (see <kcref issuenum="66" sectionnum="0">this article
+</kcref>), a free test tool for X11 regression test has not been
+found yet, making the second category a bit difficult to run.
+
+<p />
+
+Eric Pouech proposed to have a two pass approach to run the
+test. First the test case is run and outputs some results which are
+stored into a file. Then, the contents of this file is compared
+against a reference file.
+
+<p />
+
+This would allow, beyond the simple regression idea - running twice
+the same program should provide the same results -, to compare the
+output between running the program under Windows and running it under 
+Wine.
+
+<p />
+
+Eric also liked to idea of writing test cases in C which would allow
+to test three cases:
+<ul>
+   <li>test case compiled and run under Windows,</li>
+   <li>test case compiled under Windows, and run with wine</li>
+   <li>test case compiled under Unix as a Winelib application</li>
+</ul>
+
+<p />
+
+Alexandre Julliard really backed up the idea of the Perl test scripts:
+<quote who="Alexandre Julliard">The idea of using an interpreter like Perl is
+precisely that you don't need to compile anything to run tests. I
+think this is important because not everybody has a Windows
+compiler. It also allows using the exact same test script under
+Windows and Wine, so that you don't have to worry whether your Windows
+binary exactly matches your Winelib binary.
+</quote>
+
+<p />
+
+Eric and Alexandre further argued whether it was more common not to
+find a compiler or not to find a Perl interpreter on a PC/Windows box.
+
+<p />
+
+Francois Gouget also liked the C/C++ tests because <quote who="Francois Gouget">
+The downside of interpreter-based tests are:
+<ul>
+   <li>they won't test the Winelib headers or Winelib specific
+issues</li> 
+   <li>I imagine that some of our potential test writers would be
+windows programmers (after all these tests would be nothing more than
+simple Windows applications). They would probably be more comfortable
+writing tests in C/C++.</li>
+</ul>
+</quote>
+
+<p />
+
+The thread ended with Eric and Alexandre still arguing on some other
+points. All the details of the test harness are not settled down yet,
+but the effort of providing such an environment has started. We'll
+keep you posted with the advances.</section>
+
+
+<section 
+  title="Wine .so files' names"
+  subject="huge library renaming ?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0270.html"
+  posts="12"
+  startdate="23 Feb 2001 00:00:00 -0800"
+  enddate="24 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr asked whether all the Wine libraries shouldn't be
+renamed to <code>libwineXXX</code> to avoid any conflict with existing 
+libraries. Wine already had a clash with libole.so and gnumeric.
+
+<p />
+
+After some discussion on how the current distributions were doing
+their packages (Debian, RedHat...), Ove Kaaven explained what should
+be the final scheme.
+
+<p />
+
+The Wine DLL files (to be semantically correct, read the .so files
+containing Wine's DLLs ; see <kcref issuenum="74" sectionnum="4">for the
+details</kcref>) should be stored in /usr/lib/wine (as FHS
+suggests). All the other .so files (like libwine_unicode,
+libwine_tsx11...) should be stored into /usr/lib (or any directory
+pointed by /etc/ld.conf). /usr/lib/wine shouldn't be referenced by the 
+/etc/ld.conf configuration file.
+
+<p />
+
+Any program (winelib or wine itself) which wants to import a file will 
+do it through the import directive of its .spec file (and will not
+require the support of the linker (like using -lfoo) for that).
+
+<p />
+
+In other words, all is already in place for a proper storage, avoiding 
+any naming conflicts.
+
+<p />
+
+
+<p />
+
+</section>
+
+</kc>

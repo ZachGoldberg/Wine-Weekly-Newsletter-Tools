@@ -1,0 +1,416 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+
+<issue num="161" date="03/14/2003" />
+
+<intro>
+<p>This is the 161st release of the Wine's kernel cousin publication. 
+Its main goal is to act as spam magnet for my email account.
+It also serves to inform you of what's going on around Wine (the Un*x 
+Windows emulator).</p>
+</intro>
+
+
+
+<stats posts="133" size="375" contrib="40" multiples="26" lastweek="25">
+
+<person posts="15" size="37" who="Alexandre Julliard" />
+<person posts="14" size="38" who="Dimitrie O. Paun" />
+<person posts="14" size="35" who="Mike Hearn" />
+<person posts="10" size="27" who="Sylvain Petreolle" />
+<person posts="9" size="24" who="Mike Hearn" />
+<person posts="7" size="19" who="Tony Lambregts" />
+<person posts="6" size="22" who="Vitaliy Margolen" />
+<person posts="5" size="13" who="Florian Schirmer" />
+<person posts="4" size="15" who="Alireza Mahini" />
+<person posts="4" size="11" who="Dimitrie O. Paun" />
+<person posts="4" size="10" who="Ove Kaaven" />
+<person posts="4" size="9" who="James" />
+<person posts="3" size="13" who="Dan Kegel" />
+<person posts="3" size="10" who="Shachar Shemesh" />
+<person posts="3" size="10" who="George D.Plymale" />
+<person posts="3" size="8" who="Uwe Bonnes" />
+<person posts="3" size="8" who="Dmitry Timoshkov" />
+<person posts="3" size="7" who="David Fraser" />
+<person posts="3" size="7" who="Vincent Beron" />
+<person posts="3" size="6" who="Eric Pouech" />
+<person posts="2" size="5" who="Kevin DeKorte" />
+<person posts="2" size="5" who="Duane Clark" />
+<person posts="2" size="5" who="Jukka Heinonen" />
+<person posts="2" size="4" who="Francois Gouget" />
+<person posts="2" size="4" who="Marcus Meissner" />
+<person posts="2" size="4" who="Andreas Mohr" />
+<person posts="1" size="6" who="Rolf Kalbermatter" />
+<person posts="1" size="4" who="Thomas Mertes" />
+<person posts="1" size="3" who="Rolf Kalbermatter" />
+<person posts="1" size="3" who="Patrik Stridvall" />
+<person posts="1" size="3" who="Jeremy White" />
+<person posts="1" size="3" who="Martin Wilck" />
+<person posts="1" size="2" who="Kristoffer Ericson" />
+<person posts="1" size="2" who="J. Grant" />
+<person posts="1" size="2" who="Jon Griffiths" />
+<person posts="1" size="2" who="Ulrich Weigand" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Keith Matthews" />
+<person posts="1" size="1" who="David Laight" />
+
+</stats>
+
+
+
+
+<section 
+	title="News: WineX 3.0 Preview" 
+	subject="News"
+	archive="http://www.transgaming.com/showthread.php?news=61" 
+	posts="1"
+	startdate="03/08/2003"
+	enddate="03/14/2003"
+>
+<topic>News</topic>
+<p>TransGaming put together 
+<a href="http://www.transgaming.com/showthread.php?news=61">a preview release</a>
+of WineX 3.0.  The noted the following additions:</p>
+<quote who="TransGaming"><p>
+<ul>
+ <li>Hardware accelerated Vertex Shaders have been implemented. These are only supported on OpenGL drivers which implement the NV_vertex_program extension. The ARB extension will be supported in future releases (post 3.0 final) </li>
+ <li>Render to Texture and Cube Mapping support implemented for cool texturing effects. </li>
+ <li>Many installer related issues have been resolved; starting installs with autorun.exe should now work in many cases, multi disc installs should now have fewer issues with disc changing, and large installers are now supported. Additionally, significant effort has gone into making InstallShield 6 graphics update correctly. </li>
+ <li>Better handling of X11 Window Manager idiosyncracies - WineX 3.0 does a much better job of going into 'full-screen' mode. </li>
+ <li>Many texturing robustness fixes. </li>
+ <li>SecuRom copy protection speed has been improved by up to 50% in some instances. </li>
+ <li>A combination of optimizations should provide faster game play for some games. </li>
+ <li>A new ALSA sound driver backend has been provided although it is untested at this point. </li>
+</ul></p></quote>
+
+<p>They also announced the availability of <a href="http://www.transgaming.com/sims.php">The
+Sims</a> on it's own - no need to buy the Mandrake distro just to run it.  For more
+details concerning TransGaming, check out the
+<a href="http://www.transgaming.com/showthread.php?news=59">March
+Development Status Report</a>.</p>
+
+</section>
+
+
+
+
+
+<section 
+	title="Thread Latency" 
+	subject="(Mis)using threads"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0263.html" 
+	posts="13"
+	startdate="03/11/2003"
+	enddate="03/12/2003"
+>
+<topic>Multimedia</topic>
+<p>Florian Schirmer ran into some latency problems with
+threads:</p>
+<quote who="Florian Schirmer"><p>
+I've some major trouble with wine's thread implementation. We're porting a
+soundprocessing application to linux/wine. (It will run as Win32 app under
+wine in the first step). Sadly the wine thread implementation and/or the
+scheduler does not get the priorities right. The mission critical sound task
+will not get as much attention as it needs.
+</p><p>
+We've tried some hacks to improve it (increasing linux kernel priorities
+using set_scheduler/set_priorities) but this doesn't really fix the problem.
+Then we tried to make it even more ugly by creating a own thread using the
+clone() system call. This fixed the timeslice problem but opens up other
+strange problems. (Random crashes here and there). Most likely due to
+missing lock issues or something like that.
+</p><p>
+I would appreciate any hints which could make things run more smoothly!
+Basically 2 ways are left to go:
+<ul>
+<li> Fix the wine scheduler to obey priorities</li>
+<li> Fix the thread (locking?) issues</li>
+</ul></p><p>
+Thanks a lot for any information!
+</p></quote>
+
+<p>Eric Pouech suggested somehow working on the first idea might
+help with the problem.  Florian wrote back with more details:</p>
+<quote who="Florian Schirmer"><p>
+I've added some Enter/LeaveCriticalSections
+calls around the handler and it seems to make things much better (but still
+far from being perfect).
+</p><p>
+
+What prevents wine from distributing timeslices correctly? Even if i
+renice/boost linux kernel scheduler of the whole wine process(es) things go
+wrong a lot. The processing thread gets way too little attention.
+</p><p>
+
+Do you have some hints on how to boost the processing thread a bit? I'm
+perfectly happy with an (even ugly) hack. I've tried to identify the wine
+scheduler, but was unsuccessful :( Maybe you can point me in to right
+direction (file, line #)?
+</p></quote>
+
+<p>As far as a "Wine scheduler" goes, Ulrich Weigand explained why
+he had a hard time locating it, <quote who="Ulrich Weigand">
+Actually, Wine does not have a scheduler as such (well, it has a scheduler
+for 16-bit tasks, but not for 32-bit processes/threads).  Wine threads
+are just normal Linux tasks created with clone().  The usual Linux
+scheduling rules should apply ...</quote></p>
+
+<p>So priorities from Win32 threading are pretty much ignored.  Ove
+K&#229;ven explained why, 
+<quote who="Ove Kaaven">
+
+ The Linux scheduler, you mean? Wine doesn't schedule threads on its own,
+ Win32 threads are just normal Linux threads. I'm sure we'd have done
+ something with the Win32 priorities a long time ago if we thought it
+ would work. But Linux doesn't allow a non-root process to increase its 
+ scheduling priority (and of course people shouldn't run Wine as root),
+ so it mostly seemed to just be an exercise in futility, and that's why I
+ think nobody has bothered. And I don't expect this to improve...</quote>
+
+</p><p>David Laight thought the scheduler allowed scheduling priority
+to be decreased though.  Reducing some threads and allowing others to
+run at the normal level might achieve the affect of making some threads
+a higher priority.  But Ove thought there might still be a problem with
+that, <quote who="Ove Kaaven">
+ Yeah, I believe it does [let you reduce the priority], but I don't 
+ think it'll let you increase it
+ back to the original level afterwards. Anyway, the problem with doing
+ that is, if Wine would somehow reduce the priority of all "normal"
+  priority thread, and let "high-priority" threads run at original
+ priority, then Wine processes would be at a significant scheduling
+ disadvantage relative to ordinary Linux processes, and this could be
+ even worse than the status quo. It might make sense to do this for
+ "low-priority" threads though, but very few apps would create those.
+ </quote></p>
+
+<p>Mike Hearn suggested something that might be possible,
+<quote who="Mike Hearn">
+ Anyway, if this guy needs control of priorities for his app to work,
+ then perhaps he just needs to run Wine as root and implement the
+ priority switching code. Sucks, but then the whole root vs everybody
+ else needs rethinking or improving anyway imho.</quote></p>
+
+</section>
+
+
+
+
+
+
+<section 
+	title="Petzold Example Programs" 
+	subject="Wine Makefile for Charles Petzold's Example Programs"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0.html" 
+	posts="1"
+	startdate="03/12/2003"
+>
+<topic>Documentation</topic>
+<p>Dimi Paun announced the availability of sample code
+Charles Petzold's book, 
+<a href="http://www.charlespetzold.com/pw5/"><i>Programming Windows, 5th Edition</i></a>:</p>
+<quote who="Charles Petzold"><p>
+For the past few weeks, I've been working with John Kopplin on
+getting the Petzold examples compiling under Wine using his
+Gnu Makefile package, available from:
+<a href="http://www.computersciencelab.com/Petzold.htm">
+  http://www.computersciencelab.com/Petzold.htm</a>
+</p><p>
+It took some work, but we've done it. The good news is that
+all (but 3) examples compile just fine. This has been accomplished
+while making absolutely _no_ changes to the original source, and 
+very few (and obvious) changes to the GNU Makefiles.
+</p><p>
+This is very good news, as it shows we can have a common build
+system between Wine and Windows. The only samples that don't
+work just yet are those from Chap21 which build DLLs, and DLL
+creation is yet not supported by winegcc. I hope this will change
+in the near future.
+</p><p>
+The problems that needed fixing were very simple, and quite
+obvious. They fall into 2 categories:
+<ol>
+  <li> The samples expect to link with the msvcrt, not the
+     Unix libc, so we had to pass the -mno-cygwin flag
+     to the compiler/linker. Under mingw this is the default
+     behaviour. This change is actually beneficial for
+     the Windows port as well, as it will allow the samples
+     to be build using Cygwin's gcc also. As such, it
+     should be considered a portability fix, rather than
+     a Wine specific fix.</li>
+  <li> The filnames used mixed case (not matching the actual
+     name on disk), and some includes use backslash (\),
+     intead of forward slash (/). This problem is typical
+     and simple to address in a portable manner if you
+     can modify the source. As we wanted to not touch
+     the examples in any way, we had to find another way
+     around it. Luckily, Unix accepts virtually any char
+     in a filename (except / of course), as well as links.
+     So we just created the appropriate symbolic links
+     where necessary, or just renamed the file if it made
+     more sense.</li></ol>
+</p><p>
+All these renames / symlinks creation was collected in a nice
+little intallation script. So, without further delay, here
+are the instructions on how to try the sample under Wine.
+<ul>
+   (place the Petzold CD in the CDROM drive)<br />
+   <tt>
+   $ mount /mnt/cdrom<br />
+   $ mkdir petzold<br />
+   $ cd petzold<br />
+   $ cp -r /mnt/cdrom/* .<br />
+   $ wget http://www.computersciencelab.com/Petzold.zip<br />
+   $ unzip -a Petzold.zip<br />
+   $ bash Wine/install.sh<br />
+   $ make</tt></ul>
+</p><p>
+Enjoy!
+</p></quote>
+
+
+
+
+</section>
+
+
+
+
+
+<section 
+	title="Named Pipe Patch" 
+	subject="Named Pipe patch"
+	archive="http://www.winehq.org/hypermail/wine-patches/2003/03/0029.html" 
+	posts="3"
+	startdate="03/04/2003"
+	enddate="03/09/2003"
+>
+<topic>IO</topic>
+<p>Mike McCormack sent a patch to wine-devel as a preview of
+some work he's doing:</p>
+<quote who="Mike McCormack">
+<p>
+This patch probably shouldn't be applied... it's just to let everybody 
+know where I'm at with the named pipes code.
+</p><p>
+The patch moves away from using unix pipes to implement named pipes, and 
+instead implements pipes internally. This is necessary to implement 
+message mode properly (without race conditions).
+</p><p>
+I don't have time to work on it this week, so don't expect anything new 
+before the weekend. If anybody wants to play with it or comment, feel 
+welcome.
+</p><p>
+I've started trying to pass some of Dan's tests, but it still fails... 
+Dan, your test's coverage is great!
+</p></quote>
+
+<p>Dan Kegel 
+<a href="http://www.winehq.org/hypermail/wine-patches/2003/03/0101.html">cut down</a> 
+the patch in hopes it might act as a stepping stone:</p>
+<quote who="Dan Kegel"><p>
+ Since Mike's patch is a big rearchitecting that Alexander isn't
+ totally comfortable with, how about something along these lines
+ as a first step?  To reflect the fact that freshly minted named
+ pipes can be connected to, I added an fd_for_peer variable
+ that is only set when a named pipe is first created, and
+ added a new state 'ps_fresh_server' to mark pipes which have
+ been freshly created, and arranged for find_partner to be
+ able to find partners in multiple states.
+</p><p>
+ I didn't bother dealing with refcounting of the fd_for_peer variable
+ that holds the file descriptor.
+</p></quote>
+
+</section>
+
+
+
+<section 
+	title="Lightwave" 
+	subject="LightWave 3D 7.5"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0197.html" 
+	posts="7"
+	startdate="03/07/2003"
+	enddate="03/11/2003"
+>
+<topic>Graphics</topic>
+<p>George Plymale dropped a note to list problems he was
+having with 
+<a href="http://www.newtek.com">Lightwave</a>.  Overall the application 
+was very close to working.  Mike Hearn suggested George start the
+debugging process to get to the real source of the problems:
+<quote who="Mike Hearn">
+ To be honest, debugging is something best done by somebody familiar with
+ the app, and who actually has a copy. I don't know how much experience
+ with coding you have, but I'd suggest you read the wine user's guide
+ and developers guide, those give an intro to debugging and sit down and
+ work through the problems. For crashes, try using winedbg to get a
+ backtrace, if you can get a good backtrace that can help with crashes.
+</quote></p>
+
+<p>George discovered a demo was soon to be available and developers
+could download it to help improve compatibility:</p>
+<quote who="George Plymale"><p>
+
+ I just spoke with Newtek this morning and they said that they are 
+ actually going to post a trial version of LightWave this week, around 
+ Wednesday or Thursday!  So that's a real plus for this.  Also, you are 
+ right it appears that they do use their own widget library, however 
+ Window's widgets do appear to be used for some dialogs.
+</p><p> 
+ Hopefully with this trial becoming available we can work through this.
+</p></quote>
+
+<p>Mike Hearn didn't think it would necessarily lead to any fixes,
+<quote who="Mike Hearn">
+ As I have said before, you'll probably have to do this yourself. Unless
+ you can find a developer to debug it for you, it's safe to assume we're
+ all busy with other things. This happens every so often, sometimes
+ somebody gets interested and pops up with some patches or notes, but
+ it's by no means guaranteed.</quote></p>
+</section>
+
+
+
+
+<section 
+	title="Need New Winsock Maintainer" 
+	subject="New winsock maintainer needed"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/03/0264.html" 
+	posts="1"
+	startdate="03/11/2003"
+>
+<topic>IO</topic>
+<p>Martin Wilck did some huge improvements to Winsock over the
+past year.  This week he announced he won't be able to contribute
+as much:</p>
+<quote who="Martin Wilck"><p>
+
+ I am sorry to announce that I won't be able to continue as wine's
+ winsock maintainer. I will be lacking the time and power to fulfill a
+ maintainer's duties appropriately. I guess I have already failed to do
+ so in the last 2 months.
+</p><p>
+ There have been few bug reports lately, so the code isn't completely
+ broken for my successor, I hope. On the other hand, I would have liked
+ to clean up some other things like the select() call and the transport
+ provider interface. The fact that I didn't have the time to get going on
+ these also shows that I'd better hand this off to someone else.
+</p><p>
+ I'll be coming back here, and perhaps I'll have more time for
+ contributions some time in the future. In any case, I'll be available
+ for questions or complaints about the winsock code under this email
+ address and under my private email, mwilck@freenet.de. I have certainly
+ not lost interest in Wine, Linux, and Free Software.
+</p><p>
+ Working with you guys has definitely been great fun and I have learned
+ more than in years before.
+</p></quote>
+</section>
+
+</kc>
+

@@ -1,0 +1,366 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="216" date="03/26/2004" />
+<intro> <p>This is the 216th issue of the Wine Weekly News publication.
+Its main goal is to remind you to floss. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="168" size="477" contrib="49" multiples="25" lastweek="22">
+
+<person posts="22" size="59" who="Dimitrie O. Paun" />
+<person posts="16" size="57" who="Ferenc Wagner" />
+<person posts="14" size="34" who="Alexandre Julliard" />
+<person posts="11" size="37" who="Paul Millar" />
+<person posts="11" size="28" who="Jakob Eriksson" />
+<person posts="8" size="21" who="Jeremy Newman" />
+<person posts="6" size="16" who="hatky" />
+<person posts="6" size="16" who="Boaz Harrosh" />
+<person posts="6" size="14" who="Francois Gouget" />
+<person posts="5" size="11" who="Mike Hearn" />
+<person posts="5" size="11" who="Ivan Leo Murray-Smith" />
+<person posts="4" size="17" who="Eric Pouech" />
+<person posts="4" size="13" who="Hans Leidekker" />
+<person posts="4" size="8" who="Lionel Ulmer" />
+<person posts="3" size="12" who="Steven Edwards" />
+<person posts="3" size="6" who="Robert Lunnon" />
+<person posts="2" size="6" who="C. Daniel Mojoli B." />
+<person posts="2" size="5" who="Shachar Shemesh" />
+<person posts="2" size="5" who="Stefan Leichter" />
+<person posts="2" size="5" who="Uwe Bonnes" />
+<person posts="2" size="4" who="Filip Navara" />
+<person posts="2" size="4" who="Robert Shearman" />
+<person posts="2" size="3" who="Martin Fuchs" />
+<person posts="2" size="3" who="hatky &lt;&gt;" />
+<person posts="1" size="6" who="Brian Vincent" />
+<person posts="1" size="6" who="Christoph Frick" />
+<person posts="1" size="3" who="Nerijus Baliunas" />
+<person posts="1" size="3" who="Geoff Thorpe" />
+<person posts="1" size="3" who="Felipe W Damasio (Elipse Software)" />
+<person posts="1" size="3" who="=?ISO-8859-1?Q?J=F8rn?= Villesen Christensen" />
+<person posts="1" size="3" who="Raphael" />
+<person posts="1" size="2" who="Heiko Nardmann" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="(pvriens)" />
+<person posts="1" size="2" who="Michael Schluter" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="(tony_lambregts)" />
+<person posts="1" size="2" who="Christian Costa" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="flyker" />
+<person posts="1" size="2" who="(chmorgan)" />
+<person posts="1" size="2" who="Marcus Meissner" />
+<person posts="1" size="2" who="Paul van Schayck" />
+<person posts="1" size="1" who="Gibtsnich Gibtsauchnich" />
+<person posts="1" size="1" who="Jeremy Newman" />
+<person posts="1" size="1" who="Vincent B&#233;ron" />
+<person posts="1" size="1" who="Juan Lang" />
+
+</stats>
+<section 
+	title="News: WineHQ Stats" 
+	subject="News"
+	archive="http://cia.navi.cx/stats/project/winehq"
+	posts="3"
+	startdate="03/20/2004"
+	enddate="03/26/2004"
+>
+<topic>News</topic>
+<p>Someone on IRC pointed out CIA is 
+<a href="http://cia.navi.cx/stats/project/winehq">tracking Wine stats</a>.
+The stats are skewed since it tracks things sent to wine-patches rather
+than wine-cvs.  Nonetheless, the numbers are interesting.  I suspect
+some of the other projects that show lots of traffic include regular
+discussion on their lists as well as patches.  </p>
+
+<p>Over at <a href="http://www.frankscorner.org/">Frank's
+Corner</a> I found a link to a vnunet.com article titled
+<i>"<a href="http://www.vnunet.com/Features/1153604">Linux and Windows: Mixed doubles"</a></i>.
+Part I goes into a bit of discussion about Wine and 
+<a href="http://www.vnunet.com/Features/1153632">part II</a>
+delves into actual configuration of the Wine config file.
+(Yes, that same config file a bunch of people are working
+on eradicating once and for all.)</p>
+
+<p>In fact, that task is on the 
+<a href="http://www.winehq.com/site/todo_lists">To Do List</a>.
+A few weeks ago we had 19 items marked as complete, 30 in
+progress, and 18 up for grabs.  We've seen more progress and now:
+<ul>
+	<li>Green (completed): 24</li>
+	<li>Yellow (in progress): 30</li>
+	<li>Red (not started): 15</li>
+</ul></p>
+
+<p>Alexandre is working on the filesystem changes right now.
+We're likely to see a domino effect of some items once that's
+complete.  Namely, that will set things up for switching the
+configuration into the registry.</p>
+
+<p>LinuxWorld looked at the capabilities of Linux as a gaming
+platform.  Dee-Ann LeBlanc put together two articles
+that mention a bit about TransGaming.  The first one    
+<a href="http://www.linuxworld.com/story/44095.htm">explores challenges</a>
+faced by Linux.  The second 
+<a href="http://www.linuxworld.com/story/44106.htm">goes in-depth</a> 
+into libraries that can be used by game programmers.  It includes this
+quote from Gav State:</p>
+<quote who="Gavriel State"><p>
+ Our users have asked us to begin adopting the ALSA API in place of the older 
+OSS [Open Sound System, 
+<a href="http://www.opensound.com">www.opensound.com</a>] APIs, and we've 
+begun to look at how best to do that. One option that we're considering is 
+switching to OpenAL, which now has a direct ALSA back end. Doing that right is 
+going to require us to get some extensions added to OpenAL, which we're 
+discussing with OpenAL developers such as Ryan Gordon; driver quality is 
+still an issue.</p></quote>
+
+<p><a href="http://www.openal.org">OpenAL</a> was first introduced by Loki
+and provides a cross-platform 3D audio API.</p>
+
+</section>
+<section 
+	title="New Task Manager" 
+	subject="reactos' taskmgr"
+	archive="http://www.winehq.org/hypermail/wine-patches/2004/03/0276.html" 
+	posts="1"
+	startdate="03/21/2004"
+>
+<topic>Utilities</topic>
+<p>Eric Pouech ported a Task Manager to Wine:</p>
+<quote who="Eric Pouech"><p>
+This is (finally...) the port of ReactOS taskmgr into wine.
+</p><p>
+There's also a small trick for setting/resetting debug channels on the 
+fly. Just left click on any running program (not application) and in the 
+context popup menu, choose the debug channel edition line.
+This will require you to have a running dbghelp DLL, which I might 
+provide RSN. In other words, this patch alone won't allow channel 
+manipulation, this patch and the yet to come dbghelp DLL will do.
+</p><p>
+There's still lot of possible improvement on the UI part for the debug 
+channel editing, so if someone has better ideas for implementing it, 
+please feel free to do it.
+</p></quote>
+
+<p>The Task Manager is pretty slick, and since it lends itself
+to screenshots I figured I would make some available:
+<ul><li><a href="http://www.theshell.com/~vinn/ss/taskmgr-app.jpg">Applications tab</a></li>
+<li><a href="http://www.theshell.com/~vinn/ss/taskmgr-proc.jpg">Processes tab</a></li>
+<li><a href="http://www.theshell.com/~vinn/ss/taskmgr-perf.jpg">Performance tab</a></li>
+</ul>
+</p>
+</section>
+
+<section 
+	title="WinAPI Stats on WineHQ" 
+	subject="To Do A.11 - Integrate API status into WineHQ"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0482.html" 
+	posts="10"
+	startdate="03/24/2004"
+	enddate="03/25/2004"
+>
+<topic>News</topic>
+<p>More work on the web site has been done over the past week.
+I'll summarize those changes in a news article next week.  This
+one developed a thread on wine-devel, so I'll cover it now.
+Ofir Petruska, who seems to go by hatky, came up with a way
+to display the output from the winapi_extract tool.  Francois
+Gouget has had a version of this on his personal web site for
+a while and it was decided it was cool enough that we should
+integrate it into WineHQ.  Hatky came up with 
+<a href="http://www.winehq.org/hypermail/wine-devel/2004/03/0482.html">a different approach</a>
+that involved using MySQL for part of the logic.  Dimi was
+definitely against using a database, but hatky explained:
+</p><quote who="Ofir Petruska"><p>
+It uses DB only for creating the file as a parser
+because it's 3 lines of code 
+instead of 30 line parsing and very very flexible, I
+talked to laxdragon, he 
+has not problem with it, he is still reviewing it...
+</p></quote>
+
+<p>Jeremy Newman then took a look at it and made modifications.
+He announced:</p>
+<quote who="Jeremy Newman"><p>
+Ok, I have committed a version of hatky's work. It is in one php file
+instead of split across multiple files.
+</p><p>
+The file is in the tools cvs
+<a href="http://cvs.winehq.org/cvsweb/tools/winapi_stats.php">
+ http://cvs.winehq.org/cvsweb/tools/winapi_stats.php</a>
+</p><p>
+I ran it once and the output will be here:
+<a href="http://www.winehq.org/site/winapi_stats">
+http://www.winehq.org/site/winapi_stats</a>
+</p><p>
+It will be updated when Alexander runs the wine_release script.
+</p><p>
+There is one bug we noticed, and I'll leave that for someone else to
+fix. The dll name is only showing the first 5 characters. I double
+checked, it is getting inserted into the db correctly, so it is
+happening sometime after the insert.
+</p><p>
+Thanks hatky for your work.
+</p></quote>
+
+<p>Francois pointed out that several DLLs needed to be
+ignored since they were Wine-specific.  He provided a list
+that hatky integrated.</p>
+
+</section>
+
+<section 
+	title="A Distributed Test Environment" 
+	subject="Win32 packages released on sourceforge"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/0327.html" 
+	posts="42"
+	startdate="03/17/2004"
+	enddate="03/24/2004"
+>
+<topic>Testing</topic>
+<p>More discussion took place about setting up a distributed
+testing framework.  When this actually rolls out I'll write up
+more info about how it works.  Some of the details are still
+being sort out, but basically the process will work like this:
+<ul><li>Nightly builds of all the tests will be done by Paul Millar</li>
+ <li>WineHQ will be alerted to new builds</li>
+ <li>In turn, distributed Windows clients running a service
+     written by Chris Morgan will poll WineHQ for new tests</li>
+ <li>The clients will download and run the tests.  The winetest.exe
+     program will package up the results and send them back to WineHQ.</li> 
+ <li>Scripts written by Ferenc Wagner will process the results and
+     make them viewable as HTML.</li>
+</ul>
+</p>
+<p>In essence, the process is quite simple.  Some discussion
+took place this week over details.  Paul outlined how he has
+the builds set up:</p>
+<quote who="Paul Millar"><p>
+I'm adding cross-building as part of WRT, so we'd get winetest.exe rebuilt
+as changes are made to CVS (&amp; everything else too, if people want that).  
+Its nearly there, having worked around some mingw/COFF nasties.  There's
+one last hurdle: winetest.exe itself.
+</p><p>
+From what I can see, the script programs/winetest/maketest builds the
+winetest.rc file.  If the variable WINE_BUILD is set, it is used as the
+first element of the string-table, otherwise an auto-generated string is
+used, for example "20040322.1508-auto".
+</p><p>
+This makes winetest.exe build-time-dependent, so screws up the 
+check to see if anything's actually changed.
+</p><p>
+Can I set WINE_BUILD to some fixed value?  If so, what's a good one to 
+use?
+</p></quote>
+
+<p>Dimi Paun had some suggestions:</p>
+<quote who="Paul Millar"><p>
+The WINE_BUILD value must be valid, we can't distribute a winetest.exe
+with a fixed value in there. What you can do is fix it at build time
+to a known value (say YYYYMMDDhhmm), and replace it after the build
+with the proper value.
+</p><p>
+Now, when do we build? I don't think we should trigger the build based
+upon CVS commits, we need it a bit more controlled for a variety of
+reasons. Here is what I propose:
+<ul><li> decide on a time at night when the tree is very unlikely to change
+     (say 4am).</li> 
+  <li> every day, at 4:10am we do:
+     <tt>cvs up -D YYYYMMDD0400</tt>
+     (this way we know _precicely_ what we built, and we can reporduce it)</li>
+  <li>  do the build (fix WINE_BUILD), check if the winetest.exe really changed.</li>
+  <li> if it changed, edit WINE_BUILD and set it to YYYYMMDD0400.</li>
+  <li> publish the result as winetest-YYYYMMDD0400.zip via the CGI script</li>
+</ul></p><p>
+ But the main point here is that we can't build based on CVS commits, we
+ need a well known, controlled point where we build so that developers
+ can reproduce the build and investigate problems.
+</p></quote>
+
+<p>Discussion then went back and forth.. and back.. and forth about
+whether to have builds triggered by CVS commits.  Paul produced 
+some interesting info concerning CVS commits:</p>
+<quote who="Paul Millar"><p>
+Errr, 'fraid I don't see the 4am part (unless you mean at precisely
+04:00:00).  Taking data from the past year from:
+<ul><a href="http://www.winehq.org/hypermail/wine-cvs/">   
+   http://www.winehq.org/hypermail/wine-cvs/</a></ul></p><p>
+Downloading the "downloadable version", and running a wee 1-oner:
+<ul>
+  <tt>grep -h Date: 200[34]\.*|cut -d: -f2-|while read d; do date -d "$d" +%k &gt;&gt; output; done; sort -n output | uniq -c | awk '{print $2,$1}' &gt; commit.dat</tt>
+</ul></p><p>
+Gnuplot it with:
+<ul>  
+  <tt>plot [-0.5:23.5] "commit.dat" not w boxes</tt></ul></p><p>
+The results are:
+<a href="http://www.astro.gla.ac.uk/users/paulm/cvs_commit.png">
+  http://www.astro.gla.ac.uk/users/paulm/cvs_commit.png</a></p><p>
+There's actually a peak of commits at 4am.
+</p><p>
+This is of course all UK local time.  Do you mean 4am in one of the
+US-time-zones? (=&gt; ~ 9am-11am or so?).
+</p><p>
+Hmmm, in the past year there've been patches at 7am, 8am, 11am and 13am.  
+There haven't been any 9am and 10am, but looking at the data it wouldn't
+be impossible for Alexandre to commit at usual hours of the day or night
+:)
+</p><p>
+Actually, the build time isn't *that* time consuming.  Running ccache and
+distcc, it currently takes about an hour to build both native and
+cross-compilation.  With a bit of effort, I'm sure that could be improved
+a fair bit.  As soon as the cross-compilation is finished, the binaries
+are available to be published.
+</p><p>
+The time-consuming bit at the moment is running the tests within wine,
+which is bad because of the way that's done within WRT.  That needs
+fixing, but it's largely independent of the cross-building, publishing
+steps.
+</p></quote>
+
+<p>From there the discussion delved into using GPG to sign the 
+binaries.  Paul has already implemented that part on the server.
+</p>
+   
+</section>
+
+<section 
+	title="Wine Weekly News Issues #90 and #91" 
+	subject="Missing WWN issues"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/03/460.html" 
+	posts="2"
+	startdate="03/24/2004"
+>
+<p>Francois Gouget pointed out we have a bit of a gap in
+Wine Weekly News issues:
+</p><quote who="Francois Gouget"><p>
+Looking through the WINeHQ CVS I noticed that we are missing 4 WWN
+issues. Fortunately they seem to be available at the Wine Kernel Cousin
+web site... sort of.
+</p><p>
+Would some kind soul volunteer for retrieving what can be retrieved?
+<dl><dt>WWN 88 and WWN 89</dt>
+
+   <dd>Unfortunately these two appear to be empty so there's not much to
+   save.</dd>
+
+ <dt>WWN 90</dt>
+   <dd>Eric Pouech's call for a replacement.</dd>
+
+ <dt>WWN 91</dt>
+   <dd>Brian Vincent's first WWN.</dd>
+</dl></p></quote>
+
+<p>We changed the XML format a few years ago, so I went
+back and ported the missing issues.  If you're interested
+in the latest news from 2001, check out
+issues
+<a href="http://www.winehq.org/?issue=90">#90</a> and
+<a href="http://www.winehq.org/?issue=91">#91</a>.  More 
+interesting than that (at least to me) was Eric Pouech's
+revelation that parts of issue #88 exist, but had never
+been published.  At some point in the future I'll create
+issue 88 from those bits.</p>
+</section>
+</kc>

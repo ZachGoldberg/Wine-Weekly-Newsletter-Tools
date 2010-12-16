@@ -1,0 +1,654 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="64" date="09 Oct 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 64th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine 20001002 has been released. Main changes include:
+<ul>	
+        <li>Treeview control merged from Corel tree.</li>
+        <li>Many definitions added for better Winelib support.</li>
+        <li>16-bit definitions removed from all exported headers.</li>
+        <li>Lots of bug fixes.</li>
+</ul>
+
+<p />
+
+Wine mailing list are now based on MailMan. You can now peruse them <a href="http://www.winehq.org/mailman/listinfo">here</a>.
+
+</intro>
+
+<stats posts="83" size="232" contrib="32" multiples="18" lastweek="18">
+<person posts="9" size="41" who="Aviad Pineles &lt;paviad@netvision.net.il&gt;" />
+<person posts="8" size="27" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="20" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="5" size="18" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="5" size="18" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="4" size="31" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="4" size="3" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="20" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="20" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="3" size="9" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+<person posts="3" size="8" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="3" size="16" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+</stats>
+
+
+<section 
+  title="Corel and Microsoft"
+  subject="Corel and Microsoft"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-11.html"
+  posts="10"
+  startdate="03 Oct 2000 00:00:00 -0800"
+  enddate="03 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Guy Albertelli was the first to report that Microsoft invested into
+Corel: <quote who="Guy Alberte">Spare change for MS ($125M) bought 25% of
+Corel.</quote> (you can read the <a
+href="http://cnnfn.cnn.com/2000/10/02/technology/microsoft_corel/">whole 
+story</a>)
+
+<p />
+
+A few remarks went out, especially around the impact on Corel's
+involvement in Wine (<i>EdNote: Corel's folks have been silent for a
+couple of days; last mail from Corel's is 4 weeks old</i>), but also
+around Microsoft intends.
+
+<p />
+
+The most expressed opinion was, as Microsoft already did for Apple and 
+Borland/Inprise, either to keep a few competitors around (Microsoft can 
+so claim to DoJ is not a monopoly), or to squash existing competitors.
+
+<p />
+
+Anyway, this hadn't disturb much the Wine developers, but we'll keep
+you posted on the next events.
+
+<p />
+
+</section>
+
+
+<section 
+  title="Multimedia timers and deadlock"
+  subject="Multimedia Timer problems"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-23.html"
+  posts="5"
+  startdate="03 Oct 2000 00:00:00 -0800"
+  enddate="03 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Marcus Meissner reported some issues with multimedia
+timers. Basically, some games (like Diablo 1) do, upon startup, a
+tight loop to calibrate the system. However, this loop never
+terminates, mainly because return values from timeGetTime() never gets 
+increased.
+
+<p />
+
+Marcus thought at first that some of the changes to service thread
+(now using waitable timers from the wine server instead of sleeping
+for the delays) were the cause of the problem.
+
+<p />
+
+Ove K&#229;ven provided an in-depth explanation of the issue:
+<quote who="Ove Kaaven">
+<table border="1">
+   <tr><td><center>APP THREAD</center></td>	<td><center>SERVICE THREAD</center></td></tr>
+   <tr><td> start up, maps X windows, etc</td>	<td>idle</td></tr>
+   <tr><td> still in startup </td>		<td>receives mapping notifications</td></tr>
+   <tr><td>  "  </td>				<td>receives Expose, invalidates window,</td></tr>
+   <tr><td>  "  </td>				<td>sends WM_SYNCPAINT to app window</td></tr>
+   <tr><td>  "  </td>				<td>SendMessage blocks waiting for app</td></tr>
+   <tr><td> enters timing calibration loop</td> <td> -blocked-</td></tr>
+   <tr><td>  ...      </td>			<td>  "</td></tr>
+   <tr><td> main message loop  </td>		<td>  "</td></tr>
+   <tr><td> -handles the WM_SYNCPAINT  </td>    <td>  "</td></tr>
+   <tr><td>  ...      </td>			<td>SendMessage returns</td></tr>
+   <tr><td>  &#160;   </td>			<td>handle asynchronous timers</td></tr>
+</table>
+
+<p />
+
+Marcus' patch makes the app's timing loop no longer rely on the
+blocked service thread. My patch keeps the service thread from being
+blocked at all.</quote>
+
+
+<p />
+
+However, the fix provided by Ove requires a proper implementation of
+SendNotifyMessage (which is not done yet). Andreas Mohr explained he
+had started some hacking around message handling which could help, but 
+no one answered his proposal.</section>
+
+
+<section 
+  title="Anonymous structs"
+  subject="Anonymous struct/union support"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-32.html"
+  posts="9"
+  startdate="04 Oct 2000 00:00:00 -0800"
+  enddate="04 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Francois Gouget brought back some good news regarding anonymous
+unions (see <kcref issuenum="7" sectionnum="4">WWN #7</kcref> and 
+<kcref issuenum="14" sectionnum="0">WWN #14</kcref> for previous articles):
+
+<quote who="Francois Gouget">
+First I have a good news to announce: the latest gcc version supports
+anonymous unions <b>and</b> structs in C++ _and_ C. This is a big step
+forward compared to gcc 2.95.2 which only supported anonymous unions
+and only in C++.
+
+<p />
+
+Unfortunately our current NONAMELESSxxx / _FORCENAMELESSxxx system has
+a few problems: 
+<ul>
+   <li>a '!defined(__cplusplus)' test in windef.h will prevent Winelib
+users from using anonymous structs in C.</li>
+   <li>I did not find a use for NONAMELESSxxx. AFAICS either
+_FORCENAMELESSxxx is undefined and then you don't use anonymous xxx or 
+it is defined and then you use it. Why would someone define it and
+NONAMELESSxxx at the same time?</li>
+</ul>
+
+<p />
+
+So I propose the following:
+<ul>
+   <li>we keep only NONAMELESSxxx</li>
+   <li>if __WINE__ is defined and then we also defined both
+NONAMELESSxxx macros (for obvious portability reasons we don't want to
+use anonymous stuff in the WINE code)</li>
+   <li>if we know the compiler does not support anonymous
+structs/unions we define the appropriate NONAMELESSxxx macro. This
+would more or less apply to all gcc/g++ &lt;= 2.95</li>
+   <li>if after all the above NONAMELESSxxx is not defined then we use 
+anonymous xxx</li>
+</ul>
+</quote>
+
+
+<p />
+
+Uwe Bonnes asked why configure (and autoconf) couldn't be used to
+check for anonymous union / struct support in the compiler.
+
+<p />
+
+Patrik Stridval answered:
+<quote who="Patrik Stridvall">
+It can't, since the files are used by WineLib applications that don't
+use Wine's configure. 
+
+<p />
+
+And no you can't have a system wide configure since you might use
+different version of GNU C with the same include files or indeed even
+a different C compiler. 
+
+<p />
+
+There was a quite long thread (flamewar) a while ago, where I tried
+explain to people that simply didn't want to understand that.
+
+<p />
+
+Some people seemed to entertain the idea that you should compile you
+own version of WineLib as Corel currently does, for each
+application. This is totally insane in the long run. IMVHO best
+illustrated with the counter argument "So you compile your own version
+of libc for every application you write". 
+
+<p />
+
+WineLib is (or should be) a library just like any other. It should not
+require any special treatment to use.
+</quote>
+
+
+<p />
+
+Francois went further:
+<quote who="Francois Gouget">
+Even more so for this particular case. I even contend that choosing
+whether to use anonymous structs/unions or not does not even depend on 
+the compiler!
+
+<p />
+
+Either your code is written with s./u. everywhere and then you do not
+want to use anonymous structs/unions, no matter what the compiler can
+do. Or your code relies on anonymous struct/unions and your compiler
+does not, your best move is probably to switch to another
+compiler. Well, ok, in some cases you will still have to add
+s./u. everywhere in your code. But this is not going to be
+accomplished magically by a configure script or a system-wide static
+header file anyway.
+</quote>
+
+
+<p />
+
+The thread then evolved with Patrik and Francois arguing on the tidy
+bits of the implementation so it's as close as possible to Microsoft's 
+one.</section>
+
+
+<section 
+  title="Keyboard recognition"
+  subject="Keyboard input and current locale: first attempt"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-38.html"
+  posts="3"
+  startdate="04 Oct 2000 00:00:00 -0800"
+  enddate="05 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Dmitry Timoshkov put his fingers in the keyboard support code for X11:
+
+<quote who="Dmitry Timoshkov">
+Here is my first attempt on implementing support for keyboard input
+translation according to the current locale. 
+
+<p />
+
+Some problems that I tried to solve:
+<ol>
+   <li>I didn't find way to make to work XLookupString with
+setlocale(LC_CTYPE,"").</li>
+   <li>I modified keyboard detection code to assign virtual key codes
+along with the found scan codes because virtual key codes are always
+the same for english keyboard layout and other (russian for me)
+keyboard layout in windows.</li>
+</ol>
+
+<p />
+
+Now keyboard input works for me as for english US layout, as for
+russian one.
+</quote>
+
+
+<p />
+
+Ove K&#229;ven commented a bit Dmitry's patch, mainly because the keyboard
+layout which Dmitry found equal between English and Russian shouldn't
+be the case for a DVORAK layout, or a German QWERTZ (not to speak of
+French QWERTY's). Ove proposed a few evolutions to Dmitry's patch.
+
+<p />
+
+Dmitry reworked his patch accordingly, and got it submitted to
+wine-patches.
+</section>
+
+
+<section 
+  title="Wine and graphics benchmark"
+  subject="Benchmark hell..."
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-56.html"
+  posts="2"
+  startdate="04 Oct 2000 00:00:00 -0800"
+  enddate="04 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr wrote the following:
+<quote who="Andreas Mohr">
+I managed to get Winbench 4.0 working (a very old win16 benchmark from
+1993), so I decided to do some benchmarks. I wish I hadn't done them...
+
+<p />
+
+No, I won't comment on them. It'd hurt even more ;-)
+
+<p />
+
+Test run on an Athlon 800 w/ 256MB, Matrox G400 DH, X3.3.6,
+2.2.18pre10. Only graphics tests were executed.
+Disk benchmarks don't work due to broken Wine FindNext behaviour when
+deleting directories in between (I'm planning to fix this at some
+point). 
+
+<p />
+
+Here they are:
+
+<p />
+
+<table>
+<th><td>&#160;</td>             <td>Wine</td>   <td>Win98SE</td> <td>Wine better</td></th>
+<tr><td>Graph WinMark                   </td><td>37.8 MPs        </td><td>407</td><td>&#160;</td></tr>
+<tr><td>Arc Circular Complete           </td><td>1.61            </td><td>5.29</td><td>&#160;</td></tr>
+<tr><td>Partial                         </td><td>1.58            </td><td>3.48</td><td>&#160;</td></tr>
+<tr><td>Arc Ell Complete                </td><td>1.26            </td><td>6.02</td><td>&#160;</td></tr>
+<tr><td>Partial                         </td><td>0.867           </td><td>3.88</td><td>&#160;</td></tr>
+<tr><td>BitBltMS Otrer Aligned          </td><td>5.27            </td><td>7.56</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>5.61            </td><td>7.41</td><td>&#160;</td></tr>
+<tr><td>PATPAINT, Al                    </td><td>11.5            </td><td>0.681           </td><td>*</td></tr>
+<tr><td>Unal                            </td><td>3.07            </td><td>0.681           </td><td>*</td></tr>
+<tr><td>SRCCOPY Al                      </td><td>8.58            </td><td>342</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>9.64            </td><td>316</td><td>&#160;</td></tr>
+<tr><td>SRCINVERT Al                    </td><td>3.03            </td><td>159</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>3.22            </td><td>149</td><td>&#160;</td></tr>
+<tr><td>BitBltMonoMS Otrer Al           </td><td>3.43            </td><td>23.2</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>3.57            </td><td>22.5</td><td>&#160;</td></tr>
+<tr><td>PATPAINT Al                     </td><td>1.9             </td><td>1.8             </td><td>*</td></tr>
+<tr><td>Unal                            </td><td>1.96            </td><td>1.79            </td><td>*</td></tr>
+<tr><td>SRCCOPY Al                      </td><td>93.4            </td><td>396</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>92.5            </td><td>396</td><td>&#160;</td></tr>
+<tr><td>SRCINVERT Al                    </td><td>1.96            </td><td>257</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>2.05            </td><td>236</td><td>&#160;</td></tr>
+<tr><td>BitBltMonoSM Otrer Al           </td><td>3.06            </td><td>4.68</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>3.09            </td><td>4.08</td><td>&#160;</td></tr>
+<tr><td>PATPAINT Al                     </td><td>2.11            </td><td>2.79</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>2.13            </td><td>2.76</td><td>&#160;</td></tr>
+<tr><td>SRCCOPY Al                      </td><td>2.13            </td><td>7.98</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>2.15            </td><td>3.06</td><td>&#160;</td></tr>
+<tr><td>SRCINVERT Al                    </td><td>2.12            </td><td>2.79</td><td>&#160;</td></tr>
+<tr><td>SRCINVERT Unal                  </td><td>2.14            </td><td>2.76</td><td>&#160;</td></tr>
+<tr><td>BitBltSM Otrer Al               </td><td>6.37            </td><td>7.6</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>6.53            </td><td>7.44</td><td>&#160;</td></tr>
+<tr><td>PATPAINT Al                     </td><td>4.27            </td><td>0.682           </td><td>*</td></tr>
+<tr><td>Unal                            </td><td>4.42            </td><td>0.682           </td><td>*</td></tr>
+<tr><td>SRCCOPY Al                      </td><td>5.43            </td><td>349</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>5.63            </td><td>316</td><td>&#160;</td></tr>
+<tr><td>SRCINVERT Al                    </td><td>4.38            </td><td>175</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>4.52            </td><td>160</td><td>&#160;</td></tr>
+<tr><td>BitBltSS Otrer Al               </td><td>3.5             </td><td>7.78</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>21.9            </td><td>7.8             </td><td>*</td></tr>
+<tr><td>PATPAINT Al                     </td><td>1.88            </td><td>0.681           </td><td>*</td></tr>
+<tr><td>Unal                            </td><td>1.98            </td><td>0.681           </td><td>*</td></tr>
+<tr><td>SRCCOPY Al                      </td><td>103             </td><td>232</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>104             </td><td>212</td><td>&#160;</td></tr>
+<tr><td>SRCINVERT Al                    </td><td>1.93            </td><td>122</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>2.05            </td><td>114</td><td>&#160;</td></tr>
+<tr><td>BltDIBits 1bpp SRCCOPY Unal     </td><td>1.08            </td><td>29.9</td><td>&#160;</td></tr>
+<tr><td>24bpp                           </td><td>0.511           </td><td>101</td><td>&#160;</td></tr>
+<tr><td>4bpp                            </td><td>0.505           </td><td>105</td><td>&#160;</td></tr>
+<tr><td>8bpp                            </td><td>1.16            </td><td>104</td><td>&#160;</td></tr>
+<tr><td>Chord Circular                  </td><td>9.38            </td><td>27.9</td><td>&#160;</td></tr>
+<tr><td>Chord Elliptical                </td><td>5.62            </td><td>27.6</td><td>&#160;</td></tr>
+<tr><td>Circle                          </td><td>17.62           </td><td>50.3</td><td>&#160;</td></tr>
+<tr><td>Combined GWM1                   </td><td>35.4            </td><td>398</td><td>&#160;</td></tr>
+<tr><td>GWM2                            </td><td>3.6             </td><td>149</td><td>&#160;</td></tr>
+<tr><td>3                               </td><td>11.5            </td><td>75</td><td>&#160;</td></tr>
+<tr><td>4                               </td><td>45.9            </td><td>178</td><td>&#160;</td></tr>
+<tr><td>5                               </td><td>43              </td><td>252</td><td>&#160;</td></tr>
+<tr><td>6                               </td><td>45.6            </td><td>520</td><td>&#160;</td></tr>
+<tr><td>7                               </td><td>32.4            </td><td>445</td><td>&#160;</td></tr>
+<tr><td>DrawFocusRect                   </td><td>4.67            </td><td>21.4</td><td>&#160;</td></tr>
+<tr><td>DrawIcon                        </td><td>0.667           </td><td>27.8</td><td>&#160;</td></tr>
+<tr><td>DrawText, MS Sans Serif 11      </td><td>8.05            </td><td>66.5</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>11.1            </td><td>104</td><td>&#160;</td></tr>
+<tr><td>Bold 11                         </td><td>8.66            </td><td>42.2</td><td>&#160;</td></tr>
+<tr><td>System                          </td><td>7.59            </td><td>111</td><td>&#160;</td></tr>
+<tr><td>Times New Roman 11              </td><td>9.87            </td><td>53.5</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>7.3             </td><td>65.7</td><td>&#160;</td></tr>
+<tr><td>16                              </td><td>18.9            </td><td>93.2</td><td>&#160;</td></tr>
+<tr><td>Ellipse                         </td><td>9.52            </td><td>49.3</td><td>&#160;</td></tr>
+<tr><td>ExtFloodFill, Border            </td><td>0.178           </td><td>1.8</td><td>&#160;</td></tr>
+<tr><td>EFF, Surface                    </td><td>0.177           </td><td>1.7</td><td>&#160;</td></tr>
+<tr><td>FastWindowFrame                 </td><td>57.7            </td><td>Failed (!!!)    </td><td>*</td></tr>
+<tr><td>FillRect                        </td><td>114             </td><td>442</td><td>&#160;</td></tr>
+<tr><td>FillRect, Square                </td><td>6.45            </td><td>35.4</td><td>&#160;</td></tr>
+<tr><td>FillRgn, Few-Sides, HV          </td><td>65.2            </td><td>292</td><td>&#160;</td></tr>
+<tr><td>FloodFill                       </td><td>0.177           </td><td>1.8</td><td>&#160;</td></tr>
+<tr><td>FrameRect                       </td><td>19.4            </td><td>89.8</td><td>&#160;</td></tr>
+<tr><td>FrameRect, Square               </td><td>7.82            </td><td>39.4</td><td>&#160;</td></tr>
+<tr><td>FrameRgn, Few-Sides, HV         </td><td>8.24            </td><td>7.78            </td><td>*</td></tr>
+<tr><td>GWM/BitBltMS, Otrer, Al         </td><td>2.86            </td><td>260</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>1.39            </td><td>64.8</td><td>&#160;</td></tr>
+<tr><td>SRCCOPY, Al                     </td><td>10.7            </td><td>395</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>8.3             </td><td>389</td><td>&#160;</td></tr>
+<tr><td>GWM/BitBltMonoMS, Otrer, Unal   </td><td>1.24            </td><td>48.6</td><td>&#160;</td></tr>
+<tr><td>SRCAND, Al                      </td><td>1.65            </td><td>158</td><td>&#160;</td></tr>
+<tr><td>SRCCOPY Al                      </td><td>77.3            </td><td>336</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>130             </td><td>515</td><td>&#160;</td></tr>
+<tr><td>GWM/BitBltMonoSM, SRCCOPY, Al   </td><td>4.72            </td><td>8.09</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>1.32            </td><td>2.96</td><td>&#160;</td></tr>
+<tr><td>BitBltSM, SRCCOPY, Al           </td><td>6.1             </td><td>395</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>60.4            </td><td>389</td><td>&#160;</td></tr>
+<tr><td>BitBltSS, SRCCOPY, Al           </td><td>108             </td><td>197</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>109             </td><td>193</td><td>&#160;</td></tr>
+<tr><td>GWM/Ellipse                     </td><td>62.3            </td><td>133</td><td>&#160;</td></tr>
+<tr><td>GWM/ExtTextOut, MS SSerif 11    </td><td>20.3            </td><td>132</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>27              </td><td>178</td><td>&#160;</td></tr>
+<tr><td>SSerif Bold                     </td><td>21.5            </td><td>74.3</td><td>&#160;</td></tr>
+<tr><td>GWM/ExtTextOut, Rectangle       </td><td>49.8            </td><td>445</td><td>&#160;</td></tr>
+<tr><td>Square                          </td><td>14.7            </td><td>130</td><td>&#160;</td></tr>
+<tr><td>GWM/ExtTextOut, System          </td><td>19.2            </td><td>196</td><td>&#160;</td></tr>
+<tr><td>Times New Roman 11              </td><td>24.5            </td><td>150</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>9.31            </td><td>168</td><td>&#160;</td></tr>
+<tr><td>16                              </td><td>43.2            </td><td>212</td><td>&#160;</td></tr>
+<tr><td>GWM/FillRgn, Rectangular        </td><td>36.1            </td><td>607</td><td>&#160;</td></tr>
+<tr><td>Polygonal                       </td><td>92.7            </td><td>207</td><td>&#160;</td></tr>
+<tr><td>GWM/InvertRgn, Rectangular      </td><td>137             </td><td>213</td><td>&#160;</td></tr>
+<tr><td>GWM/Line, Diagonal              </td><td>1.49            </td><td>6.05</td><td>&#160;</td></tr>
+<tr><td>Horizontal                      </td><td>11.3            </td><td>46.9</td><td>&#160;</td></tr>
+<tr><td>Vertical                        </td><td>4.54            </td><td>20.1</td><td>&#160;</td></tr>
+<tr><td>PaintRgn, Polygonal             </td><td>249             </td><td>1940</td><td>&#160;</td></tr>
+<tr><td>Rectangular                     </td><td>847             </td><td>1490</td><td>&#160;</td></tr>
+<tr><td>GWM/PatBlt, BLACKNESS, Unal     </td><td>24.7            </td><td>230</td><td>&#160;</td></tr>
+<tr><td>GWM/PatBlt, DSTINVERT, Al       </td><td>223             </td><td>338</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>142             </td><td>472</td><td>&#160;</td></tr>
+<tr><td>Otrer, Unal                     </td><td>1.21            </td><td>40.4</td><td>&#160;</td></tr>
+<tr><td>PATCOPY Al                      </td><td>779             </td><td>2600</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>103             </td><td>1350</td><td>&#160;</td></tr>
+<tr><td>PATINVERT Al                    </td><td>2.82            </td><td>51.4</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>3.01            </td><td>55.3</td><td>&#160;</td></tr>
+<tr><td>ROP(0A), Unal                   </td><td>3.62            </td><td>210</td><td>&#160;</td></tr>
+<tr><td>ROP(A0), Unal                   </td><td>1.04            </td><td>25</td><td>&#160;</td></tr>
+<tr><td>ROP(A5), Unal                   </td><td>3.93            </td><td>72.7</td><td>&#160;</td></tr>
+<tr><td>WHITENESS, Al                   </td><td>1070            </td><td>7180</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>896             </td><td>7180</td><td>&#160;</td></tr>
+<tr><td>GWM/Pie, Elliptical             </td><td>6.42            </td><td>25.8</td><td>&#160;</td></tr>
+<tr><td>GWM/PolyLine                    </td><td>0.852           </td><td>98.2</td><td>&#160;</td></tr>
+<tr><td>PolyPolygon                     </td><td>12.1            </td><td>43.5</td><td>&#160;</td></tr>
+<tr><td>Polygon, Few-Sides              </td><td>22.1            </td><td>98.2</td><td>&#160;</td></tr>
+<tr><td>Many-Sides                      </td><td>15.8            </td><td>75.2</td><td>&#160;</td></tr>
+<tr><td>GWM/Rectangle                   </td><td>348             </td><td>1260</td><td>&#160;</td></tr>
+<tr><td>Rectangle, Rounded              </td><td>5.11            </td><td>44.2</td><td>&#160;</td></tr>
+<tr><td>GWM/SetDIBitsToDev, 4bpp, Unal  </td><td>3.46            </td><td>92.9</td><td>&#160;</td></tr>
+<tr><td>GWM/Square                      </td><td>3.53            </td><td>35.8</td><td>&#160;</td></tr>
+<tr><td>Square, Rounded                 </td><td>1.49            </td><td>14.8</td><td>&#160;</td></tr>
+<tr><td>GWM/StretchBltMS, SRCCOPY Unal  </td><td>0.849           </td><td>2.4</td><td>&#160;</td></tr>
+<tr><td>StretchBltMonoMS SRCAND Unal    </td><td>0.931           </td><td>17.2</td><td>&#160;</td></tr>
+<tr><td>SRCPAINT, ...                   </td><td>0.939           </td><td>17.2</td><td>&#160;</td></tr>
+<tr><td>StretchDIBits, 4bpp, SRCCOPY..  </td><td>1.07            </td><td>16.5</td><td>&#160;</td></tr>
+<tr><td>TextOut, MS SSerif 11           </td><td>10.2            </td><td>136</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>14.6            </td><td>184</td><td>&#160;</td></tr>
+<tr><td>Bold 11                         </td><td>11              </td><td>69.6</td><td>&#160;</td></tr>
+<tr><td>System                          </td><td>9.62            </td><td>195</td><td>&#160;</td></tr>
+<tr><td>Times New Roman 11              </td><td>12.5            </td><td>193</td><td>&#160;</td></tr>
+<tr><td>TNR 13                          </td><td>8.46            </td><td>205</td><td>&#160;</td></tr>
+<tr><td>16                              </td><td>24.2            </td><td>252</td><td>&#160;</td></tr>
+<tr><td>GetNearestColor                 </td><td>220000 Ops/sec. </td><td>5240000</td><td>&#160;</td></tr>
+<tr><td>GrayString, MS SSerif 11        </td><td>0.669           </td><td>16.7</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>0.857           </td><td>24.7</td><td>&#160;</td></tr>
+<tr><td>Bold 11                         </td><td>0.705           </td><td>15.4</td><td>&#160;</td></tr>
+<tr><td>System                          </td><td>0.633           </td><td>26.8</td><td>&#160;</td></tr>
+<tr><td>TNR 11                          </td><td>0.763           </td><td>17.1</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>0.865           </td><td>19.9</td><td>&#160;</td></tr>
+<tr><td>16                              </td><td>1.14            </td><td>27.5</td><td>&#160;</td></tr>
+<tr><td>InvertRect                      </td><td>270             </td><td>215             </td><td>*</td></tr>
+<tr><td>InvertRect, Square              </td><td>8.26            </td><td>47.4</td><td>&#160;</td></tr>
+<tr><td>InvertRgn, Few-Sides, HV        </td><td>67.8            </td><td>185</td><td>&#160;</td></tr>
+<tr><td>Line, Diagonal                  </td><td>8.34            </td><td>37.9</td><td>&#160;</td></tr>
+<tr><td>Horizontal                      </td><td>9.97            </td><td>43.8</td><td>&#160;</td></tr>
+<tr><td>Vertical                        </td><td>8.22            </td><td>36</td><td>&#160;</td></tr>
+<tr><td>MoveTo                          </td><td>706000 ops/sec. </td><td>7810000</td><td>&#160;</td></tr>
+<tr><td>MoveToEx                        </td><td>716000          </td><td>6290000</td><td>&#160;</td></tr>
+<tr><td>PaintRgn, Few-Sides, HV         </td><td>71.8            </td><td>374</td><td>&#160;</td></tr>
+<tr><td>HVD                             </td><td>47              </td><td>108</td><td>&#160;</td></tr>
+<tr><td>PaintRgn, Rectangular           </td><td>103             </td><td>2700</td><td>&#160;</td></tr>
+<tr><td>PatBlt, BLACKNESS, Al           </td><td>355             </td><td>3520</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>353             </td><td>3450</td><td>&#160;</td></tr>
+<tr><td>DSTINVERT, Al                   </td><td>213             </td><td>288</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>216             </td><td>264</td><td>&#160;</td></tr>
+<tr><td>PATCOPY, Al                     </td><td>214             </td><td>3080</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>215             </td><td>3010</td><td>&#160;</td></tr>
+<tr><td>PATINVERT Al                    </td><td>161             </td><td>287</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>161             </td><td>263</td><td>&#160;</td></tr>
+<tr><td>WHITENESS Al                    </td><td>341             </td><td>3230</td><td>&#160;</td></tr>
+<tr><td>Unal                            </td><td>341             </td><td>3310</td><td>&#160;</td></tr>
+<tr><td>Pie, Circular                   </td><td>8.65            </td><td>17.6</td><td>&#160;</td></tr>
+<tr><td>Pie, Elliptical                 </td><td>5.36            </td><td>17.1</td><td>&#160;</td></tr>
+<tr><td>Pixel, Get                      </td><td>0.006 MPs/sec.  </td><td>0.368</td><td>&#160;</td></tr>
+<tr><td>Pixel, Set                      </td><td>0.219 MPs/sec.  </td><td>0.831</td><td>&#160;</td></tr>
+<tr><td>PolyLine                        </td><td>1.12            </td><td>24.1</td><td>&#160;</td></tr>
+<tr><td>PolyPolygon                     </td><td>25.4            </td><td>106</td><td>&#160;</td></tr>
+<tr><td>Polygon, Few-Sides              </td><td>71.1            </td><td>329</td><td>&#160;</td></tr>
+<tr><td>, Many-Sides                    </td><td>28.7            </td><td>115</td><td>&#160;</td></tr>
+<tr><td>, Trapezoid                     </td><td>140             </td><td>519</td><td>&#160;</td></tr>
+<tr><td>, Triangle                      </td><td>129             </td><td>344</td><td>&#160;</td></tr>
+<tr><td>Rectangle                       </td><td>206             </td><td>721</td><td>&#160;</td></tr>
+<tr><td>, Rounded                       </td><td>22.3            </td><td>231</td><td>&#160;</td></tr>
+<tr><td>ScrollDC                        </td><td>155             </td><td>211</td><td>&#160;</td></tr>
+<tr><td>SetDIBitsBlt 1bpp Unal          </td><td>5.08            </td><td>114</td><td>&#160;</td></tr>
+<tr><td>24bpp                           </td><td>6.19            </td><td>65.5</td><td>&#160;</td></tr>
+<tr><td>4bpp                            </td><td>4.78            </td><td>68</td><td>&#160;</td></tr>
+<tr><td>8bpp                            </td><td>6.64            </td><td>65.5</td><td>&#160;</td></tr>
+<tr><td>SetDIBitsToDevice 1bpp Unal     </td><td>3.09            </td><td>30.7</td><td>&#160;</td></tr>
+<tr><td>24                              </td><td>2.54            </td><td>84.3</td><td>&#160;</td></tr>
+<tr><td>4                               </td><td>2.34            </td><td>91.6</td><td>&#160;</td></tr>
+<tr><td>8                               </td><td>4               </td><td>89.4</td><td>&#160;</td></tr>
+<tr><td>Square                          </td><td>237             </td><td>1730</td><td>&#160;</td></tr>
+<tr><td>, Rounded                       </td><td>34.3            </td><td>236</td><td>&#160;</td></tr>
+<tr><td>StretchBltMS, Otrer, Al         </td><td>2.86            </td><td>2.32            </td><td>*</td></tr>
+<tr><td>, Unal                          </td><td>2.77            </td><td>2.09            </td><td>*</td></tr>
+<tr><td>StretchBltMonoMS, Otrer, Al     </td><td>2.85            </td><td>13.9</td><td>&#160;</td></tr>
+<tr><td>, Unal                          </td><td>2.89            </td><td>12.9</td><td>&#160;</td></tr>
+<tr><td>StretchBltMonoSM, Otrer, Al     </td><td>3.53            </td><td>7.12</td><td>&#160;</td></tr>
+<tr><td>, Unal                          </td><td>3.57            </td><td>6.87</td><td>&#160;</td></tr>
+<tr><td>StretchBltSM, Otrer, Al         </td><td>3.36            </td><td>2.32            </td><td>*</td></tr>
+<tr><td>, Unal                          </td><td>3.12            </td><td>2.09            </td><td>*</td></tr>
+<tr><td>StretchBltSS, Otrer, Al         </td><td>2.27            </td><td>2.34</td><td>&#160;</td></tr>
+<tr><td>, Unal                          </td><td>2.24            </td><td>2.1             </td><td>*</td></tr>
+<tr><td>StretchDIBits, 1bpp, SRCCOPY,.. </td><td>0.749           </td><td>14.8</td><td>&#160;</td></tr>
+<tr><td>24                              </td><td>0.408           </td><td>7.25</td><td>&#160;</td></tr>
+<tr><td>4                               </td><td>0.416           </td><td>12.5</td><td>&#160;</td></tr>
+<tr><td>8                               </td><td>0.823           </td><td>11.1</td><td>&#160;</td></tr>
+<tr><td>TabbedTextOut, MS SSerif 11     </td><td>7.81            </td><td>67.6</td><td>&#160;</td></tr>
+<tr><td>, 13                            </td><td>10.6            </td><td>104</td><td>&#160;</td></tr>
+<tr><td>, Bold...                       </td><td>8.32            </td><td>40.8</td><td>&#160;</td></tr>
+<tr><td>, System                        </td><td>7.48            </td><td>113</td><td>&#160;</td></tr>
+<tr><td>, TNR 11                        </td><td>9.56            </td><td>48.2</td><td>&#160;</td></tr>
+<tr><td>13                              </td><td>7.1             </td><td>59</td><td>&#160;</td></tr>
+<tr><td>16                              </td><td>18.2            </td><td>84.9</td><td>&#160;</td></tr>
+<tr><td>TextOut, Arial 10               </td><td>10.1            </td><td>169</td><td>&#160;</td></tr>
+<tr><td>, Arial 10, 45                  </td><td>5.46            </td><td>3.08            </td><td>*</td></tr>
+<tr><td>, Arial 10, 90                  </td><td>5.68            </td><td>4.29            </td><td>*</td></tr>
+</table>
+</quote>
+
+
+<p />
+
+Even if Andreas felt disappointed by the results, Francois Jacques
+tries to have a bright sight on the results 
+<quote who="Francois Jacques">
+Well, even if it looks sad... at least now we have a better view of
+where are the performance bottlenecks in graphics.
+
+<p />
+
+Do you guys remember when Java 1.0 came out? People were doing
+benchmarks between Java vs. C/C++ - most of the time to demonstrate
+how Java was awfully slow compared to C/C++. 
+
+<p />
+
+Well, over time, Java picked up and while not being able to match
+C/C++ performance, the VM got optimized and with the help of JIT
+compilers, they improved it until it became usable for serious
+applications. The benchmarks helped the VM folks to figure out where
+the bottlenecks could possibly be. 
+
+<p />
+
+WINE is still not 1.0 ... Windows 3.0+ is now 10 years old - they had
+time to optimize their code - let's run the benchmarks in a few
+months. I know I'm not writing anything new by "it will improve over
+time" but it's the truth. Those benchmarks should only boost ourselves
+to tweak the thing.  
+
+<p />
+
+Also as more developers get interested by WINE as a development
+platform for porting their Windows software, we should see major
+performance enhancements. Especially, games developers and graphic
+intensive applications. 
+
+<p />
+
+I would also be curious to see the results of graphic benchmarks under 
+XFree86 4.0 which is supposedly - I haven't tried it yet - faster.
+</quote>
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+
+<p />
+
+</section>
+
+</kc>

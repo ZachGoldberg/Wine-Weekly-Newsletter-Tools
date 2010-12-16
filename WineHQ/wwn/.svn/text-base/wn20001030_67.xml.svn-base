@@ -1,0 +1,384 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="67" date="30 Oct 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 67th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="168" size="646" contrib="41" multiples="29" lastweek="19">
+<person posts="22" size="48" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="15" size="89" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="10" size="44" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="10" size="22" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="9" size="27" who="Martin Pilka &lt;mpilka@codeweavers.com&gt;" />
+<person posts="9" size="24" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="8" size="20" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="7" size="23" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="6" size="14" who="mark dufour &lt;m.dufour@student.tudelft.nl&gt;" />
+<person posts="6" size="130" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+
+<p />
+
+<ul>
+   <li>linuxtoday.com.au ran an article about us:
+<a href="http://www.linuxtoday.com.au/r/article/jsp/sid/81603">Wine: It Gets
+Better With Age</a></li>
+   <li>Ian Schmidt's
+<a href="http://wine.godmonkey.com/">Unofficial Wine Screenshots</a> page was
+<a href="http://slashdot.org/article.pl?sid=00/10/24/1225211&amp;mode=thread">slashdotted</a>
+after he put up statements (and screenshots) of MS Word and Excel 2000 working under Wine...</li>
+   <li>Ove K&#229;ven is running for maintainership of Wine's Debian packages.</li>
+</ul>
+</section>
+
+
+<section 
+  title="COM/DCOM support"
+  subject="COM/DCOM support"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-233.html"
+  posts="4"
+  startdate="21 Oct 2000 00:00:00 -0800"
+  enddate="23 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Chris Kerslake asked: 
+<quote who="Chris Kerslake">
+I have been looking for information about COM and DCOM support under
+WINE and haven't been able to find anything. I have looked through the 
+documentation section and have done some web searches but haven't
+found anything.</quote>
+
+
+<p />
+
+Chris was also looking for hints on how to start adding the missing
+bits in this area.
+
+<p />
+
+James Hatheway gave a partial answer: 
+<quote who="James Hatheway">
+The COM that is in WINE currently works pretty well, overall. For
+example, an app I am currently debugging is basically completely
+written as COM objects, and it works fine. There are certainly things
+that are missing, for example out of process and remote servers are
+not supported yet, a lot of functions are only stubs, I'm sure other
+people on this list can point other things out to you. A good way to
+find problems is to grep files for FIXME and stub. Also, DCOM support
+doesn't exist at all, as far as I know.</quote>
+
+
+<p />
+
+Juergend Schmied completed James' answer:
+<quote who="Juergen Schmied">
+The most important thing currently unimplemented is (IMHO) the
+uncomplete typelib support (the Invoke function of IDispatch). This
+makes the use of eg. ocx's without a native oleauth.dll
+impossible. (This is a quite big part since it would need the typelib
+marshaller.) A second thing is the IStorage implementation. The
+creation of temporary storage was incomplete the last time I needed it
+;-). Both problems you can easily show with hh.exe.</quote>
+
+
+<p />
+
+Anyway, for such questions, good sources of information are:
+<ul>
+   <li>the <a href="http://www.winehq.org/index.php?page=status">Wine
+status page</a></li>
+   <li>the <a href="http://wine.codeweavers.com/status.shtml">Wine 1.0
+release plan</a></li>
+</ul>
+</section>
+
+
+<section 
+  title="Wine rendering engine"
+  subject="wine rendering engine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-160.html"
+  posts="10"
+  startdate="24 Oct 2000 00:00:00 -0800"
+  enddate="27 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+
+<p />
+
+Following previous discussion on graphical engine 
+(see also <kcref issuenum="65" sectionnum="2"></kcref>), Mark Dufour gave a
+look at <a href="http://www.microwindows.org">MicroWindows</a>, which
+provides such an implementation.
+
+<p />
+
+Patrik Stridvall thought there was some incompatibility between
+MicroWindows's and Wine's approaches:
+<quote who="Patrik Stridvall">
+Microwindows doesn't really have the same design philosophy as Wine. I
+have discussed that personally with Greg Haerr (the main author) of
+Microwindows some year(s) ago.
+
+<p />
+
+Microwindows aim towards embedded systems so it rendering engine aims
+to be small and fast. Wine's rendering engine should IMHO aim to be
+flexible and fast. 
+
+<p />
+
+By flexibility I mean that Wine's rendering engine should use the
+underlying driver, like the X11 driver, if it can do the rendering
+faster. Note that it often can since the driver can directly or
+indirectly access the underlying hardware.</quote>
+
+
+<p />
+
+Some discussion also covered the licensing issues. Anyway, Greg Haerr
+had an applicable solution:<quote who="Greg Haerr">Microwindows
+(Nano-X version) has an option that allows it to be built
+client/server. This means that Wine doesn't need to be linked with the
+server, but just with the client libraries, so the server license (MPL
+alternatively GPL) doesn't apply. Thus, I don't think that there are
+any problems with creating a version of Wine that uses the Nano-X server...
+</quote>
+
+<p />
+
+Mark even got volunteers from the MicroWindows project to assist him
+on doing the job of integrating both: this would allow to run Wine on
+a frame buffered display, using MicroWindows rendering engine. Main
+work would mean rewriting current Wine X11 driver using the
+MicroWindows API. Even if this would be nice to provide a Windows CE
+clone for example, if wouldn't solve the first issue (Wine should have 
+its own rendering engine), because of license issues.
+</section>
+
+
+<section 
+  title="Mail issues"
+  subject="Mail sent to wine-devel"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-377.html"
+  posts="4"
+  startdate="26 Oct 2000 00:00:00 -0800"
+  enddate="26 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Patrik Stridvall discovered that the wine-devel mailing list had a
+quota on the size of the post (40k). He wrote: 
+<quote who="Patrik Stridvall">
+I understand it is because some people post to long debug logs on the
+list. But it would be nice if people that are regular posters to the
+list be removed from the limit or at least have a larger limit.
+</quote>
+
+
+<p />
+
+Ove K&#229;ven answered: <quote who="Ove Kaaven">
+There is no limit to the size of postings to wine-patches, but
+wine-devel, on the other hand, runs with a 40K limit. This was
+discussed briefly by web-admin, and nobody there saw a problem with
+safety limits on the non-patches lists</quote>, and asked whether
+other people liked to see the maximum size increased.
+
+<p />
+
+Not many answers came out, except Lawson Whitney stressing for using
+compressors (gzip/bzip) when sending large files.
+</section>
+
+
+<section 
+  title="mixing Wine, MS and Unix C libraries"
+  subject="Header files that conflict with UNIX headers"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-383.html"
+  posts="9"
+  startdate="27 Oct 2000 00:00:00 -0800"
+  enddate="28 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Following previous discussions on CRTDLL vs MSVCRT DLL inclusion in
+wine (<kcref issuenum="61" sectionnum="1"></kcref>) and header
+handling between the Unix and the Windows one
+(<kcref issuenum="39" sectionnum="3"></kcref>), David Elliot tried to 
+restart the efforts on those directions.
+
+<p />
+
+Francois Gouget gave an overview of what should be done:
+<quote who="Francois Gouget">
+Yes, we'll need 'our' C library headers for WineLib programs, one
+day. I've given some (_some_) thought on that. Here's a dump of how I
+see things currently. Keep in mind that it will need to be further
+discussed and refined.
+
+<p />
+
+First we must put these headers 'out of the way' so that their use is
+optional. There are multiple reasons for that the most important being 
+that we still need to be able to get access to the native (unix)
+headers for compiling Wine. The best seems to be a subdirectory of
+'include'.
+
+<p />
+
+Then I think we should have three different configurations:
+<ul>
+
+<p />
+
+	<li><b>native C library - Unix semantics</b><p />
+This is what we currently have. The WineLib application compiles with
+the native (unix) headers, and links with the native C library. The
+semantics of all the C library functions is therefore the Unix
+semantics: fopen takes a Unix path, does not understand O_TEXT, etc.
+</li>
+
+<p />
+
+	<li><b>MSVCRT C library - Windows semantics</b><p />
+With this solution we provide C headers that are compatible with those
+of Microsoft. We provide them in 'include/msvcrt' and the user puts
+'-I$(WINE_ROOT)/msvcrt' in his include path. The WineLib application
+is linked with a library called 'libmsvcrt.so' in such a way that the
+he actually calls the C functions of this library rather than those of
+the native C library (playing with the link order and no-sys library
+options and such I guess). I say 'libmsvcrt.so' because that's what I
+know. Maybe 'libcrtdll.so' would work too. The semantics of the
+functions implemented by this library are the Windows semantics: fopen 
+takes a dos path and recognizes O_TEXT, we implement _beginthread and
+friends, etc.</li>
+
+<p />
+
+	<li><b>'Mixed' C library - Unix semantics</b><p />
+This is an intermediate solution. The semantics is that of Unix like
+in the 'native C library' case. But we provide a specially designed
+set of headers to ease compilation:
+<ul>
+	<li>macros map things like '_hypot' to 'hypot'</li>
+	<li>macros provide replacements for things like _itoa</li>
+	<li>macros fake support for 'O_TEXT'</li>
+	<li>maybe some macros would map an API to a CRTDLL_xxx function</li>
+	<li>provide additional headers like 'direct.h'</li>
+	<li>maybe approximate a little bit: map _flushall to sync</li>
+	<li>etc.</li>
+</ul>
+The headers would be in 'include/mixedcrt' and a WineLib application
+would link with the native C library and possibly with crtdll if it uses
+APIs that have been remapped to one of the CRTDLL_xxx functions.
+The important thing here is: 'Unix semantics' plus some compatibility
+features.</li>
+</ul>
+
+<p />
+
+Notes:
+<ul>
+
+<p />
+
+	<li><b>Unicode</b>: We should provide the appropriate
+prototypes so that it works in the 'MSVCRT C library' case. For the
+other two solutions Unicode will not be supported (because of the 2
+vs. 4 chars difference).</li>
+
+<p />
+
+	<li><b>Thread safeness</b>: Again the MSVCRT solution should
+be thread safe because it is on Windows. For the other two it all
+depends on the native C library, i.e. it's most likely not thread
+safe.</li> 
+
+<p />
+
+	<li>This scheme leaves the door open for adding other C library
+implementations. If Borland has their own slightly different C library
+then we add the corresponding headers in 'include/bcrt' and provide
+another library.</li>
+</ul>
+</quote>
+
+
+<p />
+
+David mainly agreed on Francois directions and started discussing the
+details of the implementation.</section>
+
+
+<section 
+  title="Wine and Win4Lin"
+  subject="wine &amp; win4lin"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-389.html"
+  posts="6"
+  startdate="27 Oct 2000 00:00:00 -0800"
+  enddate="27 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Robert W Hall wrote: <quote who="Robert W Hall">I keep seeing occasional reports
+that 'wine does not run... on a win4lin-enabled kernel'. Though this
+is contrary to my experience and sounds like finger-trouble.</quote>
+
+<p />
+
+Jeremy White gave the start of an explanation:<quote who="Jeremy White">
+Actually, it's a fascinating problem - I've been bit by it,
+badly. Wine works fine with a Win4lin kernel, so long as you build it
+from source. If you try to take a binary built on a non Win4lin
+kernel, you get an unhandled exception when your app starts to run,
+with a problem in the ThunkConnect32 area. 
+
+<p />
+
+Similarly, if you take a binary that you built on your Win4lin kernel,
+and give that binary to someone on a non Win4lin kernel, they see the
+exact same problem. 
+</quote>
+
+<p />
+
+First, people thought of some mismatch in the header files, but
+Alexandre Julliard pointed the error elsewhere. Basically, every
+process on Linux (should be also true on other 32 bit i386 Unix OSes)
+use the same value for the CS and DS register (32 bit flat
+model). This value is fixed for Linux (every process gets the same
+selector value). Current code was getting this value when Wine was
+compiled. It turned out that a Win4Lin modified kernel and a regular
+Linux kernel don't use the same CS/DS value, hence most of the issues
+described earlier on.
+
+<p />
+
+Alexandre Julliard provided a fix to get the CS/DS value at run time
+(instead of compile time), which eliminated the problem.
+</section>
+
+</kc>

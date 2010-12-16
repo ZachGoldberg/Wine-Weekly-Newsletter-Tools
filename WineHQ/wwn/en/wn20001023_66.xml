@@ -1,0 +1,450 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="66" date="23 Oct 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 66th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="97" size="351" contrib="34" multiples="18" lastweek="20">
+<person posts="12" size="35" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="8" size="18" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="7" size="18" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="7" size="13" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="20" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="5" size="69" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="5" size="11" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="4" size="9" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="4" size="9" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="4" size="48" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+
+<p />
+
+<ul>
+   <li>WineHQ has now a full featured search engine (where you can look
+up for old mails, patches, WWN articles and more...). Have a look at
+<a href="http://www.winehq.org/search.html">
+http://www.winehq.org/search.html</a></li> 
+   <li>Another mailing list has been created. It's wine-users, which
+also acts as a gateway to comp.emulators.ms-windows.wine
+newsgroup. You are now able to read/write to the news group without
+having an NNTP access, or get digests of the posting, or even do
+searches using the newly installed search engine. Interesting URLs
+are:
+<ul>
+   <li><a href="http://www.winehq.org/mailman/listinfo/wine-users">
+http://www.winehq.org/mailman/listinfo/wine-users</a> to
+subscribe</li>
+   <li><a href="http://www.winehq.org/pipermail/wine-users/">
+http://www.winehq.org/pipermail/wine-users/</a> for the archive.</li>
+</ul></li>
+</ul></section>
+
+
+<section 
+  title="Wine testing effort"
+  subject="ALS Update &amp; Regression Testing"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-112.html"
+  posts="7"
+  startdate="12 Oct 2000 00:00:00 -0800"
+  enddate="19 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jim Graham reported a small note of a BOF held at Atlanta Linux
+Showcase (October 11, 2000): 
+<quote who="Jim Graham">
+Initial reports are that there was a lot of interest, and quite a few
+in attendance. They even drank 3 bottles of real Wine (geez, I always
+miss out on the good shows!).
+
+<p />
+
+One of the hot topics of discussion related to regression
+testing. CodeWeavers is in the process of developing a suite of
+regression tests for non-graphical components of Wine, but it sounds
+like there may be a need for testing the graphical aspects of Wine as
+well. 
+
+<p />
+
+Does anyone know of or have experience with free/open-source/etc tools 
+that allow for development and implementation of regression test suites
+for GUI components?
+</quote>
+
+
+<p />
+
+Eric Pouech proposed two options for the last part:
+<ul>
+   <li>The Test Environment Toolkit (
+<a href="http://tetworks.opengroup.org/">TET</a>) which seems to be the 
+tool used for X11 protocol and XLib regression suite</li>
+   <li>DejaGnu + tk/tcl + expect</li>
+</ul>
+
+<p />
+
+Jeremy White gave a shot at TET (even got confused with the two
+versions of the product, one of them being open source under Artistic
+license, the other being supported but thru annual fees), but didn't
+give a final word on TET's usage for Wine regression testing.
+
+<p />
+
+Douglas Ridgway asked another relevant question: <quote who="Doug Ridgway">It's
+not clear to me why the tool needs to be free. It makes it easier for
+the community to contribute, but since test suite maintenance and
+regression testing must be centralized anyway, a commercial solution
+is not out of the question. We could work with products designed for X or
+Win32. Of the Win32 products, Microsoft Test should be investigated, but
+I'm sure there are lots of others as well.</quote>
+
+<p />
+
+Alexandre Julliard had a different view on the matter:
+<quote who="Alexandre Julliard">
+Regression testing must <b>not</b> be centralized. It must be distributed
+just like development is. We want anyone who writes a piece of code to 
+be able to implement the corresponding tests, and to run the tests
+every time they change something to the code. 
+
+<p />
+
+This doesn't mean we cannot have a designated QA person coordinating
+the testing process, but we must make sure it is possible for
+everybody to participate. So yes, the tools have to be free. 
+</quote>
+
+
+<p />
+
+Anyway, the overall discussion on Wine regression process hasn't
+really started yet, lots of items still have to be discuss. It's
+likely CodeWeavers will put out a proposal for the matter when they
+get something a bit solid in their thinking/tools benchmarking...</section>
+
+
+<section 
+  title="Wine HOWTO license"
+  subject="Wine-HOWTO will be FDL"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-190.html"
+  posts="3"
+  startdate="19 Oct 2000 00:00:00 -0800"
+  enddate="20 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jutta Wragge, Wine HOWTO maintainer, announced:
+<quote who="Jutta Wrage">
+We argued about the license for more than half a year. 
+
+<p />
+
+The decision is made: The Wine-HOWTO will be FDL.
+</quote>
+
+
+<p />
+
+A copy of the FDL license (good for documentation and books) can be
+found at <a href="http://www.gnu.org">http://www.gnu.org</a> homepage 
+or at Jutta's website
+(<a href="http://www.witch.westfalen.de/Wine-HOWTO/gfdl.html">
+http://www.witch.westfalen.de/Wine-HOWTO/gfdl.html</a>)
+
+<p />
+
+As a reminder, Wine HOWTO can be grabbed at 
+<a href="http://www.witch.westfalen.de/wine/index.html">
+http://www.witch.westfalen.de/wine/index.html</a></section>
+
+
+<section 
+  title="A tool to help Wine making"
+  subject="Announce: Winemaker"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-195.html"
+  posts="1"
+  startdate="17 Oct 2000 00:00:00 -0800"
+  enddate="17 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+A craftsman definitively needs good tools. Francois Gouget helped a
+bit the wine community, announcing:
+<quote who="Francois Gouget">
+   Winemaker is a perl script designed to help you bootstrap the
+conversion of your Windows projects to Winelib. More precisely
+winemaker can perform the following operations:
+<ul>
+   <li>fix the filename case issues</li>
+   <li>fix the include statements (both \ vs. / and case issues)</li>
+   <li>performs the standard Dos to Unix conversions</li>
+   <li>generate Makefiles using autoconf</li>
+</ul>
+
+<p />
+
+Basically you do:
+<pre><code>
+   $ winemaker --lower-uppercase
+   $ ./configure --with-winelib-root=&lt;wherever your wine sources are&gt;
+   $ make
+</code></pre>
+
+<p />
+
+And that's it, you have a Winelib application. Of course it's not
+always that simple: winemaker does many educated guesses (which could
+be wrong); the application written in a non portable way (or Winelib
+incomplete). But it does manage to build more than 70% of the Petzold
+98 examples with no more work than the three lines above.
+
+<p />
+
+So it's not complete yet but I think it's advanced enough to be useful.
+Plus what I'm really hoping for is your feedback.
+
+<p />
+
+The next steps (as currently planned) are:
+<ul>
+   <li>adding more support for the MFC
+   <ul>
+      <li>probably add a configure option similar to the
+'--with-winelib-xxx' options</li>
+      <li>add support for wrapper executables (for the MFC
+initialization issues)</li>
+   </ul></li>
+   <li>prepare it for inclusion in the Wine source tree
+   <ul>
+      <li>move the Readme to the Winelib user guide</li>
+      <li>write a man page</li>
+      <li>remove the configure script (only keep configure.in)</li>
+      <li>merge the auxiliary files into the main perl script using
+the DATA filedescriptor</li>
+   </ul></li>
+</ul>
+
+<p />
+
+The longer term goals are:
+<ul>
+   <li>adding support for the Visual C++ project files. This should
+greatly increase winemaker's accuracy (and we should blow past the 80%
+for the Petzold 98 :-).</li>
+   <li>adding support for direct analysis of the executables
+themselves using a tool like pedump (to detect which libraries they
+are linked with, etc.)</li>
+</ul>
+</quote>
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="MFC replacement"
+  subject="Open Source MFC Replacement WRT Wine?"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-202.html"
+  posts="4"
+  startdate="18 Oct 2000 00:00:00 -0800"
+  enddate="18 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andrew Lynch posted a rationale of a SourceForge Project (
+<a href="http://sourceforge.net/projects/ofc/">
+http://sourceforge.net/projects/ofc/</a>) dubbed OFC:
+
+<quote who="Andrew Lynch">
+The Open Foundation Classes (OFC) are a frameset of C++ classes for
+applications running under windows (32bit). They are 100% compatible
+with the MFC and will be improved in various ways. All not compatible 
+parts are signed with a prefix.</quote>
+
+
+<p />
+
+and added 
+<quote who="Andrew Lynch">
+This project is still in its pre-Alpha infancy but it appears to
+address one of the main obstacles to successful porting to WineLib of
+Win32/MFC apps: MFC itself is no longer portable nor is open
+source/free. 
+
+<p />
+
+This project could potentially solve that problem by replacing MFC
+with a open source/free equivalent. 
+</quote>
+
+
+<p />
+
+Gavriel State responded Andrew's agreement upon MFC licensing options:
+
+<quote who="Gavriel State">
+MS changed the license to MFC in MSVC 6.0 Service Pack 3 to remove the
+'windows only' clause.  That said, I wouldn't recommend actually
+shipping a WineLib ported MFC app without talking to a Lawyer first,
+just to be on the safe side. </quote>
+   
+
+<p />
+
+Francois Gouget, also considering the project in its infancy, answered
+a bit on Wine and OFC cooperation mode: 
+<quote who="Francois Gouget">
+If their project does take off I think we should provide them with the
+necessary support so that it compiles out of the box with
+Winelib. Then maybe some of the Wine folks could be interested in
+contributing but that's up for individual developers to decide. 
+</quote>
+</section>
+
+
+<section 
+  title="Wine application database"
+  subject="Wrong entries in your apps database (long)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-10/Subject/article-206.html"
+  posts="1"
+  startdate="18 Oct 2000 00:00:00 -0800"
+  enddate="18 Oct 2000 00:00:00 -0800"
+>
+
+<p />
+
+While discussing the current application database issues, Jeremy White 
+wrote a bit on the new directions for the application database
+(http://wine.codeweavers.com/):
+
+<quote who="Jeremy White">
+We sat down with a bunch of Wine hackers about a month ago and wrote
+down the following rambling notes about the apps database:
+
+<p />
+
+<b>Design goals</b>
+User wants to know two things:
+<ul>
+   <li>Does my application work?</li>
+   <li>How can I make it work?</li>
+</ul>
+
+<p />
+
+<b>Management Issues/Goals:</b>
+Major flaw with current app db is input data quality. Ways to fix that
+include:
+<ul>
+   <li>Have a designated "Mr/Ms Apps" to monitor/review comment
+quality</li>
+   <li>Have some form of a moderation system to let end users know the
+quality of a given persons entry. Maybe just self evaluations, maybe
+having 'owners' have higher value.</li>
+</ul>
+
+<p />
+
+<b>Major goal:</b>
+Make it easy for users to participate by taking ownership of an
+application. Many, many people want to help Wine, but it ain't easy to
+help. Let's make it easy to help. So, if someone owns an app, it's up
+to them to monitor comments on it, track bugs (close bugs), and make
+sure quality level is high for application description. 
+
+<p />
+
+<b>Technical issues:</b>
+(Sorry, Doug) Probably not worth preserving current code base;
+probably best to start from scratch.
+
+<p />
+
+Corollary: Probably best not to auto import current apps data (it's
+quality is not considered high); best would be to have "Mr/Ms Apps"
+enter clean data.
+
+<p />
+
+<b>Major architectural change:</b>
+Create a hierarchy of data. For example:
+<pre>
+         Microsoft
+             Word
+                 95
+                     User comment 1
+                     User comment 2
+                 97  
+                     User comment 1
+</pre>
+                 ...
+Critical failing of current system: many redundant entries for the
+same product. We need to fix that. 
+
+<p />
+
+Reviews (aka user comments) should expire.
+
+<p />
+
+We should track hit counts on apps (auto magic way of knowing which
+apps are most desired).
+
+<p />
+
+<table>
+<tr>
+   <td>Idea:</td>
+   <td>Host per app web pages. Make it easy for the 'owner' of an app
+to maintain said web page. The idea is to pull the StarCraft and Notes
+howtos into the logical home for them.</td>
+</tr>
+<tr>
+   <td>Idea:</td>
+   <td>Tie the apps database to the api database. The idea is that we
+know from the apps database which apps are the most popular. We know
+from the api database which DLLs/entry points are used by those
+apps. We can then create a report out of the api database of the list
+of the DLLs most needed by the top ten apps, and then people writing
+test scripts (something Alexandre and John Sturtz are working on),
+have a prioritized todo list. Again, this helps us find useful things 
+for the many volunteers to do.</td>
+</tr>
+<tr>
+   <td>Idea:</td>
+   <td>Tie the apps database to bugzilla. If users have a problem with
+an app, it's a bug, and should be in bugzilla. If we can get to a
+point where we can easily get a report that says 'here are all the
+bugs that Quicken depends on'. Or, here are the five bugs, the fixing
+of which will make 50 apps suddenly work. This would be wicked
+cool.</td>
+</tr>
+</table>
+</quote>
+</section>
+
+</kc>

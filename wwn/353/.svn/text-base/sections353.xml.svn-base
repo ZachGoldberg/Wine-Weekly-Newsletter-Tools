@@ -1,0 +1,302 @@
+
+<section 
+	title="News: WineConf 2008"
+	subject="WineConf"
+	archive="#"
+	posts="0"
+>
+<topic>WineConf</topic>
+<p>
+WineConf 2008 was last weekend and it was a big success!  According to Jeremy White there were more attendees this year than in years past, which is a great sign.  There was also a general consensus, (not entirely because of 1.0) that Wine is beginning to 'Just Work'.  Because of both this optimism and very nice accommodations (and good cookies) the air at WineConf was very friendly and a lot of progress was made.
+</p>
+<p>
+There were a few major events at WineConf 2008:
+<ul>
+<li> An addition of another computer on this planet, aside from Alexandre's, which runs the 'make test' suite without errors. (Stefan D.'s)</li>
+<li> The discovery of the 'Julliard' rank for getting patches into WineHQ.</li>
+</ul>
+</p>
+<p>
+The Julliard rank is something worth explaining.  Wine developers have long wondered exactly *HOW* Alexandre determines whether or not a specific patch gets committed.  The process is something as follows:
+</p>
+<ul>
+<li>
+  Does the patch use C++ style comments?  Yes: REJECT
+</li>
+<li>
+  Does the patch change coding style from the surrounding code?  Yes: REJECT
+</li>
+<li>
+  Is the code obviously wrong in any way?  Yes: REJECT
+</li>
+<li>
+  Does it take more than a few seconds to see that the code is correct?  If today is a busy day: IGNORE
+</li>
+<li>
+  Is the author on the s**t list?  Yes: REJECT
+</li>
+<li>
+  Are the planets aligned in just the right way and none of the above reject?  Yes : ACCEPT
+</li>
+</ul>
+
+<p> 
+And of course now we need some sort of measurement for inclusion in the crap list.  For every 'good' patch set an author moves further off the list, for every bad patch the author's reputation is diminished and put further onto the list.  Most Wine developers have come to realize that that the Julliard Rank is very similar to Google's PageRank algorithm: everybody who cares understands how it is 'supposed' to work but could never replicate it in a million years.
+</p>
+
+<br /><br />
+<p>
+Kidding and games aside, WineConf was a huge success.  This edition of the WWN will attempt to cover some of the major happenings and discussions which took place.  But first, a brief summary of each of the participants.  (This list is from a bunch of scribbled notes as we went around the room introducing ourselves)
+</p>
+<ul>
+  <li>Jeremy White - Founder and CEO of Codeweavers. His daily job is paying Alexandre to reject his patches</li>
+  <li>James Ramey - VP of Sales for CodeWeavers. Does a
+fantastic job.</li>
+  <li>Roderick Colenbrander - D3D Guru #1 OpenGL and stuff. Currently in University.</li>
+  <li>Stefan D&#246;singer - D3D Guru #2. At fault if tests
+crash your machine.</li>
+  <li>Henri Verbeet - D3D Guru #3. Works on general Stuff and
+gaming </li>
+  <li>Alexandre Julliard - CTO of Codeweavers and WineHQ commit
+overlord. Enjoys rejecting / dropping patches.
+Famous line: "that doesn't do what you think it does".
+In general enjoys low level stuff (kernel, wineserver)</li>
+  <li>Kai Blin - Secur32 api (3 years) - kerberos for 2 years -
+Enjoys hooking up Samba and Wine (incompatible licenses so it is
+difficult). At university for another year.</li>
+  <li>Marcus Meissner - Packaging for Suse, snapshots - newest
+gcc tests, coverity issues, </li>
+  <li>Dan Kegel - Works at Google. Worked on Picasa
+with CW. Patchwatcher plugins (static + dynamic analysis
+etc.) General upkeep and infrastructure. Fantastic
+taskmaster and 1.0 manager.</li>
+  <li>Dimi Paun - Wiki and other. </li>
+  <li>Detlef Riekenberg - Works on printing support with CUPS</li>
+  <li>Huw Davies - A total "Wine Hacker" - 2D graphics, fonts
+printing. Now works with JWhite, Outlook 2k3 and 2k7 and a
+"DIB Engine".</li>
+  <li>Jeremy Newman - Networking guy at Codeweavers.  Keeps duct tape on servers.</li>
+  <li>Rob Shearman - OLE32, DCOM, working for fun but not for CW
+anymore. Enjoys RPC. Working on getting
+Wine to compile with VC9 for prefast.</li>
+  <li>James Hawkins - Mostly work on installers (msi).
+State is good so far. Specifically small bugs as
+blockers. Fusion. Puts a lot of work into tests.</li>
+  <li>Austin English - Spell checking sourcecode - test failures
+on other platforms, monitors Bugzilla/AppDB (working with office 2k7).</li>
+  <li>Owen Rudge - SoC Student - control panel and configuration
+(fix winecfg)</li>
+  <li>Maarten Lankhorst - DirectShow (video + audio
+playback). Was former SoC student. Was 2008 SoC
+organizer. Also responsible for a lot of Wine's alsa driver.</li>
+  <li>Caron Jenson - Pink support ninja - assigns bugs to
+Codeweaver devs.</li>
+  <li>Aric Stewart - Codeweaver dev. - now Jeremy's go-to-dev.
+Worked on early MSI stuff - likes doing foreign input, IME
+stuff. Multibyte language support (mlang, fonts).
+</li>
+  <li>Ken Thomases - work for Codeweavers on Mac tools.
+"Quartz driver" Coreaudio driver (working on real
+directsound) Integrating Wine with Mac OSX developer tools.</li>
+  <li>Jacek Caban - Internet Explorer (HTML Engine) url monitor,
+networking. Javascript engine</li>
+  <li>Scott Ritchie - Enjoys the high level.  Does
+Ubuntu packaging, desktop integration,
+'downstream'.    </li>
+  <li>Lei Zhang - Works at Google with Dan.   Does
+Picasa for Linux.  Triage and fix bugs.  Comctrl32.dll</li>
+  <li>Juan Lang - crypt32 (crypto guy).  Would like to
+work Plug 'n play.  Has an earring and thus is the coolest guy
+at WineConf. </li>
+  <li>Dylan Smith - SoC student - richedit controls (tables
+support).  Fixing distracting bugs is
+fun.    Wants to fix google Talk.   (Com interface)</li>
+  <li>Francois Gouget - Works for Codeweavers - Wine Desktop
+integration work.  Interest is in tests, make sure regression
+testing is effective.    </li>
+  <li>Paul Vriens - fixing tests, services, setup api, event
+related work.</li>
+  <li>Andrew Balfour - Codeweavers tech support, destroys his
+own computer with tests</li>
+  <li>Andrew Bogott - Codeweavers tech - work on crossover wrapper
+bits</li>
+  <li>Vincent Povirk - Codeweavers dev.  One of the few
+to actually move to Minnessota!  Pet project
+is "Sugared Wine" - Wine with a mini Windows bar thing.</li>
+  <li>Hans Leiddeker - winhttp, inet support.  Got gmail
+support in chromium working.</li>
+  <li>Dmitry Timoshkov  - 10 years at Wine, works on
+many things.  </li>
+  <li>Jon Parshall - COO - Jeremy's Minion.</li>
+  <li> Steven Edwards - Bordeaux Project, ReactOS Liaison and developer working Desktop integration issues.</li>
+</ul>
+<p>
+A special thanks to the following folks for helping edit this rather error-prone editor put together this WWN.
+</p>
+<ul>
+<li>Austin English</li>
+<li>Geoffrey Hausheer</li>
+<li>Jeff Zaroyko</li>
+<li>Steven Edwards</li>
+<li>Kai Blin</li>
+<li>Stephen Gentle</li>
+<li>Dmitry Timoshkov</li>
+</ul></section>
+<section 
+	title="WineConf 2008 Keynote"
+	subject="WineConf"
+	archive="#"
+	posts="0"
+>
+<topic>WineConf</topic>
+<p>
+Alexandre's keynote is available at <a href="http://www.winehq.org/site/wineconf/media">http://www.winehq.org/site/wineconf/media</a>.  The most important piece was when the entire community at WineConf got to witness pigs fly!  Some of the other highlights below:
+</p>
+<ul>
+<li>
+Wine 1.0 released!
+</li>
+<li>
+  Very few regressions since 1.0
+</li>
+<li>
+  Lots of fantastic progress during the freeze.  Lots of bugs and tests getting long overdue fixing.
+</li>
+<li>
+  1.0 generated a bunch of media exposure which is always good.  
+</li>
+<li>
+  Timing of future freezes/releases could be better.  Had issues this time with exam periods and SoC conflicts.
+</li>
+<li>
+  Almost 30 commits per day on average.  An ever increasing trend.
+</li>
+<li>
+ Reached 2 million lines of code sometime during 2008.
+</li>
+<li>
+  Wine trademark granted by USPTO for Software Freedom Law Center (SFLC) .  
+</li>
+<li>
+  1.0.1 release will happen and have a couple of bug fixes in the next few weeks.  Don't know if many more of these will happen as there hasn't been much demand or many nominations for inclusions in these releases.  Perhaps larger fixes, like whole dlls, could be backported to 1.0.x but may be too much work per benefit.
+</li>
+<li>
+  1.2 release criteria: before 2023.  For more detail see the later section in this WWN.
+</li>
+<li>
+  Wine test suite still needs work... should pass for everybody not just Alexandre.
+</li>
+</ul></section>
+<section 
+	title="Focusing on the Users"
+	subject="Users"
+	archive="#"
+	posts="0"
+>
+<topic>Users</topic>
+<p>
+Immediately following the keynote and introductions Dan Kegel did a segment focusing on the connection between what Wine devs are doing and Wine's users. </p>
+<p>
+The city of Munich has been using Wine with much success lately, with two major apps that they use it for.  The Bank of Brazil has also been successful in implementing Wine to run Lotus Notes.
+</p>
+<p>As a whole Wine seems to be successful for smaller applications.  Larger applications have budgets to hire more programmers and better programmers which means larger code bases, more API usage and clever coders using small tricks in APIs that Wine doesn't necessarily support.  Making progress but many big applications still need work.</p>
+<p>The prize is still Adobe software.  Photoshop CS2 was a success with Wine 1.0 and Photoshop / Dreamweaver CS3 installation blockers have recently been cleared, paving the way for major progress with those applications soon. 
+</p>
+<p>
+Scott Ritchie mentioned that a guesstimate of 10% of Ubuntu users have tried to use Wine.  This puts estimates at maybe 1 million users at least at some point in recent months.
+</p>
+<p>
+The D3D gurus expressed regret that the percent of games working across the board isn't increasing dramatically, instead it is a steady climb.  The biggest challenge is that there are very few major 'hit' games.  World of Warcraft is probably the biggest and it works fairly well.  Devs work as hard as they can on the games they find but there are a very many games out there.  Very few stand out in the crowd as more popular than others and as such the D3D devs don't have any single focus, instead fixing problems as they come across and as the Devs see fit.  Progress is being made and more games than ever work, however there is still much more to do!
+</p>
+<p>
+The overall 'Wine Experience' was discussed next.  As a whole everybody agrees that it is ugly.  Winecfg is arcane, there are tons of nonsense fixmes, very little 'newbie guidance' and overall a small chance of success on the first try.  Devs do care about this but its just not as much fun to fix.  This is slowly changing though as major releases become a big deal post 1.0.  E.g. double clicking an exe and msi file in nautilus should now work well with Wine.  There was also talk of having a mechanism to check removable media for windows style autoruns and triggering Wine with that as well.
+</p>
+<p> 
+For many users, "Windows is a glorified game launcher" and expect Wine to emulate that capability.  Users often expect many of the same features to exist, such as dxdiag.  Dan Kegel proposes that Wine put in effort to port such utilities to help debugging issues.  
+</p>
+<p>
+<b> A serious proposal:</b> There was much talk at WineConf about the problem of not knowing what to focus on.  A serious motion was put on the table to create an opt-in system for reporting back to WineHQ what apps your running and some information about your hardware.  The community is still considering this and may seek further feedback on the idea.</p>
+<p>
+Finally there was a big discussion on fixme's.  There is general consensus that they're in a pretty bad shape.  A consensus was almost reached on disabling fixmes by default, but instead the action item was to simply silence the noisiest fixmes to try and cleanup Wine's output a bit.
+</p></section>
+<section 
+	title="Wine's Image: WineHQ.org"
+	subject="WineHQ.org"
+	archive="http://www.winehq.org"
+	posts="0"
+>
+<topic>WineHQ.org</topic>
+<p>
+There was consensus that the Winehq.org website was in need of some work.  Many agreed that a modern revamp to something more <a href="http://www.openoffice.org/">Open Office</a> style would be nice.  The issue is that the Wine website has tons of information.  Even the homepage is jam packed, and organizing everything is very difficult.</p>
+<p>
+The website also has four major sections with three different login systems.  The main winehq.org informational site, Bugzilla, AppDB and the Wiki.  The latter triumvirate all have separate login systems.  There was some talk on integrating new authentication modules for each to unify the logins.  Perhaps look forward to some changes in this area!
+</p></section>
+<section 
+	title="Wine on other platforms (Solaris, BSD, OS X)"
+	subject="Wine"
+	archive="#"
+	posts="0"
+>
+<topic>Wine</topic>
+<p>
+A major discussion at WineConf took place about running Wine on other platforms.  Most poignantly: BSD, Solaris and Mac OS X.  The consensus was that Wine devs *DO* care about platforms other than Linux.   Other platforms so far should kinda work.  Wine is actually in BSD's ports system already.
+</p>
+<p>
+The biggest issue in this area is demand.   There were specific BSD builds of crossover posted sometime back after much demand and Codeweavers saw very very little response.  As a result not much effort has been put into the area.  In short: if you're a user of Wine on BSD, Solaris or OS X and want more support speak up! The other major hindrance is very few Wine devs run Wine on non-Linux systems.  This could change though if there was motivation.</p></section>
+<section 
+	title="Wine 1.2 Timeline"
+	subject="Wine 1.2"
+	archive="#"
+	posts="0"
+>
+<topic>Wine 1.2</topic>
+<p>
+The deadline for Wine 1.2 is 2023 (another 15 years!).  Realistically we would like to see Wine 1.2 in a much shorter time-frame, perhaps mid 2009.  Alexandre's biggest issues:
+</p>
+<ul>
+<li>Fixing the remnant bugs from 1.0 (the new 1.2 bug milestone)</li>
+<li>Better desktop integration with respect to transparency and desktop mode</li>
+<li>Tests that pass... sometimes</li>
+</ul>
+<p>Some 10 year old 'nice to have' items.  Would like at least one for 1.2:</p>
+<ul>
+<li>DIB Engine</li>
+<li>Quartz Driver</li>
+<li>Direct3D 10 </li>
+<li>USB Support (iPod, etc.)</li>
+<li>64-bit support</li>
+</ul>
+<p>
+There was plenty of discussion about doing time based releases and Alexandre seems lukewarm to the idea.  It is very difficult to quantify Wine's progress and even say if a given build merits a release.  Hence there is still a lot of motivation to wait for some form of major time milestone or 'big ticket' completion before release.   Early/Mid 2009 seems to be consensus for re-evaluating a 1.2 release.
+</p></section>
+<section 
+	title="Updates on The Big Tickets: Quartz, WineD3D, iPod Support, DIB Engine"
+	subject="Big Tickets"
+	archive="#"
+	posts="0"
+>
+<topic>Big Ticket Items</topic>
+<p>
+<b> Quartz </b>
+</p>
+<p>
+Ken Thomases has been point on the Quartz driver.  There are several major roadblocks, the first and foremost of which being: where to start?  Apple has a number of APIs to access its graphical framework.   The one they promote the most, Cocoa, is an objective C interface.  Alexandre has made it priority to keep Wine pure c and thus that is not a great option.  There is also Carbon which is pure-C which Apple still supports.  Apple has however announced that they have no plans of ever porting Carbon to 64-bit which may be a problem for Wine going forward.  Once this investigation is complete Ken plans to sit down with Alexandre and get some serious design done.  
+</p>
+<p>
+<b> D3D 10 </b>
+</p>
+<p>
+Stefan D&#246;singer summed it up best: 'Nobody cares'.  D3D10 has had a lot of commotion about it however there are almost no games which depend on it yet.  Stefan has been hard at work on a revamped fixed function rendering pipeline which is almost ready to be merged.  From there there will be some design discussion on D3D10.  Effort on D3D10 will very much depend on demand and if widespread acceptance and appeal of d3d10 appears.
+</p>
+<p>
+<b> iPod Support </b>
+</p>
+<p>
+I personally spoke to Maarten about the state of his iPod patches.  He claims 'They work fine... it just takes 30 seconds to complete every command'.  Maarten is continuing an investigation in what he believes to be a RPC bug causing this delay.  Once that is cleared there is some cleanup to do to make the patches acceptable to Alexandre and this may happen!
+</p>
+<p>
+<b> DIB Engine  </b>
+</p>
+<p>
+Huw Davies has the unfortunate task of making a DIB Engine,  The status is that it can draw lines and boxes 10,000 times faster than the original X based implementation.  However in practice it doesn't seem to be gating performance, the new suspect is gdiplus.  Huw is taking a temporary break from DIB but may pick it up again.  
+</p></section>

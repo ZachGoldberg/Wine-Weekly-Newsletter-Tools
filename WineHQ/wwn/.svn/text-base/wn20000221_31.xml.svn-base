@@ -1,0 +1,245 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="31" date="21 Feb 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 31st release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+
+</intro>
+
+<stats posts="97" size="393" contrib="27" multiples="14" lastweek="20">
+<person posts="20" size="42" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="12" size="53" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="8" size="16" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="23" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="6" size="5" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="5" size="9" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="5" size="3" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="5" size="12" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="9" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="7" who="Turchanov Sergei &lt;turchanov@otvprim.ru&gt;" />
+</stats>
+
+
+<section 
+  title="WineHQ web server"
+  subject="Network TTL trouble"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-152.html"
+>
+
+<p />
+
+There were a couple of issues with the WineHQ server this
+week. Firstly, Bertho Stultiens, who is kindly hosting www.winehq.org
+reported: 
+<quote who="Bertho Stultiens">
+There is a chance that some network-connections never will arrive at
+the www.winehq.org server. This is due to extreme hop-counts between
+networks. We have experienced hop-counts over 40 from our internal net
+and I just discovered that the external computers also reach over 30
+many times. 
+
+<p />
+
+The problem always starts after about 15:00 CET local time (09:00 EST)
+and stops first (gets less bad) when the USA's eastcoast is getting
+ready for dinner (24:00..01:00 CET). The increased traffic in the US
+is resulting in rerouting of many packets and increased
+router-involvement. Our network is almost completely routed through a
+US-connection for USA, Australia and Asia traffic. However, I've also
+seen problems within Europe. 
+
+<p />
+
+We are considering a couple of IPIP-tunnels to get the hopcount down,
+but this involves serious work and will not be done all too soon. If
+you have problems, please notify me with a trace from your local site.
+
+<p />
+
+Note: most Linux machines will not have problems because the default
+TTL is set at 64 (RFC1700 page 64 use 'cat
+/proc/sys/net/ipv4/ip_default_ttl'). However, older machines may still
+have their TTL at 32 (RFC1060 page 23 or even worse, at 15 as
+recommended in RFC791...). I do not know about other OSes what their
+defaults are, but please set them higher than 32 if you want to keep
+on using the internet. 
+</quote>
+
+
+<p />
+
+and a few days later, Bertho kept experiencing the Murphy's Law:
+
+<quote who="Bertho Stultiens">
+The network-card gave up (a ne2000 clone). The problem was that I did
+not have another 10Mbit card at hand (only 100Mbit) and it took a
+while to lay hands on a new card. But, as usual, not everything is
+working instantly with a new card. The problem during the last 10
+hours or so has been that the router's arp-cache refused to timeout
+and I could not get packets out from 130.225.13.222 (winehq). Mainly
+because the IP is an alias. However, I just got the network running
+again and the whole site is accessible again (afaik).
+</quote>
+
+
+<p />
+
+Everything has been back on tracks before the week-end.</section>
+
+
+<section 
+  title="Of compilers and calling conventions"
+  subject="Wine's dependency on the pascal calling convention (stdcall)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-164.html"
+>
+
+<p />
+
+Patrik Stridvall started another staircase discussion with Alexandre
+Julliard regarding Wine's adhere to the GNU's compiler.
+
+<p />
+
+Wine, as Windows, relies on the pascal (aka stdcall) calling
+convention: a function's calling convention defines in which order the
+parameters are pushed onto the stack: C (aka cdecl) pushes the
+parameters from left to right, pascal does it the other way).
+
+<p />
+
+Most of Windows APIs are defined with the pascal calling
+convention. So, when Wine implements a Windows API, the function is
+(most) always pascal.
+
+<p />
+
+However, Patrik pointed out: <quote who="Patrik Stridvall">While GNU C supports it
+(pascal calling convention), some other compilers like the Solaris
+Workshop C compiler doesn't AFAIK. This is not very surprising since
+ANSI C doesn't  require support for it.</quote>
+
+<p />
+
+Patrik then announced he had had some success making WineLib work with
+Solaris Workshop C, which has the following advantages:
+<quote who="Patrik Stridvall">The most important issue is the size of the debug
+info. With Solaris Workshop C 4.2 the total size of the *.so files
+with stabs debug info (used by dbx) is about 9.8 Mb. With GNU C
+2.91.66 the total size of the *.so files is about 77 Mb. No I'm not
+joking it is almost a factor 8 difference. Further more Solaris
+Workshop C generates better code and compiles faster. Secondly
+supporting more compilers is nice in itself.</quote>
+
+<p />
+
+Marcus Meissner pointed out that using latest gcc (2.95) and binutils
+would reduce debug information (by merging it between different
+compilation units).
+
+<p />
+
+Anyway, Patrik's main point remained: if Wine is asked to run, let's
+say native x86 code (using the pascal calling convention) with regular 
+code (using only cdecl calling convention), then there's a need for a
+thunking layer. 
+Patrik's main application was to be able to run Wine on Itanium (aka
+Merced) and using it x86 hardware emulation part.
+
+<p />
+
+A lengthy discussion went on between Patrik and Alexandre. Alexandre
+concluded it with:
+<ul>
+	<li />there are two different issues: adding a x86 emulator to
+Wine and compiling Wine on a compiler without support of stdcall
+	<li />first issue is a high priority one, whereas the second
+isn't (gcc can be used, even if not the best compiler around)
+	<li />changes for both issues on core Wine code shall be as
+small as possible (mainly modifying the thunk tools and code)
+</ul>
+
+<p />
+
+Final decision will be made on <quote who="Alexandre Julliard">a matter of cost
+vs. benefit. And in the case of stdcall the benefit is so small that I
+seriously doubt you can make it worthwhile. If you disagree, by all
+means go ahead and implement it, and then we'll judge on the code.
+</quote>
+
+<p />
+
+</section>
+
+
+<section 
+  title="Do animals drink Wine ?"
+  subject="COREL: typelib speedup"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-216.html"
+>
+
+<p />
+
+Marcus Meissner, in the bunch of patches he submitted from the Corel
+CVS tree, provided one with the following Changelog:
+<code>Alexandre Julliard &lt;julliard@codeweavers.com&gt; (for Corel)</code>
+
+<p />
+
+A suspicious Ove K&#229;ven asked: <quote who="Ove Kaaven">I'm sure there must be
+other people than me wondering... which Alexandre is this who needs to
+have his patch submitted to Wine by someone else?</quote>
+
+<p />
+
+Alexandre answered: 
+<quote who="Alexandre Julliard">
+It is the Alexandre-working-on-behalf-of-Corel, not the
+Alexandre-hacking-Wine-on-his-own-time; they are quite different
+animals. 
+
+<p />
+
+The work I do for Corel is owned by them, and they can do what they
+want with it; it may or may not end up in their CVS tree, and as long
+as it isn't released to the public I don't have any right to put it in 
+the WineHQ tree. Once it shows up in the Corel tree I could of course
+merge it into WineHQ myself, but if other people do the work for me
+I'm not going to complain... 
+
+<p />
+
+Even though Corel are very cool about this, and of course intend to
+release all the Wine code back to the community anyway, I think it is
+important to make a clear distinction, to ensure that I don't take
+credit for changes paid for by Corel (or that they take credit for
+changes I do on my own...) This is also why I have adopted the
+convention of putting my CodeWeavers email in the log entry of all the 
+patches I did on behalf of Corel.
+</quote>
+
+
+<p />
+
+Later on, Alexandre gave also an update on the 
+<a href="wn20000124_27.html#0">Wine's license survey</a>:
+<quote who="Alexandre Julliard">I have received an OK from about 75 people, and more
+are still arriving. Since I haven't received any opposition so far I
+think it is safe to say that we will be able to do the change pretty
+soon. </quote>
+
+<p />
+
+
+<p />
+
+</section>
+
+</kc>

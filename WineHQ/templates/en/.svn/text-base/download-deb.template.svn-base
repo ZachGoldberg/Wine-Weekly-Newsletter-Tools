@@ -1,0 +1,64 @@
+<!--TITLE:[Wine for Debian based distributions]-->
+
+<h1><img src="{$root}/images/distro/ubuntu.png" width="50" height="50" alt="Ubuntu Linux" border="0">
+Wine for Ubuntu, Debian, and Debian-based distributions
+<img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></h1>
+
+<p>Debian and Debian-based distributions such as Ubuntu utilize a special tool
+for managing packages known as APT.  APT is able to automagically install all of
+the needed dependencies for a software package, as well as keep the package 
+up to date, by scanning what are known as APT repositories.  Debian-based 
+distributions have their own repositories of software that include Wine, 
+however we keep our own repository of the latest available beta packages here for 
+download.</p>
+
+<p>There used to be graphical instructions here, however we have found that the 
+terminal commands are actually simpler to describe and quicker for the user to 
+input.  Because the commands below use sudo, you may have to enter your user
+password after hitting enter.</p>
+
+<h2>Warning: These are development packages</h2>
+
+<p><i>The packages here are development packages.  This means they will 
+periodically suffer from <a href="http://wiki.winehq.org/Regression">regressions</a>, and as a result an update may break functionality in Wine.  If the latest
+stable release of Wine (currently Wine 1.0) works for you, then you may not want
+to use the development packages.</i></p>
+
+<h2>Adding the WineHQ APT Repository:</h2>
+
+<p>First, open a terminal window (Applications->Accessories->Terminal).  On 
+Debian, you will need to open a root terminal.  Then add the repository's key 
+to your system's list of trusted APT keys by copy and pasting the following:</p>
+
+<p><i>wget -q http://wine.budgetdedicated.com/apt/387EE263.gpg -O- | sudo apt-key add -</i></p>
+
+<p>Next, add the repository to your system's list of APT sources:</p>
+
+<p><b>For Ubuntu Hardy (8.04):</b><br>
+<i>sudo wget http://wine.budgetdedicated.com/apt/sources.list.d/hardy.list -O /etc/apt/sources.list.d/winehq.list</i></p>
+<p><b>For Debian Etch (4.0):</b><br>
+<i>sudo wget http://wine.budgetdedicated.com/apt/sources.list.d/etch.list -O /etc/apt/sources.list.d/winehq.list</i></p>
+
+<p>Then update APT's package information by running '<b>sudo apt-get update</b>'.
+
+<p>If you are using Ubuntu, you can now install Wine by <a href="apt://wine">
+clicking this link</a>. Alternatively, you can install by going to 
+Applications->Add/Remove and searching for Wine.</p>
+
+<h2>Upgrading to a new version of Ubuntu</h2>
+
+<p>If you are upgrading the entire system, such as going from Ubuntu 7.10 to 
+8.04, you will need to come back to this page and enter the command for the new 
+version above.  The built in update manager will not switch the Wine repository 
+automatically.</p>
+
+<h2>Older .deb packages</h2>
+
+<p>Since the APT repository can only hold the latest packages, older versions of 
+the packages are available at 
+<a href=http://wine.budgetdedicated.com/archive/index.html>the WineHQ .deb packages archive</a>.</p>
+
+<p>You can install the packages by double-clicking on them.</p>
+
+<br>
+<p><i>Very fast and reliable webhosting for the APT repository is graciously provided by <a href="http://www.budgetdedicated.com/">budgetdedicated.com</a>.</i></p>

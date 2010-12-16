@@ -1,0 +1,209 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn+NOSPAM@theshell.com">Brian Vincent</author>
+
+<issue num="92" date="2001/04/22" />
+
+<intro>
+
+<p>This is the 92nd release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (a port of
+the Windows API to Unix-based operating systems).</p>
+
+<p>This week a new snapshot was released, 20010418.  In the 
+<a
+href="http://cvs.winehq.org/cvsweb/~checkout~/wine/ChangeLog?rev=1.46">CHANGELOG</a>
+Alexandre pointed out the following new features:</p>
+<p><ul>
+	 <li>DirectDraw restructuration and improvements.</li>
+	 <li>MSVCRT headers for compiling Winelib apps.</li>
+         <li>Postscript driver enhancements.</li>
+	 <li>Several multimedia fixes.</li>
+	 <li>Lots of bug fixes.</li>
+</ul></p>
+
+<p>Head on over to the <a
+href="http://www.winehq.org/download">download</a> 
+page and grab the source.</p>
+</intro>
+
+
+<section
+  title="RH 7.1 gcc fixes compiler bug"
+  subject="RH 7.1 gcc fixes compiler bug"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/04/0096.html"
+  posts="1"
+  startdate="04/17/2001"
+  enddate="04/17/2001"
+>
+
+
+<p>RedHat 7.0 users will want to upgrade their gcc packages to the
+ones in RedHat 7.1.  
+  <quote who="James Juran">As discovered about two weeks ago by Francois
+Jacques and Ulrich
+  Weigand, Red Hat's gcc-2.96-69 package has a bug which shows up in the
+  HOOK_CallHook function in windows/hook.c (and possibly other places). 
+  Red Hat 7.1 contains gcc-2.96-81, which fixes this bug.  Users of Red
+  Hat 7.0 should install the gcc and cpp packages from Red Hat 7.1 to fix
+  this problem.
+  </quote></p>
+
+<p>RedHat took a lot of grief last year when they
+   released what many people consider an experimental compiler.  Officially 
+   there is no such thing as gcc 2.96, but RedHat made the internal decision
+    to include a development snapshot pulled from the CVS tree.  However, as
+of January 
+    gcc has been in a feature-freeze.  The next major release, gcc 3.0,
+    will be based on this code.  From the 
+  <a href="http://www.la-sorciere.de/wine/index.html">
+    Wine HOWTO
+  </a>: <i> Here is a list of packages you need.  ... 
+  gcc version 2.7.2.3 or egcc (egcs) [now gcc 2.9x]</i></p>
+
+<p>This topic has been covered in numerous online forums, for some other
+discussion of it refer to Kernel Traffic 
+<kcref subject="recommended gcc compiler version"
+startdate="2000/12/21"></kcref>
+</p>
+</section>
+
+
+
+
+
+<section
+  title="InstallShield and ole question"
+  subject="InstallShield and ole question..."
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/04/0105.html"
+  posts="2"
+  startdate="04/18/2001"
+  enddate="04/18/2001"
+>
+
+<p>Mike Bond wrote:</p>
+<quote who="Mike Bond">
+<p>Quick brief, I've been lurking for quite some time around WineHQ and the
+   wine project, but don't really have time for putting a lot of devel into
+   it. It seems wine is finally getting close enough to working for most
+   things that I can put some time into tracking problems without gobbling
+   up many hours.</p>
+
+<p>All that said, I've been trying to get some InstallShield v6 based
+installers
+   to work with wine without much success. I've tried various combinations
+   of builtin and native versions of the ole related dlls, each
+configuration
+   with it's own hitches.</p>
+
+<p>With a mostly 'native' configuration, I get the 0x80070008
+   (ERROR_NOT_ENOUGH_MEMORY) error when trying to load IKernel.exe. I did
+not
+   spend a lot of time with this as 'builtin' really is the preferred method
+   anyway.</p>
+
+<p>My question, is anyone currently working on implementing
+CLSCTX_LOCAL_SERVER
+   in compobj.c:CoGetClassObject, or have plans to work on this in the near
+   future? If not, I may go back to trying to figure out what is happening
+   with the 'native' configuration.</p>
+
+</quote>
+
+<p>Installing programs has been a huge headache for a long time.  Lately
+there's
+been work done in this area that will eventually allow programs to be
+installed 
+without Windows.  However, there are issues with installation programs
+requiring 
+interprocess OLE communication.  This is what Mike was referring to.  
+Marcus Meissner replied:</p>
+   <quote who="Marcus Meissner"><p>
+     This will require a lot of work, basically you 
+     will need to implement all of the OLE out of process, marshalling, rpc
+stuff.</p>
+
+    <p>This is not a trivial 100 line patch, its more like 20000+ lines.</p>
+   </quote>
+
+<p>Daniel Walker disagreed and thought, 
+        <quote who="Daniel Walker">
+	The CLSCTX_LOCAL_SERVER is used for function calls in another
+process
+        on the same machine. So you wouldn't need any rpc, and I wouldn't
+think
+        you would need marshalling .. In the case of InstallShield v6 it
+isn't
+        really requesting anything from another process. It's requesting an
+        object from an EXE, instead of a DLL. 
+	</quote></p>
+
+<p>In a related post, Daniel Walker also wrote:</p>
+   <quote who="Daniel Walker"><p>
+
+    I've been working on getting the Free Borland installer working. It
+    uses installshield so I think this pertains to all installshield
+    installers .. I've found a problem in propsheet.c ,
+    PROPSHEET_CollectPageInfo() . It appears that the property pages that
+    come out of the installer have the PSP_USETITLE flag set. So wine
+    attempts to get the title from the pszTitle field. The problem occurs
+    because the pszTitle field is null. Wine try's to use it as a resource
+    ID then fails. From reading over some MS docs I think windows, in this
+    situation,  reverts the PSP_USETITLE flag then uses the title in the
+    template. So far I can get the installer to work, but it doesn't have a
+    title or caption I haven't figured out why.
+    </p><p>
+
+    The patch below should fix the borland installer and , I assume, other
+    install shield installers. Let me know if this patch doesn't work..
+    </p></quote>
+</section>
+
+
+
+
+
+<section
+  title="GDB remote debugging"
+  subject="GDB remote debugging for wine"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/04/0123.html"
+  posts="2"
+  startdate="04/20/2001"
+  enddate="04/21/2001"
+>
+
+
+<p>Ove K&aring;ven wrote in with:</p>
+
+<quote who="Ove Kaaven">
+<p>As we all know, gdb isn't very compatible with wine, since gdb makes so
+many assumptions about the operating environment that isn't true in wine.
+But lately it occurred to me that perhaps it's possible to use gdb's
+remote debugging features to solve these issues. So recently, I've been
+secretly experimenting with writing gdb-server code in the wineserver.
+It goes something like this...</p>
+
+<p><code>./configure --enable-remote-gdb
+<br>[...blah...]</br>
+<br></br>
+<br>$ wine stuff</br>
+<br>gdb socket ready at: target remote localhost:1234</br>
+<br></br>
+<br>$ gdb wine</br>
+<br>(gdb) target remote localhost:1234</br></code></p>
+
+<p>and you're currently able to look at registers, backtrace, list all the
+threads, change thread, and read process memory... neato. But its
+usefulness might be quite limited since gdb doesn't know about the
+dynamically-loaded dlls so it doesn't automatically load their symbols...
+does anyone have ideas on how to solve that? It doesn't appear that the
+standard remote protocol have a command to tell gdb, and I don't know how
+gdb ordinarily does it.</p>
+</quote>
+
+</section>
+
+</kc>

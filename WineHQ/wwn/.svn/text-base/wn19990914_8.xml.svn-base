@@ -1,0 +1,293 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="8" date="14 Sep 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the eighth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<section
+  title="Porting to BeOS"
+  subject="Porting to BeOS"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-62.html"
+>
+
+Patrik Stridvall sent out a patch to ease up porting Wine to BeOS. One of
+the major drawback he reported was the lack of mmap(), sendmsg(), recvmsg()
+and select() functions. Alexandre Julliard disliked Patrik's patch, but also
+the way to tackle the porting issue, <quote who="Alexandre Julliard">IMNSHO
+this is BeOS problem, not ours. Wine is a Unix program and needs a
+reasonable amount of Unix compatibility to work. It'd be much better (and
+probably easier) to implement a Unix compatibility layer for BeOS that adds
+the missing functions, rather than sprinkle hundreds of #ifdefs all over the
+Wine code, breaking half of the functionality at the same time.</quote>
+
+<p />
+
+Patrik expressed some difficulties on doing so, especially <quote
+who="Patrik Stridvall">functions like sendmsg/recvmsg that passes file
+descriptor between process can't be done without kernel support AFAIK, and
+BeOS doesn't seem to support it, it will have to be done some other
+way,</quote> and to cope with lack of mmap() (which is also the case of SCO
+4.2, and will arise on all systems without MMU).
+
+<p />
+
+Alexandre preferred not to put too much <code>#ifdef</code> in the code, and
+rather use stubs for missing functions (like mmap) in a compatibility layer
+and have them return failure values.
+
+</section>
+
+<section
+  title="Accelerated OpenGL &amp; Wine"
+  subject="Accelerated OpenGL &amp; Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-103.html"
+>
+
+Lionel Ulmer proposed a new plan for integrating accelerated OpenGL
+libraries with Wine:
+
+<p />
+
+<quote who="Lionel Ulmer">You may recall my previous problems about the
+adding of OpenGL support to Wine (useful for people wanting to play Half
+Life on their nice GLx00 or TNTx cards).
+
+<p />
+
+The situtation has changed a bit since last time thanks to the on-going
+Linux OpenGL standardization effort: <a
+href="http://www.opengl.org/">
+http://www.opengl.org/</a>
+
+<p />
+
+What I am think about doing now:
+
+<ul>
+
+<li />hard-code the opengl32.spec and glu32.spec using OpenGL 1.2 / GLU
+      1.3 and all the extensions defined in the future glext.h file.
+
+<li />have a file that does the translation for all the OpenGL calls
+   (stdcall / cdecl translation + X11 critical section handling) :
+
+<ul>
+
+<code>
+&#160;&#160;&#160;void&#160;WINAPI&#160;win_glPopMatrix(void)&#160;{<br />
+&#160;&#160;&#160;&#160;&#160;ENTER_GL();<br />
+&#160;&#160;&#160;&#160;&#160;glPopMatrix();<br />
+&#160;&#160;&#160;&#160;&#160;LEAVE_GL();<br />
+&#160;&#160;&#160;}<br />
+</code>
+
+</ul>
+
+<li />use of the new glGetProcAddressEXT function to conditionally use
+   extensions:
+
+<ul>
+
+<code>
+void*&#160;WINAPI&#160;wglGetProcAddress(LPCSTR&#160;&#160;lpszProc)&#160;{<br />
+&#160;&#160;HMODULE&#160;hm;<br />
+&#160;&#160;<br />
+&#160;&#160;TRACE(opengl,&#160;"(%s)\n",&#160;lpszProc);<br />
+&#160;<br />
+&#160;&#160;if&#160;(glGetProcAddressEXT(lpszProc)&#160;!=&#160;NULL)&#160;{<br />
+&#160;&#160;&#160;&#160;hm&#160;=&#160;GetModuleHandleA("opengl32");<br />
+&#160;&#160;&#160;&#160;return&#160;GetProcAddress(hm,lpszProc));<br />
+&#160;&#160;}&#160;else&#160;{<br />
+&#160;&#160;&#160;&#160;return&#160;NULL;<br />
+&#160;&#160;}<br />
+}
+</code>
+
+</ul>
+
+</ul>
+
+</quote>
+
+He asked for comments before starting implementing it. No one replied yet,
+so this should be ok :-).
+
+</section>
+
+<section
+  title="Space to install Wine"
+  subject="Space to install Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-111.html"
+>
+
+Jutta Wrage, maintainer of the Wine HOWTO, asked for the common sizes of
+binaries for updating the Wine HOWTO, which was out of date to his respect.
+
+<p />
+
+It turned out that 30 to 80 MB was necessary (depending whether or not you
+asked for debug information, if you decide to build the static or shared
+lib, and which version of the compiler you're using).
+
+<p />
+
+Marcus Meissner noted that <quote who="Marcus Meissner">gcc-2.8 and egcs use
+a slightly enhanced stab (debuginfo) format which allows the linker to strip
+out uselessly duplicated debuginfo (not all of the duplications, but
+most)</quote>", yielding to smaller sizes.
+
+</section>
+
+<section
+  title="Thread safeness"
+  subject="Thread safeness"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-111.html"
+>
+
+Uwe Bonnes reported a crash on his SMP system, while calling the libc
+function closedir, and asked whether or not he <quote who="Uwe Bonnes">put a
+critical section around DOSFS_CloseDir</quote> or if this was <quote
+who="Uwe Bonnes">some deficency of my libc?</quote>
+
+<p />
+
+Ulrich Weigand gave an explanation of the issue, <quote who="Ulrich
+Weigand">Well, this is a known problem: glibc2 <b>is</b> reentrant, but this
+simply means that glibc uses thread synchronization mechanisms internally
+where necessary to protect its data structures against reentrancy.
+Unfortunately, it tries to use the <b>pthread</b> synchronization
+primitives, and as Wine isn't linked with libpthread (and doesn't use the
+pthread mechanisms to create and manage threads), those synch routines
+(pthread_mutex etc) are simply no-ops.</quote>
+
+<p />
+
+but also listed some orientations to solve those issues:
+
+<quote who="Ulrich Weigand">
+
+<ul>
+
+<li />Use pthread_create() etc. to create and manage threads, instead
+  of using low-level primitives.<br />
+
+  This would seem the cleanest solution, but is rather difficult to
+  implement as far as I can see.  This is because the implementation
+  of pthreads on the various platforms make some low-level assumptions
+  that collide with assumptions made by Wine (e.g. on Solaris/x86,
+  the pthreads implementation assumes it can freely use the %gs segment
+  register; on Linux/x86, the implementation makes rather stringent
+  assumptions as to just where exactly the thread stack has to reside
+  etc.)
+
+<li />Do not use any libc routine that uses synchronization primitives.<br />
+
+  This would also be a clean solution, but will probably be hard to
+  do, as it would mean reimplementing quite a lot of libc features ...
+
+<li />Manually protect against libc reentrancy (use a LIBC_CritSection
+  analogous to the X11DRV_CritSection).<br />
+
+  This would work, but it seems ugly and not especially efficient ...
+  In addition, it would mean that WineLib programs using libc routines
+  would need to be aware of this.
+
+<li />Provide an implementation of the pthreads synch primitives (on top
+  of Win32 synch routines) for use by libc.<br />
+
+  This has already been implemented by Ove K&#229;ven; IMO this is probably
+  the best way to go, as it allows full use of all libc routines, while
+  using low-level routines for thread management, but still ensures thread
+  safety.
+
+</ul>
+
+</quote>
+
+<p />
+
+Bertho Stultiens proposed another solution, which would work on ELF systems
+(like Linux):<quote who="Bertho Stultiens">by overloading the allocation
+routines from another .so. The overloading .so must be loaded <b>before</b>
+libc.so for this to function (malloc and friends are weak symbols).</quote>
+
+<p />
+
+He also pointed at some drawbacks of the mechanisms, including <quote
+who="Bertho Stultiens">knowledge of some of the internals of libc; there
+were some libc routines that bypassed the top-level linking and went
+directly for the alloc primitives (might be an obscure old version of libc I
+have in mind); you also have to take the .so-library's initialization into
+account and make sure that your wrapper in initalized before libc start with
+its own initialization.</quote> Bertho provided a few hours later a first
+patch implementing this behavior, and Uwe reported no crash after a few
+hours of test.
+
+</section>
+
+<section
+  title="Winsock &amp; 32 bit"
+  subject="Winsock &amp; 32 bit"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-131.html"
+>
+
+Ove K&#229;ven announced that after the $600 founding he obtained on CoSource, 
+he started the development on the 32 bit winsock.
+
+<p />
+
+Here's the main awaited improvment (quoted from CoSource):
+
+<p />
+
+<quote who="Ove Keven">The Winsock implementation in Wine is still from the
+Win16 days, and does not use proper Win32 file handles (so e.g.
+WaitForSingleObject doesn't work on it under Wine, although it should).
+
+<p />
+
+Migrating the socket structures from being just a winsock-internal list to
+make them be handled by the wineserver instead is thus a requirement for
+that kind of non-winsock operations to work. This is not believed to be very
+hard to do (at least with some advice from the gurus), just somewhat...
+longwinded? Probably takes a week or something to complete when knowing
+exactly what to do (which the Wine gurus should be able to explain, of
+course).
+
+<p />
+
+Let me just also mention that this is a requirement for things like
+Starcraft's Battle.net to work under Wine (WHOA, now the sponsors suddenly
+come rolling in!...?)</quote>
+
+<p />
+
+He asked a few questions regarding sharing or not handles between 16 and 32
+bit interface, Marcus Meissner and Alexandre Julliard adviced Ove to use an
+architecture to what has been done for the file interface. Marcus even
+proposed (for free) some work he had started on this subject.
+
+<p />
+
+Ulrich Weigand also requested to remove the winsock entries from the TASK
+descriptors (to clean-up the code) and Patrik Stridvall reminded that
+WinSock V1's handles couldn't be used as file descriptors (whereas V2
+could), and asked for the V1 behavior to be also present, mainly to take
+into account OS:es (like BeOS) which don't treat socket descriptors as files
+descriptors.
+
+</section>
+
+</kc>

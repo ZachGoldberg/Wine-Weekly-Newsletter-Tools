@@ -1,0 +1,733 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="144" date="11/15/2002" />
+
+<intro>
+<p>This is the 144th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x
+Windows emulator).</p>
+</intro>
+
+
+
+<stats posts="372" size="1216" contrib="68" multiples="44" lastweek="43">
+
+	<person posts="43" size="117" who="Dimitrie O. Paun" />
+	<person posts="27" size="72" who="Sylvain Petreolle" />
+<person posts="26" size="85" who="Tony Lambregts" />
+<person posts="27" size="82" who="Dustin Navea" />
+<person posts="22" size="51" who="Alexandre Julliard" />
+<person posts="26" size="81" who="Vincent Beron" />
+<person posts="16" size="146" who="Greg Turner" />
+<person posts="15" size="81" who="Mike Hearn" />
+<person posts="16" size="44" who="Ender" />
+<person posts="13" size="30" who="Eric Pouech" />
+<person posts="9" size="29" who="Francois Gouget" />
+<person posts="8" size="22" who="Dmitry Timoshkov" />
+<person posts="7" size="19" who="Thomas Wickline" />
+<person posts="7" size="16" who="Andreas Mohr" />
+<person posts="6" size="20" who="Lionel Ulmer" />
+<person posts="6" size="17" who="Paul Millar" />
+<person posts="5" size="26" who="David Fraser" />
+<person posts="5" size="21" who="Hannu Kotipalo" />
+<person posts="5" size="13" who="Ian Pilcher" />
+<person posts="4" size="11" who="Alberto Massari" />
+<person posts="4" size="10" who="Shachar Shemesh" />
+<person posts="4" size="10" who="Steve Lustbader" />
+<person posts="3" size="11" who="Carl Sopchak" />
+<person posts="4" size="10" who="Marcus Meissner" />
+<person posts="3" size="8" who="Marko Kreen" />
+<person posts="3" size="8" who="Gerald Pfeifer" />
+<person posts="3" size="7" who="Jukka Heinonen" />
+<person posts="3" size="7" who="Gyorgy Jeney" />
+<person posts="3" size="6" who="Fabian Cenedese" />
+<person posts="6" size="12" who="Steven Edwards" />
+<person posts="2" size="17" who="Carlos Lozano" />
+<person posts="2" size="5" who="Uwe Bonnes" />
+<person posts="2" size="5" who="Martin Wilck" />
+<person posts="2" size="5" who="David Hammerton" />
+<person posts="2" size="5" who="Duane Clark" />
+<person posts="2" size="4" who="Ove Kaaven" />
+<person posts="2" size="4" who="Dan Kegel" />
+<person posts="2" size="4" who="Medland, Bill" />
+<person posts="2" size="4" who="Hetz Ben Hamo" />
+<person posts="2" size="3" who="Jeremy White" />
+<person posts="1" size="9" who="Christian Costa" />
+<person posts="1" size="4" who="Roderick Colenbrander" />
+<person posts="1" size="3" who="Nix N. Nix" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="Dominik Strasser" />
+<person posts="1" size="3" who="Rein Klazes" />
+<person posts="1" size="3" who="Patrik Stridvall" />
+<person posts="1" size="3" who="Gavriel State" />
+<person posts="1" size="2" who="Havoc Pennington" />
+<person posts="1" size="2" who="Ann and Jason Edmeades" />
+<person posts="1" size="2" who="Zsolt Rizsanyi" />
+<person posts="1" size="2" who="Marcus Brubaker" />
+<person posts="1" size="2" who="Joerg Mayer" />
+<person posts="1" size="2" who="Michael Wetherell" />
+<person posts="1" size="2" who="Mike McCormack" />
+<person posts="1" size="2" who="Tom Hibbert" />
+<person posts="1" size="2" who="Steve Langasek" />
+<person posts="1" size="2" who="sean" />
+<person posts="1" size="2" who="Scott Pickett" />
+<person posts="1" size="1" who="Ben Clewett" />
+<person posts="1" size="1" who="Mark Hannessen" />
+<person posts="1" size="1" who="Kevin" />
+
+</stats>
+
+<section
+	title="News: WineX 2.2.1, TransGaming Highlights"
+	subject="News"
+	archive="http://www.transgaming.com/showthread.php?news=53"
+	posts="2"
+	startdate="11/09/2002"
+	enddate="11/15/2002"
+>
+<topic>News</topic>
+<p>This weeks' issue is brought to you by Frei Brothers Pinot Noir
+(Reserve, 2000).  Is there some kind of irony in using Wine
+while drinking wine writing the Wine Weekly News?</p>
+<p>TransGaming released WineX 2.2.1 with some impressive
+speedups.  From the release notes:</p>
+<quote who="TransGaming"><p><ul>
+<li>Support for glibc 2.3, which is now the default glibc version for Debian Unstable </li>
+<li>Improvements in the quality of text rendering in Direct3D mode for WarCraft III and EverQuest </li>
+<li>Direct3D geometry rendering improvements; EverQuest: Shadows of Luclin armour is now visible. </li>
+<li>Performance improvements of 10% in some 3DMark2000 benchmarks </li>
+<li>200-300% performance improvements in some Quake-3 engine based games such as Jedi Knight 2 </li>
+<li>Massive performance improvements for some games such as EverQuest when running on stock RedHat 8.0 kernels </li>
+<li>Support for Quake 3-Engine games based off of Quake 3 1.32 </li>
+</ul></p></quote>
+
+<p>How did it get faster?  They noted the following:</p>
+<quote who="TransGaming"><p>
+On the performance front, WineX 2.2.1 includes three separate new performance
+improvements.  Most of these changes relate to performance measurement API
+several games were spending significant amounts of time simply calling the
+APIs used to measure when it was time to advance to the next frame (or sync
+with audio).  These changes resulted in a 10% boost to 3DMark2000 scores,
+and a doubling or more of performance in some Quake 3 engine based games,
+such as Jedi Knight 2.  Some issues with RedHat 8.0 based kernels were also
+resolved for some games.
+</p><p>
+Also included in WineX 2.2.1 are improvements which should reduce the in-memory
+footprint of games which use large amounts of texture data.  While overall memory
+requirements for textures remains high, swap performance should be somewhat improved.
+In the future, we hope to lower the overall requirements as well.
+</p></quote>
+
+<p>For more info and lots of other good stuff, check out November's
+<a href="http://www.transgaming.com/showthread.php?news=53">development
+status and voting</a> reports.</p>
+
+<p>And in the yet-another-review category
+<a href="http://www.linuxplanet.com/linuxplanet/reviews/4539/1/">we have one</a>
+of Xandros Desktop over at LinuxPlanet.  Skip to
+<a href="http://www.linuxplanet.com/linuxplanet/reviews/4539/4/">page 4</a>
+to read the part about Wine.  It's hard to tell if the author
+tried Wine out, but there is a
+<a href="http://www.linuxplanet.com/linuxplanet/reviews/4539/4/">screenshot</a>
+showing his resume.</p>
+</section>
+
+
+
+
+
+<section
+	title="New Wine FAQ"
+	subject="[RFC] The new Wine FAQ"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0656.html"
+	posts="16"
+	startdate="11/09/2002"
+	enddate="11/11/2002"
+>
+<topic>Documentation</topic>
+<p>As discussed last week, work started on a new Wine FAQ.
+Dimitrie Paun posted a link to a (almost) completed version:</p>
+<quote who="Dimitrie Paun"><p>
+As promised, the new Wine FAQ (in beautiful color, and an amazing bouquet),
+is ready for public review before the end of the week. So there. :)
+At the moment, it is available for your viewing pleasure here:
+<ul>
+	<a href="http://www.winehq.org/?page=faq">
+         http://www.winehq.org/?page=faq</a></ul></p>
+</quote><p><i>Editor's note: the URL was changed later in the week,
+	the URL above reflects the new location.</i>
+</p>
+<quote who="Dimitrie Paun">
+<p>
+Keith Matthews, and Thomas Wickline did most of the work on this one;
+we owe it to them. We've also received a number of useful comments
+from Jeremy White, thanks Jer!
+</p><p>
+Please direct all comments, suggestion, and (last, but not least) flames,
+to the brand new wine-faq@winehq.org. All are most appreciated.
+</p><p>
+Hopefully we'll have this one on the site not before long.
+</p></quote>
+
+<p>One of the first questions asked was whether it was available
+as SGML for conversion to other formats.  Dimi replied that currently
+it was only HTML, though the formatting was quite simple.  Discussion
+then delved into setting up Docbook so HTML, PDF, etc could be
+later generated from the SGML.</p>
+
+</section>
+
+
+
+
+
+<section
+	title="Updated To-Do List"
+	subject="TODO &amp; FAQ moved"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0825.html"
+	posts="2"
+	startdate="11/12/2002"
+>
+<topic>Project Management</topic>
+<p>Dimi Paun did a lot of updates on the TO-DO list and
+announced a new URL for it.  At the same time he moved
+the work on the new Wine FAQ:</p>
+<quote who="Dimitrie Paun"><p>
+Please note that the FAQ, and the TODO got moved to a
+new location:
+<ul><li><a href="http://www.winehq.org/?page=todo_lists">
+	http://www.winehq.org/?page=todo_lists</a></li>
+    <li><a href="http://www.winehq.org/?page=faq">
+	http://www.winehq.org/?page=faq</a></li></ul>
+</p></quote>
+
+
+
+</section>
+
+
+
+
+
+
+<section
+	title="Fun Projects"
+	subject="Wine Fun Projects v0.2"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0907.html"
+	posts="3"
+	startdate="11/14/2002"
+	enddate="11/14/2002"
+>
+<topic>Project Management</topic>
+<p>Dimi also put together a list of "fun" projects.  They
+range from quite useful to just plain weird.  You can find his
+complete list at:
+<a href="http://www.winehq.org/?page=fun_projects">http://www.winehq.org/?page=fun_projects</a>.
+A short summary goes like this:
+<dl><dt>Virtualization Projects</dt>
+	<dd>
+Virtualization environmnets tend to stress the host considerably,
+due to the inherent impedance mismatch between the two. As such,
+they provide very good (and tough) test cases. Having such
+virtualization environments run within each other is an important
+milestone in the lives of said projects, and not without good reason:
+it is a remarkable technical feat that requires a great deal of maturity.
+	<ul>
+	<li>Compile &amp; run Cygwin under Wine in Linux</li>
+	<li>Compile &amp; run Wine under Cygwin in Windows</li>
+	<li>Compile &amp; run the Java Virtual Machine under Wine in Linux</li>
+	<li>Compile &amp; run Perl under Wine in Linux</li>
+	<li>Compile &amp; run Python under Wine in Linux</li>
+	<li>Compile wxWindows under Wine</li>
+	<li>Compile QT under Wine</li>
+	<li>Compile Gtk+ under Wine</li>
+	<li>Make a ghostscript driver that uses Wine to print</li>
+	</ul>
+	</dd>
+
+
+    <dt>Janitorial Projects</dt>
+	<dd>
+Any self respecting project has a Janitorial project (e.g. 
+Kernel Janitor's List), and it's high time that we've got 
+one too. What is there to clean up? Well, lot's of things! :) 
+
+	<ul><li>Get rid of 32-&gt;16 calls shown by:<br />
+	<tt>winapi_check --cross-call-win32-win16</tt></li>
+
+	    <li>Get rid of Unicode-&gt;ASCII calls shown by:<br />
+	<tt>winapi_check --cross-call-unicode-ascii</tt></li>
+	</ul>
+	</dd>
+
+
+    <dt>Winelib Projects</dt>
+	<dd>
+Theoretically, any Win32 app should be compilable out of the 
+box under Wine. This, of course, is not the case. We have 
+incompatible headers, and a bunch of other problems described 
+in Winelib User's Guide. A good way to fix these is to try to 
+compile applications for which we have the source under Winelib. 
+There are many such apps around, but some of them stand out, 
+and are listed below. 
+
+	<ul><li>Mozilla</li>
+	<li>MFC</li>
+	<li>Visual MinGW</li>
+	<li>Gimp</li>
+	</ul>
+	</dd>
+</dl></p>
+</section>
+
+
+
+
+
+
+<section
+	title="Preliminary Supported Applications List"
+	subject="Wine 0.9 Supported Application List"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0838.html"
+	posts="4"
+	startdate="11/13/2002"
+>
+<topic>Testing</topic>
+<p>Carlos Lozano sent out two lists rating some
+applications from
+<a href="http://www.tucows.com/toppicks.html">Tucows' Top 100</a>
+list and their compatibility with Wine.  Dimi Paun reformatted
+the lists and created a mock-up
+<a href="http://www.winehq.org/?page=supported_applications">Supported
+Applications List</a>.  The programs making the "Gold
+List" (i.e. programs that install and run on an out-of-the-box
+Wine setup) were:
+<ul><li>Acrobat Reader</li>
+<li>WS-FTP LE</li>
+<li>mIRC</li>
+<li>FTP Commander</li>
+<li>12Ghosts Zip</li>
+</ul></p>
+
+<p>More work is being done in this area, look for an
+updated list in the future.</p>
+
+
+</section>
+
+
+
+
+
+
+<section
+	title="Cabextract Offered to Wine"
+	subject="Cabextract offered to WINE under LGPL.."
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0613.html"
+	posts="1"
+	startdate="11/08/2002"
+>
+<topic>Integration</topic>
+<p>Ender dropped a note mentioning Stuart Caie offered his
+Cabextract program with a LGPL license for inclusion in Wine.
+This program extracts files from Microsoft's CAB format:</p>
+<quote who="Ender"><p>
+There you go, now who wants to look into merging cabextract with WINE?
+[<a href="http://www.kyz.uklinux.net/cabextract.php3">
+http://www.kyz.uklinux.net/cabextract.php3</a>]</p>
+<p>
+It'll be useful for at least three things:
+<ul>
+<li> Remove external dependency in urlmon (dlls/urlmon/umon.c)</li>
+<li> Implement advapi32:ExtractFiles and fix dlls/setupapi/queue.c</li>
+<li> Implement cabinet.dll</li>
+<li> Probably some other misc cabinet functions here and there</li>
+<li> CHM viewer (in the future)</li>
+</ul></p><p>
+I don't think it would be too hard to merge the 0.7 changes into any
+merging work done with 0.6, so I wouldn't think it necessary to hold out
+until then. The only major bug he mentions is fixed by simply changing
+scope of a variable, so.... :)
+</p></quote>
+
+
+
+</section>
+
+
+
+
+
+
+<section
+	title="MPlayer Supports Sorenson SVQ3"
+	subject="[MPlayer-dev-eng] SVQ3 playback"
+	archive="http://mplayerhq.hu/pipermail/mplayer-dev-eng/2002-November/012790.html"
+	posts="1"
+	startdate="11/12/2002"
+>
+<topic>Utilities</topic>
+<p>This is somewhat Wine related.. I didn't dig into the
+gory details or even try it, but it seems everyone's favorite
+movie player,
+<a href="http://www.mplayerhq.hu/homepage/design6/news.html">mplayer</a>, now supports
+a QuickTime format using Wine.  This post appeared on the
+<a href="http://mplayerhq.hu/pipermail/mplayer-dev-eng/">Mplayer-dev-eng</a>
+mailing list:
+</p><quote who="A'rpi"><p>
+Thanks to Sascha Sommer, SVQ3 (and probably all the others too, but not
+added/tested yet) video is now playable with mplayer!
+Yes it still requires libwine, but we're at least over STEP 1, and
+can go to STEP 2: hacking loader to work with QT dlls.
+</p><p>
+But anyway, playing SVQ3+QDM2 MOVs with mplayer in fullscreen using hw
+yuv accel and direct rendering (yes, it seems the qt dlls support DR2!)
+and all the mplayer features, filters etc sounds much better than running
+the original slow qt5 player in wine window :)
+</p></quote>
+<p>The work involved snagging some DLLs from QuickTime 5 and the
+SDK, using wine-20020310, and other messy stuff.  The mplayer folks
+hope to clean this up soon.</p>
+
+
+</section>
+
+
+
+
+
+<section
+	title="Better OpenGL Separation"
+	subject="[RFC] Better OpenGL Separation"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0692.html"
+	posts="4"
+	startdate="11/10/2002"
+	enddate="11/11/2002"
+>
+<topic>Multimedia</topic>
+<p>Lionel Ulmer, OpenGL guru, wanted some ideas for separating
+the 3D code from the X11 driver:</p>
+<quote who="Lionel Ulmer"><p>
+The current OpenGL code (well, to be more precise, the current WGL code) is
+really X11 dependent and is only separated through hacks via ExtEscape
+mechanisms to get X11 specific variables.
+</p><p>
+As I never was able to find documentation about the OpenGL ICD mechanism (ie
+the way all this is handled in real Windows), I see three possible solutions :
+<ol>
+ <li> As almost all WGL functions have an HDC or OpenGL context argument (for
+    those having a context argument, the corresponding HDC can easily be
+    found). Thus one solution would be to use 'DC_GetDCPtr' to get the DC
+    pointer and then move all these functions in the GDI function pointer
+    table.<br /><br />
+
+    The problem with that is that 'DC_GetDCPtr' is already flagged as a hack
+    and so I am bit reluctant to use it :-)</li>
+
+ <li> Put all HDC function in GDI itself and replace in OpenGL's spec file all
+    of these by forwards to GDI.</li>
+
+ <li> Use the ExtEscape mechanism to not only get specific variables, but
+    something akin to what DDraw does to get the HAL function pointer table
+    and then use these pointers to do the real low level work in the WGL
+    functions.</li></ol>
+</p><p>
+For the moment, I think 3) is the best. Feel free to propose other solutions
+:-)</p></quote>
+<p>Alexandre replied, <quote who="Alexandre Julliard">
+I don't know, I think the current way is not so bad. It's better to
+export just a couple of internal things like display and drawable than
+a full table of functions that will be a pain to keep compatible
+across versions. If you really want to get rid of the escapes then I
+think 2) would be cleaner.</quote></p>
+<p>Lionel explained the problem he was really trying to solve:</p>
+<quote who="Lionel Ulmer"><p>
+Well, the problem with the current way is that 'display' and 'drawable' are
+really X11 concepts... This means that the current OpenGL code will ever
+only work with the X11DRV. While I agree that it's separated, it's not
+'clean' (in the sense that we have X11 code elsewhere than in X11DRV
+itself).
+</p><p>
+The only problem with 2) is that there is one function that lacks the proper
+context variable (wglGetProcAddress).
+</p></quote>
+<p>Alexandre didn't really think there was much of a problem,
+<quote who="Alexandre Julliard">
+ Note that the escapes will fail gracefully if x11drv is not present,
+ so it would be perfectly possible to make the opengl dll support other
+ drivers too. I agree it's not completely clean, and I'm certainly open
+ to other solutions, as long as we don't introduce some major ugliness
+ just to get rid of a minor one...</quote></p>
+</section>
+
+
+
+
+
+
+<section
+	title="Filesystem Change Notifications"
+	subject="Filesystem change notifications"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0883.html"
+	posts="10"
+	startdate="11/13/2002"
+	enddate="11/14/2002"
+>
+<topic>Filesystems</topic>
+<p>Ian Pilcher wanted some thoughts on implementing some
+new functions:</p>
+<quote who="Ian Pilcher"><p>
+Is anyone working on implementing FindFirstChangeNotification and
+friends?  If not, this looks like something that may be both within my
+capabilities and non-trivial enough to be useful (a rare combination!).
+</p><p>
+My thought is to use
+<a href="http://oss.sgi.com/projects/fam/">SGI FAM</a>, which
+is shipped with Red Hat and (according to bug #588) Mandrake.  I'm not
+sure about any other distributions, but the FAQ on the web page states
+that Enlightenment, GNOME, and KDE all use it, so it should be pretty
+widespread.
+</p><p>
+If no one is working on this, start preparing for an endless series of
+questions about the wineserver's internal workings.
+</p></quote>
+<p>FindFirstChangeNotification and FindNextChangeNotification
+can be used with Wait functions to have the operating system
+signal when a change has been made on a file or directory.  In
+particular, FindFirstChangeNotification sets up the conditions
+to check for.</p>
+<p>Marcus Meissner suggested an alternative to using fam:</p>
+<quote who="Marcus Meissner"><p>
+Check up on directory notifications in Linux. A way cool thing.
+<ul>
+<li> catch SIGIO ...</li>
+<li> fcntl(fd, F_NOTIFY, DN_xxx|DN_yyy);</li>
+</ul></p></quote>
+<p>Ender agreed that might be a good way to go and gave a
+link to some
+<a href="http://cvs.samba.org/cgi-bin/cvsweb/~checkout~/samba/source/smbd/notify_kernel.c">
+Samba code</a> that used it.  However, the problem remained that it
+was Linux specific.  It was pointed out that under FreeBSD you could
+use kqueue and kevent.  Of course the most portable (and simple)
+option was just to do some polling.  Ian thought maybe that's what
+he'd do first and then worry about supporting some platform specific
+methods later.</p>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section
+	title="Wine Visual Basic Compatibility"
+	subject="Wine 0.8: VB compatibility !!"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0557.html"
+	posts="12"
+	startdate="11/08/2002"
+	enddate="11/11/2002"
+>
+<topic>Testing</topic>
+<p>Andreas Mohr wanted some thoughts about better
+supporting Visual Basic applications,
+<quote who="Andreas Mohr">
+ I keep encountering people mentioning that VB stuff has lotsa problems
+ on Wine.
+ While I really can't say that I like VB, a lot of people seem to use it
+ for critical tasks in companies on a daily basis, so it sounds like perfect
+ VB compatibility would be utterly important.
+ IMHO improving that should be a goal of 0.8.
+</quote></p>
+<p>Ender felt things were working pretty well and gave some
+first-hand experience:</p>
+<quote who="Ender"><p>
+A few weeks ago I was writing a VB app for some contract work I was doing
+- and I wrote, and tested, the application under WINE.
+</p><p>
+The visual studio VB IDE has a few odd problems with property sheets and
+the like, but I never experienced a single problem running the application
+itself under WINE.
+</p><p>
+-- Sidenote:
+</p><p>
+I've just quickly played with various VB testcases under Wine.... and not
+had a single problem with any of them. Even down to writing a simple
+DirectX game in VB, that worked fine too. I've tested VB3 and VB6 as
+that's all I've got on hand.
+</p><p>
+Can you point to any actual examples of failure? From my testing I cannot
+find anything which specifically points VB as having problems. It's more
+likely just your every day problem of a program calling unimplemented
+APIs. Eg, nothing related to the program being written in Visual Basic as
+opposed to C/Assembly/Delphi/Python/whatever.
+</p></quote>
+<p>Roderick Colenbrander had run into more serious problems and
+posted a link to some test cases to illustrate:</p>
+<quote who="Roderick Colenbrander"><p>
+To demonstrate some important VB problems I made a few VB test apps. Those 
+test apps are located at 
+<a href="http://www.xs4all.nl/~sailsup/wine-vb.tar.gz">
+ http://www.xs4all.nl/~sailsup/wine-vb.tar.gz</a>
+</p><p>
+The package contains some database applications using various MS database 
+implementations (DAO, ADO), two simple tests. Next to this the package 
+contains one of those tests combined with a VB installer application.
+</p><p>
+To run these apps the VB 6.0 runtime library should be installed and perhaps 
+dcom98. The app that is bundled with an installer contains the vb runtime 
+library and most of the files from dcom98 I think. (get dcom98 from here if 
+you need it: 
+<a href="http://www.microsoft.com/com/dcom/dcom98/download.asp">
+http://www.microsoft.com/com/dcom/dcom98/download.asp</a>)
+</p><p>
+Now I will tell about problems when running those very basic apps. I'll start 
+with the app with installer. When this app starts the installer, the 
+installer first tries to install parts of the VB 6.0 runtime and some other 
+files. It crashes somewhere during the extraction of the files. (I think it 
+crashes because builtin oleaut32.dll is used and not the to be extracted 
+native oleaut32.dll). When installing dcom98 before running this setup the 
+setup app still doesn't run, but when you tell wine to use native oleaut32 
+from dcom98 it works fine.
+</p><p>
+After the app is installed, it doesn't runIt crashes while loading the activex 
+database control which is needed for this app and then launches winedbg. 
+(control is installed by the setup)
+</p><p>
+After this there are two very simple apps one containing only an empty form 
+and one containing a button on a form that run well. The only minor problem 
+is in the button app. When you click on the button it should show a 
+messagebox containing a text. On windows the text in the messagebox is 
+alligned to the left or perhaps to the center, but on wine the text is 
+alligned to the right. (looks ugly)
+</p><p>
+Next to these two simple apps there are three database apps (db1, db2 and 
+db3). (one of them called db2 is the one bundled with the setup package) 
+Neither of those apps works well. These apps report various errors "runtime
+error 335: can't access the system registry" and more of this crap.
+</p><p>
+I hope these simple apps already help a lot. Most VB problems are very similar 
+to these. If more and better tests are needed, just ask.
+</p></quote>
+<p>Jason Edmeades had worked on getting a VB program to run and
+explained his experiences,
+<quote who="Jason Edmeades">
+I have a VB prog (see 
+<a href="http://www.badcomp.co.uk/">http://www.badcomp.co.uk/</a>
+) which I spent a long time getting
+working under Wine and fixed all the oleaut32 Var* routines it used. However
+if you look at that dll, there are still a huge number of stubs.
+Additionally the date/time handling is (was, anyway) pretty useless. I would
+strongly recommend if anyone starts writing VB testcases they try and
+exercise the Variant cases as well as the standard types (...and no, I don't
+have time!)</quote></p>
+<p>Marcus Meissner pointed out another potential problem,
+<quote who="Marcus Meissner">
+ most of those VB apps appear to try to load PICTYPE_ICON,
+ which we do not support yet.</quote></p>
+ 
+</section>
+
+
+
+
+
+
+<section 
+	title="Screenshots-R-Us" 
+	subject="Making screenshots"
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/11/0814.html" 
+	posts="4" 
+	startdate="11/12/2002"
+	enddate="11/13/2002">
+>
+<topic>Project Management</topic>
+<p>Dimi Paun posted a message about my offer last week to
+accept screenshots.  If you don't know how to make a screenshot
+stop reading news about Wine development and go find out
+<a href="http://docs.kde.org/en/3.1/kdegraphics/ksnapshot/">how
+to use ksnapshot</a>. Heck, xv has been around for the past million
+years, use that. Then send me a screenshot doing something
+interesting.  Send it to vinn -at- theshell.com.  
+</p><p>
+Dimi noted the following good points of a
+screenshot (which saves me from typing the same thing):</p>
+<quote who="Dimitrie Paun"><p>
+
+  A screenshot for Wine should showcase what Wine can do. In theory, it should
+  run apps well, so we should try to show exactly that:
+  <dl>
+    <dt><strong>Do not complicate the screen with other apps.</strong></dt> 
+	<dd>We try to show Wine, not that you have a complicated desktop.
+	    For example, what am I showing 
+	<a href="http://63.138.153.104/wine/wine-ss-what.png">here</a>?</dd>
+    <dt><strong>Include the desktop in the shot.</strong></dt>
+	<dd>This should make it clear that the app is running
+        under Linux, and that it integrates nicely with the 
+        desktop of your choice.
+	Is 
+	<a href="http://63.138.153.104/wine/wine-ss-where.png">this</a> 
+	running under Wine?</dd>
+    <dt><strong>Show a complex scenario for the app.</strong></dt>
+	<dd>This will show that Wine is capable of running complex setups,
+	and makes the screeshot a lot more interesting. A screen with
+	an empty Word window is very borring, and unimpressive: "Wow,
+	Wine can draw a large white background...".
+	Take a look at 
+	<a href="http://63.138.153.104/wine/wine-ss-boring.png">this</a>.</dd>
+    <dt><strong>Do not make the screenshot too large.</strong></dt>
+	<dd>The images should be 800x600; many people don't have very large
+	resolutions, and it is very annoying to have to scroll to view the
+	image. 
+	<a href="http://63.138.153.104/wine/wine-ss-ok-large.png">See</a>?</dd>
+  </dl>
+</p><p>
+  A more decent try is 
+  <a href="http://63.138.153.104/wine/wine-ss-ok-large.png">this</a>. It shows Word, nicely
+  integrated in the KDE desktop (notice how it is listed in the task bar like
+  all the other apps), displaying a reasonable document with tables. It can be 
+  improved a bit if the document would show some embedded pictures, a bunch of 
+  fonts, complicated embedded formulae, etc. Stuff that shows how <em>much</em> 
+  of Word is actually usable under Wine.
+</p></quote>
+
+<p>Hm.  Honestly, I don't know what he meant to show in the
+first screenshot above.  But if she's single let me know.</p>
+
+<p>Francois Gouget gave some additional pointers:</p>
+<quote who="Francois Gouget"><p>
+<ul>
+<li> you say big screenshots are bad which I mostly agree with. If a
+standard size were to be decided upon I would rather vote for 1024x768
+than for 800x600. However that's not my point here. My point is that one
+should not take a screenshot of 1600x1200 and scale it to 800x600. This
+makes the fonts unreadable as is shown by your last screenshot
+(http://63.138.153.104/wine/wine-ss-ok.png). Instead I would
+recommend to start a VNC server or a second X session with the right
+resolution and take a screenshot of that.
+</li><li>
+ the second recommendation would be to make sure it shows nice fonts.
+So install the fonts from 
+<a href="http://sourceforge.net/projects/corefonts/">
+ http://sourceforge.net/projects/corefonts/</a>
+ and make sure you have a FreeType library with hinting (or use CrossOver
+Office ;-).
+</li><li>
+ if you take the full desktop, then avoid fancy backgrounds. The best
+would be to use the distribution's default look and feel to make it more
+recongnizable.
+</li></ul></p></quote>
+
+</section>
+
+
+
+</kc>

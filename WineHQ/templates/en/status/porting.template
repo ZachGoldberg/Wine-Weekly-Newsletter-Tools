@@ -1,0 +1,1044 @@
+<!--TITLE:[Wine Porting Status]-->
+<!--BLURB:[Current Status of the Wine Project]-->
+
+<h1 class="title">Wine Porting Status</h1>
+
+    <table border cellspacing=0 cellpadding=5>
+      <tr>
+        <th rowspan=2 align=center>DLL</th>
+	<th colspan=4 align=center>Compiler</th>
+        <th colspan=3 align=center>Headers</th>
+        <th colspan=8 align=center>OS</th>
+        <th colspan=4 align=center>Architecture</th>
+      </tr>
+      <tr>
+	<th align=center>gcc</th>
+	<th align=center>msvc</th>
+	<th align=center>mingw</th>
+	<th align=center>suncc</th>
+	<th align=center>Wine</th>
+	<th align=center>psdk</th>
+	<th align=center>w32api</th>
+	<th align=center>Linux</th>
+	<th align=center>FreeBSD</th>
+	<th align=center>NetBSD</th>
+	<th align=center>OpenBSD</th>
+	<th align=center>Solaris</th>
+	<th align=center>OS&nbsp;X</th>
+	<th align=center>Cygwin</th>
+	<th align=center>ReactOS</th>
+	<th align=center>i386</th>
+	<th align=center>PowerPC</th>
+	<th align=center>Sparc</th>
+      </tr>
+    
+      <tr>
+        <td>advapi32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>avicap32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>avifil32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>cabinet</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>capi2032</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>cfgmgr32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>comcat</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>comctl32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>commdlg</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>crtdll</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>crypt32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>ctl3d</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>d3d8</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>d3d9</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>d3dim</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>d3dx8</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dciman32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>ddraw</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>devenum</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dinput</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dinput8</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmband</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmcompos</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmime</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmloader</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmscript</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmstyle</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmsynth</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmusic</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dmusic32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dplay</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dplayx</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dpnhpast</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>dsound</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>gdi</td>
+        <td>B</td> <td>-</td> <td>99%</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>99%</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>glu32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>glut32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>icmp</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>imagehlp</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>imm32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>iphlpapi</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>kernel</td>
+        <td>B</td> <td>-</td> <td>N</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>N</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>lzexpand</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>mapi32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>mpr</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msacm</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msacm/imaadp32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msacm/msadp32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msacm/msg711</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msacm/winemp3</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msdmo</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>mshtml</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msi</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msimg32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msisys</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msnet32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msvcrt</td>
+        <td>B</td> <td>-</td> <td>75%</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>75%</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msvcrt20</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msvcrtd</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msvideo</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>msvideo/msrle32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>mswsock</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>netapi32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>newdev</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>ntdll</td>
+        <td>B</td> <td>-</td> <td>50%</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>50%</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>odbc32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>ole32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>oleacc</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>oleaut32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>olecli</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>oledlg</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>olepro32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>olesvr</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>opengl32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>psapi</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>qcap</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>quartz</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>rasapi32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>richedit</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>rpcrt4</td>
+        <td>B</td> <td>-</td> <td>99%</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>99%</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>serialui</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>setupapi</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>shdocvw</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>shell32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>shfolder</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>shlwapi</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>snmpapi</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>sti</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>tapi32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>ttydrv</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>twain</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>unicows</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>url</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>urlmon</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>user</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>uxtheme</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>version</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>win32s</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winaspi</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>wined3d</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winedos</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>wineps</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>wininet</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/joystick</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/mcianim</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/mciavi</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/mcicda</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/mciseq</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/mciwave</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/midimap</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/wavemap</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/winealsa</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/winearts</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/wineaudioio</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/winejack</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/winenas</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winmm/wineoss</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winnls</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winsock</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>winspool</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>wintab32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>wintrust</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>wow32</td>
+        <td>B</td> <td>-</td> <td>B</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>B</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>wsock32</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+      <tr>
+        <td>x11drv</td>
+        <td>B</td> <td>-</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>-</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>B</td> <td>C</td> <td>-</td>
+        <td>B</td> <td>B</td> <td>B</td>
+      </tr>
+
+    </table>
+

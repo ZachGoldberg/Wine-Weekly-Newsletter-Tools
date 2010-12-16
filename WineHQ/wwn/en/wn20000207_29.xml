@@ -1,0 +1,289 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="29" date="07 Feb 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the twenty nineth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+
+</intro>
+
+<stats posts="88" size="213" contrib="39" multiples="19" lastweek="22">
+<person posts="11" size="31" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="11" size="21" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="7" who="Turchanov Sergei &lt;turchanov@otvprim.ru&gt;" />
+<person posts="4" size="6" who="Marcus Meissner &lt;Marcus.Meissner@caldera.de&gt;" />
+<person posts="3" size="9" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="3" size="8" who="Matthew J. Francis &lt;mfrancis@plus.net.uk&gt;" />
+<person posts="3" size="7" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="3" size="7" who="Bernhard Rosenkraenzer &lt;bero@redhat.de&gt;" />
+<person posts="3" size="7" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="3" size="6" who="Gavriel State &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="3" size="5" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="3" size="5" who="Frank J. Ramsay &lt;fjr@marsdome.penguinpowered.com&gt;" />
+<person posts="2" size="5" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="2" size="4" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="4" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="2" size="4" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="2" size="3" who="Thomas E. Dodd /CSDC &lt;ted@cypress.com&gt;" />
+<person posts="2" size="3" who="Paul E. Merrell &lt;pem@televar.com&gt;" />
+<person posts="2" size="2" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+</stats>
+
+
+<section 
+  title="CDs serial numbers"
+  subject="CD serial numbers ?"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-489.html"
+>
+
+<p />
+
+After successfully providing a patch for reading CD Rom labels from the 
+CD Rom itself (and no longer from a static configuration option),
+Andreas Mohr kept on going with CD Roms support in Wine.
+
+<p />
+
+He asked <quote who="Andreas Mohr">does anybody have any real info about how Win
+9x creates the serial number when doing a "dir" on a CD ? (even audio
+CDs feature that !) Raw DOS doesn't print a serial number in this
+case, so it's a Win 9x addition. I already searched my whole docu and
+the whole web like crazy, but couldn't come up with anything really
+usable.</quote>
+
+<p />
+
+Ove K&#229;ven suggested that <a href="http://www.cddb.com">CDDB (an
+open source CD ROM Database system)</a> might use the same algorithm,
+but Andreas already had checked it, but CDDB wasn't producing the same 
+values.
+
+<p />
+
+Eric Pouech reminded that <quote who="Eric Pouech">there's a computation of an
+ID done at the MCI level (check dlls/winmm/mcicda/mcicda.c in the
+MCICDA_Info function), which is based on track length &amp; pos. The algo
+used is the same as Windows' one, except for one track CDs.</quote>
+
+<p />
+
+Andreas gave a look at the code, which contained what he was looking
+for, except for 1 or 2 tracks CD audio, which he found was quite
+valuable, but no one came back with the proper algorithm.
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Managed mode metrics"
+  subject="Managed mode metrics"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-490.html"
+>
+
+<p />
+
+Guy Alberte submitted a patch to somehow fix another "flying window"
+problem. This is an old issue, as Guy explained <quote who="Guy Alberte">This
+method was the result of much work on the Winword "Bullets &amp;
+Numbering" dialog. Winword does in fact use GetSystemMetrics to get
+the frame width and caption height. It then uses ClientToScreen to
+take its known client rectangle to the screen coords. It then uses the
+saved system metrics values to compute the actual window rectangle in
+screen coords. Then it calls SetWindowPos. Without the patch the
+window moves up and to the left every time one of the tabs is
+clicked.</quote>
+
+<p />
+
+G&#233;rard Patel reported this type of issue months ago, and dubbed this
+phenomenon "flying window". Part of the problem comes from the fact
+that it's quite impossible to know from different window managers the
+height used for the caption of a window. Not knowing this value, can
+make erroneous positionning.
+
+<p />
+
+Alexandre Julliard gave a more in depth analysis, which broke some of
+the accepted cause of the "flying window" problem:
+
+<quote who="Alexandre Julliard">
+If we define the 3 following rectangles:
+<ul>
+<li /><code>ClientRect</code> is the client area (in screen coordinates) 
+<li /><code>WindowRect</code> is the complete window as returned by
+GetWindowRect()  
+<li /><code>X11Rect</code> is the dimensions of the X11 window we
+created (without window manager decorations)
+</ul>
+
+<p />
+
+then we have:
+<p />
+
+
+<p />
+
+  <code>WindowRect == ClientRect + menus + borders + caption +
+scrollbars</code> 
+
+<p />
+
+in all cases (some values can be 0 depending on the window style of
+course).
+
+<p />
+
+For non-managed windows we have <code>X11Rect == WindowRect</code>, and for
+managed windows we have:
+
+<p />
+
+  <code>X11Rect == ClientRect + menus + scrollbars == WindowRect -
+caption - borders</code> 
+
+<p />
+
+Currently the code assumes X11Rect == WindowRect in all cases and this 
+is what is broken.
+</quote>
+
+
+<p />
+
+Thuy Nguyen fully agreed with Alexandre's analysis and pointed to
+CreateWindow as an example of this bad coding.</section>
+
+
+<section 
+  title="WineLib stub reexplained"
+  subject="Use .spec files for WineLib apps"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-496.html"
+>
+
+<p />
+
+After Ulrich Weigand submitted a patch to unify the start-up sequence
+for both WineLib based programs and the Wine emulator, Matthew Francis 
+asked for some more explanations. In particular, Matthew wanted to
+elaborate on how Ulrich's patch would integrate with his attempts to
+enhance the C++ support in WineLib programs (see 
+<a href="wn20000117_26.html#0">issue #26</a> for more on this).
+
+<p />
+
+As usual, Ulrich wrote a very precise description:
+
+<quote who="Ulrich Weigand">
+Well, the main reason why the WineLib linking process needs to be
+changed is that the init sequence should really switch to the Wine
+thread stack instead of using the main Linux stack.  This initial 
+switch is currently done only in the emulator, and this is one of
+the few remaining differences between the emulator and the lib.
+
+<p />
+
+As it is somewhat hard to return from a routine that switches stacks,
+it seemed simpler to just never return from the WineLib init routine,
+but instead just go through the whole startup sequence and then call
+the program entry point, which could be specified in the .spec file.
+
+<p />
+
+So, the current process goes about like this: the app calls
+MAIN_WineLibInit, and after that returns, the environment is set up.
+This call can reside either in winestub (which calls WinMain after
+it is finished), or else directly in main (in the case of a console
+app).
+
+<p />
+
+What I want to do is to start execution directly in libwine instead,
+perform initialization (including stack switch), and then call the
+app entry point.  This entry point will probably reside inside the
+.spec.c file generated by build and contain code to set up the 
+correct arguments and call the app's WinMain() or main() routine.
+
+<p />
+
+To achieve this, there are two options: either, the .spec.c file
+contains the real main() routine, which directly calls some WineLib
+routine that never returns, or else libwine.so itself contains a
+main() routine.  In both cases, there's no need for a winestub,
+as all necessary code resides either in the lib or in the .spec.c
+file.
+</quote>
+
+
+<p />
+
+Ulrich and Matthew discussed some more details and Bertho Stultiens
+provided an in-depth description of ELF initialization (and
+finalization) support, which could provide a better (and more portable 
+solution).
+</section>
+
+
+<section 
+  title="Corel's WINE CVS"
+  subject="Corel WINE branch publicly available"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-12.html"
+>
+
+<p />
+
+Gavriel State announced that 
+
+<quote who="Gavriel State">
+We're opening up read-only CVS access to our internal branch of WINE.
+Our last full merge with the WineHQ branch was in late December, and
+since then we've been concentrating on our internal branch only due to
+release time constraints. We plan to start merging our changes back
+into WineHQ (ie: making patches out of our CVS commits) after we
+release. In the meantime, if anyone wants to do any of that work for
+us, please feel free to submit any patches you want from our branch so
+long we get credit in the changelog. 8-) 
+
+<p />
+
+The site where you can get all this is: opensource.corel.com
+
+<p />
+
+It's also got at least one other thing that may be of interest to WINE
+people, our Application Printing Services library. This is a printer
+configuration and job settings library that our branch of WINE uses if
+available.
+</quote>
+
+
+<p />
+
+Quite a few developers jumped in and started feeding Wine's tree with
+Corel's efforts.
+
+<p />
+
+Upon request, James Sutherland announced that he put a snapshot of
+the CVS tree (bz2 compressed) for people wishing to get the tarball (like
+for those behind a firewall)
+
+<p />
+
+Later on, Gav' also mentionned that the first Corel Office for Linux
+will be built using the emulator (but it will be a special build for
+Linux). Next release will use WineLib. </section>
+
+</kc>

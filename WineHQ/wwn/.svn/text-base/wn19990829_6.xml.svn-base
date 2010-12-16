@@ -1,0 +1,144 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="6" date="29 Aug 1999 00:00:00 -0800" />
+
+<intro>
+
+<p />This is the sixth release of the Wine's kernel cousin publication. Its
+main goal is  to distribute widely what's going on around Wine (the Un*x
+Windows emulator).
+
+<p />Well this week has been very quiet on wine-devel, as if most of the
+developpers were on vacation at the same time.  Of course, there was the
+O'Reilly conference in Monterey (CA) where Alexandre Julliard was giving a
+talk. So, I barely had enough material to put an issue together.
+
+<p />Marcus Meissner will be giving a talk at the <a
+href="http://www.linux-kongress.de/">Linux Kongress</a> in Augsburg,
+Germany.
+
+</intro>
+
+<section
+  title="Heap issue"
+  subject="Heap issue"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-373.html"
+>
+
+<p />Uwe Bonnes reported the following question: after a block of memory
+has been freed by HeapFree(), what should be the output of
+IsBadReadPtr() on this very block.
+
+<p />Ian Schmidt investigated on Windows 98 and reported: <quote who="Ian
+Schmidt">If the size passed to IsBadReadPtr() is 4k or less it returns zero
+(memory is OK). If the size is greater than 4k it returns nonzero. So it
+seems like the first page of the pointer is OK immediately after HeapFree()
+but the rest isn't. The actual allocation size and presence/absence of other
+allocated blocks in the heap don't seem to matter.</quote>
+
+<p />This remain to be patched in Wine.
+
+</section>
+
+<section
+  title="Benchmarks"
+  subject="Benchmarks"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-404.html"
+>
+
+<p />Patrik Stridval found an article regarding CPU performance, but which
+contains a benchmark between Windows and Wine on the same hardware (<a
+href="http://bulmalug.net/body.phtml?nIdNoticia=149">
+http://bulmalug.net/body.phtml?nIdNoticia=149</a>).
+
+<p />Here's an excerpt of the results (on the new Athlon 600 from AMD):
+
+<quote who="Patrik Stridval">
+
+<p />Recently I've started playing with Wine 990815;
+one of the programs I tried to run is an old favorite of mine; WinTach. I
+was pleasantly surprised to see this old 16 bit benchmark application work
+perfectly. The results with a yellow background are obtained under Wine, the
+other row was obtained under Windows 98SE on the same hardware.
+
+<p />
+
+<table border="1">
+   <tr bgcolor="#C0C0C0">
+      <td>Mhz</td>
+      <td>Driver</td>
+      <td>VSync</td>
+      <td>WP</td>
+      <td>CAD</td>
+      <td>Spread</td>
+      <td>Paint</td>
+      <td>Score</td>
+   </tr>
+   <tr bgcolor="#FFFF00">
+      <td>600</td>
+      <td>Wine</td>
+      <td>on</td>
+      <td>980.78</td>
+      <td>1490.02</td>
+      <td>490.02</td>
+      <td>255.48</td>
+      <td>804.19</td>
+   </tr>
+   <tr>
+      <td>600</td>
+      <td>Win98</td>
+      <td>OFF</td>
+      <td>2043.49</td>
+      <td>1976.52</td>
+      <td>2102.37</td>
+      <td>651.87</td>
+      <td>1693.56</td>
+   </tr>
+</table>
+
+
+
+</quote>
+
+<p />Patrik asked if <quote who="Patrik Stridval">anybody else done benchmarking
+of Wine vs Windows?</quote>", and started wondering on the cause of the
+speed difference (X Windows, Wine itself...), but anyway was satisfied with
+the results at this stage of Wine development.
+
+<p />Uwe Bonnes proposed if some benchmarks were to be done to also integrate
+figures from wmware.
+
+</section>
+
+<section
+  title="Lobbying"
+  subject="Lobbying"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-388.html"
+>
+
+<p />Uwe Bonnes reported some feedback he got from the cygwin mailinglist (via
+http://www.cygnus.com/cygwin), and chances of seeing Mumit Khan's patches
+for anonymous unions/structs being incorporated in gcc 3.0. Mumit wrote:
+
+<quote who="Mumit Khan">
+
+<p />Some of the patches are in, and some (notably the C anon aggregates one,
+and a few others) are not.
+
+<p />The more users lobby, the more its chances are for inclusion; so please
+voice your interest in gcc@gcc.gnu.org!
+
+</quote>
+
+<p />So Uwe asked <quote who="Uwe Bonnes">people from the wine community to raise
+their voices.</quote>
+
+</section>
+
+</kc>

@@ -1,0 +1,445 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="97" date="06/11/2001" />
+
+<intro>
+
+<p>This is the 97th release of the Wine's kernel cousin publication. It's
+main goal is to distribute widely what's going on around Wine (the Un*x 
+windows emulator).</p>
+
+<p>Whew!  Finally got this issue out.  Between car crashes,
+floppy drive crashes, and very nearly some mountain bike crashes it's 
+been an exciting week.  </p>
+
+<p>Last week CodeWeavers announced support for Windows browser plug-ins by using Wine.
+A nice little article can be found at 
+<a href="http://www.linuxjournal.com/article.php?sid=5463">
+http://www.linuxjournal.com/article.php?sid=5463</a>.  In particular
+it mentions support for QuickTime and Shockwave Director and the ability to use this
+in an embedded environment.  </p>
+
+<p>In the CVS tree, work is continuing on improved window manager support, various
+multimedia fixes including an implementation of glu32.dll, and a bunch of font handling
+fixes.</p>
+
+<p>Also, a big thank you to Jan Evert, Thomas Viehmann, and David Martinez who've
+sent in fixes/suggestions/comments on the past few issues.  The'yve nticed sometimes
+get right the issues and <font size="-2">X</font>ML I don't.</p>
+
+</intro>
+
+<stats posts="153" size="466" contrib="41" multiples="23" lastweek="13">
+<person posts="22" size="61" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="16" size="48" who="Ian Pilcher &lt;ian.pilcher@home.com&gt;" />
+<person posts="13" size="30" who="Gerard Patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="10" size="31" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="10" size="26" who="Ove K&aring;ven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="8" size="38" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="6" size="26" who="Bang Jun-Young &lt;bjy@mogua.org&gt;" />
+<person posts="6" size="23" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="5" size="14" who="Patrick Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="21" who="Malte Starostik &lt;malte.starostik@t-online.de&gt;" />
+<person posts="4" size="15" who="Lawson Whitney &lt;lawson_whitney@juno.com&gt;" />
+<person posts="4" size="9" who="Stephen Crowley &lt;stephenc@placemark.com&gt;" />
+<person posts="3" size="7" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+</stats>
+
+<section
+  title="ActiveX Support"
+  subject="some unimplemented COM stuff"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0218.html"
+  posts="10"
+  startdate="05/28/2001"
+  enddate="05/30/2001"
+>
+
+Malte Starostik has been working on a way to get ActiveX support working
+in the Konqueror web browser.  He's ran into some problems and posted a
+message to wine-devel:
+<quote who="Malte Starostik"><p>
+  For testing I'm using the Shockwave Flash OCX and experienced some problems 
+  due to unimplemented functions and features in winelib.
+  First thing is typelib registration, which doesn't work yet as the debug 
+  output tells. Okay, did that manually.
+  Then, for setting the control's properties, I tried the easy way via 
+  <code>IDispatch::Invoke()</code>, which calls <code>ITypeInfo::Invoke()</code>
+  and that's only a stub :(
+  I worked around this via evil assembler hacks to call the interface's members 
+  as given by the vtable offsets in the FUNCDESC using stdcall convention  - 
+  unfortunately g++ doesn't support specifying a calling convention for method 
+  pointers like HRESULT (<code>IDispatch::*setProp</code>)(BSTR).</p>
+
+  <p>After getting this to work, I hit the next problem:
+  unimplemented urlmon.RegisterBindStatusCallback and when I use a native 
+  urlmon.dll it tries to call shlwapi.154, with native shlwapi it still doesn't 
+  work somehow, but that's a different story.</p>
+
+  <p>Anyway, what I'd basically need to get this to work properly is</p>
+  <p><ul><li>	typelib registration</li>
+	 <li>   <code>IDispatch::Invoke()</code></li>
+	 <li>   <code>RegisterBindStatusCallback()</code> and probably asynchronous bind contexts</li>
+	 <li>   probably a "real" URL Moniker, not just <code>CreateURLMoniker()</code> using a File
+                Moniker </li>
+  </ul></p>
+  <p>What I'd like to know is if anyone is already working on any of these and if 
+  so what's the status and how I could help getting these implemented. if no 
+  one started yet, I'd still like to give it a try.</p></quote>
+
+<p>James Hathaway replied with some solutions to some of the problems:</p>
+
+  <quote who="James Hathaway"><p>
+  We (Macadamian) were working on implementing oleaut32.dll, if
+  you search the archives of WINE HQ around dec 2000 / jan 2001 
+  you can see some of the patches that we submitted.  Unfortunately,
+  work has been shelved for the moment, but there is a starting point
+  for you.</p>
+
+  <p>
+  For <code>IDispatch::Invoke / ITypeInfo::Invoke</code>, there is a patch at:<br />
+  <a href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-PATCHES/archives/2000-12/date/article-196.html">
+  http://www.integrita.com/cgi-local/lwgate.pl/WINE-PATCHES/archives/2000-12/date/article-196.html</a></p>
+
+  <p>As well please see discussion of patch at:<br />
+  <a href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2001-01/date/">
+  http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2001-01/date/</a><br />
+  (with reasons why it wasn't committed, search for "invoke")</p></quote>
+
+<p>He also added that typelib registration just required adding some registry entries.</p>
+
+</section>
+
+
+<section
+  title="WINE Server Messages"
+  subject="WINE server messages"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0235.html"
+  posts="4"
+  startdate="05/30/2001"
+  enddate="05/31/2001"
+>
+
+<p>David Howells has been working on a kernel module that will integrate
+	with Wine and (hopefully!) lead to big performance increases.  
+	He wrote into the list wondering exactly how to go about integrating
+	some of the wine server functionality into the kernel:</p>
+
+<quote who="David Howells">
+<p>I'm having a little trouble deciding exactly how to emulate the "module
+registration" functionality in my kernel module. It occurs to me that this
+might be easier to accomplish with a change to the current wine server message
+set. My idea is:</p>
+<ul>
+  <li>Have the server only deal with NT Section objects and views of Sections.</li>
+
+  <li> Have no separate module table attached to a process.</li>
+
+  <li> Implement NtQuerySectionInformation/NtSetSectionInformation calls (or
+	  whatever they're called) as wineserver messages.</li>
+
+  <li> Add an extra Wine-specific information class for the purpose of recording
+	  the extra module information.</li>
+
+  <li> The wineserver process structure can then be changed so that rather than
+   keeping a separate list of process_dlls, they can just keep a list of
+   section views, some of which will be images/modules.</li>
+</ul>
+</quote>
+
+<p>Alexandre wondered what would be gained by getting rid of the
+	module list.  David explained:</p>
+	
+<quote who="David Howells">
+
+	<p><code>NtMapViewOfSection/NtUnmapViewOfSection.</code></p>
+
+  <p>Admittedly, these would be hard to implement fully in the current Wine
+  userspace server I think (they can map a section handle into _another_
+  process's VM space). However, it's something I can do in kernel space
+  reasonably easily.</p>
+
+  <p>And then there's NtQueryVirtualMemory. This can return a handle to the 
+      backing section (assuming I'm recalling this correctly) in some other 
+      process.</p>
+
+  <p>Actually, I see that you do maintain a view list in the client as well as 
+   the module list and section lists in the server. What I was thinking of was 
+   just consolidating the three into a single view list and a single section 
+   list in the server.</p>
+
+  <p>In effect, Wine'd still have the module list, it's just that there'd be
+	   non-modules in the list too.</p>
+
+  <p>This would mean that the debugger could query from the server what 
+	   Windows VM mappings should be expected.</p>
+
+  <p>And, of course, it'd make writing the kernel module slightly easier:-)</p> 
+</quote>
+
+  <p>  But Alexandre wondered what the advantage was:</p>
+
+<quote who="Alexandre Julliard">
+
+  <p>I still don't see why you want that. The fact that the section list is
+ in the client or in the server is orthogonal to the fact that we
+ maintain a list of modules. If you have a list of mapped views in the
+ server you can simplify the module list a bit by making each module
+ point to the view instead of the backing file, but you still need a
+ module list to send debugger events and do toolhelp snapshots.</p>
+
+ <p>You could of course hide the module list inside the section list by
+ adding some magic flags to the section descriptor, but all it changes
+ is that you then need to walk the whole section list to retrieve the
+ modules; I don't really see the point.</p>
+
+</quote>
+
+ <p>The thread ended there.</p>
+ 
+</section>
+
+<section
+  title="Stanford Checker"
+  subject="Stanford Checker"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0049.html"
+  posts="7"
+  startdate="06/05/2001"
+  enddate="06/05/2001"
+>
+
+<p>On linux-kernel there have been a lot of posts over the
+last few months about the bug checker being developed at
+Stanford.  It's basically an extensible compiler that 
+"allows programmers to insert customized static analysis
+passes" and a language for writing the extensions.  The
+project is being headed by Dawson Engler and several students
+at Stanford.  David Goodenough was wondering if it was
+available to be used to check the Wine codebase.  Several
+people replied that the tool was not publicly available
+(yet) and that Wine would probably have to wait until it
+was released rather than having Stanford check the code
+themselves.  Ove K&aring;ven wrote, <quote who="Ove Kaaven">
+  From what I gather, this tool has very limited and context-dependent intelligence,
+  and is not conceptually very different from what a glorified version of
+  Patrik's tools/winapi_check script might be, if given enough people
+  working on it.</quote></p>
+
+<p>Patrick Stridvall responded with a detailed explanation
+of the differences:</p>
+<quote who="Patrick Stridvall"><p>
+ Not quite.</p>
+
+<p>winapi_check is</p>
+<p><ol><li>Specifically written for Wine</li>
+    <li> A syntax analyzer</li>
+    <li> Mostly ad hoc.</li></ol></p>
+
+
+<p>The Stanford checker on the other hand is</p>
+<p><ol><li>Generalized for all C/C++ applications</li>
+       <li> A semantic analyzer</li>
+       <li> Formalized with a script language</li></ol></p>
+
+
+<p>The way I choose when designing winapi_check was the
+one of the easiest ways and the way they choose is one
+of the hardest.  So just calling it is glorified
+winapi_check  gives the Stanford people too little credit.</p>
+
+
+<p>Anyway the way Stanford choose is really _very_ hard so 
+what I fear is that they had to make some limiting
+decisions that makes their tool much less useful.</p>
+
+
+<p>That said regardless of how good the Stanford checker really
+will be I'm pretty there will be a lot of things that
+will be _much_ easier checked by writing a script
+for the Stanford checker than by extending winapi_check,
+because they have fundamentally different design
+philosofies.</p>
+
+
+<p>However don't underestimate winapi_check either.
+There is a lot of things that can quite easilt be
+checked by adding some clever perl pattern, if:s and
+a little state. Syntax level matching is not that
+bad just a little more crude.</p>
+
+<p>If somebody have something that he want to be automatically
+checked, please post it on the list and I will see what
+I can do. </p></quote>
+
+</section>
+
+
+
+
+
+<section
+  title="Stack Limit"
+  subject="stack limit"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0025.html"
+  posts="8"
+  startdate="06/04/2001"
+  enddate="06/06/2001"
+>
+		    
+<p>Stephan Crowley was working with some large matrices and
+wondered how to go about increasing the
+default stack size for winelib applications.  He also wondered
+about what drawbacks he might run into working with a large stack.
+Francois Gouget answered that with:</p>
+
+<quote who="Francois Gouget">
+
+<p>   The only drawback I know of is that this limits the number of threads
+your process can start. At least on Windows, I'm not entirely sure about
+Linux but it should be the true too (Linux threads are kind of weird).</p>
+
+<p>   What happens on Windows is that each thread gets its own stack so by
+default 1MB of virtual memory is reserved for each thread. Since there's
+a 2GB virtual memory space this means you can start a maximum of about
+2000 threads. If you increase this to 10MB then you can only start 200
+threads (per process).</p>
+
+<p>   And that's why you have all the Java developpers complaining that
+Java does not scale because it only support 2000 clients! Let me
+explain. Until JDK1.4 is out Java does not have asynchronous I/O. So all
+Java servers are of the 'one thread per client' type. So they all block
+at about 2000 clients... except for the IBM JVM which uses a smaller
+stack by default allowing it to support more than 2000 threads.</p>
+
+<p>   So that's why one might want a small stack size. Of course I doubt
+very much this affects your application (seems more scientific computing
+oriented).</p>
+
+<p>   One more word on Java and threads :-) All (overgeneralization, I now)
+Java developpers (and benchmarketers) say Linux is bad because it does
+not scale well when you have thousands of runnable threads. And all
+kernel developpers reply 'you have to be crazy to have thousands of
+threads, your server performance will be bad anyway if you do that' (to
+which I can only agree). Fortunately, as I said before, JDK 1.4 will
+finally have asynchronous I/O, and even memory mapped files! So maybe
+the Java guys will finally let the Linux scheduler off the hook.</p>
+
+<p>   (Hmm, more than you wanted to know, sorry :-)</p>
+
+</quote>
+
+<p>Alexandre responded with a 
+<a href="http://www.winehq.org/hypermail/wine-devel/2001/06/0072.html">patch</a>
+that adds support for a stack argument in the application spec file.  </p>
+
+</section>
+
+<section
+  title="Using uname with Autoconf"
+  subject="uname(1) on UnixWare (Solaris)"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0041.html"
+  posts="14"
+  startdate="06/04/2001"
+  enddate="06/06/2001"
+>
+<p>Bang Jun-Young was working on some new configuration
+code and wanted to know what the returned values were on UnixWare and Solaris.
+It was immediately met with skepticism, as Alexandre put it, 
+<quote who="Alexandre Julliard">Why do you need that?  Using uname(1) in 
+a configure script is almost certainly the wrong thing to do.</quote>
+After a bit of back and forth discussion on why it might be needed,
+Francois Gouget summed it up with:</p>
+<quote who="Francois Gouget">
+<p>   But what if one runs this configure script on Darwin. The configure
+script does not know about it so it will fail although Darwin might
+behave exactly like FreeBSD. And what if tomorrow the Linux toolchain
+changes to behave like UnixWare, or something entirely different? This
+configure script will not work anymore, and when you detect that
+'OSNAME==Linux' you'll still have to determine whether to use the old or
+the new flags somehow.</p>
+<p>   This is the whole point of Autoconf-style scripts: it's pointless to
+expect to guess how things work based on the name of the platform, i.e
+what uname returns.</p>
+<p>   Instead you should test features: if I compile&amp;link a test file with
+the '-shared -Wl,-Bsymbolic' flag combination does it work? If yes then
+it does not matter whether the platform is Linux, UnixWare or FeeeBSD.
+We'll just use these flags since they do what we want.</p></quote>
+
+<p>Patrick Stridvall also pointed out:</p>
+<quote who="Patrick Stridvall">
+<p>However regardless of this, uname shouldn't be used
+(at least not directly). Autoconf provides a standard
+way to do this (which BTW happens to use uname).
+It can be used as below.</p>
+<p><code>AC_CANONICAL_HOST<br />
+
+case $host_os in<br />
+  *cygwin* ) CYGWIN=yes;;<br />
+         * ) CYGWIN=no;;<br />
+esac<br /></code></p>
+
+<p>IMHO you will need to provide a _really_ convincing
+argument that we should make another exception
+assuming of course we make the first one for
+CYGWIN which we haven't done yet either.</p></quote>
+
+</section>
+
+
+
+<section
+  title="New Application Database is ONLINE"
+  subject="New Application Database is ONLINE"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0089.html"
+  posts="2"
+  startdate="6/11/2001"
+  enddate="6/11/2001"
+>
+
+<p>Jeremy Newman posted a note about the new Wine application database:</p>
+<quote who="Jeremy Newman"><p>
+Hey all!</p>
+
+<p>The 'shiny' new Wine Application Database is up and ready for your
+comments. We will be spending the rest of the day getting the initial
+category structure and 1st round off applications in. Once we have
+enough input, and we fell stable enough, I will link the AppDB to
+WineHQ.org and post to wine-users.</p>
+
+<p><a href="http://appdb.winehq.org/">http://appdb.winehq.org/</a></p>
+
+<p>There is one sample app in so far so you can see what we mean. in:
+Main > Utilities > Compression > WinZip</p>
+
+<p>Use that as a guideline for how this is going to work.</p>
+
+<p>Go at it guys!</p></quote>
+
+<p>After taking a quick glance, it seems pretty slick.  It supports screenshots,
+multiple versions, and user comments.  </p>
+</section>
+
+
+
+<section
+  title="Tru64 Port"
+  subject="Help needed"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/06/0082.html"
+  posts="1"
+  startdate="6/9/2001"
+  enddate="6/9/2001"
+>
+
+<p>A short post appeared on wine-devel on Saturday:</p>
+<quote who="Renukaprasad, MR"><p>We are planning to port wine onto Tru64 Unix. 
+I have some basic Questions.  Can you tell me how to go about it. How do we 
+start. How big is the task and how to start about it..</p></quote>
+<p>Interestingly enough the post came from digital.com.  There was no follow-up
+to it.</p>
+</section>
+
+</kc>

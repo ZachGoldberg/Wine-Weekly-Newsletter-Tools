@@ -1,0 +1,212 @@
+
+<section 
+	title="News: More tests passing!"
+	subject="News"
+	archive="http://www.winehq.org/pipermail/wine-devel/2009-June/076597.html"
+	posts="7"
+>
+<topic>News: More tests passing!</topic>
+<p>
+Andr&#233; Hentschel has pointed out that the Wine test suite has begun passing on NT4:
+</p>
+<quote>
+<p>
+WinNT4 is passing now for the first time since a long time(maybe since ever?).
+So special congratulations to Paul Vriens, who spent much time making the test-suite run on NT4.
+This is a great step for the test-suite. Now NT4, 2K, XP and 2K3 are passing partially.
+Keep it up!
+</p>
+</quote>
+<p>
+Several Wine releases have occured since the last WWN.  Below is a list of some of the many improvements in Wine lately:
+</p>
+<quote>
+<p>
+<ul>
+<li>Updated version of Gechko</li>
+<li>Significant Wine64 improvements</li>
+<li>Many new codecs, protocols and formats supported</li>
+<li>Provied XShm and bitmap stretching performance. </li>
+<li>Improved Memory Management</li>
+<li>FBO becomming the default for D3D</li>
+</ul>
+</p>
+</quote></section>
+<section 
+	title="Wine Bug Day"
+	subject="Bugs"
+	archive="http://www.winehq.org/pipermail/wine-devel/2009-July/077382.html"
+	posts="10"
+>
+<topic>Wine Bug Day</topic>
+<p>
+Scott Ritchie has put in a significant effort lately to help cleanup the list of open bugs in Wine's BugZilla via a recurring "Bug Day"
+</p>
+<quote>
+<p>
+So, briefly:
+</p>
+<p>
+Over the past few months, users have added an average of between 12 and
+14 bugs every day.
+</p>
+<p>
+Since June 1st:
+- 412 total bugs filed
+- 87 bugs resolved invalid
+- 227 bugs resolved fixed
+- 133 bugs confirmed but not resolved (status new)
+- 292 bugs created but unconfirmed
+</p>
+<p>
+Doing some subtraction that means we have 292 new untriaged bugs, but we
+triaged or fixed (412-292-87-227-133) = 327 old bugs.
+</p>
+<p>
+So, we're swimming above water, which is good.  But at this rate it'll
+be years before we triage every bug.  So, let's do something :)
+</p>
+<p>
+Bug Jam this Monday!
+</p>
+<p>
+One idea that has been tried in the past is to hold regular bug days.
+We've had a lot of success with them in Ubuntu as a way of organizing
+non developer volunteers, especially when we focus the event on a
+particular package.  Today's bug day, for instance, tackled over a 100
+Synaptic bugs: https://wiki.ubuntu.com/UbuntuBugDay/20090716
+</p>
+<p>
+I'd like to attempt this in Wine.  We tried it once in the past, but no
+one's organizing it now.  Even if it's just me and 2 people testing a
+handful of bugs in our favorite apps, it'll still sink a good number of
+bugs and help drain the swamp.
+</p>
+<p>
+I'm picking Monday for bug day for a few reasons - it's both after a new
+release and after the weekend, so users will have already had time to
+play their games and see if they're still affected.  If there's any sort
+of success, hopefully this will become a regular event.
+</p>
+<p>
+So, if you're into bug triage, please come and join me in #winehackers
+this Monday.  The purpose of triaging bugs is to ultimately get them
+fixed, so if you're a developer and would rather work on patches then by
+all means do that instead.
+</p>
+<p>I've created a wiki page for the event here: <a href="http://wiki.winehq.org/BugDay">http://wiki.winehq.org/BugDay</a> 
+When we're done I'll poke bugzilla for some stats and we can see how
+much of a success the event was.
+</p>
+<p>
+Thanks,<br />
+Scott Ritchie
+</p>
+</quote>
+<p>
+By all counts the first BugDay was a big success.  An August BugDay also occured, and with any luck there will also be a September Bug Day.
+</p></section>
+<section 
+	title="Wine and the Ubuntu Summut"
+	subject="Desktop Integration"
+	archive="http://www.winehq.org/pipermail/wine-devel/2009-June/076102.html"
+	posts="5"
+>
+<topic>Desktop Integration</topic>
+<p>
+Scott Ritchie brings back news from the 2009 Ubuntu Developer Summit
+</p>
+<quote>
+<p>
+Hello everyone,
+</p><p>
+I've just returned from the Ubuntu Developer Summit in Barcelona last
+week.  A lot of interesting stuff that concerns Wine happened there, and
+a lot of applies to every distro.  I'll give a brief summary in this email.
+</p><p>
+Audio:
+</p><p>
+First, I talked with a Pulseaudio expert about what we can do to make
+things work better.  He said that if we want good compatibility we will
+need our ALSA stack to use the Pulseaudio safe subset:
+ <a href="http://0pointer.de/blog/projects/guide-to-sound-apis.html.">http://0pointer.de/blog/projects/guide-to-sound-apis.html.</a> I've filed a
+metabug tracking this here:
+ <a href="http://bugs.winehq.org/show_bug.cgi?id=18740.">http://bugs.winehq.org/show_bug.cgi?id=18740.</a>  Use of this unsafe subset
+can cause most problems with stuttering or even complete dropoff.
+</p><p>
+I'm not completely familiar with how sound works in Wine, but in the
+past I remember that one complaint about PulseAudio over ALSA was
+latency.  Latency issues these days are mostly due to bad kernel
+configurations, which Lennart wrote about here:
+https://tango.0pointer.de/pipermail/pulseaudio-discuss/2009-February/003150.html.
+</p><p>
+In the meantime we should develop for the future using kernels with
+preempt enabled at 1000 HZ.  Currently neither Open SuSE nor Ubuntu are
+configured this way, however I know in the case of Ubuntu that this is
+being fixed for next release.  In particular, if you develop on Ubuntu,
+you should either upgrade to Karmic Alphas or install a custom kernel.
+The -rt flavor of the kernel is known to have problems as well.
+</p><p>
+Printing:
+</p><p>
+A printing expert from <a href="http://openprinting.org">http://openprinting.org</a> says we should output
+.pdf files to cups rather than postscript. .pdf are becoming the
+standard for printers, and apparently they allow some good things that
+postscript does not.  I've filed a bug on this here:
+ <a href="http://bugs.winehq.org/show_bug.cgi?id=18741">http://bugs.winehq.org/show_bug.cgi?id=18741</a> 
+</p><p>
+Security and Usability:
+</p><p>
+The security team thinks we should finally start respecting the execute
+bit - this means removing all MIME handlers for executable code from the
+desktop and replacing them with a single front end for programs lacking
+the execute bit. This front end would notify the user of the problem,
+scan the file for viruses, and then present some information about the
+path towards execution.  It is still undecided whether the program
+should allow execution outright, however from a UI perspective this
+would clearly be more efficient.
+</p><p>
+This creates a design challenge.  In brief, we have to simultaneously
+manage expectations about Wine, inform the user that there are other
+(preferred) methods for installing software, not patronize them for
+installing a Windows program, tell them we scanned a file for viruses
+but that it may still be unsafe, make it easy to use, and make it hard
+to use accidentally.
+</p><p>
+After input from the community and discussion with other designers, I
+believe I have some good ideas for how to handle these challenges.  The
+Canonical design team has agreed to integrate the UI extensions I've
+gathered into their weekly user testing, so over the next few months we
+should be getting some real feedback on the merits of various approaches
+to this problem. I'll be working more on this personally, and already
+have a good chunk of the specifications and front end code done (thanks
+to some great community help). I will, of course, share it here when
+it's in a usable state.
+</p><p>
+As far as we, as an upstream, are concerned, there's not much to change
+in Wine itself other than to keep making it work better and fix bugs.
+If I had to name one in particular, I'd have to say the "unclean removal
+of applications menu" entries is a particularly confusing issue for users.
+</p><p>
+What I'm doing:
+</p><p>
+Over the next few months I'm going to be working rather hard on the
+Karmic Wine Integration spec that I lead at the Summit:
+https://wiki.ubuntu.com/karmic-wine-integration.  I'm still drafting the
+spec based on my notes and discussion, but at this point I have a very
+good idea of what I want to do.
+</p><p>
+Most of the code involved is directly relevant to the Wine user, however
+almost none of it needs to go into Wine itself other than some icons.
+At this point it's mostly python scripts, modifications of other python
+programs, and Glade dialogs.  I may set up a BZR/Git repository of the
+various bits once they start turning into actual packages (which I'll
+also be doing).
+</p><p>
+Anyway, keep your eyes peeled, the next wave of distro releases are
+going to be very slick.
+</p><p>
+Thanks,<br />
+Scott Ritchie
+</p>
+</quote></section>

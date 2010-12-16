@@ -1,0 +1,585 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="260" date="02/04/2005" />
+<intro> <p>This is the 260th issue of the Wine Weekly News publication.
+Its main goal is to search for a string of boats. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="256" size="1263" contrib="78" multiples="44" lastweek="43">
+
+<person posts="23" size="70" who="Mike Hearn" />
+<person posts="15" size="51" who="Oliver Stieber" />
+<person posts="15" size="35" who="Alexandre Julliard" />
+<person posts="10" size="28" who="Paul Vriens" />
+<person posts="14" size="44" who="Rob Shearman" />
+<person posts="8" size="26" who="Carlos Lozano" />
+<person posts="8" size="25" who="Juan Lang" />
+<person posts="7" size="34" who="Luke Kenneth Casson Leighton" />
+<person posts="7" size="27" who="Jesse Allen" />
+<person posts="7" size="17" who="Lionel Ulmer" />
+<person posts="6" size="204" who="Tom" />
+<person posts="6" size="38" who="Scott Ritchie" />
+<person posts="6" size="22" who="Vincent B&#233;ron" />
+<person posts="6" size="18" who="Krzysztof Foltman" />
+<person posts="6" size="16" who="Mike McCormack" />
+<person posts="5" size="100" who="Dimitrie O. Paun" />
+<person posts="5" size="49" who="Jonathan Ernst" />
+<person posts="5" size="15" who="Eric Pouech" />
+<person posts="4" size="11" who="Jason Edmeades" />
+<person posts="3" size="100" who="Jason But" />
+<person posts="3" size="20" who="Francois Gouget" />
+<person posts="3" size="12" who="Brian Vincent" />
+<person posts="3" size="11" who="Tony Lambregts" />
+<person posts="3" size="9" who="Tony Lambregts" />
+<person posts="3" size="9" who="Dan Kegel" />
+<person posts="3" size="8" who="Paul van Schayck" />
+<person posts="3" size="8" who="Jeremy White" />
+<person posts="3" size="8" who="Sergey Efimoff" />
+<person posts="3" size="7" who="Steven Edwards" />
+<person posts="3" size="5" who="George Ginden" />
+<person posts="2" size="30" who="Holly Bostick" />
+<person posts="2" size="8" who="Jeff Latimer" />
+<person posts="2" size="7" who="Chris Morgan" />
+<person posts="2" size="7" who="Shachar Shemesh" />
+<person posts="2" size="7" who="Chris Morgan" />
+<person posts="2" size="6" who="Uwe Bonnes" />
+<person posts="2" size="6" who="James Hawkins" />
+<person posts="2" size="6" who="Marcus Meissner" />
+<person posts="2" size="6" who="Boaz Harrosh" />
+<person posts="2" size="6" who="Bill Medland" />
+<person posts="2" size="5" who="Jakob Eriksson" />
+<person posts="2" size="5" who="Ira Krakow" />
+<person posts="2" size="4" who="Andreas Mohr" />
+<person posts="1" size="5" who="Rizwan Kassim" />
+<person posts="1" size="5" who="Joachim Schiele" />
+<person posts="1" size="5" who="Stefan Leichter" />
+<person posts="1" size="4" who="Sylvain Petreolle" />
+<person posts="1" size="4" who="Jon Griffiths" />
+<person posts="1" size="4" who="Aric Stewart" />
+<person posts="1" size="4" who="Paul Millar" />
+<person posts="1" size="3" who="Hans Leidekker" />
+<person posts="1" size="3" who="Noah Schwartz" />
+<person posts="1" size="3" who="tom fogal" />
+<person posts="1" size="3" who="Gabriele Giorgetti" />
+<person posts="1" size="3" who="Aneurin Price" />
+<person posts="1" size="3" who="Ivan Leo Puoti" />
+<person posts="1" size="3" who="Diego 'Flameeyes' =?utf-8?q?Petten=C3=B2?=" />
+<person posts="1" size="3" who="Andrew Bartlett" />
+<person posts="1" size="3" who="Kari Hurtta" />
+<person posts="1" size="3" who="T'aZ" />
+<person posts="1" size="3" who="Kuba Ober" />
+<person posts="1" size="3" who="David Lee Lambert" />
+<person posts="1" size="2" who="Michael Ost" />
+<person posts="1" size="2" who="Katia Maculan" />
+<person posts="1" size="2" who="Maxime Bellenge" />
+<person posts="1" size="2" who="Rein Klazes" />
+<person posts="1" size="2" who="Daniel Kegel" />
+<person posts="1" size="2" who="Ryan Underwood" />
+<person posts="1" size="2" who="Paul Rupe" />
+<person posts="1" size="2" who="Christian Costa" />
+<person posts="1" size="2" who="Robert van Herk" />
+<person posts="1" size="2" who="Aaron Arvey" />
+<person posts="1" size="2" who="Raphael" />
+<person posts="1" size="2" who="(te0543)" />
+<person posts="1" size="2" who="pyd" />
+<person posts="1" size="2" who="gslink" />
+
+</stats>
+<section
+        title="Window Management Rewrite Details"
+        subject="Re: wine/dlls x11drv/x11drv.h x11drv/winpos.c x11d ..."
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/01/1041.html"
+        posts="14"
+        startdate="01/31/2005"
+	enddate="02/01/2005"
+>
+<topic>Status Updates</topic>
+
+<p>There's some massive changes going on right now with the Wine
+tree.  Some we've covered, some we haven't.  For instance, Mike
+Hearn and Rob Shearman have been sending steady updates about
+their DCOM work and the direction it's headed.  Besides that,
+we've got the DirectX guys, particularly Jason Edmeades, implementing 
+Direct3D 9 using a brand new library that will eventually be used 
+by D3D8 as well.  Aric Stewart and Mike McCormack are busy fleshing
+out the Microsoft Installer library.  Huw Davies has greatly
+improved the widl IDL compiler.  
+</p><p>
+Finally, a long awaited project
+is being tackled by Alexandre - the window management rewrite.
+Another set of WM patches came out this week, including one
+with this changelog:</p>
+<quote who="Alexandre Julliard"><p>
+Only create an X window for top-level windows, not for child windows.
+Get rid of the X client window too, it's no longer needed.</p>
+</quote>
+
+<p>It led Dimi to ask if the window management rewrite was
+completed.  Alexandre replied,
+<quote who="Alexandre Julliard">
+The bulk of the architectural work is done, yes. There are still many
+loose ends to tie up, and some missing performance improvements. Plus
+of course fixing all the regressions that this change will cause,
+notably with OpenGL...</quote></p>
+
+<p>Dimi asked,
+<quote who="Dimitrie Paun">
+If it's not too much trouble, it would be nice if you list all the
+known loose ends/bugs/optimisations/regressions so that (1) we can
+explicitly track them, and (2) we get a sense of where we are and
+how things are going. And last, but not least, there is the off chance
+that someone might lend a helping hand (yeah, I know, chances are
+slim to none, but still ... :))</quote></p>
+
+<p>Alexandre described some of the remaining work:</p>
+<quote who="Alexandre Julliard"><p>
+It's a bit hard to build a complete list, I mostly make it up as I
+go...  The main optimisation I know about is the repainting on window
+moves that needs to copy the bits instead of invalidating the whole
+window. The loose ends are mostly related to dll separation, the
+exported functions in user32.spec can give you a rough idea of what
+remains to be done. For OpenGL what we need is to implement proper
+clipping when drawing to a child window. There are also a number of
+window management hacks in the CrossOver tree that need to be cleaned
+up and brought over.</p></quote>
+
+<p>Lionel Ulmer described some of issues with OpenGL:</p>
+<quote who="Lionel Ulmer"><p>
+Basically, the problem with OpenGL is that there is no way (that I know of)
+in OpenGL to do non-simple clipping (what I mean by 'non-simple' is
+non-rectangular). Ie if a (non top-level) OpenGL window is obscured by
+another (non top-level) window, there is no way (that is not a hack) to
+prevent GL to draw over the obscured window.
+</p><p>
+The best way to fix this would be to have the X server export via a GLX
+extension its hardware clip-list implementation (which is something that I
+need to discuss with the FreeDesktop guys as this would be something that
+could help all the 3D X servers implementations which people are working
+on as, basically, it's exactly the same issue).
+</p><p>
+The other way is to do indirect rendering for GL contexts not associated to
+top-level windows: basically, draw in a Pixmap (or a PBuffer) and then use
+the plain Wine 'DIB' code to blit this back-buffer to the screen (doing then
+the clipping). This should work easily at the price of some performance
+(especially on cards / drivers who do not support accelerated off-screen
+rendering).
+</p><p>
+The additionnal advantage of the latter solution is to solve also the
+'multiple windows / different GL attributes' problem.</p></quote>
+
+<p>With regards to window management, Oliver Stieber ran into a
+problem getting the window ID of a child window.  Mike McCormack
+explained it was because of the recent commits Alexandre had done.
+Jeremy White explained why it might have been easy to miss the
+change:</p>
+<quote who="Jeremy White"><p>
+If Alexandre committed a patch that converted the entire code base from C to
+pure assembler, his changelog would read:
+<ul>
+   Code optimizations</ul></p><p>
+
+(Although if he could find a way to say it in one word, he would)
+&lt;grin&gt;</p></quote>
+
+</section>
+<section
+        title="RichEdit Control Code"
+        subject="RICHEDIT once again"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/01/1003.html"
+        posts="9"
+        startdate="01/30/2005"
+        enddate="02/04/2005"
+>
+<topic>Integration</topic>
+
+<p>A few months ago we covered some work that had been done by
+Krzysztof Foltman to begin a RichEdit 2.0 control (see WWN issues
+<a
+href="http://www.winehq.com/?issue=250#No%20RichEdit20A%20Window%20Class">#250</a>
+and <a href="http://www.winehq.com/?issue=251#RichEdit%20(con't)">#251</a>).
+This week Krzysztof announced he was making available what he had so far:</p>
+<quote who="Krzysztof Foltman"><p>
+My rich text control is still far from even semi-complete, but I think
+too much is done to start over, so I'm releasing it today. The number
+one reason of its incompleteness is that I put more emphasis on making
+things work exactly like in the original than on implementing more
+functions.
+</p><p>
+It's been neglected for weeks, and only recently I've fixed some old
+bugs and slowly started implementing the simplest parts of the RICHEDIT
+control API. I'm still not done with the basic stuff, like undo stack,
+so there is not much to hack on. On the other hand, it's likely I've
+made some bad decisions during design, and having someone experienced to
+look at that seemed to be a good idea to me.
+</p><p>
+Some things look really tricky to implement with the current
+architecture, like the printing API (it will likely be an ugly hack, but
+I expect the same from the original, as screen formatting and print
+formatting may be very different). Some things just need time. I will
+probably need others' help to do the RTF parser. It's just way too much
+work.
+</p><p>
+So, if anyone cares:
+<ul>
+   <a href="http://foltman.com/richtext-20050130.tar.gz">
+   http://foltman.com/richtext-20050130.tar.gz</a></ul>
+</p><p>
+Compile using the recent-ish mingw (plus original SDK richedit header file).
+</p></quote>
+
+<p>Mike McCormack was impressed:</p>
+<quote who="Mike McCormack"><p>
+Fantastic.  This is good work.  I haven't reviewed the code in depth,
+but I think the way forward is to submit an implementation of
+dlls/riched20 then make that work, and after it's debugged and worked
+out, rip out the old dlls/riched32 code and forward it to the new
+completed riched20 code.
+</p><p>
+Code review notes:
+</p><p>
+You've written the code to deal with unicode as default, which is good,
+but you need to deal with both ASCII and unicode messages in the window
+procedure.
+</p><p>
+It might be better to use libwineunicode and kernel32 unicode string
+manipulation functions rather than msvcrt ones. eg lstrlenW, lstrcpyW,
+etc. instead of wcslen, wcscpy, etc. Avoid the TCHAR type in Wine code.
+</p><p>
+Similarly, you'll need to use "winbase.h" and friends instead of
+"windows.h".
+</p><p>
+ From what I can see in the old riched32 code, the rtf parser looks
+quite good, so don't try rewrite that (which from my quick check you
+haven't).  We can merge the parser into the riched20 code quite
+easily... it just enters the text into the existing control using
+EM_SETSEL and some formatting messages.
+</p><p>
+I have a test I can send to you if you wish.  Again, my preference is to
+get this into the Wine CVS sooner rather than later, so others can start
+helping improve it.</p></quote>
+
+<p>Krzysztof made some changes based on Mike's notes and put another
+version up:</p>
+<quote who="Krzysztof Foltman"><p>
+I'll see what can be done. As soon as there is a minimal text
+manipulation API (based on RichEdit API, not on function calls), I can
+separate the control into a DLL and move the app code in the test directory.
+</p><p>
+So far, the next version is available at:
+<ul>
+     <a href="http://foltman.com/richtext-20050130b.tar.gz">
+     http://foltman.com/richtext-20050130b.tar.gz</a></ul></p><p>
+
+Main changes are:
+<ul>
+<li> editor.c contains a list of which messages/notifications/styles work
+and which don't</li>
+<li> incomplete read-only mode</li>
+<li> replacement of MSVCRT wcs functions with Win32 lstr</li>
+<li> a modification flag</li>
+<li> a shy attempt at starting undo</li>
+<li> a #define to choose between my editor and the original RICHEDIT. It's
+not what I want it to be, but it's better than nothing.</li>
+</ul></p></quote>
+
+<p>Rob Shearman had some suggestions concerning "undo" functionality:</p>
+<quote who="Robert Shearman"><p>
+Undo should be pretty easy as long as you can easily represent
+user actions in a transactions stack.
+A user doing something will then cause an action to be pushed onto the
+stack (although you would probably want some coalescing so that you
+don't have to undo each character you typed, you can just undo a
+sentence). The undo command will pop a transaction of the stack and
+apply the inverse.
+I've written a fairly nice implementation of this before in Java and it
+didn't take me very long.</p></quote>
+                                                             
+<p>Krzysztof explained a little more about how undo needed to operate,
+<quote who="Krzysztof Foltman">
+
+Yes, I know the undo basics. The most recent source has the basic stack
+structure. :) It's still a bit complex, as, first, we have formatting to
+store on the stack (linked actions are the way to go), and it's easy to
+  miss something, making undo fail in unusual circumstances.
+</quote></p>
+
+<p>Later in the week Krzysztof followed up with another patch and announced
+more work:</p>
+<quote who="Krzysztof Foltman"><p>
+It seems that I already have something useful. I've added multilevel 
+undo/redo, GetCharFormat/SetCharFormat (very incomplete) and modify 
+flag, and cleaned up the code a lot. The source code is downloadable 
+from here:
+<ul>
+     <a href="http://foltman.com/richtext-20050204.tar.gz">
+     http://foltman.com/richtext-20050204.tar.gz</a></ul>
+</p><p> 
+I'll try to add handlers for basic editing messages (like WM_SETTEXT) 
+and maybe notifications too, DLLize it and then make a Wine patch out of 
+it. Is that OK ?
+
+</p><p> 
+It's not like everything is done the way it should be (for instance, 
+coordinate system is still pixel-based and not twips-based), but at this 
+stage the risk of having to constantly rewrite everyone else's code is 
+much lower.</p></quote>
+
+<p>Mike McCormack encouraged Krzysztof to submit the code as a formal
+patch against riched20.dll and offered to help integrate it.</p>
+
+<p>Boaz Harrosh gave a pointer to another project that had some
+code that might be useful:</p>
+<quote who="Boaz Harrosh"><p>
+I have been using in a few projects, Windows side and Linux, a great
+rich edit control, I'm sure everybody knows, and used even if he
+doesn't know. "<a href="http://www.scintilla.org/">Scintilla</a>"!
+It has anything a RichEdit control needs (and
+much more but that does not have to be used). It even has the export to
+RTF function. (And to HTML for clipboard operations) It has 95% EditBox
+emulation. It is very stable, heavily used and debugged, and highly
+portable. The License is a BSD type license so I don't think it will be
+any problem. The only things missing are the RTF parser and the
+MS-RichEdit emulation (Data types and message translations). But it
+looks like these two are what above patch and existing code has. I am
+almost positive that if such a parser (And emulation layer) is submitted
+to the Scintilla project it will be further maintained by the project.
+One more thing good about it, that makes a lot of sense, is its
+popularity, which means there are a lot of people that know this
+code-base and can help fix problems. (And it does compile under wine out
+of the box.)
+</p></quote>
+</section>
+                                 
+<section 
+	title="Interlocked* Cleanup Completed" 
+	subject="[Janitorial] Interlocked* cleanup completed"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/01/0836.html" 
+	posts="1"
+	startdate="01/25/2005"
+>
+<topic>Project Management</topic>
+<p>We've had a janitorial project for a few months to
+use the Interlocked functions for thread safety.  The
+actual project says this:</p>
+<quote who="WineHQ"><p>
+ Most OLE objects should be threadsafe, which requires use 
+ of the thread-safe increment and decrement functions 
+ InterlockedIncrement(&amp;This-&gt;ref)  and 
+ InterlockedDecrement(&amp;This-&gt;ref) instead of This-&gt;ref++  
+ or This-&gt;ref--. See 
+ <a href="http://cvs.winehq.org/patch.py?id=15239">an example patch</a>
+ of how to fix this problem.
+</p><p>
+ To be consistent, references to This-&gt;ref in TRACE's should be avoided as well.
+</p></quote>
+
+<p>Paul Vriens has spent the past few weeks consistently 
+sending patches in and announced this week he'd completed
+the whole thing:</p>
+
+<quote who="Paul Vriens"><p>
+If there are not objections I'll send the attached patch to
+wine-patches.
+</p><p>
+Changelog
+<ul>
+   The Interlocked cleanup is completed.</ul></p></quote>
+
+</section>
+<section 
+	title="Software Freedom Law Center" 
+	subject="Software Freedom Law Center"
+	archive="http://www.winehq.org/hypermail/wine-devel/2005/02/0010.html" 
+	posts="4"
+	startdate="02/01/2005"
+	enddate="02/04/2005"
+>
+<topic>Project Management</topic>
+<p>
+Jeremy White wrote in to get some feedback about a new
+Open Source Development Labs initative:</p>
+<quote who="Jeremy White"><p>
+There is an exciting announcement out today:
+<ul><a href="http://www.desktoplinux.com/news/NS7711938137.html">
+  http://www.desktoplinux.com/news/NS7711938137.html</a></ul>
+</p><p>
+Essentially, OSDL has funded a community oriented pro-bono
+legal service for Free and Open Source Software Projects.
+The Center is led by Eben Moglen, the chief counsel for
+the FSF.
+</p><p>
+I've been speaking privately with Eben Moglen about this
+new effort, and he tells me that they would like to
+have the Wine Project as one if their very first clients.
+</p><p>
+Candidly, this seems fantastic to me; one of the difficult
+things that I face when promoting Wine is peoples Fear,
+Uncertainty, and Doubt about the legality of Wine.
+Having an opportunity to clarify these legal issues
+is probably the most important thing that could happen
+for Wine, in my opinion (well, okay, maybe it's
+less important than support for Pirates! &lt;grin&gt;).
+</p><p>
+However, before I go off to request the services of
+the SFLC, I thought I would post this announcement here
+and open it for any discussion.  I'd particularly
+like to hear if folks can think of any reasons
+why this might be a bad thing.
+</p><p>
+Finally, the key objectives from my standpoint are
+as follows:
+<ol>
+   <li>  Get an opinion written on Wine and copyright
+      issues (imho, we have no IP issues here)</li>
+   <li>  Get some legal research done on Patent issues
+       I don't know how this will turn out, so I think
+       we should wait for the research.</li>
+   <li>  Investigate the legal doctrine surrounding what
+       use a monopoly can make of its patents; I know
+       that US antitrust law provides some restraints,
+       but it would be great to have a legal opinion on
+       the matter.</li>
+</ol></p><p>
+Thoughts?  Comments?
+</p></quote>
+
+<p>If you happen to have any Fear, Uncertainty, or Doubt,
+maybe it's a good time to drop an email to wine-devel or
+Jeremy and let them know what could be improved.  Anyone
+ever run into legal issues they need clarified?</p>
+
+</section>
+<section
+        title="Debian WineTools Packages"
+        subject="WineTools Debian Package!"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/01/0048.html"
+        posts="1"
+        startdate="02/02/2005"
+>
+<topic>Utilities</topic>
+
+<p>
+Scott Ritchie announced the availability of the WineTools package
+for Debian.  WineTools sets up a custom configuration and lets you
+install various Windows programs:</p>
+
+<quote who="Scott Ritchie"><p>
+Ok, I finished up the winetools Debian packages.
+</p><p>
+It's on the same repository as the Wine packages at WineHQ, so you
+should be able to install it easily from there.
+</p><p>
+To run it simply type "winetools" or use the (hopefully created) menu
+entry.
+</p><p>
+One day I hope to have a man page and such, but for now it seems good.
+</p></quote>
+
+
+<p>For more information, see the new
+<a href="http://www.winehq.org/site/download-deb">Debian download page</a>.
+</p>
+</section>
+
+<section
+        title="Slick Build Output"
+        subject="Slick build output"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/01/0934.html"
+        posts="18"
+        startdate="01/27/2005"
+	enddate="01/31/2005"
+>
+<topic>Build Process</topic>
+
+<p>
+Jason But did some work to make Wine's build system a little
+easier on the eyes:</p>
+<quote who="Jason But"><p>
+Not really related to the actual wine development but more to the 
+make/build/install environment.
+</p><p>
+Remembering that most wine users will not necessarily be developers we should 
+consider improving the output of running (./configure &amp;&amp; make) to make it 
+more user friendly.  Hopefully it should also be less confronting and 
+confusing to non developers.  I propose something similar to the way the 
+Linux kernel currently compiles.  The included patch changes make so that a 
+regular make will produce much nicer output while for those die-hards who 
+prefer the original output this can be achieved by executing
+<ul><code>
+make VERBOSE=yes</code></ul></p><p>
+
+I personally prefer the neater output even for development work, the compile 
+output doesn't scroll off the screen as quickly and warnings/errors can be 
+more easily spotted.
+</p><p>
+This patch doesn't do the complete job, instead only produces output for the 
+compile (gcc) stages.  In fact, (make install) will produce no output at all!  
+If people think this is a good idea, simple extensions will lead to complete 
+output, just add the necessary 
+
+<ul><code>$(NICE_ECHO) "    whatever"</code></ul>
+</p><p>
+to the proper places in each Make*.in file
+</p><p>
+I am willing to do this if it is deemed to be good.
+</p></quote>
+
+<p>In another email, Jason showed off his work by compiling some
+directories:</p>
+<quote who="Jason But"><p>
+<code>
+Making in libs/wine/<br />
+&#160;&#160;&#160;&#160;    Compiling&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;config.c<br />
+config.c: In function `init_server_dir':<br />
+config.c:120: warning: right shift count &gt;= width of type<br />
+config.c:125: warning: right shift count &gt;= width of type<br />
+&#160;&#160;&#160;&#160;    Compiling&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;debug.c<br />
+&#160;&#160;&#160;&#160;    Compiling&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;ldt.c<br />
+&#160;&#160;&#160;&#160;    Compiling&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;loader.c<br />
+&#160;&#160;&#160;&#160;    Compiling&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;mmap.c<br />
+&#160;&#160;&#160;&#160;    Compiling&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;port.c<br />
+&#160;&#160;  Creating Library&#160;&#160;&#160;&#160;&#160;&#160;libwine.so.1<br />
+&#160;&#160;  Creating Library&#160;&#160;&#160;&#160;&#160;&#160;libwine.so</code></p></quote>
+
+<p>Alexandre wasn't in favor of it though,
+<quote who="Alexandre Julliard">
+  I think it's a lot more important to make it useful for developers,
+  which is what it is now. Users who get intimidated by the make output
+  should use a binary package.
+</quote>Later he added,
+<quote who="Alexandre Julliard">
+  Our makefiles are already complicated enough to not add
+  such gratuitous complexity.
+</quote></p>
+
+<p>Other developers had mixed reactions.  Quite a few were
+in favor of adding it, others were against it.  Alexandre wasn't
+persuaded.  Marcus Meissner pointed out one other problem:</p>
+<quote who="Marcus Meissner"><p>
+The developer can use "make -s" if he wants to see less.
+</p><p>
+vis and emacs automatic errorline jump will also stop working.</p></quote>
+
+<p>Jason provided the patch in case anyone wanted to use it:</p>
+<quote who="Jason But"><p>
+I will not bring this up any more after this email.
+</p><p>
+I note that while the patches are extensive they are merely the addition of 
+one <tt>ECHO</tt> line to each rule.
+</p><p>
+For those who are interested, I attach the patch here (hoping it works this 
+time) for the completed output cleanup.  I ran
+
+<ul><code>diff -urN wine-20050111 wine-20050111.new &gt;
+make_patches</code></ul></p><p>
+
+where wine-20050111/ is the directory with the current wine sources 
+and wine-20050111.new/ is the patched directory
+</p><p>
+All the changes are to the Make*.in files.</p><p>
+
+Closing off my input now.
+</p></quote>
+</section></kc>

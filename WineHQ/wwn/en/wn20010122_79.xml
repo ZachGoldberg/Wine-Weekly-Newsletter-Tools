@@ -1,0 +1,478 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="79" date="22 Jan 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 79th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="109" size="370" contrib="39" multiples="23" lastweek="22">
+<person posts="11" size="31" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="10" size="32" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="8" size="26" who="Jon Griffiths &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="6" size="21" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="6" size="17" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="6" size="17" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="4" size="14" who="Josh DuBois &lt;duboisj@codeweavers.com&gt;" />
+<person posts="4" size="12" who="lawson_whitney@juno.com" />
+<person posts="4" size="12" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+</stats>
+
+
+<section 
+  title="Porting to BeOS"
+  subject="Interest in a BeOS port"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0222.html"
+  posts="7"
+  startdate="11 Jan 2001 00:00:00 -0800"
+  enddate="17 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Michael Cohen made an old issue resurface. He asked if some effort was 
+made to let Wine work on BeOS. 
+
+<p />
+
+Francois Gouget pointed out to some information on the BeWine project:
+<ul>
+   <li>Official BeWine Site at <a href="http://bewine.loungenet.org/">
+http://bewine.loungenet.org/</a></li>
+   <li>Links on WineHQ 
+<a href="http://www.winehq.org/projects/bewine.html"> 
+http://www.winehq.org/projects/bewine.html</a></li>
+</ul>
+
+<p />
+
+This subject had already been covered in previous articles (
+<kcref issuenum="10" sectionnum="4">#10/5</kcref> and 
+<kcref issuenum="8" sectionnum="0">#8/1</kcref>).
+
+<p />
+
+However, this effort stopped almost two years ago. Patrik Stridvall
+explained the biggest difficulties that couldn't be solved:
+<ul>
+   <li>The memory area were applications are usually loaded is not
+permitted by the BeOS kernel. This either mean that your application
+has to be relocated (some .exe files don't hold the relevant
+information to do so - remember the old message about stripped
+binaries ?), or that the Wine "emulation" cannot be run properly (but
+this shouldn't impact Winelib programs).<br />
+One could trap all faulty accesses and relocate them (in the trap
+handler) to another area, but this would really slow down the
+execution.</li> 
+   <li>Some other Unix calls were missing from BeOS at that time:
+<ul>
+   <li>BeOS doesn't have mmap</li>
+   <li>BeOS doesn't have recvmsg/sendmsg (which allows passing file
+descriptors between any Wine program and the wineserver)</li>
+   <li>BeOS doesn't handle file descriptors and sockets as the same
+thing (even if this would be fixed by the BONE (BeOS Networking
+Extension) extension</li>
+</ul></li>
+</ul>
+
+<p />
+
+Doug Clement (who was leading the effort at that time) also answered:
+
+<quote who="Doug Clement">
+Last voice from the list was that we're waiting on BONE, for some
+features relating to sockets. To be honest, I've about given up on Be
+since it's  taken so long to get BONE out, and I'm completely out of
+the loop now. I'll happily keep the web site up for whoever wants to
+use it, though. Make sure you start with the latest patch we have..
+</quote>
+
+
+<p />
+
+Michael Cohen tried to start up some discussion on helping with the
+relocation bits:
+<quote who="Michael Cohen">
+I had an idea contemplating the PPC port and I have some preliminary
+patches for 20001222 that might affect wine in general. I was
+considering one day that a sort of pre-interpretation system could be
+implemented, where the entire application is analyzed quickly and then
+modified as it is loaded into memory to suit the particular
+architecture's needs. I've not seen much in this way discussed on this
+mailing list, and I have also not received much input, be it positive
+or negative, as far as this idea is concerned. 
+
+<p />
+
+As I have seen it, the developers of wine have put an immense amount
+of effort into understanding MFC and the various quirks of such a
+horrible but extensively (almost universally :-( ) used operating
+system set as windows is, but I am surprised that the modularization to
+bring wine to other systems is not as big of a focus as I thought it
+would be upon first taking interest in wine. Wine has come a long way,
+but it still needs a bit of polishing before it can become a truly
+excellent app.
+</quote>
+
+
+<p />
+
+There was no response.</section>
+
+
+<section 
+  title="Porting to S/390"
+  subject="Wine for LINUX on S390"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0261.html"
+  posts="3"
+  startdate="17 Jan 2001 00:00:00 -0800"
+  enddate="17 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Jim (without a last name but with an email address' domain at
+daimlerchrysler.com) asked: <quote who="Jim ___doe">has anyone tried
+to port Wine to run on LINUX on an IBM mainframe? We are running
+several LINUX virtual servers of different distributions and would
+like to try running WINE. So far when I run the /tools/wineinstall I
+get the error that I must add my CPU CONTEXT to WINNT.H. </quote> 
+
+<p />
+
+Francois Gouget said that, for the time being, it was not possible to
+run Wine on S/390, but it could be possible to run Winelib
+applications, as long as the basic support was put in (like the CPU
+context handling...).
+
+<p />
+
+Ulrich Weigand started putting his hands into it: 
+
+<quote who="Ulrich Weigand">
+While I just did a quick hack, I got at least WineMine running.
+Now that Winelib is a bit cleaned up (Sparc runs out of the box),
+it would probably be not too difficult to properly implement S/390 
+support, or in fact support for any 32-bit architecture (64-bit is 
+an entirely different story).
+
+<p />
+
+I didn't pursue it further because I wasn't sure there's really
+anybody interested in running Wine on S/390. But if you'd like
+to try it, I could certainly contribute the arch-specific patches.
+
+<p />
+
+[ B.t.w. I'm now working for IBM on the Linux for S/390 port.
+  That's why I am quite familiar with the architecture ... ;-) ]
+</quote>
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Unicode and Winelib"
+  subject="Winelib + Unicode"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0241.html"
+  posts="11"
+  startdate="16 Jan 2001 00:00:00 -0800"
+  enddate="18 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Jon Griffiths, still working on MSVCRT DLL, was trying to make 
+<a href="http://www.vwcl.org">VWCL</a>working on Wine (as a strong
+user of the MSVCRT DLL). He needed to have a way to define Unicode
+string even when the Winelib program (using VWCL) was compiled as a
+ASCII one. 
+
+<p />
+
+However, the standard way of using the L prefix on string fails:
+L"foo" is compiled by gcc as a 32 bit Unicode string, whereas a
+Windows compiler would generate a 16 bit Unicode string (see 
+<kcref issuenum="41" sectionnum="2">for more details</kcref> on UTF-16 and
+UTF-32). Jon looked for ways of defining UTF-16 properly from Winelib
+code.
+
+<p />
+
+Francois Gouget suggested two solutions:
+<ul>
+   <li>use a bleeding-edge gcc compiler (2.97 and later) which comes
+with a <code>-fshort-wchar</code> flag (this will generate UTF-16
+instead of UTF-32)</li>
+   <li>use the <code>WINE_UNICODE_TEXT</code> macro. Good part of it
+include: 
+   <ul>
+      <li> it supports both chars and strings, i.e. you can write: 
+<code>WINE_UNICODE_TEXT('c')</code> as well as
+<code>WINE_UNICODE_TEXT("string")</code>. I agree that it's a bit ugly
+but I had to do it because that's what they do with
+<code>OLESTR</code> in the MFC! In C I believe you will have warnings 
+(but at least it will compile and do the right thing). You might want to
+have two macros instead.</li>
+      <li>it will do the right thing when you switch to g++ 2.97,
+i.e. it will become <code>L##x</code></li>
+</ul></li>
+</ul>
+
+<p />
+
+Jon went further and was upset with the use of
+<code>-fshort-wchar</code> flag in combination with standard gcc libc:
+
+<quote who="Jonathonm Griffiths">
+Actually, having said that, have you tested
+<code>-fshort-wchar</code>? does it require  libc to be rebuilt? or
+just to build with a different set of headers (i.e. lib funcs still
+cannot be used)? My assumption is that it just changes the behavior
+of <code>L"foo"</code>, and doesn't address the crt issues at all.
+</quote>
+
+
+<p />
+
+Francois replied:
+<quote who="Francois Gouget">
+That's right, it does not address the crt issues at all. Actually it
+helps a little in that you can use the standard C library headers
+(e.g. to get wcslen) and then link with crtdll or msvcrt. 
+
+<p />
+
+But the libc C still expects 4byte Unicode chars and I don't expect
+this to change anytime soon. It would require two implementations of
+each Unicode function which means two versions of the library. 
+</quote>
+
+
+<p />
+
+Jon continued with:<quote who=""> I think this sounds the end of
+the idea of the 3 crt scenarios (ms/libc/mixed) that were discussed
+before, for all but the most trivial apps. What is left is ms and
+mixed, where mixed still uses modified headers but uses the ignore
+directive in the apps .spec file to link to the libc implementation
+where desired (and where not already specified in msvcrt.spec).
+</quote>
+
+<p />
+
+For more details on the matter, you can look at old articles: 
+(<kcref issuenum="67" sectionnum="3">issue 67</kcref>, 
+<kcref issuenum="38" sectionnum="0">issue 38</kcref>, 
+<kcref issuenum="16" sectionnum="2">issue 16</kcref>)
+
+<p />
+
+Francois was less pessimistic, at least on the impact of this Unicode
+matter:<quote who="Francois Gouget"> I think that there are many Windows
+applications that don't really care about Unicode. These should not
+have too much trouble with the native C headers.</quote>
+
+<p />
+
+Anyway, the final scenarios for MSVCRT are still open, but, with time
+going by, it seems the number of options is decreasing and the full
+native header might be the final solution (just a feeling that might
+start growing).</section>
+
+
+<section 
+  title="DirectDraw reorganization (cont'd) "
+  subject="Reenable DXGrab"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0145.html"
+  posts="6"
+  startdate="16 Jan 2001 00:00:00 -0800"
+  enddate="17 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Continuing after last week article (<kcref issuenum="78" sectionnum="0">see
+here</kcref>), Ove Kaaven got a look at the DDK for the DirectDraw/3D 
+interfaces:
+<quote who="Ove Kaaven">
+It seems that whoever designed DirectDraw/3D weren't the same guys
+that designed DirectSound. There isn't exactly a COM interface, rather
+the HAL interface is a range of C structures and callbacks (although
+GUIDs and vtables seem to be referenced here and there).</quote>
+
+
+<p />
+
+(As a reminder, the DirectSound driver interface is in fact another
+COM object. Here, the interface is merely a couple of C structures
+with function pointers).
+
+<p />
+
+Alexandre Julliard reiterated his approach on adding/deriving
+Microsoft interfaces in Wine: 
+<quote who="Alexandre Julliard">
+If the interface is reasonably sane (at least by Microsoft standards,
+so it's not a strong constraint ;-) and it allows doing everything we
+need, then yes, it's better to use an existing interface than defining
+our own.  OTOH if we need to add our own private interface on top of
+this one then it's probably not worth the trouble.</quote>
+
+
+<p />
+
+Ove felt like 99% of the job can be done with the standard interface,
+but 1% would require Wine specific flags.
+
+<p />
+
+Alexandre went on:
+<quote who="Alexandre Julliard">
+A few extra flags are not really a problem, there are some precedents
+already (like the Wine-specific WS_EX_* window style bits). This
+should of course be avoided as much as possible, but as long as the
+basic meaning of the interface is preserved, adding a few small
+extensions is acceptable.</quote>
+
+
+<p />
+
+This should now be the end of the thread.</section>
+
+
+<section 
+  title="WebBrowser DLLs (cont'd)"
+  subject="Initial stubbing of shdocvw.dll (IWebBrowser)"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0180.html"
+  posts="1"
+  startdate="17 Jan 2001 00:00:00 -0800"
+  enddate="17 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Yoram (Yoz) Grahame, while reading last week issue, posted a follow up 
+on <kcref issuenum="78" sectionnum="1">article</kcref> regarding the COM
+object for web browsing:<quote who="Yoram Grahame">
+Just saw the bit in WWN about Mozilla and IWebBrowser, and thought I'd 
+better tell you guys that a lot of this work's been done already: 
+<a href="http://www.iol.ie/~locka/mozilla/mozilla.htm">
+http://www.iol.ie/~locka/mozilla/mozilla.htm</a>
+</quote></section>
+
+
+<section 
+  title="Documentation access"
+  subject="documentation patch"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0277.html"
+  posts="13"
+  startdate="18 Jan 2001 00:00:00 -0800"
+  enddate="21 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+After a patch was submitted to update the .sgml contents in the
+documentation directory, Uwe Bonnes started complaining:
+
+<quote who="Uwe Bonnes">our development package now doesn't contain any
+more readable formatted files in <code>documentation</code>. So it
+gets harder to point posters in c.e.m.w to those files...
+
+<p />
+
+What about adding a directory with formatted documentation? This would 
+require Alexandre to run a make in the <code>documentation</code>
+directory after patches to the documentation as a run with autoconf is
+needed if configure.in was patched.
+
+<p />
+
+If that isn't acceptable, there should be another place where
+up-to-date readable versions of our documentation files can be found
+</quote>
+
+
+<p />
+
+Jeremy White explained how to build the documentation (at least in
+HTML), but setting up the XSL/XSLT tools for the DocBook conversion
+always has been a hard thing to do and remains a hurdle, even for
+regular developers.
+
+<p />
+
+John R Sheets started providing a conditional make to test for the
+presence of doc-book tools, but Alexandre Julliard has a more radical
+opinion:<quote who="Alexandre Julliard">
+The doc is not built by default, so there is no point in making it
+conditional. People who don't have the docbook tools simply shouldn't
+run 'make' in the doc directory. </quote>
+
+<p />
+
+Alexandre also explained that all the documentation versions generated 
+from DocBook (including text and HTML) were available:<quote who="Alexandre Julliard">
+Only it's in separate tar files because I don't want to force
+everybody to download the doc in 4 different formats if they don't
+need it. If someone can download the source package, they can also
+probably figure out how to download the doc package that sits in the
+same directory (we probably should mention this in the README though,
+patches welcome).</quote>
+
+<p />
+
+Anyway, the documentation can also be browsed on-line at 
+<a href="http://www.winehq.org/documentation">http://www.winehq.org/documentation</a>
+
+<p />
+
+</section>
+
+
+<section 
+  title="Wine logo"
+  subject="Proposed New Wine Logo"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0284.html"
+  posts="4"
+  startdate="18 Jan 2001 00:00:00 -0800"
+  enddate="18 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Jeremy Newman announced: <quote who="Jeremy Newman">I have placed a revised logo
+Design at <a href="http://www.winehq.org/logo/">
+http://www.winehq.org/logo/</a>, and asked for some feedback.</quote>
+
+<p />
+
+Marcus Meissner found the foot of the glass too thick, but Jeremy was
+also concerned by the look when the image is reduced to a 48x48 xpm,
+and sticked to his idea. 
+
+<p />
+
+Jeremy proposed, after all comments are made (and taken into account)
+to update the website accordingly. He also proposed to have a
+consistent spelling of Wine across the Web site to be 'Wine' (and not 
+'WINE' or 'wine').
+</section>
+
+</kc>

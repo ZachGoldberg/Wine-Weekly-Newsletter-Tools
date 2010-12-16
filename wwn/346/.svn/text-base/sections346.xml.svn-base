@@ -1,0 +1,677 @@
+
+<section 
+	title="News: Wine 0.9.60, Some cool Wine Videos, "
+	subject="News"
+	archive="#"
+	posts="0"
+>
+<topic>News</topic>
+<p>
+<b>Weekly Winetricks updates:</b>
+</p>
+<quote>
+<p>
+r40<br />
+Update to latest mono<br />
+Remove mono11 and mono12 verbs, replace with mono19<br />
+Abort properly on network errors<br />
+<br />
+r39<br />
+Updated xvid<br />
+<br />
+r38<br />
+Switch to listing simpler synonyms for changing windows version<br />
+Correct description of volnum verb (it's still needed)
+<br />
+<br />
+r37<br />
+Fix typo in sha1sum check that caused it to be ignored!
+<br />
+Update sha1sum for flash player (see comment for URL about the update)
+<br />
+<br />
+r36<br />
+Much better error reporting for gui users.
+<br />
+<br />
+r35<br />
+Add wmp10 and windows media codecs
+<br />
+<br />
+r34<br />
+Add Windows Media Player 9 (not really usable yet; this is for the guys implementing Quartz etc.)
+<br />
+<br />
+r33<br />
+Fixed typo that disabled curl.
+<br />
+<br />
+r32<br />
+Three improvements from Paul Drain:<br />
+1) better error handling options for wget<br />
+2) add the rest of ms core fonts<br />
+3) specify (currently) known good sourceforge mirrors for some files<br />
+<br />
+As always, get it at<br />
+<a href="http://kegel.com/wine/winetricks">http://kegel.com/wine/winetricks</a><br />
+or<br />
+<a href="http://code.google.com/p/winezeug">http://code.google.com/p/winezeug</a><br />
+<br />
+</p>
+</quote>
+<p>
+<b>Random News</b>
+</p>
+<p>
+Linux Magazine Online has an interesting <a href="http://www.linux-magazine.com/online/news/summer_wine_version_1_0_announced_for_june">article</a> about the upcoming Wine 1.0.  Expect more of these to crop up as the big day comes closer!
+</p>
+
+<p>
+Turns out that youtube has some pretty good videos of some cool stuff Wine can do now a days:
+</p>
+<p>
+<ul>
+<li>
+<a href="http://www.youtube.com/watch?v=CYY-g6ionzM">Starcraft + Touchscreen</a>
+</li>
+<li>
+<a href="http://www.youtube.com/watch?v=zwdtB8k9VuI">Trackmania Nations Forever on 0.9.60</a>
+</li>
+</ul>
+</p>
+
+<p>
+<b>Wine Updates</b><br /><br />
+We missed wine 0.9.59 last week, and 0.9.60 came out this week.  The release notes from both:
+</p>
+<quote>
+<pre>
+Wine 0.9.60 was released today, with the following main changes:
+
+    * Better support for Windows IMEs.
+    * Option for Windows-style window decorations.
+    * Improved system tray behavior.
+    * Window management fixes.
+    * Improved quartz audio support.
+    * Better support for launching apps from Unix file managers.
+    * Lots of bug fixes.
+
+</pre>
+<pre>
+Wine 0.9.59 was released today, with the following main changes:
+
+    * Improved support for the .NET framework.
+    * Better services handling through a separate services.exe process.
+    * Support for ATI fragment shader.
+    * Better support for http proxies.
+    * Window management fixes.
+    * Pre-compiled fonts are now available in the source tree.
+    * Lots of bug fixes.
+</pre>
+</quote></section>
+<section 
+	title="WWN Wine 1.0 Interview Series Part 1, Dan Kegel"
+	subject="Wine 1.0"
+	archive="#"
+	posts="0"
+>
+<topic>Wine 1.0</topic>
+<p>
+<i>Brian Vincent and I have been conspiring to bring the Wine community some insights from some of the more well known and established members of the Wine Development community!  We're going to try and have at least one interview posted each week up until the 1.0 release!  We asked our targets the same set of 10 questions designed to try and get at some of their key thought processes and we present to you their responses each week.
+</i>
+</p>
+<p>
+<b>Introduction</b>
+</p>
+<p>
+This week we bring you insights from a Google employee who is at the core of the moving and shaking behind Wine.  He helped port Picasa to Linux, is the Wine 1.0 release manager, constantly patrols Wine-Users and the Wine-Devel mailing lists, watches daily valgrind runs and does regular regression-testing is the overall expert and awesome dude: Dan Kegel.
+</p>
+<p>
+<b>Interview:
+</b>
+</p>
+<p>
+1.  It's been a pretty long road to 1.0.  Do you think Wine should
+have tried to have a release based on any of the older versions over
+the years?  If so, at what point or points do you think Wine should
+have tried to have a release?  Why?  Do you think the actual 1.0
+release is at an appropriate time?
+</p>
+<quote who="DanKegel">
+<p>
+We had a 0.8 release and an 0.9 release; they had the desired effect
+of attracting more users, while not overpromising.   I think this is
+a pretty good time for 1.0, actually.   The question is rather, what will
+our policy be for future releases?  The Linux kernel is probably the
+most similar project out there, and they do a release every three
+or four months.  I'd like to see a wine-1.2.0 release in time for the
+Ubuntu 8.10.  Judging by https://wiki.ubuntu.com/GutsyReleaseSchedule
+and <a href="http://live.gnome.org/TwoPointTwentythree,">http://live.gnome.org/TwoPointTwentythree,</a> 
+that means wine-1.2.0
+in late August '08.   That would mean we'd be out of the 1.0 code
+freeze for only 6 weeks before the code freeze for 1.2, which is crazy fast.
+So maybe not this time around (unless some absolutely amazingly
+cool features land during those six weeks).
+</p>
+</quote>
+<p>
+2.  What highlights do you think we should point out about 1.0?  I
+mean, now that we're here, shouldn't we be standing on the rooftops
+shouting, "We can do [this]!".  What is [this]?  If someone wanted to
+go take Wine for a spin, are there any Windows programs out there
+you'd recommend they try out?  There's still a ton of Windows apps
+with no comparable Linux version, are there any in particular you find
+useful that you'd suggest someone try?
+</p>
+<quote who="DanKegel">
+<p>
+We should be shouting "Try your Photoshop CS2 plugins!  Try Dreamweaver 8!
+Try your organization's mission-critical apps!  Report any problems you find!"
+</p>
+</quote>
+<p>
+3a.  Looking ahead, what technical changes do you see Wine needing?
+Are there any large patch sets that are already sitting out there that
+haven't been merged because of the code freeze?
+</p>
+<quote who="DanKegel">
+<p>
+The big ones I can think of are the DIB Engine (an idea which has been
+percolating for ages) and .net support.  Oh, and the Javascript support
+needed to install Photoshop CS3.  Longer term, I'd like to see the
+user-mode WDM driver framework supported.
+</p>
+</quote>
+<p>
+3b. We've had a few different groups driving Wine development for a Wine,
+namely Google and CodeWeavers.  What do you guys have planned for
+areas of focus? Over the years we've seen quite a few large changes that
+have moved Wine in very different directions - for example, D3D8
+development really ushered in a new era of gaming support for Wine,
+the port to OS X has really opened the door on portability, is there
+anything like that on the horizon?  Do you ever think someone will have
+ntoskrnl loading Windows drivers or hooking into the kernel or something
+like that?
+<br />
+<br />
+Long term, we'll probably find that we have to follow
+Windows' example and implement application-specific behavior
+to get key apps working perfectly without breaking other apps.
+Ugly, but true.
+</p>
+<quote who="DanKegel">
+<p>
+No idea; I imagine we'll just keep pushing on whatever mainstream apps
+we think are the current low-hanging fruit.
+</p>
+</quote>
+<p>
+4.  What don't we want to do?  What technical things shouldn't we
+worry about?  Are there any parts of Windows that aren't worth trying
+to support?  For example, Win31 support hangs on tenuously at this
+point, is there ever a point where it's not worth supporting?  Or does
+Wine fill a valuable role in that it allows legacy applications to be
+usable?
+</p>
+<quote who="DanKegel">
+<p>
+You'd be surprised how many people complain when we break windows 3.1!
+Turns out a lot of old apps use a little bit of win 3.1, especially installers.
+I do think we'll want to revive the DOS support and improve Win 3.1 support
+sometime.   We'll probably never do real VxD support, nor arbitrary drivers.
+</p>
+</quote>
+<p>
+5.  Is Wine too ambitious?  Are we trying to tackle something too big?
+Will there ever be a point where the
+complexity of the project combined with the regression rate isn't
+manageable by the size of our developer community?  At one point about
+a decade ago it seemed like Microsoft was releasing new technologies
+and new API's every week.  Things seemed to have really slowed down,
+but do you think that that trend will continue? Do you think we'll be able
+to keep up with future APIs with Vista, Windows 7 etc?
+</p>
+<quote who="DanKegel">
+<p>
+At one point, Wine was a crazy project.  It's not crazy anymore.
+<br /><br />
+One thing in our favor is that victory is easier for underdogs in a way;
+we only need to make a relatively small percentage of the user base
+happy to significantly change the status quo.
+</p>
+</quote>
+
+<p>
+6a.  If you could wave your magic wand and change one thing about
+Wine, what would it be?
+<quote who="DanKegel">
+<p>
+We'd have a big automated application regression test suite.
+</p>
+</quote>
+6b.  If you could wave your magic wand and change one thing about
+Linux [or OS X], what would it be?
+<quote who="DanKegel">
+<p>
+I'd improve disk storage.  For instance, I'd make LVM snapshots more
+space-efficient.  (Actually, I *am* doing that; see <a href="http://zumastor.org.)">http://zumastor.org</a>.)
+Also, right now, if you put your whole system on an LVM volume,
+it's hard to read your disks without actually booting the system
+from them; I'd fix that.  (Maybe Dan Phillips will fix that, it's certainly
+on his mind.)  And I'd get rid of the need for init ramdisks...
+</p>
+</quote>
+6c.  If you could wave your magic wand and change one thing about
+Windows, what would it be?
+</p>
+<quote who="DanKegel">
+<p>
+It looks like Microsoft's strategy is increasingly to merge apps with Windows,
+which is clearly anticompetitive.  I think the EU should follow the original
+antitrust judge's verdict, and order Microsoft to break itself up into
+separate companies for Windows and for applications, prohibit the
+Windows spinoff from offering any apps, and prohibit the apps spinoff
+from using any Windows source code or undocumented interfaces.
+</p>
+</quote>
+<p>
+7.  Now that Wine has hit 1.0, do you think the major distros will
+bundle Wine?  If not, why?  Are they scared of lawsuits?  If so,
+should they be?
+</p>
+<quote who="DanKegel">
+<p>
+They already bundle Wine, don't they?   Hmm,
+<a href="http://distrowatch.com/table.php?distribution=redhat">http://distrowatch.com/table.php?distribution=redhat</a>doesn't say.
+Somebody get distrowatch to track wine, please :-)
+Anyway, yes, all distros should bundle Wine.  I don't know
+of any legal problems; if Microsoft wanted to shut us down,
+they should have done so years ago.
+</p>
+</quote>
+<p>
+8.  We should ask this only because there's no better way to incite
+violence than to start a flamewar on licensing, but do you see any
+need to switch to LGPL3?  Most developers seem to be pretty happy with
+version 2.  Then again, most people seemed happy with the X11 license
+before we rather quickly changed our minds.  Is there anything within
+the LGPL3 license that would particularly be a problem for Wine?
+</p>
+<quote who="DanKegel">
+<p>
+Not yet.   It's a fine license, but relicensing is hard.
+</p>
+</quote>
+<p>
+9.  With 1.0 out, do you see the need for any process changes?  Will
+patches still enter the Wine tree the way they have been?  Do you
+think anything will change after 1.0 with regards to development
+style?
+</p>
+<quote who="DanKegel">
+<p>
+
+As I said above, I'd like to see Wine get into a four-release-a-year cycle,
+where releases are relatively painless operations.  I think that's going
+to require that automated application regression test suite, though.
+<br /><br />
+I think we have some work pending with the SFLC that needs to
+get done, too.
+</p>
+</quote>
+<p>
+10.  If we could magically add all the developers in the world
+and have a Wine 2.0 this time next year, what would you want
+to be included?
+</p>
+<quote who="DanKegel">
+<p>
+Full support for the top twenty apps requested by Linux users!
+</p>
+</quote></section>
+<section 
+	title="Jeremy White interview on LWN"
+	subject="Wine History"
+	archive="http://www.networkworld.com/community/node/26915"
+	posts="0"
+>
+<topic>Wine History</topic>
+
+<p>
+Interviews abound this week!  This one is not part of the actual WWN 1.0 series, but is of course still interesting nonetheless.  Jeremy White has some coverage of the story of wine as "the underdog".  See <a href="http://lwn.net/Articles/278115/rss">http://lwn.net/Articles/278115/rss</a> which links to<a href="http://www.networkworld.com/community/node/26915.">http://www.networkworld.com/community/node/26915.</a>
+</p>
+<quote>
+<p>
+"We are completely rewriting the Windows operating system from the ground up," he says. "Basically we took Microsoft's crown jewel, that they've had billions of dollars to develop using tens of thousands of developers, and we, the open source community, have essentially re-implemented that. We are the scrappy underdogs. Here's where the Hollywood music comes up."
+</p>
+</quote></section>
+<section 
+	title="IMM / IME work"
+	subject="IMM / IME"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-April/064872.html"
+	posts="3"
+>
+<topic>IMM / IME</topic>
+<p>
+Aric Stewart has been hard at work with IMM / IME support.  He has reached a major milestone and has written in with a progress report:
+</p>
+<quote>
+<p>Hello all,
+</p>
+<p>
+  I know this will only interest a small portion of you but thought i
+would give a quick update on the state of IMM32 since I have brought it
+to a major milestone.
+</p>
+<p>
+  All the main patches are in which now separate IMM32 and IMEs. There
+is still more work to do but the major framework is in place. X11 XIM
+processing should be unchanged. However wine can now begin to  load
+native windows IMEs as well.
+</p>
+<p>
+ I have tested with windows ATOK20 (a popular Japanese IME) and
+successfully had text processing in a fully IME aware application. There
+are still clear issues to resolve in many aspects of this processing but
+we have forward progress.
+</p>
+<p>
+ ImmInstallIME does not work yet, nor does switching keyboards.  So to
+get the native IME to work you need to add this registry key.
+</p>
+<p>
+System\CurrentControlSet\Control\Keyboard Layouts\'keyboard layout'
+->"Ime File"='IME filename'
+</p>
+<p>
+so for example for ATOK20 in Japanese i used.
+</p>
+<p>
+System\\CurrentControlSet\\Control\\Keyboard Layouts\\e0010411
+->"Ime File"="ATOK20W.IME"
+</p>
+<p>
+I would love to hear how well things work.  I am sure using native IMEs
+will quickly show us many places where IMM32 needs to be improved.
+</p>
+<p>
+One issues I am going to investigate next is that sometimes non x11drv
+ime initialization, if occurring too early, causes x11drv to fail to
+create windows.  I have not investigated with the latest changes to
+xim.c  (which may already correct this problem) but if you see this
+problem this patch may help and i believe the
+IME_UpdateAssociation(NULL) is already unneeded.
+
+</p>
+<p>
+thanks,<br />
+-aric
+</p>
+</quote></section>
+<section 
+	title="UXTheme work (Speedup)"
+	subject="UXTheme"
+	archive="http://www.winehq.org/pipermail/wine-patches/2008-April/053692.html"
+	posts="4"
+>
+<topic>UXTheme</topic>
+<p>
+Alex Villac&#236;s Lasso recently submitted an interesting patch which has some consequences for everyday users.  He mentions a specific speedup which should be noticeable for most everybody.
+</p>
+<quote>
+<p>
+I was very annoyed with the slowness of the theme engine in the listbox case (as used by builtin regedit). I tracked down the source of the slowdown to a iteration in UXTHEME_SizedBlt() that repeatedly calls UXTHEME_Blt() in order to cover the required area. The attached patch replaces this with an iteration over a memory bitmap that is then used by UXTHEME_Blt() in a single call. All tests still pass. Results in noticeable speedup in the painting of the listview header in regedit and the two uses in winecfg.
+</p><p>
+Changelog:
+* Speed up UXTHEME_SizedBlt in the ST_TILE by building an appropriately-sized memory bitmap out of the tile instead of iterating with UXTHEME_Blt() directly.
+</p>
+</quote></section>
+<section 
+	title="XDC Updates for Wine"
+	subject="X11 Support"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-April/065016.html"
+	posts="4"
+>
+<topic>X11 Support</topic>
+<p>
+Stefan D&#246;singer took a trip to XDC (X Developers' Conference) with a few questions for X people from Wine.  On his todo list included issues about relative mouse movements, tablet support, DRI2 and more.  His research and information follows:
+</p>
+<quote>
+<p>
+Hi,
+</p><p>
+Here's a short summary of the wine-related things that were going on on XDC:
+</p><p>
+-> Mouse input: Daniel Stone will take care of that. He says DGA would give us
+what we want, but recommends not to use it. He is working on extending
+XInput(or making a new XI2) which can report relative mouse movements. The X
+people want to phase out DGA. Some games use it for relative input, so
+they'll make a DGA emulation layered on the new XInput stuff. He will need
+debugging / testing help from us since Wine will most likely be the only App
+making use of that directly. Also we should not hold our breath, he has some
+other items on his TODO list, but the end of 2008 is a plausible ETA.
+</p><p>
+-> Tablets: Config issue is known and being worked on
+</p><p>
+-> Graphics, general: The Mesa and ATI people are willing to help out with our
+issues. I talked to Aaron Plattner and Pierre ? from Nvidia, and
+they know the issues and worked on some extensions for that internally some
+time ago, but then decided that they're not going to implement that for some
+reason they didn't tell me(I hope they re-consider that now that someone is
+asking for it though). The ATI guys warned me that it might take a while
+until any new extensions are available in production drivers, but that's
+something we have to put up with I guess. Also both the ATI and Mesa people
+like the idea of using our conformance tests for their driver testing and
+debugging. The Nvidia guys offered help with the multithreading crashes and
+the 32 vs 40 varying issue.<br />
+(I also talked to Ben Byer from Apple, but he's not in charge of the graphics
+drivers)
+</p><p>
+-> Graphics: Flat shading: Picking that as a first case for working on an
+extension. Should be fairly easy to implement in Mesa since all cards have a
+specific register for exactly that issue.
+</p><p>
+-> Graphics, multithreading: general agreement that what we are doing is
+correct, and driver bugs need fixing. It looks like the crash in fglrx will be
+fixed soon(my test app worked in Matthew's development driver). For the
+Nvidia issues I'll file a bugreport as soon as I know if the glxSwapBuffers
+crash is a driver or Gentoo bug)
+</p><p>
+-> Graphics, sRGB blending: Everyone believes me that our emulation is
+slow("pow() - uh oh, don't use that, that's not parallelizeable"[Keith
+Packard]). The nvidia people are aware of the issue, but a fix is also
+unlikely. The ATI people aren't sure if their dx9 hardware supports sRGB
+writing, maybe the windows driver is emulating things as well - have to check
+</p><p>
+-> Graphics, GLSL issues: MOVA and LIT, possibly extensions for that.
+</p><p>
+-> Graphics, Hacks: Both the ATI and Nvidia developers warned me that their
+Windows drivers have a huge per-application bug workaround database. Aaron
+was pretty impressed that Wine doesn't have any app-specific hacks. I am
+afraid we will need them, as some apps seem to expect different behavior that
+our d3d9 tests get. I think the best way is to fetch some information about
+the Windows driver hacks and write tests which trigger them to show
+that "hl2.exe" gets different driver behavior than "d3d9_test.exe"(or in
+whatever way things work)
+</p>
+</quote></section>
+<section 
+	title="Improving Missing DLL errors"
+	subject="Usability"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-April/065123.html"
+	posts="5"
+>
+<topic>Usability</topic>
+<p>
+Steven Edwards wrote in with a great idea for 1.0 to help users solve the problem of missing DLLs.  The idea is to display a GUI notification that the DLL is missing and perhaps some information on how to rectify the issue.
+</p>
+<quote>
+<p>
+Hi,
+My hope that was for Wine 1.0 we could add error handling for missing
+dlls and functions that made sense to the user rather than just silent
+failed or spewed messages to the console. If you have an application
+that depends on a dll such as OUTLOOK.EXE depending on OUTLIB.DLL you
+will get a message like this:
+</p><p>
+err:module:import_dll Library OUTLLIB.dll (which is needed by
+L"Z:\\home\\sedwards\\.wine\\drive_c\\Program Files\\Microsoft
+Office\\OFFICE11\\OUTLOOK.EXE") not found<br />
+err:module:LdrInitializeThunk Main exe initialization for
+L"Z:\\home\\sedwards\\.wine\\drive_c\\Program Files\\Microsoft
+Office\\OFFICE11\\OUTLOOK.EXE" failed, status c0000135
+</p><p>
+So instead how about throwing a nice message box? I started working on
+this but don't quite know how to properly pass the information to the
+MessageBoxW or maybe fill in the MessageBoxIndirect structure to
+display the error in a human readable format. I just don't really
+know. Of course once its done this would need to be broken out in to a
+helper function, its just a proof of concept....
+</p><p>
+Anyone want to help?
+</p>
+</quote>
+<p>
+ Steven Edwards and Dan Kegel then wrote a few messages about how best to go about showing this message.  Some ideas were to go through explorer.exe, to 'cheese' it by forking an xmessage, or just to be more direct.  Alexandre Juillard then wrote in with his thoughts:
+</p>
+<quote>
+<p>
+You certainly don't want to call through explorer for that, showing a
+message box directly is fine. You have to be careful to only do it when
+loading the main exe, not for any random dll load; also you have to
+properly handle the case of a missing X display.
+</p></quote>
+<p>
+Austin English also presents the idea of linking to the wiki:
+</p>
+<quote>
+<p>
+A link to a wiki page (http://wiki.winehq/MissingDLL ?) with list of
+common dlls/where they come from/what they do/how to use winetricks/etc.)
+would be a bit easier/quicker to implement.
+</p>
+</quote>
+<p>
+Steven Edwards got back within a day or two with a patch which is undergoing review; we should hopefully see this implemented in the near future!
+</p>
+</section>
+<section 
+	title="GSoC 2008 Projects Announced!"
+	subject="GSoC"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-April/065074.html"
+	posts="4"
+>
+<topic>GSoC</topic>
+<p>
+Austin English wrote in with an update on the SoC projects which were accepted:
+</p>
+<quote>
+<p>
+For those of you who haven't heard yet, the Google SOC Projects were announced today:
+<a href="http://google-opensource.blogspot.com/2008/04/announcing-accepted-student-proposals.html">http://google-opensource.blogspot.com/2008/04/announcing-accepted-student-proposals.html</a>
+</p><p>
+6 Wine projects have been accepted:
+<a href="http://code.google.com/soc/2008/wine/about.html">http://code.google.com/soc/2008/wine/about.html</a>
+</p><p>
+Improving Wine MSXML implementation<br />
+by Piotr Caban, mentored by James Hawkins<br />
+<br />
+Print Dialog<br />
+by Gal Topper, mentored by Detlef Riekenberg<br />
+<br />
+Implementing proper Control Panel support for Wine<br />
+by Owen Rudge, mentored by Juan Lang<br />
+<br />
+DirectPlay implementation<br />
+by Ismael Barros Barros, mentored by Kai Blin<br />
+<br />
+Wine - Richedit with Tables<br />
+by Dylan Andrew Harper Smith, mentored by Huw D M Davies<br />
+<br />
+Improve Gdi+ Implemenation<br />
+by Adam Joel Petaccia, mentored by Lei Zhang<br />
+<br />
+Thanks to all those who applied and congrats to those who were accepted!<br />
+<br />
+Now get hacking ;-).
+</p></quote>
+<p>
+Some of the students responded in with updates about themselves:
+</p>
+<p>
+Owen Rudge:
+</p>
+<quote>
+<p>
+Hello all. :-) I already introduced myself a while ago when I was writing my
+proposal, and I'm very pleased to see that it was accepted! I'm a 3rd year
+comp sci student at the University of St Andrews in sunny(!) Scotland.
+Looking forward to getting to work on Wine, although I've got exams and a
+junior honours project to get finished first, alas! I've got various ideas
+floating around my head and have figured out how I think I'm going to start
+tackling the project, so hopefully I'll be all ready to go when exams are
+out of the way.
+Cheers,
+</p>
+</quote>
+<p>
+Gal Topper
+</p>
+<quote>
+<p>
+Hello everyone. My name is Gal Topper and my goal this summer will be
+to implement PrintDlgEx* in Wine, so that we'll have support for the
+newer and more flexible print dialog that was introduced in Windows
+NT. I am a third year computer science student in York University in
+Toronto, Canada, and lucky for me, my exams are over! So for now, I
+can enjoy both the project and the spring. :)
+<br /><br />
+I'm excited about this project and plan to keep you all up-to-date
+when things start moving. :)
+<br />
+Cheers,
+Gal
+</p>
+</quote>
+<p>
+Ismael Barros:
+</p>
+<quote>
+<p>
+Hi there
+<br /><br />
+I'm from Spain and I'm supposed to hack DirectPlay support up until
+wine can fully run at least GTA2 multiplayer out of the box, but I
+hope to have time enough to give some love to other dplay games. I'll
+try not to have too much fun in the testing phases, I promise :)
+<br /><br />
+I still have to get some exams done before embracing the sleepless
+nights of passionate coding (and/or swearing against msdn), but things
+are going faster than expected and I hopefully will be free of urgent
+duties in two or three weeks.
+<br /><br />
+Hope not to break anything<br />
+Over and out<br />
+  Ismael
+</p>
+</quote>
+<p>
+Adam Petaccia
+</p>
+<quote>
+<p>
+Hello Wine world, my name is Adam Petaccia, and this summer I will be
+working on Wine's GDI+ implementation, so more applications can work
+"out of the box". I am currently a student at the University of North
+Carolina, Greensboro (US), and look forward to getting to coding, once
+I'm done with those pesky exams.
+</p><p>
+Its exciting to see how far Wine has come (I remember running Starcraft
+as root with nice -20 just so that the game could be somwhat playable --
+thank [deity] we don't have to do that now) and I look forward to making
+Wine even greater.
+</p>
+</quote>
+<p>
+There are two other students (Dylan Andrew Harper Smith, Piotr Caban) who have yet to respond to this post with introductions, hopefully they will for next week's issue!
+</p></section>

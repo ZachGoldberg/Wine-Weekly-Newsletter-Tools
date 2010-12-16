@@ -1,0 +1,656 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="112" date="01/05/2002" />
+
+<intro>
+<p>
+This is the 112th release of the Wine's kernel cousin publication. Its main 
+goal is to distribute widely what's going on around Wine (the Un*x Windows 
+emulator). </p>
+
+<p>It's been a little while since we've seen a development release,
+so it shouldn't come as a surprise Alexandre released one.  In
+the 20011226 release we have these changes announced:
+<ul>
+	<li> Many improvements to audio support.</li>
+	<li> Lots of new actions in SystemParametersInfo.</li>
+	<li> New console based on Win32 window instead of xterm.</li>
+	<li> Server protocol redesigned.</li>
+	<li> More shlwapi improvements.</li>
+	<li> Lots of bug fixes.</li>
+</ul></p>
+
+</intro>
+
+<stats posts="211" size="794" contrib="51" multiples="29" lastweek="23">
+<person posts="24" size="88" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="21" size="141" who="Andriy Palamarchuk &lt;apa3a@yahoo.com&gt;" />
+<person posts="21" size="84" who="Andreas Mohr &lt;andi@rhlx01.fht-esslingen.de&gt;" />
+<person posts="18" size="72" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="9" size="22" who="Dan Kegel &lt;dank@kegel.com&gt;" />
+<person posts="8" size="23" who="Robert Baruch &lt;autophile@starband.net&gt;" />
+<person posts="8" size="21" who="Chris Green &lt;chris_e_green@yahoo.com&gt;" />
+<person posts="7" size="48" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+<person posts="7" size="33" who="Martin Wilck &lt;Martin.Wilck@fujitsu-siemens.com&gt;" />
+<person posts="7" size="14" who="Bill Medland &lt;medbi01_1@accpac.com&gt;" />
+<person posts="6" size="21" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="6" size="15" who="Laurent Pinchart &lt;laurent.pinchart@skynet.be&gt;" />
+<person posts="5" size="17" who="David Elliott &lt;dfe@tgwbd.org&gt;" />
+<person posts="5" size="13" who="Mike McCormack  &lt;mike_mccormack@start.com.au&gt;" />
+<person posts="4" size="10" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="3" size="14" who="Sander van Leeuwen &lt;sandervl@xs4all.nl&gt;" />
+<person posts="3" size="13" who="Robert Lunnon &lt;bobNoSpaM@yarrabee.net.au&gt;" />
+<person posts="3" size="10" who="=Sylvain Petreolle &lt;spetreolle@yahoo.fr&gt;" />
+<person posts="3" size="8" who="ccrayne@crayne.org" />
+<person posts="3" size="6" who="Rein Klazes &lt;rklazes@xs4all.nl&gt;" />
+<person posts="2" size="13" who="Michael Stefaniuc &lt;mstefani@redhat.de&gt;" />
+<person posts="2" size="6" who="Geoff Thorpe &lt;geoff@geoffthorpe.net&gt;" />
+<person posts="2" size="6" who="lawson_whitney@juno.com" />
+<person posts="2" size="4" who="J.Brown (Ender/Amigo) &lt;ender@enderboi.com&gt;" />
+<person posts="2" size="4" who="Hetz Ben Hamo &lt;hetz@kde.org&gt;" />
+<person posts="2" size="4" who="Daniel Sabo &lt;sorry@nospam.com&gt;" />
+<person posts="2" size="3" who="Ben Stanley &lt;bds02@uow.edu.au&gt;" />
+<person posts="2" size="3" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="2" size="3" who="gleb@nbase.co.il (Gleb Natapov)" />
+<person posts="1" size="4" who="James A Sutherland &lt;james@sutherland.net&gt;" />
+<person posts="1" size="4" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="1" size="4" who="Gavriel State &lt;gav@transgaming.com&gt;" />
+<person posts="1" size="3" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="1" size="3" who="Robert Jonsson &lt;robert.jonsson@dataductus.se&gt;" />
+<person posts="1" size="3" who="David Welch &lt;welch@cwcom.net&gt;" />
+<person posts="1" size="3" who="Gerard Patel &lt;gerard.patel@nerim.net&gt;" />
+<person posts="1" size="3" who="Matts Kivik &lt;kivik@firstlinux.net&gt;" />
+<person posts="1" size="3" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+<person posts="1" size="2" who="Derek J Witt &lt;cappicard@flinthills.com&gt;" />
+<person posts="1" size="2" who="Dax Kelson &lt;dax@gurulabs.com&gt;" />
+<person posts="1" size="2" who="Joerg Mayer &lt;jmayer@loplof.de&gt;" />
+<person posts="1" size="2" who="Roger Fujii &lt;rmf@lookhere.com&gt;" />
+<person posts="1" size="2" who="Jon Griffiths &lt;jon_p_griffiths@yahoo.com&gt;" />
+<person posts="1" size="2" who="Jan Dvorak &lt;johnydog@go.cz&gt;" />
+<person posts="1" size="2" who="lee &lt;lee@imyourhandiman.com&gt;" />
+<person posts="1" size="2" who="James Juran &lt;jamesjuran@alumni.psu.edu&gt;" />
+<person posts="1" size="2" who="dfd &lt;spiritwind@c1347127-a.bllvu1.wa.home.com&gt;" />
+<person posts="1" size="2" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="1" size="1" who="James Tabor &lt;jimtabor@adsl-64-217-116-74.dsl.hstntx.swbell.net&gt;" />
+<person posts="1" size="1" who="Waldek Hebisch &lt;hebisch@math.uni.wroc.pl&gt;" />
+
+</stats>
+
+<!-- ################################################################ -- />
+
+
+
+<section
+  title="Building a Test Suite"
+  subject="We *really* need a development model change !"
+  topic1="Debugging"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/12/0430.html"
+  posts="73"
+  startdate="12/25/2001"
+  enddate="01/03/2002"
+>
+<p>
+Wine has had some severe regression problems over the past year.  If you
+read the wine-users you'll see lots of posts that mention something like
+"don't use wn20011108 use wn20010510 instead!".  The inter-process
+window communication stuff has created some problems for example.  Andreas
+Mohr was working on LoadModule16() and noticed it had some major 
+problems.  The he decided to write a test program to discover how bad
+it was.  The end result is, Andreas put out a request to put together
+a test suite for Wine:</p>
+<quote who="Andreas Mohr"><p>
+ due to the number of regressions I found few days ago,
+ it occurred to me that we really need an API test suite now.
+ Thus I went ahead and implemented a test functionality for LoadModule16().
+ The result: 7 of the 21 tests that I implemented were FAILING !!
+ That's ONE THIRD. And that for such a highly basic function as LoadModule16().
+ That's quite incredible.
+</p><p>
+ I guess we really should change our development model from trying tons of
+ programs to *systematically* testing functions and Windows mechanisms now.
+ If we can show everyone where stuff is failing, it might be a lot easier
+ to attract new people.
+</p><p>
+ I attached a preview of the posting I intend to post on *tons* of Windows
+ devel newsgroups ("Call For Volunteers"). That way we might actually get
+ hold of hundreds of Windows developers helping us implement a complete
+ test suite (complete tests of up to 12000 Windows functions).
+ Not to mention the additional PR we might get out of this...
+</p><p>
+ If this works, then we'd need someone in charge of managing the assignment
+ of specific windows functions to specific programmers.
+ I won't do that (very limited time).
+ Anyone from CodeWeavers up to the task ? Or maybe someone non-developer
+ and rather foreign to the Wine devel could do that task ?
+</p><p>
+ About the program:
+ My goal was to get a program with very easy parsing interface:
+ fields separated by colons, nothing fancy and difficult to implement, ...
+ A .exe can be found at:
+<a href="http://home.nexgo.de/andi.mohr/download/wt_ldr16.exe">
+ http://home.nexgo.de/andi.mohr/download/wt_ldr16.exe</a>
+</p><p>
+ Please comment on both my intended posting and the way I programmed the first
+ version of the test suite (I'm not extremely happy with the current program;
+ if you have any improvements, then get them here ASAP !).
+</p><p>
+ As 12000 Windows functions is an enormous number, I think we should really
+ start doing this NOW instead of years later once Wine really needs this.
+ Wine does not extremely need this yet, but we're getting pretty damn close
+ to that already.
+</p></quote>
+<p>
+Francois Gouget felt that such a testing framework could be very
+helpful to others and might draw more contributors, 
+ <quote who="Francois Gouget">After all a Win32
+ conformance test suite could also benefit other projects like Odin,
+ ReactOS?, and any other Win32 reimplementation. Thus there may be an
+ argument that it could be beneficial to have a test suite that everyone
+ could contribute to. It could even be under a different license, like
+ GPL to ensure that all projects contribute to it fairly (and who wants a
+ proprietary Win32 conformance suite anyway). Such a strategy would even
+ make more sense if there was already such a test suite out there.</quote>
+He also added that Wine's commandline handling would be perfect for such
+testing.  Although it recently received some updates, it's still buggy
+and needs testing.</p>
+
+<p>
+Andreas Mohr and Andriy Palamarchuk began exchanging emails and discussing
+the format of the tests and the output.  Both agreed that commandline tests
+were the way to go.  The output would be easily parsed and the tests could
+be easily automated.  Andriy did a search for testing frameworks and came
+up with <a href="http://www.winehq.org/hypermail/wine-devel/2001/12/0442.html">
+a list of some</a>.  Before any discussion took place as to which ones would
+work, Alexandre pointed out, <quote who="Alexandre Julliard">
+ Look at programs/winetest, that's the tool we should use to write 
+ tests IMO.</quote> Andriy looked at winetest and reported:</p>
+
+<quote who="Andriy Palamarchuk"><p>
+ Just looked at the tool. It only provides gateway from
+ Perl to wine API functions, right?
+</p><p>
+ Advantages I see in using script-based tests:
+<ol>
+ <li> tests can be used without recompilation</li>
+ <li> Perl is familiar to many developers</li>
+ <li> programming in scripting language is usually easier
+ than in C</li>
+ <li> Perl is widely used for testing purposes and I
+ expect to find many testing tools in Perl.</li>
+</ol>
+</p><p>
+ Cons:
+<ol>
+ <li> Many current Wine contributors don't know Perl</li>
+ <li> one more level of abstraction does not give
+ significant advantages in this application. On the
+ contrary, it is more difficult to locate the cause of
+ problems because the developer has to go through one more,
+ often not familiar layer. Absence of strict typing in
+ this layer will hurt a lot.</li>
+</ol>
+</p><p>
+ Advantages of using C-based tests:
+<ol>
+ <li> compilation has to be used to run the tests. In
+ some cases this is an advantage. Before running the
+ tests you'd better be sure it at least compiles in
+  both environments.</li>
+ <li> C is the most familiar to developers language and
+ the language itself is simpler than Perl</li>
+ <li> Documentation for Win32 API is C-oriented.
+ Examples, given in documentation are in C or easy
+ translated to C</li>
+ <li> Developers already have some testing code snippets 
+ in C</li>
+</ol>
+</p></quote><p>
+The discussion branched into whether the existing perl 
+framework was robust enough to be useful.  Alexandre
+argued that until people started using it and found
+fault with it, then there was no point in getting rid
+of what was already in place.  He also felt that perl
+was usable and that creating the tests in C wasn't
+really necessary:</p>
+<quote who="Alexandre Julliard"><p>
+ For Perl all you need is the
+ winetest app that is in the tree, plus a bit of Makefile glue which is
+ pretty trivial to do.
+</p><p>
+ In fact here's a 10-minute hack to add a make test target. With that
+ all you have to do is create a test script in dlls/xxx/tests/foo.test,
+ put the expected output in tests/foo.test.ref (presumably generated by
+ running the test under Windows), add your script to the makefile and
+ run make test.
+</p></quote>
+<p>There were some arguments put forth for using C,
+but no one really experimented with the perl setup.
+Of course, one of the arguments for using C was that
+not very many developers were familiar with perl.  Jeremy
+White gave everyone some reasons why the perl framework
+was enough and went on to list how to really make it
+usable:</p>
+<quote who="Jeremy White"><p><ol>
+
+     <li>  Modify the makefiles so that 'make test'
+         (or make regress, or pick your poison)
+         does something interesting, and does
+         so without much hassle.</li>
+
+     <li>  Define a standard for how tests should
+         work.  For example, if I wanted to
+         write a test for FunctionFoo(), I should
+         be able to create wine/programs/winetest/tests/foo.pl,
+         add 'foo.pl' to winetest/tests/Makefile.in,
+         and my test should automatically become part
+         of the regression suite.<br /><br />
+
+         (Note that adding tests/foo.c is just as trivial).
+	<br /><br />
+         I believe that the defacto standard chosen
+         at this point is that a test prints 'OK' if
+         all went well, and it doesn't on error, and
+         prints some clue as to what went wrong.
+	</li>
+     <li>  Add a section to the documentation on how
+         to do the same.</li>
+</ol></p></quote>
+
+<p>For testing under Windows, Jeremy felt, 
+<quote who="Jeremy White">
+Ideally, we would have a 'winetest.zip' such that all I would
+ have to do is install Perl, and then I'd have a nice set of
+ sample test scripts I could run/modify/tweak to my hearts
+ satisfaction.</quote> Alexandre agreed and added,
+<quote who="Alexandre Julliard"> 
+ Exactly, yes. If possible winetest.zip should also include perl.dll
+ and the needed packages so that you don't even need to install perl at
+ all. I think it may be a good idea to have a winetest.zip that
+ contains winetest.exe and related files that you only have to install
+ once, and another zip that contains the test themselves which you may
+ need to upgrade more frequently (or that you could get directly from
+ CVS if you have a CVS client on Windows).</quote></p>
+
+<p>Francois then went and wrote a 
+  <a href="http://www.winehq.org/hypermail/wine-devel/2002/01/0012.html">
+lengthy description</a> of how to implement the testing.  He
+purposely left it open to any language.  I'll refer you to the
+link for the full description, but he started out with:</p>
+<quote who="Francois Gouget"><p>
+   A test unit is an executable or script. You can name it anyway you
+ like (please no space in the names, it's always annoying). All test
+ units should be non-interactive. A test unit called xxx generates two
+ outputs:<ul>
+ <li> its exit code</li>
+ <li> text output on either or both of stdout and stderr, both of which are
+ normally redirected to a file called 'xxx.out'.</li>
+</ul></p>
+<p>
+   A test succeeds if:
+<ul>
+ <li> its exit code is 0</li>
+ <li> and its output, 'xxx.out' matches the reference output according to
+ the rules described later.</li>
+</ul></p>
+<p>
+   Reciprocally it fails if:
+<ul>
+ <li> its exit code is non zero
+   Either because one aspect of the test failed and thus the test unit
+ decided to return a non-zero code to indicate failure, or because it
+ crashed and thus the parent got a >= 128 error code.</li>
+ <li> or because its output differs from the reference output established
+ on Windows</li>
+</ul></p>
+<p>
+   Under this model each test unit may actually be comprised of more
+ than one process (for instance to test CreateProcess, inter-process
+ messaging, inter-process DDE, etc.). All that counts is that the
+ original process does not finish until the testing is complete so that
+ the testing framework knows when to check the test output and move on.
+</p><p>
+   (There is no provision for hung tests. A time out based mechanism,
+ with a large time out, like 5 minutes, could do the trick.)
+</p><p>
+   A test unit can also exercise more than one aspect of one or more
+ APIs. But, as a rule of thumb, a specific test should not exercise more
+ than a couple to a handful related APIs (or up to a dozen in extreme
+ cases). Also, more than one test could exercise different aspects a
+ given API.
+</p><p>
+   So when running the Wine regression tests, if we find that 3 tests
+ out of 50 failed, it means that three processes had an incorrect exit
+ code or output out of fifty. One should then analyze in more details
+ what went wrong during the execution of these processes to determine
+ which specific API or aspect of an API misbehaved.  This can be done
+ either by looking at their output, by running them again with Wine
+ traces, or even by running them in a debugger.
+</p></quote>
+<p>The discussion began to turn toward what the expected output of
+a test should be.  Most developers felt that a simple PASS/FAIL output
+wasn't necessarily enough.  For instance, it's important to have
+something like a "TO-DO" output where you know the test is going to
+fail and you don't really want to track it as being a failed test
+for regression purposes.  Ulrich Weigand posted an interesting note
+about how the dejagnu test suite works (which is currently used by
+gcc):</p>
+<quote who="Ulrich Weigand"><p>
+ When you run the test, every test case either passes or fails,
+ which results in a classification into four subsets:</p>
+<p><ul>
+  PASS   Test case was expected to pass, and it did<br />
+  FAIL   Test case was expected to pass, but failed<br />
+  XPASS  Test case was expected to fail, but passed<br />
+  XFAIL  Test case was expected to fail, and it did
+</ul></p><p>
+ Only a test case in the FAIL category causes the whole test run
+ to fail, and is reported even in the test run summary.  The other
+ categories are only reported as total numbers.
+</p><p>
+ If you are getting nonzero FAIL numbers, you have introduced a
+ regression.  Nonzero PASS and XFAIL numbers are expected; if you
+ get nonzero XPASS numbers you might look at the cases in question
+ and decide whether you want to remove the 'expected to fail' flag.
+</p></quote>
+<p>Alexandre posted some examples he had written.  From that Andriy
+Palamarchuk created some different tests and posted what he 
+learned:</p>
+<quote who="Andriy Palamarchuk"><p>
+  I ported a sample of my tests from C to the Perl
+framework. Want to share my experiences.
+</p><p>
+ Good:<ol>
+ <li>1) AFAICS technically you could do all the things you
+ could do in C - working with structures, using
+ callback functions, using threads. Existing problems
+ probably can be ironed out.</li>
+ <li> additional processing of the test results can be
+ done easier and quicker than in C</li>
+</ol></p><p>
+ Bad:<ol>
+ <li> constants must be explicitly declared or plain
+ numbers used instead</li>
+ <li> no documentation on the framework yet.</li>
+ <li> in many cases data sizes must be specified manually
+ - for structures processing, function parameters.</li>
+ <li> more difficult to track issues. than in C</li>
+</ol></p><p>
+ Note, issues (1) and (2) probably can be fixed.
+</p></quote>
+
+</section>
+
+
+
+<!-- ################################################################ -- />
+
+
+
+<section
+  title="Cooperation With Odin Project"
+  subject="Cooperation between Odin &amp; Wine"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/12/0435.html"
+  topic1="Integration"
+  posts="3"
+  startdate="12/26/2001"
+  enddate="12/26/2001"
+>
+<p>The <a href="http://odin.netlabs.org"> 
+Odin Project</a> is the OS/2 equivalent of Wine.
+The code is actually based on Wine, but it branched
+a long time ago.  Since then a lot of fixes have 
+appeared in both trees that could benefit both projects.
+Sander van Leeuwen from the Odin Project wrote to the
+wine-devel list to seek cooperation between the projects:
+</p><quote who="Sander van Leeuwen"><p>
+ As some of you might remember I'm the lead developer of the Odin project. (project
+ for OS/2 with the same goals as Wine). Odin is partly based on Wine code. The
+ core dlls (gdi32, user32, kernel32) + some special dlls (winmm, directx, winsock)
+ use some Wine code, but is basically incompatible with Wine for obvious reasons.
+ Most of the remaining dlls are based entirely on Wine code.
+</p><p>
+ The last few years there has been little cooperation between both projects for several reasons.
+ One of them is that we have far fewer active developers and cooperation sometimes proved to be
+ difficult.  Some source files of the two project had grown apart since changes were never merged back into Wine.
+</p><p>
+ Now, I'm trying to change this situation, but am wondering how to proceed. I can post bug fixes to this list, but
+ it will be difficult for me to actually test these changes in Wine itself. (too time consuming)
+ Posting diff files is not always possible due to the major differences between source files.
+</p><p>
+ Merging changes from Wine into our source tree is no problem. We can do that ourselves. However, it would
+ be nice if compiler incompatibilites (we use IBM VisualAge C++, not GCC) could be resolved. There aren't
+ many, but the IBM compiler is not always as flexible as GCC and of course doesn't understand any GCC extensions.
+ It would be a big help if incompatible code could be changed. Switching compilers is not an option for us.
+ I can post a (small) list of changes we had to make.
+</p><p>
+ The license of our project is not compatible with Wine, but the dlls that are largely based on Wine (such as 
+ comctl32, shell32, ole) are an exception to the project license. The sources of those dlls are released under the
+ Wine license.  In case there is ever interest in the other sources, then you can just ask me. I'd be happy to 'donate' them to 
+ Wine.
+</p><p>
+ For more information about Odin you can visit 
+  <a href="http://odin.netlabs.org">http://odin.netlabs.org</a> 
+ (some information is outdated though).
+ There you can find out where to download the sources (cvs).
+</p><p>
+ The next post from me will contains some patches for bugs in Wine that I've recently found.
+</p></quote><p>
+
+His next post contained a bunch of bug fixes.  However, changes in the
+code bases prevented true diffs couldn't be created.  This could be an excellent 
+opportunity for someone to get involved with Wine - fix up the existing changes
+Sander pointed out (which requires just a basic understanding of C) and then
+see if there's anything else that could be merged from their project.</p>
+
+
+</section>
+
+
+
+<!-- ################################################################ -- />
+
+
+
+<section
+  title="Lindows Screenshots"
+  subject="Lindows screenshots"
+  topic1="Commercial Development"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/01/0080.html"
+  posts="5"
+  startdate="01/04/2002"
+  enddate="01/04/2002"
+>
+<p>It's gotten a little rough lately for Lindows.com.  Microsoft
+filed a lawsuit the day before Christmas arguing that the name
+was too similar to "Windows".  It should be noted that the name
+of Michael Robertson's company is Lindows.com, Inc and they are
+very careful to refer to it that way.  Similarly, the name of their
+product is LindowsOS.  They are avoiding use of just
+"Lindows".  At any rate, this week Michael Robertson sent an
+open letter to Bill Gates about the trademark dispute.  The
+text of which can be found at:
+<a href="http://www.lindows.com/lindows_michaelsminutes_letter.php">
+ http://www.lindows.com/lindows_michaelsminutes_letter.php</a>
+</p><p>
+More interesting are the screenshots they released.  Hetz Ben Hamo
+wrote to the list:</p>
+<quote who="Hetz Ben Hamo"><p>
+ I just got this - Lindows released 2 screenshots of their Lindows: 
+ <a href="http://www.lindows.com/screenshots">www.lindows.com/screenshots</a>
+</p><p>
+ Now, IF they did use wine (and that's a big if - from the screenshots they're 
+ running either Office 2K or office XP, Internet Explorer, the fonts looks 
+ like MS TTF fonts, and I think those screenshots are modified a bit - look at 
+ the 2nd screenshots, behind the start menu - look at the "file/edit/view" 
+ menu - it should be alligned to the left) and they'll contribute some parts 
+ of their wine to the standard wine - then wine will be in much better shape 
+ then what is it today.
+</p></quote>
+<p>From the looks of the screenshots they're just using Linux + KDE + Wine.
+</p>
+<p>Also new on the LindowsOS front is the "
+<a href="http://www.lindows.com/lindows_home_insiders.php">Insider</a>" 
+program.  If you pay them $99 a year you get to sign a non-disclosure
+agreement and "share your time, perspective and expertise".</p> 
+
+</section>
+
+
+
+
+<!-- ################################################################ -- />
+
+
+
+<section
+  title="MS EULA Conflicts"
+  subject="msnbc news alert installer: Unable to start browser"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/12/0068.html"
+  topic1="Microsoft Windows"
+  posts="7"
+  startdate="01/04/2002"
+  enddate="01/04/2002"
+>
+<p>Dan Kegel had some questions concerning a product he found:
+<quote who="Dan Kegel"><p>
+ While doing research for my site on the Microsoft
+ antitrust trial ( 
+ <a href="http://www.kegel.com/remedy/">
+ http://www.kegel.com/remedy/</a> ), I
+ came across a nasty little EULA for a product called
+ MSNBC News Alert.  The EULA is at
+ <a href="http://www.msnbc.com/tools/newsalert/naeula.asp">
+ http://www.msnbc.com/tools/newsalert/naeula.asp</a>
+ and says</p><p><blockquote><i>
+ MSNBC Interactive grants you the right to install and use
+ copies of the SOFTWARE PRODUCT on your computers running validly
+ licensed copies of the operating system for which the SOFTWARE
+ PRODUCT was designed [e.g., Microsoft Windows(r) 95; Microsoft
+ Windows NT(r), Microsoft Windows 3.x, Macintosh, etc.].
+</i></blockquote></p></quote>
+
+<p>Jeremy White replied, <quote who="Jeremy White">
+ Microsoft seems to be updating their free download products
+ to use an EULA like this.  You'll find it in Windows Media
+ Player, Direct X, and other places.</quote>  Dan looked
+ into it more and found, <quote who="Dan Kegel">
+ Yep.  With Microsoft stuff, they tend to call the free downloads
+ 'operating system components' to make it sound more reasonable.
+ They can't use that dodge with products from MSNBC, though, so
+ it looks more ham-handed there.</quote></p>
+
+</section>
+
+
+
+
+<!-- ################################################################ -- />
+
+
+
+<section
+  title="Mixed Mode CD Labels"
+  subject="Mixed-mode CD Labels"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/12/0463.html"
+  topic1="Multimedia"
+  posts="13"
+  startdate="12/28/2001"
+  enddate="01/02/2002"
+>
+<p>Chris Green announced:</p>
+<quote who="Chris Green"><p>
+ I've just experimentally, in my own copy of the CVS, changed the code in 
+ misc/cdrom.c so that it handles mixed mode CDs the same as data CDs for 
+ retrieving CD labels. (In the process of trying to get Age of Empires 1 to 
+ run in single-player mode).
+</p><p>
+ And surprisingly, it worked! (mind you AOE is not fast under wine, but that's 
+ another problem).
+</p><p>
+ Does anyone have any comments on this approach? if not I'll submit a patch...
+</p></quote>
+<p>Andreas Mohr wondered, <quote who="Andreas Mohr">
+Hmm, did you actually implement something new or just used old sector reading
+code ?  I know for a fact that you need special raw sector ioctl()s at least 
+for certain mixed-mode CDs...</quote> To which Chris replied, 
+<quote who="Chris Green">
+ I didn't do anything other than use the old sector-reading code. I can say 
+ though that it worked for picking up the correct label for both Age of 
+ Empires and for Diablo 1, so it does work for at least some CDs.
+</quote>  Chris also was unsure exactly which kinds of CD's caused problems.
+Andreas explained:</p>
+<quote who="Andreas Mohr"><p>
+ I guess it might be  music CDs with builtin biography data/programs often that
+ are problematic.
+</p><p>
+ If you get hold of such CDs, then you need to experiment with
+ CDROMREADMODE2, CDROMREADMODE1 and/or CDROMREADRAW ioctl()s 
+ (in /usr/include/linux/cdrom.h) to get back sector data.
+ I already verified once that you can get the CD label of "problematic"
+ mixed-mode CDs this way.
+ I couldn't figure out the mechanism that e.g. Windows uses to calculate
+ the serial number of these CDs, though.
+</p><p>
+ You might probably want to figure out a way to have misc/cdrom.c
+ also support label and serial reading of problematic mixed-mode CDs, in a
+ modular way (i.e. one that doesn't look too awful code-wise ;)
+</p></quote>
+<p>
+Chris looked into it and reported:</p>
+<quote who="Chris Green"><p>
+Ok - I've been doing some serious experimenting here, including reading the 
+iso 9660 spec :)
+</p><p>
+I've found some interesting things too.
+</p><p>
+First, it seems that some CD's don't just store the 'best' data in 
+higher-numbered volume descriptors. Some seem to store 'everything' in the 
+type 1 (primary) descriptor, and only store the modified info in the type 2 
+(secondary) descriptor. So the routine CDROM_Data_FindBestVoldesc (it returns 
+the highest-numbered descriptor) might need some rethinking...
+</p><p>
+Secondly, I found a real curiosity in one particular CD: Microsoft's 
+Multimedia Beethoven (about 1992) isn't ISO9660 at all. It's a mixed mode CD, 
+and is readable in Windows, as well as Wine, but the label is screwy (Windows 
+XP gets it wrong too). Instead of using the specification identifier 'CD001' 
+(ISO9660) it uses 'CDROM' and has two dwords stored at the start of the 
+volume descriptor, as well as having a few other discrepancies. I have no 
+conclusive proof as to what specification it's written, but I'm guessing its 
+possibly the original High Sierra format, or perhaps an even earlier, 
+semi-proprietary, spec. Either way, it makes me wonder whether some of the 
+'strange' mixed-mode CDs are of a similar nature.
+</p><p>
+Anyway, what I'm thinking is to rewrite the code that deals with CD labels to 
+take into account what I've found so far - I'll also include support to get 
+the label from the 'CDROM' type I've found, so we'll have the right label for 
+that CD too. Quite possibly, that'll fix the 'strange' mixed mode CD's too. 
+</p><p>
+If anyone has an odd CD lying around, they can email me the first 65536 bytes 
+of the CD (hopefully no vendor will care about copyright on their volume 
+descriptors!) so I can compare the structure of the volume descriptors - I've 
+got about 8 of them so far, just use 'dd if=/dev/scd0 of=cd.dmp bs=65536 
+count=1' and compress the result before emailing it to me :) 
+</p></quote>
+<p>Chris went on to make a patch and explained exactly what it does,
+<quote who="Chris Green">
+ What I've done is to check for the pre-iso signature, and if it occurs, to 
+ increase the offset by 8. This puts the offset in a position that makes the 
+ get label function find the correct entry. I've tested it with both 'normal' 
+ iso9660 cds, and with pre-iso cds (e.g. MS Multimedia Beethoven, and MS 
+ Cinemania 92) and it works flawlessly in both cases. </quote></p>
+<p>Sylvain Petreolle reported, <quote who="Sylvain Petreolle">
+ Using Dark Reign (The Future of War) mixed CD,
+ (one data track and several audio after),
+ label is reported correctly. Good Job !</quote></p>
+
+</section>
+
+
+
+
+</kc>

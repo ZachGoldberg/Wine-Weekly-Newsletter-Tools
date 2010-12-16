@@ -1,0 +1,307 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="269" date="04/08/2005" />
+<intro> <p>This is the 269th issue of the Wine Weekly News publication.
+Its main goal is to light candles. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="123" size="486" contrib="53" multiples="25" lastweek="33">
+
+<person posts="9" size="29" who="James Hawkins" />
+<person posts="8" size="25" who="Kees Cook" />
+<person posts="7" size="21" who="Dimitrie O. Paun" />
+<person posts="7" size="20" who="Andreas Mohr" />
+<person posts="6" size="28" who="Andrew Tridgell" />
+<person posts="6" size="19" who="Mike McCormack" />
+<person posts="5" size="15" who="Troy Rollo" />
+<person posts="4" size="14" who="Damnation" />
+<person posts="4" size="9" who="David Hemmo" />
+<person posts="3" size="22" who="Brouard Nicolas" />
+<person posts="3" size="11" who="Shachar Shemesh" />
+<person posts="3" size="11" who="Dmitry Timoshkov" />
+<person posts="3" size="11" who="Stefan D&#246;singer" />
+<person posts="3" size="11" who="Stephen Crowley" />
+<person posts="5" size="17" who="Robert Shearman" />
+<person posts="3" size="7" who="Paul Vriens" />
+<person posts="2" size="11" who="Damjan Jovanovic" />
+<person posts="2" size="7" who="Jakob Eriksson" />
+<person posts="2" size="7" who="Terry Barnaby" />
+<person posts="2" size="6" who="Paul Vriens" />
+<person posts="2" size="5" who="Tom Wickline" />
+<person posts="2" size="5" who="Joris Huizer" />
+<person posts="2" size="5" who="Robert Reif" />
+<person posts="2" size="5" who="Scott Ritchie" />
+<person posts="1" size="35" who="Robert Lunnon" />
+<person posts="1" size="18" who="Wesley Parish" />
+<person posts="1" size="10" who="Rein Klazes" />
+<person posts="1" size="8" who="Barbara Post" />
+<person posts="1" size="8" who="Raphael" />
+<person posts="1" size="7" who="Lauri Tulmin" />
+<person posts="1" size="4" who="David Lee Lambert" />
+<person posts="1" size="4" who="Uwe Bonnes" />
+<person posts="1" size="3" who="Juan Lang" />
+<person posts="1" size="3" who="Alban Browaeys" />
+<person posts="1" size="3" who="Paul Millar" />
+<person posts="1" size="3" who="Vincent B&#233;ron" />
+<person posts="1" size="3" who="Mike Hearn" />
+<person posts="1" size="3" who="C. Scott Ananian" />
+<person posts="1" size="3" who="David =?iso-8859-15?q?G=FCmbel?=" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="Brian Vincent" />
+<person posts="1" size="2" who="(wino)" />
+<person posts="1" size="2" who="Ivan Leo Puoti" />
+<person posts="1" size="2" who="Michael Jung" />
+<person posts="1" size="2" who="Tobias Burnus" />
+<person posts="1" size="2" who="Joachim von Thadden" />
+<person posts="1" size="2" who="Hannu Valtonen" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="2" who="Boaz Harrosh" />
+<person posts="1" size="2" who="Hans Leidekker" />
+<person posts="1" size="2" who="Steven Edwards" />
+
+</stats>
+<section 
+	title="News: Miguel de Icaza Interview" 
+	subject="News"
+	archive="http://software.newsforge.com/software/05/03/31/128223.shtml"
+	posts="1"
+	startdate="04/02/2005"
+	enddate="04/08/2005"
+>
+<topic>News</topic>
+<p>If you go way back in time, you can find Miguel de Icaza listed in
+Wine's 
+<a href="http://cvs.winehq.com/cvsweb/wine/documentation/ChangeLog.OLD?rev=1.1&amp;content-type=text/x-cvsweb-markup">Changelog</a> 
+(now Changelog.old).  Miguel submitted patches from the earliest days of 
+Wine until early 1995.  This week he sat down with Joe Barr for a
+<a href="http://software.newsforge.com/software/05/03/31/128223.shtml">
+NewsForge interview</a>.  He briefly discusses some of the work:</p>
+<quote who="NewsForge"><p>
+<i>Joe:</i> OK, that's how you got started. What was your first involvement with an open source project?
+</p><p>
+<i>Miguel:</i> I cannot remember. I think it was that I was contributing the routines that ran in route, without any port of Wine, I think. Then I worked on Midnight Commander.
+</p><p>
+<i>Joe:</i> That was your first big splash.
+</p><p>
+<i>Miguel:</i> I think I was working on Wine, turning Wine into a library, back in the day. No, it wasn't a big splash back in the day. It was just a little tool that I wrote, that was it. It was a tiny tool.
+</p><p>
+<i>Joe:</i> Midnight Commander?
+</p><p>
+<i>Miguel:</i> Yeah, but that was in 1992. 
+</p></quote>
+
+
+</section>
+<section
+        title="CAP_SYS_NICE &amp; Win32 Thread Priorities"
+        subject="PGP signing party"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0080.html"
+        posts="5"
+        startdate="04/04/2005"
+	enddate="04/08/2005"
+>
+<topic>Fixes</topic>
+
+<p>
+Robert Reif wanted to know, <quote who="Robert Reif">
+Are there any plans or is anyone working on mapping Windows
+SetProcessClass and SetThreadPriority support to linux process
+priorities on kernels that support CAP_SYS_NICE?</quote></p>
+
+<p>Rob Shearman thought there might be a problem:</p>
+<quote who="Robert Shearman"><p>
+ Mapping Win32 thread priority levels to Linux nice levels is fairly 
+ trivial, but convincing kernel developers to allow unprivileged 
+ user-space programs to control thread priorities is the big problem. The 
+ last time a discussion like this came up, we (Wine developers and Cedega 
+ developers) requested a way of changing a thread's relative priority 
+ within a process (without affecting the overall CPU time the process 
+ gets). This should be a good compromise between meeting applications' 
+ needs and preventing unprivileged applications from freezing the 
+ computer. AFAIK, this hasn't been implemented yet.
+</p></quote>
+
+<p>Robert wanted to know if it could all be done with CAP_SYS_NICE:</p>
+<quote who="Robert Reif"><p>
+CAP_SYS_NICE gives you:
+<ul>
+    <li> Allow raising priority and setting priority on other (different
+      UID) processes</li>
+    <li> Allow use of FIFO and round-robin (realtime) scheduling on own
+      processes and setting the scheduling algorithm used by another
+      process.</li></ul></p><p>
+
+wineserver would need to be a setuid program but it could set 
+CAP_SYS_NICE at startup and immediately reduce it's privileges back to 
+normal.
+</p></quote>
+
+<p>Rob explained:</p>
+<quote who="Robert Shearman"><p>
+There are a number of problems:
+<ol>
+<li> I don't think that will work yet as the server process needs to have 
+the same user ID as the client processes.</li>
+<li> setuid binaries make sysadmins nervous and would require a security 
+audit by us. Yes, they don't need to make it setuid, but then the people 
+who do could run their programs as root anyway.</li>
+<li> setuid programs are a nasty hack that work around limitation in the 
+granularity of security in the kernel.</li>
+<li> This approach won't generalize for other apps on the system that 
+might want to control the relative priority of their threads, such as 
+MPlayer.</li></ol></p></quote>
+
+</section>
+<section
+        title="Speeding Up Builds"
+        subject="Development method"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0158.html"
+        posts="6"
+        startdate="04/08/2005"
+>
+<topic>Build Process</topic>
+
+<p>David Hemmo wanted to know how to speed up his build process:</p>
+<quote who="David Hemmo"><p>
+ Right now, each time I make a modification (even one line) I do a 
+'make' followed by a 'make install'.
+Is there a faster way ?
+</p></quote>
+
+<p>Stefan D&#246;singer suggested,
+<quote who="Stefan Dosinger">
+I run these commands in the directory of the dll or program which I changed. 
+That is way faster(especially make install)</quote></p>
+
+<p>Mike McCormack went a step further and suggested not doing a <tt>make install</tt>:</p>
+<quote who="Mike McCormack"><p>
+Try to skip the 'make install', and instead run wine from the build 
+directory. eg.
+<ul><code>
+~/src/wine/wine regedit</code></ul></p><p>
+
+I make a point of never installing Wine to make sure I don't accidentally 
+run an older installed version that didn't get overwritten properly.
+</p></quote>
+
+<p>Ivan Leo Puoti expanded on that idea:</p>
+<quote who="Ivan Leo Puoti"><p>
+
+You can also just have a script called wine in your path, that does something like
+<ul><code>
+#!/bin/bash<br />
+/path/to/wine $*</code></ul></p><p>
+just check you don't have other files in your path called wine.
+</p></quote>
+</section>
+<section
+        title="Wine-Probe Initiative"
+        subject="Starting up"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0120.html"
+        posts="1"
+        startdate="04/06/2005"
+>
+<topic>News</topic>
+
+<p>David G&#252;mbel announced:</p>
+<quote who="David Gumbel"><p>
+
+A while ago we were debating an initiative named "Wine-Probe"[1] (which
+would roughly equal "Wine-tasting" in english) on wine-devel that was in
+the making between Wirtschaftsförderung Region Stuttgart GmbH and us
+(ITOMIG). Its goal is to make local software vendors aware of the potential
+business opportunity in a Wine-based port or a Wine/Linux version of their
+software. It's also designed to be beneficial for the Wine project as a
+whole, e.g. by providing AppDB entries and success stories.
+</p><p>
+This is to let you know that we've officially launched the initiative by
+today. It has already made it into several (german speaking) news sites[2],
+so I'd say things look promising. We're looking forward to the interest and
+feedback we'll get in the weeks to come.
+
+<ul>
+<li>[1] <a href="http://www.winehq.com/site?issue=254#WINEprobe%20Initiative">http://www.winehq.com/site?issue=254#WINEprobe%20Initiative</a></li>
+<li>[2] <a href="http://www.golem.de/0504/37335.html">http://www.golem.de/0504/37335.html</a>
+   (<a href="http://translate.google.com/translate?u=http%3A%2F%2Fwww.golem.de%2F0504%2F37335.html&amp;langpair=de%7Cen&amp;hl=en&amp;ie=UTF-8&amp;oe=UTF-8&amp;prev=%2Flanguage_tools">Google translation</a>)<br />
+   <a href="http://www.pro-linux.de/news/2005/7996.html">http://www.pro-linux.de/news/2005/7996.html</a>
+   (<a href="http://translate.google.com/translate?u=http%3A%2F%2Fwww.pro-linux.de%2Fnews%2F2005%2F7996.html&amp;langpair=de%7Cen&amp;hl=en&amp;ie=UTF-8&amp;oe=UTF-8&amp;prev=%2Flanguage_tools">Google translation</a>)<br />
+   <a href="   http://www.pc-magazin.de/common/nws/einemeldung.php?id=37335">http://www.pc-magazin.de/common/nws/einemeldung.php?id=37335</a>
+   (<a href="http://translate.google.com/translate?u=http%3A%2F%2Fwww.pc-magazin.de%2Fcommon%2Fnws%2Feinemeldung.php%3Fid%3D37335&amp;langpair=de%7Cen&amp;hl=en&amp;ie=UTF-8&amp;oe=UTF-8&amp;prev=%2Flanguage_tools">Google translation</a>)</li>
+   </ul>
+</p></quote>
+
+
+</section>
+<section
+        title="Key Signing Party at WineConf"
+        subject="PGP signing party"
+        archive="http://www.winehq.org/hypermail/wine-devel/2005/04/0057.html"
+        posts="2"
+        startdate="04/04/2005"
+	enddate="04/05/2005"
+>
+<topic>WineConf 2005</topic>
+
+<p>Shachar Shemesh wanted to let everyone know he plans
+on organizing a key signing party at WineConf:</p>
+<quote who="Shachar Shemesh"><p>
+Last year's raving success (I exchanged keys with Marcus) gives appetite 
+for more.
+</p><p>
+So, if you always wanted to have a PGP key that most of the free 
+software will know [1].
+If you wanted to be able to carry out encrypted secure conversations online.
+Or if you just want a chance to brag about what well connected key you 
+have [2].
+</p><p>
+We will (try) to hold a PGP key signing party at wineconf this year. In 
+order to participate, it is positively absolutely necessary that you:
+<ol>
+<li> Have a PGP key. You can generate one for yourself using gpg.</li>
+<li> Send the PGP key finger print to me AT LEAST A WEEK BEFORE THE 
+CONFERENCE. Any later than that, and it is not certain that we'll manage 
+to get your key on the printed piece of paper that is necessary for 
+carrying out the party.</li>
+<li> Bring a copy you can trust to wineconf, to make sure other people are 
+really signing your key (i.e. - that I'm not pulling anybody's leg).</li>
+<li> Bring an identifying ID to wineconf. Two is preferable. Passport or a 
+driver license in a language people can read. If you can only bring one, 
+a passport is definitely preferable.</li>
+</ol></p><p>
+The full details of what a key signing party is, why are the procedures 
+as they are, and what's so important about *not* signing the keys with 
+your laptop at the party can be found at 
+<a href="http://www.cryptnet.net/fdp/crypto/gpg-party.html">http://www.cryptnet.net/fdp/crypto/gpg-party.html</a>
+</p><p>
+Note: No aliases on PGP keys. If your PGP key says "lord master of 
+compiler optimization", then your passport had better say the same or no 
+one will be able to sign your key.
+</p><p>
+<ul>
+[1] My key is signed by RMS himself 
+(<a href="http://pgp.mit.edu:11371/pks/lookup?op=vindex&amp;search=0xCDBDBCE2">http://pgp.mit.edu:11371/pks/lookup?op=vindex&amp;search=0xCDBDBCE2</a>). This 
+means that any key that I sign is just two keys away from the very 
+inventor of free software.<br />
+[2] See [1]</ul>
+</p>
+</quote>
+
+<p>
+Shachar followed up the next day:</p>
+<quote who="Shachar Shemesh"><p>
+My mistake. I'm going to need both the finger print AND the actual key.
+Also, if you DON'T want the key published to a key server (I use
+<a href="http://pgp.mit.edu">http://pgp.mit.edu</a>), please let me know well in advance. Obviously, your
+key will be published to all the people present at the key party. If
+your name's not there on your email headers, include it in the body. The
+name must be the same as appears on your formal IDs.
+</p><p>
+The purpose of a pgp signing party is to establish a link between your
+virtual identity (your key) and your real one (as verified by an ID).
+For that reason it is impossible to participate by proxy, or under an alias.
+</p>
+</quote>
+
+</section></kc>

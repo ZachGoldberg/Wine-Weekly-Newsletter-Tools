@@ -1,0 +1,386 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="296" date="10/25/2005" />
+<intro> <p>This is the 296th issue of the Wine Weekly News publication and a special edition to look at the beta release of Wine.  It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+
+
+<section 
+	title="Beta: How We Got Here"
+	subject="Beta: How We Got Here"
+>
+<p><img align="right" alt="Wine 0.9" hspace="5" vspace="5" height="202" width="340"
+src="http://www.winehq.org/images/wwn296-wine0-9.jpg" /> With Wine hitting a beta release today,
+it's fitting to look back on the past few years of development and pick out some highlights.
+We have a  pretty good <a href="http://www.winehq.com/site/history">history of Wine</a>
+that provides a pretty good introduction to how Wine came to be.  It also
+covers the ups and downs of Wine's commercial development, various
+conferences we've had, and Wine's licensing flamewars^H^H^H^H^H^H^H^H^H 
+discussions.  This special issue of WWN aims to take more of a technical 
+look at Wine's internals and show you how things have progressed.
+
+</p><p>
+
+Eric Pouech began writing the Wine Weekly News over 6 years ago.  We
+have a mostly continuous and mostly weekly account of development since then.
+While WWN has strived to keep an accurate log, a lot of major projects
+have been undertaken that barely get mentioned in its pages.  That includes
+things like font handling and the WinMM architecture.  On the other hand,
+many areas show a natural progression over several months that have led to 
+the architecture in Wine 0.9.  We'll focus primarily on technical topics 
+covered in WWN, but don't forget that has been brought to you by nearly 800
+different contributors over its twelve year history.
+
+</p><p>
+<ul><i>"Development will not stop with the BETA release. If anything, it will 
+speed up as more programmers become familiar with the project. New BETA 
+releases will be released periodically as Wine progresses."</i>
+<ul>Bob Amstadt, August, 1994 (Linux Journal #4)</ul></ul>
+</p><p>
+
+In the beginning, Wine set out to run early Windows programs.  A hefty
+infrastructure based on a DOS-style architecture emerged.  Windowing
+was done by hooking into Tk.  When Windows 95 arrived, a major shift
+in development began to take place to support the new 32-bit API's
+and applications.  Microsoft seemed to add new API's every day
+throughout the late 1990's.  The pace has certainly slowed down these
+days, but it changed the direction of Wine development.  Most
+recently we made the switch from using Windows 98 as the default
+configuration to Windows 2000.  That switch signaled a major shift
+for Wine away from the old DOS heritage to the NT architecture.
+
+</p><p>
+
+Going all the way back to <a href="http://www.winehq.com/?issue=1">WWN #1</a>,
+there's two interesting threads.  Ulrich Weigand discussed creating separate
+address spaces for applications.  See, back in the beginning Wine used the
+same memory space for all applications.  That model was based on the 
+way Windows 95 worked.  It's also the reason Windows 9x was so unstable -
+any application could stomp on the memory of another.  As Ulrich explained,
+it wasn't exactly a simple task.  The topic was discussed
+further a few weeks later in <a href="http://www.winehq.com/?issue=4#Address%20Space%20Separation%20/%20Stability%20vs%20Correctness">WWN #4</a>.  Work
+<a href="http://www.winehq.org/?issue=27#Address%20space%20separation%20has%20started">actually 
+began</a> a few months later in early 2000.  It <a href="http://www.winehq.org/?issue=39#Some%20more%20bits%20on%20address%20space%20separation">continued</a>
+through early 2000 and 
+<a href="http://www.winehq.org/?issue=46#Address%20space%20separation">wrapped 
+up</a> in late May.  As with many things in Wine's evolution it provided
+a necessary step forward at the initial expense of growing pains (and loss
+of functionality.)  
+</p><p>
+The second thread in that early issue discussed porting Wine.  At the time, 
+Patrik Stridvall outlined four different areas of portability: OS, CPU 
+architectures, compilers, and separating out the graphics drivers.  Although 
+Wine's portability is now better than ever, most developers still use Linux on 
+x86 machines along with the gcc compiler.  Getting Wine running on other 
+operating systems remains a struggle, although a small group of people 
+continue to help keeping Wine
+working on FreeBSD and Solaris x86.  There has been some success in getting
+Wine to work on Sparc and PowerPC machines, but since it's not possible to
+run x86 binaries on them most of the efforts have dissolved.  The last item
+on Patrik's original list, separating out graphics drivers, has been 
+successful.  At the moment there's primarily one driver that gets used,
+<a href="http://www.winehq.org/?issue=47#Feature:%20The%20X11%20driver%20by%20Ove%20K%E5ven">winex11.drv</a>, 
+but it's possible to write a custom driver for something like Mac OS X and, in 
+fact, work has been done in that area.
+
+</p><p>
+
+It's interesting that two fundamental areas of development were discussed in
+that first issue.  While address space separation is something now taken for
+granted, it's ironic that portability remains an issue for Wine.   Porting
+is a never ending project that fosters discussion nearly every month on
+the development mailing list.
+
+</p><p>
+
+A huge project that began around the same time as address separation
+was DLL separation.  Wine's original DLLs weren't separated along the
+same lines as Windows.  Wine's DLLs should only call exported functions
+of other DLLs.  In other words, it should be possible to rip out one
+of Wine's builtin DLLs and drop in a native Windows one without any
+difference.
+<a href="http://www.winehq.org/?issue=5#Elfdlls%20are%20coming">If</a>
+<a href="http://www.winehq.org/?issue=7#ElfDLLs%20(cont'd)">you</a>
+<a href="http://www.winehq.org/?issue=11#Module%20loading">look</a>
+<a href="http://www.winehq.org/?issue=49#Wine%20.so%20files%20loading">really</a>
+<a href="http://www.winehq.org/?issue=69#DLLs%20get%20separated">hard</a>
+you'll see a chronicle of how the work began.  At the end of 2000
+<a href="http://www.winehq.org/?issue=74#Feature:%20Of%20Dynamic%20loading%20in%20Wine%20by%20Eric%20Pouech">the infrastructure</a>
+was in place to make the transition smoother.  Worked progressed and by
+early 2003 some of the 
+<a href="http://www.winehq.org/?issue=151#Separating%20NTDLL%20and%20Kernel32">hardest bits</a> were left.
+
+</p><p>
+<ul><i>"the 1.0 release might even happen, but probably not before second quarter 2000."</i>
+<ul>Marcus Meissner, November, 1999</ul></ul>
+</p><p>
+
+Discussion of Wine's registry first appears in 
+<a href="http://www.winehq.com/?issue=5#Registry%20rewrite">WWN #5</a> with
+suggestions for improvement.  Back then, discussion occurred about whether
+to move the registry directly into the file system, whether to turn it into
+a binary format for performance reasons, or whether to leave it as an ASCII
+file.  Well, it's still an ASCII file, though discussions still come up from
+time to time about moving it to a binary format.  Ove K&#229;ven wrote
+a feature article for 
+<a href="http://www.winehq.org/?issue=48#Feature:%20The%20Registry%20by%20Ove%20K%E5ven">WWN #48</a>
+describing Wine's registry.  Much of that information remains true to this
+day and bits of that article remain in the
+<a href="http://www.winehq.com/site/docs/wineusr-guide/index">Wine
+User Guide</a>.  Although it seems like Wine's registry code has been
+ultrastable for a long time, issues were
+<a href="http://www.winehq.org/?issue=80#Registry%20and%20main%20branches">still
+popping up</a> in 2001 that caused problems.  
+It took until June, 2003 for a 
+<a href="http://www.winehq.org/?issue=173#ReactOS%20Regedit%20Merge">regedit
+tool</a> to appear, courtesy of the <a href="http://www.reactos.org">ReactOS</a>
+project.  Implementing the registry allowed for Wine's own configuration to
+be handled with it.
+
+</p><p>
+
+In fact, one of the key things in the Wine beta release is the new configuration
+mechanisms.  There's two key things that come into play here.  First,
+Wine needed to have a sane set of defaults that allowed it to work out
+of the box.  From there, a tool needed to be created that allowed those
+settings to get overridden.  Back in 
+<a href="http://www.winehq.org/?issue=52#A%20visual%20configuration%20tool%20for%20Wine">WWN 
+#52</a> there began some discussion about creating a graphical configuration
+tool (though TkWine already existed).  Basically the 
+<a href="http://www.winehq.org/?issue=62#New%20Wine%20configuration%20tool">initial 
+idea</a> was to have it serve as a way to edit the text-based config file.
+In early 2001 an effort to 
+<a href="http://www.winehq.org/?issue=88#Removal%20of%20Commandline%20Options">remove 
+commandline options</a> began.  It was one of the first patches that made
+people question the direction Wine's configuration was heading.  Looking
+back, it's clear that Wine is pretty easy to use now without a lot of different
+commandline options.  In 2002 a large to-do list was created that contained
+the first concrete discussion of building
+<a href="http://www.winehq.org/?issue=142#A%20Big%20To-Do%20List">a graphical
+configuration tool</a>.  That work 
+<a href="http://www.winehq.org/?issue=159#Making%20Config%20Tools">began</a>
+in early 2003 and
+<a href="http://www.winehq.org/?issue=186#Winecfg%20Revisited">continued</a>
+<a href="http://www.winehq.org/?issue=188#Winecfg%20Status%20&amp;%20Preferences">on</a>
+<a href="http://www.winehq.org/?issue=206#Winecfg%20Additions">and</a>
+<a href="http://www.winehq.org/?issue=233#Configuration%20To-Do%20List">on</a>.
+For the most part the tool was complete in the middle of 2004.  However,
+a lot of other work remained to be done, such as setting up some sane default
+parameters, and cutting over to it couldn't be done right away.  This past June
+<a href="http://www.winehq.org/?issue=279#Winecfg%20Goes%20Live">winecfg</a>
+went live and the old config file fell by the wayside.  
+
+</p><p>
+
+Part of the configuration change dovetailed into DLL separation and led
+to a big development effort by Alexandre and Eric Pouech to
+<a href="http://www.winehq.org/?issue=184#Evolution%20of%20Wine's%20File%20Management">rewrite the filesystem code</a>.  The project got off the ground
+around August, 2003 with
+<a href="http://www.winehq.org/?issue=189#Filesystem%20Roadmap">some ideas</a>
+and some 
+<a href="http://www.winehq.org/?issue=204#File%20Handling">initial</a>
+<a href="ttp://www.winehq.org/?issue=209#New%20Filesystem%20Code%20Merge%20Commencing">code</a>
+appeared shortly thereafter.  For the most part it was a very smooth
+transition and by April, 2004 the new code was in place.  
+
+</p><p>
+
+<ul><i>"Given the amount of progress Wine has made over the past year, it seems (to me
+anyway) that the time may be appropriate to try for Wine version 1.0."</i>
+ <ul>Jeremy White, May 11th, 2000</ul></ul>
+
+</p><p>
+
+One of the final big changes to go into Wine's beta has been a change
+in <a href="http://www.winehq.org/?issue=218#Managing%20Windows">window
+management</a>.  The work loomed as rather mysterious and vague item
+on the to-do list for a 
+<a href="http://www.winehq.org/?issue=63#Window%20Manager%20woes">long</a> 
+time and it was widely agreed Alexandre
+was the only one who had the background to tackle it.  At the core
+lies the ability for interprocess window communication.  Around December
+of last year the update region management 
+<a href="http://www.winehq.org/?issue=247#Windows%20Update%20Region%20Changes">was moved</a> 
+into the server.  Optimizations over the next few months solidified this
+area of code and work mostly
+<a href="http://www.winehq.org/?issue=260#Window%20Management%20Rewrite%20Details">wrapped up</a>
+by the beginning of February.
+
+</p><p>
+
+The infrastructure around Wine has seen a lot of changes over the years.  
+in <a href="http://www.winehq.org/?issue=62#New%20Wine%20configuration%20tool">September 2000</a> 
+Wine replaced an older bug tracking system with Netscape's Bugzilla.  Jeremy
+Newman has been hating it ever since.   Around the same time,
+discussion began about 
+<a href="http://www.winehq.org/?issue=66#Wine%20application%20database">overhauling 
+the Application Database</a>.  By May of 2001, 
+<a href="http://www.winehq.org/?issue=97#New%20Application%20Database%20is%20ONLINE">a 
+new AppDB</a> had been written by Newman.  The code behind that was eventually
+released publicly and the Wine community stepped up with massive
+changes to make the <a href="http://appdb.winehq.org">AppDB</a> what it is 
+today.
+
+</p><p>
+
+Putting together 
+<a href="http://www.winehq.org/?issue=112#Building%20a%20Test%20Suite">a test 
+suite</a> became a hot topic in early 2002.  It's nearly doubled in size
+each year since then.   We now have about 12,000 individual unit tests
+that run on both Windows and Wine.  Besides "poking" Windows to find out
+how it behaves, the tests also serve to keep key areas of Wine from
+regressing.
+</p><p>
+
+<ul><i>"I really feel like 2001 will be the year of Wine 1.0"</i>
+    <ul>Eric Pouech, January 1st, 2001</ul></ul>
+
+</p><p>
+
+As Wine has matured, more and more higher-level libraries have began appearing.
+Things like 
+<a href="http://www.winehq.org/?issue=59#Scanner%20support">TWAIN scanner</a>
+support were implemented on top of native Linux libraries (in that case
+SANE.)  The 
+<a href="http://www.winehq.org/?issue=103#Crypto%20API">CryptoAPI</a> popped
+up in 2001 as well as improvements to the
+<a href="http://www.winehq.org/?issue=110#SHLWAPI%20Additions">Shell Lightweight API</a>.  Work on advanced controls, such as 
+<a href="http://www.winehq.org/?issue=141#Listview%20Update%20(con't)">Listview</a> 
+and more recently 
+<a href="http://www.winehq.org/?issue=260#RichEdit%20Control%20Code">RichEdit 2.0</a>, 
+have quietly made a lot of things "just work".   Huge development efforts, 
+such as 
+<a href="http://www.winehq.org/?issue=148">Microsoft Installer</a> support,
+have been financed by CodeWeavers and undertaken by 
+<a href="http://www.winehq.org/?issue=182#Beginnings%20of%20Microsoft%20Installer%20Support">Mike</a>
+<a href="http://www.winehq.org/?issue=230#Microsoft%20Installer%20Work">McCormack</a> 
+and 
+<a href="http://www.winehq.org/?issue=231#Status%20of%20MSI">Aric</a> 
+<a href="http://www.winehq.org/?issue=253#MSI%20Status%20Update">Stewart</a>.
+Libraries like these provide the guts behind Wine that Windows applications
+require.  
+
+</p><p>
+
+Of those libraries, DirectX is required by virtually every game on the market.  
+Initial work to support early versions
+of DirectX (&lt; v7) began in 1997 and predated WWN.  A lot of that work was
+good enough to get games running.  In 
+<a href="http://www.winehq.com/?issue=2#Small%20implementation%20of%20win32%20api">WWN #2</a>, 
+Lionel Ulmer began asking about implementing hardware accelerated OpenGL.
+<a href="http://www.winehq.org/?issue=45#OpenGL%20requirements">By 2000</a>, 
+Wine hooked into any ABI compliant OpenGL library allowing for hardware 
+acceleration.  Then in 2000 work stagnated when TransGaming formed and began 
+creating a commercial Direct3D implementation.  It wasn't until 2002 that 
+Jason Edmeades 
+<a href="http://www.winehq.org/?issue=135#Direct3D%208%20Support">inquired</a>
+about supporting DirectX 8.  Work
+<a href="http://www.winehq.org/?issue=150#Direct3D%20Update">really</a>
+<a href="http://www.winehq.org/?issue=152#Direct%203D%20Status">picked</a>
+<a href="http://www.winehq.org/?issue=170#Direct3D%20Status">up</a> and
+things 
+<a href="http://www.winehq.org/?issue=182#DirectX%20/%20Operation%20Flashpoint">really improved</a>
+over the course of about a year.
+About a year ago ideas began
+<a href="http://www.winehq.org/?issue=240#DirectX%209%20Roadmap">kicking
+around</a> about adding support for Direct3D 9.  The decision was made to
+implement it using a new library with the goal of eventually switching
+Direct3D 8 and earlier versions over to it eventually.  Oliver Stieber
+jumped in earlier this year to
+<a href="http://www.winehq.org/?issue=257#Direct3D%20Update%20and%20Roadmap">mention</a>
+some of the work he had done on D3D9.  Things have really taken off on it
+and you can expect a lot more DirectX improvements in the very near future.
+
+</p><p>
+
+<ul><i>"Why exactly does an installer require such complex parts of OLE anyway?
+ That seems like overkill for a self-extracting exe to me."</i>
+ <ul>Mike Hearn, January 21, 2003</ul></ul>
+</p><p>
+DCOM is a four-letter word, namely one that's caused a lot of Wine
+developers to mutter some other four-letter words.  Wine's DCOM 
+implementation has seen quite a few revisions over the years.  While the
+DirectX efforts serve to get a lot of games to run, almost
+all of the effort for DCOM has gone into supporting a single application: 
+InstallShield.  In September 2001 
+<a href="http://www.winehq.org/?issue=104#InstallShield%206">work began</a> on
+extending DCOM to support InstallShield 6.  Initially it took a month to
+get <a href="http://www.winehq.org/?issue=106#InstallShield%206%20Success">it 
+working</a> to some degree.  
+<a href="http://www.winehq.org/?issue=141#RPC%20Update">Work</a>
+<a href="http://www.winehq.org/?issue=154#InstallShield%206%20Insight">on</a> 
+<a href="http://www.winehq.org/?issue=155#RPC%20Data%20Marshalling">it</a>
+continued, but sort of stalled by 2003.  Some of the key DCOM developers
+started to realize a massive rewrite was required in order to make some of
+the harder, and crucial, bits work.  In January of this year a 
+<a href="http://www.winehq.org/?issue=256#DCOM%20Status%20Update%20and%20Roadmap">new 
+roadmap</a> was posted and progressed rapidly with CodeWeavers staff 
+spearheading the development. That DCOM rewrite, 6 months and 135 patches 
+later, is now complete.
+
+</p><p>
+
+Earlier we mentioned a lot of topics don't get nearly enough coverage 
+here on the pages of WWN as they deserve.  One of those areas is
+internationalization.  A dedicated group has spent a lot of time not only 
+making all sorts of programs from around the world work with Wine, but 
+providing translations and documentation for the project.  
+
+</p><p>
+
+Back in 
+<a href="http://www.winehq.org/?issue=25#Better%20support%20for%20Cyrillic%20fonts">WWN #25</a>
+we didn't have the luxury of a full Unicode implementation.  Some of you,
+namely those living on the North American continent, might be surprised
+to learn ASCII just doesn't cut it for everyone in the world.  In fact,
+there's a million character sets out there and supporting them is a tough
+task.  Microsoft chose to do this using a special set of "Wide" functions
+that allowed Unicode character sets to be worked with.  Wine, of course,
+needed to followed this same mechanism to implement the "W" counterpart
+to all of the ASCII functions.  The patch discussed in WWN #25 added 
+support for Cyrillic characters.  Ove K&#229;ven suggested looking at
+the environment variables in the user's environment, and in fact that's
+what eventually ended up happening. 
+
+</p><p>
+
+Even as recently as 2000 the discussion was going on about how to best
+support Unicode.  It wasn't exactly clear
+(<a href="http://www.winehq.org/?issue=41#Ansi%20and%20Unicode">WWN #41</a>)
+directly implementing the ASCII functions on top of Unicode was the best
+direction.  Well, that mechanism proved to be the way to go.  By 2002 work had 
+progressed to the point where Shachar Shemesh started work on languages 
+requiring
+<a href="http://www.winehq.org/?issue=119#Implementing%20BiDi%20Fonts">bidi</a>
+support.
+
+</p><p>
+
+<ul><i>"We are now working on the last missing piece ... to complete the transition from 
+a Win3.1 architecture to a NT-like architecture. Once this is done we'll be able 
+to release 1.0. I won't give any dates though..."</i>
+ <ul>Alexandre Julliard, October 29th, 2001</ul></ul>
+
+</p><p>
+
+So where are we headed?  As we mentioned, DirectX support is going to
+continue to improve in the short term.  Work on getting games to run will
+likely drive 
+<a href="http://www.winehq.org/?issue=277#Copy%20Protection%20Status%20#1">efforts</a>
+to 
+<a href="http://www.winehq.org/?issue=290#Safedisc%20Begins%20to%20Work">improve</a>
+copy protection support.  On the tools side of things, the new
+<a href="http://wiki.winehq.org">Wine Wiki</a> has proven to be quite
+successful.  In the more distant future, Mac OS X on Intel presents an 
+interesting opportunity and could very well lead to very successful port.
+And, as always, at any time a major patch could arrive from out of the blue 
+that makes Wine do something new.  All this work, along with lots of 
+bugfixes, will eventually get us to Wine 1.0.  I'm not going to be the one
+to throw out any predictions of when that'll happen.  </p>
+
+
+</section>
+</kc>

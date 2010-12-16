@@ -1,0 +1,414 @@
+
+<section 
+	title="News: Wine 1.1.2 "
+	subject="Wine"
+	archive="#"
+	posts="0"
+>
+<topic>Wine</topic>
+<p>
+<b>Wine 1.1.2 Released</b>
+</p>
+<p>
+The second development branch release since Wine 1.0 was released recently.  Courtesy of some excellent summer of code students we're seeing big changes in gdi and the control panel as well as big movements in msxml and direct 3d.  Alexandre's shortlog:
+</p>
+
+<quote>
+<p>
+ The Wine development release 1.1.2 is now available.
+<br />
+What's new in this release:
+<br />
+    * Control panel improvements and new appwiz panel.<br />
+    * Restructurations of state handling in Direct3D.<br />
+    * Support for timer queue functions.<br />
+    * Many MSXML improvements.<br />
+    * Several fixes to Solaris support.<br />
+    * Various bug fixes.<br />
+
+</p>
+</quote>
+<p>
+<b>WineConf 2008</b>
+</p>
+<p>
+A friendly reminder for all those who are interested that WineConf 2008 is approaching quickly!  Head over to the <a href="http://www.winehq.org/site/wineconf">official</a> page for more information.  See you there!
+</p></section>
+<section 
+	title="CUDA Followup: it works!"
+	subject="CUDA"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-July/067093.html"
+	posts="20"
+>
+<topic>CUDA</topic>
+<p>
+Seth Shellnut has been hard at work making that CUDA wrapper work and has written in with some success!
+</p>
+<quote>
+<p>
+Ok, I'm pretty sure I've got a working wrapper. Still need to implement a few functions and the direct3d calls but nearly everything is there. If anyone would like to test out different CUDA apps with this and report any feedback it would be much appreciate. I don't have a CUDA enabled card so I can't test anything.
+</p><p>
+The source files are viewable here,
+<br />
+ <a href="http://shelnutt.twomurs.com/patches/cuda/">http://shelnutt.twomurs.com/patches/cuda/</a> 
+<br />
+and as a 7z file.
+<br />
+ <a href="http://shelnutt.twomurs.com/patches/cuda.7z">http://shelnutt.twomurs.com/patches/cuda.7z</a> 
+<br />
+Binary file is available under<br />
+ <a href="http://shelnutt.twomurs.com/patches/cuda/bin/">http://shelnutt.twomurs.com/patches/cuda/bin/</a> 
+<br />
+Thanks,
+<br />
+Seth Shelnutt
+
+</p>
+</quote>
+<p>
+There was then some discussion about doing actual testing.  Sadly it seemed that the wrapper somehow caused CPU usage to spike to 100%.  With Stefan Dosinger's help it may be that we found a bug in the linux cuda implementation.  Mind Matter writes in with his testing:
+</p>
+<quote>
+<p>
+I have been testing this out with Seth. Yes the wrapper is up and
+running. I have been able to run the folding@home GPU client for about
+a week now with comparable performance to the same hardware running
+under Windows. The main problem as stated before is that both cores
+(dual core system) are running at 100% and the system is not usable
+until the client is killed. In Windows this client only uses about 20%
+or less of a single core to feed the GPU leaving the second core free.
+</p><p>
+I ran oprofile (first time, never heard of it before) while the client
+was running.
+<br />
+<pre>
+213932 54.7876 wine-preloader
+       CPU_CLK_UNHALT...|
+         samples|      %|
+       ------------------
+         1970113 88.9871 libcuda.so.177.13
+          160796  7.2629 FahCore_11.exe
+           30056  1.3576 libc-2.7.so
+           10169  0.4593 libpthread-2.7.so
+            9143  0.4130 libcudart.so.2.0
+            8473  0.3827 libfreetype.so.6.3.16
+            5065  0.2288 kernel32.dll.so
+            4726  0.2135 ntdll.dll.so
+            3578  0.1616 [vdso] (tgid:19882
+range:0xffffe000-0xfffff000)
+            3458  0.1562 cudart.dll.so
+</pre>
+I have attached the full output.
+<br />
+I assume this says that libcuda is using 88% of the CPU and
+FahCore_11.exe is using 7%. When I watch the processes in the KDE
+system monitor it shows FahCore_11.exe using ~50% (one full core) and
+Xorg using ~50% (second core). I don't see from oprofile how and why
+xorg is using a whole core.
+
+</p>
+</quote>
+<p>
+Stefan's comments:
+</p>
+<quote>
+<p>
+Your result
+shows that the CPU time is spent in the Cuda driver(on behalf of both the
+FAH and X11 processes). I am afraid I can't help you with that. I recommend
+you to contact Nvidia on this issue.
+</p>
+</quote></section>
+<section 
+	title="MSI Extensions"
+	subject="Installers"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-July/067717.html"
+	posts="6"
+>
+<topic>Installers</topic>
+<p>
+Scott Ritchie writes in with an interesting idea about MSI installers.  The thread didn't seem to end in any action items but its an interesting thought nonetheless.
+</p>
+<quote>
+<p>
+Just a crazy thought, but...
+<br />
+What if we created a standard for passing some sort of wine-specific
+metadata in an MSI file?  Windows would ignore it, but application
+developers could use it to include some helpful Linux-specific Wine
+instructions like what windows version to use, a custom .desktop file,
+or even instructions to install into a completely independent Wine prefix.
+</p><p>
+This way, a single .msi file could be a true universal installer for
+both Windows machines and Linux machines.  Moreover, there'd be less of
+a need to create custom Wine packages for applications like Picassa
+since a lot of that functionality would be abstracted into Wine itself.
+<br />
+Thoughts?
+<br />
+Thanks,<br />
+Scott Ritchie
+</p>
+</quote>
+<p>
+Reece Dunn follows up with more information about MSIs
+</p>
+<quote>
+<p>
+That sounds interesting.
+<br />
+The main MSI data is essentially just a database. Other people provide
+their own extensions, for example, InstallShield have their own
+extensions to support self-registration of DLL's via (something like)
+_IISSelfReg and _IISSelfUnReg tables.
+<br />
+I don't see why we can't add things like X11Desktop tables and the like.
+</p>
+</quote>
+<p>
+Stefan Dösinger writes in with his thoughts:
+</p>
+<quote>
+<p>Hm. I sort of like and dislike the idea at the same time
+
+Regarding desktop integration with win32 apps is concerned, I think those
+problems should be fixed in Wine. I think all the things we need to set up
+the shortcuts, filetypes, etc. properly are provided by the Windows app
+as-is.
+
+Installing into a different wineprefix won't work, I think. By the time you
+have msi started up, a wineprefix decision is done already.
+
+What would be cool though, is if Wine's msi could install a completely
+Wine-independent native Linux application(or, install a Winelib app that
+brings its own Wine). That way one could build an universal package that
+contains a Win32 and native Linux app at the same time.
+
+
+</p>
+</quote>
+</section>
+<section 
+	title="Blitting speedups"
+	subject="Optimizations"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-July/067676.html"
+	posts="12"
+>
+<topic>Optimizations</topic>
+<p>
+Aric Stewart noticed an interesting inefficiency in some dsruface code and attempts a fix:
+</p>
+<quote>
+<p>
+Hi there,
+<br />
+I was playing with a older Japanese side scrolling shooter benchmark and 
+was getting 4.3 frames per second. Some digging revealed that the game 
+made extensive use of Blt on gdi surfaces and it looks like the current 
+implementation of Blt actually locks the entire destination surface to 
+blt to it. This then causes the Unlock to copy the entire screen out. 
+This means that every time any sprite moved the entire screen redrew.
+</p><p>
+I threw together this patch, which seems far to simple to be at all 
+correct, and suddenly i was getting 28.8 frames per second. I know it is 
+not fully correct because a a portion of the game (drawn by FastBlt it 
+looks like) stopped rendering correctly with this patch.
+</p><p>
+But I thought it may get someone who knows that area better thinking 
+about it. If we can optimize this then a number of the scrolling shooter 
+games will become playable. I am told that these style games are still 
+very popular here.
+</p><p>
+And if said people in the know where to busy, maybe they could give me 
+some pointers on if I have the right approach or not.
+</p><p>
+If anyone is interested I can provide an archive with the benchmark 
+program in it.
+</p><p>
+-aric
+</p>
+</quote>
+<p>
+H. Verbeet pointed out some issues with the patch in that it breaks some bliting.
+</p>
+<quote>
+<p>
+This will break things like checking for out of surface rectangles,
+clipping and overlapping blits.
+
+Stefan knows this part of the code better than me, but I don't think
+there's anything wrong with the concept of the patch.
+</p>
+</quote>
+<p>
+As it turns out Aric's patch is indeed on its way to being correct, and with a couple of back and fourths on the mailing list Aric submitted a working patch to which Stefan signed off on.
+</p>
+</section>
+<section 
+	title="Digital Signature Checking in WINE"
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+<p>
+Juan Lang has recently sent in a few patches and an explanation as to how Wine will handle digital certificates.
+</p>
+<quote>
+<p>
+Folks, now that there's a bit more code in Wine that "verifies" file
+signatures, I wanted to make sure everyone understands its current
+limitations.
+</p><p>
+1.  It's only implemented for PE files and .cab files.  Windows
+supports more formats, of course, notably MSI files (see bug 11759,
+ <a href="http://bugs.winehq.org/show_bug.cgi?id=11759">http://bugs.winehq.org/show_bug.cgi?id=11759</a> )
+</p><p>
+2.  Wine doesn't actually verify that the signature in the file
+matches the file being checked.  Any valid certificate could be put
+into a file, and Wine would accept it.
+</p><p>
+I don't consider this a serious security flaw, because I think the
+concept of a signature validating anything useful about a binary is
+flawed.  Hence I'm not terribly motivated to fix it.
+</p><p>
+Flame away,<br />
+--Juan
+</p>
+</quote>
+<p> 
+Of course this caused a couple disturbances.  Richie Hindle:
+</p>
+<quote>
+<p>
+I assume you don't ship signed software.  If you did, you might see things
+differently.  Unless I've misunderstood, you've made this possible:
+<br />
+1. I release my software with my digital signature attached
+<br />
+2. A malware author downloads my software, extracts my certificate, and
+  applies it to his malware
+<br />
+3. His software infects a user's machine and damages it.  The user
+  discovers the infection, looks at the signature, **Wine says that the
+  certificate is valid**, and the user blames me.
+<br />
+Please, either tell me I'm wrong, or make Wine honest about what it's
+telling the user.
+</p>
+</quote>
+<p>
+Juan's response:
+</p>
+<quote>
+<p>
+No, you're not wrong, and this email was my attempt at being honest.
+</p><p>
+I'll point out that there are other avenues of attack that can lead
+Wine to "mislead" the user about who signed an executable.  However,
+in my professional opinion, a signature on a binary isn't worth the
+bits its encoded in.  Any software, signed or not, can contain
+vulnerabilities.  With the size and complexities of today's software,
+and with signatures only being affixed to the largest and most complex
+software, I'll state that in my opinion it's the signed software which
+is more at risk than the unsigned software.  If you believe a piece of
+software signed by Microsoft (or Apple, or...) is any more trustworthy
+than some random piece of code, you needn't look far to disabuse
+yourself of that notion.
+</p><p>
+Even so, an exploit is far more likely to target Windows, and perhaps
+to fail on Wine, than it is to target Wine.  I'm not attempting to
+hide behind a security through obscurity defense.  I'm pointing out
+that even if digital signatures meant anything--and I maintain that
+they don't--the probability of their being attacked in Wine is very
+low.  Therefore, from a risk management point of view, there's no
+compelling reason to fix it.  I may fix it someday, but as I said
+before that wouln't remove all code signing vulnerabilities from Wine,
+it would only remove this particular one.
+</p><p>
+If you disagree, patches are welcome.
+</p>
+</quote>
+<p>
+Paul Millar brings in another point, about the rational behind digital signatures:
+</p>
+<quote>
+<p>
+Whether the code operates correctly (e.g., doesn't crash, taking out your
+filesystem and burning down your house) isn't under scrutiny.  You are quite
+right in saying that a software having a valid digital signature from
+Microsoft makes no statement whether the software will work.  Maybe it does,
+maybe it doesn't.  But, this isn't what digital signatures are about.
+</p><p>
+Instead, signed software attempts to prevent silent injection of Trojan
+software.  The question is rather: did this software which claims to come
+from Microsoft really do so?  Has it been hacked to include some "additional
+functionality"?
+</p><p>
+A digital signature makes one precise statement: that someone (or some agent)
+with access to the corresponding private key decided to sign the software.
+</p><p>
+If you also trust that:
+ 1.    you have the correct public key for the certificating authority
+       (CA) that issued the code-signing certificate,
+<br />
+ 2.    the CA are doing their job correctly,
+<br />
+ 3.    the recipient of the code-signing certificate tries to ensure that
+       the key is only used to sign their own software (e.g., hasn't been
+       silently stolen).
+<br />
+then you can be pretty certain that, if some software was signed by a valid
+code-signing certificate, that the software is the genuine article.
+</p>
+</quote>
+<p>
+Juan's final point is that he agrees.  The certificates don't promise anything about how functional software is, but merely give a good inclination as to whom its from.
+</p>
+<quote>
+<p>
+Sure.  It's just my professional opinion that a signature on an
+application provides no security.  Zip, nada.  It does give you some
+assurance of who it came from, that's all.
+</p>
+</quote>
+</section>
+<section 
+	title="AcceptEX Implementation"
+	subject="AcceptEX"
+	archive="http://www.winehq.org/pipermail/wine-patches/2008-August/059086.html"
+	posts="2"
+>
+<topic>AcceptEX Implementation</topic>
+<p>
+As many of WWN's readers will be familiar with there is an open <a href="http://bugs.winehq.org/show_bug.cgi?id=9787">bug</a> concerning acceptex which affects Warcraft 3.  In fact, this bug has more than 250 comments and 84 votes, by far the most votes of any bug.  Scott Lindeneau sends in a patch to wine-patches recently with a seemingly working implementation of the necessary functions.
+</p>
+<quote>
+<p>
+ Implements locatable async commands that can be notified(Terminated) using a locator (obj_handle_t)<br />
+ Allows the connect command to be passed two sockets, one for listening and one to accept the connection to(instead of creating a new socket).<br />
+ sock.c: Implements sock_close_handle to correctly remove any associated/locatable sockets.<br />
+ fd.c: Implements register_async_l which registers a locatable async request to a file descriptor that can be notified later.<br />
+ async.c: Implements async_wake_up_l to notify locatable async's and create_async_l which creates locatable async events.<br />
+</p>
+<pre>
+---
+ include/wine/server_protocol.h |   34 +++++++++++-
+ server/async.c                 |   32 +++++++++--
+ server/fd.c                    |   30 ++++++++++
+ server/file.h                  |    7 ++
+ server/protocol.def            |   14 +++++
+ server/request.h               |    4 +
+ server/sock.c                  |  120 +++++++++++++++++++++++++++++++---------
+ server/trace.c                 |   23 ++++++++
+ 8 files changed, 231 insertions(+), 33 deletions(-)
+
+Implements AcceptEx and GetAcceptExSockaddrs.
+---
+ dlls/mswsock/mswsock.spec      |    4 +-
+ dlls/ws2_32/socket.c           |  250 ++++++++++++++++++++++++++++++++++++++++
+ dlls/ws2_32/ws2_32.spec        |    2 +
+ include/wine/server_protocol.h |    2 +-
+ 4 files changed, 255 insertions(+), 3 deletions(-)
+</pre>
+</quote></section>

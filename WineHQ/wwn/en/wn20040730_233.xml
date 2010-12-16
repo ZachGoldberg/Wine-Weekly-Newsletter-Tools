@@ -1,0 +1,578 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="233" date="07/30/2004" />
+<intro> <p>This is the 233rd issue of the Wine Weekly News publication.
+Its main goal is to laugh. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="244" size="1068" contrib="65" multiples="35" lastweek="32">
+
+<person posts="27" size="174" who="Shachar Shemesh" />
+<person posts="26" size="89" who="Dmitry Timoshkov" />
+<person posts="26" size="75" who="Mike Hearn" />
+<person posts="17" size="46" who="Alexandre Julliard" />
+<person posts="13" size="38" who="Jeroen Janssen" />
+<person posts="12" size="41" who="Robert Shearman" />
+<person posts="8" size="20" who="Andreas Mohr" />
+<person posts="6" size="19" who="James Hawkins" />
+<person posts="6" size="18" who="Lionel Ulmer" />
+<person posts="6" size="11" who="Ivan Leo Puoti" />
+<person posts="5" size="64" who="Michael Jung" />
+<person posts="5" size="15" who="Vincent B&#233;ron" />
+<person posts="4" size="14" who="Jeroen Janssen" />
+<person posts="4" size="11" who="Dimitrie O. Paun" />
+<person posts="4" size="11" who="Ferenc Wagner" />
+<person posts="6" size="16" who="Diego Petten&#242;" />
+<person posts="4" size="9" who="Francois Gouget" />
+<person posts="4" size="9" who="Marcus Meissner" />
+<person posts="3" size="166" who="Marcio Esper" />
+<person posts="3" size="15" who="Michael Schluter" />
+<person posts="3" size="9" who="Filip Navara" />
+<person posts="2" size="14" who="sergio ojalvo" />
+<person posts="2" size="10" who="Ove Kaaven" />
+<person posts="2" size="9" who="Nicolai Kuntze" />
+<person posts="2" size="7" who="Chris Morgan" />
+<person posts="2" size="7" who="Uwe Bonnes" />
+<person posts="2" size="5" who="Fabian Cenedese" />
+<person posts="2" size="5" who="Andreas Davour" />
+<person posts="2" size="5" who="Robert Reif" />
+<person posts="2" size="5" who="Ryan Underwood" />
+<person posts="2" size="4" who="Vitaly Lipatov" />
+<person posts="2" size="3" who="Troy Rollo" />
+<person posts="1" size="15" who="Thomas Weidenmueller" />
+<person posts="1" size="7" who="Christian Costa" />
+<person posts="1" size="5" who="Francois Gouget" />
+<person posts="1" size="4" who="Marcelo Duarte" />
+<person posts="1" size="3" who="Gerald Pfeifer" />
+<person posts="1" size="3" who="Paul van Schayck" />
+<person posts="1" size="3" who="Niek Beernink" />
+<person posts="1" size="3" who="Dan Timis" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="Colin Wright" />
+<person posts="1" size="3" who="Peter Riocreux" />
+<person posts="1" size="3" who="Shachar Shemesh" />
+<person posts="1" size="3" who="Harald Milz" />
+<person posts="1" size="3" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Joe Gainey" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Mike McCormack" />
+<person posts="1" size="2" who="Paul Millar" />
+<person posts="1" size="2" who="Maurizio Monge" />
+<person posts="1" size="2" who="David Lee Lambert" />
+<person posts="1" size="2" who="Jeremy Newman" />
+<person posts="1" size="2" who="Steven Edwards" />
+<person posts="1" size="2" who="Santosh Siddheshwar" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="Stefan Munz" />
+<person posts="1" size="2" who="Jeremy White" />
+<person posts="1" size="2" who="Dan Kegel" />
+<person posts="1" size="2" who="Yorick Hardy" />
+<person posts="1" size="1" who="Manuel Fink" />
+
+</stats>
+<section 
+	title="News: Wine Review" 
+	subject="News"
+	archive="http://www.framasoft.net/article2336.html"
+	posts="1"
+	startdate="07/24/2004"
+        enddate="07/30/2004"
+>
+<topic>News</topic>
+<p>So I found this web site this week called
+<a href="http://www.framasoft.net/article2780.html">Framasoft</a> that
+has a pretty detailed list of free software applications.  Naturally being
+curious I had to see what they had to say about Wine.  
+<a href="http://www.framasoft.net/article2336.html">Their critique</a> is
+pretty harsh, though perhaps not without reason.  I think some of the gripes
+about CodeWeavers are leveled unfairly.  </p>
+
+</section>
+<section 
+	title="Configuration To-Do List" 
+	subject="winecfg todo list"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/07/0427.html" 
+	posts="3"
+	startdate="07/25/2004"
+>
+<topic>Configuration</topic>
+<p>
+Yes.. we continue the ongoing saga of Wine's configuration
+this week.  A lot of folks have been successfully running
+without the trusty config file, but there's still some work
+to be done.  Mike Hearn summarized the to-do list:</p>
+<quote who="Mike Hearn"><p>
+
+So, I talked with Chris and here are some tasks remaining on
+winecfg. All of these are *easy* and can be done by anybody who has
+basic coding ability. For a few of them you don't even really need to
+know C! So come on lurkers, I know you're out there, step on up.
+</p><p>
+Things that need to be done before we should switch to winecfg IMHO
+are:
+<ul>
+<li> Windows Look has no associated edit control. Who modifies this
+  setting these days anyway? I vote for killing the label rather than
+  adding the edit.</li>
+
+<li> UseTakeFocus (FIXME) - why is this a setting in the UI? I don't
+  even know what the UseTakeFocus protocol does, I've certainly never
+  tweaked it. Does it need to be there? At the very least it needs to
+  be rephrased into terms people can understand and the FIXME needs
+  to be removed.</li>
+
+<li> In the Drives tab, the top half is full of widgetry we probably
+  don't want anymore. In particular "Use real windows drive" etc
+  doesn't make much sense, you can just change the c: mapping to get
+  that effect and it's not something we want to encourage
+  anyway. Especially as most people these days seem to use XP rather
+  than Win98 using a real windows drive is fast way to get an
+  inoperable Wine as well as (possibly) a torched Windows install if
+  it's on FAT32 and you can even pick up viruses from them.
+  <br /><br />
+  I kid you not, the other day I ran a program that had been sitting
+  on my Windows XP partition for a few months and my virtual windows
+  drive (I think the term virtual rather than fake sounds better)
+  ended up infected with some W32.Bagle variant.
+  <br /><br />
+  Anyway the top half of this tab doesn't do anything, never did,
+  doesn't make any sense and should just be removed.</li>
+
+<li> We should probably merge the X11 Driver and Audio tabs together as
+  they both have lots of empty space, and rename it to "Audio and
+  Video" or something. I think the term "X11 Driver" doesn't make
+  much sense to many people anyway.</li></ul></p><p>
+
+Minor cosmetic fix: remove the groupbox on the "about" tab, it
+doesn't provide any information at all. We also may want to stick the
+authors list in there, as it's a bit more visible than in the shell32
+about box which is hardly ever shown. But obviously these things
+should not block us switching to it.
+</p><p>
+Once those things are done we can apply the patch to switch Wine to
+using the registry entirely. Is it worth writing a migration tool?
+</p><p>
+I'm not really sure, I guess some people would like their settings
+preserved but most of the settings people tweak are just check boxes
+in the new UI anyway and would take like 5 seconds to
+restore. AppDefaults are a bigger issue but do many people have lots
+of these?
+</p><p>
+Oh, final thing, we need to double check that removing the config
+doesn't regress things. I've been running with no config file for a
+few months now and while there are a few minor things I don't think
+they are critical. I may well have missed things though.
+</p></quote>
+
+<p>James Hawkins then began doing a bit of work on those items and more.  
+Among other things he posted a patch changing audio detection:</p>
+<quote who="James Hawkins">
+<p>
+Changelog:
+<ul>
+    <li> take audio autodetection out of winecfg and put it in winmm</li>
+    <li> if driver is not found in the registry or the driver fails to
+       load, then autodetect driver</li></ul></p></quote>
+
+<p>Rob Shearman was glad to see it,
+<quote who="Rob Shearman">
+Thanks for another cool patch. It lessens the burden on the user.</quote></p>
+
+<p>Alexandre didn't like the approach though,
+<quote who="Alexandre Julliard">
+
+This code does not belong in winmm. Autodetection in winmm should be
+done by having the drivers themselves fail to load if the
+corresponding support is missing.
+
+</quote></p>
+</section>
+<section 
+	title="rsabase.dll Work" 
+	subject="rsabase.dll"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0425.html" 
+	posts="4"
+	startdate="07/25/2004"
+	enddate="07/26/2004"
+>
+<topic>Security</topic>
+<p>Michael Jung submitted a patch adding some tests for RSABase.DLL which
+in turn is responsible for implementing Microsoft's "<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/seccrypto/security/csps_and_the_cryptography_process.asp">Cryptographic Service 
+Provider</a>" (CSP) API's.  
+Rob Shearman warned him,
+<quote who="Rob Shearman">
+ You seem to be working on Crypto stuff, so I thought I'd better tell you
+ that I've got a patch pending that implements half of the functionality
+ in rsabase.</quote> 
+
+<p>Michael replied,
+<quote who="Michael Jung">
+Thanks for the information. Indeed I've been working on rsabase.dll. When do 
+you plan to submit your patch? I would like to see if at least some of my 
+code can be incorporated, or if the work was in vain.</quote></p>
+
+<p>Rob must have sent him the patch and fortunately it appears there 
+was no duplication of work:</p>
+<quote who="Michael Jung">
+<p>
+as far as I can tell from looking at your patch, our work is pretty much non 
+overlapping. 
+</p><p>
+I worked on the following aspects:
+<ul>
+<li> Implementation of "real handles", instead of "address-handles".</li>
+<li> Separating OpenSSL dependent code from CSP code. I consider
+  this beneficial, since there seem to be some license issues
+  with OpenSSL (at least for the ReactOS project - there was a short
+  discussion on this on the wine-devel list). If the OpenSSL code is
+  cleanly separated, it will be easier to support GNUTLS or something
+  later.</li>
+<li> Basically, my code doesn't do any crypto stuff at all until now
+  (Besides some first lines of code for MD5 hashing). I tried to
+  get the MSDN CryptoAPI examples to compile and run, which only
+  acquire contexts, hash data, derive keys, query CSP params and so
+  on, but which never verify the results. So my code is mainly skin
+  (but elephant skin), no guts.</li></ul>
+</p><p>
+I've 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/07/att-0425/01-rsabase.diff">attached</a> the current version of my patch. 
+</p><p>
+Do you have a certain application, which you want to get running? Would it be 
+ok for you if we proceed as follows: I will wait until you submit your patch 
+(It would be nice if you could add some unit-tests that test for behaviour 
+you depend on). After this you give me a week or two to incorporate my work.
+</p><p>
+Is there any area in rsabase, which you definitely will not implement in the 
+near future and which I could work on until you submit your patch?
+</p></quote>
+
+<p>Rob didn't think he was planning on doing much more work,
+<quote who="Rob Shearman">
+Well, pretty much everything that I was going to implement is in the 
+patch I sent you. The only additional functions I was going to implement 
+are RSA_CPSignHash and RSA_CPVerifySignature. However, if you want me to 
+implement some more I would be only too happy to do so having gained a 
+lot of familiarity with both CryptoAPI and the OpenSSL/Crypto library.
+</quote></p>
+
+
+</p>
+</section>
+<section 
+	title="Wine &amp; Locales" 
+	subject=""
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0.html" 
+	posts="35"
+	startdate="07/28/2004"
+	enddate="07/29/2004"
+>
+<topic>Internationalization</topic>
+<p>
+There was a long discussion this week about Wine and setting locales.
+At times it bordered a flamewar, and it's not clear anything has really
+been resolved to everyone's satisfaction. Basically the problem revolves 
+around trying to map Unix/Linux's
+environment settings into Windows and then getting apps to behave 
+appropriately.  Needless to say, this is very tricky.  In the Unix world
+there's 
+ <a href="http://publib16.boulder.ibm.com/pseries/en_US/aixprggd/nlsgdrf/locale_env.htm">a
+set of environment variables</a> that control this.  In Shachar Shemesh's
+case he likes to mix and match values of these to get applications to behave
+in a sane matter.  For example, he sets LANG=en_US (US English) and 
+LC_CTYPE=he_IL (Israeli locale for Hebrew) because,
+<quote who="Shachar Shemesh">
+ I need to access Hebrew from ANSI applications, but having the 
+user locale (which you call the system locale) set to Hebrew has some 
+undesirable side effects. I therefore have this mixed setting. No 
+problems for me, as I'm not using any characters that belong to the 
+English locale that are outside the ASCII range.</quote>  So Shachar added
+support to Wine that took into account LC_CTYPE and then asked that 
+everyone agree on how it should be used: </p>
+<quote who="Shachar Shemesh"><p>
+In an attempt to get away from a possibly confusing subject line, and to 
+converge on an agreed behavior, here is an attempt to clear the desired 
+locale behavior Wine should have. Dmitry (and anyone else), please 
+comment on 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/07/0505.html">this 
+table</a> where you think there are errors in it, and say 
+what should be there.
+</p><p>
+In the "Unix setting", I'm always assuming that LC_ALL overrides 
+whatever is written in that column, and that LANG is used if neither 
+LC_ALL nor the column are set.
+</p></quote>
+
+<p>Dmitry Timoshkov answered:</p>
+<quote who="Dmitry Timoshkov"><p>
+I said it many times already, and I'll repeat once more: Windows has
+only one active locale which defines all the things you mentioned in
+the table except language of the interface which let's set aside to not
+confuse each other. There is no need to try to find appropriate mappings
+for LC_TYPE or anything else you find in the output of the 'locale'
+command. But still (almost) any locale setting you want to modify in
+the win32 environment on a per user basis can be done either by running
+Control Panel/Regional Options, or modifying the registry or win.ini
+directly. By default all locale data are set according to the global
+system locale.
+</p><p>
+Any attempt to have more than one active locale simultaneously will lead
+to confusion and nothing else, be it unix environment or win32.
+</p></quote>
+
+<p>From there the two went back and forth over exactly what behavior was
+affected.  Shachar was able to point out differences between a systemwide
+locale setting and one set by a user.  Still, Dmitry didn't think it
+really mattered:</p>
+<quote who="Dmitry Timoshkov"><p>
+System default locale defines current ANSI code page,
+while user default locale simply puts the overrides to
+the registry for numbers, currency, date/time.
+</p><p>
+I still want your patch to be removed until you at least
+write test cases showing exactly what APIs are affected
+by system/user locale. Using LC_CTYPE for the system
+default locale (current ANSI code page) is very dubious
+choice as well. The whole purpose and the patch itself
+are pure hacks aimed to fix unexplaned side effects.
+</p><p>
+Alexandre, please revert the patch until at least a test
+case is written and a better explanation provided what
+exactly wrong with locale controlled by only LC_ALL and LANG.
+</p>
+</quote>
+
+<p>Shachar felt his interpretation was fine and didn't require 
+any changes.  Alexandre agreed,
+<quote who="Alexandre Julliard">
+I'm afraid I still don't see what's wrong with the patch. Obviously
+there can be different system and user locales on Windows, since there
+are APIs for that, and LC_CTYPE looks like a pretty good match for
+what the system locale does; I don't really understand why you are so
+violently opposed to that patch. Could you please explain exactly what
+you think this is going to break?</quote></p>
+
+
+<p>Dmitry explained what was wrong with it,
+<quote who="Dmitry Timoshkov">
+It breaks every user's setup where LANG and LC_CTYPE inadvertently point
+to different locales (like LC_CTYPE=en_US, LANG=ru_RU) and users in that
+case have completely not working Wine: neither keyboard input, not localized
+resources and everything else. I, personally, fixed several similar cases
+for our customers.
+</quote></p>
+
+<p>Alexandre didn't exactly understand the problem and asked,
+<quote who="Alexandre Julliard">
+Keyboard input will be affected because we now set the Unix codepage from
+LC_CTYPE too, is that your main objection?</quote>  Dmitry confirmed
+that was issue.  However, Alexandre felt there really was a problem that needed
+to be solved and asked for some input:</p> 
+<quote who="Alexandre Julliard"><p>
+But the fact is that there are two different locales that can be
+configured independently on Windows, and some users need that
+ability. So how do you propose to solve the issue?
+</p><p>
+We could of course make it configurable in the config file instead,
+but it seems to me that reusing the existing Unix setup is better than
+requiring users to configure the same thing in two different places.
+</p></quote>
+
+<p>Dmitry thought that might work,
+<quote who="Dmitry Timoshkov">
+
+I like the idea of moving that setting to the config file. We can't
+use existing unix locale settings except LC_ALL and LANG because
+every user's system might have (and does have) very different locale
+settings, we can't assume that everyone out there configures locale
+in the same way.
+</quote></p>
+
+<p>To which Alexandre replied,
+<quote who="Alexandre Julliard">
+I don't see how the settings would be different, surely LC_CTYPE is
+always going to control the ASCII->Unicode mapping on Unix, so why
+shouldn't it do that on Wine?  If the issue is that users change their
+setup without understanding the results, then surely adding even more
+config parameters that they need to get right is not going to improve
+the situation.
+</quote></p>
+
+<p>Dmitry then went back to his original argument that it might just not
+be needed:</p>
+<quote who="Dmitry Timoshkov"><p>
+The real question is whether setup with different system and user locale
+is really used under Windows, and if yes, exactly what purpose is pursued?
+</p><p>
+In the initial patch Shachar wanted to have English user interface while
+being able to not break current ANSI codepage support. Instead of implementing
+MUI for the first part (English user interface) he proposed a simple hack
+to workaround the problem.
+</p><p>
+I still ask to show the tests demonstrating what APIs are affected by system
+and user locale and fix all the places in Wine which behave differently first.
+Then Shachar might want to write an explanations for the users and add them
+to documentation how the setup with different system/user locale is supposed
+to behave. And only after that we can return to discussion what environment
+variables or config file settings will control such things.
+</p></quote>
+
+<p>So the way it stands, Shachar's patch has been committed that makes Wine
+also take into account LC_CTYPE settings.  </p> 
+
+</section>
+<section 
+	title="S3 Texture Compression" 
+	subject="Re: [D3D] Added native and emulated S3TC support"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/07/0492.html" 
+	posts="5"
+	startdate="07/27/2004"
+	enddate="07/28/2004"
+>
+<topic>DirectX</topic>
+<p>Microsoft licensed a texture compression scheme from
+S3 and incorporated it into DirectX a long time ago.  In
+turn, most video card manufacturers licensed the technology. This
+week Christian Costa posted a patch that added "S3TC" support
+to Wine's DirectX.  It has both native and emulated S3TC support.
+Mike Hearn asked, <quote who="Mike Hearn">
+ it's my understanding that S3TC is patented, is this also
+ true of the emulation library techniques?</quote></p>
+
+<p>Lionel Ulmer replied,
+<quote who="Lionel Ulmer">
+Why do you think we took the pain to use an external library to do the
+decompression instead of having it in the Wine code itself :-) ?
+</quote>  That led Mike to comment,
+<quote who="Mike Hearn">
+Great, so this is another codec-style fiasco where you have to violate
+patents with an extra library if you have the "wrong" video card? What
+does that mean for distribution?
+</quote></p>
+
+<p>Lionel replied:</p>
+<quote who="Lionel Ulmer">
+<p>
+Anyway, as we use the library that is (or will) be dynamically loaded by the
+DRI code, the packaging issue will be already solved for us for the DRI.
+</p><p>
+Basically, only people like me with pre-GeForce NVIDIA cards will need to do
+the extra steps of actually installing the library, all others will either
+have hardware support or have it installed via the DRI package.
+</p></quote>
+
+<p>The patch still hasn't been applied, but then again 
+Alexandre has been working remotely all week and there's a 
+good chance he just hasn't caught up.  </p>
+
+</section>
+<section 
+	title="To Bugzilla Or Not To Bugzilla" 
+	subject="Is bugzilla worth keeping?"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0386.html" 
+	posts="19"
+	startdate="07/24/2004"
+	enddate="07/29/2004"
+>
+<topic>Project Management</topic>
+<p>Wine has had a <a href="http://bugs.winehq.org">Bugzilla</a> bug tracking
+system for a while now (well, we lost the database once, but some kind folks
+fixed it up.)  Like any project, including paid commercial development, it's
+hard to maintain that bug list.  Mike Hearn wondered if we should just get
+rid of it: </p>
+<quote who="Mike Hearn"><p>
+One thing I notice about most other open source projects is that they
+have many more flamewars than we do. So, I thought I'd start one:
+</p><p>
+It strikes me, looking at the wine-bugs list, that there is a huge
+disparity between the number of people maintaining it and the number
+of people filing bugs in it. It seems to be quite rare for
+communication on bugfixes to take place there, wine-devel is the more
+usual forum.
+</p><p>
+So are we misleading users by having a bugzilla into thinking that if
+they file a bug there, it'll be fixed when it probably won't?
+</p><p>
+If so, does it matter?
+</p><p>
+If we were to simply drop bugzilla, how would it impact the project?
+</p></quote>
+
+<p>The answer seemed to be a resounding <i>no</i>.  Ivan Leo Puoti summed
+up a bunch of the reasons people liked it, <quote who="Ivan Leo Puoti">
+Of course we should keep it. It's a place to track bugs, and keep everything
+related to a non working application in the same place. And if we didn't have
+it, people would just flood the devel list with bug reports, or not report at
+all, and non of them seem a great idea. I've got a couple bugs fixed with
+bugzilla, and if wine will ever be finished then eventually all the bugs will be
+fixed. And not really we get messages on the patches list with patches that fix
+something in bugzilla. And it's a good place to send developers that aren't sure
+what to do next.
+</quote></p>
+
+<p>There were even more reasons, such as Steven Edwards':</p>
+<quote who="Steven Edwards">
+Yes sometimes if I am bored and looking for something to do I will
+search bugzilla and pick a random bug that can either be fixed or needs
+to be closed because it is fixed in a more recent CVS.</quote>
+
+<p>Shachar Shemesh:</p>
+<quote who="Shachar Shemesh"><p>
+I use bugzilla as a tool to keep track of my "todo" list. If there is a 
+place where I suspect a certain behaviour is broken, I open a bug report 
+(knowing it will only be me who will have to "confirm" it... :-), and 
+leave it "unconfirmed".</p>
+</quote>
+
+<p>Dan Kegel:</p>
+<quote who="Dan Kegel"><p>
+It would deprive us of long-term memory.  For instance, I filed the bug
+report <a href="http://bugs.winehq.org/show_bug.cgi?id=1404">#1404</a>
+in January 2003 with a nice test case (but one that's hard to translate into a 
+unit test).  Without Bugzilla, we'd have a harder time remembering problems
+like that. </p></quote>
+
+<p>There was a lot of sentiment expressed that it's too bad there aren't
+resources (read: people) available to help maintain the current bugs.  For
+example, some things might be fixed in there and haven't been cleaned out.
+Someone who could write test apps could also greatly help out by identifying
+the source of a problem (even if they can't fix it.)  Mike concluded 
+it indeed was worth keeping, 
+<quote who="Mike Hearn"> 
+I don't have any strong opinion on the matter, I was just playing devil's
+advocate :) Always useful to re-examine how we're helping or hindering
+users, even if the eventual conclusion is that we're doing OK.</quote>
+</p>
+</section>
+<section 
+	title="Listing API's in a DLL" 
+	subject="how can I find what functions a dll file provides?"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0409.html" 
+	posts="4"
+	startdate="07/24/2004"
+	enddate="07/25/2004"
+>
+<topic>Creating Stubs</topic>
+<p>James Hawkins asked a question that comes up from time to time,
+<quote who="James Hawkins">
+In what way can I list the API functions provided from a certain dll
+file?  I seem to remember seeing somewhere that you could use a
+debugger, but I'm not sure.
+</quote> </p>
+
+<p>Diego Petteno suggested, 
+<quote who="Diefo Petteno">
+I usually use Dependency Walker (
+<a href="http://www.dependencywalker.com/">http://www.dependencywalker.com/</a>)
+which works fine under wine (seems strange because it's a Microsoft product, 
+but that's it ;) It's also useful to track down which dlls uses an executable 
+and then try to load the native ones.
+</quote></p>
+
+<p>Andi Mohr also suggested using one of Wine's tools,
+<quote who="Andreas Mohr">
+<tt>wine/tools/winedump/</tt>
+(now even with 16bit NE file support)
+</quote></p>
+</section></kc>

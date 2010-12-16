@@ -1,0 +1,103 @@
+{$error}
+
+<p></p>
+
+<form name="survey" action="{$self}" method="post">
+
+<p>
+The current plan is to host Wineconf in Saint Paul, Minnesota, over the
+weekend of September 27 and 28, 2008.  
+</p>
+<p>
+This year we have some funding in the Wine Party Fund for travel costs.
+The hope is that this will mitigate the pain for many Europeans that might not otherwise
+come to Minnesota.  It's not an infinite supply, so we will
+have to prioritize to favor people with proven contribution histories.
+</p>
+<p>
+Please fill out this survey to help me figure out how to manage that
+funding and to help me plan the dates.
+</p>
+
+<p>How does the location work for you:</p>
+
+<ol>
+  <li>
+      <input type="radio" name="q[location]" value="good" checked="checked" />
+      I am happy to come to the USA, it's the best choice for me.
+  </li>
+
+  <li>
+      <input type="radio" name="q[location]" value="okay" />
+      St. Paul is okay for this year, but in general, Europe is better.
+  </li>
+
+  <li>
+      <input type="radio" name="q[location]" value="hateusa" />
+      I will never travel to the USA under any circumstances. 
+  </li>
+</ol>
+
+<p>How does the date work:</p>
+
+<ol>
+  <li>
+      <input type="radio" name="q[date]" value="fine" checked="checked" />
+      The weekend of September 27th works fine for me.
+  </li>
+
+  <li>
+      <input type="radio" name="q[date]" value="move" />
+      I could make it, but I need a different date (please specify below).
+  </li>
+
+  <li>
+      <input type="radio" name="q[date]" value="no" />
+      This fall is just bad for me; I can't come.
+  </li>
+</ol>
+
+<p>Do you need travel sponsorship:</p>
+
+<ol>
+
+  <li>
+      <input type="radio" name="q[money]" value="need" />
+      I can't come without financial aid.
+  </li>
+  <li>
+      <input type="radio" name="q[money]" value="some" />
+      I could come, but boy would it be nice to have some help.
+  </li>
+
+  <li>
+      <input type="radio" name="q[money]" value="none" />
+      I don't need any financial help for the travel.
+  </li>
+
+</ol>
+
+<table>
+
+<tr>
+  <th>Name:</th>
+  <td><input type="text" name="q[name]" size="40" value="{$name}" /></td>
+</tr>
+
+<tr>
+  <th>Email:</th>
+  <td><input type="text" name="q[email]" size="40" value="{$email}" /></td>
+</tr>
+
+<tr>
+  <th>Comments:</th>
+  <td><textarea name="q[comment]" rows="5" cols="40">{$comment}</textarea></td>
+</tr>
+
+</table>
+
+<p><input type="submit" name="submit" value=" Submit Survey " class="button" /></p>
+
+<input type="hidden" name="fields" value="location|date|money|name|email|comment" />
+
+</form>

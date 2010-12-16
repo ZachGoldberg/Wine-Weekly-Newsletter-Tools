@@ -1,0 +1,372 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="201" date="12/19/2003" />
+<intro> <p>This is the 201st issue of the Wine Weekly News publication.
+Its main goal is to not get the Maguai wet. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="167" size="547" contrib="49" multiples="35" lastweek="19">
+
+<person posts="19" size="46" who="Alexandre Julliard" />
+<person posts="16" size="37" who="Mike Hearn" />
+<person posts="10" size="32" who="Fabian Cenedese" />
+<person posts="7" size="21" who="Andreas Mohr" />
+<person posts="7" size="17" who="Dimitrie O. Paun" />
+<person posts="7" size="16" who="Ivan Leo Murray-Smith" />
+<person posts="6" size="20" who="Gregory M. Turner" />
+<person posts="5" size="13" who="Dmitry Timoshkov" />
+<person posts="5" size="12" who="Hans Leidekker" />
+<person posts="5" size="12" who="Sylvain Petreolle" />
+<person posts="5" size="11" who="Vincent B&#233;ron" />
+<person posts="4" size="8" who="Rein Klazes" />
+<person posts="3" size="59" who="Tom" />
+<person posts="6" size="31" who="Marcus Meissner" />
+<person posts="3" size="11" who="Shachar Shemesh" />
+<person posts="3" size="10" who="Bill Medland" />
+<person posts="3" size="7" who="Kevin Koltzau" />
+<person posts="3" size="7" who="Chris Morgan" />
+<person posts="3" size="7" who="Saulius Krasuckas" />
+<person posts="3" size="6" who="Ferenc Wagner" />
+<person posts="3" size="5" who="Brett I. Holcomb" />
+<person posts="4" size="6" who="Eric Pouech" />
+<person posts="2" size="18" who="Steven Edwards" />
+<person posts="2" size="15" who="Brian Vincent" />
+<person posts="2" size="10" who="Joshua Walker" />
+<person posts="2" size="10" who="Luke Kenneth Casson Leighton" />
+<person posts="2" size="8" who="Vitaliy Margolen" />
+<person posts="2" size="6" who="Aric Stewart" />
+<person posts="2" size="5" who="Juan Lang" />
+<person posts="2" size="5" who="Chris Morgan" />
+<person posts="2" size="4" who="Uwe Bonnes" />
+<person posts="2" size="4" who="Dan Kegel" />
+<person posts="2" size="4" who="Andrew de Quincey" />
+<person posts="2" size="4" who="hatky" />
+<person posts="1" size="6" who="Ulrich Czekalla" />
+<person posts="1" size="4" who="Mark Knecht" />
+<person posts="1" size="4" who="Juan Antonio Bosc&#225; Lloret" />
+<person posts="1" size="4" who="Jeremy Shaw" />
+<person posts="1" size="3" who="Elizabeth Kowalsky" />
+<person posts="1" size="3" who="Michael Stefaniuc" />
+<person posts="1" size="2" who="Jakob Eriksson" />
+<person posts="1" size="2" who="Martin Fuchs" />
+<person posts="1" size="2" who="Phil Krylov" />
+<person posts="1" size="2" who="Kirill Smelkov" />
+<person posts="1" size="1" who="Troy Rollo" />
+<person posts="1" size="1" who=" &lt;ea@iol.it&gt;" />
+
+</stats>
+<section
+        title="News: Wine-20031212, WineX 3.2.1, TG Update"
+        subject="News"
+        archive="http://www."
+        posts="1"
+        startdate="12/13/2003"
+        enddate="12/19/2003"
+>
+<topic>News</topic>
+<p>Just after last week's issue came out, Alexandre tagged Wine-20031212.
+He noted the following changes:</p>
+<quote who="Alexandre Julliard"><p>
+WHAT'S NEW with Wine-20031212: (see
+<a href="http://cvs.winehq.org/cvsweb/wine/ChangeLog?rev=1.78&amp;content-type=text/x-cvsweb-markup">ChangeLog</a>
+ for details)
+<ul>
+        <li> Initial implementation of XDND drag&amp;drop support.</li>
+        <li> Improved startup performance on remote displays.</li>
+        <li> Major improvements in the oleaut32 dll.</li>
+        <li> Some support for Netbios functions.</li>
+        <li> Work around for Exec Shield and prelinking troubles.</li>
+        <li> Many code cleanups.</li>
+        <li> Lots of bug fixes.</li></ul>
+</p></quote>
+
+
+<p>Go <a href="http://sourceforge.net/project/showfiles.php?group_id=6241">
+ download it.</a></p>
+<p>TransGaming's WineX received a minor version update.  WineX 3.2.1
+was released on Wednesday. Additions include some game-specific fixes and
+web pages launched in a game should actually launch now.  See their
+<a href="http://downloads.transgaming.com/files/winex-3.2.1_releasenotes.txt">
+release notes</a> for more detail.  </p>
+<p>TransGaming also came out with their 
+<a href="http://www.transgaming.com/showthread.php?news=98">December
+Development and Voting Report</a>.  They describe some of their work
+on pixel and vertex shaders.  An investigation into ALSA turned up
+interesting results:</p>
+<quote who="TransGaming"><p>
+ALSA, of particular interest to TransGaming's Linux audience, does not provide 
+much of an added benefit over OSS. The primary speed advantage, hardware 
+mixing, a slower kludgy implementation use due to the fact that looping sound 
+doesn't appear to be supported; although full duplex support should be 
+easier to provide than with OSS. The major drawback of ALSA is that its mmap 
+interface is not compatible with what is required for DirectSound unless 
+undocumented interfaces are used. All in all it appears that using ALSA would 
+provide some speed advantages for newer cards, but to be done properly would 
+require a rewrite of the winealsa driver. Thus we would suggest that, for the 
+time being, people continue to use the OSS emulation layer of ALSA with "MMap" 
+= "Y" enabled in their config file to get the best performance if it's 
+supported on their sound card. </p></quote>
+
+</section>
+
+<section 
+	title="Exec Shield Problems" 
+	subject="Allocating too much memory for prelink workaround"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0367.html" 
+	posts="7"
+	startdate="12/13/2003"
+	enddate="12/14/2003"
+>
+<topic>Integration</topic>
+<p>
+Last month I covered a problem with exec shield's interactions with
+Wine (see 
+<a href="http://www.winehq.org/?issue=196#Exec-Shield%20Problems">issue #196</a>
+for details).  I didn't cover the solution, or the ramifications of it.
+About a week after that issue came out Alexandre committed 
+<a href="http://cvs.winehq.org/patch.py?id=10168">a patch</a> to CVS
+with the following comment:</p>
+<quote who="Alexandre Julliard"><p>
+Create a huge array in bss to reserve the memory area we need for PE
+binaries, to prevent exec shield from mapping system libraries there.
+</p></quote> 
+<p>
+By huge array, he meant a 256MB one.  Marcus Meissner reported the
+first problem about 3 days after the change appeared:</p>
+<quote who="Marcus Meissner"><p>
+On SuSE 8.2, i586 glibc, loader/wine-* crash due to the 256 MB static array
+in main().
+</p><p>
+The test machine has just 64MB RAM and 200MB swap.
+</p><p>
+If I start decreasing the array it works, up to 201MB.
+<ul><tt>
+$ /lib/ld-linux.so.2 ./wine-kthread<br />
+./wine-kthread: error while loading shared libraries: ./wine-kthread: cannot map zero-fill pages: Cannot allocate memory<br />
+$</tt></ul> </p><p>
+
+So ld.so really wants to get 20xMB memory but fails.
+</p></quote>
+
+<p>Alexandre thought that the memory should just be overcommitted, and
+since it's not really used it wouldn't cause an issue.  Apparently SuSE
+protects against that though.  Marcus explained how to get around it:</p>
+<quote who="Marcus Meissner"><p>
+SuSE 8.2 has a "overcommit" sysctl, which is default off.
+In this case at least the SuSE kernel uses a heuristic on left over
+memory to chek mmap()s. And it limits it at this amount of memory apparently.
+If I do
+<ul><tt>
+	echo -n 1 >/proc/sys/vm/overcommit_memory</tt></ul></p><p>
+it works again.</p></quote>
+
+<p>A few weeks later Fabian Cenedese reported a mysterious problem
+where Wine just segfaulted.  He tracked the problem down to the series
+of CVS commit on the day of the exec shield workaround.  Vincent Beron
+wondered if there might be another way to essentially achieve the
+same exec shield workaround but in a little more reliable manner :</p>
+<quote who="Vincent Beron"><p>
+Thinking about what Fabian and Marcus hit...</p><p>
+
+Would it be possible to just have a dummy executable which allocates the
+256MB chunk of memory from 11/22, linked to the same libs as the main
+wine-{k,p}thread, but having that executable not actually used?
+</p><p>
+ That way, we still gain the prelink workaround by reserving the memory,
+ but Wine should continue to work on computers with less memory, or those
+ who do not overcommit memory.
+</p></quote>
+
+<p>Alexandre didn't think it would work,
+<quote who="Alexandre Julliard">
+I don't see how, if the executable isn't used it won't do any
+good. What we need is a way to reserve the memory but not the swap
+space; but I don't think we can do that simply with a bss hack, it
+will require a linker script which is a major pain.
+</quote></p>
+
+<p>Mike Hearn thought working around it was just the wrong solution and
+the correct solution was elsewhere:</p>
+<quote who="Mike Hearn"><p>
+Well, I asked this before but didn't get an answer - why can't we work
+with Jakub to have some new ELF flag/section to reserve a particular
+area of memory for the win32 binary?
+</p><p>
+Hmm, also, what happens if the binary is >256mb? For instance, some very
+large installers can go beyond that size. How does that work on Windows?
+</p></quote>
+
+<p>Alexandre vented some frustration:</p>
+<quote who="Alexandre Julliard"><p>
+Of course we can, I was trying to find a way that would work today,
+without requiring upgrading to CVS binutils.
+</p><p>
+Also, frankly, I've spent the last year chasing glibc breakages, and I
+don't particularly feel like spending the next year chasing kernel
+breakages. I was kind of hoping someone else would pick that fight, so
+I could go back to writing some real Wine code for a change...
+</p></quote>
+
+<p>Any kernel/distro people listening?</p>
+
+</section>
+<section 
+	title="Delayed Debug Tracing" 
+	subject="Delayed debug tracing"
+	archive="http://www.winehq.org/hypermail/wine-devel/2D03/12/0363.html" 
+	posts="9"
+	startdate="12/13/2003"
+>
+<topic>Debugging</topic>
+<p>I think someone asked this last year, but there was no good answer
+at the time.  Mike Hearn inquired about adding a feature to Wine's 
+debugging mechanisms:</p>
+<quote who="Mike Hearn"><p>
+I'd like to implement delayed debug tracing, by which I mean you can do
+a +relay,+seh,+tid,+win,+otherstuff and yet not create a log file so
+huge it's impossible to work with. I seem to recall seeing this feature
+in WineX, where you can press Alt-F12 to switch it on.
+</p><p>
+Does anybody who knows the debugging/keyboard code have any particular
+preferences as to how this should be implemented?
+</p></quote>
+
+<p>Rein Klazes replied with a really neat solution:</p>
+<quote who="Rein Klazes"><p>
+Gerard Patel (if I remember his name correctly) sent in such a patch
+years ago, which was not committed for obvious reasons.
+</p><p>
+My way to create a small log goes like this. Start wine like this:
+<ul><code>
+(wine &lt;arguments&gt; &amp; read ans; echo '===') 2&gt;&amp;1 |
+awk '{if( $1 == "===") flag=1-flag; if(flag) print}' &gt;wine.log
+</code></ul></p><p>
+filling the log will only begin after pressing the enter key. Add a
+<tt>while(true)</tt>, to make it behave as a toggle.
+</p></quote>
+<p>Mike thought building this into Wine might be better,
+<quote who="Mike Hearn">
+Certainly using mini shell scripts like that seems to be more of a hack
+than special casing some Wine code.
+</quote> Besides being inefficient, Rein then pointed out another
+problem, <quote who="Rein Klazes">
+it suffers from certain side effects like having to change
+focus as well.</quote></p>
+
+<p>Alexandre argued the opposite - that scripting provided more functionality,
+<quote who="Alexandre Julliard">
+a wrapper script is much cleaner than adding some
+special handling deep in the Wine core. That way you can define the
+policy you want (switching on a key press, after a delay, after a
+certain function is called, etc.) instead of having the Wine core
+impose its own.
+</quote></p>
+<p>Mike went ahead and submitted
+<a href="http://www.winehq.org/hypermail/wine-patches/2003/12/0165.html">a
+patch to delay debug tracing</a> that was faster than sending it through
+a script,
+<quote who="Mike Hearn">
+The tradeoff that my patch
+makes is flexibility for performance - if you are redirecting wine's
+output through wrapper programs and scripts then you have the overhead
+at least of the IPC, and maybe also text parsing. Simply enabling relay
+gives a huge speed hit even when not logging things, the last thing
+wanted is even more overhead.
+</quote></p>
+
+</section>
+<section 
+	title="Printing With No Printer" 
+	subject="Printing with no printer"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0398.html" 
+	posts="2"
+	startdate="12/14/2003"
+	enddate="12/14/2003"
+>
+<topic>Configuration</topic>
+<p>Mike Hearn is working on an app that requires a printer
+set up in Windows.  Not having a printer is causing a bit
+of a problem, so he asked:</p>
+
+<quote who="Mike Hearn"><p>
+
+It seems from reading the documentation that it's possible to print to a
+.ps file in Wine, even if you don't actually have a printer. However, I'm
+not sure how to do that - I've got far enough to get the 
+"Couldn't find PPD file '/unix/path/to/PPD/file', expect a crash now!"
+message, but am not sure where to go from here. I don't have any PPD
+files, as I have no printer.
+</p><p>
+Has anybody done this before?
+
+</p></quote> 
+
+<p>Marcus Meissner provided the recipe:</p>
+
+<quote who="Marcus Meissner"><p>
+
+You copy the generic.ppd file from documentation/samples, and 
+add to .wine/config:
+<ul><code>
+[ppd]<br />
+"generic" = "/usr/lib/wine/ppd/generic.ppd"</code></ul></p></quote>
+
+
+</section>
+<section 
+	title="Alexandre on Vacation" 
+	subject="Vacation"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0434.html" 
+	posts="2"
+	startdate="12/15/2003"
+>
+<topic>Project Management</topic>
+<p>Just a heads up - 
+news will probably slow to a trickle.  Alexandre is going on vacation:</p>
+<quote who="Alexandre Julliard"><p>
+There won't be any commits for a while, since I'm leaving now for a
+vacation in Switzerland, where I won't have net access. Assuming I
+survive the deprivation, I'll be back in two weeks.
+</p><p>
+I hope you all have nice holidays, and I look forward to finding a few
+hundred patches in my mailbox when I get back...
+</p></quote>
+
+</section>
+<section 
+	title="Status Update Preview" 
+	subject="Wine Status Page Pre-1"
+	archive="http://www.winehq.org/hypermail/wine-devel/2003/12/0456.html" 
+	posts="2"
+	startdate="12/16/2003"
+	enddate="12/17/2003"
+>
+<topic>Status Updates</topic>
+<p>Tom Wickline finished a draft version of updated Wine DLL status page.
+He asked everyone to please review it and proofread it:
+</p><quote who="Tom Wickline"><p>
+
+Here is the current DLLs Status Page.
+I've made a number of changes since I last sent
+these partial pages to the dev-list.
+Here is a list of things I still need to do for completeness.
+<ol>
+<li> Proof Read! (against all my notes)</li>
+<li> Doc links, (Thursday night Friday AM)</li>
+<li> Send to Brian V for WWN coverage :)  (Brian if you want you can get an 
+early start)</li>
+<li> Add/Remove todo's</li>
+<li> changelog update</li>
+<li> Give everyone a chance to respond.. Friday?  ;)</li>
+<li> diff -u &amp; send</li>
+<li> :)</li>
+</ol>
+
+</p></quote>
+
+<p><a href="http://www.winehq.org/hypermail/wine-devel/2003/12/0456.html">Tom's
+ email</a> contains the complete status update.
+</p>
+</section></kc>

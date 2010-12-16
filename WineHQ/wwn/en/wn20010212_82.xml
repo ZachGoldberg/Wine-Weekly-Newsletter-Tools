@@ -1,0 +1,481 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="82" date="12 Feb 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 82nd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="87" size="335" contrib="36" multiples="17" lastweek="15">
+<person posts="6" size="26" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="6" size="22" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="6" size="19" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="6" size="19" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="6" size="14" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="16" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="4" size="14" who="Alan Chandler &lt;alan@chandlerfamily.org.uk&gt;" />
+<person posts="4" size="13" who="Thomas Flynn &lt;flynnt@acm.org&gt;" />
+<person posts="4" size="12" who="Jon Griffiths &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="4" size="12" who="James Sutherland &lt;jas88@cam.ac.uk&gt;" />
+<person posts="4" size="12" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="3" size="7" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+<person posts="2" size="8" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="2" size="5" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="5" who="David D. Hagood &lt;wowbagger@sktc.net&gt;" />
+<person posts="2" size="28" who="Ian Pilcher &lt;pilcher@concentric.net&gt;" />
+<person posts="2" size="11" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+</stats>
+
+
+<section 
+  title="Wine and reverse engineering"
+  subject="Reverse engineering court decision"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0033.html"
+  posts="12"
+  startdate="04 Feb 2001 00:00:00 -0800"
+  enddate="07 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Paul Merrell posted an article from PlanetIT about some recent
+decisions made in the USA regarding the legal aspects of reverse
+engineering (<a href="http://www.planetit.com/">
+http://www.planetit.com/</a>).
+
+<p />
+
+Paul even quoted some part of the article <quote who="">
+Hypothetically, similar efforts taken by others to reverse-engineer
+Microsoft Windows could be deemed justifiable if the aim of those
+efforts were to make other companies' programs, designed for Windows,
+run on an operating system other than Windows. This assumes that the
+9th Circuit ruling holds up."</quote>
+
+<p />
+
+In non legal terms, this would mean that Wine developers could
+reverse-engineer Windows without fearing some troubles from Microsoft
+layers horde.
+
+<p />
+
+Robert Cunningham shed some more lights on this matter: 
+<quote who="Robert W. Cunningham">
+Unfortunately, this decision applies directly only to those bringing
+such cases within the California 9th Circuit Court. While other courts
+may "take note" of this decision, it has not yet risen to the level of
+a "precedent".
+
+<p />
+
+Unless, of course, the case gets appealed all the way to the Supreme
+Court, they decide to hear it, and they then decide to affirm the
+decision. Then (and only then) would the decision become the law of
+the land. Until that time, it will likely first have to be pursued on
+a case-by-case basis in all other Circuit Courts. Which means we can
+expect all similar cases to avoid the 9th Circuit like the plague so
+long as they have other venues to run to.
+
+<p />
+
+As Paul mentioned in the quote he selected, the key item involves
+moving an application to a different platform. Application
+"portability" may legally no longer require "porting"! It may instead
+allow for "OS Compatibility Layers" to be written instead. This may
+also drive a needed wedge into the notion of migrating applications
+into the OS, a strategy MS has evolved into a fine art.
+
+<p />
+
+This affects far more than Wine: One project that comes to mind is
+MAME (games). There are many more seemingly similar projects that are
+NOT affected, such as MOL(Mac-on-Linux), Win4Lin, Plex86, VMware and
+probably several others that actually run the target OS, not emulate
+(clone) it. 
+
+<p />
+
+An extreme interpretation of this decision could be as follows: If I
+need a reason to legally clone a new feature in some market-leading
+desktop OS, all I need to do is find an app (any app) that uses that
+feature, then declare my intent to make that app run under some other
+(any other) OS. It does not matter if the feature being emulated is
+"documented" or not. Taken further, it may even be possible to dispose
+of the specific API used to implement the feature, and use a different
+one instead. 
+
+<p />
+
+Eventually (assuming this decision survives), the courts will see that
+ALL such forms of reverse engineering should be legal WITHOUT the
+necessity of an app to port.
+
+<p />
+
+However, this notion still needs to be more fully explored via
+additional cases before its full scope can be determined. Presently,
+the scope appears to be very restricted: The article points out that
+the DeCSS decision would probably not be affected in any way. In the
+current environment, this is probably true. But what if you can
+convince the courts to view DVD "content" as a "program"! While this
+may seem obviously true to technical folks, especially those who
+create multimedia apps and content for a living, it may take many
+visits to court to properly communicate this understanding to the
+legal system.
+
+<p />
+
+Anyway, since most of the available content security systems ARE
+software, and MS has already migrated theirs into the latest versions
+of Windows, this entire issue already has the potential to snowball
+completely out of the control of OS and content companies, and
+possibly even Congress itself.
+
+<p />
+
+With the major media companies trying to tie software protection and
+content protection together under copyright law (via laws such as DMCA
+and UCITA), this may be just the wedge needed to pry them back apart.
+</quote>
+
+
+<p />
+
+This could help Wine in the long term on some legal aspects when
+needed. However, as Robert pointed out, this is just a first step, and 
+many more still have to be made.
+
+<p />
+
+</section>
+
+
+<section 
+  title="PS printer driver and fonts"
+  subject="psdrv: map Courier New to Courier"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0375.html"
+  posts="19"
+  startdate="29 Jan 2001 00:00:00 -0800"
+  enddate="06 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+After Huw Davies submitted a patch were he hardcoded some font
+mappings (from Windows' Courier New to Courier) in the Wine postscript 
+driver, Ian Pilcher started asking a few questions:
+<quote who="Ian Pilcher">
+Hmm. I haven't been able to get Courier to scale properly.  (It
+prints way too large from Lotus Notes.)  I was actually thinking of
+doing exactly the reverse.
+
+<p />
+
+What do you think of the idea of user-configurable mappings, a la the
+X font aliases? 
+</quote>
+
+
+<p />
+
+Huw agreed that having this kind of substitution list would be a nice
+thing. Regarding the scaling issue, Huw continued: <quote who="Huw Davies"> 
+Note if you're using ghostscript to process the output then
+the fonts will look about 15% larger, that's because GS's fonts are
+rather bigger than Adobe's and you're probably using Adobe's
+AFMs. Other than that then I'm seeing Wine's Courier to be about
+another 15% larger than the output from Windows.</quote>
+
+<p />
+
+Gav State added:<quote who="Gavriel State">Just FYI, the corelwine tree has
+support for psdrv font mapping that you might be able to use.
+
+<p />
+
+In general, it would be nice to move the psdrv font work that was done
+in the corelwine tree into main CVS. While the x11drv/psdrv
+cross-dependency issue will have to be fixed, I suspect that it
+shouldn't be that hard to convert the FontTastic API calls into
+appropriate FreeType calls - there are only 11 places where a
+FontTastic API is called, and about 15 more where font properties
+specific to the FontTastic font server are accessed - most of which
+are just for added accuracy in the calculation of internal and
+external leading. 
+
+<p />
+
+The printing code that's in that tree is really quite good - when we
+were testing it, we were often able to hold the Wine generated output
+and the Win32 generated output up to the light and see no significant
+differences between them.  Only after several pages of output would the
+cumulative error in character widths build up to the point where 
+WordPerfect would break a line at a different word.
+</quote>
+
+<p />
+
+
+<p />
+
+Note: FontTastic is a TrueType server that Corel did embed in its
+Linux distribution and allowed the Wine port of the Corel tools to get
+information about TT fonts - which still needs to be done in Wine (see
+<kcref issuenum="75" sectionnum="2">Xfree 4.02 and Wine</kcref>for more info).
+
+<p />
+
+Ian and Huw then discussed the details of the implementation. Ian was
+a bit confused with all the possible fonts (and type of fonts like
+TrueType, X11 Type1...) and searched a way to help the configuration.
+
+<p />
+
+Huw answered <quote who="Huw Davies">I anticipate that most people will just
+be happy using TT/Type1/.fon fonts all served by FreeType and will not
+bother using XLFD fonts at all. This makes font configuration quite
+easy, we just tell the FreeType font driver which font files we want
+it to serve and that's it. The psdrv may still want to substitute
+builtin type1 fonts, but that seems to me to be psdrv's role and thus
+its configuration is unique to that; this becomes more obvious when
+you think that the user may install 2 instances of psdrv that print to
+different printers which may have different fontsets installed,
+therefore font substitution would be on a printer by printer basis.
+</quote>
+
+<p />
+
+Part of the modifications discussed here have been added to the CVS
+tree.
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Messages and pointers"
+  subject="Strange window message / queue behaviour"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0057.html"
+  posts="4"
+  startdate="05 Feb 2001 00:00:00 -0800"
+  enddate="06 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Marcus Meissner ran into an interesting issue:
+<quote who="Marcus Meissner">
+I have an application that handles several text edit controls.
+
+<p />
+
+At one point it flips from the first to the second (after you have 
+entered the fourth character).
+
+<p />
+
+This is done by a function, which does (simplified) this:
+<pre>
+{
+        DWORD startsel,endsel;
+
+<p />
+
+        PostMessageA(hwnd1,EM_GETSEL,&amp;startsel,&amp;endsel);
+        SetFocus(hwnd2);
+        PostMessageA(hwnd2,EM_SETSEL,0,0);
+        /* ... */
+        CallWindowProcA(hwnd,....);
+        return;
+}
+</pre>
+
+<p />
+
+According to the +relay,+edit trace the EM_GETSEL is executed way
+_AFTER_ the return from the function, so, since it uses stackvalues,
+it then smashes the stack somewhere else.
+</quote>
+
+
+<p />
+
+Ove Kaaven proposed a possible explanation: I
+<quote who="Ove Kaaven">
+remember Ulrich have been talking about 
+<kcref issuenum="19" sectionnum="2">message parameters conversion</kcref> ;
+there's the possibility that Windows recognizes that it's a
+message known to contain pointers, and so just drops the message, so
+that EM_GETSEL is simply never dispatched? 
+</quote>
+
+
+<p />
+
+Ulrich Weigand gave some further explanations:
+<quote who="Ulrich Weigand">
+Yes. <code>EM_GETSEL</code> is classified as 'pointer message', and
+the 32-bit <code>PostMessage</code> in Win9x simply drops it. (The
+16-bit PostMessage doesn't appear to care, but if a 16-bit message
+with pointers is about to be <b>received</b> by a 32-bit app, the
+Get/PeekMessage call drops the message...) 
+
+<p />
+
+You get DebugOutput messages like
+<code>"PostMessage: ignoring posted message with pointer"</code>
+
+<p />
+
+or
+
+<p />
+
+<code>"GetMessage: ignoring retrieved message with pointer"</code>
+
+<p />
+
+when this happens.
+</quote>
+
+
+<p />
+
+Later on, Marcus implemented the dropping of messages with pointers.</section>
+
+
+<section 
+  title="Importing Wine to North America"
+  subject="Benchmark hell"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0084.html"
+  posts="7"
+  startdate="06 Feb 2001 00:00:00 -0800"
+  enddate="09 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Well, WWN normally doesn't cover the OffTopic mails. But we'll do an
+exception this week. Wine-devel was posted with the following message:
+<quote who="">I found your benchmark... it wasn't exactly
+what I was looking for, but do you maybe have an idea on how I can
+find information about the demand for wine in Canada, or North America
+on the internet? I'm writing my thesis on importing german wine to
+Canada and need to go over the demand part too of course. 
+</quote>
+
+<p />
+
+This of course produces lots of sarcasm from the developers. Andreas
+Mohr started with: <quote who="Andreas Mohr">I just <b>had</b> to approve this
+one. It's just way too funny :-) "Wine benchmark"... ROTFD (ROTF
+drunkenly)</quote>
+
+<p />
+
+Eric Pouech (from France) kept going on with the sarcasms 
+<quote who="Eric Pouech">hmmm I ROTFL:ed mainly because of "German
+Wine"... isn't that on oxymoron ?.</quote>
+
+<p />
+
+This, of course, fired some discussion about Germany being able to
+produce some rather good Wine, and beer too...
+
+<p />
+
+Anyway, all the Wine team wishes the best of luck to this fellow with
+his thesis...</section>
+
+
+<section 
+  title="Startup directory and resulting behavior"
+  subject="Current Directory Strangely Affects Behaviour of Applications"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/02/0095.html"
+  posts="4"
+  startdate="10 Feb 2001 00:00:00 -0800"
+  enddate="10 Feb 2001 00:00:00 -0800"
+>
+
+<p />
+
+Alan Chandler popped up some nasty behavior: 
+<quote who="Alan Chandler">
+I am trying to debug a game called Grand Prix Legends, running on Wine 
+with the TransGaming patch. If just spent all day getting nowhere in
+winedbg because I couldn't get hold of what the game was doing. 
+
+<p />
+
+If I cd to the directory in which the game is installed (ie
+~/win/sierra/gpl) and then run
+
+<p />
+
+<code>wine gpl.exe</code>
+
+<p />
+
+The program starts and fills the whole of my screen with a single
+black window. It sits there until I move the mouse, at which time it
+exits. 
+
+<p />
+
+I have just discovered that if I cd to the root of my c: drive (ie
+<code>~/win</code>) and then run 
+
+<p />
+
+<code>wine c:\\sierra\\gpl\\gpl.exe</code>
+
+<p />
+
+The program starts and I get a 640x480 window with the correct startup 
+screen (I have "Desktop" = "640x480" in my config file). It is <b>not</b>
+managed (even though I have "Managed" = "Y" in my config file).
+However the program appears to partially work - in that
+<ul>
+   <li>The program responds to the mouse when I click on the correct
+parts of the screen,</li>
+   <li>It runs a race with computer AI cars when I tell it too.</li>
+</ul>
+</quote>
+
+
+<p />
+
+Gav State was puzzled but somehow confirmed the issue:
+<quote who="Gavriel State">
+I can't think of <b>why</b> this is happening, but I can confirm that we've
+seen this with a few other programs, including 3DMark2000. I don't
+believe that it's an issue particular to the TG patch, but I don't
+know of any examples of this happening with, say, a pure OpenGL game
+that doesn't require the TG patch.
+</quote>
+
+
+<p />
+
+The discussion then evolved in some more detailed explanation on
+graphics integration in Wine. But the problem describe here shall have 
+to be looked at.</section>
+
+</kc>

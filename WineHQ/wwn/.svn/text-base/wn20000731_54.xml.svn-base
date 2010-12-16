@@ -1,0 +1,142 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="54" date="2000/07/31" />
+
+<intro>
+
+<p />
+
+This is the 54th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="122" size="361" contrib="42" multiples="22" lastweek="23">
+<person posts="12" size="23" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="11" size="25" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="7" size="19" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="7" size="15" who="David Elliott &lt;dfe@infinite-internet.net&gt;" />
+<person posts="7" size="14" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="7" size="12" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="16" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="6" size="11" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="5" size="9" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+</stats>
+
+
+<section 
+  title="Connection detection"
+  subject="InternetCheckConnection"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-380.html"
+  posts="18"
+  startdate="2000-07-26"
+  enddate="2000-07-28"
+>
+
+<p />
+
+Aric Stewart posted a patch implementing the InternetCheckConnection() 
+API. This function checks whether an Internet connection is
+available.
+
+<p />
+
+Marcus Meissner didn't like the implementation (it was using a ping to a
+certain address): 
+<quote who="Marcus Meissner">
+This can be considered a denail of service attack. Imagine an
+application doing:<br />
+<code>
+&#160;&#160;&#160;&#160;TryFireUpDialin();<br />
+&#160;&#160;&#160;&#160;while (!InternetCheckConnection());
+</code><br />
+Not good. Also even without a ping getting through we can still access 
+URLs if behind a firewall.
+
+<p />
+
+We should probably just check if we have a network connection at all.
+</quote>
+.
+Marcus suggested either parsing the output of 'ifconfig' checking for
+ppp or eth interfaces, or looking at 'route -n' for those interfaces.
+
+<p />
+
+Bertho Stultiens proposed to use 'netstat -r -n' to get the correct
+interfaces.
+
+<p />
+
+St&#233;phane Lussier pointed out that Microsoft's documentation says that
+when FLAG_ICC_FORCE_CONNECTION flag is set, the function shall try the URL.
+http://msdn.microsoft.com/workshop/networking/wininet/reference/functions/InternetCheckConnection.asp
+
+<p />
+
+Then part of the discussion covered the portability issues: Gerald
+Pfeifer noted that, for example, the route command had a different
+location under Solaris or FreeBSD, some different command line
+switches than the Linux ones, and also some stricter privilege
+checking (only root can list route tables).
+
+<p />
+
+But, after some investigation, 'netstat -r -n' seemed to be portable,
+and working with user privileges on most unices.
+
+<p />
+
+Alexandre Julliard proposed another approach:<quote who="Alexandre Julliard">
+Having to parse the output of netstat will be more trouble than it's
+worth IMO. I think we should not try to be too clever here. I'd
+suggest simply checking for a network interface that is up and not
+loopback, using the same ioctls than ifconfig does.</quote>
+
+<p />
+
+Both options seem acceptable, but no implementation has been provided
+yet. </section>
+
+
+<section 
+  title="Wine profiling tool"
+  subject="cprof profiling tool available - useful for WINE development"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-4120.html"
+  posts="2"
+  startdate="2000-07-27"
+  enddate="2000-07-2_"
+>
+
+<p />
+
+Jeff Tranter from Corel announced:
+<quote who="Jeff Tranter">
+As part of our WINE development we created a performance
+profiler tool that supports multi-threaded programs (GNU
+gprof does not support threads). We've just released it
+under the GPL and made it available from our open source
+web site. You can find more information on the tool at
+<a href="http://members.rogers.com/jefftranter/cprof.tar.gz">
+http://members.rogers.com/jefftranter/cprof.tar.gz</a>
+
+<p />
+
+Instructions for accessing our public CVS server are
+at <a href="http://members.rogers.com/jefftranter/">
+http://members.rogers.com/jefftranter/</a>
+</quote>
+
+
+<p />
+
+James Abbatiello gave a try, but run into multiple errors and had to
+do lots of work by hand, but without any success. It seems that until
+CVS trees from Corel and WineHQ are properly synchronized, this nice
+tool shall be hard to tame.</section>
+
+</kc>

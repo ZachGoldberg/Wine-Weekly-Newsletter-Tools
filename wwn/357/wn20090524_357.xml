@@ -1,0 +1,137 @@
+
+<section
+	title="News: WWN Resurrection"
+	subject="Wine"
+	archive="#"
+	posts="0"
+>
+<topic>Wine</topic>
+New AppDB project resumed -- I am working on it now that I have (some) time again
+
+Patchwatcher</section>
+<section
+	title="A Working DIB Engine"
+	subject="DIB"
+	archive="http://bugs.winehq.org/show_bug.cgi?id=421"
+	posts="0"
+>
+<topic>DIB</topic>
+<p>
+Massimo Del Fedele has gotten the DIB engine to a point where <a href="http://www.winehq.org/pipermail/wine-devel/2009-May/075821.html">all wine test-suite tests</a> pass with the DIB engine enabled.  This means many applications which depend on the DIB engine (MSN Messenger, Autocad to name a few) should now be working and should be retested.
+</p>
+<p>
+Before we continue it is important to note that in its current form it is unlikely this DIB Engine will make it into the main WineHQ tree.  Builds of Wine with Massimo's work will likely be provided in the near future.  Expect an in depth analysis of this situation in next week's WWN.
+</p>
+<p>
+May 9th (Massimo "<a href="http://www.winehq.org/pipermail/wine-devel/2009-May/075548.html">DIB Engine : Almost 100% working</a>"):
+</p>
+<quote>
+<p>
+Well, after some (many) bugfixes and additions, the mighty DIB Engine is almost 100%
+operational.<br />
+On one of tested apps (MSN Messenger) it behaves even better than original one :-)
+<br /><br />
+For whom wish to test it, bug 421 page.
+<br /><br />
+Ciao
+<br /><br />
+Max
+</p>
+</quote>
+<p>
+May 13th (Massimo, "<a href="http://www.winehq.org/pipermail/wine-devel/2009-May/075669.html">DIB Engine - first set of fixings agains wine test suite</a>"):
+</p>
+<quote>
+<p>
+I started fixing failures against test suite.
+Most of bitmap ones are fixed, remaining are due
+to still stubbed funcs.
+<br /><br />
+Now the problem is that it fixed also most todo_wines on bitmap suite....
+<br /><br />
+As usual, on bug 421 page for who wants to test it.
+<br /><br />
+Ciao
+</p>
+</quote>
+<p>
+May 17th (Massimo, "<a href="http://www.winehq.org/pipermail/wine-devel/2009-May/075708.html">DIB Engine - Mostly fixed against test suite</a>")
+</p>
+<quote>
+<p>
+Remaining bugs are related to :
+
+1) Some color on monochrome bitmaps.... here I guess nobody knows how to do it right. I fixed some todo wine (most) but have 2 failures which wine does right.Seldom used anyways, and happens only on weird palettes. I guess not ever Microsoft knows what they did on this respect :-)
+<br />
+2) an AlphaBlend() call which should fail and doesn't. Here I really don't
+know why it should fail..... Uninfluent, anyways.
+<br />
+3) GetDIBits on a source DIB with BPP <= 8 fails to retrieve the original DIB palette, and synthesizes a new one instead.
+For the moment I found no simple way to grab the palette from inside GetDIBits without maintaining a linked list
+of HBITMAP <--> internal bitmaps. Not worth the effort for the moment anyways.
+If somebody notices weird colors due to it, I'll try to fix.....
+<br />
+There are still some missing/buggy features rarely used that aren't spotted by testsuite;
+by now I've no time to fix them, anyways no one felt into them up to now :-)
+<br />
+Austin, could you please retest it against test suite ?
+<br />
+(code on Bug421 page)
+<br />
+Ciao
+<br />
+Max
+<br />
+</p>
+</quote>
+<p>
+May 22nd, (Massimo, "<a href="http://www.winehq.org/pipermail/wine-devel/2009-May/075821.html">DIB Engine : passing all tests</a>")
+</p>
+<quote>
+<p>
+I posted on bug 421 page (as usual) latest update of my engine.
+It suld pass all tests in wine suite.... also all bitmap's todo_wines,
+so expect some "false positive" signaled by tests.
+<br /><br />
+Austin, could you please re-run it on your test machines ?
+<br />
+Ciao
+<br />
+Max
+</p>
+</quote></section>
+<section
+	title="The future of Max's DIB Engine"
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+Distro support
+Seperate branch (Wine-next)
+Not in Tree
+Huw Time</section>
+<section
+	title="Wine and DirectX 10 - the real story"
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+</section>
+<section
+	title="XInput 2 Spec "
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+</section>
+<section
+	title="Patchwatcher: Host wanted!"
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+</section></kc>

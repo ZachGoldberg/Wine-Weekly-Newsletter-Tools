@@ -1,0 +1,396 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="41" date="01 May 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 41st release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+Wine 20000430 has been released. Main changes are:
+<ul>
+	<li />Wine is now distributed under the X11 license.
+        <li />DirectDraw restructuration.
+        <li />Debugger is now an external Winelib program.
+        <li />pthreads emulation for thread-safe glibc routines.
+        <li />On-demand loading of built-in dlls.
+        <li />WININET, URLMON and i18n fixes merged from Corel tree.
+        <li />Lots of bug fixes.
+</ul> 
+
+</intro>
+
+<stats posts="161" size="444" contrib="29" multiples="20" lastweek="11">
+<person posts="28" size="150" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="21" size="13" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="13" size="33" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="13" size="28" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="13" size="28" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="10" size="21" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="10" size="20" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="8" size="22" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="11" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+</stats>
+
+
+<section 
+  title="Improving wrc"
+  subject="Resource endianness"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-232.html"
+>
+
+<p />
+
+Bertho Stultiens, while preparing for a new version of wrc (the Wine
+resource compiler), had some yet unanswered questions:
+<quote who="Bertho Stultiens">
+According to what I found on the web are resources always
+little-endian because MS does not support/wrote OSes for big-endian
+processors. There are a couple of questions that go with this:
+<ul>
+   <li />Is it true that MS only has little-endian version?
+   <li />Should I support big-endian at all in wrc? Currently, wrc
+generates the native endianness of the platform, but it does _not_
+convert binary resources (such as bitmaps). It is actually extremely
+difficult to mix endianness in resources because everything has to be
+examined and _cannot_ be guaranteed to be correct (such as RCDATA).
+   <li />Should wine only use little-endian in the resources? In my
+opinion, yes. Let the resources be the same all the time and let the
+resource-loader take care of conversion. There is a comment in a
+header about byte-swapping and wrc. I really would prefer to have
+byte-swapping in wine rather than wrc. Mainly because wine already
+requires to do the analysis of resource-contents, whereas wrc only
+packs data (without contextual/semantical knowledge).
+</ul></quote>
+
+
+<p />
+
+Bertho asked for feedback and also experiences natively running Wine
+on a big-endian CPU.
+
+<p />
+
+Both Alexandre Julliard and Ulrich Weigand answered that all current
+NT versions run on little-endian only systems, so this question
+doesn't seem to have been addressed (it still remains open on Windows
+CE). Alexandre even made some sarcasm:<quote who="Alexandre Julliard">The Windows
+headers contain a few #ifdef _MAC that attempt to add big-endian
+support (apparently using a generic <code>#ifdef BIG_ENDIAN</code> was
+a concept a bit too abstract for Microsoft)</quote>
+
+<p />
+
+Ulrich went a bit further:
+<quote who="Ulrich Weigand">
+I agree, resources should always be treated little-endian.  
+
+<p />
+
+At the most, we might think about making a distinction between the 
+resource data itself and the 'meta data' surrounding it (resource
+directory, PE header links ...);  it might be easier to have the latter
+in native byte ordering, especially in the case of the dummy PE headers
+created for Wine modules (these structures are completely internal 
+between wrc and the Wine loader, so we can use whatever is easiest 
+here, of course).
+
+<p />
+
+Every 'external' format, be it .RES file or cursors/icons/etc. imported
+by or included in RC files, should IMO always be little-endian.  The
+same applies to the raw resource data exchanged between app and Wine,
+e.g. when using a Create...Indirect routine.</quote>
+
+
+<p />
+
+Ulrich gave also some feedback on his successful trials to run
+'hello3' on Solaris (32 bit big endian) (even if he never sent the
+patches, because he never finished the clean up):<quote who="Ulrich Weigand">
+I decided to have resource contents in little-endian, and meta data
+(resource directory) in native big-endian format, as this seemed to be
+the solution requiring the fewest Wine changes. The changes described
+in the following achieved this result.</quote>
+
+<p />
+
+Major changes include reading and writing meta-data in wrc (doing some 
+swapping when needed), as well as modifying reading of resources in
+Wine (same type of swapping). Ulrich also pointed out some less
+obvious modification to be made: another <quote who="Ulrich Weigand"> problem is
+in the handling of Unicode strings: wide characters are also
+endianness-sensitive, of course, so a simple lstrcpyWtoA doesn't do
+the right thing...</quote> and <quote who="Ulrich Weigand">pe_resource.c routines
+don't work, as they rely on various bit-field structures to break out
+the 'resource name is string' and 'resource data is directory'
+bits. This doesn't work, as on Sparc bit-fields are allocated starting
+from the MSB down, not LSB up as on Intel :-/</quote>
+
+<p />
+
+Finally, Bertho announced he shall be sending a new wrc version later
+this week.</section>
+
+
+<section 
+  title="Wine's license"
+>
+
+<p />
+
+After the previous events (see <a href="wn19991206_20.html#1">"shall we
+change?"</a> and <a href="wn20000124_27.html#0">"vote for a
+change!"</a>) episodes), Alexandre Julliard changed the Wine
+license for the X11 one. Here's the terms of the new license:
+
+<quote who="Alexandre Julliard">
+
+<p />
+
+<code>
+
+Copyright (c) 1993-2000 the Wine project authors (see the file AUTHORS for a
+complete list)
+
+<p />
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+<p />
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+<p />
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+</code>
+
+</quote>
+
+</section>
+
+
+<section 
+  title="Ansi and Unicode"
+  subject="ANSI/Unicode"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-268.html"
+>
+
+<p />
+
+Dimitrie Paun was kind of unhappy with Wine's current string
+support. As you may already know, most of 32 APIs come into two
+flavors: ANSI and Unicode. API suffixed with 'A' are ANSI, and the
+ones with 'W' are Unicode. Being ANSI (resp. Unicode) express how the
+function must handle any string input or output parameter. So, the
+same function, say CreateWindow, come in two flavors CreateWindowA and 
+CreateWindowW.
+
+<p />
+
+Microsoft uses the same convention (a #define UNICODE triggers the
+Unicode mode at compile time).
+
+<p />
+
+ANSI means a one byte per character coding, whereas Unicode implies
+several bytes (at least two, but some are escapes to longer
+sequences). Even if Unicode consumes more memory, it also allows to
+store strings for various languages: most of non textual languages
+(Japanese, at least in Kanji or Chinese, most of cyrillic alphabets,
+as Russian... but also some other European languages, with specific
+diacritics). 
+
+<p />
+
+Ove K&#229;ven gave an overview of the different encodings:
+
+<quote who="Ove Kaaven">
+<ul>
+   <li />ASCII: 7-bit, one byte per character
+   <li />ISO 8859 encodings, ordinary SBCS codepages: 8-bit (often extended
+ASCII), one byte per character. (<i>Note: All the ISO Latin
+1,2.... follow this scheme</i>)
+   <li />Asian languages, DBCS codepages: 8-bit; either one or two bytes
+per character (if the first byte is a "lead byte", it's a two-byte
+character).
+   <li />UTF-16: Unicode encoding, two bytes per character (preferably
+big-endian but I doubt MS cares). May employ surrogate pairs (two
+UTF16 characters in reserved ranges) to encode Unicode characters
+beyond the first 64K; the surrogate pairs allow access to 1M more
+characters (may be necessary for very exotic Asian languages, but no
+such characters are defined yet).   
+   <li />UCS2: Unicode encoding, two bytes per character, but not
+surrogate pairs. 
+   <li />UCS4: Unicode encoding, four bytes per character, easily and
+conveniently encodes the full Unicode set. This is what GNU systems
+prefer, since they don't want to deal with surrogate pairs.
+   <li />UTF-32: Same as UCS4, just defined by different organizations
+(UCS4 is ISO, UTF32 is Unicode Consortium, plus the added restriction
+of that no more than 64K+1M different characters may exist in UTF32).
+   <li />UTF-8 (UTF-FSS): Unicode encoding useful for compatibility with
+software written for 8-bit C strings. Variable-width (between 1 and 6
+bytes per character). Lower 128 characters are encoded as plain ASCII.
+   <li />UTF-7: Unicode encoding for compatibility with software written
+for 7-bit characters (email, news, etc). A hybrid of Base64 and
+Quoted-Printable.
+</ul></quote>
+
+
+<p />
+
+In the rest of this article, W will refer to UTF-16 strings or
+functions, and U to UTF-8 strings or functions.
+
+<p />
+
+Currently, as Dimitrie points out, most of the Wine code is poorly
+written with regard to Unicode: most of the W functions convert the
+string into an ANSI one, and then call the A function, implying a loss 
+of information, and some potential bugs.
+
+<p />
+
+Dimitrie proposed to change Wine's style for coding by providing a
+unique function (let's say suffixed by 'X') which would be the work
+horse for both A and W functions.
+
+<p />
+
+Dmitry Timoshkov didn't like this proposal, and rather suggested to
+<quote who="Dmitry Timoshkov">Wine should have only one functional implementation
+indeed. I think, it should be implemented like in NT: all actual work
+does Unicode version, ANSI version simply converts ANSI to Unicode and 
+then calls Unicode workhorse. But this transition will consume a lot
+of time and efforts.</quote>
+
+<p />
+
+Dimitrie Paun went further with:<quote who="Dimitrie Paun">
+Somehow, I don't think working with W is the right thing to do in
+Unix. We have the following situation: we receive strings as
+arguments; their encoding is not explicit with every string, but
+rather is implicit by the entry point. Now, we can do two things:
+<ol>
+   <li />[eager] convert at the entry point in one common format, and
+carry on in with one internally with that format
+   <li />[lazy] remember the encoding that the strings are in, and pass
+that around until we actually need a specific encoding
+</ol>
+
+<p />
+
+Anyway, I like 2 better than 1. Not committing to an encoding early in
+the game is good -- sometimes we need UTF8 (file systems, X), in other
+cases we need UTF16 (pure Win stuff). Moreover, the thing is scalable
+-- if another encoding comes along, we could easily support it. And,
+on top of it all, it should be more efficient.</quote>
+
+<p />
+
+With lots of discussions and contributions from many people, the
+following table has been built:
+
+<p />
+
+<table border="1">
+<tr>
+   <td><center></center></td><td><center>Description</center></td>
+   <td><center>Pros</center></td><td><center>Cons</center></td></tr>
+<tr>
+   <td>1</td><td>W-&gt;A conversion, work internally with A</td>
+   <td><ul><li />best option for debugging<li />fast for A (common
+   case today)<li />use std. Win API</ul></td>
+   <td><ul><li />we do NOT support Unicode, we just pretend we do(1)<li />a
+   lot of work, a lot clutter, close to no gain.<li />inefficient for
+   the W case</ul></td> 
+</tr>
+<tr>
+   <td>2</td><td>A-&gt;W conversion, work internally with W</td>
+   <td><ul><li />full Unicode support<li />fast for W<li />use of std. Win
+   API<li />part of Wine is already written this way</ul></td> 
+   <td><ul><li />a lot of clutter<li />very inefficient in the A case
+   (A-&gt;W-&gt;U usually)(2)</ul></td> 
+</tr>
+<tr>
+   <td>3</td><td>A,W call onto a X function which carries the encoding
+   around</td> 
+   <td><ul><li />full Unicode support<li />as fast as 1 for A, and as 2
+   for W (for common code path like display)<li />support for new
+   encodings is trivial<li />not much worse than 2 for
+   debugging<li />maybe a bit less clutter than in 1 or 2
+   (debatable)<li />easy transition from what we have to this</ul></td> 
+   <td><ul><li />use of non std. Win API: this doesn't work across DLLs
+   (would require new APIs)<li />it is not used in Wine
+   currently<li />test coverage of all possible paths can be
+   huge</ul></td>  
+</tr>
+<tr>
+   <td>4</td><td>Write all functions independent of the encoding and
+   recompile to get all encodings (same .c file would generate .Ansi.o, 
+   .w.o object files</td>
+   <td><ul><li />fastest option for A, W<li />easy to support future
+   encodings<li />use of std. API<li />less clutter (in theory)</ul></td>
+   <td><ul><li />huge bloat<li />it is not used in Wine
+   currently<li />(maybe) difficult transition path</ul></td> 
+</tr>
+</table>
+
+<p />
+
+Notes:
+<ol>
+   <li />Patrik Stridvall modified his winapi_check tool to list the
+cases where W-&gt;A conversion was used. At least 172 suspect
+functions have been reported.
+   <li />Alexandre Julliard pointed out that <quote who="Alexandre Julliard">converting
+A-&gt;W-&gt;U for file I/O may seem wasteful but it isn't really since
+we need to support code pages; you can only do A-&gt;U directly for 
+7-bit ascii which is not enough. And supporting code pages without the
+Unicode step means N^2 conversion tables instead of 2*N (where N is
+the number of code pages).</quote>
+</ol>
+
+<p />
+
+Since Alexandre's preferred approach is #2, it was the chosen
+one. However, lots of arguments, mainly between Dimitrie Paun and
+Patrik Stridvall flooded wine-devel to such an extent that some
+readers thought they were reading linux-kernel mailing list.
+
+<p />
+
+Patrik also proposed to automate some of the A-&gt;W or W-&gt;A
+conversions so that stubs for some functions could be generated from
+the .spec file. This didn't work out as, because there are different
+options to take care of:
+<ul>
+   <li />strings can be input, output, or input/output string
+   <li />being a NULL string can be an error or a normal parameter
+   <li />string can be 0 terminated, of fixed length...
+   <li />in some cases (like resources), strings represent IDs (if
+HiWord is 0)
+</ul>
+Semantics seemed too complex to really provide a robust framework.
+As a conclusion, Wine internal string encoding shall (slowly) shift
+from Ansi to Unicode (UTF-16).</section>
+
+</kc>

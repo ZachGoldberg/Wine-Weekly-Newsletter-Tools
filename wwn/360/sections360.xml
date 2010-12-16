@@ -1,0 +1,194 @@
+
+<section 
+	title="News: Wineconf sighted over starboard bow!"
+	subject="Wineconf"
+	archive="http://www.winehq.org/pipermail/wine-devel/2009-September/078479.html"
+	posts="7"
+>
+<topic>Wineconf</topic>
+<p>
+<a href='http://wiki.winehq.org/WineConf2009'>Wineconf 2009</a> has been announced and community members have begun signing up to attend.  This year's conference will be held in Enschede Netherlands on November 7th and 8th.  Wineconf 2008 is now infamous for establishing the ever-so-tough to break <a href='http://www.winehq.org/wwn/353#News: WineConf 2008'>Julliard Rank</a>.  Wineconf 2009 is sure to also be filled with fun and interesting insights into the Wine development community!  Jeremy White's announcement:
+</p>
+<quote>
+<p>
+Hi Folks,
+</p><p>
+It's now close enough to November that you can't blow
+this email off &amp;lt;grin&amp;gt;.
+</p><p>
+We've got all the info here:
+  <a href="http://wiki.winehq.org/WineConf2009">http://wiki.winehq.org/WineConf2009</a> 
+</p><p>
+Our challenge this year is that we're managing the booking,
+so we need a firm head count ahead of time.
+</p><p>
+Again, if money is an issue, and you haven't already, please 
+contact me privately.
+</p><p>
+So if you're thinking of coming, email Hans.  
+</p><p>
+Now.  
+</p><p>
+Please.
+</p><p>
+Failure to do so may result in your sleeping on the streets
+of Enschede *grin*.
+</p><p>
+Cheers,
+</p><p>
+Jeremy
+</p>
+</quote></section>
+<section 
+	title=".NET continues to make progress under Wine"
+	subject=".NET"
+	archive="http://www.winehq.org/pipermail/wine-devel/2009-August/077809.html"
+	posts="1"
+>
+<topic>.NET</topic>
+<p>
+Dan Kegel appears to have returned from sabbatical and is again helping to shore up lose ends within Wine.  This time he writes in to discuss the progress of .NET 3.5
+</p>
+<quote>
+<p>
+After the recent success with the .net 3.0 installer, I decided to try .net 3.5:
+</p>
+<pre>
+$ wget <a href="http://download.microsoft.com/download/7/0/3/703455ee-a747-4cc8-bd3e-98a615c3aedb/dotNetFx35setup.exe">http://download.microsoft.com/download/7/0/3/703455ee-a747-4cc8-bd3e-98a615c3aedb/dotNetFx35setup.exe</a> 
+$ sha1sum dotNetFx35setup.exe b0ca05c12ebb9a3610206bad7f219e02b7873cbd  dotNetFx35setup.exe
+$ rm -rf ~/.wine
+$ sh winetricks dotnet20
+$ wine dotNetFx35setup.exe
+</pre>
+<p>
+And surprise, although there was a crash dialog about
+printfilterpipelinesvc, the installer reported that it finished ok!
+</p>
+<p>
+I have no idea if the installed runtime actually works,
+and there are a ton of log messages after installation
+finishes.  (Presumably the .net optimization service?)
+But it's nice to have gotten this far.
+</p>
+<p>
+- Dan
+</p>
+</quote></section>
+<section 
+	title="Wrap up from Google Summer of Code"
+	subject="GSOC"
+	archive="http://www.winehq.org/pipermail/wine-devel/2009-August/078105.html"
+	posts="2"
+>
+<topic>GSOC</topic>
+<p>
+Trever Davenport writes in to discuss his progress with Wine and GStreamer for his Google Summer of Code Project
+</p>
+<quote>
+<p>
+Hi,
+</p><p>
+I wanted to send a mail to the list and basically state what the
+status of all this is and what my plans are for the future.
+</p><p>
+For those unfamiliar with what i was doing, I was trying to enable
+using gstreamer elements as directshow filter to expand the quartz
+functionality available.  At the start of the program I was not very
+familiar with quartz so it took a fair amount of learning to get up to
+speed with it.
+</p><p>
+The basic ability to use a gstreamer element is mostly there.  More
+work is needed to finish up a few aspects of it though.  The source
+commited to my github repo does expose one working element if you have
+the gstreamer mp3 plugin installed.  A little bit more work is needed
+to map more formats so that more elements can be exposed.  I had hoped
+to do this before the program deadline but it just ended up not being
+possible.  But i plan to keep working on this.  I'd like to see it
+commited if possible.
+</p><p>
+My plans are essentially the following:
+<ul>
+<li> expand the format mapping so most audio elements (ones that operate
+on one input and one output) can be exposed </li>
+<li> add to the quartz filter registry</li>
+<li> clean up anything I can find (i am sure there is a leak or two, etc)</li>
+<li> finish build setup - configure option and library finding issue
+(seems to pickup 64bit version on 64bit system...which won't work...)</li>
+<li> start patch review</li>
+</ul>
+</p><p>
+More long term I want to start more general quartz work.  Implementing
+some of the currently unimplemented features such as dynamic pin
+reconnection would help.  I want to do this as well as start cleaning
+up a few areas I found while trying to find what was happening.  I
+also want to continue working on this to allow more elements,
+specifically the demuxers from gstreamer which should be able to the
+take the place of avisplitter and mpegsplitter but have more features.
+</p><p>
+I didn't get as far as i had wanted to due to how much I had to learn
+about directshow and time was constantly a issue.  Nothing really uses
+the new filter currently expect my little test mp3 player, which is
+also available in the github repo (just search for tdaven, both the
+wine and the test programs are in my personal repo).  It seems the
+quartz dsound element sometimes (i've had it often) does not mix well
+when using alsa as the audio driver over pulseaudio.  If it sounds
+extremely slow this is the cause.  I've not tracked down exactly what
+is going on in this case, but using raw alsa or something else has
+never demonstrated the issue.  Took me a good while to find this was
+the cause though.
+</p><p>
+If there are any questions I'd be glad to answer whatever.
+</p><p>
+Cheers,
+</p><p>
+Trevor Davenport
+</p>
+</quote>
+<p>
+Austin English writes about his Summer of Code Project with AppInstall
+</p>
+<quote>
+<p>
+Appinstall is a testing framework using AutoHotKey to perform 'real
+world' gui testing. Essentially, it allows for users to write scripts
+in AutoHotKey (a really easy language), to test installing their
+favorite application, as well as running it and performing various
+actions. By making the test on windows, we can ensure the behavior
+matches native. By testing it on Wine, it can find very subtle bugs,
+and also, serve as a great regression test.
+</p><p>
+Appinstall itself consists of a shell script that handles creating
+WINEPREFIXes, running winetricks (if needed for an application),
+caching downloads, parsing the results, and scp'ing them to a
+webserver. The bulk of the program is in autohotkey scripts, which
+tests various applications, from 7-zip to Adobe Photoshop CS2.
+</p><p>
+Currently, it tests has 39 tests, though, that's a bit deceptive,
+since some of those tests builtin wine applications. In actuality,
+there are 35 'real' applications tested, of various types. Most do a
+silent install, when possible. Some, such as Notepad++ and Firefox
+have a few more tests built in, others simply test that the program
+runs. The tests are run daily, on my machine, to monitor for
+regressions and fixed bugs. It takes about an hour or so to go through
+all the tests, with the downloads cached. If sha1sum's are disabled,
+that time can go down considerably, especially for large (many files)
+tests, e.g., Gimp, Photoshop, Python.
+</p><p>
+The future of appinstall really depends on if users contribute :-). If
+anything, those 35 applications will be tested daily. If users would
+like to contribute, by writing a test for their favorite downloadable
+application, it would be helpful. There's a guide here:
+ <a href="http://wiki.winehq.org/Appinstall_Testing.">http://wiki.winehq.org/Appinstall_Testing.</a> Personally, my time
+recently has been spoken for, so I haven't had as much time to work on
+it. If I get more free time, or a sponsor ;-), that may change.
+There's tons of room for improvement...there are a lot of small
+testcase programs on bugzilla that could be tested, and thousands of
+downloadable applications on windows to test. Eventually, I'd like to
+test the Microsoft Office installers (optionally, if the cd is in the
+drive), various language conformance tests (python/perl/etc., assuming
+they pass on Windows), and once Dan's crossbuild scripts start to work
+better on Wine, test some of those.
+</p><p>
+-Austin
+</p>
+</quote></section>

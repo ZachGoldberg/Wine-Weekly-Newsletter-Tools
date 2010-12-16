@@ -1,0 +1,119 @@
+<!--TITLE:[The Wine Git Tree]-->
+
+<h1>The Wine Git Tree</h1>
+
+<p>Wine uses an Open Source, open process development model. 
+Anyone may get the code, post opinions on what should be done,
+and contribute patches. You will need to know C and/or perl, and something
+about <a href="{$root}/site/resources">Unix and Windows</a>.</p>
+
+<p><a href="http://git.or.cz/">Git</a> is a fast directory
+content manager, originally written for use with large repositories,
+such as the Linux Kernel source.</p>
+
+<p>You will need Git 1.3.1 or above.</p>
+
+<p>Read the sections below on how to use our Git tree or check the
+<a href="http://wiki.winehq.org/GitWine">GitWine</a> guide on the Wine Wiki.</p>
+
+<ol>
+    <li><a href="#clone">Getting a local copy of Wine</a></li>
+    <li><a href="#cleaning">Cleaning up your existing tree</a></li>
+    <li><a href="#uptodate">Staying Up-To-Date</a></li>
+    <li><a href="#sourcetree">Source Tree Browsing via the Web</a></li>
+    <li><a href="#modules">Other modules available from WineHQ</a></li>
+    <li><a href="#clonecvs">Getting a local copy of Wine with CVS</a></li>
+</ol>
+
+<hr />
+
+<h1 id="clone">Getting a local copy of Wine</h1>
+
+<p>To check out the entire Wine source tree, do:</p>
+
+<p><code>git clone git://source.winehq.org/git/wine.git wine</code></p>
+
+<hr />
+
+<h1 id="cleaning">Cleaning up your existing tree</h1>
+
+<p>A quick way to clean up your tree after you've been modifying
+it and want to remove changes you haven't checked in is this: </p>
+
+<p><code>cd wine
+git diff-index -p HEAD &gt; total-<i>x.x.x</i>.diff
+patch -p1 -R &lt; total-<i>x.x.x</i>.diff
+git reset
+</code></p>
+
+<p>Using the current x.x.x tags, you can keep a history of changes
+that were in your Wine tree.</p>
+
+<p>If you have made commits to the tree, and want to remove them all,
+you can use the following more dangerous command:</p>
+
+<p><code>git reset --hard origin</code></p>
+
+
+<p>This will wipe out any local changes you have made, so use it with caution.</p>
+
+<hr />
+
+<h1 id="uptodate">Staying Up-To-Date</h1>
+
+<p> First, make sure to clean your tree as described above, then
+run the following commands from the top level wine directory:</p>
+
+<p><code>git fetch
+git rebase origin
+</code></p>
+
+<hr />
+
+<h1 id="sourcetree">Source Tree Browsing via the Web</h1>
+
+<p>The source code of the entire Wine tree is (<a href="http://lxr.linux.no/">LXR</a>-based)
+  cross-referenced and available for browsing, including a search engine.
+  This cross-references source is based on the snapshot-releases and is made available at: </p>
+<ul>
+  <li><a href="http://source.winehq.org/">source.winehq.org</a></li>
+</ul>
+
+<p> Direct access from the web to the complete Git tree is also possible, using
+<a href="http://www.kernel.org/pub/software/scm/gitweb/">gitweb</a> package:</p>
+<ul>
+  <li><a href="http://source.winehq.org/git/wine.git">source.winehq.org/git/wine.git</a>,
+  on the primary Git repository</li>
+</ul>
+
+<hr />
+
+<h1 id="modules">Other modules available from WineHQ</h1>
+
+<p>In addition to the main source tree, the WineHQ Git server also
+exports the following modules:</p>
+
+<ul>
+  <li><a href="http://source.winehq.org/git/website.git">website.git</a>  -- source for the WineHQ.org website</li>
+  <li><a href="http://source.winehq.org/git/bugzilla.git">bugzilla.git</a>  -- source for the bugzilla version used on the WineHQ site</li>
+  <li><a href="http://source.winehq.org/git/appdb.git">appdb.git</a>  -- source for the application database web site</li>
+  <li><a href="http://source.winehq.org/git/docs.git">docs.git</a>  -- source for the Wine documentation</li>
+  <li><a href="http://source.winehq.org/git/tools.git">tools.git</a>  -- tools used on the WineHQ site</li>
+</ul>
+
+<hr />
+
+<h1 id="clonecvs">Getting a local copy of Wine with CVS</h1>
+
+<p>If you cannot use Git for some reason, the main source tree is
+  also available through CVS.</p>
+
+<p>To login to the CVS server, run in a terminal:</p>
+
+<p><code>cvs -d :pserver:cvs@cvs.winehq.org:/home/wine login</code></p>
+
+<p>Use &quot;cvs&quot; as the password (without the quotes).</p>
+
+<p>To check out the Wine source tree run:</p>
+
+<p><code>cvs -z 3 -d :pserver:cvs@cvs.winehq.org:/home/wine checkout wine</code></p>

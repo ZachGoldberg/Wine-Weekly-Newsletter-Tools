@@ -1,0 +1,3641 @@
+From truiken at gmail.com  Sun Dec 23 03:43:18 2007
+From: truiken at gmail.com (James Hawkins)
+Date: Sun, 23 Dec 2007 03:43:18 -0600
+Subject: ole32: Fix a failed call to DllGetClassObject while retrieving
+	class object interface pointer.
+In-Reply-To: <b4cc5a3d0712222037t35033191wac9ad92717b58dd4@mail.gmail.com>
+References: <b4cc5a3d0712200653t738a43c4rcbd00ff8e779e128@mail.gmail.com>
+	<476ABF8B.1080509@codeweavers.com>
+	<b4cc5a3d0712220746y4a883afau649a5f22aec8a59@mail.gmail.com>
+	<22821af30712220906o2b313fe6oc1fbea0657f92f58@mail.gmail.com>
+	<b4cc5a3d0712221025g3ba44bcay14f02396813c62a1@mail.gmail.com>
+	<22821af30712221255h4778df15v9d714eae492d8ef5@mail.gmail.com>
+	<476DB25C.8080200@codeweavers.com>
+	<22821af30712221912y3643fc30y607ae67de6cb0f68@mail.gmail.com>
+	<b4cc5a3d0712222037t35033191wac9ad92717b58dd4@mail.gmail.com>
+Message-ID: <22821af30712230143g2fade695x898c962879bf9cff@mail.gmail.com>
+
+On Dec 22, 2007 10:37 PM, Huang, Zhangrong <hzhrong at gmail.com> wrote:
+> hi,
+>
+> 2007/12/23, James Hawkins <truiken at gmail.com>:
+> > On Dec 22, 2007 6:57 PM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+> > > James Hawkins schreef:
+> > >
+> > > > On Dec 22, 2007 12:25 PM, Huang, Zhangrong <hzhrong at gmail.com> wrote:
+> > > >
+> > > >> 2007/12/23, James Hawkins <truiken at gmail.com>
+> > > >>>>>
+>
+> > > >>>>
+> > > >>> Disassembling what?
+> > > >>>
+> > > >> Native ole32.dll, MkParseDisplayName calls adsldp.dll's
+> > > >> DllGetClassObject twice,
+> > > >> frist using IID_IParseDisplayName, second using IID_IClassFactory.
+> > > >>
+> > > >>
+> > > >>
+> > > >
+> > > > Disassembling native Windows binaries is not allowed in this project,
+> > > > so I'm afraid none of your patches can be accepted
+> > > This is not the first time such disassemble occurs, I think it should be
+> > > made more clear that disassembly is not allowed in the wine project.
+>
+> Thank you for mentioning that. But, I think that's kind of mixing up.
+> I didn't do anything like disassembly code to source code translation.
+> I just saw how native binaries work when debugging my app in Windows.
+>
+
+Disassembling of any kind is prohibited.  You don't have to convert
+the disassembly to source code first to disqualify.
+
+> I didn't have much knowledge about COM, so I searched MSDN and found
+> some useful info about DllGetClassObject, then I wrote the patch, it's
+> quite clean.
+>
+
+You just said you disassembled native ole32.dll.
+
+-- 
+James Hawkins
+
+
+From kai.blin at gmail.com  Sun Dec 23 04:31:20 2007
+From: kai.blin at gmail.com (Kai Blin)
+Date: Sun, 23 Dec 2007 11:31:20 +0100
+Subject: New bugzilla components (round 3)
+In-Reply-To: <476D5D59.8050809@kievinfo.com>
+References: <476D5D59.8050809@kievinfo.com>
+Message-ID: <200712231131.26437.kai.blin@gmail.com>
+
+On Saturday 22 December 2007 19:54:17 Vitaliy Margolen wrote:
+
+> ------------------------------
+> This is up for discussion:
+[...]
+> wine-net ->
+
+I'll just go with James' suggestions here:
+
+wine-net -> ws2_32, need to reclassify the wininet bugs to 'wininet', but that 
+can be done after the rename just as well.
+
+wine-sspi -> secur32
+
+Cheers,
+Kai
+
+-- 
+Kai Blin
+WorldForge developer  http://www.worldforge.org/
+Wine developer        http://wiki.winehq.org/KaiBlin
+Samba team member     http://www.samba.org/samba/team/
+--
+Will code for cotton.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20071223/8b5b80db/attachment.pgp 
+
+From hzhrong at gmail.com  Sun Dec 23 04:49:04 2007
+From: hzhrong at gmail.com (Huang, Zhangrong)
+Date: Sun, 23 Dec 2007 18:49:04 +0800
+Subject: ole32: Fix a failed call to DllGetClassObject while retrieving
+	class object interface pointer.
+In-Reply-To: <22821af30712230143g2fade695x898c962879bf9cff@mail.gmail.com>
+References: <b4cc5a3d0712200653t738a43c4rcbd00ff8e779e128@mail.gmail.com>
+	<476ABF8B.1080509@codeweavers.com>
+	<b4cc5a3d0712220746y4a883afau649a5f22aec8a59@mail.gmail.com>
+	<22821af30712220906o2b313fe6oc1fbea0657f92f58@mail.gmail.com>
+	<b4cc5a3d0712221025g3ba44bcay14f02396813c62a1@mail.gmail.com>
+	<22821af30712221255h4778df15v9d714eae492d8ef5@mail.gmail.com>
+	<476DB25C.8080200@codeweavers.com>
+	<22821af30712221912y3643fc30y607ae67de6cb0f68@mail.gmail.com>
+	<b4cc5a3d0712222037t35033191wac9ad92717b58dd4@mail.gmail.com>
+	<22821af30712230143g2fade695x898c962879bf9cff@mail.gmail.com>
+Message-ID: <b4cc5a3d0712230249y4b4c08ala7c78da8fbfd78e6@mail.gmail.com>
+
+2007/12/23, James Hawkins <truiken at gmail.com>:
+> On Dec 22, 2007 10:37 PM, Huang, Zhangrong <hzhrong at gmail.com> wrote:
+> > hi,
+> >
+> > 2007/12/23, James Hawkins <truiken at gmail.com>:
+> > > On Dec 22, 2007 6:57 PM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+> > > > James Hawkins schreef:
+> > > >
+> > > > > On Dec 22, 2007 12:25 PM, Huang, Zhangrong <hzhrong at gmail.com> wrote:
+> > > > >
+> > > > >> 2007/12/23, James Hawkins <truiken at gmail.com>
+> > > > >>>>>
+> >
+> > > > >>>>
+> > > > >>> Disassembling what?
+> > > > >>>
+> > > > >> Native ole32.dll, MkParseDisplayName calls adsldp.dll's
+> > > > >> DllGetClassObject twice,
+> > > > >> frist using IID_IParseDisplayName, second using IID_IClassFactory.
+> > > > >>
+> > > > >>
+> > > > >>
+> > > > >
+> > > > > Disassembling native Windows binaries is not allowed in this project,
+> > > > > so I'm afraid none of your patches can be accepted
+> > > > This is not the first time such disassemble occurs, I think it should be
+> > > > made more clear that disassembly is not allowed in the wine project.
+> >
+> > Thank you for mentioning that. But, I think that's kind of mixing up.
+> > I didn't do anything like disassembly code to source code translation.
+> > I just saw how native binaries work when debugging my app in Windows.
+> >
+>
+> Disassembling of any kind is prohibited.  You don't have to convert
+> the disassembly to source code first to disqualify.
+
+Actually, I did say "assembly debugging" at first, because when I was debugging
+my private app, what I saw in native ole32.dll was assembly code, so I called
+"assembly debugging".  All I got that was native ole32.dll called
+DllGetClassObject
+twice, that's it, I didn't know how it done and still don't understand
+that assembly code well.
+
+>
+> > I didn't have much knowledge about COM, so I searched MSDN and found
+> > some useful info about DllGetClassObject, then I wrote the patch, it's
+> > quite clean.
+> >
+>
+> You just said you disassembled native ole32.dll.
+
+Maybe I missed what your said and what you mean, but you said
+"disassembly"  first,
+I did mean I saw native ole32.dll in assembly code mode, not mean I
+did disassembly
+or any cracking stuff.
+
+>
+> --
+> James Hawkins
+>
+
+
+-- 
+$ apt-get moo
+         (__)
+         (oo)
+   /------\/
+  / |    ||
+ *  /\---/\
+    ~~   ~~
+...."Have you mooed today?"...
+
+
+From dank at kegel.com  Sun Dec 23 06:24:41 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 23 Dec 2007 04:24:41 -0800
+Subject: Looking for serious Photoshop 7/CS users to break wine
+Message-ID: <a71bd89a0712230424s5aecf27n2319eff0f69405db@mail.gmail.com>
+
+Our support for Photoshop 7 and maybe CS
+is strong enough for industrial users --
+and if it isn't, I'd like to know about it so
+we can do something about it.
+So I posted notes asking for serious Photoshop
+users to try it and let us know what's still broken:
+http://ubuntuforums.org/showthread.php?p=4001494
+http://www.adobeforums.com/webx/.3c05a212
+Hopefully that will bring in some good bug reports.
+- Dan
+p.s. The latter message reads
+-- snip --
+Topic: Wine Project looking for Photoshop CS users who want Linux support
+
+If you're not a Linux user, or if you don't like the idea of
+running Photoshop for Windows on Linux, you can stop reading now,
+this message probably won't be interesting to you.
+
+The Wine project is looking for hardcore Photoshop CS or 7
+users who use Photoshop professionally, all day, every day,
+and who are willing to tell us why they can't do that in Linux
+using Wine yet.
+
+We know everybody would like Photoshop CS3 or at least
+CS2 support, but support for CS2 and CS3 isn't quite
+ready, so we'd like to focus on our strengths, and support
+Photoshop 7 and CS excellently. Don't worry, we're also
+working on the CS2 and CS3 issues. Getting all the 7 and CS
+issues taken care of builds a stronger foundation for CS2 and CS3.
+
+If something doesn't work in Photoshop 7 or CS itself,
+or your favorite plugin works in Windows with 7 or CS
+but not in Wine, please let us know how to reproduce
+the problem. To do that, just reply to this post,
+or post in the wine-users mailing list,
+or leave a comment in the wine appdb for Photoshop 7 or CS,
+or file a bug in the Wine Bugzilla,
+whichever you're more comfortable with.
+We'll take it from there; if we can reproduce it, we'll
+file a bug and see if we can get a wine developer to fix it.
+
+Ideally you'd test with the latest release of Wine
+(currently 0.9.51), but if you're still on a slightly older
+version, don't sweat it, we'll retest on the latest for you.
+
+Thanks!
+Dan Kegel
+Wine 1.0 Release Manager
+-- snip --
+
+
+From r.kalbermatter at hccnet.nl  Sun Dec 23 08:27:56 2007
+From: r.kalbermatter at hccnet.nl (Rolf Kalbermatter)
+Date: Sun, 23 Dec 2007 15:27:56 +0100
+Subject: ole32: Fix a failed call to DllGetClassObject while
+	retrievingclass object interface pointer.
+Message-ID: <003001c84570$03266240$4001a8c0@NATERS>
+
+James Hawkins [truiken at gmail.com] wrote:
+
+>Disassembling of any kind is prohibited.  You don't have to convert the
+disassembly
+>to source code first to disqualify.
+
+By that strict definition starting up any decent debugger is already
+disqualifying.
+Not sure we want to go quite there. I wouldn't really know how to do some of
+my programs
+without sometimes using a debugger, although that happens to usually break
+into my own
+code but in the case of an exception, also not.
+
+Rolf Kalbermatter
+
+
+
+From stefan at codeweavers.com  Sun Dec 23 09:09:07 2007
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Sun, 23 Dec 2007 16:09:07 +0100
+Subject: bugfix for bug #6994
+In-Reply-To: <op.t3riyfhiqeis3t@alexei-desktop>
+References: <op.t3riyfhiqeis3t@alexei-desktop>
+Message-ID: <200712231609.07256.stefan@codeweavers.com>
+
+Am Sonntag, 23. Dezember 2007 01:43:17 schrieb Alexei Slepov:
+> Subject:
+>
+> We can't use ordinary backbuffer to render textures, which size is more
+> than
+> size of the screen. To render bigger texture we must use pbuffer.
+You can't just set the setting to PBUFFER, you at least have to check if 
+pbuffers are supported.
+
+The proper fix is IMHO to fix the problems fbos suffer from and default to fbo 
+offscreen rendering
+
+
+From wine-devel at kievinfo.com  Sun Dec 23 11:03:46 2007
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 23 Dec 2007 10:03:46 -0700
+Subject: tools/wineshelllink: do not execute applications directly,  
+	use 'start' utility instead
+In-Reply-To: <200712231726.13705.lich@math.spbu.ru>
+References: <200712231726.13705.lich@math.spbu.ru>
+Message-ID: <476E94F2.4040806@kievinfo.com>
+
+Kirill K. Smirnov wrote:
+> This is needed by console applications.
+> Fixes bug #10867
+> 
+> -Exec=env WINEPREFIX="${WINEPREFIX:-$HOME/.wine}" wine "$path" $args
+> +Exec=env WINEPREFIX="${WINEPREFIX:-$HOME/.wine}" wine start "$path" $args
+This is not correct. If console needs to be created for those apps and there 
+isn't one, then Wine should do it when starting an app.
+
+Vitaliy.
+
+
+From julliard at winehq.org  Sun Dec 23 11:23:36 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Sun, 23 Dec 2007 18:23:36 +0100
+Subject: ole32: fix wrong timeout check
+In-Reply-To: <476D91AC.9090404@inbox.lv> (Alexander Dorofeyev's message of
+	"Sat, 22 Dec 2007 14:37:32 -0800")
+References: <a71bd89a0712211901y7de6094euafa478ad6d112b61@mail.gmail.com>
+	<476D91AC.9090404@inbox.lv>
+Message-ID: <871w9dmijr.fsf@wine.dyndns.org>
+
+Alexander Dorofeyev <alexd4 at inbox.lv> writes:
+
+> Yeah these calculations are a headache. I could probably write
+>
+> now < start_time || now >= start_time + dwTimeout
+
+The right way is to write
+
+ now - start_time > dwTimeout
+
+using unsigned variables everywhere. Then you don't have to worry about
+overflows, and you don't even need to special case INFINITE.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From lich at math.spbu.ru  Sun Dec 23 13:23:57 2007
+From: lich at math.spbu.ru (Kirill K. Smirnov)
+Date: Sun, 23 Dec 2007 22:23:57 +0300
+Subject: tools/wineshelllink: do not execute applications directly,
+	use 'start' utility instead
+Message-ID: <200712232223.58154.lich@math.spbu.ru>
+
+>> -Exec=env WINEPREFIX="${WINEPREFIX:-$HOME/.wine}" wine "$path" $args
+>> +Exec=env WINEPREFIX="${WINEPREFIX:-$HOME/.wine}" wine start "$path" $args
+>This is not correct. If console needs to be created for those apps and there 
+>isn't one, then Wine should do it when starting an app.
+
+  This is correct. "wine start" is the right way to start complicated (which 
+use AllocConsole/FreeConsole and HWND) console applications (bug #10827 and 
+bug #10867).
+
+  I do not understand how to detect lack of console even for applications 
+called from desktop shortcut. Dumb IO console is always present AFAIK. I 
+tried to following:
+
+Create simple console application.
+#include <stdio.h>
+
+int main(void)
+{
+        FILE *f = fopen("ia.txt", "w");
+        int ret;
+
+        ret = fprintf(stdout, "qqq\n");
+        fprintf(f, "%d\n", ret);
+        fclose(f);
+        return 0;
+}
+
+compiled it as windows console app and run it:
+1) $ wine a.exe
+2) $ wine start a.exe
+3) create a desktop shortcut and click on it.
+
+1'), 2'), 3') compiled the same app as a UNIX app and run it via desktop 
+shortcut.
+In all cases results are the same: successful output to stdout (res=4).
+
+This makes me think that stdio handles are always present.  I may be wrong, 
+just let me know.
+
+--
+Kirill
+
+
+From truiken at gmail.com  Sun Dec 23 13:36:23 2007
+From: truiken at gmail.com (James Hawkins)
+Date: Sun, 23 Dec 2007 13:36:23 -0600
+Subject: ole32: Fix a failed call to DllGetClassObject while
+	retrievingclass object interface pointer.
+In-Reply-To: <003001c84570$03266240$4001a8c0@NATERS>
+References: <003001c84570$03266240$4001a8c0@NATERS>
+Message-ID: <22821af30712231136i2c1aa2a9qb508c171498f5cb9@mail.gmail.com>
+
+On Dec 23, 2007 8:27 AM, Rolf Kalbermatter <r.kalbermatter at hccnet.nl> wrote:
+> James Hawkins [truiken at gmail.com] wrote:
+>
+> >Disassembling of any kind is prohibited.  You don't have to convert the
+> disassembly
+> >to source code first to disqualify.
+>
+> By that strict definition starting up any decent debugger is already
+> disqualifying.
+> Not sure we want to go quite there. I wouldn't really know how to do some of
+> my programs
+> without sometimes using a debugger, although that happens to usually break
+> into my own
+> code but in the case of an exception, also not.
+>
+> Rolf Kalbermatter
+>
+>
+
+Of course.  The issue was one of communication.  I asked him what he
+was disassembling and he replied 'native ole32', so I took him quite
+literally.
+
+-- 
+James Hawkins
+
+
+From dank at kegel.com  Sun Dec 23 22:10:11 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 23 Dec 2007 20:10:11 -0800
+Subject: Which is more important to Linux users, itunes or photoshop?
+Message-ID: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+
+Not a real question, but I thought this graph was interesting:
+
+http://www.google.com/trends?q=dreamweaver+linux%2C+%22world+of+warcraft%22+linux%2C++itunes+linux%2C+photoshop+linux
+
+It seems iTunes on Linux is twice as popular a query as Photoshop on Linux.
+No idea what that really means, but it does make me
+want to get our iTunes support shipshape...
+
+Then again, this graph shows mplayer beating out itunes (presumably
+because it works):
+http://www.google.com/trends?q=dreamweaver+linux%2C+mplayer+linux%2C++itunes+linux%2C+photoshop+linux
+
+OK, too much fooling around with graphs.  Back to
+watching Underdog with my four-year-old...
+
+
+From zgold550 at gmail.com  Sun Dec 23 23:52:02 2007
+From: zgold550 at gmail.com (Zachary Goldberg)
+Date: Mon, 24 Dec 2007 00:52:02 -0500
+Subject: [wintab32 1/7] Store and use the physical device id to match
+	device to cursor.
+In-Reply-To: <476E92F7.6040903@winehq.org>
+References: <476E92F7.6040903@winehq.org>
+Message-ID: <b050a5e70712232152nd3f22b8v4f5fddfef566e8c9@mail.gmail.com>
+
+On Dec 23, 2007 11:55 AM, Jeremy White <jwhite at winehq.org> wrote:
+> ...snip..
+> +static int cursor_from_device(DWORD deviceid, LPWTI_CURSORS_INFO *cursorp)
+> +{
+> +    int i;
+> +    for (i = 0; i < gNumCursors; i++)
+> +        if (gSysCursor[i].PHYSID == deviceid)
+> +        {
+> +            *cursorp = &gSysCursor[i];
+> +            return i;
+> +        }
+> +
+> +    ERR("Could not map device id %d to a cursor\n", (int) deviceid);
+> +    return -1;
+>  }
+>
+> ...snip..
+
+Perhaps a silly and/or wrong observation but, is this in an effort to
+support multiple cursors?
+
+
+From scott at open-vote.org  Mon Dec 24 00:32:14 2007
+From: scott at open-vote.org (Scott Ritchie)
+Date: Sun, 23 Dec 2007 22:32:14 -0800
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+Message-ID: <476F526E.7090905@open-vote.org>
+
+Dan Kegel wrote:
+> Not a real question, but I thought this graph was interesting:
+> 
+> http://www.google.com/trends?q=dreamweaver+linux%2C+%22world+of+warcraft%22+linux%2C++itunes+linux%2C+photoshop+linux
+> 
+> It seems iTunes on Linux is twice as popular a query as Photoshop on Linux.
+> No idea what that really means, but it does make me
+> want to get our iTunes support shipshape...
+> 
+Similarly:
+http://www.google.com/trends?q=photoshop+linux%2C+itunes+linux%2C+itunes+ubuntu%2C+photoshop+ubuntu&ctab=0&geo=all&date=all&sort=0
+
+Let's not get ahead of ourselves, though.  A lot of these queries are
+because there's a howto they're looking for, exactly because it's hard
+to get it to work out of the box.
+
+Thanks,
+Scott Ritchie
+
+
+From nemes.sorin at gmail.com  Mon Dec 24 02:55:29 2007
+From: nemes.sorin at gmail.com (SorinN)
+Date: Mon, 24 Dec 2007 10:55:29 +0200
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+Message-ID: <e9ddc420712240055j2a58ec38ne98140bbd1fd9395@mail.gmail.com>
+
+OK,
+
+by meanings - Dreamweaver and Photoshop are important - iTunes are not
+so important ..but a lot more peoples know about ITunes.
+
+
+2007/12/24, Dan Kegel <dank at kegel.com>:
+> Not a real question, but I thought this graph was interesting:
+>
+> http://www.google.com/trends?q=dreamweaver+linux%2C+%22world+of+warcraft%22+linux%2C++itunes+linux%2C+photoshop+linux
+>
+> It seems iTunes on Linux is twice as popular a query as Photoshop on Linux.
+> No idea what that really means, but it does make me
+> want to get our iTunes support shipshape...
+>
+> Then again, this graph shows mplayer beating out itunes (presumably
+> because it works):
+> http://www.google.com/trends?q=dreamweaver+linux%2C+mplayer+linux%2C++itunes+linux%2C+photoshop+linux
+>
+> OK, too much fooling around with graphs.  Back to
+> watching Underdog with my four-year-old...
+>
+>
+>
+
+
+-- 
+Nemes Ioan Sorin
+
+
+From maarten at codeweavers.com  Mon Dec 24 07:06:30 2007
+From: maarten at codeweavers.com (Maarten Lankhorst)
+Date: Mon, 24 Dec 2007 14:06:30 +0100
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+Message-ID: <476FAED6.6020307@codeweavers.com>
+
+Hi Dan,
+
+Dan Kegel schreef:
+> Not a real question, but I thought this graph was interesting:
+>
+> http://www.google.com/trends?q=dreamweaver+linux%2C+%22world+of+warcraft%22+linux%2C++itunes+linux%2C+photoshop+linux
+>
+> It seems iTunes on Linux is twice as popular a query as Photoshop on Linux.
+> No idea what that really means, but it does make me
+> want to get our iTunes support shipshape...
+>
+> Then again, this graph shows mplayer beating out itunes (presumably
+> because it works):
+> http://www.google.com/trends?q=dreamweaver+linux%2C+mplayer+linux%2C++itunes+linux%2C+photoshop+linux
+>
+> OK, too much fooling around with graphs.  Back to
+> watching Underdog with my four-year-old...
+>   
+This is just looking for search queries, there are probably a lot more
+variationis of it (such as dreamweavers+ubuntu, etc). I personally think
+all 3 important:
+- iTunes because it's such a popular program, and wine should have
+support for it.
+- Photoshop and dreamweaver are because there are no professional
+alternatives for it with a familiar interface.
+
+They are 2 groups that have different demands of the os (amusement vs
+productivity). So I think they are both important in their own way.
+
+Cheers,
+Maarten.
+
+
+From adam at tpetaccia.com  Mon Dec 24 09:58:14 2007
+From: adam at tpetaccia.com (Adam Petaccia)
+Date: Mon, 24 Dec 2007 10:58:14 -0500
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+Message-ID: <1198511894.11540.3.camel@mighmos>
+
+
+On Sun, 2007-12-23 at 20:10 -0800, Dan Kegel wrote:
+> Not a real question, but I thought this graph was interesting:
+> 
+> http://www.google.com/trends?q=dreamweaver+linux%2C+%22world+of+warcraft%22+linux%2C++itunes+linux%2C+photoshop+linux
+> 
+> It seems iTunes on Linux is twice as popular a query as Photoshop on Linux.
+> No idea what that really means, but it does make me
+> want to get our iTunes support shipshape...
+> 
+> Then again, this graph shows mplayer beating out itunes (presumably
+> because it works):
+> http://www.google.com/trends?q=dreamweaver+linux%2C+mplayer+linux%2C++itunes+linux%2C+photoshop+linux
+> 
+> OK, too much fooling around with graphs.  Back to
+> watching Underdog with my four-year-old...
+> 
+> 
+
+I'm not a developer, but it seems to me that people google search when
+something /doesn't/ work.  Few people google wine+world of warcraft (or
+WoW) because it works out of the box for most people, for example.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20071224/e63dd85e/attachment.pgp 
+
+From zac at zacbrown.org  Mon Dec 24 10:03:00 2007
+From: zac at zacbrown.org (Zac Brown)
+Date: Mon, 24 Dec 2007 10:03:00 -0600
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <476FAED6.6020307@codeweavers.com>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+	<476FAED6.6020307@codeweavers.com>
+Message-ID: <476FD834.7090705@zacbrown.org>
+
+Maarten Lankhorst wrote:
+> Hi Dan,
+> 
+> Dan Kegel schreef:
+>> Not a real question, but I thought this graph was interesting:
+>>
+>> http://www.google.com/trends?q=dreamweaver+linux%2C+%22world+of+warcraft%22+linux%2C++itunes+linux%2C+photoshop+linux
+>>
+>> It seems iTunes on Linux is twice as popular a query as Photoshop on Linux.
+>> No idea what that really means, but it does make me
+>> want to get our iTunes support shipshape...
+>>
+>> Then again, this graph shows mplayer beating out itunes (presumably
+>> because it works):
+>> http://www.google.com/trends?q=dreamweaver+linux%2C+mplayer+linux%2C++itunes+linux%2C+photoshop+linux
+>>
+>> OK, too much fooling around with graphs.  Back to
+>> watching Underdog with my four-year-old...
+>>   
+> This is just looking for search queries, there are probably a lot more
+> variationis of it (such as dreamweavers+ubuntu, etc). I personally think
+> all 3 important:
+> - iTunes because it's such a popular program, and wine should have
+> support for it.
+> - Photoshop and dreamweaver are because there are no professional
+> alternatives for it with a familiar interface.
+> 
+> They are 2 groups that have different demands of the os (amusement vs
+> productivity). So I think they are both important in their own way.
+> 
+> Cheers,
+> Maarten.
+> 
+> 
+
+I agree with this stand point. Aside from the iTunes store functionality there
+a few different programs that are excellent replacements for iTunes. People are
+probably just querying it to figure out how to work with their iPods.
+
+Photoshop/Dreamweaver/Illustrator are all definitely big on the professional side.
+I use Photoshop myself, though I'm sort of weened myself off of it and am getting
+used to the Gimp. Maybe the new Gimp interface will be more intuitive? Either way
+both should be focus points but if you put priority one, I feel like Photoshop and
+friends is probably a little more important to people.
+
+-Zac
+
+
+
+From jwhite at winehq.org  Mon Dec 24 10:21:29 2007
+From: jwhite at winehq.org (Jeremy White)
+Date: Mon, 24 Dec 2007 10:21:29 -0600
+Subject: [wintab32 1/7] Store and use the physical device id to match
+	device to cursor.
+In-Reply-To: <b050a5e70712232152nd3f22b8v4f5fddfef566e8c9@mail.gmail.com>
+References: <476E92F7.6040903@winehq.org>
+	<b050a5e70712232152nd3f22b8v4f5fddfef566e8c9@mail.gmail.com>
+Message-ID: <476FDC89.5000701@winehq.org>
+
+> Perhaps a silly and/or wrong observation but, is this in an effort to
+> support multiple cursors?
+
+No, not at all.  It's fixing a pretty awful bug; the old code
+relied on the physical device id exactly lining up with the cursor
+number.
+
+Cheers,
+
+Jeremy
+
+
+From dank at kegel.com  Mon Dec 24 10:59:50 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 24 Dec 2007 08:59:50 -0800
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <1198511894.11540.3.camel@mighmos>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+	<1198511894.11540.3.camel@mighmos>
+Message-ID: <a71bd89a0712240859r43338744s22de7a979b866c78@mail.gmail.com>
+
+On Dec 24, 2007 7:58 AM, Adam Petaccia <adam at tpetaccia.com> wrote:
+> I'm not a developer, but it seems to me that people google search when
+> something /doesn't/ work.  Few people google wine+world of warcraft (or
+> WoW) because it works out of the box for most people, for example.
+
+By that argument, google searches are a good indication of where we
+need to focus our effort.  And that's exactly what I was after.
+
+
+From dank at kegel.com  Mon Dec 24 11:13:10 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 24 Dec 2007 09:13:10 -0800
+Subject: Anyone know how to produce a win16 pkzip self-extractor?
+Message-ID: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>
+
+To look into
+http://bugs.winehq.org/show_bug.cgi?id=3620
+I wanted to create a 16 bit self-extracting archive.
+
+So I downloaded
+ftp://ftp.pkware.com/pk263w16.exe
+and followed the instructions in Help for creating a windows self-extractor.
+Sadly, 'file' on the resulting .exe says it's just a zip file.
+
+The help file says you can convert a .zip to a .exe
+using File / Convert, but that crashes with
+Unhandled exception: page fault on read access to 0xffffffff in 16-bit
+code (12e7:be9a).
+deep inside pkzip.
+
+So I tried the 32 bit version, which according to
+http://www.ecn.wfu.edu/~cottrell/pkzip.html#sfx can
+do it cross-platform.
+
+But when I tried
+http://www.filegate.net/pkware/pkwin32/pk250c32.exe
+with
+wine PKZIP25.EXE -add -sfx=win16 test *.TXT
+it said
+PKZIP: (E5) Unknown or illegal sub-option - sfx=win16
+which, I think, means you have to be using a registered copy
+to do cross-platform self-extractors.
+
+I also tried the DOS version, and that just hung (grumble).
+
+Anyone figured out a way to do this yet?
+
+I filed a bug for a console problem related to pkzip,
+http://bugs.winehq.org/show_bug.cgi?id=10884
+but not the crash yet.
+Perhaps the failure to create a real self-extractor
+is another bug, I haven't tried on windows xp yet.
+- Dan
+
+
+From thunderbird2k at gmx.net  Mon Dec 24 11:58:24 2007
+From: thunderbird2k at gmx.net (Roderick Colenbrander)
+Date: Mon, 24 Dec 2007 18:58:24 +0100
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <a71bd89a0712240859r43338744s22de7a979b866c78@mail.gmail.com>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+	<1198511894.11540.3.camel@mighmos>
+	<a71bd89a0712240859r43338744s22de7a979b866c78@mail.gmail.com>
+Message-ID: <20071224175824.318080@gmx.net>
+
+> On Dec 24, 2007 7:58 AM, Adam Petaccia <adam at tpetaccia.com> wrote:
+> > I'm not a developer, but it seems to me that people google search when
+> > something /doesn't/ work.  Few people google wine+world of warcraft (or
+> > WoW) because it works out of the box for most people, for example.
+> 
+> By that argument, google searches are a good indication of where we
+> need to focus our effort.  And that's exactly what I was after.
+> 
+
+Another interesting search is this to add 'office linux' though the problem is that it is hard to say if everyone means microsoft office with it but even if only half the people mean that, then there is still a very high demand. I haven't looked for internet explorer or excel/word/powerpoint themselves:
+http://www.google.com/trends?q=office+linux%2C+dreamweaver+linux%2C+%22world+of+warcraft%22+linux%2C++itunes+linux%2C+photoshop+linux&ctab=0&geo=all&date=all&sort=0
+
+Roderick
+-- 
+Ist Ihr Browser Vista-kompatibel? Jetzt die neuesten 
+Browser-Versionen downloaden: http://www.gmx.net/de/go/browser
+
+
+From pgquiles at elpauer.org  Mon Dec 24 12:37:08 2007
+From: pgquiles at elpauer.org (Pau Garcia i Quiles)
+Date: Mon, 24 Dec 2007 19:37:08 +0100
+Subject: Anyone know how to produce a win16 pkzip self-extractor?
+In-Reply-To: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>
+References: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>
+Message-ID: <20071224193708.a3ma67jcgo88gk40@www.elpauer.org>
+
+Quoting Dan Kegel <dank at kegel.com>:
+
+I have tried with WinRAR 1.54, which is available at  
+http://www.oldversion.com/program.php?n=winrar, and it works. I am not  
+sure if that's 16 or 32-bit, though. The resulting executable does not  
+work, by the way.
+
+> To look into
+> http://bugs.winehq.org/show_bug.cgi?id=3620
+> I wanted to create a 16 bit self-extracting archive.
+>
+> So I downloaded
+> ftp://ftp.pkware.com/pk263w16.exe
+> and followed the instructions in Help for creating a windows self-extractor.
+> Sadly, 'file' on the resulting .exe says it's just a zip file.
+>
+> The help file says you can convert a .zip to a .exe
+> using File / Convert, but that crashes with
+> Unhandled exception: page fault on read access to 0xffffffff in 16-bit
+> code (12e7:be9a).
+> deep inside pkzip.
+>
+> So I tried the 32 bit version, which according to
+> http://www.ecn.wfu.edu/~cottrell/pkzip.html#sfx can
+> do it cross-platform.
+>
+> But when I tried
+> http://www.filegate.net/pkware/pkwin32/pk250c32.exe
+> with
+> wine PKZIP25.EXE -add -sfx=win16 test *.TXT
+> it said
+> PKZIP: (E5) Unknown or illegal sub-option - sfx=win16
+> which, I think, means you have to be using a registered copy
+> to do cross-platform self-extractors.
+>
+> I also tried the DOS version, and that just hung (grumble).
+>
+> Anyone figured out a way to do this yet?
+>
+> I filed a bug for a console problem related to pkzip,
+> http://bugs.winehq.org/show_bug.cgi?id=10884
+> but not the crash yet.
+> Perhaps the failure to create a real self-extractor
+> is another bug, I haven't tried on windows xp yet.
+> - Dan
+>
+>
+>
+
+
+
+-- 
+Pau Garcia i Quiles
+http://www.elpauer.org
+(Due to my workload, I may need 10 days to answer)
+
+
+
+From kevin at plop.org  Mon Dec 24 12:36:21 2007
+From: kevin at plop.org (Kevin Koltzau)
+Date: Mon, 24 Dec 2007 13:36:21 -0500
+Subject: Anyone know how to produce a win16 pkzip self-extractor?
+In-Reply-To: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>
+References: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>
+Message-ID: <200712241336.21277.kevin@plop.org>
+
+On Monday 24 December 2007 12:13:10 pm Dan Kegel wrote:
+> To look into
+> http://bugs.winehq.org/show_bug.cgi?id=3620
+> I wanted to create a 16 bit self-extracting archive.
+>
+> I also tried the DOS version, and that just hung (grumble).
+
+pkzip 2.5 for dos works fine under dosbox
+
+
+From jwhite at winehq.org  Mon Dec 24 13:47:56 2007
+From: jwhite at winehq.org (Jeremy White)
+Date: Mon, 24 Dec 2007 13:47:56 -0600
+Subject: The status of the wintab dll
+In-Reply-To: <420BCCC8.7090405@sneakemail.com>
+References: <420BCCC8.7090405@sneakemail.com>
+Message-ID: <47700CEC.9010704@winehq.org>
+
+Hi Folks,
+
+Okay, I've now spent some time putting some love into wintab.dll,
+and I've now gotten to the point where Photoshop 7 works properly,
+no matter what order your X devices are in.
+
+I've also improved behavior of a number of other test programs
+I worked with as I struggled with Photoshop.
+
+But now I'm done, because Photoshop tilt + pressure work again.  (Yay!)
+
+I thought I'd reprise my current understanding for future posterity.
+
+First, there are 2 immediate changes that are clearly appropriate to make:
+
+  1.  We should strip out devices like mice and such.
+
+      Otherwise, anyone with more than 1 mouse is going to appear to
+      have a tablet with 1 cursor.  A simple exclusion of devices without
+      'Wacom' or stylus/cursor/eraser in either their name or type should suffice.
+
+
+  2.  The following commit, I believe, is wrong:
+
+      commit ee2db299deb19c76a5ff9a5338b3640b490494e4
+      Author: Mikolaj Zalewski <mikolajz at google.com>
+      Date:   Thu Aug 30 12:41:37 2007 -0700
+
+          winex11.drv: wintab: Copy also the button #0 state.
+
+      That is, in X, our devices come out as 1 based (not 0 based), and
+      on Windows, they report as 0 based.  iow, with this patch, pkButtons is always 2;
+      on Windows, it's always 1.
+
+      But no app I've seen so far really cares, and I don't feel that
+      I know enough to really assert what the 'right' implementation is.
+
+      The truth is, the whole logic around pkButtons and BUTTONMAP and so on is
+      clearly not fully implemented; we don't do the weird magical thing with
+      relative positioning reports, for example.
+
+
+Finally, from a 'big picture' perspective, wintab.dll could really use some
+serious love.  Further, it's a fairly straight forward process.  This would
+make a really good beginner project.  You just need a tablet, mostly.
+
+I think the appropriate next step is for someone to write a comprehensive
+tablet test utility, to run both on Windows and to compare under Wine.
+
+That's the next step imho.
+
+I'm going into Robert's status to note what I think has changed.
+
+> 
+> ***In Painter 5
+> *Cursor pressure works. (Therefore is usable by most)
+> *Cursor orientation is a little odd: The orientation maths needs to be
+> re-done.
+
+  Unchanged.
+
+> *No eraser. Haven't yet cracked what enables the eraser.
+
+  Should be fixed.
+
+> *Doesn't work in desktop mode: Need to map to desktop coordinates.
+> *Repeats windows bugs where cursor looses pressure/orientation info
+> almost bug for bug (Is this a feature? ;-)
+> *Cannot detect pressure/orientation int the "Brush Tracking" window: The
+> tablet context is attached to the main window, so no events get to the
+> popup, even if they overlap.
+> This is not how windows wintab functions.
+> 
+> ***In Photoshop 6.
+> *Can only get tablet data in desktop mode: This is because the tablet
+> context is attached to the desktop. Which generates/receives no wine
+> events outside desktop mode.
+> * Eraser and pen pressure working. *But* to get them working, you must
+> have 3 XInput devices listed in your XF86Config file, They need to be
+> the last entries in the "ServerLayout" section and the following order:
+> eraser, tablet mouse. This is a far from ideal way of specifying the
+> devices Wintab should use :-/
+> I'll document this if someone can point me to a good place to put the docs.
+
+  This should be fixed.
+> 
+> *******To Do*************
+> 
+> 1. Look at X11 errors. There appear to be some errors that deny some
+> users the
+> ability to access Wintab enabled apps. (I think I know how to fix this)
+> 2. Improve orientation data. Orientation comes in as X-Y coords
+> (Implicit Z), and has to leave as spherical coords. This calculation
+> needs to be re-done.
+> 3. When tablet context is on top, let it read XInput events from all the
+> app's top-level windows. (This simulates the fact that the context is
+> usually designed to cover the whole screen)
+> 4. When tablet context is attached to desktop, read XInput events from
+> all the app's top-level windows.
+> 5. Tests
+> ~    --My current philosophy on tests is...
+> ~    Use Photoshop & Painter, any formal tests
+> ~    can be written if anyone else gets involved in patching Wintab, to
+> avoid regressions, and conflict.
+
+  I disagree; I think a test application is the clear next step.
+Too much is done by trial + error, and some rigor is the next step imho.
+
+> 
+> **********Long term to do (Anyone interested?):*********
+> There's a lot of work that could be done here, but what gets done
+> and who does it probably depends upon whether anyone finds an app that
+> needs these features. I'd love to implement these, but realistically, I
+> don't
+> foresee doing this unless someone hires me to do so ;)
+> 
+> 1. Improve configuration of wintab.
+>     Wintab could probably do with some information entered into the
+>     config file, to avoid the user having to
+>     hack their Xfree86cfg file.
+> 2. Handle Z-Order of context properly.
+>     This entails
+>         *sharing Z-Order between apps.
+>         *Working out exactly what role windows have in
+>          determining tablet context z-orders.
+>         *Allow tablet contexts that don't cover the whole
+>          screen/tablet.
+>         *Handle inter-application clipping of tablet contexts
+>         *Allow all application's windows to receive tablet events when
+> tablet
+> context is on top
+> 
+> 3. Implement non-system tablet contexts (Where system cursor not moved
+> by pen or mouse)
+> 4. Unicodify
+
+  Done, I think.
+
+> 5. Implement various wintab extensions.
+> 6. Implement wintab manager functions.
+> 7. Tests.
+> 
+> *********Unknowns*********
+> 
+> 1. How are wintab contexts are raised lowered?
+> Contexts have their own z-order independent of windows, and their own
+> viewport concept, based upon the tablet's coordinate system, not that of
+> the OS.
+> It appears that entering, or clicking on the window the tablet context
+> is attached to will raise/lower the context.
+> But I haven't done much testing on this.
+> In particular, what happens if more than one app request their tablet
+> context is attached to the desktop?
+> 
+> 
+> 2. How Painter detects the eraser.
+> Have 3 possibilities
+>     i. Windows can detect an eraser, and sends specific messages.
+>         (I'm sure I've seen this, but can't work out where!)
+>     ii. Only works if tablet and cursors are named correctly.
+>         (Probably linked to wacom tablets only).
+>     iii. I've missed something
+
+   It's all the cursor number; 0 is 'puck', 1 is 'stylus', and 2 is 'eraser'.
+> 
+> 3. Requirements of other applications
+
+
+Cheers,
+
+Jeremy
+
+
+From julliard at winehq.org  Mon Dec 24 14:05:55 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 24 Dec 2007 21:05:55 +0100
+Subject: [wintab32 3/7] Add constants for cursor types and use them.
+In-Reply-To: <476E9309.8030505@winehq.org> (Jeremy White's message of "Sun, 23
+	Dec 2007 10:55:37 -0600")
+References: <476E9309.8030505@winehq.org>
+Message-ID: <87odcfluxo.fsf@wine.dyndns.org>
+
+Jeremy White <jwhite at winehq.org> writes:
+
+> --- a/include/wintab.h
+> +++ b/include/wintab.h
+> @@ -525,6 +525,23 @@ typedef struct tagROTATION {  /* 1.1 */
+>  #endif
+>
+>  /***********************************************************************
+> + * WACOM WINTAB EXTENSIONS TO SUPPORT CSR_TYPE
+> + *   In Wintab 1.2, a CSR_TYPE feature was added.  This adds the
+> + *   ability to return a type of cursor on a tablet.
+> + *   Unfortunately, we cannot get the cursor type directly from X,
+> + *   and it is not specified directly anywhere.  So we virtualize
+> + *   the type here.  (This is unfortunate, the kernel module has
+> + *   the exact type, but we have no way of getting that module to
+> + *   pass us that type).
+> + */
+> +
+> +#define CSR_TYPE_PEN        0x822
+> +#define CSR_TYPE_ERASER     0x82a
+> +#define CSR_TYPE_MOUSE_2D   0x007
+> +#define CSR_TYPE_MOUSE_4D   0x094
+
+This doesn't seem to belong in wintab.h.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Mon Dec 24 14:10:55 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Mon, 24 Dec 2007 21:10:55 +0100
+Subject: WineX11.drv: Add an X11 window for the client area [attempt3]
+In-Reply-To: <20071218190531.128810@gmx.net> (Roderick Colenbrander's message
+	of "Tue, 18 Dec 2007 20:05:31 +0100")
+References: <20071218190531.128810@gmx.net>
+Message-ID: <87k5n3lupc.fsf@wine.dyndns.org>
+
+"Roderick Colenbrander" <thunderbird2k at gmx.net> writes:
+
+> +    if (data->client_window)
+> +    {
+> +        int w = data->client_rect.right - data->client_rect.left;
+> +        int h = data->client_rect.bottom - data->client_rect.top;
+> +
+> +        TRACE("Updating client window 0x%lx to %dx%x,%dx%d\n", data->client_window,
+> +              data->client_rect.left, data->client_rect.top, w, h);
+> +
+> +        if(w>0 && h>0) 
+> +        {
+> +            wine_tsx11_lock();
+> +            XMoveResizeWindow(display, data->client_window, data->client_rect.left,
+> +                              data->client_rect.top, w, h);
+> +            wine_tsx11_unlock();
+
+You should do that only when the size has actually changed.
+
+> +static Window create_client_window( Display *display, struct x11drv_win_data *data)
+> +{
+> +    XSetWindowAttributes attr;
+> +
+> +    attr.event_mask = ExposureMask;
+> +    attr.bit_gravity = NorthWestGravity;
+> +    attr.backing_store = NotUseful;
+
+Using NorthWestGravity is good but you still need to fix the valid rects
+calculation accordingly.
+
+> +static void destroy_client_window( Display *display, struct x11drv_win_data *data )
+> +{
+> +    if (!data->client_window) return;
+> +
+> +    wine_tsx11_lock();
+> +
+> +    XDeleteContext( display, data->client_window, winContext );
+> +    XDestroyWindow( display, data->client_window );
+> +    data->client_window = 0;
+> +    XFlush(display);
+> +
+> +    wine_tsx11_unlock();
+
+The XFlush shouldn't be needed.
+
+> @@ -1569,7 +1648,19 @@ void X11DRV_SetParent( HWND hwnd, HWND parent, HWND old_parent )
+>          if (old_parent == GetDesktopWindow())
+>          {
+>              /* destroy the old X windows */
+> -            destroy_whole_window( display, data );
+> +
+> +            /* Don't destroy the X11 window twice in order to prevent a BadWindow error, if the client window is the whole window */
+> +            if(data->whole_window == data->client_window)
+> +            {
+> +                destroy_whole_window( display, data );
+> +                data->client_window = 0;
+> +                RemovePropA( data->hwnd, client_window_prop );
+> +            }
+
+The test is useless, if you are changing the parent of the desktop
+window something is very wrong...
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From hverbeet at gmail.com  Mon Dec 24 14:58:35 2007
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Mon, 24 Dec 2007 21:58:35 +0100
+Subject: wined3d: add zero/near zero vertex rhw special case
+In-Reply-To: <4770A399.1020301@inbox.lv>
+References: <4770A399.1020301@inbox.lv>
+Message-ID: <d658b69e0712241258s3b4a4cbat847bef5f85aab5ee@mail.gmail.com>
+
+On 25/12/2007, Alexander Dorofeyev <alexd4 at inbox.lv> wrote:
+>
+> +    if ((pos[3] < 1e-8) && (pos[3] > -1e-8))
+You should probably use eps and -eps there, like the rest of the code does.
+Also, please write a test case to prevent this from regressing in the future.
+
+
+From dank at kegel.com  Mon Dec 24 16:57:34 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 24 Dec 2007 14:57:34 -0800
+Subject: Anyone know how to produce a win16 pkzip self-extractor?
+In-Reply-To: <200712241336.21277.kevin@plop.org>
+References: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>
+	<200712241336.21277.kevin@plop.org>
+Message-ID: <a71bd89a0712241457h649a71b9la7768b6db4086ca8@mail.gmail.com>
+
+On Dec 24, 2007 10:36 AM, Kevin Koltzau <kevin at plop.org> wrote:
+> > I also tried the DOS version, and that just hung (grumble).
+>
+> pkzip 2.5 for dos works fine under dosbox
+
+I am sick and tired of us wimping out and pointing people
+to dosbox.  Wine should be able to run DOS apps.
+See http://bugs.winehq.org/show_bug.cgi?id=9178 for
+details.  Mikolaj even provided a patch that gets it working.
+IMHO this needs fixing for wine 1.0.
+- Dan
+
+
+From the3dfxdude at gmail.com  Mon Dec 24 17:07:54 2007
+From: the3dfxdude at gmail.com (Jesse Allen)
+Date: Mon, 24 Dec 2007 16:07:54 -0700
+Subject: Which is more important to Linux users, itunes or photoshop?
+In-Reply-To: <a71bd89a0712240859r43338744s22de7a979b866c78@mail.gmail.com>
+References: <a71bd89a0712232010i715b609k5a99e300d55be90b@mail.gmail.com>
+	<1198511894.11540.3.camel@mighmos>
+	<a71bd89a0712240859r43338744s22de7a979b866c78@mail.gmail.com>
+Message-ID: <530468570712241507g37295915k10f077eb437d13f4@mail.gmail.com>
+
+On Dec 24, 2007 9:59 AM, Dan Kegel <dank at kegel.com> wrote:
+> On Dec 24, 2007 7:58 AM, Adam Petaccia <adam at tpetaccia.com> wrote:
+> > I'm not a developer, but it seems to me that people google search when
+> > something /doesn't/ work.  Few people google wine+world of warcraft (or
+> > WoW) because it works out of the box for most people, for example.
+>
+> By that argument, google searches are a good indication of where we
+> need to focus our effort.  And that's exactly what I was after.
+>
+>
+
+Maybe we should compare the google graph to appdb hits.
+
+
+From thunderbird2k at gmx.net  Mon Dec 24 17:25:11 2007
+From: thunderbird2k at gmx.net (Roderick Colenbrander)
+Date: Tue, 25 Dec 2007 00:25:11 +0100
+Subject: WineX11.drv: Add an X11 window for the client area [attempt3]
+In-Reply-To: <87k5n3lupc.fsf@wine.dyndns.org>
+References: <20071218190531.128810@gmx.net> <87k5n3lupc.fsf@wine.dyndns.org>
+Message-ID: <20071224232511.203180@gmx.net>
+
+> "Roderick Colenbrander" <thunderbird2k at gmx.net> writes:
+> 
+> > +    if (data->client_window)
+> > +    {
+> > +        int w = data->client_rect.right - data->client_rect.left;
+> > +        int h = data->client_rect.bottom - data->client_rect.top;
+> > +
+> > +        TRACE("Updating client window 0x%lx to %dx%x,%dx%d\n",
+> data->client_window,
+> > +              data->client_rect.left, data->client_rect.top, w, h);
+> > +
+> > +        if(w>0 && h>0) 
+> > +        {
+> > +            wine_tsx11_lock();
+> > +            XMoveResizeWindow(display, data->client_window,
+> data->client_rect.left,
+> > +                              data->client_rect.top, w, h);
+> > +            wine_tsx11_unlock();
+> 
+> You should do that only when the size has actually changed.
+Is it enough to check if the dimensions changed or should I also care about the position? (I don't think it changes)
+
+> > +static Window create_client_window( Display *display, struct
+> x11drv_win_data *data)
+> > +{
+> > +    XSetWindowAttributes attr;
+> > +
+> > +    attr.event_mask = ExposureMask;
+> > +    attr.bit_gravity = NorthWestGravity;
+> > +    attr.backing_store = NotUseful;
+> 
+> Using NorthWestGravity is good but you still need to fix the valid rects
+> calculation accordingly.
+
+What's the problem in X11DRV_SetWindowPos? I have checked valid_rects there but the contents of the two rects stored in it look ok to me. They seem to contain the current and previous location of the whole window (the location of where the window starts ignoring the border added by the WM). What should be done in this part of the code?
+
+> > +static void destroy_client_window( Display *display, struct
+> x11drv_win_data *data )
+> > +{
+> > +    if (!data->client_window) return;
+> > +
+> > +    wine_tsx11_lock();
+> > +
+> > +    XDeleteContext( display, data->client_window, winContext );
+> > +    XDestroyWindow( display, data->client_window );
+> > +    data->client_window = 0;
+> > +    XFlush(display);
+> > +
+> > +    wine_tsx11_unlock();
+> 
+> The XFlush shouldn't be needed.
+When destroying the client window when code to recreate the client window is there, this was needed. I guess because events hadn't arrived yet for the destroyed window. But I can remove it for now as perhaps something else was wrong.
+
+Thanks,
+Roderick
+
+-- 
+GMX FreeMail: 1 GB Postfach, 5 E-Mail-Adressen, 10 Free SMS.
+Alle Infos und kostenlose Anmeldung: http://www.gmx.net/de/go/freemail
+
+
+From zac at zacbrown.org  Mon Dec 24 17:32:39 2007
+From: zac at zacbrown.org (Zac Brown)
+Date: Mon, 24 Dec 2007 17:32:39 -0600
+Subject: Anyone know how to produce a win16 pkzip self-extractor?
+In-Reply-To: <a71bd89a0712241457h649a71b9la7768b6db4086ca8@mail.gmail.com>
+References: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>	<200712241336.21277.kevin@plop.org>
+	<a71bd89a0712241457h649a71b9la7768b6db4086ca8@mail.gmail.com>
+Message-ID: <47704197.8050706@zacbrown.org>
+
+Dan Kegel wrote:
+> On Dec 24, 2007 10:36 AM, Kevin Koltzau <kevin at plop.org> wrote:
+>>> I also tried the DOS version, and that just hung (grumble).
+>> pkzip 2.5 for dos works fine under dosbox
+> 
+> I am sick and tired of us wimping out and pointing people
+> to dosbox.  Wine should be able to run DOS apps.
+> See http://bugs.winehq.org/show_bug.cgi?id=9178 for
+> details.  Mikolaj even provided a patch that gets it working.
+> IMHO this needs fixing for wine 1.0.
+> - Dan
+> 
+> 
+I agree. One way or another it needs to be done.
+
+
+From jjmckenzie51 at sprintpcs.com  Mon Dec 24 18:17:56 2007
+From: jjmckenzie51 at sprintpcs.com (James McKenzie)
+Date: Mon, 24 Dec 2007 17:17:56 -0700
+Subject: Anyone know how to produce a win16 pkzip self-extractor?
+In-Reply-To: <a71bd89a0712241457h649a71b9la7768b6db4086ca8@mail.gmail.com>
+References: <a71bd89a0712240913t776a4f36u8b205962c59862d2@mail.gmail.com>
+	<200712241336.21277.kevin@plop.org>
+	<a71bd89a0712241457h649a71b9la7768b6db4086ca8@mail.gmail.com>
+Message-ID: <47704C34.6080807@sprintpcs.com>
+
+Dan Kegel wrote:
+> I am sick and tired of us wimping out and pointing people
+> to dosbox.  Wine should be able to run DOS apps.
+> See http://bugs.winehq.org/show_bug.cgi?id=9178 for
+> details.  Mikolaj even provided a patch that gets it working.
+> IMHO this needs fixing for wine 1.0.
+> - Dan
+>
+>   
+Dan:
+
++1 for adding this to 1.0
+
+James
+
+
+
+From andrey.turkin at gmail.com  Tue Dec 25 03:30:55 2007
+From: andrey.turkin at gmail.com (Andrey Turkin)
+Date: Tue, 25 Dec 2007 12:30:55 +0300
+Subject: kernel32: Add an ability to execute 32-bit applications from
+	16-bit	ones using winoldap.dll
+In-Reply-To: <E1J73DW-00074M-W7@mail.codeweavers.com>
+References: <E1J73DW-00074M-W7@mail.codeweavers.com>
+Message-ID: <4770CDCF.7090405@gmail.com>
+
+Dmitry Timoshkov wrote:
+> Hello,
+>
+> this patch should fix the problem reported in the bug 3620.
+>
+> winoldap.mod in Windows is a 16-bit .exe which uses its command line to load
+> a 32-bit module and pass the parameters to it. Since winebuild doesn't allow
+> to create a 16-bit builtin exe, I decided to create a 16-bit builtin dll
+> instead. That adds some complexity due to need to create another thread to
+> launch a 32-bit application from, and wait until it finishes.
+>   
+The application mentioned in the bug change current directory to output
+dir and then uses WINEXEC with relative filename to start child application.
+Thread created by winoldap uses another current directory because of
+something, so CreateProcess fails with your patch.
+
+<snip>
+
+
+> +    if (CreateProcessA( NULL, cmdline, NULL, NULL, FALSE,
+> +                        0, NULL, NULL, &startup, &info ))
+> +    {
+> +        HINSTANCE16 hwinoldap;
+> +
+> +        /* Give 30 seconds to the app to come up */
+> +        wait_input_idle( info.hProcess, 30000 );
+> +
+> +        args->ret = TRUE;
+> +        SetEvent(args->event);
+> +
+> +        WaitForSingleObject( info.hProcess, INFINITE );
+> +
+> +        CloseHandle( info.hThread );
+> +        CloseHandle( info.hProcess );
+> +
+> +        /* decrement WINOLDAP usage count to signal that we have finished */
+> +        hwinoldap = GetModuleHandle16( "winoldap" );
+> +        FreeLibrary16( hwinoldap );
+> +    }
+>   
+Usage count should be decremented regardless of CreateProcess return value.
+> +
+> +    RestoreThunkLock( count );
+> +    HeapFree( GetProcessHeap(), 0, cmdline );
+> +
+> +    if (!args->ret);
+> +        SetEvent( args->event );
+>   
+Typo.
+
+
+
+From julliard at winehq.org  Tue Dec 25 14:11:46 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 25 Dec 2007 21:11:46 +0100
+Subject: WineX11.drv: Add an X11 window for the client area [attempt3]
+In-Reply-To: <20071224232511.203180@gmx.net> (Roderick Colenbrander's message
+	of "Tue, 25 Dec 2007 00:25:11 +0100")
+References: <20071218190531.128810@gmx.net> <87k5n3lupc.fsf@wine.dyndns.org>
+	<20071224232511.203180@gmx.net>
+Message-ID: <87abnylekd.fsf@wine.dyndns.org>
+
+"Roderick Colenbrander" <thunderbird2k at gmx.net> writes:
+
+> Is it enough to check if the dimensions changed or should I also care
+> about the position? (I don't think it changes)
+
+Position can definitely change too.
+
+> What's the problem in X11DRV_SetWindowPos? I have checked valid_rects
+> there but the contents of the two rects stored in it look ok to
+> me. They seem to contain the current and previous location of the
+> whole window (the location of where the window starts ignoring the
+> border added by the WM). What should be done in this part of the code?
+
+Since the client window is moved with NorthwestGravity, the valid rects
+have to be computed relative to the client, not the whole window. The
+client can move relative to the whole window.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From dmitry at codeweavers.com  Tue Dec 25 23:27:53 2007
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Wed, 26 Dec 2007 13:27:53 +0800
+Subject: kernel32: Add an ability to execute 32-bit applications
+	from16-bit	ones using winoldap.dll
+References: <E1J73DW-00074M-W7@mail.codeweavers.com>
+	<4770CDCF.7090405@gmail.com>
+Message-ID: <004201c84780$11c6b400$a600fea9@DMITRY>
+
+"Andrey Turkin" <andrey.turkin at gmail.com> wrote:
+
+> The application mentioned in the bug change current directory to output
+> dir and then uses WINEXEC with relative filename to start child application.
+> Thread created by winoldap uses another current directory because of
+> something, so CreateProcess fails with your patch.
+
+Thanks for the comments, I sent an improved version of the patch.
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Wed Dec 26 04:48:09 2007
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Wed, 26 Dec 2007 18:48:09 +0800
+Subject: include: added the new Vista messages.
+References: <3f4fd2640712241805p1e9a6b65j2cde0fc5c7328575@mail.gmail.com>
+Message-ID: <010b01c847ac$cf757eb0$a600fea9@DMITRY>
+
+"Reece Dunn" <msclrhd at googlemail.com> wrote:
+
+>  #define WM_SYSDEADCHAR      0x0107
+> +#define WM_UNICHAR          0x0109
+>  #define WM_KEYFIRST         WM_KEYDOWN
+> -#define WM_KEYLAST          0x0108
+> +#define WM_KEYLAST          0x0109
+
+Please keep the entries sorted by value.
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Wed Dec 26 04:55:49 2007
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Wed, 26 Dec 2007 18:55:49 +0800
+Subject: include: added the new Vista messages.
+References: <3f4fd2640712241805p1e9a6b65j2cde0fc5c7328575@mail.gmail.com>
+	<010b01c847ac$cf757eb0$a600fea9@DMITRY>
+Message-ID: <014e01c847ad$e1f9add0$a600fea9@DMITRY>
+
+"Dmitry Timoshkov" <dmitry at codeweavers.com> wrote:
+
+> "Reece Dunn" <msclrhd at googlemail.com> wrote:
+> 
+>>  #define WM_SYSDEADCHAR      0x0107
+>> +#define WM_UNICHAR          0x0109
+>>  #define WM_KEYFIRST         WM_KEYDOWN
+>> -#define WM_KEYLAST          0x0108
+>> +#define WM_KEYLAST          0x0109
+> 
+> Please keep the entries sorted by value.
+
+Ignore this, I missed the fact that 0x0108 no more exists.
+
+-- 
+Dmitry.
+
+
+From msclrhd at googlemail.com  Wed Dec 26 04:57:44 2007
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Wed, 26 Dec 2007 10:57:44 +0000
+Subject: include: added the new Vista messages.
+In-Reply-To: <010b01c847ac$cf757eb0$a600fea9@DMITRY>
+References: <3f4fd2640712241805p1e9a6b65j2cde0fc5c7328575@mail.gmail.com>
+	<010b01c847ac$cf757eb0$a600fea9@DMITRY>
+Message-ID: <3f4fd2640712260257m1023d5f8md3661d6b24cd1e95@mail.gmail.com>
+
+On 26/12/2007, Dmitry Timoshkov <dmitry at codeweavers.com> wrote:
+> "Reece Dunn" <msclrhd at googlemail.com> wrote:
+>
+> >  #define WM_SYSDEADCHAR      0x0107
+> > +#define WM_UNICHAR          0x0109
+> >  #define WM_KEYFIRST         WM_KEYDOWN
+> > -#define WM_KEYLAST          0x0108
+> > +#define WM_KEYLAST          0x0109
+>
+> Please keep the entries sorted by value.
+
+They are (in the above example):
+
+0x0107 WM_SYSDEADCHAR
+0x0109 WM_UNICHAR
+0x010d WM_IME_STARTCOMPOSITION
+
+There is a '-' on the first WM_KEYLAST line, as this has been updated
+to 0x0109 (as WM_UNICHAR is now the last key message).
+
+- Reece
+
+
+From julliard at winehq.org  Wed Dec 26 07:09:09 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 26 Dec 2007 14:09:09 +0100
+Subject: include: added the new Vista theme part and state headers.
+In-Reply-To: <3f4fd2640712241650n69b1547akfbad2ae496d99450@mail.gmail.com>
+	(Reece Dunn's message of "Tue, 25 Dec 2007 00:50:44 +0000")
+References: <3f4fd2640712241650n69b1547akfbad2ae496d99450@mail.gmail.com>
+Message-ID: <87ejd9mwlm.fsf@wine.dyndns.org>
+
+"Reece Dunn" <msclrhd at googlemail.com> writes:
+
+> In the SDK, vssym32.h includes vsstyle.h (as is done here). However,
+> the SDK has obsoleted tmschema.h, and duplicates the entries
+> throughout vsstyle.h and vssym32.h.
+>
+> Since it does not make sense to duplicate the entries (even if
+> tmschema.h uses the TM_ macros and vsstyle.h defines the enums by
+> hand), vsstyle.h includes tmschema.h.
+
+Maybe it doesn't make sense to duplicate them, but since it's what MS
+does, it's what we have to do too.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From msclrhd at googlemail.com  Wed Dec 26 07:34:40 2007
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Wed, 26 Dec 2007 13:34:40 +0000
+Subject: include: added the new Vista theme part and state headers.
+In-Reply-To: <87ejd9mwlm.fsf@wine.dyndns.org>
+References: <3f4fd2640712241650n69b1547akfbad2ae496d99450@mail.gmail.com>
+	<87ejd9mwlm.fsf@wine.dyndns.org>
+Message-ID: <3f4fd2640712260534l5a56b058udcf7c5a48b3b7fe@mail.gmail.com>
+
+On 26/12/2007, Alexandre Julliard <julliard at winehq.org> wrote:
+> "Reece Dunn" <msclrhd at googlemail.com> writes:
+>
+> > In the SDK, vssym32.h includes vsstyle.h (as is done here). However,
+> > the SDK has obsoleted tmschema.h, and duplicates the entries
+> > throughout vsstyle.h and vssym32.h.
+> >
+> > Since it does not make sense to duplicate the entries (even if
+> > tmschema.h uses the TM_ macros and vsstyle.h defines the enums by
+> > hand), vsstyle.h includes tmschema.h.
+>
+> Maybe it doesn't make sense to duplicate them, but since it's what MS
+> does, it's what we have to do too.
+
+I'll rework these three patches to follow what MS do then.
+
+In tmschema.h, MS does the following:
+
+    If NTDDI_VERSION is set to NTDDI_LONGHORN or later (or vssym32.h
+was included first), and SCHEMA_VERIFY_VSSYM32 is not defined
+[backward compatibility verification mode], display an obsoleted
+message and include vssym32.h.
+
+    Otherwise, the XP tmschema.h content is used.
+
+This would mean that if you define SCHEMA_VERIFY_VSSYM32, or include
+vssym32.h after tmschema.h, then you will get multiple definitions of
+the various enumerations.
+
+- Reece
+
+
+From julliard at winehq.org  Wed Dec 26 09:07:46 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 26 Dec 2007 16:07:46 +0100
+Subject: dlls/user32/edit.c -- remove superflous check (RESEND)
+In-Reply-To: <Pine.LNX.4.64.0712260959170.29138@acrux.dbai.tuwien.ac.at>
+	(Gerald Pfeifer's message of "Wed, 26 Dec 2007 10:00:18 +0100 (CET)")
+References: <Pine.LNX.4.64.0712260959170.29138@acrux.dbai.tuwien.ac.at>
+Message-ID: <87abnxmr3x.fsf@wine.dyndns.org>
+
+Gerald Pfeifer <gerald at pfeifer.com> writes:
+
+> dwBufLen already indictes that this variable is of type DWORD and
+> thus always positive.  I also looked at the implementation of 
+> ImmGetCompositionStringW() and we do not seem to return a negative
+> value (such as -1).
+
+Maybe the implementation doesn't, but the function returns a LONG, and
+can (and probably should) return negative values on error.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Wed Dec 26 09:10:18 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Wed, 26 Dec 2007 16:10:18 +0100
+Subject: dlls/d3dx8/math.c -- simple fixup (RESEND)
+In-Reply-To: <Pine.LNX.4.64.0712261001140.29138@acrux.dbai.tuwien.ac.at>
+	(Gerald Pfeifer's message of "Wed, 26 Dec 2007 10:03:07 +0100 (CET)")
+References: <Pine.LNX.4.64.0712261001140.29138@acrux.dbai.tuwien.ac.at>
+Message-ID: <8763ylmqzp.fsf@wine.dyndns.org>
+
+Gerald Pfeifer <gerald at pfeifer.com> writes:
+
+> Not a biggie, but still in my queue.  If you aren't going to take this
+> (admittedly) minor patch, please let me know and I'll remove it locally.
+
+There's no need to worry about the scope of variables in such a small
+function.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From zgold550 at gmail.com  Wed Dec 26 11:05:47 2007
+From: zgold550 at gmail.com (Zachary Goldberg)
+Date: Wed, 26 Dec 2007 12:05:47 -0500
+Subject: Compile info patch
+Message-ID: <b050a5e70712260905j3ecacb7cr2d42f6756d8f0623@mail.gmail.com>
+
+I've been checking recently, haven't seen any further discussion on
+this patch, or seen it be committed.  Any thoughts on why?  I'm
+curious because I think its useful, and because I wrote a WWN article
+on it -- which of course only makes sense if the patch is applied :).
+
+-- 
+Zachary Goldberg
+Computer Science & Engineering
+Electrical Captain of Penn Electric Race Team
+School of Engineering at the University of Pennsylvania
+
+
+From stefan at codeweavers.com  Wed Dec 26 14:51:09 2007
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Wed, 26 Dec 2007 21:51:09 +0100
+Subject: wined3d: dirtify colorkey state in IWineD3DDeviceImpl_SetTexture
+In-Reply-To: <477345C9.9010705@inbox.lv>
+References: <477345C9.9010705@inbox.lv>
+Message-ID: <200712262151.10044.stefan@codeweavers.com>
+
+Am Donnerstag, 27. Dezember 2007 07:27:21 schrieb Alexander Dorofeyev:
+> Hi.
+>
+> Colorkey emulation by alpha test should be disabled when game sets no
+> texture (or texture without colorkey) and reenabled when needed. Dirtifying
+> a state here, so that state_alpha will be called, fixes the problem.
+In theory the texture stage handler calls the colorkey handler if a color key 
+change condition is met. Can you check why the call to state_alpha() in 
+sampler() in state.c, line 2415 isn't called properly?
+
+
+From alexd4 at inbox.lv  Thu Dec 27 01:24:31 2007
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Wed, 26 Dec 2007 23:24:31 -0800
+Subject: wined3d: dirtify colorkey state in IWineD3DDeviceImpl_SetTexture
+In-Reply-To: <200712262151.10044.stefan@codeweavers.com>
+References: <477345C9.9010705@inbox.lv>
+	<200712262151.10044.stefan@codeweavers.com>
+Message-ID: <4773532F.9010309@inbox.lv>
+
+Oops, too bad I didn't notice it's supposed to happen in sampler. Why that isn't 
+called - I think it's because that check at line 2415 is inside
+
+if(stateblock->textures[sampler]) {
+
+block. Since the app is setting texture to NULL, it's not entering. Taking the 
+colorkey part out of this block helps. I guess it will be a better fix then.
+
+Stefan D?singer wrote:
+> Am Donnerstag, 27. Dezember 2007 07:27:21 schrieb Alexander Dorofeyev:
+>> Hi.
+>>
+>> Colorkey emulation by alpha test should be disabled when game sets no
+>> texture (or texture without colorkey) and reenabled when needed. Dirtifying
+>> a state here, so that state_alpha will be called, fixes the problem.
+> In theory the texture stage handler calls the colorkey handler if a color key 
+> change condition is met. Can you check why the call to state_alpha() in 
+> sampler() in state.c, line 2415 isn't called properly?
+
+
+
+From gerald at pfeifer.com  Wed Dec 26 15:30:46 2007
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Wed, 26 Dec 2007 22:30:46 +0100 (CET)
+Subject: dlls/user32/edit.c -- remove superflous check (RESEND)
+In-Reply-To: <87abnxmr3x.fsf@wine.dyndns.org>
+References: <Pine.LNX.4.64.0712260959170.29138@acrux.dbai.tuwien.ac.at>
+	<87abnxmr3x.fsf@wine.dyndns.org>
+Message-ID: <Pine.LNX.4.64.0712262215090.29138@acrux.dbai.tuwien.ac.at>
+
+On Wed, 26 Dec 2007, Alexandre Julliard wrote:
+>> dwBufLen already indictes that this variable is of type DWORD and
+>> thus always positive.  I also looked at the implementation of 
+>> ImmGetCompositionStringW() and we do not seem to return a negative
+>> value (such as -1).
+> Maybe the implementation doesn't, but the function returns a LONG, and
+> can (and probably should) return negative values on error.
+
+Okay.  In that case, to account for possible future enhancements of 
+ImmGetCompositionStringW(), we'll need a patch like the following. The 
+current error handling code in EDIT_GetCompositionStr() simply doesn't 
+work due to the unsignedness of dwBufLen.
+
+Gerald
+
+ChangeLog:
+Fix error handling in EDIT_GetCompositionStr().
+
+Index: dlls/user32/edit.c
+===================================================================
+RCS file: /home/wine/wine/dlls/user32/edit.c,v
+retrieving revision 1.16
+diff -u -3 -p -r1.16 edit.c
+--- dlls/user32/edit.c	20 Nov 2007 16:56:17 -0000	1.16
++++ dlls/user32/edit.c	26 Dec 2007 21:29:33 -0000
+@@ -5360,6 +5348,7 @@ static void EDIT_UpdateText(EDITSTATE *e
+ 
+ static void EDIT_GetCompositionStr(HWND hwnd, LPARAM CompFlag, EDITSTATE *es)
+ {
++    LONG l;
+     DWORD dwBufLen;
+     LPWSTR lpCompStr = NULL;
+     HIMC hIMC;
+@@ -5369,9 +5358,9 @@ static void EDIT_GetCompositionStr(HWND 
+     if (!(hIMC = ImmGetContext(hwnd)))
+         return;
+ 
+-    dwBufLen = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, NULL, 0);
++    dwBufLen = l = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, NULL, 0);
+ 
+-    if (dwBufLen < 0)
++    if (l < 0)
+     {
+         ImmReleaseContext(hwnd, hIMC);
+         return;
+
+
+From stefan at codeweavers.com  Wed Dec 26 19:19:16 2007
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Thu, 27 Dec 2007 02:19:16 +0100
+Subject: [PATCH] ddraw: Return a nullpointer as lpSurface in Lock() if the
+	rect is invalid.
+In-Reply-To: <1198704916.3577.2.camel@localhost>
+References: <1198704916.3577.2.camel@localhost>
+Message-ID: <200712270219.16576.stefan@codeweavers.com>
+
+Am Mittwoch, 26. Dezember 2007 22:35:16 schrieb G?nther Brammer:
+> +            memset(&locked_desc, 1, sizeof(locked_desc));
+> +            locked_desc.dwSize = sizeof(locked_desc);
+> +
+>              hr = IDirectDrawSurface_Lock(surface, rect, &locked_desc,
+> DDLOCK_WAIT, NULL); ok(hr == DDERR_INVALIDPARAMS, "Lock returned 0x%08x for
+> rect [%d, %d]->[%d, %d]" ", expected DDERR_INVALIDPARAMS (0x%08x)\n", hr,
+> rect->left, rect->top, rect->right, rect->bottom, DDERR_INVALIDPARAMS); +  
+>          ok(!memcmp(&locked_desc, &surface_desc, sizeof(locked_desc)),
+> "IDirectDrawSurface_Lock did not set lpSurface in the surface desc\n"); }
+I think you should just compare lpSurface instead of memcmp'ing the entire 
+structure.
+
+Also, in the patch that changes surface.c, it seems that the patch changes a 
+few whitespaces(unless I missed something).
+
+
+From dmitry at codeweavers.com  Thu Dec 27 05:05:02 2007
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Thu, 27 Dec 2007 19:05:02 +0800
+Subject: user32: Test destroying the cursor of a parent process.
+References: <689de9370712270215sc48c10bg8551e8b484b73a34@mail.gmail.com>
+Message-ID: <004301c84878$55e203d0$a600fea9@DMITRY>
+
+"Andrew Riedi" <andrewriedi at gmail.com> wrote:
+
+> changelog: user32: Test destroying the cursor of a parent process.
+
+This doesn't look at all like a suggested way to test interprocess
+cursor handles we discussed on IRC: create a process, create a window
+in it, use SendMessage to pass requests/results in order to avoid
+creating a child process for each thing you would like to test.
+
+-- 
+Dmitry.
+
+
+From rob at codeweavers.com  Thu Dec 27 05:56:03 2007
+From: rob at codeweavers.com (Robert Shearman)
+Date: Thu, 27 Dec 2007 11:56:03 +0000
+Subject: [wintab32] Refine how we determine cursor types; use that to
+	discard	non tablet devices.
+In-Reply-To: <4772B140.3060709@codeweavers.com>
+References: <4772B140.3060709@codeweavers.com>
+Message-ID: <477392D3.2060409@codeweavers.com>
+
+Jeremy White wrote:
+> +/* FIXME:  strcasestr is not available on all platforms; implement a simple version */
+> +static char * poormans_strcasestr(const char *haystack, const char *needle)
+>   
+
+This is something that can be put in include/wine/port.h.
+
+-- 
+Rob Shearman
+
+
+
+From julliard at winehq.org  Thu Dec 27 06:27:26 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Thu, 27 Dec 2007 13:27:26 +0100
+Subject: Compile info patch
+In-Reply-To: <b050a5e70712260905j3ecacb7cr2d42f6756d8f0623@mail.gmail.com>
+	(Zachary Goldberg's message of "Wed, 26 Dec 2007 12:05:47 -0500")
+References: <b050a5e70712260905j3ecacb7cr2d42f6756d8f0623@mail.gmail.com>
+Message-ID: <87zlvw5nm9.fsf@wine.dyndns.org>
+
+"Zachary Goldberg" <zgold550 at gmail.com> writes:
+
+> I've been checking recently, haven't seen any further discussion on
+> this patch, or seen it be committed.  Any thoughts on why?  I'm
+> curious because I think its useful, and because I wrote a WWN article
+> on it -- which of course only makes sense if the patch is applied :).
+
+This stuff has nothing to do in the code, particularly not in the
+loader. If you want to check the result of configure you should look at
+config.log. If you want to know whether a given feature is supported,
+you should try to make use of it; for instance open the audio tab in
+winecfg to find out which sound drivers are working, etc.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From zac at zacbrown.org  Thu Dec 27 09:16:38 2007
+From: zac at zacbrown.org (Zac Brown)
+Date: Thu, 27 Dec 2007 09:16:38 -0600
+Subject: [Fwd: [advapi32] Correctly handle incorrect buffer sizes
+	in	LookupAccountNameA (RESEND)]
+Message-ID: <4773C1D6.2000602@zacbrown.org>
+
+Hi,
+
+Could I get some feedback on this patch as to why it wasn't accepted? Just
+trying to see where I've gone wrong and what I can do to improve the patch.
+
+Any feedback would be greatly appreciated. Thanks!
+
+-Zac
+
+-------- Original Message --------
+Subject: [advapi32] Correctly handle incorrect buffer sizes in
+LookupAccountNameA (RESEND)
+Date: Fri, 21 Dec 2007 02:32:45 -0600
+From: Zac Brown <zac at zacbrown.org>
+Reply-To: wine-devel at winehq.org
+To: wine-patches at winehq.org
+
+Hi,
+
+Changelog:
+* Correctly handle incorrect buffer sizes in LookupAccountNameA
+
+Notes:
+* Fixes bug 10612
+
+-Zac Brown
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Correctly-handle-incorrect-buffer-sizes-in-LookupAcc.patch
+Type: text/x-patch
+Size: 3217 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20071227/1c296335/attachment.bin 
+
+From winehacker at gmail.com  Thu Dec 27 10:10:17 2007
+From: winehacker at gmail.com (Steven Edwards)
+Date: Thu, 27 Dec 2007 11:10:17 -0500
+Subject: Compile info patch
+In-Reply-To: <87zlvw5nm9.fsf@wine.dyndns.org>
+References: <b050a5e70712260905j3ecacb7cr2d42f6756d8f0623@mail.gmail.com>
+	<87zlvw5nm9.fsf@wine.dyndns.org>
+Message-ID: <19e31a080712270810t7c8b98a1hf2e8c351c40d64da@mail.gmail.com>
+
+On Dec 27, 2007 7:27 AM, Alexandre Julliard <julliard at winehq.org> wrote:
+> This stuff has nothing to do in the code, particularly not in the
+> loader. If you want to check the result of configure you should look at
+> config.log. If you want to know whether a given feature is supported,
+> you should try to make use of it; for instance open the audio tab in
+> winecfg to find out which sound drivers are working, etc.
+
+It would be kind of nice if this information was somewhere for binary
+builds. Unless of course you mean the rpm/deb packagers should ship
+with a config.log....
+
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From zgold550 at gmail.com  Thu Dec 27 11:31:22 2007
+From: zgold550 at gmail.com (Zachary Goldberg)
+Date: Thu, 27 Dec 2007 12:31:22 -0500
+Subject: Compile info patch
+In-Reply-To: <19e31a080712270810t7c8b98a1hf2e8c351c40d64da@mail.gmail.com>
+References: <b050a5e70712260905j3ecacb7cr2d42f6756d8f0623@mail.gmail.com>
+	<87zlvw5nm9.fsf@wine.dyndns.org>
+	<19e31a080712270810t7c8b98a1hf2e8c351c40d64da@mail.gmail.com>
+Message-ID: <b050a5e70712270931oa178dd4q271ba1356f855865@mail.gmail.com>
+
+On Dec 27, 2007 11:10 AM, Steven Edwards <winehacker at gmail.com> wrote:
+> On Dec 27, 2007 7:27 AM, Alexandre Julliard <julliard at winehq.org> wrote:
+> > This stuff has nothing to do in the code, particularly not in the
+> > loader. If you want to check the result of configure you should look at
+> > config.log. If you want to know whether a given feature is supported,
+> > you should try to make use of it; for instance open the audio tab in
+> > winecfg to find out which sound drivers are working, etc.
+>
+> It would be kind of nice if this information was somewhere for binary
+> builds. Unless of course you mean the rpm/deb packagers should ship
+> with a config.log....
+>
+>
+> --
+> Steven Edwards
+>
+> "There is one thing stronger than all the armies in the world, and
+> that is an idea whose time has come." - Victor Hugo
+>
+
+Even if the config.log was shipped, my feelings are thus:
+
+There will always be people in #wine asking for help who are fairly
+hopeless to find and parse through a config.log, no matter how good
+wine gets.  I agree that competent users and devs could easily find
+this information; heck most of them probably would know all that
+information without even needing to look for their own systems.  But
+for the sake of helping people on #wine help users in debugging
+issues, I think this could be a help.
+
+Just 2 cents,
+--Zach
+
+
+From rmh at aybabtu.com  Thu Dec 27 15:50:55 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Thu, 27 Dec 2007 22:50:55 +0100
+Subject: splitting out on_winver_change() and friends
+Message-ID: <20071227215055.GA13916@thorin>
+
+
+Hi
+
+I'm writing a small application to automate the process of setting Windows
+version for executables that are known to require a specific one.  I'd like
+it to use the knowledge about defining Windows versions contained in
+winecfg/appdefaults.c instead of duplicating/forking code from it.
+
+Would it be ok to move on_winver_change() and some of its friends like
+win_versions[] and set_reg_key() to libwine.so.1 for this purpose ?
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From jgardou at yahoo.fr  Thu Dec 27 18:27:20 2007
+From: jgardou at yahoo.fr (=?iso-8859-1?q?J=E9r=F4me_Gardou?=)
+Date: Fri, 28 Dec 2007 01:27:20 +0100
+Subject: winelib and exceptions
+Message-ID: <200712280127.20600.jgardou@yahoo.fr>
+
+Hello.
+
+I'm trying to handle exceptions in a winelib program i'm writing.
+
+after 
+#include <exceptions.h>
+
+I'm using the GetExceptionInformation() function, but then winegcc complains 
+that __eptr has not been defined.
+
+Any tip/idea on what's going on ?
+
+	
+
+	
+		
+___________________________________________________________________________ 
+Yahoo! Mail r?invente le mail ! D?couvrez le nouveau Yahoo! Mail et son interface r?volutionnaire.
+http://fr.mail.yahoo.com
+
+
+
+From alexd4 at inbox.lv  Fri Dec 28 04:39:27 2007
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Fri, 28 Dec 2007 02:39:27 -0800
+Subject: What's the status of these patches by Roderick Colenbrander?
+Message-ID: <4774D25F.5020305@inbox.lv>
+
+WineD3D: p8 palette in alpha fix 2/2 [attempt 2]
+WineD3D: fix p8 GL_EXT_paletted texture bug 1/2 [attempt 2]
+
+Submitted something like 5 day ago, but I think they didn't make it to 
+git? They are needed to fix some bugs, like this:
+
+http://bugs.winehq.org/show_bug.cgi?id=10797
+
+Roderick, maybe you can resubmit them?
+
+
+From winehacker at gmail.com  Fri Dec 28 04:43:40 2007
+From: winehacker at gmail.com (Steven Edwards)
+Date: Fri, 28 Dec 2007 05:43:40 -0500
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <20071227215055.GA13916@thorin>
+References: <20071227215055.GA13916@thorin>
+Message-ID: <19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+
+Hi,
+
+On Dec 27, 2007 4:50 PM, Robert Millan <rmh at aybabtu.com> wrote:
+> I'm writing a small application to automate the process of setting Windows
+> version for executables that are known to require a specific one.  I'd like
+> it to use the knowledge about defining Windows versions contained in
+> winecfg/appdefaults.c instead of duplicating/forking code from it.
+>
+> Would it be ok to move on_winver_change() and some of its friends like
+> win_versions[] and set_reg_key() to libwine.so.1 for this purpose ?
+
+How about rather than writing another application to do this, you make
+winecfg take arguments on the command line so you could set something
+like
+
+winecfg foo.exe --winver win98 --dll=gdiplus.dll=n
+
+Then all you need is a script for your known bad applications....
+
+Thanks
+Steven
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From winehacker at gmail.com  Fri Dec 28 04:49:39 2007
+From: winehacker at gmail.com (Steven Edwards)
+Date: Fri, 28 Dec 2007 05:49:39 -0500
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+Message-ID: <19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+
+On Dec 28, 2007 5:43 AM, Steven Edwards <winehacker at gmail.com> wrote:
+> How about rather than writing another application to do this, you make
+> winecfg take arguments on the command line so you could set something
+> like
+>
+> winecfg foo.exe --winver win98 --dll=gdiplus.dll=n
+>
+> Then all you need is a script for your known bad applications....
+
+Actually, another way you could do it is to use inf files and store
+them in a database. We discussed something like this for the appdb.
+Using inf's would be a cleaner method than hacking winecfg to automate
+importing this data in to the registry and then everyone can use it.
+I'd suggest if you know of an application thats buggy, needs the
+version and dll information hard set, you try the inf route and submit
+it to appdb if its an application listed there.
+
+Thanks
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From samuel at slbdata.se  Fri Dec 28 07:31:52 2007
+From: samuel at slbdata.se (Samuel =?ISO-8859-1?Q?Lid=E9n?= Borell)
+Date: Fri, 28 Dec 2007 14:31:52 +0100
+Subject: Uninitialized static consts
+Message-ID: <1198848712.5668.36.camel@crashie>
+
+Hi,
+
+I discovered a static constant wasn't initialized in RedrawWindow when I
+was using Valgrind. I wonder if this is a problem or not, because it has
+been there since 2005 and it doesn't give any compiler warnings. AFAIK
+constants can't be initialized later (unless they are pointers), so it
+seems to me that this really is a problem.
+
+I used a regex to find other occurrences of uninitialized consts, and I
+found a lot of them. Most of them are interfaces, but I don't know what
+interfaces *really* are, so I don't know about these. But types like
+structs and unions should be initialized, right?
+
+Here's the command I used:
+grep -E 'static const [^*=;]+;' `find -iname '*.c'`
+
+
+Please CC me any replies because I'm not subscribing to the list.
+
+
+Regards,
+Samuel Lid?n Borell
+
+
+
+
+From thunderbird2k at gmx.net  Fri Dec 28 08:35:19 2007
+From: thunderbird2k at gmx.net (Roderick Colenbrander)
+Date: Fri, 28 Dec 2007 15:35:19 +0100
+Subject: What's the status of these patches by Roderick Colenbrander?
+In-Reply-To: <4774D25F.5020305@inbox.lv>
+References: <4774D25F.5020305@inbox.lv>
+Message-ID: <20071228143519.203150@gmx.net>
+
+> WineD3D: p8 palette in alpha fix 2/2 [attempt 2]
+> WineD3D: fix p8 GL_EXT_paletted texture bug 1/2 [attempt 2]
+> 
+> Submitted something like 5 day ago, but I think they didn't make it to 
+> git? They are needed to fix some bugs, like this:
+> 
+> http://bugs.winehq.org/show_bug.cgi?id=10797
+> 
+> Roderick, maybe you can resubmit them?
+> 
+
+They just entered GIT. Perhaps Alexandre was busy or missed them.
+
+Roderick
+-- 
+GMX FreeMail: 1 GB Postfach, 5 E-Mail-Adressen, 10 Free SMS.
+Alle Infos und kostenlose Anmeldung: http://www.gmx.net/de/go/freemail
+
+
+From maarten at codeweavers.com  Fri Dec 28 10:54:18 2007
+From: maarten at codeweavers.com (Maarten Lankhorst)
+Date: Fri, 28 Dec 2007 17:54:18 +0100
+Subject: What happened to the videos from WineConf?
+Message-ID: <47752A3A.7010704@codeweavers.com>
+
+I remember at wineconf there were some videos created, what happened
+with those? I tried to look on youtube for wineconf, but I didn't find
+anything. Are they online yet? Or will they be put online?
+
+-Maarten
+
+
+From dank at kegel.com  Fri Dec 28 10:57:08 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Fri, 28 Dec 2007 08:57:08 -0800
+Subject: Uninitialized static consts
+Message-ID: <a71bd89a0712280857s20e60d51le89aa67a525a9f44@mail.gmail.com>
+
+Samuel wrote:
+> I discovered a static constant wasn't initialized in RedrawWindow when I
+> was using Valgrind. I wonder if this is a problem or not, because it has
+> been there since 2005 and it doesn't give any compiler warnings.
+
+static vars are located in the bss section and are initialized
+to zero by the runtime loader, iirc.
+
+Can you give more details about the error you found with
+Valgrind?
+- Dan
+
+
+From Andrew.Talbot at talbotville.com  Fri Dec 28 10:14:39 2007
+From: Andrew.Talbot at talbotville.com (Andrew Talbot)
+Date: Fri, 28 Dec 2007 16:14:39 +0000
+Subject: Uninitialized static consts
+References: <1198848712.5668.36.camel@crashie>
+Message-ID: <fl37df$uuj$1@ger.gmane.org>
+
+Samuel Lid?n Borell wrote:
+
+> Hi,
+> 
+> I discovered a static constant wasn't initialized in RedrawWindow when I
+> was using Valgrind. I wonder if this is a problem or not, because it has
+> been there since 2005 and it doesn't give any compiler warnings. AFAIK
+> constants can't be initialized later (unless they are pointers), so it
+> seems to me that this really is a problem.
+> 
+> I used a regex to find other occurrences of uninitialized consts, and I
+> found a lot of them. Most of them are interfaces, but I don't know what
+> interfaces *really* are, so I don't know about these. But types like
+> structs and unions should be initialized, right?
+> 
+
+Hi Samuel,
+
+Objects with static duration, if not specifically initialized, are given
+implicit initializers: their elements are zeroed.
+
+Regards,
+
+-- 
+Andy.
+
+
+
+
+From samuel at slbdata.se  Fri Dec 28 12:00:41 2007
+From: samuel at slbdata.se (Samuel =?ISO-8859-1?Q?Lid=E9n?= Borell)
+Date: Fri, 28 Dec 2007 19:00:41 +0100
+Subject: Uninitialized static consts
+In-Reply-To: <a71bd89a0712280857s20e60d51le89aa67a525a9f44@mail.gmail.com>
+References: <a71bd89a0712280857s20e60d51le89aa67a525a9f44@mail.gmail.com>
+Message-ID: <1198864841.5668.48.camel@crashie>
+
+
+The errors (I found some more now) occur when I run a program that I've
+made myself, so it could very well be bug in my program and not in Wine.
+Anyway, I've uploaded the Valgrind output and the source code of my
+program here:
+
+http://www.slbdata.se/hwcheck/wine/
+
+
+
+fre 2007-12-28 klockan 08:57 -0800 skrev Dan Kegel:
+> Samuel wrote:
+> > I discovered a static constant wasn't initialized in RedrawWindow when I
+> > was using Valgrind. I wonder if this is a problem or not, because it has
+> > been there since 2005 and it doesn't give any compiler warnings.
+> 
+> static vars are located in the bss section and are initialized
+> to zero by the runtime loader, iirc.
+> 
+> Can you give more details about the error you found with
+> Valgrind?
+> - Dan
+
+
+
+From thestig at google.com  Fri Dec 28 12:26:15 2007
+From: thestig at google.com (Lei Zhang)
+Date: Fri, 28 Dec 2007 10:26:15 -0800
+Subject: What happened to the videos from WineConf?
+In-Reply-To: <47752A3A.7010704@codeweavers.com>
+References: <47752A3A.7010704@codeweavers.com>
+Message-ID: <558b2f5c0712281026x49fe685y9f596ff9872f7059@mail.gmail.com>
+
+On Dec 28, 2007 8:54 AM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+> I remember at wineconf there were some videos created, what happened
+> with those? I tried to look on youtube for wineconf, but I didn't find
+> anything. Are they online yet? Or will they be put online?
+>
+> -Maarten
+>
+
+The videos have been processed and encoded, but we ran into problems
+getting them on youtube. I've found the right person to talk to about
+this, so hopefully they'll get the videos online in the next couple
+weeks.
+
+
+From maxime.bellenge at gmail.com  Fri Dec 28 17:05:56 2007
+From: maxime.bellenge at gmail.com (Maxime =?ISO-8859-1?Q?Belleng=E9?=)
+Date: Sat, 29 Dec 2007 00:05:56 +0100
+Subject: [1/3] WineD3D: Fix a problem in BltOverride
+In-Reply-To: <200712270209.40026.stefan@codeweavers.com>
+References: <200712270209.40026.stefan@codeweavers.com>
+Message-ID: <1198883156.18388.2.camel@typhoon>
+
+Hi Stephan,
+
+Since this patch has been commited to git I have a big regression in the
+game Syberia. Everything is black. Nothing is displayed expected some
+menu items.
+
+In order to determine that this is this patch which is the problem I did
+a "git bisect".
+
+Maxime
+
+
+
+From alexd4 at inbox.lv  Sat Dec 29 04:32:15 2007
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Sat, 29 Dec 2007 02:32:15 -0800
+Subject: [1/3] WineD3D: Fix a problem in BltOverride
+Message-ID: <4776222F.50707@inbox.lv>
+
+Hi.
+
+I think it may be the same regression I also saw in another app. At least it
+seems to be in that place too. Can you check if this patch helps?
+
+Maxime Belleng? wrote:
+     > Hi Stephan,
+     >
+     > Since this patch has been commited to git I have a big regression in the
+     > game Syberia. Everything is black. Nothing is displayed expected some
+     > menu items.
+     >
+     > In order to determine that this is this patch which is the problem I did
+     > a "git bisect".
+     >
+     > Maxime
+
+
+
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: e9666f062e997d4c13ef883418430aed2ceae1a4.diff
+Type: text/x-patch
+Size: 838 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20071229/d442c916/attachment.bin 
+
+From Andrew.Talbot at talbotville.com  Sat Dec 29 02:23:14 2007
+From: Andrew.Talbot at talbotville.com (Andrew Talbot)
+Date: Sat, 29 Dec 2007 08:23:14 +0000
+Subject: user32: Remove unneeded casts.
+References: <20071229000507.GB25261@redhat.com>
+Message-ID: <fl505i$aai$1@ger.gmane.org>
+
+Michael Stefaniuc wrote:
+
+> I just stumbled upon those while researching a potential problem for
+> which Smatch issued a warning.
+> [...]
+> @@ -1324,7 +1324,7 @@ HDDEDATA WINAPI DdeAddData(HDDEDATA hData, LPBYTE
+> pSrc, DWORD cb, DWORD cbOff)
+>      if (new_sz > old_sz)
+>      {
+>  DdeUnaccessData(hData);
+> -     hData = GlobalReAlloc((HGLOBAL)hData, new_sz +
+> sizeof(DDE_DATAHANDLE_HEAD),
+> +     hData = GlobalReAlloc(hData, new_sz + sizeof(DDE_DATAHANDLE_HEAD),
+[...]
+
+Hi,
+
+In general, I have left the casts in where one PVOID-type handle was cast as
+another, e.g. HMODULE as HANDLE: I wasn't sure if strict typing might (one
+day) be an issue. AFAIK, my only transgressions were when I removed the
+casts from the return values of some {Local|Global}Alloc() and family
+functions, where they, strictly speaking, return a handle, not a literal
+PVOID, so arguably should be cast. For example:
+
+    PSID pSid = (PSID)LocalAlloc(0, cBytes);
+
+Since LocalAlloc() returns a HLOCAL - which just happens to be a PVOID - one
+might argue that the cast should remain. As another example of
+type-equivalence versus -distinction, DWORD and ULONG are both defined as
+unsigned long, but I have currently left them as distinct types, too.
+
+I would be glad for feedback on how type-strict we should be, please.
+
+Thanks,
+
+-- 
+Andy.
+
+
+
+
+From maxime.bellenge at gmail.com  Sat Dec 29 03:29:20 2007
+From: maxime.bellenge at gmail.com (Maxime =?ISO-8859-1?Q?Belleng=E9?=)
+Date: Sat, 29 Dec 2007 10:29:20 +0100
+Subject: [1/3] WineD3D: Fix a problem in BltOverride
+In-Reply-To: <4776222F.50707@inbox.lv>
+References: <4776222F.50707@inbox.lv>
+Message-ID: <1198920561.2789.2.camel@typhoon>
+
+Hi,
+
+Yes the problem is fixed with this patch although I have millions
+traces like this one :
+
+err:d3d_surface:IWineD3DSurfaceImpl_BltOverride Unexpected render target
+-> render target blit
+
+It makes the game slow whereas before wine 0.9.51 if I remember exactly,
+the game was fast without this message. Maybe this trace should be made
+a warn instead of en error ?
+
+Maxime
+
+
+On Sat, 2007-12-29 at 02:32 -0800, Alexander Dorofeyev wrote:
+> Hi.
+> 
+> I think it may be the same regression I also saw in another app. At least it
+> seems to be in that place too. Can you check if this patch helps?
+> 
+> Maxime Belleng? wrote:
+>      > Hi Stephan,
+>      >
+>      > Since this patch has been commited to git I have a big regression in the
+>      > game Syberia. Everything is black. Nothing is displayed expected some
+>      > menu items.
+>      >
+>      > In order to determine that this is this patch which is the problem I did
+>      > a "git bisect".
+>      >
+>      > Maxime
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+
+
+
+From julliard at winehq.org  Sat Dec 29 03:46:16 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Sat, 29 Dec 2007 10:46:16 +0100
+Subject: user32: Remove unneeded casts.
+In-Reply-To: <fl505i$aai$1@ger.gmane.org> (Andrew Talbot's message of "Sat, 29
+	Dec 2007 08:23:14 +0000")
+References: <20071229000507.GB25261@redhat.com> <fl505i$aai$1@ger.gmane.org>
+Message-ID: <87k5mx6dg7.fsf@wine.dyndns.org>
+
+Andrew Talbot <Andrew.Talbot at talbotville.com> writes:
+
+> In general, I have left the casts in where one PVOID-type handle was cast as
+> another, e.g. HMODULE as HANDLE: I wasn't sure if strict typing might (one
+> day) be an issue. AFAIK, my only transgressions were when I removed the
+> casts from the return values of some {Local|Global}Alloc() and family
+> functions, where they, strictly speaking, return a handle, not a literal
+> PVOID, so arguably should be cast. For example:
+>
+>     PSID pSid = (PSID)LocalAlloc(0, cBytes);
+>
+> Since LocalAlloc() returns a HLOCAL - which just happens to be a PVOID - one
+> might argue that the cast should remain. As another example of
+> type-equivalence versus -distinction, DWORD and ULONG are both defined as
+> unsigned long, but I have currently left them as distinct types, too.
+>
+> I would be glad for feedback on how type-strict we should be, please.
+
+We want to be as type-strict as possible, but that doesn't mean we want
+explicit typecasts, just the opposite in fact. The only way to benefit
+from type strictness is to not use casts and let the compiler warn about
+mismatches. That's also why generic handles like HANDLE or HLOCAL are
+defined as void*, so that they can be assigned to other types without
+casting. So typecasts of generic handle types, or of integer types,
+should all be avoided as far as possible.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From rmh at aybabtu.com  Sat Dec 29 05:43:15 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Sat, 29 Dec 2007 12:43:15 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+Message-ID: <20071229114315.GA1799@thorin>
+
+On Fri, Dec 28, 2007 at 05:43:40AM -0500, Steven Edwards wrote:
+> Hi,
+> 
+> On Dec 27, 2007 4:50 PM, Robert Millan <rmh at aybabtu.com> wrote:
+> > I'm writing a small application to automate the process of setting Windows
+> > version for executables that are known to require a specific one.  I'd like
+> > it to use the knowledge about defining Windows versions contained in
+> > winecfg/appdefaults.c instead of duplicating/forking code from it.
+> >
+> > Would it be ok to move on_winver_change() and some of its friends like
+> > win_versions[] and set_reg_key() to libwine.so.1 for this purpose ?
+> 
+> How about rather than writing another application to do this, you make
+> winecfg take arguments on the command line so you could set something
+> like
+> 
+> winecfg foo.exe --winver win98 --dll=gdiplus.dll=n
+
+Yes, I suppose that'll do.   Want a patch for --winver ?
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From julliard at winehq.org  Sat Dec 29 06:04:50 2007
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Sat, 29 Dec 2007 13:04:50 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <20071229114315.GA1799@thorin> (Robert Millan's message of "Sat, 
+	29 Dec 2007 12:43:15 +0100")
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<20071229114315.GA1799@thorin>
+Message-ID: <87bq896719.fsf@wine.dyndns.org>
+
+Robert Millan <rmh at aybabtu.com> writes:
+
+> On Fri, Dec 28, 2007 at 05:43:40AM -0500, Steven Edwards wrote:
+>> How about rather than writing another application to do this, you make
+>> winecfg take arguments on the command line so you could set something
+>> like
+>> 
+>> winecfg foo.exe --winver win98 --dll=gdiplus.dll=n
+>
+> Yes, I suppose that'll do.   Want a patch for --winver ?
+
+It's only a matter of setting a registry key, that can be done easily by
+calling regedit, there's no need to involve winecfg.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From rmh at aybabtu.com  Sat Dec 29 06:35:49 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Sat, 29 Dec 2007 13:35:49 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <87bq896719.fsf@wine.dyndns.org>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<20071229114315.GA1799@thorin> <87bq896719.fsf@wine.dyndns.org>
+Message-ID: <20071229123549.GB3873@thorin>
+
+On Sat, Dec 29, 2007 at 01:04:50PM +0100, Alexandre Julliard wrote:
+> Robert Millan <rmh at aybabtu.com> writes:
+> 
+> > On Fri, Dec 28, 2007 at 05:43:40AM -0500, Steven Edwards wrote:
+> >> How about rather than writing another application to do this, you make
+> >> winecfg take arguments on the command line so you could set something
+> >> like
+> >> 
+> >> winecfg foo.exe --winver win98 --dll=gdiplus.dll=n
+> >
+> > Yes, I suppose that'll do.   Want a patch for --winver ?
+> 
+> It's only a matter of setting a registry key, that can be done easily by
+> calling regedit, there's no need to involve winecfg.
+
+Looking at winecfg/appdefaults.c, there seems to be several keys involved.
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From jgardou at yahoo.fr  Sat Dec 29 08:51:54 2007
+From: jgardou at yahoo.fr (=?iso-8859-1?q?J=E9r=F4me_Gardou?=)
+Date: Sat, 29 Dec 2007 15:51:54 +0100
+Subject: .NET apps with mono... some testing.
+Message-ID: <200712291551.54528.jgardou@yahoo.fr>
+
+Many .NET/C# apps don't work with the combination wine-mono.....
+
+I've discovered that installing the arial32 from msttcorefonts solves a lot of 
+problems, especially with graphical apps.
+
+I've tested a few apps (supreme commander patches, fastmd5 (tested here 
+http://bugs.winehq.org/show_bug.cgi?id=10467 with native .NET...) and all of 
+them worked quite well, although not quite beautiful.
+
+	
+
+	
+		
+___________________________________________________________________________ 
+Yahoo! Mail r?invente le mail ! D?couvrez le nouveau Yahoo! Mail et son interface r?volutionnaire.
+http://fr.mail.yahoo.com
+
+
+
+From maarten at codeweavers.com  Sat Dec 29 09:43:45 2007
+From: maarten at codeweavers.com (Maarten Lankhorst)
+Date: Sat, 29 Dec 2007 16:43:45 +0100
+Subject: .NET apps with mono... some testing.
+In-Reply-To: <200712291551.54528.jgardou@yahoo.fr>
+References: <200712291551.54528.jgardou@yahoo.fr>
+Message-ID: <47766B31.5030102@codeweavers.com>
+
+J?r?me Gardou schreef:
+> Many .NET/C# apps don't work with the combination wine-mono.....
+>
+> I've discovered that installing the arial32 from msttcorefonts solves a lot of 
+> problems, especially with graphical apps.
+>
+> I've tested a few apps (supreme commander patches, fastmd5 (tested here 
+> http://bugs.winehq.org/show_bug.cgi?id=10467 with native .NET...) and all of 
+> them worked quite well, although not quite beautiful.
+>   
+Which mono version did you use?
+
+
+From rmh at aybabtu.com  Sat Dec 29 09:45:25 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Sat, 29 Dec 2007 16:45:25 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+Message-ID: <20071229154525.GA9173@thorin>
+
+On Fri, Dec 28, 2007 at 05:49:39AM -0500, Steven Edwards wrote:
+> On Dec 28, 2007 5:43 AM, Steven Edwards <winehacker at gmail.com> wrote:
+> > How about rather than writing another application to do this, you make
+> > winecfg take arguments on the command line so you could set something
+> > like
+> >
+> > winecfg foo.exe --winver win98 --dll=gdiplus.dll=n
+> >
+> > Then all you need is a script for your known bad applications....
+> 
+> Actually, another way you could do it is to use inf files and store
+> them in a database. We discussed something like this for the appdb.
+> Using inf's would be a cleaner method than hacking winecfg to automate
+> importing this data in to the registry and then everyone can use it.
+> I'd suggest if you know of an application thats buggy, needs the
+> version and dll information hard set, you try the inf route and submit
+> it to appdb if its an application listed there.
+
+I was thinking in doing something like this already, but you still need a
+way to set winver, so it boils down to either sharing code with winecfg or
+duplicating it.
+
+I'd like to avoid duplication if possible.
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From jgardou at yahoo.fr  Sat Dec 29 09:55:28 2007
+From: jgardou at yahoo.fr (=?iso-8859-1?q?J=E9r=F4me_Gardou?=)
+Date: Sat, 29 Dec 2007 16:55:28 +0100
+Subject: .NET apps with mono... some testing.
+In-Reply-To: <47766B31.5030102@codeweavers.com>
+References: <200712291551.54528.jgardou@yahoo.fr>
+	<47766B31.5030102@codeweavers.com>
+Message-ID: <200712291655.28234.jgardou@yahoo.fr>
+
+Le Saturday 29 December 2007 16:43:45 Maarten Lankhorst, vous avez ?crit?:
+> J?r?me Gardou schreef:
+> > Many .NET/C# apps don't work with the combination wine-mono.....
+> >
+> > I've discovered that installing the arial32 from msttcorefonts solves a
+> > lot of problems, especially with graphical apps.
+> >
+> > I've tested a few apps (supreme commander patches, fastmd5 (tested here
+> > http://bugs.winehq.org/show_bug.cgi?id=10467 with native .NET...) and all
+> > of them worked quite well, although not quite beautiful.
+>
+> Which mono version did you use?
+
+mono-1.2.6 with gtksharp 2.10.2 . the latest available on mono website.
+
+I'm trying to figure out why font rendering is so bad on gtk# applications. 
+(try gtk theme manager... it's awful)
+
+	
+
+	
+		
+___________________________________________________________________________ 
+Yahoo! Mail r?invente le mail ! D?couvrez le nouveau Yahoo! Mail et son interface r?volutionnaire.
+http://fr.mail.yahoo.com
+
+
+
+From wine-devel at kievinfo.com  Sat Dec 29 10:11:17 2007
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sat, 29 Dec 2007 09:11:17 -0700
+Subject: Where are the bugzilla admins?
+Message-ID: <477671A5.6040403@kievinfo.com>
+
+Where did our buzilla admins go? 3 weeks and nothing is changing!
+
+Vitaliy.
+
+
+From winehacker at gmail.com  Sat Dec 29 10:18:26 2007
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sat, 29 Dec 2007 11:18:26 -0500
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <20071229154525.GA9173@thorin>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+	<20071229154525.GA9173@thorin>
+Message-ID: <19e31a080712290818o4eaf3395v52f0a75a6fcd7c8f@mail.gmail.com>
+
+On Dec 29, 2007 10:45 AM, Robert Millan <rmh at aybabtu.com> wrote:
+> I was thinking in doing something like this already, but you still need a
+> way to set winver, so it boils down to either sharing code with winecfg or
+> duplicating it.
+>
+> I'd like to avoid duplication if possible.
+
+I am not sure where the global winver is set but I am sure its still
+in the registry so you can change it with a registry key as Julliard
+said. For just running per-application all you need to do is set it as
+HKCU\Software\Wine\AppDefaults\foo.exe\Version which is a string
+resource, again this can be done via a reg file that regedit can
+import. Thats even less complicated then then inf route I suggested.
+
+Do you mean you have a situation like a broken application AND
+installer that only works under win98 but the default version is
+win2000? Maybe you only want that installer to run in win98 mode but
+the rest of wine to run in win2000 mode? Wine used to have the -winver
+option I think and CrossOver has this setting but I can't see anyway
+to set the windows version on the command line for a buggy installer.
+The solution (which I also think kind of sucks) would be to do
+something like script
+
+wine regedit add-setup.exe-version.reg
+wine setup.exe
+wine regedit remove-setup.exe-version.reg
+wine regedit add-foo.exe-version.reg
+wine foo.exe
+
+Of course steps 3 and 4 could be combined in one registry file and 1
+and 3 would not even be needed if you could set the version on the
+command line but we don't seem to support that anymore for quite a
+long time. I think the solution to have multiple appdefaults with
+programs having generic names like setup.exe and install.exe is to
+enhance the support in wine and winecfg application/dlloverrides to
+use md5sum/sha hashes. I don't know how julliard really feels about
+this but this is similar to what was discussed with having a custom
+Wine shim engine for application compatibly. If you were going to
+change some code and he approves I think this is the route to go.....
+
+So say rather than having
+
+HKCU\Software\Wine\AppDefaults\setup.exe\Version win98
+
+you would have something like
+
+HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\Version win98
+HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\filename
+setup.exe
+
+HKCU\Software\Wine\AppDefaults\912672566150fd7663fba3a927f79fca\Version win2000
+HKCU\Software\Wine\AppDefaults\912672566150fd7663fba3a927f79fca\filename
+setup.exe
+
+This way two installers both named setup.exe can have their own
+windows version and dlloverrides set.
+
+Thanks
+Steven
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From winehacker at gmail.com  Sat Dec 29 10:23:11 2007
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sat, 29 Dec 2007 11:23:11 -0500
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <20071229154525.GA9173@thorin>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+	<20071229154525.GA9173@thorin>
+Message-ID: <19e31a080712290823x3a51f120l337194b14144f7ed@mail.gmail.com>
+
+On Dec 29, 2007 10:45 AM, Robert Millan <rmh at aybabtu.com> wrote:
+> I'd like to avoid duplication if possible.
+
+Also as a follow-up again, you can also just hack Dan's winetricks
+script for your needs as it does the winversion magic with the
+registry I was talking about. I think doing that would be a hack and
+if you want to properly fix the problem (if I understand what you need
+correctly) is to enhance the entire application default override
+system like I described in the last email.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From jgardou at yahoo.fr  Sat Dec 29 11:11:02 2007
+From: jgardou at yahoo.fr (=?iso-8859-1?q?J=E9r=F4me_Gardou?=)
+Date: Sat, 29 Dec 2007 18:11:02 +0100
+Subject: .NET apps with mono... some testing.
+In-Reply-To: <200712291655.28234.jgardou@yahoo.fr>
+References: <200712291551.54528.jgardou@yahoo.fr>
+	<47766B31.5030102@codeweavers.com>
+	<200712291655.28234.jgardou@yahoo.fr>
+Message-ID: <200712291811.03320.jgardou@yahoo.fr>
+
+Le Saturday 29 December 2007 16:55:28 J?r?me Gardou, vous avez ?crit?:
+> Le Saturday 29 December 2007 16:43:45 Maarten Lankhorst, vous avez ?crit?:
+> > J?r?me Gardou schreef:
+> > > Many .NET/C# apps don't work with the combination wine-mono.....
+> > >
+> > > I've discovered that installing the arial32 from msttcorefonts solves a
+> > > lot of problems, especially with graphical apps.
+> > >
+> > > I've tested a few apps (supreme commander patches, fastmd5 (tested here
+> > > http://bugs.winehq.org/show_bug.cgi?id=10467 with native .NET...) and
+> > > all of them worked quite well, although not quite beautiful.
+> >
+> > Which mono version did you use?
+>
+> mono-1.2.6 with gtksharp 2.10.2 . the latest available on mono website.
+>
+> I'm trying to figure out why font rendering is so bad on gtk# applications.
+> (try gtk theme manager... it's awful)
+>
+>
+
+Some more feedback here.
+
+Changing the key HKEY_CURRENT_CONFIG\Software\Fonts\LogPixels from 96 to 2 
+changes everything. From enormous characters in gtk# programs, there is now a 
+good size in those apps.
+
+Obviously, this is not the good way to get it working.
+
+
+
+
+	
+
+	
+		
+___________________________________________________________________________ 
+Yahoo! Mail r?invente le mail ! D?couvrez le nouveau Yahoo! Mail et son interface r?volutionnaire.
+http://fr.mail.yahoo.com
+
+
+
+From stefani at seibold.net  Sat Dec 29 07:59:31 2007
+From: stefani at seibold.net (Stefani Seibold)
+Date: Sat, 29 Dec 2007 14:59:31 +0100
+Subject: err:ntdll:RtlpWaitForCriticalSection blocked
+Message-ID: <1198936771.9031.6.camel@matrix>
+
+Hi,
+
+i still try since more than two years to bring up the old windows 95
+game "pitfall: the mayan adventure".
+
+The games runs well without sound, but if i try to enable the sound a
+small sound chuck will be played and the games freeze with the message:
+
+err:ntdll:RtlpWaitForCriticalSection section 0x20017c90 "?" wait timed
+out in thread 0009, blocked by 000f, retrying (60 sec)
+err:ntdll:RtlpWaitForCriticalSection section 0x20017c90 "?" wait timed
+out in thread 000e, blocked by 000f, retrying (60 sec)
+
+All Wine Versions since the last two years have the same effect,
+included the newest 0.9.52.
+
+Any idea?
+
+Thanx for helping me...
+
+Stefani
+
+
+
+
+From hverbeet at gmail.com  Sat Dec 29 12:36:24 2007
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Sat, 29 Dec 2007 19:36:24 +0100
+Subject: What happened to the videos from WineConf?
+In-Reply-To: <558b2f5c0712281026x49fe685y9f596ff9872f7059@mail.gmail.com>
+References: <47752A3A.7010704@codeweavers.com>
+	<558b2f5c0712281026x49fe685y9f596ff9872f7059@mail.gmail.com>
+Message-ID: <d658b69e0712291036l797bac3i272f82c8ee9863e9@mail.gmail.com>
+
+On 28/12/2007, Lei Zhang <thestig at google.com> wrote:
+> On Dec 28, 2007 8:54 AM, Maarten Lankhorst <maarten at codeweavers.com> wrote:
+> > I remember at wineconf there were some videos created, what happened
+> > with those? I tried to look on youtube for wineconf, but I didn't find
+> > anything. Are they online yet? Or will they be put online?
+> >
+> > -Maarten
+> >
+>
+> The videos have been processed and encoded, but we ran into problems
+> getting them on youtube. I've found the right person to talk to about
+> this, so hopefully they'll get the videos online in the next couple
+> weeks.
+>
+FWIW, personally I don't care much for youtube. Just having an .ogg we
+can download somewhere would be enough for me.
+
+Related to this subject, what happened to the group foto? I don't
+think it was posted to winehq like last year.
+
+
+From saulius2 at ar.fi.lt  Sat Dec 29 13:26:47 2007
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Sat, 29 Dec 2007 21:26:47 +0200 (EET)
+Subject: COM/DCOM of WINE
+In-Reply-To: <200710250958.35661.research@science.su>
+References: <586B06EED9F2614DAA1B52C8C626563D0258F4F1@NE2K3EVS10.corp.clp.com.hk>
+	<200710250958.35661.research@science.su>
+Message-ID: <Pine.LNX.4.62.0712291647270.12541@tvarka.ar.fi.lt>
+
+* On Thu, 25 Oct 2007, L. Rahyen wrote:
+> * On Thursday October 25 2007 08:08, Fong, Man To wrote:
+> > 
+> > > The communication protocol, pre-defined by TCS manufacturing, is 
+> > > DCOM. Since the communication protocol is not opened by the 
+> > > manufacturer. We must install the API provided by the manufacturer 
+> > > on our workstation running on Linux. Does WINE support the DCOM 
+> > > function?
+  ... 
+> If something will not work for you please fill a bug report at 
+> http://bugs.winehq.org . In case if builtin DCOM support doesn't work as 
+> expected you can run "winetricks dcom98" to use native DCOM instead (you 
+> can download winetricks at http://kegel.com/wine/winetricks ). If this 
+> workaround helps you should mention this in your bug report as well.
+
+IANAL, but for being legal this way requires a user to have valid Windows 
+Licence (or so).  One of at least Win98, AFAIK.
+
+
+From saulius2 at ar.fi.lt  Sat Dec 29 13:39:23 2007
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Sat, 29 Dec 2007 21:39:23 +0200 (EET)
+Subject: bug 9986
+In-Reply-To: <9e89675b0710260445h39205b83t4458a5d2819b82d1@mail.gmail.com>
+References: <3a768c550710251443y28c5ec63j3e671cf0514b530@mail.gmail.com>
+	<3f4fd2640710251502q1bd24a3ftf9d38348e8dcec4c@mail.gmail.com>
+	<3a768c550710251509m21e52d59u54825cb64df67397@mail.gmail.com>
+	<3f4fd2640710251558s32981fd1saccd79783874864f@mail.gmail.com>
+	<9e89675b0710260445h39205b83t4458a5d2819b82d1@mail.gmail.com>
+Message-ID: <Pine.LNX.4.62.0712292127050.12541@tvarka.ar.fi.lt>
+
+* On Fri, 26 Oct 2007, Damjan Jovanovic wrote:
+> * On 10/26/07, Reece Dunn wrote:
+> > * On 25/10/2007, Juan Lang wrote:
+> > > 
+> > > > Tests would also be useful here as well, so that there is not a 
+> > > > regression.
+> > >
+> > > That's good general advice, but hard to implement without a serial 
+> > > device to test against, which our test systems won't have.
+> >
+> > You could always skip the tests when a serial connection is not 
+> > present. That way, you get coverage on systems that do have them. It 
+> > should be possible to configure Virtual Machines that have serial 
+> > ports suitable for use in these tests.
+  ...
+> You can emulate a serial port, but that requires kernel-mode drivers
+> in at least Windows, and emulating hardware that plugs into the
+> emulated port isn't much easier.
+
+Yes, but this is possible. I believe, the ideal state would be when MinGW 
+support for compiling device drivers + Wine support for running KMD is 
+good enough.
+
+It probably should be a separate software project, though, as it will 
+require very specific driver coding and testing-on-Windows manpower.  No?
+
+
+From alexd4 at inbox.lv  Sat Dec 29 23:24:07 2007
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Sat, 29 Dec 2007 21:24:07 -0800
+Subject: [1/3] WineD3D: Fix a problem in BltOverride
+In-Reply-To: <1198920561.2789.2.camel@typhoon>
+References: <4776222F.50707@inbox.lv> <1198920561.2789.2.camel@typhoon>
+Message-ID: <47772B77.9000703@inbox.lv>
+
+I don't have this game, so I can't check myself, but I think that the reason of 
+slowdown may be not only that a err message is printed, but also because it 
+exists with error, and that means it will have to do slower, software blit. But 
+in older versions in this situation it would try hardware accelerated blit, I think.
+
+Can you try commenting or removing the line with ERR() to check? It's 
+wine/dlls/wined3d/surface.c:2976. If the game is still slower than it used to 
+be, another thing you can try is also comment/remove 'return ...' statement just 
+after that ERR and see what happens. After more careful look at that code, it 
+looks to me both ERR and return there may be a mistake, because it causes 
+regular texture -> render target blits not to happen in hardware, but it will be 
+safer if you test first if it works at all without these lines :).
+
+Maxime Belleng? wrote:
+> Hi,
+> 
+> Yes the problem is fixed with this patch although I have millions
+> traces like this one :
+> 
+> err:d3d_surface:IWineD3DSurfaceImpl_BltOverride Unexpected render target
+> -> render target blit
+> 
+> It makes the game slow whereas before wine 0.9.51 if I remember exactly,
+> the game was fast without this message. Maybe this trace should be made
+> a warn instead of en error ?
+
+
+From thunderbird2k at gmx.net  Sat Dec 29 13:51:26 2007
+From: thunderbird2k at gmx.net (Roderick Colenbrander)
+Date: Sat, 29 Dec 2007 20:51:26 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <19e31a080712290818o4eaf3395v52f0a75a6fcd7c8f@mail.gmail.com>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+	<20071229154525.GA9173@thorin>
+	<19e31a080712290818o4eaf3395v52f0a75a6fcd7c8f@mail.gmail.com>
+Message-ID: <20071229195126.54450@gmx.net>
+
+> On Dec 29, 2007 10:45 AM, Robert Millan <rmh at aybabtu.com> wrote:
+> > I was thinking in doing something like this already, but you still need
+> a
+> > way to set winver, so it boils down to either sharing code with winecfg
+> or
+> > duplicating it.
+> >
+> > I'd like to avoid duplication if possible.
+> 
+> I am not sure where the global winver is set but I am sure its still
+> in the registry so you can change it with a registry key as Julliard
+> said. For just running per-application all you need to do is set it as
+> HKCU\Software\Wine\AppDefaults\foo.exe\Version which is a string
+> resource, again this can be done via a reg file that regedit can
+> import. Thats even less complicated then then inf route I suggested.
+> 
+> Do you mean you have a situation like a broken application AND
+> installer that only works under win98 but the default version is
+> win2000? Maybe you only want that installer to run in win98 mode but
+> the rest of wine to run in win2000 mode? Wine used to have the -winver
+> option I think and CrossOver has this setting but I can't see anyway
+> to set the windows version on the command line for a buggy installer.
+> The solution (which I also think kind of sucks) would be to do
+> something like script
+> 
+> wine regedit add-setup.exe-version.reg
+> wine setup.exe
+> wine regedit remove-setup.exe-version.reg
+> wine regedit add-foo.exe-version.reg
+> wine foo.exe
+> 
+> Of course steps 3 and 4 could be combined in one registry file and 1
+> and 3 would not even be needed if you could set the version on the
+> command line but we don't seem to support that anymore for quite a
+> long time. I think the solution to have multiple appdefaults with
+> programs having generic names like setup.exe and install.exe is to
+> enhance the support in wine and winecfg application/dlloverrides to
+> use md5sum/sha hashes. I don't know how julliard really feels about
+> this but this is similar to what was discussed with having a custom
+> Wine shim engine for application compatibly. If you were going to
+> change some code and he approves I think this is the route to go.....
+> 
+> So say rather than having
+> 
+> HKCU\Software\Wine\AppDefaults\setup.exe\Version win98
+> 
+> you would have something like
+> 
+> HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\Version
+> win98
+> HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\filename
+> setup.exe
+> 
+> HKCU\Software\Wine\AppDefaults\912672566150fd7663fba3a927f79fca\Version
+> win2000
+> HKCU\Software\Wine\AppDefaults\912672566150fd7663fba3a927f79fca\filename
+> setup.exe
+> 
+> This way two installers both named setup.exe can have their own
+> windows version and dlloverrides set.
+> 
+> Thanks
+> Steven
+> 
+> -- 
+> Steven Edwards
+> 
+> "There is one thing stronger than all the armies in the world, and
+> that is an idea whose time has come." - Victor Hugo
+> 
+
+The system on windows doesn't use the md5sum (I think it has one) but it looks for the product ID which is burried into most executables first. It also checks for other things but in a hackier way. As there are a lot of different versions of a program but which all need the same override.
+
+Roderick
+-- 
+GMX FreeMail: 1 GB Postfach, 5 E-Mail-Adressen, 10 Free SMS.
+Alle Infos und kostenlose Anmeldung: http://www.gmx.net/de/go/freemail
+
+
+From rmh at aybabtu.com  Sat Dec 29 13:58:06 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Sat, 29 Dec 2007 20:58:06 +0100
+Subject: COM/DCOM of WINE
+In-Reply-To: <Pine.LNX.4.62.0712291647270.12541@tvarka.ar.fi.lt>
+References: <586B06EED9F2614DAA1B52C8C626563D0258F4F1@NE2K3EVS10.corp.clp.com.hk>
+	<200710250958.35661.research@science.su>
+	<Pine.LNX.4.62.0712291647270.12541@tvarka.ar.fi.lt>
+Message-ID: <20071229195806.GA16541@thorin>
+
+On Sat, Dec 29, 2007 at 09:26:47PM +0200, Saulius Krasuckas wrote:
+>   ... 
+> > If something will not work for you please fill a bug report at 
+> > http://bugs.winehq.org . In case if builtin DCOM support doesn't work as 
+> > expected you can run "winetricks dcom98" to use native DCOM instead (you 
+> > can download winetricks at http://kegel.com/wine/winetricks ). If this 
+> > workaround helps you should mention this in your bug report as well.
+> 
+> IANAL, but for being legal this way requires a user to have valid Windows 
+> Licence (or so).  One of at least Win98, AFAIK.
+
+AFAIK copyright only governs copying/distribution.  You may need a license
+to redistribute MS-DCOM, but since it's Microsoft itself who distributes it
+in their website I don't think they have a basis to claim damages.
+
+(IANAL, either)
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From saulius2 at ar.fi.lt  Sat Dec 29 14:24:56 2007
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Sat, 29 Dec 2007 22:24:56 +0200 (EET)
+Subject: icmp states I need to be running wine as root
+In-Reply-To: <3a768c550710211426g690f0256s3dd7053ad426672d@mail.gmail.com>
+References: <BAY128-W20EECF38BE9B2383B74329AB990@phx.gbl>
+	<471BBDF5.4000105@kievinfo.com>
+	<3a768c550710211405y7538b533jf64bb7d18020ad12@mail.gmail.com>
+	<BAY128-W6DDF560A5D1ECA2013A27AB990@phx.gbl>
+	<3a768c550710211426g690f0256s3dd7053ad426672d@mail.gmail.com>
+Message-ID: <Pine.LNX.4.62.0712292141470.12541@tvarka.ar.fi.lt>
+
+* On Sun, 21 Oct 2007, Juan Lang wrote:
+> 
+> > Isn't there another way to do this than with SOCK_RAW, or having to 
+> > run wine as root?
+> 
+> In answer to your second question:  yes, modify the Linux kernel not
+> to have such restrictions.
+
+Well, there are already patches which modifies it in one way or another.  
+I refer to "man 7 capabilities" or web resources [1]-[3].  Some of 
+approaches may be abandoned already, but I see recent discussion [4] on 
+this and by [5] I judge SELinux already can handle this task.
+
+Plus, I have found some recently updated tool called "Filesystem 
+capabilities for linux" which also is not POSIX compatible (and so were 
+old capabilities implementation for linux kernel):
+
+|  With this patch, you will be able to grant selective privileges to 
+| executables on a needed basis. This means for some executables, there is 
+| no need anymore to run as root or as a suid root binary.
+| 
+| For example, you may drop the SUID bit from ping and grant the 
+| CAP_NET_RAW capability:
+| 
+|     # chmod u-s /bin/ping
+|     # chcap cap_net_raw=ep /bin/ping 
+
+If this is acceptable solution, then it probably would be nice for Wine to 
+have separate binary for every needed capability.  CAP_NET_RAW (for ICMP), 
+CAP_SYS_RAWIO (for IO ports) and CAP_SYS_NICE (for threads priority) comes 
+to mind.
+
+This plan is to don't force users to give the bunch of capabilities to the 
+main Wine binary (or even several of them) at once (so the security risk 
+should be increased in a minimal way).  But well, that could be a minor 
+nuance for such users.
+
+
+[1] http://www.securityfocus.com/infocus/1400
+[2] http://lwn.net/Articles/79185/
+[3] http://lwn.net/Articles/199004/
+[4] http://lkml.org/lkml/2006/9/18/100
+[5] http://lwn.net/Articles/79208/
+[6] http://www.olafdietsche.de/linux/capability/
+
+
+From rmh at aybabtu.com  Sat Dec 29 14:08:53 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Sat, 29 Dec 2007 21:08:53 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <19e31a080712290818o4eaf3395v52f0a75a6fcd7c8f@mail.gmail.com>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+	<20071229154525.GA9173@thorin>
+	<19e31a080712290818o4eaf3395v52f0a75a6fcd7c8f@mail.gmail.com>
+Message-ID: <20071229200853.GB16541@thorin>
+
+On Sat, Dec 29, 2007 at 11:18:26AM -0500, Steven Edwards wrote:
+> 
+> you would have something like
+> 
+> HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\Version win98
+> HKCU\Software\Wine\AppDefaults\b83fd2e8b34ba6b6f59e9f9cfbe129d9\filename
+> setup.exe
+> 
+> HKCU\Software\Wine\AppDefaults\912672566150fd7663fba3a927f79fca\Version win2000
+> HKCU\Software\Wine\AppDefaults\912672566150fd7663fba3a927f79fca\filename
+> setup.exe
+
+Sounds good.  It could also be a good idea to have some mechanism so that
+multiple hashes can point to the same description / setup.  Think of the same
+versioning problem shared by a dozen of different localised versions of an
+app, etc.
+
+How about something like:
+
+HKCU\Software\Wine\AppDefaults\md5\b83fd2e8b34ba6b6f59e9f9cfbe129d9 foomatic_installer
+HKCU\Software\Wine\AppDefaults\md5\912672566150fd7663fba3a927f79fca foomatic_installer
+   [ ... ]
+HKCU\Software\Wine\AppDefaults\foomatic_installer\Version win98
+HKCU\Software\Wine\AppDefaults\foomatic_installer\filename setup.exe
+
+(as a bonus, this gives us a short description of what these hashes are
+referring to)
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From rmh at aybabtu.com  Sat Dec 29 14:23:37 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Sat, 29 Dec 2007 21:23:37 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <20071229195126.54450@gmx.net>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+	<20071229154525.GA9173@thorin>
+	<19e31a080712290818o4eaf3395v52f0a75a6fcd7c8f@mail.gmail.com>
+	<20071229195126.54450@gmx.net>
+Message-ID: <20071229202337.GA17240@thorin>
+
+On Sat, Dec 29, 2007 at 08:51:26PM +0100, Roderick Colenbrander wrote:
+> 
+> The system on windows doesn't use the md5sum (I think it has one) but it looks for the product ID which is burried into most executables first. It also checks for other things but in a hackier way. As there are a lot of different versions of a program but which all need the same override.
+
+I think it's a bad idea to do that:
+
+  - Product IDs may not necessarily be unique identifiers for every
+  given program.  Hashes are.
+
+  - It's easier for users to submit information about their apps if they
+  can use tools they're familiar with such as md5sum / sha1sum.
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From luis.montes at dslextreme.com  Sat Dec 29 14:35:01 2007
+From: luis.montes at dslextreme.com (Luis A. Montes)
+Date: Sat, 29 Dec 2007 12:35:01 -0800
+Subject: RtlpWaitForCriticalSection
+Message-ID: <1198960501.5547.29.camel@localhost>
+
+I got a game (Need for speed III) that has been reported to work by
+others. On my computer, though, the game hangs at different places about
+50% of the time. I compiled Wine 0.9.51 from source on a Slackware 12.0
+dual core Athlon, and although I'm sure most people this days buy at
+least that kind of computer, maybe that was not true when the reports
+came out. What I'm thinking is that this is a race condition brought out
+because of the two cores. I think that because if I run inside gdb I
+catch a SIGTERM going to a thread that then exits. Another thread then
+prints the:
+err:ntdll:RtlpWaitForCriticalSection section ... wait timed out in
+thread ..., blocked by <dead_thread>, retrying (60 sec)
+
+I see three ways to fix this problem:
+- When a thread dies, release the locks it has. Of course this wouldn't
+be compatible with windows, but perhaps a command line option could
+activate that code. In any case I could try something like that for this
+game in particular. I'm looking for some pointers on where should I
+start looking.
+- Looking into why the thread is getting a SIGTERM in the first place.
+Perhaps there is a way to delay the signal from being sent in a
+reasonable way? Who would be sending it?
+- Run the game in a single core (setting the affinity?) It just occur to
+me that I should be able to set the affinity on a bash shell and then
+start wine from there. I'll try that.
+
+
+
+From rmh at aybabtu.com  Sat Dec 29 16:13:04 2007
+From: rmh at aybabtu.com (Robert Millan)
+Date: Sat, 29 Dec 2007 23:13:04 +0100
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <19e31a080712290823x3a51f120l337194b14144f7ed@mail.gmail.com>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+	<20071229154525.GA9173@thorin>
+	<19e31a080712290823x3a51f120l337194b14144f7ed@mail.gmail.com>
+Message-ID: <20071229221304.GA20600@thorin>
+
+On Sat, Dec 29, 2007 at 11:23:11AM -0500, Steven Edwards wrote:
+> On Dec 29, 2007 10:45 AM, Robert Millan <rmh at aybabtu.com> wrote:
+> > I'd like to avoid duplication if possible.
+> 
+> Also as a follow-up again, you can also just hack Dan's winetricks
+> script for your needs as it does the winversion magic with the
+> registry I was talking about.
+
+I looked at this before, and the winversion magic in that script seems to
+be just a minor part of what winecfg does.
+
+> I think doing that would be a hack and
+> if you want to properly fix the problem (if I understand what you need
+> correctly) is to enhance the entire application default override
+> system like I described in the last email.
+
+Yes.  I want to do it right.  Should I start working in that direction?
+
+-- 
+Robert Millan
+
+<GPLv2> I know my rights; I want my phone call!
+<DRM> What use is a phone call, if you are unable to speak?
+(as seen on /.)
+
+
+From winehacker at gmail.com  Sat Dec 29 16:29:40 2007
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sat, 29 Dec 2007 17:29:40 -0500
+Subject: splitting out on_winver_change() and friends
+In-Reply-To: <20071229221304.GA20600@thorin>
+References: <20071227215055.GA13916@thorin>
+	<19e31a080712280243n2fb913fer392e0ed37b208145@mail.gmail.com>
+	<19e31a080712280249m2d0940desd3654b841c736666@mail.gmail.com>
+	<20071229154525.GA9173@thorin>
+	<19e31a080712290823x3a51f120l337194b14144f7ed@mail.gmail.com>
+	<20071229221304.GA20600@thorin>
+Message-ID: <19e31a080712291429x486cfb2l4f676d6a243f15a3@mail.gmail.com>
+
+On Dec 29, 2007 5:13 PM, Robert Millan <rmh at aybabtu.com> wrote:
+> Yes.  I want to do it right.  Should I start working in that direction?
+
+I'd like to hear Alexandre's comments for my suggestions. The current
+application override system bothers me but maybe he has other ideas or
+I am missing something. The entire system seems to depend too much on
+the applications name which seems limited to me but maybe he has ideas
+for a more robust way of tracking dlloverrides and version settings
+when the application name conflicts.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From dank at kegel.com  Sat Dec 29 19:04:16 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 29 Dec 2007 17:04:16 -0800
+Subject: appdb license choices unclear
+Message-ID: <a71bd89a0712291704u6c996d51x82c2ef89b970cbdf@mail.gmail.com>
+
+Has anybody else been confused by this?
+When submitting an app to the appdb, I'm often flummoxed
+by what to put in the license field.  I'm usually
+looking for something that means
+"Closed source, free to download, but not redistributable"
+(like e.g. http://labs.adobe.com/misc/terms_of_use.html )
+but the only choices
+are: Retail, Open Source, Freeware, Demo, Shareware.
+
+"Freeware" might be the closest of the bunch, but it implies GPL or
+at least the ability to redistribute binaries
+(i.e. the other meaning of the word Free).
+
+Is there a way to make this clearer?   Maybe "nonredistributable freeware"?
+- Dan
+
+
+From dank at kegel.com  Sat Dec 29 19:13:24 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 29 Dec 2007 17:13:24 -0800
+Subject: appdb new version submission form has awkward radio buttons
+Message-ID: <a71bd89a0712291713m31767092ge9d77942ad18d6be@mail.gmail.com>
+
+When submitting a new version, clicking the radio button next
+to "Request being a maintainer for this version, allowing you to edit it later"
+or "Monitor changes to this version, also after it has been accepted"
+can't be undone.  There should be a way to get back to the state
+of no button clicked.  Perhaps those should be checkboxes instead.
+
+
+From remco47 at yahoo.com  Sat Dec 29 20:22:24 2007
+From: remco47 at yahoo.com (Remco)
+Date: Sat, 29 Dec 2007 18:22:24 -0800 (PST)
+Subject: What happened to the videos from WineConf?
+Message-ID: <132394.88565.qm@web50110.mail.re2.yahoo.com>
+
+"H. Verbeet" <hverbeet at gmail.com> wrote:
+> > The videos have been processed and encoded, but we ran into problems
+> > getting them on youtube. I've found the right person to talk to
+> > about this, so hopefully they'll get the videos online in the next
+> > couple weeks.
+> 
+> FWIW, personally I don't care much for youtube. Just having an .ogg we
+> can download somewhere would be enough for me.
+
+Maybe the full-res Theora videos can be published as torrents on a
+strictly legal tracker like legittorrents.info? Alternatively,
+WineHQ.org could host a tracker. This can be useful for
+bandwidth-reduction on all downloads from WineHQ.org.
+
+Remco
+
+
+
+      ____________________________________________________________________________________
+Looking for last minute shopping deals?  
+Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
+
+
+From dank at kegel.com  Sat Dec 29 23:48:45 2007
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 29 Dec 2007 21:48:45 -0800
+Subject: So, you want to fix typos?
+Message-ID: <a71bd89a0712292148i394d4004habfca647842f3715@mail.gmail.com>
+
+I see somebody's posting a few fix-typo-in-comments patches, e.g.
+http://www.winehq.org/pipermail/wine-patches/2007-December/048099.html
+http://www.winehq.org/pipermail/wine-patches/2007-December/048101.html
+
+That reminds me that I worked out some time ago how
+to find such typos efficiently.  At the risk of encouraging lots
+of silly typo-fixing patches, I've documented the process here:
+http://kegel.com/wine/spellingpolice/
+
+For instance, to find typos in comments in shell32, you can do:
+
+sudo apt-get install ispell
+
+wget http://kegel.com/wine/spellingpolice/stop.txt
+wget http://kegel.com/wine/spellingpolice/lspell-pl.txt -O lspell.pl
+perl lspell.pl stop.txt ~/wine-git/dlls/shell32/*.[ch]
+
+This outputs:
+
+/home/dank/wine-git/dlls/shell32/autocomplete.c: 1
+
+dispays
+
+/home/dank/wine-git/dlls/shell32/brsfolder.c: 1
+
+relativ
+
+/home/dank/wine-git/dlls/shell32/dataobject.c: 1
+
+droping
+
+/home/dank/wine-git/dlls/shell32/iconcache.c: 1
+
+resoure
+
+/home/dank/wine-git/dlls/shell32/pidl.c: 1
+
+relativ
+
+/home/dank/wine-git/dlls/shell32/pidl.h: 1
+
+desribes
+
+/home/dank/wine-git/dlls/shell32/shell.c: 1
+
+incidently
+
+/home/dank/wine-git/dlls/shell32/shfldr_fs.c: 1
+
+spezified
+
+/home/dank/wine-git/dlls/shell32/shfldr_unixfs.c: 4
+
+appart relativ savely should'nt
+
+/home/dank/wine-git/dlls/shell32/shlexec.c: 1
+
+foward
+
+/home/dank/wine-git/dlls/shell32/shlfileop.c: 2
+
+ERRROR INVLID
+
+/home/dank/wine-git/dlls/shell32/shlfolder.c: 1
+
+whitch
+
+/home/dank/wine-git/dlls/shell32/shlview.c: 2
+
+buily provied
+
+/home/dank/wine-git/dlls/shell32/trash.c: 1
+
+DESCRITION
+
+
+From fgouget at free.fr  Sun Dec 30 03:22:41 2007
+From: fgouget at free.fr (Francois Gouget)
+Date: Sun, 30 Dec 2007 10:22:41 +0100 (CET)
+Subject: So, you want to fix typos?
+In-Reply-To: <a71bd89a0712292148i394d4004habfca647842f3715@mail.gmail.com>
+References: <a71bd89a0712292148i394d4004habfca647842f3715@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0712301010400.13226@amboise.dolphin>
+
+On Sat, 29 Dec 2007, Dan Kegel wrote:
+[...]
+> That reminds me that I worked out some time ago how
+> to find such typos efficiently.  At the risk of encouraging lots
+> of silly typo-fixing patches, I've documented the process here:
+> http://kegel.com/wine/spellingpolice/
+
+I've run my 'typos' script on your custom dictionary and noticed it 
+allows a couple of bad words:
+
+   nonexistant
+   upto
+   UPTO
+   wether
+
+and also
+
+   Codeweavers
+   Bad capitalization, should be 'CodeWeavers'. I'm including it because 
+the dictionary seems case sensitive.
+
+It also allows all variants of the following though I realize you have 
+no choice because these are part of longer Microsoft identifiers:
+   OCCURED  (from STATUS_MCA_OCCURED)
+   SEPERATOR (from MDP_SEPERATOR, SDDL_SEPERATOR and SEPERATOR)
+
+
+Typos:
+   http://fgouget.free.fr/index-en.shtml#typos
+   http://fgouget.free.fr/typos/typos
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+          The last time religion ruled, it was called the dark ages.
+
+

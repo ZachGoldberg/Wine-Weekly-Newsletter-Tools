@@ -1,0 +1,366 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Interview</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="8" who="Martin Wilck" date="24 June 2003" />
+
+<intro>
+<p>Martin Wilck lives in Paderborn, Germany, the town of the former Nixdorf
+ headquarters. 
+ By trade he's actually a physicist and studied at the University of
+ G&#246;ttingen.  He earned his PhD in Leipzig. 
+ Martin has been involved with Linux since about 1993.  
+ Early in his career he worked on atmospheric modeling.  
+ In 2001 he started working for Fujitsu Siemens after realizing 
+ his career in physics was too likely
+ not to lead anywhere. Since then, Martin has worked as a Linux 
+ system engineer in Paderborn. Next to hacking, he enjoys 
+ cooking and music (singing and listening).
+</p>
+</intro>
+
+<interview>
+
+
+
+
+<question><p><i>BV: </i>
+ You've only been involved with Wine for about a year, but in
+ that time you've completely revamped the Winsock code.  How
+ did you get involved?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+Actually, I did not revamp all of the code. Most of my work was 
+to get a working implementation of Windows-style asynchronous I/O over
+sockets in Wine. 
+</p><p>
+I had to port a piece of our company's server-management software from
+NT to Linux. 
+</p><p>
+When the porting project was started, we decided to use Winelib to do
+the porting. This decision was great for me because, besides Winelib
+being a fine porting tool, it gave me the opportunity to contribute to
+Free Software as part of my job.
+I'd describe this as an ideal situation for a programmer who is concerned
+about Free Software, and I enjoyed it as the best time I had so far in
+my professional life. I must admit, though, that may initial
+expectations to finish the porting within a month were way too
+optimistic.
+</p><p>
+Part of the code was the implementation of a proprietary network
+protocol. This implementation was based heavily on asynchronous socket
+I/O, which I had to implement in Wine in order to do the porting. 
+</p><p>
+On my way through the Winsock code, I happened to fix some other issues
+and quickly became the Winsock maintainer, mostly because nobody else
+was interested, I guess. 
+</p><p>
+Unfortunately, my porting project is not yet finished. The priorities in
+our group changed and I am busy other duties.
+Moreover, some aspects of the software turned
+out to be very hard to port through Wine (security-related stuff, based
+very strongly on Windows security concepts, RPC etc.). Sometimes I
+wonder if I had come further by using something else instead of Wine,
+but I doubt it.
+</p></answer>
+
+<question><p><i>BV: </i>
+ What was the end result of the project?  Did you decide to do a 
+ native port, or were plans to support Linux abandoned?</p></question>
+<answer><p><i>Martin:</i>
+ Well, it was postponed until who-knows-when. The main reason was that I
+ had other tasks that prevented me from getting the job done. Being
+ self-critical, another reason may have been that I tried to push all the
+ missing functionality into Wine rather than simply modifying our code
+ which would have been  faster for some parts of the project. 
+</p></answer>
+
+
+
+<question><p><i>BV: </i>
+ How hard was it to convince your boss to let you contribute to free
+ software? </p></question>
+<answer><p><i>Martin:</i>
+ It wasn't hard at all. Doing the porting natively would have been a
+ massive project because the code
+ used a lot of Windows-specific functionality. The
+ commercial alternatives were out of the question because the software is
+ a free (as in beer) add-on for our hardware, thus we couldn't afford
+ expensive run-time licenses.
+ Moreover, using Winelib gave us the opportunity to port our code with a
+ minimum set of changes in the code itself. This was desirable in terms
+ of future code maintenance.
+</p><p>
+ Actually, I think a number of people in our company liked the fact that
+ the company name was seen in a well-known forum of the free software
+ community. My involvement with Wine was mostly welcome because it 
+ contributed to Fujitsu Siemens' activities for Open Source and Linux.
+</p><p>
+ On the other hand, I should clarify that making our code itself open
+ source was never considered. 
+</p></answer>
+
+
+
+
+<question><p><i>BV: </i>
+ Has anyone else in your company worked with other free software 
+ projects?</p></question>
+<answer><p><i>Martin:</i>
+ We have had a number of small but important contributions to the Linux
+ kernel. Most importantly, the first "high memory" patch came from my
+ colleague Gerhard Wichert. Apart from that, I am not sure.
+ Our parent company Fujitsu
+ has a strong commitment to Open Source and Linux, e.g. in the 
+ <a href="http://www.osdl.org">Open
+ Source Development Lab</a>.
+</p></answer> 
+
+
+
+
+
+<question><p><i>BV: </i>
+ Did you have much prior Windows programming experience?  Or 
+ did you come from the Unix world?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+ Entirely Unix/Linux. I had no Windows programming experience at all.
+ Actually, I haven't much Windows user experience, either.
+</p></answer>
+
+
+
+<question><p><i>BV: </i>
+ Could you briefly describe the services that Winsock provides?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+ Winsock provides a programming interface (API) to network protocols.
+ It is the Windows counterpart of the Berkeley socket API that is used
+ for network programming on Linux and most other Unixes. 
+
+ Winsock started as an add-on product for Windows 3.1 AFAIK. The Winsock
+ 2 interface introduced many features that go beyond the classical
+ Berkeley interface, like asynchronous IO, stackable protocols, support
+ for 3rd-party protocols ("transports") and many more.
+</p></answer>
+
+
+
+<question><p><i>BV: </i>
+ How well does the Winsock API map to Unix/Linux functionality?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+ The Winsock 1 API is mostly a subset of Berkeley sockets. However, the
+ above mentioned Winsock 2 extensions are, at least in part, difficult
+ map to Unix functionality. Winsock 1 contained some Windows-typical
+ extensions for inter-process communication (like events and messages)
+ that are straightforward to map to standard Wine functionality.
+</p></answer>
+
+
+
+<question><p><i>BV: </i>
+ Previous to your work Wine only had a Winsock 1 implementation.
+ What's the differences between Winsock 1 and Winsock 2?  
+</p></question>
+
+<answer><p><i>Martin:</i> 
+ It isn't true that Wine had only Winsock 1 before I started.
+  I just added a significant part of Winsock 2, namely 
+ asynchronous IO. 
+</p></answer>
+
+<question><p><i>BV: </i>
+ A lot of this stuff seems like you'd need to debug over-the-wire.
+ Did you spend a lot of time in a debugger and looking at traces?</p></question>
+
+<answer><p><i>Martin:</i>
+In a debugger, no.
+I never figured out how to work with winedbg properly
+:-). I looked a lot at traces, though, and tcpdump'ed quite a bit.</p></answer>
+
+<question><p><i>BV: </i>
+ One application that's often talked about is getting the AOL client
+ to run.  Have you ever looked at it?  I seem to recall some Winsock 
+ issues were involved.  
+</p></question>
+
+<answer><p><i>Martin:</i>
+ I have never been an AOL user.
+</p><p>
+ There was a request by a Lindows guy a year ago. He sent me some traces
+ and I looked at them, but I couldn't identify a Winsock problem. I
+ closed the associated Bugzilla entry after 2 months of inactivity. 
+ I suspect that the communications problem was at a higher layer than
+ winsock proper. 
+</p></answer>
+
+<question><p><i>BV: </i>
+ Have you worked on any other parts of Wine? </p></question>
+<answer><p><i>Martin:</i>
+ Small contributions for advapi32 and netapi32. Ultimately, these were
+ aimed at the same target (our code).</p></answer>
+
+
+
+<question><p><i>BV: </i>
+ You did some work integrating with Samba.  What exactly were
+ you trying to accomplish?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+
+ I never really worked on that, just tried to check out the options.
+ Windows internally relies on RPC calls for a lot of its functionality,
+ and Samba implements a large part of the RPC interface. At the time I
+ was looking at the netapi32 DLL. Almost all calls in this DLL should be
+ mapped to RPC calls. Wine currently doesn't do that, leading to a lot of
+ hacking and guessing what the correct behavior should be. 
+</p><p>
+ I think Greg Turner's work is very promising in the RPC area. However
+ for specific parts of the API I was looking at, the most important
+ question is how (if at all) to map security-related concepts like users,
+ groups, and permissions between Windows and Unix. This is rather a
+ philosophical or policy-related problem than a technical problem. 
+</p><p>
+ Because Wine is a huge beast and wasn't developed with security in mind
+ in the first place, it is a very bad idea to run it (or even a part of
+ it) with superuser privileges. That also means that Windows processes
+ running in Wine will never be able to do anything requiring more than
+ ordinary user privileges (like changing the user ID). 
+</p><p>
+ This means that Wine's field of applicability will remain limited to 
+ Win95-style end user applications, because Wine's security capabilities
+ are similar to those of Win95. That's not too bad because this is what
+ Wine was made for, and what most people want. Problems may only arise if
+ future Windows end user software developed on Win2k, XP and successors
+ becomes more aware of these Windows features and uses them more
+ extensively.
+</p><p>
+ For system and server software, it means that most likely only small
+ parts of them can be ported using Wine or Winelib.
+</p></answer>
+
+
+
+
+<question><p><i>BV: </i>
+ Do you think Wine will eventually have to use Samba for authentication
+ purposes?  Or is it something that could be developed within Wine?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+ Wine can do nothing more than 'pseudo-authentication'. This is because
+ there are no real security features in Wine (see above). Samba is not
+ necessary for that pseudo-authentication. I once sent in a
+ proof-of-concept patch using the PAM libraries for authentication.
+ Samba may be added to the picture using the "winbind" daemon, giving
+ Wine applications access to a Windows Domain user base, but only
+ indirectly through native Unix library calls.
+</p><p>
+ Windows does a lot more than authentication over RPC. For example,
+ Windows associates a large number of properties with a (network) user
+ account and provides functions to retrieve them. The Unix world has no
+ equivalent for these properties. Windows also retrieves information
+ about other hosts through RPC, and much more.
+</p><p>
+ Much of this RPC functionality is implemented in Samba. Wine can't
+ directly link to Samba libraries because of license issues (Samba is
+ GPL). Currently, there is no other interface available for accessing
+ this Samba functionality except for linking, and it appears it isn't
+ meant by the Samba team to be accessed. So it appears that most of the
+ RPC functionality has to be reimplemented in Wine (unless the license
+ issues are somehow settled which I doubt). In that case, it remains
+ unclear how a running Samba server and a Wine program can interact given
+ that they might be trying to use the same TCP/IP ports.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV: </i>
+ That could be a serious area of contention.  Considering that both
+ would likely need need to do similar things (authentication, file IO)
+ it's shame a library of functions couldn't be shared by both.  Of course,
+ what would be really nice is if the Samba folks could do all the mysterious
+ RPC work and then Wine could just hook into it.  Do you think this will be
+ a problem in the future?  Are there any good ways to work around it?
+</p></question>
+<answer><p><i>Martin:</i> 
+
+This can only come to pass if the Samba folks decide to make their
+libraries LGPL'd, which I doubt they will. Actually, samba is very much
+self-contained and does not provide a library API at this time. I can't
+tell what their future plans are, but it appears they have other
+priorities.
+</p><p>
+Greg Turner would be the person to ask here, he used to be the bold
+volunteer to tackle RPC in Wine.
+</p><p>
+But you are right that this is a serious issue, especially because RPC
+becomes more and more important with newer Windows releases. 
+</p></answer>
+
+
+<question><p><i>BV: </i>
+ What area of Wine development do you see as needing the most work?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+ In the short term, the attention must focus on getting the popular
+ applications working well and fast, and this is what the Wine people are
+ currently doing. I consider it especially crucial to get those typical
+ "small applications" like garden or wedding planners, tax software, etc.
+ supported - the stuff people download from the net and expect to work
+ nicely. I have too little insight in the UI areas of Wine to tell where 
+ most work is needed there.
+</p><p>
+ In the long run, a solution for the RPC interfaces must be found because
+ it is a very important IPC mechanism on Windows. I wish Greg all luck and
+ success for his efforts in that direction, but I'd consider it a
+ post-1.0 issue.
+</p><p>
+ As for my field of work, the Winsock 2 API is far from complete,
+ especially the bottom side (the "service provider" programming interface
+ or "SPI") is completely missing. That seems to be a minor issue for
+ getting applications to run, though.
+</p><p>
+ Perhaps the most important issue is making the documentation more
+ comprehensive and up-to-date in order to make it easier for volunteers
+ to get started and contribute. I am talking about developer
+ documentation here; companies like CodeWeavers have already succeeded in
+ making Wine a positive user experience.
+</p></answer>
+
+
+
+
+<question><p><i>BV: </i>
+ You recently announced you wouldn't have time to work on Wine for
+ a while.  Any plans to contribute in the future?
+</p></question>
+
+<answer><p><i>Martin:</i> 
+ Yes, most definitely. I am still around for fixing Winsock bugs,
+ although I currently do not follow the developers mailing list (mail me
+ directly if there are any issues!). I don't promise any more because I
+ want be able to keep my promises. 
+</p></answer>
+
+<question><p><i>BV: </i>
+ Thanks for the interview!</p></question>
+<answer><p><i>Martin:</i> 
+ Thanks for interviewing me :-)
+</p></answer></interview>
+
+</kc>

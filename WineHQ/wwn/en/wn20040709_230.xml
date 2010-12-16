@@ -1,0 +1,569 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="230" date="07/09/2004" />
+<intro> <p>This is the 230th issue of the Wine Weekly News publication.
+Its main goal is to experience a slow harddrive failure. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="125" size="3730" contrib="43" multiples="25" lastweek="16">
+
+<person posts="18" size="66" who="Mike Hearn" />
+<person posts="11" size="40" who="Andrei Barbu" />
+<person posts="9" size="25" who="Dmitry Timoshkov" />
+<person posts="8" size="21" who="Shachar Shemesh" />
+<person posts="7" size="17" who="Christian Costa" />
+<person posts="6" size="21" who="Mike McCormack" />
+<person posts="5" size="15" who="Steven Edwards" />
+<person posts="4" size="14" who="Duane Clark" />
+<person posts="4" size="10" who="Alexandre Julliard" />
+<person posts="4" size="9" who="Lionel Ulmer" />
+<person posts="3" size="6" who="Andreas Mohr" />
+<person posts="2" size="3329" who="George Marshall" />
+<person posts="2" size="16" who="Vitaly Lipatov" />
+<person posts="2" size="9" who="Peter Dennis Bartok" />
+<person posts="2" size="7" who="Satish A. Lele" />
+<person posts="2" size="6" who="Michael Jung" />
+<person posts="2" size="6" who="Paul Davis" />
+<person posts="2" size="5" who="David Lee Lambert" />
+<person posts="2" size="5" who="Marcus Meissner" />
+<person posts="2" size="5" who="=?iso-8859-1?q?Shiva=20Ram=20Krishna?=" />
+<person posts="2" size="4" who="Jon Griffiths" />
+<person posts="2" size="4" who="Saulius Krasuckas" />
+<person posts="2" size="4" who="Eric Pouech" />
+<person posts="2" size="3" who="Robert Reif" />
+<person posts="2" size="3" who="Gearoid Donnellan" />
+<person posts="1" size="14" who="Krishna Murthy" />
+<person posts="1" size="10" who="Adrian Rees" />
+<person posts="1" size="5" who="Raghavan Gurumurthy" />
+<person posts="1" size="4" who="Roger Olson" />
+<person posts="1" size="4" who="Roger Olson" />
+<person posts="1" size="3" who="Jonathan Wilson" />
+<person posts="1" size="3" who="Ferenc Wagner" />
+<person posts="1" size="3" who="Uwe Bonnes" />
+<person posts="1" size="2" who="Bill Medland" />
+<person posts="1" size="2" who="Vincent B&#233;ron" />
+<person posts="1" size="2" who="=?ISO-8859-1?Q?Marc_R=F6ttig?=" />
+<person posts="1" size="2" who="(wine-devel)" />
+<person posts="1" size="2" who="James Perry" />
+<person posts="1" size="2" who="Olaf Leidinger" />
+<person posts="1" size="2" who="James Gregory" />
+<person posts="1" size="1" who="Ge van Geldorp" />
+<person posts="1" size="1" who="Gamel, Matthew R" />
+
+</stats>
+<section 
+	title="Mono Ditching Wine" 
+	subject="Re: [Mono-winforms-list] Fw: [Mono-list] System.Windows.Forms plans."
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0010.html" 
+	posts="12"
+	startdate="07/01/2004"
+	enddate="07/03/2004"
+>
+<topic>Integration</topic>
+<p>We've talked a few times about Mono using Wine for
+ it's System.Windows.Forms implementation.  For the timeline
+ of events, see issues
+ <a href="{$root}/wwn/162#.NET%20Success">#162</a>,
+ <a href="{$root}/wwn/171#Making%20Mono's%20Winforms%20Work">#171</a>,
+ <a href="{$root}/wwn/213#Wine%20As%20A%20Shared%20Library%20&amp;%20Mono">#213</a> and 
+ <a href="{$root}/wwn/214#Wine%20As%20A%20Shared%20Library%20&amp;%20Mono%20(con't)">#214</a>.
+ Last week Miguel de Icaza announced on the 
+ <a href="http://lists.ximian.com/archives/public/mono-devel-list/">Mono development list</a>
+ plans to abandon using Wine on the backend:</p>
+<quote who="Miguel de Icaza"><p>
+     A couple of weeks ago, we decided to rewrite our
+System.Windows.Forms implementation.  Today's implementation suffered
+from various problems:
+<ul>
+	<li> Debugging with Wine was extremely hard, and Wine was 
+	  a moving target, internals change from release to release.</li>
+
+	<li> Wine/GDI+ interactions were not efficient.</li>
+
+	<li> Too many cooks contributed to the core, so it was
+	  hard to maintain.</li></ul></p><p>
+
+    So a couple of weeks ago we decided to take a step back and
+redesign it, as you remember one of the reasons for using Wine is that
+it would allow third-party components to P/Invoke and to hook up to
+WndProc, this is sadly required for most third-party commercial
+controls and for advanced applications like WebMatrix to run.
+</p><p>
+    Our new implementation takes a different approach, it will be
+completely managed and will not use Wine, this should help the
+portability to new operating systems, and should help on the debugging
+side of things, and should help with the large set of Wine/GDI+
+interactions that we have.  
+</p><p>
+    To support WndProc, this new version uses the most commonly used
+WndProc events internally so applications that depend on this work,
+and we will have an optional plugin that would use WineLib to host
+advanced functionality. 
+</p><p>
+    This is a rewrite from scratch to support the new design, and we
+hope to have something in the next couple of weeks that will go into
+the Mono CVS repository.
+</p><p>
+    The core is being worked on by Peter Bartok, and once the core is
+ready familiar faces: Jackson, Jordi and Ravindra will join the effort
+to implement the missing functionality, and we hope that interested
+developers will join this effort.
+</p></quote>
+
+<p>The announcement was made on a Mono mailing list that Steven Edwards
+just happened to notice.  He wrote back and cc:'ed wine-devel wondering
+if there was something that could just be fixed with Wine,
+<quote who="Steven Edwards">
+ Rather than spending a whole lot of time rewriting things wouldn't it
+ be better to help the Wine project get stable and move to the 1.0 goal?
+ There is a roadmap and TODO on WineHQ of things that are needed for
+ 1.0. </quote></p>
+
+<p>More reasons were listed about problems Wine caused.  Most developers
+seemed surprised the concerns hadn't been voiced earlier.  Probably the
+topic that touched off the most debate concerned the stability of Wine's
+interfaces.  Paul Davis voiced his opinion:</p>
+<quote who="Paul Davis"><p>
+PDB might not be able to fuss, but I will. I recently asked about a
+way to figure out which version of Wine is in use at run-time because
+of the recent changes to wine_init()'s prototype. Alexandre appeared
+quite adamant that he was against introducing any such mechanism.
+</p><p>
+Wine has a bit of a problem with the Mono project and our much smaller
+FST project to support VST win32/x86 plugins on linux. It has
+previously been a self-contained project that did not provide
+libraries, and whose internal API was not accessed by anyone or
+anything outside of Wine itself. It now is being used by (at least) 2
+projects as a *library*, and it can either accept that role - which
+implies providing (at least) runtime version info - or reject it,
+which would be a great shame.
+</p></quote>
+
+<p>Mike Hearn then summarized many aspects of the discussion in a long
+post:</p>
+<quote who="Mike Hearn"><p>
+
+To be frank, I think we could declare Wine interface stable *today*.
+Versioning APIs is not exactly rocket science, yes it implies compromises
+but it's quite clear that Wine 1.0 is years away. These people want to use
+it today. We have all kinds of goals for 0.9 and 1.0 mixed in together and
+we seem to have decided pretty much arbitrarily that they should all occur
+at once, but I don't see the logic behind that.
+</p><p>
+I really feel that yes we should support Wine as a library, and that means
+making the APIs we export stable ASAP. I especially think we should stop
+the nonsense where we use GNU symbol versions in libwine marked "1.0"
+while not actually keeping them stable.
+</p><p>
+OK, so having had that rant, I also think that not using Wine to implement
+System.Windows.Forms is crazy too (hmm, there's a theme here, guess I'm
+feeling contrary today). The only reason to implement SWF is to run
+.NET apps built for Windows, it's a sucky toolkit compared to GTK# and
+isn't going to be used for writing apps on Linux that's for sure.
+</p><p>
+Therefore perfect compatibility is crucial. SWF is a very leaky API,
+there are the obvious ones like WndProc and Control.Handle but it almost
+certainly leaks in other ways: for instance, the order in which events are
+fired, that sort of thing. This *matters*, I've seen many apps crash
+and burn in mysterious ways due to tiny differences in the order
+notifications were sent to it and other subtleties.
+</p><p>
+Now, I think some of Peters arguments are valid and some aren't. Let's
+take a look at them:
+</p><p>
+<i> Wine is too hard to use as a library. It does complicated things with
+registers and threads, and requires weird bootstrap code.</i>
+<ul><p>
+I'm not sure what to make of this one. The low level code isn't optional,
+it's required in order to provide the environment Win32 code requires.
+Mono likewise does some pretty complicated stuff to provide a .NET JITing
+runtime so you guys are clearly competent when it comes to low level code.
+</p><p>
+If you skip the hard stuff here then you'll just hit a brick wall further
+down the road when you start trying to run *real apps* which P/Invoke to
+native code, poke controls via their Handles and other icky things. .NET
+simply wasn't created for portability at all, regardless of what Microsoft
+might say, and production .NET apps developed for Windows will require
+a Windows environment.
+</p></ul></p><p>
+
+<i> Wine isn't portable enough.</i>
+<ul>
+I disagree here. I think this is bunk. It's been ported to a bunch of CPU
+archs and operating systems. It's probably runs on only slightly fewer
+platforms than Mono itself.</ul></p><p>
+
+
+<i> Wine's APIs are unstable.</i>
+<ul>
+See above. I think Peter is right, our exported APIs are not that large,
+and making them stable is not that hard either. They don't even have to be
+hard-iron set-in-stone will never ever ever change stable, simply doing
+our best would be a big improvement over what we have now. The flip side
+of this is that nobody is forcing you to use the latest version of Wine,
+or even dynamically link to it in the first place, you could easily just
+import snapshots into Mono CVS.</ul></p><p>
+
+
+<i> People find it too hard to setup.</i>
+<ul><p>
+Well, I've been flicking through the June archives of mono-winforms-list
+and I'm not seeing this at all ... yes there are lots of people saying "I
+wrote this app and it doesn't work!" but then SWF isn't complete and
+neither is Wine, so no big surprises there. The only setup related
+problems I could see are related to hardcoded paths being compiled into
+binaries - this is trivial to fix inside Wine and Mono, in fact I wrote a
+patch months ago to do this for Wine (so it can run from any prefix). It'd
+be easy to get this applied. The other problems I've seen are just random
+crashes which could be in the SWF code or Wine, I don't know which.
+</p><p>
+Wine really is not hard to set up. You just install it, same as any
+regular library. Yes, you can then not do mv /opt/wine1 /opt/wine2 and
+have it run, but that's like a 10 minute fix as I already did 99% of the
+work.
+</p></ul></p><p>
+
+<i> GDI+/Wine interactions are too slow.</i>
+<ul><p>
+I suspect this isn't a problem for Microsoft because they implemented GDI+
+in native code then bound it to .NET. You guys are trying to implement
+GDI+ in .NET and then make Wine use it, which is a suboptimal solution.
+</p><p>
+I think if you had done it the way Microsoft did by writing a GDI+ DLL for
+Wine and then mapped that to System.Drawing, there would not need to be
+this constant mapping into System.Drawing contexts and things would go a
+lot faster. Yes, that means implementing GDI+ in Win32/C, not much fun I
+know, but it's the way Microsoft did it and therefore if we want
+compatibility the way we must do it too (Wine will have to implement GDI+
+itself at some point anyway).
+</p></ul></p><p>
+
+
+<i> All our problems will go away if we implement S.W.F in C#</i>
+<ul><p>
+I strongly disagree with this notion. Nobody sane implements a
+production widget toolkit unless they have to, they are HUGE, win32
+especially so because it's so old. The listview control alone has a
+bazillion different modes. I think Dimi estimated it'd cost $145,000 to
+develop at current market rates. Even worse, you can't implement SWF in
+managed code and get correct compatibility without reimplementing most of
+Wine in managed code as well, which would be even sillier. 
+</p><p>
+The plan of doing an emulated WndProc in C# with the most common case is
+just going to lead to an endless stream of people trying to run apps and
+reporting "blah blah message isn't implemented", or worse "blah app has
+native code and passes it Control.Handle". I'm very skeptical you can use
+a "winelib plugin" to fix that - how can this work when the HWND the
+native code is trying to use is fake? Oh, don't forget details like
+handles being valid in any process! Programs that use
+OLE embedding between themselves <i>+depend</i> on that fact.
+</p><p>
+It especially makes me sad to see this because eventually people are going
+to start coming to us with hybrid .NET/Win32 apps and want to run them via
+Wine or Mono. They won't run on Mono because they'll P/Invoke to native
+GUI code to do stuff that .NET/SWF can't do, and they won't run on Wine
+because we don't implement the .NET framework.
+</p></ul></p><p>
+I really think we should make another attempt to work together on this one
+- last time Paul raised the issue of wine_init changing its prototype
+(which caused them pain), Alexandre actually reverted the change. Too late
+in some respects, the damage was already done, but I think it's wrong to
+say we aren't interested in working with you. The last time Mono even had
+a presence on this list, it was asking how to open Wine as a library and
+example code was written for you. None of the other concerns were ever
+raised here, as far as I remember.
+</p><p>
+Well, you seem to have made up your mind, but I just have this horrible
+sinking feeling that one day WineHQ is going to have to do our own
+implementation of S.W.F in order to be able to run apps of the complexity
+people demand. Half baked solutions along the lines of "sorry using
+Control.Handle/the registry/whatever isn't portable" won't cut it when
+this is the last app blocking a migration to free software but they
+can't/won't rewrite it.
+</p></quote>
+
+<p>Paul mentioned versioning wasn't as important as just notification
+that things are changing.  He was frustrated it was more of a communication
+issue than a technical one.  From there the thread pretty much died.</p>
+
+</section>
+<section 
+	title="Microsoft Installer Work" 
+	subject="MSI in Wine"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0061.html" 
+	posts="4"
+	startdate="07/05/2004"
+>
+<topic>Status Updates</topic>
+<p>Microsoft Installer (MSI) is becoming a bit of a problem.
+It's an area that needs development, but there hasn't been
+anyone available until recently to do the work.  There has 
+been a workaround and Gearoid Donnellan discovered it on his
+own,
+<quote who="Gearoid Donnellan">
+I am very shocked that this actually works and you probably know
+already but If you download and extract the Windows Installer
+redistributable in the wine directory you can then install MSI's using
+"<tt>wine msiexec /i &lt;msiname&gt;</tt>".
+Tried it with winzip.msi and it worked perfectly. 
+Don't know if that will hold through with others though
+</quote></p>
+
+<p>Well, it just so happens that Mike McCormack and Aric
+Stewart have been spending a lot of time on this lately.
+The first patches began hitting the mailing list about two
+weeks ago.  Mike outlined some of the work:</p>
+<quote who="Mike McCormack"><p>
+ Aric and I have been working on a replacement for MSI.DLL that would 
+ eliminate the need to download the Windows installer distributable to 
+ install .msi files.
+</p><p>
+ We have made quite a bit of progress on this in the last couple of 
+ months, but the work is not yet complete.  After I finish flushing out 
+ the work we've done, it should be possible to install some simple .msi 
+ files without any Windows DLLs at all.
+</p><p>
+ We are still missing an implementation of msiexec, but it is a fairly 
+ trivial wrapper around msi.dll, so should not be too hard to implement.
+</p><p>
+ The native msi dlls (i.e. the MS redistributables) have worked in Wine 
+ for more than two years :)   They contain a few annoying bugs which are 
+ hard to workaround...
+</p></quote>
+
+<p>MSI is needed for some 
+<a href="http://www.apple.com/itunes/">rather popular</a>
+ new applications to run.</p>
+</section>
+<section 
+	title="Wine on FreeBSD" 
+	subject="Wine on FreeBSD current"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0164.html" 
+	posts="15"
+	startdate="06/09/2004"
+	enddate="06/22/2004"
+>
+<topic>Ports</topic>
+<p>Remember last week how I alluded to a problem with Wine
+and FreeBSD?  That thread began about a month ago and it started
+when John Birrell wondered how well Wine worked on FreeBSD-CURRENT (5.2.1)
+compared to -STABLE (4.10).  
+Jonathan Fosburgh described the current (pun intended) situation,
+<quote who="Jonathan Fosburgh">
+There is a threading problem right now (search the bug reports) on -CURRENT 
+when using libpthread.  Using libc_r is sort of working, at least as of a few 
+weeks ago.  I saw some discussion on one of the FreeBSD mailing lists 
+discussing a different way of linking against a thread library that might 
+make things work better.  Basically, it involves  not using -lpthread during 
+the link stage but instead compiling against -pthread. Check through the 
+freebsd-current and freebsd-ports mailing list archives, I believe the 
+discussion was in one of those.</quote></p>
+
+<p>Gerald Pfeifer, the FreeBSD packager, then brought up the fact that
+-STABLE doesn't work either:</p>
+<quote who="Gerald Pfeifer"><p>
+Right now, Wine doesn't work at all on FreeBSD -STABLE:
+<ul><code>
+  wine: failed to initialize: /swtest/wine/dlls/ntdll.dll.so: mmap of
+  entire address space failed: Cannot allocate memory</code></ul></p><p>
+
+and before that I used to see deadlocks upon startup of non-trivial
+applications (such as Forte Agent, both 16bit and 32bit flavors).
+</p><p>
+I believe there are also significant threading issues on -CURRENT, so
+overall Wine is hardly, if at all, usable on any version of FreeBSD I
+have access to, even though I'm still working to keep it at least
+compilable on FreeBSD 4.9 and 5.2/5.3.
+</p></quote>
+
+<p>John then looked into the problem and reported what he found:</p>
+<quote who="John Birrell"><p>
+From what I can see, there are two problems with the Wine build from CVS
+on FreeBSD -current that seem to be related to the use of BSD make. In the
+dlls 'setupapi' and 'version' directories there are source files called
+install.c. These confuse the build during a "make install". BSD make tries
+to compile and link a program called "install". Renaming the source files
+to something other than install.c (such as winstall.c) allows the build
+to succeed.
+</p><p>
+At run time, the error:
+<ul><code>
+"wine: failed to initialize: /something/lib/wine/ntdll.dll.so: mmap of
+entire address space failed: Cannot allocate memory"</code></ul>
+</p><p>
+is caused by Wine attempting to mmap memory outside the user process
+address space. I see mmap addr around 0xd8100000 (mostly 0xd81eccd8)
+whereas the user address space limit on FreeBSD current is 0xbfc00000
+(at least on my system).
+</p><p>
+This failure is well before any thread library issues are encountered.
+</p><p>
+I ran a test of mmap on FreeBSD current to see what address space I
+was able to mmap. Using objdump to identify the pages that the test
+program was linked to load in, the test program was able to mmap MAP_ANON,
+MAP_FIXED, MAP_NOCORE all memory from 0x0 to 0xbfc00000, except the
+pages at which the test program was mapped at.
+</p><p>
+I'll look further into how Wine is mmap'ing memory on FreeBSD.
+</p></quote>
+
+<p>Gerald then wondered where the change needed to be made - Wine
+or FreeBSD.  John further explained:</p>
+<quote who="John Birrell"><p>
+From what I can see, the FreeBSD mmap address allocation behaviour that I see
+isn't documented. From the documentation, I would have expected the Wine code
+to work - it doesn't seem unreasonable to me.
+</p><p>
+I think the FreeBSD kernel code needs to change. If this is to happen, it
+will only be in the FreeBSD5 tree. It is too late in the FreeBSD4 branch to
+make that sort of change since it's not really a bug fix.
+</p><p>
+To get Wine to work on FreeBSD4, there needs to be a way of making the
+reservation code optional. A simple mmap test in configure which snaffles
+memory above 0x80000000 and then tries to mmap some more memory without
+specifying a fixed address would detect if mmap is behaving in a way that
+would allow the Wine reservation code to function.
+</p><p>
+For FreeBSD5, which will become the stable branch sometime soon, I think
+the kernel code needs to change. I have a FreeBSD src commit bit, but I'm not
+a vm person, so I can only prototype a change and submit it for review. I'm
+not sure if the other developers will regard this change favourably, though.
+They may take the attitude that if Wine can be made to work with the FreeBSD
+kernel code as is, then Wine should be coded accordingly.
+</p><p>
+If the Wine code was restructured to make the reservation code optional,
+that would cover both FreeBSD4 and FreeBSD5. Then, if the FreeBSD mmap
+algorithm was to change in the future, the build could start using the
+reservation code at that time.
+</p></quote>
+
+<p>Alexandre didn't want that fix for FreeBSD4,
+<quote who="Alexandre Julliard">
+Well, there's a reason for that reservation code, and it's that some
+Windows apps require it; so unless you find some other way to ensure
+that FreeBSD never allocates anything above 0x80000000, the
+reservation code can't really be made optional.</quote></p>
+
+<p>So... that was the status last month and no one has mailed the
+list to report any updates since then.  If you're on FreeBSD 4.9,
+things will break if you upgrade to 4.10.  If you're on 5.2 things
+are broken.</p>
+
+</section>
+<section 
+	title="OpenSSL vs. NSS" 
+	subject="RFC: OpenSSL vs NSS"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0110.html" 
+	posts="4"
+	startdate="07/09/2004"
+>
+<topic>Licensing</topic>
+<topic>Integration</topic>
+<p>Steven Edwards wondered about a potential licensing conflict
+that might affect ReactOS, which is licensed under the GPL:</p>
+<quote who="Steven Edwards"><p>
+
+I believe we have a licensing issue with the crypto implementation in
+Wine and would like feedback relating to this. I know that some of the
+OpenSSL developers monitor this list so please provide feedback. 
+</p><p>
+The first question is in regards to the following:
+</p><p>
+Clause 3 of OpenSSL license:
+<ul><i>
+  3. All advertising materials mentioning features or use of this
+     software must display the following acknowledgement:
+     "This product includes software developed by the OpenSSL Project
+     for use in the OpenSSL Toolkit. 
+     (<a href="http://www.openssl.org/">http://www.openssl.org/</a>)"
+</i></ul></p><p>
+This stipulation seems to introduce an incompatibility with the GPL. For
+normal Wine this is not a big deal but if someone wants to make a
+Winelib application that is GPL or if I want to take Wine's Wininet and
+Adavapi32 code in to ReactOS this presents a problem. Am I correct in
+reading it this way?
+</p><p>
+If I am correct and it is incompatible with GPL then would any of
+the Wine developers object to changing out crypto implementation to use
+NSS from Mozilla? I have spoken with the developers of Network Security
+Services for Mozilla and it has recently been tri-licensed MPL/LGPL/GPL
+on CVS tip. http://www.mozilla.org/projects/security/pki/nss/
+</p><p>
+From what I understand this lib provides everything we need so all
+it really means is that our soft dependency on OpenSSL is now a soft
+dependency on Mozilla. If we want to use the webbrowser module in Wine
+then a Mozilla dependency will be there already so we might as well use
+the security implementation while we are at it.
+
+</p></quote>
+<p>
+The discussion hadn't even really got started by the time this week's
+issue was published, but Mike Hearn did mention another alternative, 
+<quote who="Mike Hearn">
+
+GNUTLS would probably be better. We don't currently depend
+on native Mozilla/GRE. Currently our usage of Moz is restricted to using a
+precompiled Windows binary activex control produced by somebody else.
+</quote></p>
+</section>
+<section 
+	title="Pango vs. ICU" 
+	subject="Pango for BiDi"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/07/0044.html" 
+	posts="7"
+	startdate="06/30/2004"
+	enddate="07/03/2004"
+>
+<topic>Internationalization</topic>
+<p>Mike Hearn wanted to know if GNOME's Pango library could be used for
+BiDi support rather than ICU.  There are some messy details with ICU that
+make it rather hard to use.  Shachar Shemesh didn't think Pango offered
+enough features:</p>
+<quote who="Shachar Shemesh"><p>
+Pango uses fribidi for it's bidi. As fribidi doesn't do shaping, I'm not 
+sure where pango's shaping comes from. It may be an add-on.
+</p><p>
+In any case, I'm hoping that if/when fribidi starts to support UTF-16, 
+pango will follow. Last time I looked at it, we were too far off from 
+needing what pango had to offer. Getting a bidi edit control (sigh) is 
+much higher on my todo (for which I have no time :-( )
+</p><p>
+The really sad thing here is that ICU really has everything we need. 
+It's just that it's too simple for people to compile wine without it, 
+that is the problem.
+</p></quote>
+
+<p>Mike agreed that the shaping might be an add-on,
+<quote who="Mike Hearn">
+Pango shapers are plugin modules written specifically for Pango, iirc.</quote>
+From there the discussion delved into packaging issues.  ICU support can
+be built into binary packages since it's statically linked.  Shachar pointed
+out that it's still a problem with Debian,
+<quote who="Shachar Shemesh">
+For a package to be included in 
+Debian, for example, it needs to be reconstructible by doing "apt-get 
+source wine; apt-get build-dep wine", and then simply CDing into the 
+proper directory and running the build script. If there is no half-way 
+modern ICU version in Debian, Ove can't really build wine with BiDi. 
+Maybe we can get our supplied packages to be BiDi enabled, but so long 
+as we use ICU, and ICU has this horrible linking policy, we can't really 
+get it widespread. Since I want it widespread, fribidi is where I'm headed.
+</quote></p>
+
+<p>The conversation then continued on IRC, and Shachar summarized that
+discussion:</p>
+<quote who="Shachar Shemesh"><p>
+
+Just to sum up the IRC discussion with Mike:
+<ol>
+<li> I use ICU because it's the best we have at the moment. That doesn't 
+revoke my right to hate it. Until I have an alternative (or someone else 
+steps forward to do BiDi on Wine), that's what we are using.</li>
+<li> Eat the strawberries.</li>
+<li> Never tell amusing stories around geeks. They will either guess the 
+punchline or find logic errors in the story.</li>
+</ol></p></quote>
+
+</section></kc>

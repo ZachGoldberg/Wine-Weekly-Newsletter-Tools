@@ -1,0 +1,238 @@
+
+<section 
+	title="News: Wine 0.9.52 Released"
+	subject="Wine"
+	archive="http://www.winehq.org/pipermail/wine-announce/2007-December/000116.html"
+	posts="1"
+>
+<topic>Wine Release</topic>
+<p>
+Wine 0.9.52 release with some noteworthy fixes (more on these further in this WWN).  But first, the Julliard short log:
+</p>
+<quote>
+<p><pre>
+This is release 0.9.52 of Wine, a free implementation of Windows on Unix.
+
+What's new in this release:
+  - Improved graphics tablet support.
+  - Support for RPC context handles.
+  - Fixes for some longstanding screen depth issues.
+  - Implementation of "My Network Places" shell folder.
+  - Lots of bug fixes.
+</pre>
+</p>
+</quote>
+<p>Tablet support and the screen depth issues will be covered in more detail in this issue of the WWN.  <br /><br />
+Given that its holiday season activity has slowed a tad (for both the devs and the editor) and hence this wwn may be a bit shorter than normal.
+</p></section>
+<section 
+	title="Bug #2680 (24/32 bit depth reporting) Fixed"
+	subject="Wine Graphics"
+	archive="http://bugs.winehq.org/show_bug.cgi?id=2680"
+	posts="0"
+>
+<topic>Bit Depth</topic>
+<p>
+"Wine Bug #2680: Wine should report 32bit color depth instead of 24bit"
+</p>
+<p>
+Colors are stored by the computers with different formats and different numbers of bits (1s and 0s) per color and per pixel (bpp).  There also exists the concept of "bit depth" which is the total number of bits actually used for the RGB colors.  The problem is that often times a bit depth of 24 bits (8 bits per color) will often be reported as 32 BPP because its actually stored as 32 bits.  The extra 8 bits are sometimes used for alpha data.  X naturally reports 16/24 bit depth, even though sometimes it uses 32 bits.  24 bits is the actual amount of data stored and is what X reports.  Windows apps however, often expect a bpp of 32 to be reported.</p>
+<p>
+This would seem like a simple fix, just report 32 whenever we have 24 set.  However throughout the GDI code there was an assumption that bpp == depth.  This has only recently been fixed by Stefan D&#246;singer allowing the reporting change to go through; fixing the bug.  Huzzah!
+</p>
+<quote>
+<p>
+I sent a patch that should fix those issues, and it was committed today. Can
+you try it with current git? I do NOT mean 0.9.51, this is one commit wave
+older, but the current git code from today.
+<br /><br /><br />
+
+This should fix all apps that expect 32 from GetDeviceCaps(BITSPIXEL). I don't
+know if there are any other causes of 32 bit confusion, but if there aren't
+any, then yes, it should fix all those bugs.
+<br /><br />
+It will not fix 15/16 bpp confusion, but it should be easier to fix now.
+<br /><br />
+I am waiting for the first regression reports to come in...
+
+</p>
+</quote>
+<p>
+Thus far I havn't seen any (regressions) however this fix was just published with Wine 0.9.52.  So we'll keep an eye out!
+</p>
+</section>
+<section 
+	title="Tablet Pen/Eraser/Pressure support"
+	subject="wintab.dll"
+	archive="http://www.winehq.org/pipermail/wine-devel/2007-December/061414.html"
+	posts="1"
+>
+<topic>wintab.dll</topic>
+<p>
+Jeremy White has done a lot of work recently to restore support for tablet input within wine.  His biggest test bed was in Photoshop, and getting all the different kinds of input working correctly in there.  After what must have been at least 30 patches he writes in with the following summary of progress of wintab.dll. 
+</p>
+<quote>
+<p>
+Hi Folks,
+<br /><br />
+Okay, I've now spent some time putting some love into wintab.dll,
+and I've now gotten to the point where Photoshop 7 works properly,
+no matter what order your X devices are in.
+<br /><br /><br /><br />
+I've also improved behavior of a number of other test programs
+I worked with as I struggled with Photoshop.
+<br /><br />
+But now I'm done, because Photoshop tilt + pressure work again.  (Yay!)
+<br /><br />
+I thought I'd reprise my current understanding for future posterity.
+<br /><br />
+First, there are 2 immediate changes that are clearly appropriate to make:
+<pre>
+  1.  We should strip out devices like mice and such.
+
+      Otherwise, anyone with more than 1 mouse is going to appear to
+      have a tablet with 1 cursor.  A simple exclusion of devices without
+      'Wacom' or stylus/cursor/eraser in either their name or type should suffice.
+
+  ..
+  Finally, from a 'big picture' perspective, wintab.dll could really use some
+  serious love.  Further, it's a fairly straight forward process.  This would
+  make a really good beginner project.  You just need a tablet, mostly.
+
+  I think the appropriate next step is for someone to write a comprehensive
+  tablet test utility, to run both on Windows and to compare under Wine.
+
+  That's the next step imho.
+</pre>
+</p>
+</quote>
+<p>
+Jeremy was also gracious enough to go through the previous wintab.dll todo list and check off the fixed issues
+</p>
+<quote>
+<p>
+<pre>
+> *No eraser. Haven't yet cracked what enables the eraser.
+
+  Should be fixed.
+...
+> ***In Photoshop 6.
+> *Can only get tablet data in desktop mode: This is because the tablet
+> context is attached to the desktop. Which generates/receives no wine
+> events outside desktop mode.
+> * Eraser and pen pressure working. *But* to get them working, you must
+> have 3 XInput devices listed in your XF86Config file, They need to be
+> the last entries in the "ServerLayout" section and the following order ...
+
+  This should be fixed.
+
+> 1. Improve configuration of wintab.
+> ...
+> 4. Unicodify
+
+  Done, I think.
+
+> 2. How Painter detects the eraser.
+> Have 3 possibilities
+>     i. Windows can detect an eraser, and sends specific messages.
+>         (I'm sure I've seen this, but can't work out where!)
+>     ii. Only works if tablet and cursors are named correctly.
+>         (Probably linked to wacom tablets only).
+>     iii. I've missed something
+
+   It's all the cursor number; 0 is 'puck', 1 is 'stylus', and 2 is 'eraser'.
+
+
+Cheers,
+
+Jeremy White
+</pre>
+
+</p>
+</quote></section>
+<section 
+	title="Wine as root and SOCK_RAW"
+	subject="Wine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2007-October/059971.html"
+	posts="6"
+>
+<topic>ICMP</topic>
+<p>
+<a href="http://en.wikipedia.org/wiki/Internet_Control_Message_Protocol">ICMP</a>, Internet Control Message Protocol, is built into the Linux Kernel and is used in part by WINE.  For most things there is no trouble using ICMP as a normal user (hence things like ping can mostly be run by everybody).  However, you'll notice certain internet actions (such as ping -f, flood) require super-user privileges as they could be used for malicious purposes.  Inevitably some windows applications will require a normal usage of ICMP and hence will not need access to the parts of ICMP that require superuser (in particular, <a href="http://msdn2.microsoft.com/en-us/library/ms740548.aspx">SOCK_RAW</a>) and some will need these privileges.  This results in some unfortunate users being <a href="http://www.winehq.org/pipermail/wine-devel/2007-October/059969.html">yelled at</a> to run WINE as root:
+</p>
+<quote>
+<p>
+I tried to update the Ocean application as outlined in bug 8332 and got a message from the console stating I needed to be running as root for ICMP to work.
+</p>
+</quote>
+<p>
+I should re-iterate before I continue, it is <b>NOT</b> recommended to ever run WINE as root.  The policy of only giving privileges as necessary is important.  <br />
+<br />
+Anyway, back to the good stuff: some users will get this warning for such applications.  They are left with only two options (as well <a href="http://www.winehq.org/pipermail/wine-devel/2007-October/059971.html">outlined</a> by Juan Lang)
+</p>
+<quote>
+<p>
+So to be clear:  we strongly recommend against running Wine as root.
+But you sometimes need to run Wine as root in order to do certain
+things on Linux, e.g. open raw sockets.  The solution:  don't run
+applications that want to do those things, or take it up with the
+Linux kernel developers.
+</p>
+</quote>
+<p>
+Now if that were the end of the story, this wouldn't be a very helpful WWN article now would it?  Saulius Krasuckas has <a href="http://www.winehq.org/pipermail/wine-devel/2007-December/061479.html">written in</a> with some solutions (mostly involving patching the kernel) to this problem that don't require you to run wine as root.
+</p>
+
+<quote>
+<p>
+Well, there are already patches which modifies it in one way or another.  
+I refer to "man 7 capabilities" or web resources [1]-[3].  Some of 
+approaches may be abandoned already, but I see recent discussion [4] on 
+this and by [5] I judge SELinux already can handle this task.
+<br /><br />
+Plus, I have found some recently updated tool called "Filesystem 
+capabilities for linux" which also is not POSIX compatible (and so were 
+old capabilities implementation for linux kernel):
+<br /><br />
+|<i>  With this patch, you will be able to grant selective privileges to <br />
+</i>|<i> executables on a needed basis. This means for some executables, there is  <br />
+</i>|<i> no need anymore to run as root or as a suid root binary. <br />
+</i>|<i>  <br />
+</i>|<i> For example, you may drop the SUID bit from ping and grant the  <br />
+</i>|<i> CAP_NET_RAW capability: <br />
+</i>|<i>  <br />
+</i>|<i>     # chmod u-s /bin/ping <br />
+</i>|<i>     # chcap cap_net_raw=ep /bin/ping  <br />
+</i> <br />
+If this is acceptable solution, then it probably would be nice for Wine to 
+have separate binary for every needed capability.  CAP_NET_RAW (for ICMP), 
+CAP_SYS_RAWIO (for IO ports) and CAP_SYS_NICE (for threads priority) comes 
+to mind.
+ <br /> <br />
+This plan is to don't force users to give the bunch of capabilities to the 
+main Wine binary (or even several of them) at once (so the security risk 
+should be increased in a minimal way).  But well, that could be a minor 
+nuance for such users.
+ <br /> <br />
+[1] <a href="http://www.securityfocus.com/infocus/1400">http://www.securityfocus.com/infocus/1400</a><br />
+[2] <a href="http://lwn.net/Articles/79185/">http://lwn.net/Articles/79185/</a><br />
+[3] <a href="http://lwn.net/Articles/199004/">http://lwn.net/Articles/199004/</a><br />
+[4] <a href="http://lkml.org/lkml/2006/9/18/100">http://lkml.org/lkml/2006/9/18/100</a><br />
+[5] <a href="http://lwn.net/Articles/79208/">http://lwn.net/Articles/79208/</a><br />
+[6] <a href="http://www.olafdietsche.de/linux/capability/">http://www.olafdietsche.de/linux/capability/</a><br />
+
+</p>
+</quote>
+
+
+</section>
+<section 
+	title="Game slowdowns? GLSL and ARB Shaders"
+	subject="GLSL"
+	archive="http://bugs.winehq.org/show_bug.cgi?id=10940"
+	posts="0"
+>
+<topic>Speeding up older games</topic>
+<p>
+On some games you may have noticed some slowdowns since wine 0.9.49.  If you recall, as highlighted by WWN 333, it was in this release that wine now uses GLSL shaders by default (the regkey UseGLSL = enabled by default).  GLSL shaders allow for the use of modern shading techniques which is needed for many more modern games.  However, GLSL shaders have some added complexity in compiling/linking and can be slower than ARB. WINE devs will continue to mature and speed up the GLSL code, however for games which have experienced slowdowns with GLSL enabled that don't need modern shading effects it may be wise to set UseGLSL = disabled for improved performance.
+</p></section>

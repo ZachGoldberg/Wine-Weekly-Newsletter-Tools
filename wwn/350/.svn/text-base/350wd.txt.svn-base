@@ -1,0 +1,2481 @@
+From wine-devel at kievinfo.com  Fri Aug  1 00:10:32 2008
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Thu, 31 Jul 2008 23:10:32 -0600
+Subject: dinput: the DIK_ keycode is not the same as the scancode.
+In-Reply-To: <4891F6C6.2050708@codeweavers.com>
+References: <488DD4FF.70202@codeweavers.com> <488E7C66.9090000@kievinfo.com>	
+	<48908507.7020202@codeweavers.com> <48910355.6010109@kievinfo.com>
+	<1217487182.27965.24.camel@hermes2.karcher.local>
+	<4891AB23.1050805@codeweavers.com> <4891BF51.3060006@kievinfo.com>
+	<4891C09D.5070000@codeweavers.com>
+	<4891F6C6.2050708@codeweavers.com>
+Message-ID: <48929AC8.9000809@kievinfo.com>
+
+Please bottom post on this ML.
+
+Aric Stewart wrote:
+ > Here is a revised patch which builds the scancode->DIK table on
+ > initialization making no xserver round trips required on lookup.
+ >
+ > How does this look?
+ >
+ > -aric
+ >
+ > Aric Stewart wrote:
+ >> Yes, I have verified those vkeys in windows.
+ >> the VK_OEM_* keys are specificaly VK codes that vary from keyboard to
+ >> keyboard. VK_OEM_3 is just one example.
+ >>
+ >> -aric
+ >>
+ >> Vitaliy Margolen wrote:
+ >>> Aric Stewart wrote:
+ >>>> vkey codes similarly do not produce a clean 1 to 1 correspondance.
+ >>>> the '@' key (0x1a) is vkey (VK_OEM_3)  which is the vkey of the '`'
+ >>>> key on the us keyboard.
+ >>> This is needs to be fixed in x11drv then. Not in dinput. Have you
+ >>> verified what v_keys you getting from windows for these keys?
+ >>>
+ >>> Vitaliy.
+ >>>
+ >>
+
+
+Few problems with your patch:
+
+> +    if (c && c >31 && c < 96)
+Checking for c != 0 is redundant here.
+
+> -    dik_code = hook->scanCode & 0xff;
+> +    dik_code = This->ScanCodemap[hook->scanCode];
+Scan code can be larger then 256 so "& 0xff" is really necessary.
+
+> +    BYTE ScanCodemap[WINE_DINPUT_KEYBOARD_MAX_KEYS];
+You should make this array static and initialize it only once per process
+
+> +static int map_dik_code(DWORD scanCode)
+> +{
+> +    int out_code = 0;
+> +    static const int asciiCodes[] =
+> +        {/*32*/ DIK_SPACE,0,0,0,0,0,0,DIK_APOSTROPHE,0,0,0,0, DIK_COMMA,       /*44*/ \
+Please rearrange array to have some-what reasonable and same number of 
+elements in each line, like 10 (or 5, 8).
+
+> +        newDevice->ScanCodemap[i] = map_dik_code(i);
+Please stay consistent with types. If it's a BYTE then you should return 
+BYTE from the function.
+
+Vitaliy.
+
+
+
+
+From julliard at winehq.org  Fri Aug  1 02:35:05 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 01 Aug 2008 09:35:05 +0200
+Subject: dinput: the DIK_ keycode is not the same as the scancode.
+In-Reply-To: <4891AB23.1050805@codeweavers.com> (Aric Stewart's message of
+	"Thu, 31 Jul 2008 07:08:03 -0500")
+References: <488DD4FF.70202@codeweavers.com> <488E7C66.9090000@kievinfo.com>
+	<48908507.7020202@codeweavers.com> <48910355.6010109@kievinfo.com>
+	<1217487182.27965.24.camel@hermes2.karcher.local>
+	<4891AB23.1050805@codeweavers.com>
+Message-ID: <87vdylchna.fsf@wine.dyndns.org>
+
+Aric Stewart <aric at codeweavers.com> writes:
+
+> I like Michael's  idea of initializing this lookup array on 
+> initialization of the keyboard. Then we only have to worry about it if 
+> the user switches keyboard layouts mid program and since last i looked 
+> wine does not support that anyway we would be ok.
+
+Wine does support dynamic keyboard changes, so you'd need to refresh the
+mapping at that point. I doubt it's worth the trouble.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Fri Aug  1 02:49:17 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 01 Aug 2008 09:49:17 +0200
+Subject: [1/7] WineD3D: use the window size as drawable size
+In-Reply-To: <00d701c8f31e$b0db9c50$1292d4f0$@com> ("Stefan =?utf-8?Q?D?=
+	=?utf-8?Q?=C3=B6singer=22's?=
+	message of "Thu, 31 Jul 2008 10:03:31 -0500")
+References: <00d701c8f31e$b0db9c50$1292d4f0$@com>
+Message-ID: <87od4dcgzm.fsf@wine.dyndns.org>
+
+Stefan D?singer <stefan at codeweavers.com> writes:
+
+> @@ -4681,7 +4681,9 @@ static void viewport_miscpart(DWORD state, IWineD3DStateBlockImpl *stateblock, W
+>                     stateblock->viewport.Width, stateblock->viewport.Height);
+>      } else {
+>          target = (IWineD3DSurfaceImpl *) stateblock->wineD3DDevice->render_targets[0];
+> +        LEAVE_GL();
+>          target->get_drawable_size(target, &width, &height);
+> +        ENTER_GL();
+
+That's ugly, the lock isn't even entered in that function. Can we please
+start to clean up the ENTER_GL mess to only grab the lock around GL
+calls and not over huge amounts of code including nested functions?
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From r.kalbermatter at hccnet.nl  Fri Aug  1 02:53:43 2008
+From: r.kalbermatter at hccnet.nl (Rolf Kalbermatter)
+Date: Fri, 1 Aug 2008 09:53:43 +0200
+Subject: DLL loading prolem when injecting into another process
+In-Reply-To: <BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl>
+References: <BAY118-W51033CC21D50A53EFFE578947D0@phx.gbl><9885634A383842D2815FCC53C4B2B2FD@NATERS>
+	<BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl>
+Message-ID: <9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+
+Hongbo Ni  wrote: 
+
+>> Not sure about what you mean with injecting here but in normal
+application operation
+>> when loading a DLL explicitedly from a specific directory (which is not
+the current
+>> directory nor the application directory or one of the standard search
+paths), 
+>> Windows
+>	
+> did you mean 'Wine', i know ms-windows has no problem.
+
+No I was refereing to Windows and in my experience this is true for Windows
+at least up to XP.
+	 
+>> will not resolve to other DLLs implicitedly loaded by that DLL eventhough
+they are in
+>> the same directory than the referencing DLL.
+>	 
+> This is exactly the another situation I am going to explain. Thanks.
+
+It's been some time that I had to deal with this in an application someone
+else had developed
+as I have always made sure to avoid this for a long time.
+
+But from working in higher level applications loading DLLs form a specific
+absolut path, this
+loading usually seems to fail if this DLL references other DLLs that are not
+in the standard
+Windows search locations (memory, application dir, windows and system dir,
+and PATH environment
+variable) eventhough those dependant DLLs reside in the same directory as
+the DLL that was
+just attempted to be loaded.
+
+It may be that you have to make sure to not modify the current directory in
+the process of
+determining the path to load the parent DLL from. I've seen for instance in
+those higher level
+development environments that loading such DLL combos failed on the initial
+application load
+only to be prompted to locate the parent DLL in question with a file dialog
+and then it magically
+seemed to work. This is because the windows file dialog will automagically
+modify the current
+directory for the current process and now the implicit LoadLibrary during
+the loading of the
+parent DLL seems to also find the dependant DLLs in that same directory.
+
+And this behaviour was certainly like that up to and including W2K but I do
+believe even XP.
+
+That is not to say that Wine might not have to do something extra here, for
+instance to support
+new Vista behaviour which seems to have complicated the whole DLL loading
+procedure a bit.
+	 
+>I have produced a patch to load the imported dll from same directory
+>as the referring DLL when import_dll() fail to load from standard 
+>locations (current dir, app dir and PATH)
+>	 
+>But I did not know how to write test case for it since there are other DLL
+involved.
+
+Well it will be a bit cumbersome as you will have to create two extra dummy
+DLLs A.dll and B.dll
+where A.dll implicitedly loads B.dll and then load A.dll from the test
+executable. A.dll and B.dll
+would have to reside in a different directory (possibly subdirectory) to the
+actual test executable
+and of course can't be inside any directory considered a windows or system
+directory. Also make sure you set the current directory to something else
+than that directory. 
+And then see what happens when this test is crosscompiled and run under
+Windows. If the LoadLibrary
+of A.dll does not fail under Windows then yes Wine will need some extra
+functionality to replicate
+that behaviour.
+
+My guess is that it will however fail on most Windows versions except maybe
+Vista which would still
+be a reason to try to implement that behaviour in Wine too. However you will
+likely have to do quite
+a bit more tests to then figure out the exact conditions under which this
+behaviour is applied under
+newer Windows versions. 
+
+Rolf Kalbermatter
+
+
+
+From julliard at winehq.org  Fri Aug  1 02:54:30 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 01 Aug 2008 09:54:30 +0200
+Subject: d3dx9: Implementation of D3DXGetPixelShaderProfile 1/2 try 3
+In-Reply-To: <489220EE.80809@ilidium.com> (Luis Busquets's message of "Thu, 31
+	Jul 2008 22:30:38 +0200")
+References: <489220EE.80809@ilidium.com>
+Message-ID: <87k5f1cgqx.fsf@wine.dyndns.org>
+
+Luis Busquets <luis.busquets at ilidium.com> writes:
+
+> +       case D3DPS_VERSION(2, 0):
+> +           if ((caps.PS20Caps.NumTemps>=22)                          &&
+> +               (caps.PS20Caps.Caps&D3DPS20CAPS_ARBITRARYSWIZZLE)     &&
+> +               (caps.PS20Caps.Caps&D3DPS20CAPS_GRADIENTINSTRUCTIONS) &&
+> +               (caps.PS20Caps.Caps&D3DPS20CAPS_PREDICATION)          &&
+> +               (caps.PS20Caps.Caps&D3DPS20CAPS_NODEPENDENTREADLIMIT) &&
+> +               (caps.PS20Caps.Caps&D3DPS20CAPS_NOTEXINSTRUCTIONLIMIT))
+> +           {
+> +           return "ps_2_a";
+> +           }
+> +           if ((caps.PS20Caps.NumTemps>=32)                          &&
+> +               (caps.PS20Caps.Caps&D3DPS20CAPS_NOTEXINSTRUCTIONLIMIT))
+> +           {
+> +           return "ps_2_b";
+> +           }
+> +           return "ps_2_0";
+
+I'm usually tolerant of strange identation styles, but that's not even
+indentation at all. Can you please fix this to use a more commonly
+accepted format?
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Fri Aug  1 02:57:01 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 01 Aug 2008 09:57:01 +0200
+Subject: [PATCH 1/2] shell32: Add a test for FindExecutableA.
+In-Reply-To: <558b2f5c0807311800j54e82d1cke2c5dd2251db5257@mail.gmail.com>
+	(Lei Zhang's message of "Thu, 31 Jul 2008 18:00:06 -0700")
+References: <558b2f5c0807311800j54e82d1cke2c5dd2251db5257@mail.gmail.com>
+Message-ID: <87fxppcgmq.fsf@wine.dyndns.org>
+
+"Lei Zhang" <thestig at google.com> writes:
+
+> +    {
+> +        char expand[MAX_PATH];
+> +        strcpy(command, "foobar");
+> +        strcpy(filename, "foo.msi");
+> +        file = CreateFileA(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+> +        ok(file != INVALID_HANDLE_VALUE, "Failure to open file %s\n", filename);
+> +        CloseHandle(file);
+> +
+> +        ok(ExpandEnvironmentStringsA("\%systemroot\%\\system32\\msiexec.exe", expand, MAX_PATH) != 0, "ExpandEnvironmentStringsA failed\n");
+
+Again, please don't hardcode system32, use GetSystemDirectory instead.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Fri Aug  1 04:31:16 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 01 Aug 2008 11:31:16 +0200
+Subject: crypt32(1/3): Use ReadFile rather than a memory-mapped file to
+	check the type of a file
+In-Reply-To: <3a768c550807311029o1fd910daobdb0527f2a3a0f3f@mail.gmail.com>
+	(Juan Lang's message of "Thu, 31 Jul 2008 10:29:47 -0700")
+References: <3a768c550807311029o1fd910daobdb0527f2a3a0f3f@mail.gmail.com>
+Message-ID: <878wvhcc9n.fsf@wine.dyndns.org>
+
+"Juan Lang" <juan.lang at gmail.com> writes:
+
+> From 064365f26630c76546a6c8bedc1e99d47b74563d Mon Sep 17 00:00:00 2001
+> From: Juan Lang <juan.lang at gmail.com>
+> Date: Thu, 31 Jul 2008 09:08:09 -0700
+> Subject: [PATCH] Use ReadFile rather than a memory-mapped file to check the type of a file
+
+This doesn't work here:
+
+../../../tools/runtest -q -P wine -M wintrust.dll -T ../../.. -p wintrust_test.exe.so softpub.c && touch softpub.ok
+softpub.c:449: Test failed: expected TRUST_E_NOSIGNATURE, got 800b0003
+make: *** [softpub.ok] Error 1
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From huw at codeweavers.com  Fri Aug  1 06:56:48 2008
+From: huw at codeweavers.com (Huw Davies)
+Date: Fri, 1 Aug 2008 12:56:48 +0100
+Subject: DIB engine status
+Message-ID: <20080801115648.GB24893@merlot.physics.ox.ac.uk>
+
+Hi folks,
+
+Here's an update on the DIB engine that I've been working on for the
+last few months.  This work has been made possible by the generosity
+of Google - so thanks go to them and of course to Dan.
+
+You can find the code at http://repo.or.cz/w/wine/dibeng-hd.git
+
+What's supported
+================
+- All dib section depths (including BI_BITFIELD support).
+
+- Single pixel solid and dashed pens.
+
+- The 16 rop2s.
+
+- Solid and dib pattern brushes.
+
+- A brunch of primitives for drawing onto all dib section surfaces.
+
+- GDI32 apis: LineTo, Rectangle and PatBlt.
+
+- An extensive test suite for all of the above.
+
+What needs to be done
+=====================
+- Blitting (eg BitBlt, StretchBlt and StretchDIBits) - I have some
+  hacks for these in my tree.
+
+- ExtTextOut
+
+- Many more GDI32 apis - a lot of these should be easy given that we
+  have a set of underlying dib drawing primitives.
+
+- Non-MM_TEXT mapping modes and world transforms.
+
+- The initial interaction with GDI32 in BITMAP_SelectObject is hacky
+  and needs some work.
+
+- Lots more...
+
+
+
+Note that at the moment it's essentially useless because of the lack
+of blitting, so unless you fancy hacking on that yourself then you
+probably don't want to bother fetching the tree.
+
+I'm going to stop working on this for a while (lots of fun Outlook
+2007 bugs for me to look at!), but will endeavour to keep the tree up
+to date with respect to WineHQ.  If someone *does* want to hack on
+this then feel free to send me patches!
+
+Thanks,
+Huw.
+-- 
+Huw Davies
+huw at codeweavers.com
+
+
+From dank at kegel.com  Fri Aug  1 07:32:54 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Fri, 1 Aug 2008 05:32:54 -0700
+Subject: New valgrind warnings in wined3d/arb_program_shader.c
+In-Reply-To: <00bb01c8f346$3dc6fb10$b954f130$@com>
+References: <a71bd89a0807311021k24c08391i51405b1558ae6514@mail.gmail.com>
+	<00bb01c8f346$3dc6fb10$b954f130$@com>
+Message-ID: <a71bd89a0808010532n4f1a0cb3lded2007e79b23a22@mail.gmail.com>
+
+Stefan D?singer <stefan at codeweavers.com> wrote:
+> Does the attached patch fix the warnings?
+
+It had a level of indirection mistake, but yes, the
+following patch fixes the new warnings:
+
+diff --git a/dlls/wined3d/utils.c b/dlls/wined3d/utils.c
+index a9fc780..6e1e0ac 100644
+--- a/dlls/wined3d/utils.c
++++ b/dlls/wined3d/utils.c
+@@ -1790,6 +1790,7 @@ void gen_ffp_op(IWineD3DStateBlockImpl
+*stateblock, struct ffp_settings *setting
+     DWORD ttff;
+     DWORD cop, aop, carg0, carg1, carg2, aarg0, aarg1, aarg2;
+
++    memset(settings, 0, sizeof(*settings));
+     for(i = 0; i < GL_LIMITS(texture_stages); i++) {
+         IWineD3DBaseTextureImpl *texture;
+         if(stateblock->textureState[i][WINED3DTSS_COLOROP] ==
+WINED3DTOP_DISABLE) {
+
+
+From stefan at codeweavers.com  Fri Aug  1 09:48:07 2008
+From: stefan at codeweavers.com (=?UTF-8?Q?Stefan_D=C3=B6singer?=)
+Date: Fri, 1 Aug 2008 09:48:07 -0500
+Subject: [1/7] WineD3D: use the window size as drawable size
+In-Reply-To: <87od4dcgzm.fsf@wine.dyndns.org>
+References: <00d701c8f31e$b0db9c50$1292d4f0$@com>
+	<87od4dcgzm.fsf@wine.dyndns.org>
+Message-ID: <001a01c8f3e5$9ccadce0$d66096a0$@com>
+
+> > +        LEAVE_GL();
+> >          target->get_drawable_size(target, &width, &height);
+> > +        ENTER_GL();
+> 
+> That's ugly, the lock isn't even entered in that function. Can we
+> please
+> start to clean up the ENTER_GL mess to only grab the lock around GL
+> calls and not over huge amounts of code including nested functions?
+Actually the problem with patch 2 made me unsure if using the Window size here is correct at all.
+
+To stay on topic though, I oppose moving the lock into every state handler. There are just the scissorrect and viewport functions that may have to perform User32 calls(if the patch turns out to be correct). Moving the lock call into the state handlers would pollute the code with them and raise the locking costs considerably.
+
+
+
+
+
+From lav at etersoft.ru  Fri Aug  1 09:58:39 2008
+From: lav at etersoft.ru (Vitaly Lipatov)
+Date: Fri, 1 Aug 2008 18:58:39 +0400
+Subject: [Gdiplus] Try harder to get a monospace font
+In-Reply-To: <1217550920.6507.4.camel@belthazor-saved>
+References: <1217550920.6507.4.camel@belthazor-saved>
+Message-ID: <200808011858.40764.lav@etersoft.ru>
+
+? ????????? ?? 1 ??????? 2008 Adam Petaccia ???????(a):
+> + *  If Courier New is not found, the replacement font Liberation Mono is
+> used. */
+Why do not use font replacement rules in the registry? I think it is more 
+common way to subst Liberation fonts instead proprietary one.
+
+
+-- 
+Vitaly Lipatov, ALT Linux Team
+Russia, Saint-Petersburg, www.etersoft.ru
+
+
+From julliard at winehq.org  Fri Aug  1 10:18:03 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 01 Aug 2008 17:18:03 +0200
+Subject: [1/7] WineD3D: use the window size as drawable size
+In-Reply-To: <001a01c8f3e5$9ccadce0$d66096a0$@com> ("Stefan =?utf-8?Q?D?=
+	=?utf-8?Q?=C3=B6singer=22's?=
+	message of "Fri, 1 Aug 2008 09:48:07 -0500")
+References: <00d701c8f31e$b0db9c50$1292d4f0$@com>
+	<87od4dcgzm.fsf@wine.dyndns.org> <001a01c8f3e5$9ccadce0$d66096a0$@com>
+Message-ID: <87vdykbw7o.fsf@wine.dyndns.org>
+
+Stefan D?singer <stefan at codeweavers.com> writes:
+
+> To stay on topic though, I oppose moving the lock into every state
+> handler. There are just the scissorrect and viewport functions that
+> may have to perform User32 calls(if the patch turns out to be
+> correct). Moving the lock call into the state handlers would pollute
+> the code with them and raise the locking costs considerably.
+
+It would require adding more of them, but that's good, it makes the
+locking more explicit. We really have to stop taking a big global lock
+and executing thousands of lines of code inside it. As long as you are
+only moving the lock inside the individual functions the cost is the
+same.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From stefan at codeweavers.com  Fri Aug  1 10:50:18 2008
+From: stefan at codeweavers.com (=?windows-1252?Q?Stefan_D=F6singer?=)
+Date: Fri, 1 Aug 2008 10:50:18 -0500
+Subject: New valgrind warnings in wined3d/arb_program_shader.c
+In-Reply-To: <a71bd89a0808010532n4f1a0cb3lded2007e79b23a22@mail.gmail.com>
+References: <a71bd89a0807311021k24c08391i51405b1558ae6514@mail.gmail.com>	
+	<00bb01c8f346$3dc6fb10$b954f130$@com>
+	<a71bd89a0808010532n4f1a0cb3lded2007e79b23a22@mail.gmail.com>
+Message-ID: <000601c8f3ee$4cbc8b50$e635a1f0$@com>
+
+> It had a level of indirection mistake, but yes, the
+> following patch fixes the new warnings:
+I think it's gcc's fault, or the code relying on something that the C spec
+doesn't guarantee. It seems to me that gcc doesn't pack the bitfields
+properly as we hoped, and leaves padding bytes in between that are left
+uninitialized. The hash function then treats the structure as a binary blob.
+
+Since the bitfields did not do what we hoped they'd do(avoid hashing over
+empty data), I'll dig my old manual packing patch out again.
+
+Meanwhile, the problems should not cause any crashes or incorrect rendering,
+but it has negative effects on performance.
+
+I tried replacing the memset with this:
+
+    for(i = 0; i < 8; i++) {
+        settings->op[i].cop = 0;
+        settings->op[i].aop = 0;
+        /* 0x3F: set all 6 bits of the args to 1 */
+        settings->op[i].carg0 = 0;
+        settings->op[i].carg1 = 0;
+        settings->op[i].carg2 = 0;
+        settings->op[i].aarg0 = 0;
+        settings->op[i].aarg1 = 0;
+        settings->op[i].aarg2 = 0;
+        settings->op[i].dst = 0;
+        settings->op[i].tex_type = 0;
+        settings->op[i].projected = 0;
+        settings->op[i].color_correction = 0;
+    }
+    settings->fog = 0;
+
+The code manually initializes all members of the structure, but the valgrind
+warnings still remain
+
+
+
+
+
+From stefan at codeweavers.com  Fri Aug  1 10:52:25 2008
+From: stefan at codeweavers.com (=?utf-8?Q?Stefan_D=C3=B6singer?=)
+Date: Fri, 1 Aug 2008 10:52:25 -0500
+Subject: [1/7] WineD3D: use the window size as drawable size
+In-Reply-To: <87vdykbw7o.fsf@wine.dyndns.org>
+References: <00d701c8f31e$b0db9c50$1292d4f0$@com>	<87od4dcgzm.fsf@wine.dyndns.org>
+	<001a01c8f3e5$9ccadce0$d66096a0$@com>
+	<87vdykbw7o.fsf@wine.dyndns.org>
+Message-ID: <000701c8f3ee$97f68260$c7e38720$@com>
+
+> It would require adding more of them, but that's good, it makes the
+> locking more explicit. We really have to stop taking a big global lock
+> and executing thousands of lines of code inside it. As long as you are
+> only moving the lock inside the individual functions the cost is the
+> same.
+In the current form there's one lock call each time the states are applied, if the individual functions call the lock there's one call per applied state
+
+
+
+
+From hongbo_ni at hotmail.com  Fri Aug  1 11:11:47 2008
+From: hongbo_ni at hotmail.com (Hongbo Ni)
+Date: Sat, 2 Aug 2008 02:11:47 +1000
+Subject: DLL loading prolem when injecting into another process
+In-Reply-To: <9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+References: <BAY118-W51033CC21D50A53EFFE578947D0@phx.gbl><9885634A383842D2815FCC53C4B2B2FD@NATERS>
+	<BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl>
+	<9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+Message-ID: <BAY118-W50BE39C01E8061867C5DA7947F0@phx.gbl>
+
+
+Rolf Kalbermatter wrote: 
+> My guess is that it will however fail on most Windows versions except maybe
+> Vista which would still be a reason to try to implement that behaviour in Wine 
+> too. However you will likely have to do quite
+> a bit more tests to then figure out the exact conditions under which this
+> behaviour is applied under newer Windows versions. 
+
+You are right, when loading a DLL from specific folder, the linked DLL in same folder
+can not be loaded. I have tested on Windows Vista.
+
+Back to DLL injecting, It works since Windows 95. My program has been working
+for many years, but not on Wine.
+
+Here is how to inject a DLL into another process:
+
+A.exe is linked to A.dll, A.dll is linked to B.dll, they are all in the same folder.
+
+in A.dll I have a function called InjectDll(), it calls SetWindowsHookEx(WH_GETMESSAGE,...)
+to inject A.dll into Notepad process. Since A.dll is lined to B.dll, B.dll will be loaded on
+window, but on wine.
+
+//in A.dll
+LRESULT WINAPI GetMsgProc (int nCode, WPARAM wParam,  LPARAM lParam)
+{
+ if(g_hHookGetMsg==NULL) return 0;
+ return(CallNextHookEx(g_hHookGetMsg, nCode, wParam, lParam));
+}
+
+DLLA_API int InjectDll(void)
+{
+ HWND hwnd = FindWindow(NULL,"Notepad");
+ if(hwnd){
+   g_hHookGetMsg = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hinstDll,GetWindowThreadProcessId(hwnd, NULL));
+   if(g_hHookGetMsg){
+       PostMessage(hwnd, WM_NULL, 0, 0);
+   }
+ }
+ return fnDllB(); //in DLLB.dll
+}
+
+Maybe in window SetWindowsHookEx not only map A.dll, but so all DLL linked by A.dll into Hooked 
+Window process. 
+
+Also at the time A.exe is injecting A.dll, B.dll is loaded, so the system knows where B.dll is.
+Now I am wondering how window do that.
+
+To Prove windows do it, I have put a Test suite at http://www.njstar.com/zipfile/HookApp.zip
+It contains source project and compiled exe in BIN folder.
+
+1. start BIN\App-exe\App.exe first, it's is not linked to DLLA or DLLB.
+
+2. start BIN\HookApp.exe and DLLA and DLLB is linked and loaded.
+
+3. Click BIN\HookApp.exe's menu Inject. it will inject DLLA into  BIN\App-exe\App.exe, and
+    DLLB will also got loaded into  BIN\App-exe\App.exe on Windows. This will be fail on Wine.
+
+Regards
+Hongbo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_________________________________________________________________
+Are you paid what you're worth? Find out: SEEK Salary Centre
+http://a.ninemsn.com.au/b.aspx?URL=http%3A%2F%2Fninemsn%2Eseek%2Ecom%2Eau%2Fcareer%2Dresources%2Fsalary%2Dcentre%2F%3Ftracking%3Dsk%3Ahet%3Asc%3Anine%3A0%3Ahot%3Atext&_t=764565661&_r=OCT07_endtext_salary&_m=EXT
+
+From julliard at winehq.org  Fri Aug  1 11:20:46 2008
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Fri, 01 Aug 2008 18:20:46 +0200
+Subject: New valgrind warnings in wined3d/arb_program_shader.c
+In-Reply-To: <000601c8f3ee$4cbc8b50$e635a1f0$@com> ("Stefan =?utf-8?Q?D?=
+	=?utf-8?Q?=C3=B6singer=22's?=
+	message of "Fri, 1 Aug 2008 10:50:18 -0500")
+References: <a71bd89a0807311021k24c08391i51405b1558ae6514@mail.gmail.com>
+	<00bb01c8f346$3dc6fb10$b954f130$@com>
+	<a71bd89a0808010532n4f1a0cb3lded2007e79b23a22@mail.gmail.com>
+	<000601c8f3ee$4cbc8b50$e635a1f0$@com>
+Message-ID: <87k5f0btb5.fsf@wine.dyndns.org>
+
+Stefan D?singer <stefan at codeweavers.com> writes:
+
+>> It had a level of indirection mistake, but yes, the
+>> following patch fixes the new warnings:
+> I think it's gcc's fault, or the code relying on something that the C spec
+> doesn't guarantee. It seems to me that gcc doesn't pack the bitfields
+> properly as we hoped, and leaves padding bytes in between that are left
+> uninitialized. The hash function then treats the structure as a binary blob.
+
+gcc is perfectly correct, if you don't want padding space then your
+bitfields have to add up to the size of an integer.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From stefan at codeweavers.com  Fri Aug  1 11:56:24 2008
+From: stefan at codeweavers.com (=?utf-8?Q?Stefan_D=C3=B6singer?=)
+Date: Fri, 1 Aug 2008 11:56:24 -0500
+Subject: New valgrind warnings in wined3d/arb_program_shader.c
+In-Reply-To: <87k5f0btb5.fsf@wine.dyndns.org>
+References: <a71bd89a0807311021k24c08391i51405b1558ae6514@mail.gmail.com>	<00bb01c8f346$3dc6fb10$b954f130$@com>	<a71bd89a0808010532n4f1a0cb3lded2007e79b23a22@mail.gmail.com>	<000601c8f3ee$4cbc8b50$e635a1f0$@com>
+	<87k5f0btb5.fsf@wine.dyndns.org>
+Message-ID: <000e01c8f3f7$887a3080$996e9180$@com>
+
+> gcc is perfectly correct, if you don't want padding space then your
+> bitfields have to add up to the size of an integer.
+Figured that out by now :-)
+
+I thought it left paddings between my flags, but actually there are 12 unused bits at the end, and one uninitialized, because unused, but still hashed member adding troubles.
+
+
+
+
+From liquid.acid at gmx.net  Fri Aug  1 13:03:56 2008
+From: liquid.acid at gmx.net (Tobias Jakobi)
+Date: Fri, 01 Aug 2008 20:03:56 +0200
+Subject: [2/7] WineD3D: use the drawable size to set up blitting
+In-Reply-To: <000401c8f386$f9c7b080$ed571180$@com>
+References: <000001c8f37f$d784f430$868edc90$@com>
+	<000401c8f386$f9c7b080$ed571180$@com>
+Message-ID: <4893500C.2010804@gmx.net>
+
+Stefan D?singer wrote:
+>> I'm sorry, I cannot reproduce this. Which settings are you using?
+> I see it now, it only occurs with medium post processing settings.
+OK, I can't use the high settings for now because of the slowdowns. 
+Medium is the only half-working option for now.
+
+> 
+> The patch obviously has a flaw when the drawable is bigger than the target,
+> in which case the coordinate system's origin is outside of the target's
+> area. I think I have to deal with the drawable-target difference in the
+> blit-to-frontbuffer code
+
+
+I keep an eye out for patches on the ml :)
+
+
+From jjmckenzie51 at earthlink.net  Fri Aug  1 14:17:02 2008
+From: jjmckenzie51 at earthlink.net (James Mckenzie)
+Date: Fri, 1 Aug 2008 12:17:02 -0700 (GMT-07:00)
+Subject: crypt32(3/3): More fully implement CryptSIPRetrieveSubjectGuid
+Message-ID: <890417.1217618222821.JavaMail.root@mswamui-cedar.atl.sa.earthlink.net>
+
+Juan:
+
+Please put something in the title to let us know that this is a resumission like (try 2).  Some folks resend and resend their patches when Alexandre does not 'immediately' react to them.
+
+Thank you.
+
+James McKenzie
+
+
+-----Original Message-----
+>From: Juan Lang <juan.lang at gmail.com>
+>Sent: Aug 1, 2008 10:22 AM
+>To: wine-patches at winehq.org
+>Subject: crypt32(3/3): More fully implement CryptSIPRetrieveSubjectGuid
+>
+>Also just rediffed.
+
+Need a full change log here as well.
+
+>--Juan
+
+
+
+From juan.lang at gmail.com  Fri Aug  1 14:23:56 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Fri, 1 Aug 2008 12:23:56 -0700
+Subject: crypt32(3/3): More fully implement CryptSIPRetrieveSubjectGuid
+In-Reply-To: <890417.1217618222821.JavaMail.root@mswamui-cedar.atl.sa.earthlink.net>
+References: <890417.1217618222821.JavaMail.root@mswamui-cedar.atl.sa.earthlink.net>
+Message-ID: <3a768c550808011223v16287caam8599b3cbb928d2be@mail.gmail.com>
+
+> Please put something in the title to let us know that this is a resumission like (try 2).  Some folks resend and resend their patches when Alexandre does not 'immediately' react to them.
+
+I did, in the body.  They're not different than the original
+submissions, except for being rediffed, as I already noted.
+--Juan
+
+
+From truiken at gmail.com  Fri Aug  1 14:30:14 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Fri, 1 Aug 2008 14:30:14 -0500
+Subject: crypt32(3/3): More fully implement CryptSIPRetrieveSubjectGuid
+In-Reply-To: <3a768c550808011223v16287caam8599b3cbb928d2be@mail.gmail.com>
+References: <890417.1217618222821.JavaMail.root@mswamui-cedar.atl.sa.earthlink.net>
+	<3a768c550808011223v16287caam8599b3cbb928d2be@mail.gmail.com>
+Message-ID: <22821af30808011230p20e8f1a5u4e3c541cb556bc08@mail.gmail.com>
+
+On Fri, Aug 1, 2008 at 2:23 PM, Juan Lang <juan.lang at gmail.com> wrote:
+>> Please put something in the title to let us know that this is a resumission like (try 2).  Some folks resend and resend their patches when Alexandre does not 'immediately' react to them.
+>
+> I did, in the body.  They're not different than the original
+> submissions, except for being rediffed, as I already noted.
+> --Juan
+>
+
+Can you put it in the subject line?  That makes it easier to
+distinguish the email from previous attempts.  gmail, for instance,
+groups emails with the same subject line into conversations, so your
+resubmissions sometimes look like replies to old emails, etc.
+
+-- 
+James Hawkins
+
+
+From wine-devel at kievinfo.com  Fri Aug  1 15:15:04 2008
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Fri, 01 Aug 2008 14:15:04 -0600
+Subject: dinput: the DIK_ keycode is not the same as the scancode.
+In-Reply-To: <23758778.1217603851417.JavaMail.root@elwamui-chisos.atl.sa.earthlink.net>
+References: <23758778.1217603851417.JavaMail.root@elwamui-chisos.atl.sa.earthlink.net>
+Message-ID: <48936EC8.7050403@kievinfo.com>
+
+James Mckenzie wrote:
+> Vitaliy Margolen <wine-devel at kievinfo.com> at Jul 31, 2008 10:10 PM (PNT) wrote about Re: dinput: the DIK_ keycode is not the same as the scancode.
+>>> -    dik_code = hook->scanCode & 0xff;
+>>> +    dik_code = This->ScanCodemap[hook->scanCode];
+>> Scan code can be larger then 256 so "& 0xff" is really necessary.
+>>
+> What is the type of scanCode.  If it is BYTE and BYTE is properly defined as being between 0x00 and 0xff, then the check is not necessary.  If it is defined as something else, then the check IS necessary and should nto be dropped
+
+typedef struct tagKBDLLHOOKSTRUCT
+{
+     DWORD   vkCode;
+     DWORD   scanCode;
+     DWORD   flags;
+     DWORD   time;
+     ULONG_PTR dwExtraInfo;
+} KBDLLHOOKSTRUCT, *LPKBDLLHOOKSTRUCT, *PKBDLLHOOKSTRUCT;
+
+
+(scanCode & 0x100) != 0 indicates an extended key.
+
+> In this case, I feel that map_dik_code should be defined as BYTE and no other type.  Was that the intent of your comment?
+That and definitions of the variables and the array type.
+
+
+Vitaliy.
+
+
+From r.kalbermatter at hccnet.nl  Fri Aug  1 17:25:11 2008
+From: r.kalbermatter at hccnet.nl (Rolf Kalbermatter)
+Date: Sat, 2 Aug 2008 00:25:11 +0200
+Subject: DLL loading prolem when injecting into another process
+In-Reply-To: <BAY118-W50BE39C01E8061867C5DA7947F0@phx.gbl>
+References: <BAY118-W51033CC21D50A53EFFE578947D0@phx.gbl><9885634A383842D2815FCC53C4B2B2FD@NATERS><BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl><9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+	<BAY118-W50BE39C01E8061867C5DA7947F0@phx.gbl>
+Message-ID: <B78735D867E043DAAFEFFC15A5EB1FD5@NATERS>
+
+Hongbo Ni wrote:
+  
+> Back to DLL injecting, It works since Windows 95. My program 
+> has been working for many years, but not on Wine.
+> 
+> Here is how to inject a DLL into another process:
+> .....
+
+Ok I think I understand. You are using a technique I have once read about in
+Microsoft System Journal back in about 1994. And this is certainly tricky.
+
+Eventhough I'm anything but an expert in these matters I do think that the
+code
+that receives a message for a process and checks if a WH_GETMESSAGE hook is
+set
+and in that case maps the according DLL into the process space if that
+hasn't
+already happened, should also track down all implicit dependencies of that
+DLL
+and map them into the process space too.
+
+It may currently just do a LoadLibrary equivalent and that will of course
+not
+find the B.dll as it is not in any of the standard search locations for the
+injected process.
+
+I do not think that the solution is to "correct" LoadLibrary to actually do
+a
+search for linked libraries in the parent library's directory too.
+
+However I fear the proper fix might go deep into Wine server and probably is
+above most people's head except for Alexandre. What you can do is trying to
+get an actual test integrated to the Wine tests that does what you do in
+your
+test that you wrote and mark that test as todo_wine. And then hope that
+Alexandre
+can find a way to implement a fix without to much trouble.
+
+Of course if you can find the way to implement that correctly a second patch
+after
+the test has been added as todo_wine would certainly be welcome.
+
+Rolf Kalbermatter
+
+
+
+From winehacker at gmail.com  Sat Aug  2 01:10:11 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sat, 2 Aug 2008 02:10:11 -0400
+Subject: DLL loading prolem when injecting into another process
+In-Reply-To: <B78735D867E043DAAFEFFC15A5EB1FD5@NATERS>
+References: <BAY118-W51033CC21D50A53EFFE578947D0@phx.gbl>
+	<9885634A383842D2815FCC53C4B2B2FD@NATERS>
+	<BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl>
+	<9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+	<BAY118-W50BE39C01E8061867C5DA7947F0@phx.gbl>
+	<B78735D867E043DAAFEFFC15A5EB1FD5@NATERS>
+Message-ID: <19e31a080808012310x30450f7fg98baa5dff66a7b64@mail.gmail.com>
+
+On Fri, Aug 1, 2008 at 6:25 PM, Rolf Kalbermatter
+<r.kalbermatter at hccnet.nl> wrote:
+> Ok I think I understand. You are using a technique I have once read about in
+> Microsoft System Journal back in about 1994. And this is certainly tricky.
+
+Its also documented in Inside Windows by Jeffery Richter if you happen
+to have a copy of that laying around.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From winehacker at gmail.com  Sat Aug  2 01:12:43 2008
+From: winehacker at gmail.com (Steven Edwards)
+Date: Sat, 2 Aug 2008 02:12:43 -0400
+Subject: DLL loading prolem when injecting into another process
+In-Reply-To: <19e31a080808012310x30450f7fg98baa5dff66a7b64@mail.gmail.com>
+References: <BAY118-W51033CC21D50A53EFFE578947D0@phx.gbl>
+	<9885634A383842D2815FCC53C4B2B2FD@NATERS>
+	<BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl>
+	<9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+	<BAY118-W50BE39C01E8061867C5DA7947F0@phx.gbl>
+	<B78735D867E043DAAFEFFC15A5EB1FD5@NATERS>
+	<19e31a080808012310x30450f7fg98baa5dff66a7b64@mail.gmail.com>
+Message-ID: <19e31a080808012312j26d897bo41f370c8c0ee9e68@mail.gmail.com>
+
+On Sat, Aug 2, 2008 at 2:10 AM, Steven Edwards <winehacker at gmail.com> wrote:
+> Its also documented in Inside Windows by Jeffery Richter if you happen
+> to have a copy of that laying around.
+
+Sorry make that Advanced Windows. I gave my copy to a friend so I
+don't recall much about the chapter, except there is example code that
+could be used for testing that came with the cd in the book.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From hongbo_ni at hotmail.com  Sat Aug  2 01:48:16 2008
+From: hongbo_ni at hotmail.com (Hongbo Ni)
+Date: Sat, 2 Aug 2008 16:48:16 +1000
+Subject: DLL loading prolem when injecting into another process
+In-Reply-To: <B78735D867E043DAAFEFFC15A5EB1FD5@NATERS>
+References: <BAY118-W51033CC21D50A53EFFE578947D0@phx.gbl><9885634A383842D2815FCC53C4B2B2FD@NATERS><BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl><9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+	<BAY118-W50BE39C01E8061867C5DA7947F0@phx.gbl>
+	<B78735D867E043DAAFEFFC15A5EB1FD5@NATERS>
+Message-ID: <BAY118-W53A316E6010E8A99AA93B9947E0@phx.gbl>
+
+
+
+Rolf Kalbermatter wrote:
+> I do not think that the solution is to "correct" LoadLibrary to actually do
+> a search for linked libraries in the parent library's directory too.
+>
+> However I fear the proper fix might go deep into Wine server and probably is
+> above most people's head except for Alexandre. What you can do is trying to
+> get an actual test integrated to the Wine tests that does what you do in
+> your test that you wrote and mark that test as todo_wine. And then hope that
+> Alexandre can find a way to implement a fix without to much trouble.
+>
+> Of course if you can find the way to implement that correctly a second patch after
+> the test has been added as todo_wine would certainly be welcome.
+
+What I have descripted is only one way of hook to another process, there are other ways.
+
+Good news, It turns out the fix could be a simple patch as this
+
+@ -322,7 +322,7 @@ void *get_hook_proc( void *proc, const WCHAR *module )
+     {
+         TRACE( "loading %s\n", debugstr_w(module) );
+         /* FIXME: the library will never be freed */
+-        if (!(mod = LoadLibraryW(module))) return NULL;
++        if (!(mod = LoadLibraryExW(module, NULL, LOAD_WITH_ALTERED_SEARCH_PATH))) return NULL;
+     }
+     return (char *)mod + (ULONG_PTR)proc;
+ }
+
+When my debug, I noticed 'module' comes in full path. so LoadLibraryW will load the module, but when it process
+imports, it searchs the application dir, current dir and PATH. So DLL in the same dir can not be loaded.
+
+By using LOAD_WITH_ALTERED_SEARCH_PATH, LoadLibraryExW will put in path of 'module' on the load_path, 
+so fix-imports can load linked DLLs by searching the dir of injected dll first, then the current and PATH.
+
+In process HOOK, the target proc has no idea of the injected DLL comes from.  The linked DLLs are most likely
+NOT in the same dir as current hooked application(s). More likely in the same dir as injected DLL .
+
+What do I have to do to get this patch accepted ?
+
+Hongbo Ni
+
+
+_________________________________________________________________
+Are you paid what you're worth? Find out: SEEK Salary Centre
+http://a.ninemsn.com.au/b.aspx?URL=http%3A%2F%2Fninemsn%2Eseek%2Ecom%2Eau%2Fcareer%2Dresources%2Fsalary%2Dcentre%2F%3Ftracking%3Dsk%3Ahet%3Asc%3Anine%3A0%3Ahot%3Atext&_t=764565661&_r=OCT07_endtext_salary&_m=EXT
+
+From andrewfenn at gmail.com  Sat Aug  2 10:17:15 2008
+From: andrewfenn at gmail.com (Andrew Fenn)
+Date: Sat, 2 Aug 2008 22:17:15 +0700
+Subject: one liner patch to stop crash, everquest2.exe
+In-Reply-To: <d658b69e0807232353q582c4fe6h1b398477e8aef3f5@mail.gmail.com>
+References: <b594ca9d0807170229y47e390b6xe999176d35340cb0@mail.gmail.com>
+	<d658b69e0807202339i2925897fg5cc7bd1a4896f78b@mail.gmail.com>
+	<b594ca9d0807210048v76676718h9090077bf1aeca05@mail.gmail.com>
+	<d658b69e0807210058i3cb616fbq6fd28677ea79c5d9@mail.gmail.com>
+	<b594ca9d0807210339q3350795cg90e6272b15c469d@mail.gmail.com>
+	<d658b69e0807210403q3d132f81r603ff7ace66cbc21@mail.gmail.com>
+	<000901c8eb3e$0d32ec80$2798c580$@com>
+	<b594ca9d0807232046m31abe200j42aae76fc1d4ac7d@mail.gmail.com>
+	<d658b69e0807232352r5121d2fetd835effce485fb00@mail.gmail.com>
+	<d658b69e0807232353q582c4fe6h1b398477e8aef3f5@mail.gmail.com>
+Message-ID: <b594ca9d0808020817yb9fe3e6ke98fc2ff45a12aac@mail.gmail.com>
+
+After doing a recent git pull I noticed that it now crashes at a different
+place in the code. Here's the backtrace (I haven't had a look yet, this is
+more of a heads up)..
+
+Backtrace:
+=>1 0x7e49089b hash_table_destroy+0xb(table=0x17, free_value=0x7e3e8dc0,
+cb=0x7e4c9a50) [/home/andrew/wine/wine/dlls/wined3d/utils.c:1583] in wined3d
+(0x0032e8f8)
+  2 0x7e3e539f arbfp_free+0x3f(iface=0x19c480)
+[/home/andrew/wine/wine/dlls/wined3d/arb_program_shader.c:2258] in wined3d
+(0x0032e918)
+  3 0x7e40f02b IWineD3DDeviceImpl_Reset+0x19b(iface=0x19c480,
+pPresentationParameters=0x32e9c0)
+[/home/andrew/wine/wine/dlls/wined3d/device.c:7256] in wined3d (0x0032e998)
+  4 0x7e4e43ce IDirect3DDevice9Impl_Reset+0x1ae(iface=<register EDI not in
+topmost frame>, pPresentationParameters=0x1b9f848)
+[/home/andrew/wine/wine/dlls/d3d9/device.c:381] in d3d9 (0x0032ea08)
+  5 0x008d31a1 in everquest2 (+0x4d31a1) (0x0032ea3c)
+0x7e49089b hash_table_destroy+0xb
+[/home/andrew/wine/wine/dlls/wined3d/utils.c:1583] in wined3d: movl
+0x14(%eax),%ecx
+1583        for (i = 0; i < table->entry_count; ++i)
+
+This is while performing the same task as before. Start up Everquest2.exe in
+windowed mode, wait till it gets to the login screen, press alt+enter to go
+to fullscreen mode.
+
+On Thu, Jul 24, 2008 at 1:53 PM, H. Verbeet <hverbeet at gmail.com> wrote:
+
+> > certainly worth a try to see if it fixes the game. It'll involve
+> There should be a "You'll still need a test case though." somewhere in
+> that line.
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20080802/adebf7eb/attachment-0001.htm 
+
+From hverbeet at gmail.com  Sat Aug  2 10:22:11 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Sat, 2 Aug 2008 17:22:11 +0200
+Subject: one liner patch to stop crash, everquest2.exe
+In-Reply-To: <b594ca9d0808020817yb9fe3e6ke98fc2ff45a12aac@mail.gmail.com>
+References: <b594ca9d0807170229y47e390b6xe999176d35340cb0@mail.gmail.com>
+	<b594ca9d0807210048v76676718h9090077bf1aeca05@mail.gmail.com>
+	<d658b69e0807210058i3cb616fbq6fd28677ea79c5d9@mail.gmail.com>
+	<b594ca9d0807210339q3350795cg90e6272b15c469d@mail.gmail.com>
+	<d658b69e0807210403q3d132f81r603ff7ace66cbc21@mail.gmail.com>
+	<000901c8eb3e$0d32ec80$2798c580$@com>
+	<b594ca9d0807232046m31abe200j42aae76fc1d4ac7d@mail.gmail.com>
+	<d658b69e0807232352r5121d2fetd835effce485fb00@mail.gmail.com>
+	<d658b69e0807232353q582c4fe6h1b398477e8aef3f5@mail.gmail.com>
+	<b594ca9d0808020817yb9fe3e6ke98fc2ff45a12aac@mail.gmail.com>
+Message-ID: <d658b69e0808020822hf3df52cu4dc4979bfba47eb8@mail.gmail.com>
+
+2008/8/2 Andrew Fenn <andrewfenn at gmail.com>:
+> After doing a recent git pull I noticed that it now crashes at a different
+> place in the code. Here's the backtrace (I haven't had a look yet, this is
+> more of a heads up)..
+>
+> Backtrace:
+> =>1 0x7e49089b hash_table_destroy+0xb(table=0x17, free_value=0x7e3e8dc0,
+> cb=0x7e4c9a50) [/home/andrew/wine/wine/dlls/wined3d/utils.c:1583] in wined3d
+> (0x0032e8f8)
+>   2 0x7e3e539f arbfp_free+0x3f(iface=0x19c480)
+> [/home/andrew/wine/wine/dlls/wined3d/arb_program_shader.c:2258] in wined3d
+> (0x0032e918)
+>   3 0x7e40f02b IWineD3DDeviceImpl_Reset+0x19b(iface=0x19c480,
+> pPresentationParameters=0x32e9c0)
+> [/home/andrew/wine/wine/dlls/wined3d/device.c:7256] in wined3d (0x0032e998)
+>
+There were some changes there, but it still looks like the same basic
+issue to me (Reset triggering another Reset).
+
+
+From kornelpal at gmail.com  Sat Aug  2 10:52:26 2008
+From: kornelpal at gmail.com (=?ISO-8859-1?Q?Korn=E9l_P=E1l?=)
+Date: Sat, 02 Aug 2008 17:52:26 +0200
+Subject: mono progress on mixed-mode assemblies...
+In-Reply-To: <482C49EC.2020306@codeweavers.com>
+References: <a71bd89a0805090318v177de82cw55b90b72c0a20fab@mail.gmail.com>	<002001c8b1c6$c6fa6a00$83666250@kornelpal.hu>	<a71bd89a0805090754o34dca0cew9eabe1165e203169@mail.gmail.com>
+	<005201c8b5a6$12700930$83666250@kornelpal.hu>
+	<482C49EC.2020306@codeweavers.com>
+Message-ID: <489482BA.9070701@gmail.com>
+
+Hi,
+
+Mono 2.0 (Preview 1) is available for download on
+http://mono.ximian.com/monobuild/preview/download-preview/
+
+This includes a lot of improvements over version 1.9 including my work
+on supporting mixed-mode assemblies.
+
+Please try it. Feedback is welcome, version 2.0 has not been released yet.
+
+Note that MSVCRT is not yet supported.
+
+There are some test projects in the SVN repository available at
+http://anonsvn.mono-project.com/viewcvs/trunk/mono/mono/tests/mixed-mode/
+
+Only MixedModeApp and MixedModeLibrary are supposed to work.
+
+Korn?l
+
+
+
+From chi at etersoft.ru  Fri Aug  1 09:23:43 2008
+From: chi at etersoft.ru (=?koi8-r?b?88XSx8XKIO7P18/To8zP1w==?=)
+Date: Fri, 1 Aug 2008 18:23:43 +0400
+Subject: DIB engine status
+In-Reply-To: <20080801115648.GB24893@merlot.physics.ox.ac.uk>
+References: <20080801115648.GB24893@merlot.physics.ox.ac.uk>
+Message-ID: <200808011823.43422.chi@office.etersoft.ru>
+
+ Friday 01 August 2008 15:56:48 Huw Davies wrote:
+> Hi folks,
+>
+> Here's an update on the DIB engine that I've been working on for the
+> last few months.  This work has been made possible by the generosity
+> of Google - so thanks go to them and of course to Dan.
+>
+> You can find the code at http://repo.or.cz/w/wine/dibeng-hd.git
+>
+> What's supported
+> ================
+> - All dib section depths (including BI_BITFIELD support).
+>
+> - Single pixel solid and dashed pens.
+>
+> - The 16 rop2s.
+>
+> - Solid and dib pattern brushes.
+>
+> - A brunch of primitives for drawing onto all dib section surfaces.
+>
+> - GDI32 apis: LineTo, Rectangle and PatBlt.
+>
+> - An extensive test suite for all of the above.
+>
+> What needs to be done
+> =====================
+> - Blitting (eg BitBlt, StretchBlt and StretchDIBits) - I have some
+>   hacks for these in my tree.
+>
+> - ExtTextOut
+>
+> - Many more GDI32 apis - a lot of these should be easy given that we
+>   have a set of underlying dib drawing primitives.
+>
+> - Non-MM_TEXT mapping modes and world transforms.
+>
+> - The initial interaction with GDI32 in BITMAP_SelectObject is hacky
+>   and needs some work.
+>
+> - Lots more...
+>
+>
+>
+> Note that at the moment it's essentially useless because of the lack
+> of blitting, so unless you fancy hacking on that yourself then you
+> probably don't want to bother fetching the tree.
+>
+> I'm going to stop working on this for a while (lots of fun Outlook
+> 2007 bugs for me to look at!), but will endeavour to keep the tree up
+> to date with respect to WineHQ.  If someone *does* want to hack on
+> this then feel free to send me patches!
+>
+> Thanks,
+> Huw.
+Hello, Huw!
+
+Did you hear anything about Jesse Allen's version of DIB Engine: 
+http://article.gmane.org/gmane.comp.emulators.wine.devel/53234 (His version - 
+http://repo.or.cz/w/wine/dibdrv.git )
+Do you know why it was neccesary to restart solving this problem with your 
+work instead of accepting and developing that version?
+We'd like to continue develop your version. When are you going to remain this 
+project?
+
+Tha/nks, Serge.
+
+
+From juan.lang at gmail.com  Sat Aug  2 13:16:53 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Sat, 2 Aug 2008 11:16:53 -0700
+Subject: [1/2] netapi32: Added partial implementation of NetShareAdd
+Message-ID: <3a768c550808021116q1b7fc3c5u7a271adff4590c4a@mail.gmail.com>
+
+Hi Vitaliy, overall your patch looks pretty good.  A few minor points:
+
++    FIXME("(%s %d %p) partially implemented\n",
+debugstr_w(servername), level, buf);
+Because you add a more specific FIXME for every unimplemented path, it
+seems to me this would be better as a TRACE.
+
++    result = RegCreateKeyExA(HKEY_LOCAL_MACHINE, regKey, 0, NULL, 0, KEY_WRITE,
++                NULL, &hKey, &disposition);
++    if (result != ERROR_SUCCESS)
++    {
++        FIXME("Unable to open/create key 'HKLM\\%s'\n", regKey);
++        return result;
+This shouldn't be a FIXME, as there's nothing to "fix" in the code:
+if the key couldn't be created, there's a setup problem or some other
+unrecoverable error.  A TRACE is fine.
+
++    /* FIXME: A duplicate patch checking should be implemented here */
+Do you mean a duplicate path?
+
+--Juan
+
+
+From juan.lang at gmail.com  Sat Aug  2 13:26:05 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Sat, 2 Aug 2008 11:26:05 -0700
+Subject: [2/2] netapi32: Added partial implementation of NetShareGetInfo
+Message-ID: <3a768c550808021126g79a10a55rb7d689df485feb5@mail.gmail.com>
+
+Hi again Vitaliy,
+
++/************************************************************/
++WCHAR *ParseParam(WCHAR **paramStr, const WCHAR *name)
+
+This should be static.  The name of the function also shouldn't be
+capitalized like this, to make it clear that it isn't a Win32
+function.  Looking at other source files in netapi32, either
+NETAPI_ParseParam or simply parse_param would be better.  Also, some
+comments for it would be nice.  In particular, the meaning of paramStr
+and the return value aren't clear from the function name.
+
++    FIXME("(%s %s %d %p) partially implemented\n", debugstr_w(servername),
++        debugstr_w(netname), level, bufptr);
+As with patch 1, a TRACE is probably better here.
+
++    size = 512;
++    result = RegQueryValueExW(hKey, netname, NULL, NULL, (LPBYTE)
+paramStr, &size);
+This isn't actually a correct value for size, size = sizeof(paramStr)
+would be correct (and less prone to future error.)  Can the value
+become bigger than 512 characters?
+
+--Juan
+
+
+From juan.lang at gmail.com  Sat Aug  2 13:27:48 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Sat, 2 Aug 2008 11:27:48 -0700
+Subject: DLL loading prolem when injecting into another process
+In-Reply-To: <BAY118-W53A316E6010E8A99AA93B9947E0@phx.gbl>
+References: <BAY118-W51033CC21D50A53EFFE578947D0@phx.gbl>
+	<9885634A383842D2815FCC53C4B2B2FD@NATERS>
+	<BAY118-W25BB0F3F870EC071236BF6947F0@phx.gbl>
+	<9AD9899D2F0240D7AB3751D0A6C8E254@NATERS>
+	<BAY118-W50BE39C01E8061867C5DA7947F0@phx.gbl>
+	<B78735D867E043DAAFEFFC15A5EB1FD5@NATERS>
+	<BAY118-W53A316E6010E8A99AA93B9947E0@phx.gbl>
+Message-ID: <3a768c550808021127i798fc670sa50873ad83463012@mail.gmail.com>
+
+> What do I have to do to get this patch accepted ?
+
+Write a regression test that shows the problem, marked with todo_wine.
+--Juan
+
+
+From jacek at codeweavers.com  Sat Aug  2 13:34:48 2008
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Sat, 02 Aug 2008 20:34:48 +0200
+Subject: kernal32: change if...if to if...'else if' in
+	get_module_path_end()
+In-Reply-To: <1217574512101511498@njxvm1.njstar.com>
+References: <1217574512101511498@njxvm1.njstar.com>
+Message-ID: <4894A8C8.4060909@codeweavers.com>
+
+Hongbo Ni wrote:
+> If '\\' is found, there is no point to find '/'.
+>   
+
+There is, think about path like
+c:\dir1\dir2/file.dll
+
+Jacek
+
+
+From jjmckenzie51 at earthlink.net  Sat Aug  2 17:24:26 2008
+From: jjmckenzie51 at earthlink.net (James McKenzie)
+Date: Sat, 02 Aug 2008 15:24:26 -0700
+Subject: rsaenh: Test and correct the maximum allowable salt length
+In-Reply-To: <3a768c550807281958s335c50b6rad1b9ea5531a397c@mail.gmail.com>
+References: <3a768c550807281958s335c50b6rad1b9ea5531a397c@mail.gmail.com>
+Message-ID: <4894DE9A.3080209@earthlink.net>
+
+Juan Lang wrote:
+> Inspired by a patch by Karsten Elfenbein.
+>   
+Who is this and why is this so important?
+> --Juan
+>   
+Per:
+http://winehq.org/site/sending_patches
+
+What in the hell does this patch do?  Why is it needed?  What does it 
+fix/implement?  Doees this change affect any Bugzilla issues? Where is 
+the Changelog?
+
+This is what I have been trying to get you to do.  I have no idea what 
+you are up to and I have NO access to IRC or other alternate forms of 
+messaging/communications other than this mailing list.
+
+Let's try to do things better in the future.
+
+James McKenzie
+
+
+
+From juan.lang at gmail.com  Sat Aug  2 17:41:43 2008
+From: juan.lang at gmail.com (Juan Lang)
+Date: Sat, 2 Aug 2008 15:41:43 -0700
+Subject: rsaenh: Test and correct the maximum allowable salt length
+In-Reply-To: <4894DE9A.3080209@earthlink.net>
+References: <3a768c550807281958s335c50b6rad1b9ea5531a397c@mail.gmail.com>
+	<4894DE9A.3080209@earthlink.net>
+Message-ID: <3a768c550808021541u4759556eoa0e55391352bc10@mail.gmail.com>
+
+James, please show a little more courtesy.
+
+> Who is this and why is this so important?
+
+Karsten wrote a patch to address an issue he had with Eve Online.
+It's important because of attribution:  I wanted people to realize
+that I was indebted to him for thinking of it.  I didn't use his code,
+though, otherwise I would have said "based on a patch by Karsten
+Elfenbein."  You'll find many such changelog entries in the CVS log.
+You can find his old patch by googling.
+
+> What in the hell does this patch do?  Why is it needed?  What does it
+> fix/implement?  Doees this change affect any Bugzilla issues? Where is
+> the Changelog?
+
+The Changelog is the subject of the email, and that's what showed up
+in the commit log.  As far as what it does and why it's needed, it
+fixes a bug (obviously), whose presence is shown by the test.  Karsten
+didn't open a bugzilla entry, otherwise I would have referenced it.
+
+> This is what I have been trying to get you to do.  I have no idea what
+> you are up to and I have NO access to IRC or other alternate forms of
+> messaging/communications other than this mailing list.
+
+I'm not sure what you mean by trying to get me to do.  You've emailed
+me once before when I neglected to put the magic words "try 2" in the
+subject of an email.  I'm not sure what that has to do with this.
+
+As far as not having access to other forms of communication, you're
+not really on this list, either, at least you don't use an email
+address we can reply to without jumping through some hoop.  There's no
+missing communication.  All the communication about this issue took
+place in this forum and wine-patches.
+
+> Let's try to do things better in the future.
+
+Sorry, I'm doing things just fine.  Read the commit logs.  You may try
+to do better in the future if you wish.  You could start by being more
+polite.
+--Juan
+
+
+From dank at kegel.com  Sat Aug  2 17:42:13 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 2 Aug 2008 15:42:13 -0700
+Subject: Patch checking robot coming
+Message-ID: <a71bd89a0808021542n68ae2a4em11e7a371bf440710@mail.gmail.com>
+
+After some discussion with Jeremy and Alexandre
+about how nice it would be to have some automated
+way to check patches before Alexandre commits them,
+I decided to have a go at creating one.
+
+What I have so far is a script that watches wine-patches
+and applies each patch to current git, then builds,
+and sends email with a subject line saying whether
+it worked, and a body containing a short "I'm a build robot"
+note, the patch, and the build log.
+
+You can see the code at
+http://code.google.com/p/winezeug/source/browse/#svn/trunk/patchwatcher
+Its main failing is that it doesn't understand patch
+series yet, but I should be able to get that going
+by rewriting get-next-patch.pl to take a bit more context into account.
+
+Right now it only emails the results to me, but it's probably
+nearly good enough to show results to other people.
+
+Question: where should the results go?
+I could put them up on a web site
+and/or email them to the patch's author
+and/or email them to a dedicated mailing list (e.g.
+wine-patches-buildlogs at winehq.org?)
+and/or email them to wine-devel.
+- Dan
+
+
+From truiken at gmail.com  Sat Aug  2 17:51:07 2008
+From: truiken at gmail.com (James Hawkins)
+Date: Sat, 2 Aug 2008 17:51:07 -0500
+Subject: fusion: Use proper function pointer
+In-Reply-To: <200808022209.49338.andrew.talbot@talbotville.com>
+References: <200808022209.49338.andrew.talbot@talbotville.com>
+Message-ID: <22821af30808021551r4ea205fcj973c7b789e8f8670@mail.gmail.com>
+
+On Sat, Aug 2, 2008 at 4:09 PM, Andrew Talbot
+<andrew.talbot at talbotville.com> wrote:
+> Changelog:
+>    fusion: Use proper function pointer.
+>
+> diff --git a/dlls/fusion/fusion.c b/dlls/fusion/fusion.c
+> index ac01cf4..637346c 100644
+> --- a/dlls/fusion/fusion.c
+> +++ b/dlls/fusion/fusion.c
+> @@ -32,6 +32,9 @@
+>
+>  WINE_DEFAULT_DEBUG_CHANNEL(fusion);
+>
+> +typedef HRESULT (WINAPI *PFNGETCORVERSION)(LPWSTR pbuffer, DWORD cchBuffer,
+> +                                           DWORD *dwLength);
+> +
+>  /******************************************************************
+>  *  ClearDownloadCache   (FUSION.@)
+>  */
+> @@ -89,20 +92,18 @@ HRESULT WINAPI GetAssemblyIdentityFromFile(LPCWSTR pwzFilePath, REFIID riid,
+>     return E_NOTIMPL;
+>  }
+>
+> -static HRESULT (WINAPI *pGetCORVersion)(LPWSTR pbuffer, DWORD cchBuffer,
+> -                                        DWORD *dwLength);
+> -
+
+There's nothing wrong with this.  We use this type of function pointer
+all over the code base.
+
+-- 
+James Hawkins
+
+
+From ambro at b4ever.net  Sat Aug  2 18:30:01 2008
+From: ambro at b4ever.net (Ambroz Bizjak)
+Date: Sun, 3 Aug 2008 01:30:01 +0200 (CEST)
+Subject: Patch checking robot coming
+In-Reply-To: <a71bd89a0808021542n68ae2a4em11e7a371bf440710@mail.gmail.com>
+References: <a71bd89a0808021542n68ae2a4em11e7a371bf440710@mail.gmail.com>
+Message-ID: <45133.193.77.101.149.1217719801.squirrel@webmail.b4ever.net>
+
+Dan Kegel wrote:
+> What I have so far is a script that watches wine-patches
+> and applies each patch to current git, then builds,
+
+Just where are you going to run that? To me, a script that builds just
+every patch is a serious security flaw; I suppose it wouldn't be very hard
+for someone to send a naughty patch that would take control of your
+machine. Something like editing a Makefile. I suggest you make it build
+patches in a chroot as a regular user, and copy over the chroot from a
+template every time a new patch is being built.
+
+
+
+From xerox_xerox2000 at yahoo.co.uk  Sat Aug  2 18:50:45 2008
+From: xerox_xerox2000 at yahoo.co.uk (Louis. Lenders)
+Date: Sat, 2 Aug 2008 23:50:45 +0000 (GMT)
+Subject: rsaenh: Test and correct the maximum allowable salt length
+Message-ID: <587930.81709.qm@web23206.mail.ird.yahoo.com>
+
+Usually i don't feel the need to respond to  messages on wine-devel, but now i do:
+
+
+> What in the hell does this patch do?  Why is it needed?  What does it
+> fix/implement?  Doees this change affect any Bugzilla issues? Where is
+> the Changelog?
+> This is what I have been trying to get you to do.  I have no idea what
+> you are up to and I have NO access to IRC or other alternate forms of
+> messaging/communications other than this mailing list.
+
+I haven't got a clue what the patch is all about either, 
+but if i'd wanted to know i would just drop a friendly note, asking 
+some more info. As long as i've followed wine's development i've seen 
+Juan as very helpful and main contributor to wine, so i'm  a bit surprised 
+about your unfriendly reaction to this patch....
+
+
+      __________________________________________________________
+Not happy with your email address?.
+Get the one you really want - millions of new email addresses available now at Yahoo! http://uk.docs.yahoo.com/ymail/new.html
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20080802/17e078a8/attachment-0001.htm 
+
+From dank at kegel.com  Sat Aug  2 19:24:07 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 2 Aug 2008 17:24:07 -0700
+Subject: Patch checking robot coming
+Message-ID: <a71bd89a0808021724w3125ae57y900f09a56396d267@mail.gmail.com>
+
+Ambroz wrote:
+>  To me, a script that builds just
+> every patch is a serious security flaw; I suppose it wouldn't
+> be very hard for someone to send a naughty patch
+> that would take control of your machine.
+
+True.
+
+> I suggest you make it build patches in a chroot
+> as a regular user, and copy over the chroot from a
+> template every time a new patch is being built.
+
+Sounds great.  Want to implement that and send it
+my way?   It'll take me a while to get the kinks worked
+out of the script, it'd be nice to have a hand with the chroot.
+- Dan
+
+
+From zgold550 at gmail.com  Sat Aug  2 21:25:52 2008
+From: zgold550 at gmail.com (Zachary Goldberg)
+Date: Sat, 2 Aug 2008 22:25:52 -0400
+Subject: Patch checking robot coming
+In-Reply-To: <a71bd89a0808021724w3125ae57y900f09a56396d267@mail.gmail.com>
+References: <a71bd89a0808021724w3125ae57y900f09a56396d267@mail.gmail.com>
+Message-ID: <b050a5e70808021925g1e0b747uf0661c38350841ff@mail.gmail.com>
+
+On Sat, Aug 2, 2008 at 8:24 PM, Dan Kegel <dank at kegel.com> wrote:
+> Ambroz wrote:
+>>  To me, a script that builds just
+>> every patch is a serious security flaw; I suppose it wouldn't
+>> be very hard for someone to send a naughty patch
+>> that would take control of your machine.
+>
+> True.
+>
+>> I suggest you make it build patches in a chroot
+>> as a regular user, and copy over the chroot from a
+>> template every time a new patch is being built.
+>
+> Sounds great.  Want to implement that and send it
+> my way?   It'll take me a while to get the kinks worked
+> out of the script, it'd be nice to have a hand with the chroot.
+> - Dan
+>
+>
+>
+
+Its really ironic that you post this today as just yesterday I was
+contemplating the same thing, and not only doing a compile check but
+also a run of the test suite and valgrind.  Other than that I wanted
+to put in a +1 for sending an email to the author and to a status
+website.
+
+
+From the3dfxdude at gmail.com  Sat Aug  2 21:25:55 2008
+From: the3dfxdude at gmail.com (Jesse Allen)
+Date: Sat, 2 Aug 2008 20:25:55 -0600
+Subject: DIB engine status
+In-Reply-To: <200808011823.43422.chi@office.etersoft.ru>
+References: <20080801115648.GB24893@merlot.physics.ox.ac.uk>
+	<200808011823.43422.chi@office.etersoft.ru>
+Message-ID: <530468570808021925n7ad9f07mba976fb1d89db7e6@mail.gmail.com>
+
+On Fri, Aug 1, 2008 at 8:23 AM, ?????? ????????? <chi at etersoft.ru> wrote:
+>
+> Did you hear anything about Jesse Allen's version of DIB Engine:
+> http://article.gmane.org/gmane.comp.emulators.wine.devel/53234 (His version -
+> http://repo.or.cz/w/wine/dibdrv.git )
+> Do you know why it was neccesary to restart solving this problem with your
+> work instead of accepting and developing that version?
+> We'd like to continue develop your version. When are you going to remain this
+> project?
+>
+> Tha/nks, Serge.
+>
+
+
+Mainly because I don't have time, I only have access to that git, and
+I have another job :) I did a bit of work on it last december that I
+didn't release. It's still on my hard drive. Huw's DIB tree is similar
+in concept to what I did. He was my mentor if you remember. But it
+doesn't mean what I was doing was usable. I trust Huw can manage
+building the basis of a DIB engine alot better than me. But I will
+likely download his tree and play around with it before school starts
+again.
+
+From dank at kegel.com  Sat Aug  2 21:36:26 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sat, 2 Aug 2008 19:36:26 -0700
+Subject: Patch checking robot coming
+In-Reply-To: <b050a5e70808021925g1e0b747uf0661c38350841ff@mail.gmail.com>
+References: <a71bd89a0808021724w3125ae57y900f09a56396d267@mail.gmail.com>
+	<b050a5e70808021925g1e0b747uf0661c38350841ff@mail.gmail.com>
+Message-ID: <a71bd89a0808021936x185400e8icf2087aa9c617c32@mail.gmail.com>
+
+On Sat, Aug 2, 2008 at 7:25 PM, Zachary Goldberg <zgold550 at gmail.com> wrote:
+> Its really ironic that you post this today as just yesterday I was
+> contemplating the same thing, and not only doing a compile check but
+> also a run of the test suite and valgrind.
+
+Yeah, that's the end goal.  Gotta walk before you run, though.
+
+> Other than that I wanted to put in a +1 for sending an
+> email to the author and to a status website.
+
+Yeah, I'll probably do that.  I'll probably only send the email
+in case of a failure; nobody needs extra email that just
+tells them what they already knew (that their patch was perfect :-)
+- Dan
+
+
+From dmitry at codeweavers.com  Sat Aug  2 22:00:28 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 3 Aug 2008 12:00:28 +0900
+Subject: [1/2] mlang: Add implementation of
+	fnIMLangFontLink_GetCharCodePages
+References: <200808021613.12951.vitperov@etersoft.ru>
+Message-ID: <84FF1AD176374EE79A6CEBC88D8A1A23@DMITRY>
+
+"Vitaly Perov" <vitperov at etersoft.ru> wrote:
+
+> @@ -1855,8 +1855,56 @@ static HRESULT WINAPI fnIMLangFontLink_GetCharCodePages(
+>          WCHAR chSrc,
+>          DWORD* pdwCodePages)
+>  {
+> -    FIXME("\n");
+> -    return E_NOTIMPL;
+> +    /* codepages, supported by Windows */
+> +    static const unsigned int processCP[] = {1250, 1251, 1252, 1253, 1254, 1255,
+> +        1256, 1257, 1258, 874, 932, 936, 949, 950, 0};
+
+It doesn't really matter what code pages Windows supports, it does
+matter though what code pages are valid. You need to use Win32 APIs
+EnumSystemCodePages/GetCPInfo/MultiByteToWideChar instead of accessing
+Wine internals directly.
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Sat Aug  2 22:05:51 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 3 Aug 2008 12:05:51 +0900
+Subject: [2/2] mlang/tests: add test for fnIMLangFontLink_GetCharCodePages
+References: <200808021613.20699.vitperov@etersoft.ru>
+Message-ID: <62E050D02BE14B51B038D73B63ADCAE7@DMITRY>
+
+"Vitaly Perov" <vitperov at etersoft.ru> wrote:
+
+> +    /* Tests for GetCharCodePages */
+> +    /* Latin 1 */
+> +    ok(IMLangFontLink_GetCharCodePages(iMLFL, 'd', &dwCodePages) == S_OK,
+> +        "IMLangFontLink_GetCharCodePages failed\n");
+> +    ok(dwCodePages == 2032127, "Incorrect CodePages returned (%i)\n", dwCodePages);
+> +
+> +    /* Cyrillic (Japanese, Simplified Chinese and Korean are also
+> +       include these symbols) */
+> +    ok(IMLangFontLink_GetCharCodePages(iMLFL, 0x0436, &dwCodePages) == S_OK,
+> +        "IMLangFontLink_GetCharCodePages failed\n");
+> +    ok(dwCodePages == 917508, "Incorrect CodePages returned (%i)\n", dwCodePages);
+> +
+> +    /* Japanese */
+> +    ok(IMLangFontLink_GetCharCodePages(iMLFL, 0xff6f, &dwCodePages) == S_OK,
+> +        "IMLangFontLink_GetCharCodePages failed\n");
+> +    ok(dwCodePages == 131072, "Incorrect CodePages returned (%i)\n", dwCodePages);
+
+Please use symbolic names for code pages bit field.
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Sat Aug  2 22:09:54 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 3 Aug 2008 12:09:54 +0900
+Subject: ntdll: import dll from dir of referring dll if not found
+	instandard locations
+References: <1217575415101518340@njxvm1.njstar.com>
+Message-ID: <C67F62172C154E1DA0050D9F798A5692@DMITRY>
+
+"Hongbo Ni" <hongbo at njstar.com> wrote:
+
+> This patch fixes bug 14699. It should fix all failed applications
+> which try to load a dll from specific folder, and the dll is link
+> another dll in the same folder.
+
+Please add a test case for this behaviour to confirm that your patch
+is doing a correct thing.
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Sat Aug  2 23:11:09 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Sun, 3 Aug 2008 13:11:09 +0900
+Subject: [1/2] mlang: Add implementation
+	offnIMLangFontLink_GetCharCodePages
+References: <200808021613.12951.vitperov@etersoft.ru>
+	<84FF1AD176374EE79A6CEBC88D8A1A23@DMITRY>
+Message-ID: <9BFC50F4DB6644ED80DFF7CDEEBFE4FE@DMITRY>
+
+"Dmitry Timoshkov" <dmitry at codeweavers.com> wrote:
+
+> It doesn't really matter what code pages Windows supports, it does
+> matter though what code pages are valid. You need to use Win32 APIs
+> EnumSystemCodePages/GetCPInfo/MultiByteToWideChar instead of accessing
+> Wine internals directly.
+
+... or rather use mlang internal mlang_data structures.
+
+-- 
+Dmitry.
+
+
+From hongbo_ni at hotmail.com  Sun Aug  3 01:45:15 2008
+From: hongbo_ni at hotmail.com (Hongbo Ni)
+Date: Sun, 3 Aug 2008 16:45:15 +1000
+Subject: ntdll: import dll from dir of referring dll if not found
+	instandard locations
+In-Reply-To: <C67F62172C154E1DA0050D9F798A5692@DMITRY>
+References: <1217575415101518340@njxvm1.njstar.com>
+	<C67F62172C154E1DA0050D9F798A5692@DMITRY>
+Message-ID: <BAY118-W4972F6F639633D6945E06994790@phx.gbl>
+
+
+"Dmitry Timoshkov" <dmitry at codeweavers.com> wrote:> > This patch fixes bug 14699. It should fix all failed applications> > which try to load a dll from specific folder, and the dll is link> > another dll in the same folder.> > Please add a test case for this behaviour to confirm that your patch> is doing a correct thing.Please ignore this patch. This is not how window work. Window&Wine solve it byLoadLibraryExW(module, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)  I will post another patch to just solve bug 14699. As discussed in my prev email: RE: DLL loading prolem when injecting into another process? @ -322,7 +322,7 @@ void *get_hook_proc( void *proc, const WCHAR *module ){     TRACE( "loading %s\n", debugstr_w(module) );     /* FIXME: the library will never be freed */-    if (!(mod = LoadLibraryW(module))) return NULL;+   if (!(mod = LoadLibraryExW(module, NULL, LOAD_WITH_ALTERED_SEARCH_PATH))) return NULL;   }   return (char *)mod + (ULONG_PTR)proc;}Currently there is no test case to show LoadLibraryW above has loaded the module in the processother than current process. But how can I write test case to justify using LoadLibraryExW instead LoadLibraryW above ?  How can I know if another process has loaded the DLL containing GetMsgProc when I am trying to callSetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hinstDll,GetWindowThreadProcessId(hwnd, NULL)); Hongbo Ni
+_________________________________________________________________
+Meet singles near you. Try ninemsn dating now!
+http://a.ninemsn.com.au/b.aspx?URL=http%3A%2F%2Fdating%2Eninemsn%2Ecom%2Eau%2Fchannel%2Findex%2Easpx%3Ftrackingid%3D1046247&_t=773166080&_r=WL_TAGLINE&_m=EXT
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20080803/77ed54a8/attachment.htm 
+
+From jeffzaroyko at gmail.com  Sun Aug  3 03:27:23 2008
+From: jeffzaroyko at gmail.com (Jeff Zaroyko)
+Date: Sun, 3 Aug 2008 18:27:23 +1000
+Subject: xinput implementation
+In-Reply-To: <op.ue51cei3t3yy3k@chourmovs-desktop>
+References: <a71bd89a0807310704j5903bc15p7d9c3609e21b9946@mail.gmail.com>
+	<op.ue51cei3t3yy3k@chourmovs-desktop>
+Message-ID: <f5d9424f0808030127y4158d020w6f8f8f8f391690a3@mail.gmail.com>
+
+On Fri, Aug 1, 2008 at 2:56 AM, chourmovs <vince.saulnier at free.fr> wrote:
+> If i've understood what i read before, i think i've found a sort of xinput's conformance test suite writen by windows coder
+> what do you think of that ?
+>
+> http://www.codeproject.com/KB/directx/xbox360_cont_xinput.aspx
+>
+> We've got the source code for a test and even binaries !!
+>
+> I've to test its behaviour under windows XP and after use it under wine to test new code and patches, isn't it ? I'm not sure to understand the conformance test guide well
+>
+> Thank you
+
+It's in C++ and the license looks incompatible with the LGPL.  So, no
+it doesn't look like it can be used.  If you're looking to contribute
+code, it's probably in your best interest to learn to program in C by
+picking up a book such as 'The C Programming Language, second edition'
+by K&R as a start, otherwise you have a large gap between not knowing
+how to program in C and being able to contribute to the degree which
+you've expressed interest.
+
+-Jeff
+
+
+From hverbeet at gmail.com  Sun Aug  3 03:56:06 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Sun, 3 Aug 2008 10:56:06 +0200
+Subject: [3/9] WineD3D: Beware of the frontbuffer coordinate system
+	difference
+In-Reply-To: <002201c8f533$148a6310$3d9f2930$@com>
+References: <002201c8f533$148a6310$3d9f2930$@com>
+Message-ID: <d658b69e0808030156y4d2eab78m91f48a089324a806@mail.gmail.com>
+
+2008/8/3 Stefan D?singer <stefan at codeweavers.com>:
+> +            src_rect->x1 -= offset.x; dst_rect->x2 -=offset.x;
+Why are you modifying dst_rect here?
+
+
+From hverbeet at gmail.com  Sun Aug  3 04:00:53 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Sun, 3 Aug 2008 11:00:53 +0200
+Subject: [7/9] WineD3D: Always load glFinish and glFlush from opengl32.dll
+In-Reply-To: <001201c8f533$039e6ab0$0adb4010$@com>
+References: <001201c8f533$039e6ab0$0adb4010$@com>
+Message-ID: <d658b69e0808030200x190680c2h3a5d036a4cd38a9e@mail.gmail.com>
+
+2008/8/3 Stefan D?singer <stefan at codeweavers.com>:
+> +/* glFinish and glFlush are always loaded from opengl32.dll, this the always have
+> + * __stdcall calling convention
+> + */
+In theory WINAPI could be something else than __stdcall.
+
+
+From ambro at b4ever.net  Sun Aug  3 05:22:32 2008
+From: ambro at b4ever.net (Ambroz Bizjak)
+Date: Sun, 3 Aug 2008 12:22:32 +0200 (CEST)
+Subject: Patch checking robot coming
+In-Reply-To: <a71bd89a0808021724w3125ae57y900f09a56396d267@mail.gmail.com>
+References: <a71bd89a0808021724w3125ae57y900f09a56396d267@mail.gmail.com>
+Message-ID: <50954.193.77.101.149.1217758952.squirrel@webmail.b4ever.net>
+
+Dan Kegel wrote:
+> Sounds great.  Want to implement that and send it
+> my way?   It'll take me a while to get the kinks worked
+> out of the script, it'd be nice to have a hand with the chroot.
+> - Dan
+
+OK, I'll try it. I have a lot of experience with the OS's architecture so
+it should be ready soon.
+
+
+
+From jarredsumner at gmail.com  Sat Aug  2 18:23:31 2008
+From: jarredsumner at gmail.com (Jarred Sumner)
+Date: Sat, 2 Aug 2008 16:23:31 -0700
+Subject: World of Warcraft's Current Perforamnce Rating
+Message-ID: <62dc9df70808021623w5cd0d3bbo7acb18729621e8a9@mail.gmail.com>
+
+Dear Wine Dev's,
+
+    It seems that as of wine 1.1.0 and later, Almost Every Game's
+performance that I play on linux has vastly improved. Those games are:
+
+
+   - World of Warcraft
+   - City of Heroes
+   - Command & Conquer 3 Tiberium Wars
+
+World of Warcraft's Performance has reached higher levels than Windows XP
+Professional Service Pack 3. It runs 85 FPS whereas on Windows it runs 75fps
+averagely
+
+City of Heroes runs the same on Windows as on Linux
+
+Command & Conquer 3 Tiberium Wars Runs a little better due to the fact that
+there is no anti-aliasing (With the patches provided on the appdb)
+
+Great Job with this wine development team!
+
+I have tested these games on the following distrobutions:
+
+Arch CORE
+Ubuntu 8.04.1 & 8.04
+Slackware 12.1
+
+Thank You for making gaming on Linux Playable!
+
+Sincerely,
+Jarrhed
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20080802/fcc441df/attachment.htm 
+
+From piotr.caban at gmail.com  Sun Aug  3 06:15:07 2008
+From: piotr.caban at gmail.com (Piotr Caban)
+Date: Sun, 3 Aug 2008 13:15:07 +0200
+Subject: msxml3: off-by-one fix for Qname allocation
+In-Reply-To: <mailman.922.1217706731.4616.wine-patches@winehq.org>
+References: <mailman.922.1217706731.4616.wine-patches@winehq.org>
+Message-ID: <200808031315.07846.piotr.caban@gmail.com>
+
+Hi Joris,
+SysAllocStringLen allocates additional space for NULL byte. It's not needed to 
+change string size.
+On the other hand QNames should be created differently. I will send patches 
+changing it soon.
+
+Regards,
+Piotr
+
+
+From Andrew.Talbot at talbotville.com  Sun Aug  3 07:15:28 2008
+From: Andrew.Talbot at talbotville.com (Andrew Talbot)
+Date: Sun, 03 Aug 2008 13:15:28 +0100
+Subject: fusion: Use proper function pointer
+References: <200808022209.49338.andrew.talbot@talbotville.com>
+	<22821af30808021551r4ea205fcj973c7b789e8f8670@mail.gmail.com>
+Message-ID: <g747h1$reb$1@ger.gmane.org>
+
+James Hawkins wrote:
+
+> On Sat, Aug 2, 2008 at 4:09 PM, Andrew Talbot
+> <andrew.talbot at talbotville.com> wrote:
+>> Changelog:
+>>    fusion: Use proper function pointer.
+>>
+>> diff --git a/dlls/fusion/fusion.c b/dlls/fusion/fusion.c
+>> index ac01cf4..637346c 100644
+>> --- a/dlls/fusion/fusion.c
+>> +++ b/dlls/fusion/fusion.c
+>> @@ -32,6 +32,9 @@
+>>
+>>  WINE_DEFAULT_DEBUG_CHANNEL(fusion);
+>>
+>> +typedef HRESULT (WINAPI *PFNGETCORVERSION)(LPWSTR pbuffer, DWORD
+>> cchBuffer,
+>> +                                           DWORD *dwLength);
+>> +
+>>  /******************************************************************
+>>  *  ClearDownloadCache   (FUSION.@)
+>>  */
+>> @@ -89,20 +92,18 @@ HRESULT WINAPI GetAssemblyIdentityFromFile(LPCWSTR
+>> pwzFilePath, REFIID riid,
+>>     return E_NOTIMPL;
+>>  }
+>>
+>> -static HRESULT (WINAPI *pGetCORVersion)(LPWSTR pbuffer, DWORD cchBuffer,
+>> -                                        DWORD *dwLength);
+>> -
+> 
+> There's nothing wrong with this.  We use this type of function pointer
+> all over the code base.
+> 
+
+Hi James,
+
+I think the part of my patch you have copied excludes the crucial bit (please excuse the line-wrapping).
+
+-    pGetCORVersion = (void *)GetProcAddress(hmscoree, "GetCORVersion");
++    pGetCORVersion = (PFNGETCORVERSION)GetProcAddress(hmscoree, "GetCORVersion");
+
+The thing that I would argue is wrong is that we are using an object pointer
+
+    (void*)
+
+in place of a function pointer
+
+    <return type> (*)(<args>)
+
+Granted there are probably around two thousand other instances like this in the dlls, and some may argue that it works, so leave it. On the other hand, there are also quite a lot of type definitions for *PFN...s and several MAKE_FUNCPTR() macros around, too.
+
+I seem to remember that someone tried to compile Wine with Visual Studio or suchlike, recently, and had to suppress warnings about using object pointers instead of function pointers (amongst other things).
+
+Anyway, I just fly the odd flag in good faith, occasionally, and see whether it gets saluted or shot down. :)
+
+Thanks and kind regards,
+
+-- 
+Andy.
+
+
+
+
+From wine at mkarcher.dialup.fu-berlin.de  Sun Aug  3 07:18:24 2008
+From: wine at mkarcher.dialup.fu-berlin.de (Michael Karcher)
+Date: Sun, 03 Aug 2008 14:18:24 +0200
+Subject: fusion: Use proper function pointer
+In-Reply-To: <22821af30808021551r4ea205fcj973c7b789e8f8670@mail.gmail.com>
+References: <200808022209.49338.andrew.talbot@talbotville.com>
+	<22821af30808021551r4ea205fcj973c7b789e8f8670@mail.gmail.com>
+Message-ID: <1217765904.5061.10.camel@hermes2.karcher.local>
+
+Am Samstag, den 02.08.2008, 17:51 -0500 schrieb James Hawkins:
+> > -static HRESULT (WINAPI *pGetCORVersion)(LPWSTR pbuffer, DWORD cchBuffer,
+> > -                                        DWORD *dwLength);
+> > -
+> 
+> There's nothing wrong with this.  We use this type of function pointer
+> all over the code base.
+
+You don't quote the interesting part:
+> > -    pGetCORVersion = (void *)GetProcAddress(hmscoree, "GetCORVersion");
+> > +    pGetCORVersion = (PFNGETCORVERSION)GetProcAddress(hmscoree, "GetCORVersion");
+
+This *is* wrong, according to the C standard. You may not cast a
+function pointer to a data pointer (like void*). There might be
+precedence in Wine to ignore this rule, but the patch seems appropriate
+at this point, as GetProcAddress does, in fact, return a
+pointer-to-function (FARPROC, which is typedefed in windef.h to a
+function pointer), which gets assigned to a function pointer. The
+(void*) cast is an IMHO misguided attempt to suppress the warning of
+casting between to function pointers of different types. As there is no
+void* like generic pointer for function pointers, the only sensible way
+to suppress the warning without causing undefined behaviour really is
+casting the result of GetProcAddress to the type of the destination
+pointer. As the casts to function pointer types look utterly
+incomprehensible in C, it seems correct to introduce a typedef, like the
+patch does.
+
+Another point of the patch is that is makes a static global variable a
+local function variable. I don't take a position on that change,
+although on the first glance it seems reasonable, as the global variable
+is initialized on each entry into get_corversion. If the address of
+GetCORVersion should be cached between invocations, the GetProcAddress
+and LoadLibraryA calls should probably be guarded by pGetCORVersion !=
+NULL.
+
+Regards,
+  Michael Karcher
+
+
+
+From hongbo_ni at hotmail.com  Sun Aug  3 08:54:37 2008
+From: hongbo_ni at hotmail.com (Hongbo Ni)
+Date: Sun, 3 Aug 2008 23:54:37 +1000
+Subject: problem loading wine test projects windows vista
+Message-ID: <BAY118-W5665E3798D8280C540E18694790@phx.gbl>
+
+
+Hi,
+
+I want to build and test wine test suite on window, I did
+
+./tools/winapi/msvcmaker --no-wine
+
+that is ok, but when I try to open the fille winetest.dsw,
+
+1. with Developer Studio 6.0, it compaints that all *.dsp files (such as dlls\advapi32\tests\advapi32_test.dsp)
+   have been modified and can not be loaded as Developer Studio Project.
+   
+2. with Developer Studio 2008, half of the *.dsp files (such as dlls\user32\tests\user32_test.dsp) 
+   was reported corrupted after been converted into the current Visual C++ project format. 
+
+Does anyone know what is the problem? Please help me.
+
+I really need to compile and run existing tests on window before I can write any test case for wine.
+
+Regards
+Hongbo Ni
+_________________________________________________________________
+It's simple! Sell your car for just $40 at CarPoint.com.au
+http://a.ninemsn.com.au/b.aspx?URL=http%3A%2F%2Fsecure%2Dau%2Eimrworldwide%2Ecom%2Fcgi%2Dbin%2Fa%2Fci%5F450304%2Fet%5F2%2Fcg%5F801459%2Fpi%5F1004813%2Fai%5F859641&_t=762955845&_r=tig_OCT07&_m=EXT
+
+From stefan at codeweavers.com  Sun Aug  3 09:36:19 2008
+From: stefan at codeweavers.com (=?windows-1252?Q?Stefan_D=F6singer?=)
+Date: Sun, 3 Aug 2008 09:36:19 -0500
+Subject: [3/9] WineD3D: Beware of the frontbuffer coordinate
+	system	difference
+In-Reply-To: <d658b69e0808030156y4d2eab78m91f48a089324a806@mail.gmail.com>
+References: <002201c8f533$148a6310$3d9f2930$@com>
+	<d658b69e0808030156y4d2eab78m91f48a089324a806@mail.gmail.com>
+Message-ID: <004b01c8f576$4bd0cba0$e37262e0$@com>
+
+> 2008/8/3 Stefan D?singer <stefan at codeweavers.com>:
+> > +            src_rect->x1 -= offset.x; dst_rect->x2 -=offset.x;
+> Why are you modifying dst_rect here?
+Wooops. Copypaste.
+
+
+
+
+
+From stefan at codeweavers.com  Sun Aug  3 09:36:19 2008
+From: stefan at codeweavers.com (=?windows-1252?Q?Stefan_D=F6singer?=)
+Date: Sun, 3 Aug 2008 09:36:19 -0500
+Subject: [7/9] WineD3D: Always load glFinish and glFlush from opengl32.dll
+In-Reply-To: <d658b69e0808030200x190680c2h3a5d036a4cd38a9e@mail.gmail.com>
+References: <001201c8f533$039e6ab0$0adb4010$@com>
+	<d658b69e0808030200x190680c2h3a5d036a4cd38a9e@mail.gmail.com>
+Message-ID: <004c01c8f576$516308d0$f4291a70$@com>
+
+> 2008/8/3 Stefan D?singer <stefan at codeweavers.com>:
+> > +/* glFinish and glFlush are always loaded from opengl32.dll, this
+> the always have
+> > + * __stdcall calling convention
+> > + */
+> In theory WINAPI could be something else than __stdcall.
+The code uses __stdcall, not WINAPI, if USE_WIN32_OPENGL is defined, thus
+I've used __stdcall here too
+
+
+
+
+From dank at kegel.com  Sun Aug  3 10:28:13 2008
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 3 Aug 2008 08:28:13 -0700
+Subject: problem loading wine test projects windows vista
+Message-ID: <a71bd89a0808030828s5ddfbc70l323a8f81041387ed@mail.gmail.com>
+
+Hongbo wrote:
+> I really need to compile and run existing tests on window before I can write any test case for wine.
+
+The easiest way is to cross-compile them on wine and then run them on windows.
+
+To do this, say
+   make crosstest
+
+See
+http://www.winehq.org/site/docs/winedev-guide/cross-compiling-tests
+- Dan
+
+
+From msclrhd at googlemail.com  Sun Aug  3 09:27:07 2008
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Sun, 3 Aug 2008 15:27:07 +0100
+Subject: problem loading wine test projects windows vista
+In-Reply-To: <BAY118-W5665E3798D8280C540E18694790@phx.gbl>
+References: <BAY118-W5665E3798D8280C540E18694790@phx.gbl>
+Message-ID: <3f4fd2640808030727m7344464cn7f4dfe59037a7d5e@mail.gmail.com>
+
+2008/8/3 Hongbo Ni <hongbo_ni at hotmail.com>:
+>
+> Hi,
+>
+> I want to build and test wine test suite on window, I did
+>
+> ./tools/winapi/msvcmaker --no-wine
+>
+> that is ok, but when I try to open the fille winetest.dsw,
+>
+> 1. with Developer Studio 6.0, it compaints that all *.dsp files (such as dlls\advapi32\tests\advapi32_test.dsp)
+>   have been modified and can not be loaded as Developer Studio Project.
+>
+> 2. with Developer Studio 2008, half of the *.dsp files (such as dlls\user32\tests\user32_test.dsp)
+>   was reported corrupted after been converted into the current Visual C++ project format.
+>
+> Does anyone know what is the problem? Please help me.
+>
+> I really need to compile and run existing tests on window before I can write any test case for wine.
+
+What is git's core.autocrlf setting configured to? I had this issue
+(some of the detected filenames are '\r' - which is caused by perl
+being confused, which then confuses Visual Studio).
+
+You need to set core.autocrlf to false:
+
+    $ git config --bool core.autocrlf false
+
+HTH,
+- Reece
+
+
+From paul.vriens.wine at gmail.com  Sun Aug  3 12:50:42 2008
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Sun, 03 Aug 2008 19:50:42 +0200
+Subject: winetest sometimes shows 'crashed' and sometimes 'timeout'
+Message-ID: <4895EFF2.4050804@gmail.com>
+
+Hi,
+
+A few months ago I mentioned the fact that due to some issues with old 
+kernel32/debugger tests there were some leftovers in the registry:
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
+  (contains 'Debugger' which points to kernel32_test.exe)
+
+I have a feeling that on systems where this AeDebug contains normal debugger 
+information we sometimes see 'crashed' whereas we see 'timeout' when the key 
+still contains our own entry.
+
+Can anybody confirm this finding?
+
+What I'm actually looking for is people having a look at that registry key to 
+see the contents. If it's indeed something containing "kernel32_test.exe" I'd 
+like to hear about it (preferably with the tag they have used for the winetest run).
+
+One way to fix this registry key is to run 'drwtsn32 -i'. This of course 
+restores the basic dr watson entry and not some specific debug program that was 
+there before.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From hverbeet at gmail.com  Sun Aug  3 13:12:25 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Sun, 3 Aug 2008 20:12:25 +0200
+Subject: [7/9] WineD3D: Always load glFinish and glFlush from opengl32.dll
+In-Reply-To: <004c01c8f576$516308d0$f4291a70$@com>
+References: <001201c8f533$039e6ab0$0adb4010$@com>
+	<d658b69e0808030200x190680c2h3a5d036a4cd38a9e@mail.gmail.com>
+	<004c01c8f576$516308d0$f4291a70$@com>
+Message-ID: <d658b69e0808031112g7fb86b50n3811b0c7193d15ea@mail.gmail.com>
+
+2008/8/3 Stefan D?singer <stefan at codeweavers.com>:
+> The code uses __stdcall, not WINAPI, if USE_WIN32_OPENGL is defined, thus
+> I've used __stdcall here too
+>
+What code? The exports in opengl32.dll are WINAPI. (It would only
+really make a difference for Win64, I guess)
+
+
+From chourmovs at gmail.com  Sun Aug  3 13:24:23 2008
+From: chourmovs at gmail.com (chourmovs vs)
+Date: Sun, 3 Aug 2008 20:24:23 +0200
+Subject: No subject
+Message-ID: <374283970808031124w25292690t2753815e945d78a9@mail.gmail.com>
+
+chourmovs at gmail.com
+
+
+From Andrew.Talbot at talbotville.com  Sun Aug  3 13:26:03 2008
+From: Andrew.Talbot at talbotville.com (Andrew Talbot)
+Date: Sun, 03 Aug 2008 19:26:03 +0100
+Subject: msvfw32: Rename macro parameter to avoid string coincidence
+References: <200808031820.29188.andrew.talbot@talbotville.com>
+Message-ID: <g74t7r$l49$1@ger.gmane.org>
+
+You might want to forget this one. I guess no one is compiling Wine on a
+broken, pre-ANSI compiler. So the expansion of macro parameters inside
+string literals may well, in effect, be a non-issue.
+
+-- 
+Andy.
+
+
+
+
+From chourmovs at gmail.com  Sun Aug  3 13:29:28 2008
+From: chourmovs at gmail.com (chourmovs)
+Date: Sun, 3 Aug 2008 11:29:28 -0700 (PDT)
+Subject: xinput implementation
+Message-ID: <18800318.post@talk.nabble.com>
+
+
+
+Jeff Zaroyko wrote:
+> 
+> 
+> It's in C++ and the license looks incompatible with the LGPL.  So, no
+> it doesn't look like it can be used.  If you're looking to contribute
+> code, it's probably in your best interest to learn to program in C by
+> picking up a book such as 'The C Programming Language, second edition'
+> by K&R as a start, otherwise you have a large gap between not knowing
+> how to program in C and being able to contribute to the degree which
+> you've expressed interest.
+> 
+> -Jeff
+> 
+
+Hi Jeff thank you for your support
+I've got few notion of c, and i've never tried class programming with c++
+The fact is what i found about xinput on the web use xinput msnd classes
+like windows.h and xinput.h
+How could i rewrite what is included in msdn ? How could i intercept xinput
+signal with c coding without any classes ?
+To Follow Dan instruction, my first and only aim is to write conformance
+test for the moment but i'm not sure i have understood what i've to do
+
+-- 
+View this message in context: http://www.nabble.com/xinput-implementation-tp18748649p18800318.html
+Sent from the Wine - Devel mailing list archive at Nabble.com.
+
+
+
+From alexd4 at inbox.lv  Sun Aug  3 16:52:39 2008
+From: alexd4 at inbox.lv (Alexander Dorofeyev)
+Date: Mon, 04 Aug 2008 00:52:39 +0300
+Subject: [2/2] wined3d: Use CTXUSAGE_RESOURCELOAD for ActivateContext()
+	in	color_fill_fbo()
+In-Reply-To: <d658b69e0808031217v743022c7pe2ffca52a68fef0f@mail.gmail.com>
+References: <d658b69e0808031217v743022c7pe2ffca52a68fef0f@mail.gmail.com>
+Message-ID: <489628A7.8030705@inbox.lv>
+
+H. Verbeet wrote:
+
+> +    IWineD3DDeviceImpl_MarkStateDirty(This, STATE_RENDER(WINED3DRS_SCISSORTESTENABLE));
+> +
+> +    glDisable(GL_BLEND);
+> +    IWineD3DDeviceImpl_MarkStateDirty(This, STATE_RENDER(WINED3DRS_ALPHABLENDENABLE));
+
+Don't you need to also dirtify STATE_SCISSORRECT there?
+
+
+From stefan at codeweavers.com  Sun Aug  3 16:54:55 2008
+From: stefan at codeweavers.com (=?windows-1252?Q?Stefan_D=F6singer?=)
+Date: Sun, 3 Aug 2008 16:54:55 -0500
+Subject: [7/9] WineD3D: Always load glFinish and glFlush from opengl32.dll
+In-Reply-To: <d658b69e0808031112g7fb86b50n3811b0c7193d15ea@mail.gmail.com>
+References: <001201c8f533$039e6ab0$0adb4010$@com>	
+	<d658b69e0808030200x190680c2h3a5d036a4cd38a9e@mail.gmail.com>	
+	<004c01c8f576$516308d0$f4291a70$@com>
+	<d658b69e0808031112g7fb86b50n3811b0c7193d15ea@mail.gmail.com>
+Message-ID: <004701c8f5b3$91572e20$b4058a60$@com>
+
+> > The code uses __stdcall, not WINAPI, if USE_WIN32_OPENGL is defined,
+> thus
+> > I've used __stdcall here too
+> >
+> What code? The exports in opengl32.dll are WINAPI. (It would only
+> really make a difference for Win64, I guess)
+The definition of WINE_GLAPI on top of the same file:
+
+#ifdef USE_WIN32_OPENGL
+#define WINE_GLAPI __stdcall
+#else
+#define WINE_GLAPI
+#endif
+
+I can surely send a patch that replaces the __stdcall in there with WINAPI,
+but I'd prefer to ask Roderick first why he set it up this way.
+
+
+
+
+From scott at open-vote.org  Sun Aug  3 21:27:36 2008
+From: scott at open-vote.org (Scott Ritchie)
+Date: Sun, 03 Aug 2008 19:27:36 -0700
+Subject: Patch checking robot coming
+In-Reply-To: <a71bd89a0808021936x185400e8icf2087aa9c617c32@mail.gmail.com>
+References: <a71bd89a0808021724w3125ae57y900f09a56396d267@mail.gmail.com>	<b050a5e70808021925g1e0b747uf0661c38350841ff@mail.gmail.com>
+	<a71bd89a0808021936x185400e8icf2087aa9c617c32@mail.gmail.com>
+Message-ID: <48966918.8060004@open-vote.org>
+
+Dan Kegel wrote:
+> On Sat, Aug 2, 2008 at 7:25 PM, Zachary Goldberg <zgold550 at gmail.com> wrote:
+>> Its really ironic that you post this today as just yesterday I was
+>> contemplating the same thing, and not only doing a compile check but
+>> also a run of the test suite and valgrind.
+> 
+> Yeah, that's the end goal.  Gotta walk before you run, though.
+> 
+>> Other than that I wanted to put in a +1 for sending an
+>> email to the author and to a status website.
+> 
+> Yeah, I'll probably do that.  I'll probably only send the email
+> in case of a failure; nobody needs extra email that just
+> tells them what they already knew (that their patch was perfect :-)
+> - Dan
+> 
+> 
+Depending on how bogged-down the robot gets (compiler cache will help),
+it might be useful to have a visible status somewhere so I know that my
+patch was at least checked before bothering Alexandre to commit it :)
+
+
+Thanks,
+Scott Ritchie
+
+
+From dmitry at codeweavers.com  Sun Aug  3 23:18:37 2008
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 4 Aug 2008 13:18:37 +0900
+Subject: user32/tests: Avoid crash on win9x in win.c
+References: <1217797302.7803.23.camel@p4.lan>
+Message-ID: <CF3888EEFC1242FF8BB895644B3B44C3@DMITRY>
+
+"Detlef Riekenberg" <wine.dev at web.de> wrote:
+
+> @@ -4765,10 +4765,14 @@ static void test_hwnd_message(void)
+>          parent = pGetAncestor(hwnd, GA_PARENT);
+>          ok(parent != 0, "GetAncestor(GA_PARENT) should not return 0 for message windows\n");
+>          ok(parent != desktop, "GetAncestor(GA_PARENT) should not return desktop for message windows\n");
+> -        root = pGetAncestor(hwnd, GA_ROOT);
+> -        ok(root == hwnd, "GetAncestor(GA_ROOT) should return hwnd for message windows\n");
+> +        if (0) {
+> +            /* this crash on win9x */
+> +            root = pGetAncestor(hwnd, GA_ROOT);
+> +            ok(root == hwnd, "GetAncestor(GA_ROOT) should return hwnd for message windows\n");
+> +        }
+
+HWND_MESSAGE is not supported on win9x, so there is no point in
+disabling a part of the test which is not supposed to pass a all.
+Probably CreateWindowEx doesn't fail for some reason, so you need
+to find a different way to detect that.
+
+-- 
+Dmitry.
+
+
+From chourmovs at gmail.com  Sun Aug  3 11:57:18 2008
+From: chourmovs at gmail.com (chourmovs)
+Date: Sun, 3 Aug 2008 09:57:18 -0700 (PDT)
+Subject: xinput implementation
+In-Reply-To: <f5d9424f0808030127y4158d020w6f8f8f8f391690a3@mail.gmail.com>
+References: <op.ue4e57uct3yy3k@chourmovs-desktop>
+	<a71bd89a0807310704j5903bc15p7d9c3609e21b9946@mail.gmail.com>
+	<op.ue51cei3t3yy3k@chourmovs-desktop>
+	<f5d9424f0808030127y4158d020w6f8f8f8f391690a3@mail.gmail.com>
+Message-ID: <18800318.post@talk.nabble.com>
+
+
+
+
+Jeff Zaroyko wrote:
+> 
+> 
+> It's in C++ and the license looks incompatible with the LGPL.  So, no
+> it doesn't look like it can be used.  If you're looking to contribute
+> code, it's probably in your best interest to learn to program in C by
+> picking up a book such as 'The C Programming Language, second edition'
+> by K&R as a start, otherwise you have a large gap between not knowing
+> how to program in C and being able to contribute to the degree which
+> you've expressed interest.
+> 
+> -Jeff
+> 
+
+Hi Jeff thank you for your support
+I've got few notion of c, and i've never tried class programming with c++
+The fact is what i found about xinput on the net call xinput msnd classes
+like windows.h and xinput.h
+How could i rewrite what is included in msdn ? How could i intercept xinput
+signal with c coding without any classes ?
+To Follow Dan instruction, my first and only aim is to write conformance
+test for the moment but i'm not sure i have understood what i've to do
+
+-- 
+View this message in context: http://www.nabble.com/xinput-implementation-tp18748649p18800318.html
+Sent from the Wine - Devel mailing list archive at Nabble.com.
+
+
+
+From hverbeet at gmail.com  Mon Aug  4 01:55:46 2008
+From: hverbeet at gmail.com (H. Verbeet)
+Date: Mon, 4 Aug 2008 08:55:46 +0200
+Subject: [2/2] wined3d: Use CTXUSAGE_RESOURCELOAD for ActivateContext() in
+	color_fill_fbo()
+In-Reply-To: <489628A7.8030705@inbox.lv>
+References: <d658b69e0808031217v743022c7pe2ffca52a68fef0f@mail.gmail.com>
+	<489628A7.8030705@inbox.lv>
+Message-ID: <d658b69e0808032355g636d351fhe3ac3f11250cc706@mail.gmail.com>
+
+2008/8/3 Alexander Dorofeyev <alexd4 at inbox.lv>:
+> H. Verbeet wrote:
+>
+>> +    IWineD3DDeviceImpl_MarkStateDirty(This, STATE_RENDER(WINED3DRS_SCISSORTESTENABLE));
+>> +
+>> +    glDisable(GL_BLEND);
+>> +    IWineD3DDeviceImpl_MarkStateDirty(This, STATE_RENDER(WINED3DRS_ALPHABLENDENABLE));
+>
+> Don't you need to also dirtify STATE_SCISSORRECT there?
+>
+Probably, yeah.
+
+
+From fgouget at free.fr  Mon Aug  4 03:23:34 2008
+From: fgouget at free.fr (Francois Gouget)
+Date: Mon, 4 Aug 2008 10:23:34 +0200 (CEST)
+Subject: DIB engine status
+In-Reply-To: <20080801115648.GB24893@merlot.physics.ox.ac.uk>
+References: <20080801115648.GB24893@merlot.physics.ox.ac.uk>
+Message-ID: <alpine.DEB.1.10.0808041006020.5515@amboise.dolphin>
+
+On Fri, 1 Aug 2008, Huw Davies wrote:
+
+> Hi folks,
+> 
+> Here's an update on the DIB engine that I've been working on for the
+> last few months.
+
+An important thing to note about this work is that its architecture 
+should be acceptable to Alexandre. So it can go into WineHQ, the only 
+blocker being that it's not quite complete enough yet.
+
+So that leads to the most important question:
+
+   what's needed to allow it to go into WineHQ?
+
+Blitting I guess. Everything else in the list below?
+Can we avoid having to implement everything before we can commit it?
+
+[...]
+> What needs to be done
+> =====================
+> - Blitting (eg BitBlt, StretchBlt and StretchDIBits) - I have some
+>   hacks for these in my tree.
+> 
+> - ExtTextOut
+> 
+> - Many more GDI32 apis - a lot of these should be easy given that we
+>   have a set of underlying dib drawing primitives.
+> 
+> - Non-MM_TEXT mapping modes and world transforms.
+> 
+> - The initial interaction with GDI32 in BITMAP_SelectObject is hacky
+>   and needs some work.
+> 
+> - Lots more...
+
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+                            1 + e ^ ( i * pi ) = 0
+
+

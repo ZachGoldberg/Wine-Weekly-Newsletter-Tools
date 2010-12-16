@@ -1,0 +1,466 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Wine Traffic</title>
+<author contact="mailto:brianv@REMOVETHIS.ski-copper.com">Brian Vincent</author>
+<issue num="95" date="13 May 2001 00:00:00 -0800" />
+<intro>
+ 
+<p>This is the 95th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x Windows emulator).</p>
+
+<p>Next week's issue will likely arrive on Tuesday, or possibly later depending 
+on how many threads there are.  I'll be on vacation next week.  On a related note,
+does anyone have any suggestions as to what to see or do at Lake Powell, UT?</p>
+
+</intro>
+
+<stats posts="2" size="182" contrib="2" multiples="13" lastweek="0">
+<person posts="9" size="32" who="Francois Gouget &lt;gouget&gt;" />
+<person posts="8" size="35" who="Marcus Meissner &lt;marcus.de&gt;" />
+<person posts="6" size="18" who="Ian Pilcher &lt;ian.pilcher&gt;" />
+<person posts="3" size="8" who="Andreas Mohr &lt;a.mohr&gt;" />
+<person posts="3" size="7" who="Alexandre Julliard &lt;julliard&gt;" />
+<person posts="3" size="7" who="Eric Pouech &lt;eric.pouech&gt;" />
+<person posts="3" size="6" who="Uhmmmm &lt;uhmmmm&gt;" />
+</stats>
+ 
+ 
+<section
+  title="Headlines"
+  subject="A new vintage and some interesting press"
+  archive="http://www.winehq.org/hypermail/wine-cvs/2001/05/0068.html"
+  posts="1"                                                 
+  startdate="10 May 2001 00:00:00 -0800"
+  enddate="10 May 2001 00:00:00 -0800"
+>
+ 
+<mention>CodeWeavers</mention>
+<mention>TransGaming</mention>
+
+<p>Alexandre has unleashed a new snapshot unto the world.  On
+Thursday Wine-20010510 was cut and made available.  The source
+is available via http at 
+<a href="http://gnumonks.org/ftp/pub/rpms/cl-7.0/SOURCES/Wine-20010510.tar.gz">
+http://gnumonks.org/ftp/pub/rpms/cl-7.0/SOURCES/Wine-20010510.tar.gz</a>
+or through ftp at  
+<a href="ftp://ftp.infomagic.com/pub/mirrors/linux/sunsite/ALPHA/wine/development/Wine-20010510.tar.gz">
+ftp://ftp.infomagic.com/pub/mirrors/linux/sunsite/ALPHA/wine/development/Wine-20010510.tar.gz</a>.
+</p>
+ 
+<p>The main changes include:</p>
+
+<p><ul>
+  	<li> a ton of printing enhancements (check out last weeks issue about the 
+          addition of CUPS support)</li>
+ 	<li> graphics driver restructurations</li>
+	<li> changes to facilitate a port to NetBSD</li>
+	<li> and lots of other fixes for bugs</li>
+   </ul> 
+</p>
+
+<p>Also out this week were a pair of interesting stories in the press.</p>  
+
+<p>The first one, from 
+<a href="http://www.gamespy.com">GameSpy.Com</a>, is titled 
+<a href="http://www.gamespy.com/articles/may01/wine/">Ports vs. Wine</a>.
+As <a href="http://www.linuxtoday.com">Linux Today</a> describes it,
+"GameSpy takes on the question of whether Linux gamers are better off 
+waiting for Linux ports (which aren't as plentiful as many would like) 
+or getting behind Wine. Includes commentary from Gavriel State of TransGaming, 
+which is working on bringing DirectX to Wine; and an assortment of pro-ports 
+people including Scott Draeker of Loki, who maintain that compatibility layers 
+are bad news".  This is what Gavriel had to say in the article:</p>  
+
+<quote who="Gavriel State"><p>
+TransGaming doesn't see WineX as competition for source level porting efforts from 
+companies such as TribSoft and Loki. Rather the opposite: WineX compliments the 
+existing Linux games market by keeping Linux users in Linux to play their games, even 
+when the developer or publisher has decided against a direct Linux port. TransGaming 
+is certainly not going to be spending any effort on games that have already been ported 
+by Loki or TribSoft. </p>
+
+<p>Keep in mind also that WineX can be used for source level compatibility (aka 
+Winelib) to speed up the process of recompiling games using Linux-based compilers 
+and development tools, and thus taking advantage of Linux-specific features where 
+they make sense. In fact, internally we use the Winelib approach for regression 
+testing with the various Microsoft Direct3D samples. </p>
+
+<p>It's not an either/or situation. We'll see some games being played under the 
+Wine binary loader, some ported"natively" to Linux using Winelib and some direct 
+access to Linux APIs, and others rewritten from the ground up using APIs like SDL.</p>
+
+<p>The true strength of Linux and Open Source lies in diversity and choice, and having 
+multiple approaches to game portability is just one more aspect of that strength. </p>
+
+</quote>
+
+<p>Also included in the article is a nice 
+<a href="http://www.gamespy.com/asp/image.asp?/articles/may01/wine/1.jpg">screenshot</a> 
+of Shiny's Sacrifice running with WineX.</p>
+
+<p>The second article out this week is 
+<a href="http://www.eet.com/story/OEG20010508S0061">"Plug-ins 
+to enhance browsers of Linux-based appliances"</a> from 
+<a href="http://www.eet.com">EETimes</a>.  It starts off:</p>
+
+<quote who="eetimes">
+
+<p>Looking to narrow the gap in features between Windows- 
+and Linux-based platforms, CodeWeavers Inc. has developed a series of browser 
+plug-ins such as Shockwave and QuickTime for Linux-based Internet appliances.</p>
+
+<p>CodeWeavers' CrossOver plug-in software, scheduled for a May 15 launch, will 
+be offered to Internet appliance manufacturers building platforms that run Linux 
+or any Unix-like operating system. </p>
+
+</quote>
+
+<p>And then further down:</p>
+
+<p><quote who="eetimes">In addition to the CrossOver plug-ins, CodeWeavers plans this 
+fall to launch CrossOver display, which will let an Internet appliance start up a 
+Windows application installed on a nearby PC with a click of a button, but without 
+a Windows OS. And CrossOver server, scheduled for release in mid-2002, is a complete 
+Windows-compatible Linux-based server. </quote></p>
+
+</section>
+ 
+ 
+<section
+  title="doors IPC"
+  subject="doors IPC"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0054.html"
+  posts="3"
+  startdate="08 May 2001 00:00:00 -0800"
+  enddate="09 May 2001 00:00:00 -0800">
+ 
+  <mention></mention>
+
+<p>Damjan Lango posted note about speeding up the wineserver:</p>
+
+<quote who="Damjan Lango"><p>
+Some time ago here was a discussion about speeding up the communication
+between the wineserver and the application with various kernel patches.
+I was reading "Unix Network Programming, volume 2 - IPC" and ran over
+a "doors" IPC api that is implemented on Solaris and has the lowest latency.
+According to the book it is ~3 times faster than pipe.
+Actual values for Solaris 2.6 in the book are: (in milliseconds)</p>
+<p><ul><code>
+doors:      121<br />
+sysv msgq:  260<br />
+pipe:       324<br />
+unix dom. socket: 465<br />
+posix msgq: 584<br />
+</code></ul></p>
+...
+
+<p>There is also a link to a Linux implementation of doors on:
+<a href="http://www.rampant.org/doors/">http://www.rampant.org/doors/</a></p>
+
+<p>On this link you will find also more info on doors.</p>
+
+<p>But according to the performance tests that the author made,
+the linux pipe is somewhat the same speed as doors so 
+maybe it could be optimized more or maybe is Linux's pipe
+already so optimized that doors are unnecessary.</p>
+
+<p>So what do you think, would this be useful for speeding up wine?
+	I apologoize if you already know about this...</p></quote>
+
+<p>Marcus Meissner replied with:</p>
+<quote who="Marcus Meissner"><p>What a coincidence ;)</p>
+
+<p>I just did a patch changing the critical section handling to become more of a
+spinlock.</p>
+
+<p>I have attached it. This should reduce the critical section based
+reschedules between:<br />
+	<ul><code>wine &lt;-&gt; wineserver &lt;-&gt; wine</code></ul><br /> 
+to:<br />
+	<ul><code>wine &lt;-&gt; wine</code></ul></p>
+
+<p>Since critical sections are thought to be 'fast' and 'short time' locking
+primitives, and Win32 threads should not sleep in a critical section,
+we can just give up our timeslice and wait for the other thread that
+has the lock to continue.</p>
+
+<p>This is a preliminary version, but it works.
+It uses 'LockSemaphore' as differentation between process-local and
+global critical sections.</p>
+
+<p>It uses 'sched_yield', which is a POSIX feature, to give up the timeslice.
+How does one force a reschedule on another UNIX? Is<br />
+	<blockquote><code>select(0,NULL,NULL,NULL,shorttimeout);</code></blockquote>
+reliable?</p>
+
+<p>This patch can give spinning processes on SMP systems, but I do not 
+consider this a real problem at this time.</p>
+
+<p>I would like to know if there is something wrong with the concept ;)</p>
+
+<p>At least winword feels a bit snappier now.</p></quote>
+
+</section>
+
+
+
+
+
+
+<section
+  title="Helping with Wine"
+  subject="Re: where do I go to find out who needs help"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/05/0068.html"
+  posts="2"
+  startdate="09 May 2001 00:00:00 -0800"
+  enddate="09 May 2001 00:00:00 -0800">
+
+<mention></mention>
+<mention>codeweavers</mention>
+
+<p>Sean Callahan sent a message that asked what could be done to help
+out with Wine.  Francois Gouget sent a lengthy reply that listed a lot
+of items:</p>
+
+<quote who="Francois Gouget">
+
+<p>
+   Hmmm, I think I can also find a list of bugs in bugzilla that could
+   easily be fixed by someone new to Wine:</p>
+
+<p>
+	Easy:</p>
+
+<p>
+<ul>
+
+<li>
+   Builtin msvcrt mishandles the cmdline to argv conversion #234: <a
+   href="http://bugs.winehq.org/show_bug.cgi?id=234">http://bugs.winehq.org/show_bug.cgi?id=234</a>
+   This prevents 'wine /mnt/win/Program\ Files\whatever\foo.exe' from working
+   if you're using the builtin msvcrt!</li>
+
+ <li> I'm almost 100% certain that there's another bug in the same function
+   in its handling of the environment variable.</li>
+
+ <li> PrgWin95/98: System metrics differ from the Win9x values
+   #48: <a
+   href="http://bugs.winehq.org/show_bug.cgi?id=48">http://bugs.winehq.org/show_bug.cgi?id=48</a>
+   One day I'll fix this one... I swear. Unless you want to work on it
+   first. In that case I'll provide you with my test application and dumps
+   of the metrics for Win95, Win98, NT4, ...</li>
+
+ <li> The doc about the command line arguments and the config file is out
+   of date. I'm sure there are plenty of other things that are out of
+   date.</li>
+
+ <li> Get the VXCL samples, test them with Wine and report the bugs in the
+   bugzilla database. I know there's lots of them. Then people (or
+   yourself) can start fixing these bugs in a distributed fashion.</li>
+
+ <li> PrgWin95: Listbox getting a recessed border instead of a flat one
+   #56: <a href="http://bugs.winehq.org/show_bug.cgi?id=56">
+	http://bugs.winehq.org/show_bug.cgi?id=56</a>
+   (I can provide you with the sample application)</li>
+
+ <li> I think it would be nice to add a tool that displays the dlls version
+   information like 'About' does in the windows explorer. I have some
+   code you could use as a starting point and I think it could be
+   merged with winver. In fact this would be almost stabdard windows
+   programming.</li>
+
+ <li> There's a bug in the drawing of the border of the common control
+   tabs. Fixing each of the four instances of the code is easy. It would
+   be interesting to find a way to factorize some of this code.</li>
+
+</ul>
+</p>
+
+<p>Medium (I expect these would take longer or be a bit harder)</p>
+
+<p>
+<ul>
+
+ <li> Provide a pedump utility
+   #91: <a href="http://bugs.winehq.org/show_bug.cgi?id=91">
+	http://bugs.winehq.org/show_bug.cgi?id=91</a>
+   I know there's sample code that does that already floating around so
+   it should be relatively simple.</li>
+
+ <li> wrc fails on preprocessed files
+   #115: <a href="http://bugs.winehq.org/show_bug.cgi?id=115">
+	http://bugs.winehq.org/show_bug.cgi?id=115</a>
+   I believe it's just a grammar problem. You'll need to know
+   (or to get cozy with) lex/yacc...</li>
+
+ <li> CreateIcon does not resize bitmaps
+   #175: <a href="http://bugs.winehq.org/show_bug.cgi?id=175">
+	http://bugs.winehq.org/show_bug.cgi?id=175</a>
+   I did a similar fix somewhere some time ago. I can provide a
+   sample application and I might be able to point you in the right 
+   direction.</li>
+
+ <li> winemaker: 'winemaker --nomfc' does not have the intended effect
+   #227: <a href="http://bugs.winehq.org/show_bug.cgi?id=227">
+	http://bugs.winehq.org/show_bug.cgi?id=227</a>
+    </li>
+
+ <li> winemaker: Ignores the '--with-{mfc,wine}' options once they are
+   cached
+   #225: <a href="http://bugs.winehq.org/show_bug.cgi?id=225">
+	http://bugs.winehq.org/show_bug.cgi?id=225</a>
+   If you're familiar with autoconf and know how configure scripts
+   should behave...</li>
+
+ <li> StrokePath ignores PS_JOIN_xxx
+   #11: <a href="http://bugs.winehq.org/show_bug.cgi?id=11">
+	http://bugs.winehq.org/show_bug.cgi?id=11</a>
+   This should not be too difficult to fix but it would certainly help
+   if you are familiar with GDI.</li>
+
+ <li> Checking the differences between what's in the Windows dlls and
+   what's in our spec files... and fix the contents of our spec files
+   as appropriate. I already have a list of all the APIs in
+   each of the dlls for Win95, Win98, NT4 and Wine2000, plus a script
+   that can show the differences.</li>
+
+ <li> Enhancing the above perl script.</li>
+
+</ul>
+</p>
+
+<p>   But let us know also what kind of work you would like to do and what 
+kind of things you're best at:<br />
+<ul>
+ - C programming<br />
+ - Debugging<br />
+ - Windows programming<br />
+ - tweaking shell scripts<br />
+ - writing/fixing documentation<br />
+ - doing web stuff<br />
+</ul>
+</p>
+
+<p>   It also depends on what motivates you: getting an application to
+work, implementing some new functionality, getting applications to
+compile, fixing scripts, fixing documentation or writing new
+documentation...</p>
+
+<p>   And the last parameter is how much time you have for Wine
+work. In any case it's probably better to start with something simple to
+see if you like it.</p>
+
+</quote>
+
+<p>And in a completely different thread it was asked how to submit code
+once something has been fixed.  Francois also replied to that with:</p>
+
+<quote who="Francois Gouget"><p>
+		&gt; Have a look at http://www.winehq.org</p>
+
+<p>   More precisely:</p>
+<p><ul>
+
+<li>CVS 
+   <a href="http://www.winehq.org/?page=cvs">http://www.winehq.org/?page=cvs</a>
+   The best way to stay up to date.</li>
+
+ <li> wine-patches
+   <a href="http://www.winehq.org/mailman/listinfo/wine-patches">
+	http://www.winehq.org/mailman/listinfo/wine-patches</a>
+   It's best if you subscribe to wine-patches
+   (otherwise each of your emails will go through the moderator)</li>
+
+ <li> Wine Developer's Guide: Chapter 4. Submitting Patches
+   <a href="http://www.winehq.org/docs/wine-devel/patches">
+	http://www.winehq.org/docs/wine-devel/patches</a>
+   All you need to know about submitting patches (I hope)</li>
+</ul></p>
+
+<p>
+   Should you run out of FIXMEs (!), don't hesitate to ask for ideas of
+things to hack on this list.
+</p>
+
+</quote>
+
+</section>
+
+<section
+  title="GDB Remote Debugging"
+  subject="GDB remote debugging"
+  archive="http://www.winehq.org/hypermail/wine-patches/2001/05/0049.html"
+  posts="4"
+  startdate="09 May 2001 00:00:00 -0800"
+  enddate="09 May 2001 00:00:00 -0800">
+
+<mention></mention>
+<mention>Ove K&#229;ven</mention>
+<mention>Eric Pouech</mention>
+
+<p>Ove K&#229;ven posted a patch on the wine-patches list with updates on
+some code he wrote for using gdb to debug Wine apps:</p>
+
+<quote who="Ove Kaaven">
+
+<p>For any sufficiently disillusioned Wine hackers, here's my current
+experimental code for letting GDB attach to a Wine process. It's
+reasonably featured (exceptions are caught, changing threads work,
+single-stepping works, software breakpoints work, you can do backtraces,
+change registers and variables, etc). You can also do "info shared" to get
+a list of loaded .sos, and use the "sharedlibrary" command to load their
+symbols, but I strongly recommend against loading symbols for
+libpthread.so, or you'll destroy the neat "info thread" display.</p>
+
+<p>This code has helped me quite a bit in my debugging, actually, when
+winedbg couldn't be used...</p>
+
+<p>Apply autoconf after patching.
+Engage with ./configure --enable-remote-gdb</p>
+
+<p>I assume Alexandre isn't going to like some of the stuff in here, but I
+suppose it's up to him whether to take it or leave it...</p>
+
+</quote>
+
+<p>He was right, Alexandre responded with:</p>
+
+<quote who="Alexandre Julliard">
+
+<p>How did you guess I wouldn't like it? ;-)</p>
+
+<p>Actually I think it's a neat hack, but it doesn't belong in the server
+at all. You should be able to do the same thing as a client-side
+process using the Win32 debugging API. It could be either a
+stand-alone Winelib app, or a special mode inside winedbg so that you
+can reuse some of the code in there.</p>
+
+<p>Ove responded to this and said that he could attach and detach gdb
+to a running process whereas the winedebugger can't do that.  Eric 
+Pouech cleared this up with some instructions:</p>
+
+<p>&gt; winedbg can't, at least nobody knows<br />
+   &gt; how to attach winedbg to a running process.</p>
+
+<p>well, winedbg can... and now everybody *SHOULD* know</p>
+
+<p>start winedbg without any argument on commande line
+then, use command <br />
+<ul><code>walk process</code></ul></p>
+
+<p>you'll get a list of running processes
+using the command<br />
+<ul><code>attach &lt;pid&gt;</code></ul><br />
+really attaches to the running process</p>
+
+<p>the only drawback of the method (compared to gdb interface) is that
+the Win32 API doesn't allow to detach the debugger from a running
+process the only issue is to kill the debuggee (or the debugger)</p>
+
+</quote>
+
+</section>
+
+</kc>
+

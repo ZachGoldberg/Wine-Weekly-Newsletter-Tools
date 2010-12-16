@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="42" date="08 May 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 42nd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+
+</intro>
+
+<stats posts="84" size="236" contrib="34" multiples="18" lastweek="20">
+<person posts="10" size="61" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="6" size="13" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="6" size="13" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="6" size="12" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="6" size="10" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="13" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="19" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="3" size="8" who="Peter Ganten &lt;peter@ganten.org&gt;" />
+<person posts="3" size="8" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="3" size="7" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+</stats>
+
+
+<section 
+  title="IsBadPtr and such"
+  subject="Problem with the new IsBad[Read|Write]Ptr() functions"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-28.html"
+>
+
+<p />
+
+One of Alexandre Julliard's recent patch included a rewrite of the
+IsBadReadPtr functions. Those functions check if a chunk of memory
+defined by its address and size is readable/writable... The old
+implementation was parsing the /proc pseudo filesystem to get the
+memory mappings and to derive from it if the memory chunk was mapped,
+and if so, with the correct attributes (read, write). Alexandre
+changed it to use a read/write access to that chunk protected by an
+exception frame. This exception frame catches all undesired accesses,
+and thus provides the desired behavior.
+
+<p />
+
+Peter Ganten reported a changed behavior the loading mechanism:
+
+<quote who="Peter Ganten">
+When COMCTL32 is loaded, PE_LoadImage() checks, if this is a system
+DLL (base > 2GB), which it is, and thus checks if it is already loaded
+at that address. This check is done by first calling IsBadReadPtr()
+for the base address and then comparing the content of that address
+with the content of the library to load.
+
+<p />
+
+The old IsBadReadPtr() code returned true in this situation, while the 
+new code returns false (the addresses and the relay output is identical 
+up to this point). Most interesting is the fact, that the
+VirtualAlloc() call in PE_LoadImage() fails, _if_ IsBadReadPtr() has
+been called before. As a result, COMCTL32 will be relocated to another 
+address and not shared, when it is loaded a second time later by the
+same process. COMCTL32 detects this situation and exits the process. 
+</quote>
+
+
+<p />
+
+Ulrich Weigand gave a first explanation of what went wrong:
+
+<quote who="Ulrich Weigand">
+I guess what's happening here is that the base address of COMCTL32
+(and the other system DLLs as well, b.t.w.) is just slightly below
+3GB, and so the attempted access in IsBadReadPtr() falls into the
+unmapped range immediately below the Linux stack, which is mapped as
+VM_GROWSDOWN. Such accesses trigger automatic growing of the stack
+downwards to include the accessed address. Therefore, not only will
+the access succeed, subsequent attempts to use the range for mmap()
+will fail :-/</quote>
+
+
+<p />
+
+Ulrich and Alexandre discussed various solutions to solve this issue
+including:<ul>
+   <li />mapping a dummy page to mark the end of the stack (to forbid 
+it growing too big - as Ulrich pointed out, it would be a <b>very</b> bad
+thing if a call to IsBadReadPtr would map several of MB of stack in
+the address space)
+   <li />change the loader behavior (this would require implementing
+shared segments, but this will be needed anyway)
+</ul></section>
+
+
+<section 
+  title="Spying tools"
+  subject="Some useful info"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-65.html"
+>
+
+<p />
+
+Dmitry Timoshkov posted a link to some useful tools which can be of
+some help for people crafting Wine:
+<a href="http://www.anticracking.sk/EliCZ/export.htm">
+http://www.anticracking.sk/EliCZ/export.htm</a>
+
+<p />
+
+
+<p />
+
+
+<p />
+
+</section>
+
+</kc>

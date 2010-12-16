@@ -1,0 +1,242 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="38" date="10 Apr 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 38th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="87" size="206" contrib="30" multiples="18" lastweek="17">
+<person posts="11" size="22" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="8" size="21" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="7" size="16" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="5" size="17" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="5" size="16" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="4" size="9" who="Stephane Lussier &lt;stephane@macadamian.com&gt;" />
+<person posts="4" size="8" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="8" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="4" size="5" who="Jon Masters &lt;jonathan@easypenguin.co.uk&gt;" />
+<person posts="4" size="19" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+</stats>
+
+
+<section 
+  title="'Programming Windows' test suite effort"
+  subject="PrgWin95 testing kit update"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-21.html"
+>
+
+<p />
+
+Francois Gouget announced a new location for his Programming Windows
+test suite effort (<a href="wn20000313_34.html#0">read the first
+announce</a>):
+<quote who="Francois Gouget"> 
+        I have just released the version 0.1.3 of my 'Programming
+Windows 95' testing kit for Wine. I also moved it to a new Web site to
+avoid the commercial banners of the previous web hosting service. You
+can get everything about version 0.1.3 at: 
+
+<p />
+
+<a href="http://fgouget.free.fr/wine/PrgWin95/">
+http://fgouget.free.fr/wine/PrgWin95/</a>
+
+<p />
+
+As was suggested in the newsgroup I also put up a 'Getting started
+with Winelib' page at:
+
+<p />
+
+<a href="http://fgouget.free.fr/wine/winelib-en.shtml">
+http://fgouget.free.fr/wine/winelib-en.shtml</a>
+</quote>
+
+
+<p />
+
+Francois also announced some enhancements in the results, but still
+many areas to be looked upon (bugs in redraw, as well as symbol
+definition issues, like NULL or some mathematical symbols).
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Requests to the server"
+  subject="Wine ate my registry"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-15.html"
+>
+
+<p />
+
+Dave Pickles a very long ago reported some problems while Wine was
+saving the registry. No one really took care at that time. Two weeks
+ago, Uwe Bonnes experienced the same kind of problems and decided to
+take a look at it. After some tests, he reported some strange
+behavior. G&#233;rard Patel also looked at it and found what was going
+wrong: at some point the code sets a request buffer for the server,
+and fills it with different values. Setting up a request buffer
+require to get a buffer (there is one buffer per thread), and then
+write some values in it. The bug found by G&#233;rard lied in the fact that 
+part of the code writing the values was calling another function,
+which, in turn, was also making a call to the server. This second call 
+was trashing the values already written in the buffer (as there's a
+buffer per thread, the same buffer was used).
+
+<p />
+
+After providing a (now obvious) fix, Uwe asked:
+<quote who="Ulrich Weigand">
+But this seems to be a general issue. If after initialization of some
+value in the request buffer a function calls somehow results in
+another server call, these initialized values may get silently
+overwritten. 
+
+<p />
+
+How to tackle that problem? Should server calls be stackable? Put a
+CriticalSection around the server call? But this is a server call
+itself. Check some usage count? But it should probably be thread
+specific too. Or carefully check the code that after some
+initialization no other server call is done? But both latter solutions 
+will give many wrong alarms as we might request the buffer much
+earlier than we initializes the values.
+</quote>
+
+
+<p />
+
+Alexandre Julliard answered:
+<quote who="Alexandre Julliard">
+In fact it may make sense at some point to support stackable requests, 
+so that signal handling can work properly. At the moment signals do
+not work if they happen while we are filling a request buffer, which
+means that we cannot single-step through a server call with the
+built-in debugger for instance. 
+</quote>
+
+
+<p />
+
+For people also interested in server handling issues, G&#233;rard Patel
+wrote <a href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-39.html">a short newbie oriented
+documentation</a> on the subject.</section>
+
+
+<section 
+  title="Documenting Wine API coverage"
+  subject="A case for Wine and Contributing to Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-387.html"
+>
+
+<p />
+
+While discussing around Francois Gouget PrgWin95 effort, Patrik
+Stridvall and Francois put together some scripting tools which give
+some statistics on API coverage in Wine.
+They defined three states for an API:
+<ol>
+   <li />real stub: nothing is done in C file)
+   <li />pseudo stub: some code has been written, but part of the
+function contains a <code>FIXME("bla bla stub");</code> somewhere
+   <li />implemented: there's a real implementation of the function)
+</ol>
+Even if not 100% correct (for example, for the latest kind, it's hard
+to tell whether is the functionality implemented is 10% or 90%
+correct, at least it's more than 0), this gives an overview of Wine's
+progress. 
+
+<p />
+
+Look at <a href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-26.html">for the details of this
+coverage</a>.
+
+<p />
+
+Francois was rather disappointed by the first raw results: 
+<quote who="Francois Gouget">The stats do not look too good :-(. There's more stubs
+than I expected. I guess that for them to be meaningful we would
+really need to perform an analysis of which functions are really used
+by applications. </quote>
+
+<p />
+
+Jeremy White replied that:
+<quote who="Jeremy White">&lt;CodeWeavers&gt;have
+a PHP/MySQL database that we are hoping to release to the world 'soon'
+which does this. You can upload a dumpbin of xxx.dll and xxx.lib and
+it will store the authoritative list of APIs supplied by that version
+of xxx, along with ordinals, API names, and (where available)
+parameter counts.
+
+<p />
+
+    You can then edit any given API and enter subjective data about
+the quality of its implementation. You can also upload a zip file
+containing dumpbins of all of the .exes and .dlls of a particular
+application. That 'project' can then be analyzed for external
+dependencies.
+
+<p />
+
+    I'm hoping we can add a whole bunch of applications, and then
+start doing some analysis to find out which APIs are most needed, of
+those, which need the most help, and so on. 
+
+<p />
+
+    We have all this right now, but we're making a clean copy (to
+remove confidential customer data). 
+</quote>
+
+
+<p />
+
+Jeremy also noted some bad sides to the approach:<quote who="Jeremy White">
+Note that this method only provides a static analysis of what an app
+really uses. You can get mislead, because many apps do
+LoadLibrary/GetProcAddress and so you miss those APIs. Also, the new
+COM interfaces tend not to be caught by this approach. Still, it's a
+good start.</quote></section>
+
+
+<section 
+  title="Crash on startup"
+  subject="RH6.2"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-46.html"
+>
+
+<p />
+
+As already reported some weeks ago for 
+<a href="wn20000306_33.html#3">Debian distro</a>, lots of other ones
+blow when used with wine, with a nice bug in glibc. So RedHat 6.2 and
+Mandrake 7.0 users, if your wine crash at startup, either upgrade your 
+glibc package (if a fix is available), or set LC_ALL to en in your
+environment:
+
+<p />
+
+<code>
+(t)csh: setenv LC_ALL en
+<p />
+
+(b(a))sh: LC_ALL=en ; export LC_ALL
+</code>
+</section>
+
+</kc>

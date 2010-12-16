@@ -1,0 +1,373 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Interview</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="6" who="Andreas Mohr" date="20 May 2003" />
+
+<intro>
+<p>
+  This is our 6th interview with Wine developers.  
+  Check out the <a href="http://www.winehq.org/interview">Interviews</a>
+  page for previous ones.
+</p>
+<p>
+ This week Andreas Mohr finds himself in the hotseat.
+ Andi was born in Karlsruhe, Germany in 1977 and grew
+ up in Renningen, near Stuttgart.  He did the usual 
+ military service after high school and in 1997 
+ began studying electrical engineering at Stuttgart University.
+ Now he's attending the University of Applied Sciences in
+ Esslingen studying computer science.  Besides the normal
+ CS classes Andi is focusing on embedded systems, automation,
+ and networking.  
+</p>
+</intro>
+
+<interview>
+<question><p><i>BV:</i> How did you get involved with Wine?</p></question>
+
+<answer><p><i>Andi:</i> Well, it just happened that someone told me that there was that cool OS
+ that I just <b>had</b> to try, so I tried it and soon found my way to Wine,
+ since I was interested in also running some Windows programs on Linux.
+ And I believe everyone would agree with me that Wine at that time (1996)
+ was so incredibly crappy that I just <b>had</b> to do some major contributions
+ to it ;-)
+</p><p>
+ Besides, I had an extensive DOS Turbo Pascal and Assembler lowlevel
+ programming background, so I was foolish enough to "fall in love
+ immediately" ;)</p></answer>
+
+
+
+
+<question><p><i>BV:</i> Do you remember the first patch you submitted?</p></question>
+
+<answer><p><i>Andi:</i> 
+ Of course I could look at documentation/ChangeLog.OLD, since
+ I'm not entirely sure right now, but from numerous previous glances
+ at that file, I'm pretty sure that it was a patch fixing some NE file
+ (Win16 programs) data segment size calculation, way back at the end of 1996
+ or so.</p></answer>
+
+
+<question><p><i>BV:</i>
+ Did Wine even support PE executables back then?  Did you
+ have any hand in getting the loader to work with them?  </p></question>
+
+<answer><p><i>Andi:</i>
+Yes, 
+as far as I remember 
+there was basic Win32 executable loading support at that time.
+But the real Win32 support started later.
+I did improve PE support on several occasions, 
+but I don't remember
+any details (see ChangeLog for info).</p></answer>
+
+
+
+<question><p><i>BV:</i> You've been to a lot of conferences and given quite a few
+talks on Wine, do you find it helpful to meet other developers?</p></question>
+
+<answer><p><i>Andi:</i> 
+
+Most definitely! For example, doing an internship at CodeWeavers
+has been VERY interesting and entertaining (boy, did we have bloody
+ping pong matches!).
+And I really can't say that the wineconf 2002 conference,
+graciously sponsored by Lindows, has bored me. wineconf 2002 has been
+the first time that almost the entire Wine developer community
+(over 30 people!) managed to gather somewhere and talk about
+pretty important topics. We had a lot of fun, that's for sure!</p></answer>
+
+<question><p><i>BV:</i>
+ Who did you really enjoy meeting at Wineconf?</p></question>
+
+<answer><p><i>Andi:</i>
+Hmm, I'd say Gavriel State from TransGaming was certainly interesting.
+Also, I'd never met Ove Kaaven before (even though I'd been chatting
+with him on IRC for an amount of time which could almost be measured
+in months).
+And in fact ALL of the people meeting at that conference were very
+interesting to talk to.</p><p>
+I loved talking to Jeff Tranter (formerly Corel) to get some background 
+information about the huge help Corel was for Wine when they used Wine 
+to port their programs. We had some nice beers 
+one evening :)) </p></answer>
+<question><p><i>BV: </i>
+ At the time of Wineconf the license had just changed to LGPL.  Was
+ that a popular topic of discussion?  Or was everyone over it by
+ that point?</p> </question>
+
+<answer><p><i>Andi: </i>
+Ah, no, far from it!
+While the rest of us were doing a "normal" discussion, there's even been
+a second separate "licensing" discussion going on between CodeWeavers
+and TransGaming.
+They were forbidden to bring any weapons to that discussion, though!
+*grin*
+(the discussion has still been relatively "silent", as far as I know)</p
+></answer>
+
+<question><p><i>BV:</i> Is Wine just a hobby or have you gotten paid to work on it?</p></question>
+
+<answer><p><i>Andi:</i> 
+Well, I'd say it's <b>mostly</b> a hobby. But I've been paid to do Real Work
+on some Wine parts by various companies on several occasions already.</p></answer>
+
+
+<question><p><i>BV:</i>What are you studying right now?</p></question>
+
+<answer><p><i>Andi:</i> 
+Yep, I'm studying the worst subject you could possibly be studying
+right now, given the current economy: Computer Science ;-)
+When I started doing that, people used to say stuff like
+"whoa, you're studying CS?? you'll surely be able to get a great job
+and earn a 'certain' load of money once you graduate!". 
+And frankly spoken, I can clearly remember that I was sometimes opposing
+them at that early time already ("there'll surely be a time when this
+will prove to be dead wrong, and hopefully it won't affect me too much yet
+once I'm finished").
+</p><p>
+Anyway, since I'm almost finished, it'll just take one additional year until I
+graduate. And I really hope that the situation will be somewhat less
+catastrophic at that time... ("it really can't get any worse than that..."
+-- or can it??)</p></answer>
+
+
+
+
+<question><p><i>BV:</i> What's your favorite part of Wine to work on?</p>
+</question>
+
+<answer><p><i>Andi:</i> 
+Hmm, maybe installers or file system layer. And maybe the program loader.
+But apart from that, I just work on about <b>everything</b> that needs fixing
+and that interests me.</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ You've probably written the most documentation of anyone.
+ Do you like working on that, or do you do it because no one
+ else is?</p></question>
+
+<answer><p><i>Andi:</i> 
+ Hmm, sometimes I like doing that, but in many cases I don't.
+ And I can't say that I've had a whole lot of support or suggestions
+ so far, not even after having added a special "comments" section to
+ the Wine User Guide...
+ So in general, feedback or help is <b>very</b> poor.
+</p><p>
+ Also, I don't like that there are some developers that submit enduser
+ relevant code without documenting a single part of it (yes, in many cases
+ I can easily find out about its functionality, but having to do so
+ grows tiresome rather fast, believe me...).
+</p><p>
+ Oh, and by the way: I'm currently planning to submit the most extensive
+ Wine Users Guide I've ever done pretty soon. (hint, hint! ;)
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Since I initially asked that, you've submitted some of the update you 
+ mentioned, Dimi made some organization changes, and we've also had 
+ WineHQ revamped.  What areas of the docs need work now?  </p></question>
+<answer><p><i>Andi:</i> 
+Hmm, I don't quite know. Just look at 
+<a href="http://www.winehq.org/?page=todo_lists">
+http://www.winehq.org/?page=todo_lists</a>, 
+then you can see the current status. 
+I know that the Wine User Guide could need a lot more work, but of course 
+this is always the case (documentation is never finished). </p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+ You've worked on a lot of Winelib utilities.  Do you see
+ that as one of the last major areas that could be improved?
+ Or are there still core features to add?</p>
+</question>
+
+<answer><p><i>Andi:</i> 
+Well, Wine definitely needs more auxiliary utilities, such as a real
+graphical control panel (no, programs/control/ is not enough yet, since it
+only runs <b>one</b> particular panel application!) or a desktop
+or the wineboot utility.
+Unfortunately I haven't been able to do a whole lot of wineboot
+work recently due to "other" very time-consuming tasks (see above ;),
+so Shachar Shemesh stepped in and submitted the first parts of it
+(mucho thanks!).</p></answer>
+
+<question><p><i>BV:</i> 
+ Alexandre said your wineboot patch was overdesigned.  I didn't really
+ examine it, but what was the problem?</p>
+</question>
+
+<answer><p><i>Andi:</i> 
+Hmm, I probably used too many defines, and I "reused" some functions too
+many times (since the various bootup parts are doing very similar things).
+And I guess he didn't like the amount of configuration settings I included.
+(although I think that that's needed, in order to avoid becoming
+the next popular target for virii and trojans).
+Add to that the fact that I've been very busy during the last semester
+(and also the fact that I've been writing an ALSA Aztech PCI 168 sound driver),
+which caused proper wineboot maintenance to be a problem, and then you know
+why it's been less than optimal.
+I plan to eventually do some wineboot improvements soon, though
+(since I've got some free time soon).
+But then don't hold your breath, since my ToDo list is looooong.
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+Why did you decide to write a sound driver? Have you 
+worked on any other parts of the kernel? </p>
+</question>
+<answer><p><i>Andi:</i> 
+Well, I discovered that Aztech PCI168 card in a PC of my father, and I found 
+out that there were zero, zilch Linux drivers for it, so I kept that in mind 
+for quite some time. And about one year later I started implementing a driver, 
+from scratch. </p><p>
+I've written the NI5010 network card driver (you will not even remember it, 
+since it's an ISA 8bit (!) 2MBit (!) ethernet card from stoneage), together 
+with Jan-Pascal van Best, who was writing a driver for it at the same time, 
+so we combined our fortunately rather diverse efforts. 
+That was back in '97.</p></answer>
+
+<question><p><i>BV:</i>
+How does writing a kernel driver compare to working on Wine? 
+</p></question>
+<answer><p><i>Andi:</i> 
+Well, writing a kernel driver is somewhat "strange", since it's unknown 
+territory compared to the pretty familiar Wine environment. 
+But apart from that I'd say it's comparable. Both projects have a huge 
+source tree and you need to find your way around in both. 
+</p><p>
+Trying to get your work accepted into the kernel can be a bitch at times. 
+For example,
+I discovered a complete deadlock in the 2.4.x kernel when using SB16 
+in full-duplex mode (these were actually two separate fatal bugs!), 
+and I sent a mail containing an explanation and a possible, working patch 
+to the Linux kernel mailing list, but I've never had any real success in 
+getting that fix in. 
+The reason that nobody cared about it is probably that 2.6 will use ALSA 
+instead of OSS sound drivers anyway... 
+But in other cases I've managed to get patches accepted much faster. 
+E.g. I recently fixed a software suspend locking bug in 2.5.x. </p></answer>
+
+
+<question><p><i>BV:</i>
+ When you finish your driver work are you planning on working 
+on Wine more or do you have some other big projects planned? 
+</p></question>
+<answer><p><i>Andi:</i> 
+I'm afraid that I have to tell you that I started yet another project: 
+providing an Open Source Linux driver for 
+the shamelessly neglected ACX100 22/44Mbps wireless chipset by Texas 
+Instruments, at <a href="http://acx100.sf.net">http://acx100.sf.net</a>. 
+</p><p>
+The various inofficial binary driver versions "leaked" onto the net 
+are pretty insufficient: they only work with Linux 2.4.18 specifically, 
+and they're more or less buggy. 
+So far we're making good progress: we now have a driver which initializes 
+the card and handles ioctl()s. 
+4 out of 13 developers are currently working on the code, so we have a 
+sufficiently large amount of manpower. 
+I expect to have a preliminary working version in about 3 weeks or so 
+(don't hold your breath!). 
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i>
+If there's one thing you could implement in Wine, what would it be?</p>
+</question>
+
+<answer><p><i>Andi:</i> 
+I guess what would be useful is some kind
+of Wine capability to do automatic in-memory patching of programs in case
+they are "broken", i.e. they abuse some horrible Windows "feature" and
+there's no way that Wine can properly implement that.
+So I'd let Wine have a database comparing the program it loads, and if it
+finds a match, then it would apply whatever binary patch/hack is
+needed to make that program run on Wine despite its huge problems or bugs.
+</p><p>
+Of course technically I could implement it, but it's always a matter of
+time...
+And to tell you the truth, other things are way more important currently
+(such as further docu work).
+</p><p>
+Not to mention that implementing such a feature could actually conflict
+with "cool" things like the DMCA...
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+ It wouldn't be too much different than a copy protection crack.
+ But isn't Wine supposed to implement "bug for bug" compatibility with
+ Windows?  Are there any particular braindamaged programs you've used?</p>
+</question>
+
+<answer><p><i>Andi:</i> 
+Well, "bug for bug" compatibility in rare cases simply ISN'T possible
+(take VxDs or direct descriptor table access as an example).
+Or other nasty things might include programs accessing Win16 GDI objects
+in a way incompatible with "modern" Windows versions...
+</p><p>
+I don't remember any particular braindamaged programs, but this isn't
+to say that there aren't any - you can easily find several if you
+search a bit.
+</p><p>
+But all in all I keep being surprised at how well we're able to reimplement
+the Windows mechanisms... (surprisingly few real issues for such a large
+undertaking with such a different operating system).</p></answer>
+
+<question><p><i>BV:</i> 
+You mentioned the DMCA, I've always thought that was a good example
+of people not caring
+about something until it was too late.  What do you think about 
+some other digital rights management initiatives being proposed?</p></question>
+<answer><p><i>Andi:</i> 
+TCPA/Palladium/NGSCB/DRM 
+"Trustworthy Computing" initiative is
+a big threat to the IT world as a whole as we know it (and love it), 
+and especially to "non-conforming", "improper", "cancerous" and
+"un-American" software such as Open Source software and freely shared software. 
+</p><p>
+If you're not yet aware of these possible restrictions of your Personal Freedom 
+(to explain it in simple words: 
+you will not be able to use your PC the way you're doing now, since it'll 
+tell you what to use or not to use and how or how not to use it), 
+then feel free to read about it at: 
+<ul>
+ <li><a href="http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html">http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html</a></li>
+ <li><a href="http://www.eweek.com/article2/0,3959,1052803,00.asp">http://www.eweek.com/article2/0,3959,1052803,00.asp</a></li></ul></p><p>
+Note that the second article talks about "it needs to stay out of the consumer 
+space for a while". Translation: "we know that we have some severe issues with 
+enlightened and grumpy endusers, so let us shove it down by introducing it 
+in the commercial space first, which is quite eager to protect company secrets 
+anyway. Once it's successfully introduced, resistance by endusers will not 
+persist, since NGSCB will already be too widely used and they won't be able to 
+evade it." 
+</p><p>
+In other words: we'll have to think about a globally organized collaborative 
+effort to boycott this threatening development and to make sure that even the 
+uninformed masses do take notice. </p></answer>
+
+
+<question><p><i>BV:</i> 
+I agree - waiting until someone is shipping it is too late.
+Thanks for the interview!</p></question>
+
+</interview></kc>
+

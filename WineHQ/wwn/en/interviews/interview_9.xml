@@ -1,0 +1,416 @@
+<?xml version="1.0" ?> 
+<kc>
+<title>Interview</title> 
+<author email="vinn@theshell.com">Brian Vincent</author> 
+<issue num="9" who="Jukka Heinonen" date="10 July 2003" /> 
+ <intro>
+  <p>
+  This is our 9th interview with Wine developers. Check out the
+  <a href="http://www.winehq.org/interview">Interviews</a>
+  page for previous ones.
+  </p>
+  <p>
+  Jukka Heinonen lives in Helsinki, Finland and works as
+  a software engineer for a medium sized Finnish company.  He's
+  also working on a Masters degree in physics at the University of
+  Helsinki.  He still has a few courses left but admits he gets
+  too easily bored to go in for something for longer periods of time.
+  In his spare time he enjoys reading and working on a RoboCup team
+  <i>"that really is years away from being able to compete against
+  even beer cans"</i>.
+ </p> 
+ </intro>
+<interview>
+<question><p><i>BV:</i> 
+How did you get involved with Wine?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+Well, it all began when my big brother gave me a huge 
+pile of Windows and DOS games. Since I only had a single
+computer which had Linux in it and I was not eager to
+install Windows only for playing games, I thought it would
+be a good idea to see whether I could get some of those
+games running under Linux using some kind of emulator.
+And my surprise was great when I found out that you could
+play Fallout using Wine without more than a little bit of
+tweaking...
+</p></answer>
+
+
+
+
+<question><p><i>BV:</i> 
+ Do you remember the first patch you submitted?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ It had probably something to do with Fallout and Windows
+ asynchronous keyboard state polling functions. Or it could
+ have been some patch about mouse grabbing in full screen
+ direct draw windows, which was probably the first regression
+ I had to fix in order to keep Fallout playable.
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+ What areas of Wine do you like to work on?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ I have been working mostly on DOS lately, but I'm starting
+ to get really bored on that stuff. I guess I would like to
+ work on some part of Wine where Wine is missing functionality
+ that is needed by a large number of programs, but I guess
+ I'm just too lazy to think of any good candidate. Besides,
+ I mostly have games as test programs and I really only need
+ Wine for game playing purposes, so that might bias me towards
+ certain kinds of areas...
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+ How does the DOS architecture differ from something like
+ Windows 98?  Is it possible to share any functionality, such
+ as file handling, with the rest of Wine?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+Well, I guess you already know that Windows 95, 98 and ME 
+really are based on DOS. There are quite a few surprising 
+similarities and almost all new features in DOS7 really map
+almost directly to Win32 API. Wine DOS emulation naturally calls
+Win32 API so dependencies are inverted when compared to
+original Windows versions. 
+</p><p>
+A better source for sharing functionality would probably be 
+Windows 3.1 or Win16, which is much closer to DOS and DPMI
+and actually contains DOS as part of the API. Wine DOS
+emulation currently shares lots of basic stuff with Win16 and
+I think that is a rather good thing.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ Does that include the loader code?  
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ No. DOS .exe and .com programs are mapped into memory
+ using a separate loader code that has nothing to do with Win16
+ programs.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ Have you ever looked at any other DOS emulator projects, such as
+ dosemu, to see how something is supposed to work? </p></question>
+
+<answer><p><i>Jukka:</i>
+ I have looked at them, but I have found out that there is little I
+ could learn from them.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Why does Wine need it's own DOS implementation if there's other
+ emulators available for Linux?
+</p></question>
+
+<answer><p><i>Jukka:</i>
+ This is a good question. I have thought about that question a lot
+ and this is what I have concluded:
+<ul>
+
+<li> Windows can execute DOS programs pretty well.
+  Wine should be able to do the same.</li>
+<li> Wine DOS emulator uses Windows API as much as possible.
+  This means that emulator itself is smaller than
+  separate emulators, it is based on code that has
+  been tested more widely and it integrates well with
+  other parts of Wine.</li>
+<li> Win16 support requires almost full DOS emulation.
+  If separate DOS emulator was used, either code
+  would need to be duplicated or DOS emulator would
+  need to be embedded into Wine, which is something they
+  have not been designed for.</li>
+<li> If you fix DOS emulation bug in Wine, it is highly likely
+  that Win16 bug gets fixed, too. Because a large amount of
+  DOS emulation code is also used by Win16 code, it gets
+  tested by applications that are rarely used with pure
+  DOS emulators.</li>
+<li> You need to install and configure only a single application 
+  to get DOS and Windows support instead of having to do the same
+  for two separate applications. </li></ul></p></answer>
+
+<question><p><i>BV:</i> 
+ One thing that appeared this year was "winedos".  What is that?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ Winedos is a separate DLL that contains most of the DOS
+ emulation code in Wine. It has actually been around for a few
+ years, already, but I have worked on it only for the last
+ half a year or something. It doesn't really have a large impact
+ on DOS support. However, it allows Wine processes to only load
+ DOS support code into memory if the process really needs it.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ Does that mean Wine gets a performance improvement?  Or are there
+ enough other bottlenecks that it doesn't matter?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ Starting Win32 processes is a bit faster this way and
+ they require slightly less memory. However, I don't think 
+ either of these effects improves Wine performance noticeably. 
+ Still, if all rarely used subsystems use lazy initialization,
+ we do get significant performance improvements.
+</p></answer>
+
+<question><p><i>BV:</i>
+ Will a compile time option be added to not include support for DOS?
+ Or would that be a bad thing?
+</p></question>
+
+<answer><p><i>Jukka:</i>
+ If Wine is compiled without Win16 support, I don't think DOS support 
+ should be included, either. So the same configure option that disables
+ Win16 should also prevent building of winedos DLL.
+</p><p>
+Another DOS support related issue is that winedos DLL can be compiled
+without DOS support. This is used on those i386 platforms that do
+not support running real mode programs. Win16 support still requires
+winedos DLL but those parts of the DLL that are related to real mode
+things won't be compiled in. It would probably be a good idea to be
+able to switch into this mode even on those platforms that
+do support real mode programs because it would make testing that code
+compiles correctly on all platforms a lot easier.
+</p></answer>
+
+
+<question><p><i>BV:</i> 
+What are you trying to accomplish by moving 
+ all of the DOS support stuff to winedos?
+</p></question>
+
+<answer><p><i>Jukka:</i>
+The reason for this is based on a few simple observations:
+<ul>
+<li> Most Win32 application have no need for DOS emulation.</li>
+<li> Non-i386 platforms should not need DOS emulation.</li>
+<li> DOS emulation code has lots of interdependencies but it really
+needs very little from Wine in addition to plain Win32 API.</li>
+</ul>
+
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+Why is this built as a library and not a completely separate 
+executable?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+Some Win32 applications call DOS functions using VxDs which would be 
+quite an awkward thing to do if DOS functions were in a separate executable.
+That is probably the only technical reason why winedos is DLL and
+not an executable.
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+A lot of your patches mention moving int21 functionality into
+winedos.  What is int21 and how many more functions need to be moved?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+DOS services are called using processor interrupt instructions.
+That is why these services are called as "INTxx" where xx is hexadecimal
+number. INT21 is one of those services and it is probably the most important
+and complicated of them all. It actually contains as much code as all
+the other interrupt services combined.
+</p><p>
+There are about 20-30 INT21 subfunctions that still need to be moved 
+ to winedos. This means that about a thousand lines of code need
+ to be reviewed and probably mostly rewritten because so many
+ DOS subfunctions have been found out to be incomplete and buggy.
+ And, after that there are still a few other files that look likely
+ candidates for moving to winedos DLL.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ Twenty to thirty really doesn't sound that bad.  Will that take 
+ a long time?  Are there any hard ones left?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ These int21 functions that have not been moved to winedos are
+  the most difficult ones to move. They either use ntdll functions
+ that are not exported or their implementation is incorrect and
+ they would need to be rewritten.
+</p><p> 
+ Assuming I can move 50-100 lines per patch and it takes week or two
+ weeks per patch it would take something between two months and a year
+ to move all those functions. It is or course possible that if I get too 
+ bored with these functions I just copy them directly to winedos and add lots
+ of FIXME comments. This would be much faster, anyway.
+</p></answer>
+
+<question><p><i>BV:</i>
+ How have you been testing these functions?  
+</p></question>
+
+<answer><p>
+First of all, existing implementation is reviewed and compared to
+available documentation (Ralf Brown's interrupt list or MSDN, for example).
+This catches a large amount of bugs. If something needs more checking, 
+I search for source code that uses those functions, which is unfortunately 
+available for only a small amount of functions. For a part of these 
+functions, I have DOS programs that make use of them and these functions
+are the only functions that I can say to have been properly tested.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ Alexandre just committed support for DPMI IRQ handling.  What does DPMI
+ provide?  
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+Working IRQ handling is needed by any DPMI program that
+uses timer IRQs for precision timing, polls keyboard
+(because this needs asynchronous events that are handled
+by the same code as IRQs), installs mouse callback
+handler or wants to use soundblaster emulation. So, it
+is possible that quite a few DPMI programs (games
+especially) would start to work better when IRQs
+are properly supported.
+</p><p>
+I have some hopes that after IRQ handling has been fixed and 
+after VESA support has been tweaked a little, most DPMI
+based programs would work under Wine. However, DOS4GW is 
+still a problem because I have no idea why it doesn't work.
+Fortunately there are free DOS4GW replacements available,
+like DOS32A, which seem to work quite well.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ What is DOS4GW? 
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ DOS4GW is a 32-bit DOS extender. It allows DOS programs to be
+ executed in 32-bit protected mode which makes DOS programs faster
+ and a lot easier to program. There are other DOS extenders that can 
+ do this and programs executed under Wine or Windows may also
+ directly call DPMI (DOS Protected Mode Interface) services via int31 
+ without using any extenders.
+</p><p> 
+ What makes DOS4GW important is that, as far as I know, it is the
+ most popular DOS extender. There is a vast amount of DOS programs
+ that would run under Wine without any special hacks if only DOS4GW
+ could be made to work. Right now, you need to figure out 
+ whether a program is using DOS4GW and if it is, it must be executed
+ using some other DOS extender.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ Alexandre just started moving Win16 support to winevdm.  Have you
+ worked on any of that at all?  
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ I fixed a bunch of bugs caused by winevdm rework. It is
+ possible that parts of winedos DLL could be moved into winevdm 
+ program, but as mentioned above, some Win32 applications really
+ need to call to DOS services and I don't see how winevdm would
+ easily support those use cases. My plan is to first separate
+ DOS support into winedos and then think about what to do with winevdm.
+ Or most likely let others think about that, because I'm not that keen
+ on another DOS rework.
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+ Eric has recently done a lot of work on wineconsole.  Has this improved
+ DOS support at all?  
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ Curses support makes it finally possible to run DOS console applications
+ in regular Unix terminals. You really cannot tell DOS nethack from
+ native Linux nethack, any more. Unless you notice that you cannot
+ use line drawing characters in DOS. This is actually something that could
+ be fixed quite easily by using VT100 alternate character set or
+ by using Unicode-curses, which combined with UTF8-xterm would make
+ curses wineconsole show all DOS characters.
+</p></answer>
+
+
+<question><p><i>BV:</i>
+ Is there anything you wish Wine could do, but can't?  
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ I have quite a few games that I cannot run with Wine.
+Even WineX can't run them. Having them running under Wine is
+something I would like to see. Unfortunately, most problems are
+due to copy protection schemes which seems to confirm my belief
+that copy protection only hurts those who play by the rules.
+ </p><p>
+The most annoying thing right now is that Wine does not work
+well with window managers. I have all the time problems with
+keyboard focus because of this. The current managed window
+code would probably fix this problem, but it would only cause
+other problems because window managers just cannot provide
+the decorations needed by many Windows applications.
+ </p><p>
+And I really wish that I would be able to minimize full screen
+Wine applications. Again, this is something where Wine really
+should cooperate with window managers.
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+ So, if you could add one feature to Wine, what would it be?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+ I have been toying with an idea of adding stubs for
+ all the DLLs and functions that come with Windows XP and 2003
+ to Wine. Not a really useful feature, I'm afraid, but I would
+ finally see what new functions those two really add.
+</p></answer>
+
+
+
+<question><p><i>BV:</i> 
+I've gotta ask about the 
+<a href="http://www.robocup.org/02.html">RoboCup</a> team.  That's some pretty
+  hard stuff - AI, autonomous control systems, not to mention
+ robotics.  Do you have any experience working on anything like that?
+</p></question>
+
+<answer><p><i>Jukka:</i> 
+I have worked mostly on software parts of the project. I guess
+that is where my expertise lays. But that does not mean that I
+have not had my finger literally in almost every other part
+of the project. There is one place where I have actually had 
+some previous experience. Pattern recognition code is quite similar
+to code that is used in particle physics for fitting particle
+trajectories, a thing I always find rather curious.
+</p></answer>
+
+<question><p><i>BV:</i> 
+ Thanks for the interview!</p></question>
+
+<answer><p><i>Jukka:</i>
+ You're welcome.</p></answer>
+
+
+</interview>
+</kc>

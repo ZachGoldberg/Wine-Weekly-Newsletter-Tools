@@ -1,0 +1,323 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="226" date="06/11/2004" />
+<intro> <p>This is the 226th issue of the Wine Weekly News publication.
+Its main goal is to grill. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="85" size="371" contrib="41" multiples="15" lastweek="16">
+
+<person posts="12" size="34" who="Mike Hearn" />
+<person posts="8" size="23" who="Robert Shearman" />
+<person posts="7" size="27" who="Eric Pouech" />
+<person posts="6" size="63" who="Luca Capello" />
+<person posts="4" size="19" who="Shachar Shemesh" />
+<person posts="4" size="14" who="Chris Morgan" />
+<person posts="3" size="20" who="Erich Hoover" />
+<person posts="3" size="7" who="Robert Reif" />
+<person posts="2" size="8" who="Paul Millar" />
+<person posts="2" size="7" who="Joshua Walker" />
+<person posts="2" size="5" who="hatky" />
+<person posts="2" size="4" who="Fabian Cenedese" />
+<person posts="2" size="4" who="Robert Lunnon" />
+<person posts="2" size="4" who="Saulius Krasuckas" />
+<person posts="1" size="35" who="Twickline" />
+<person posts="1" size="16" who="Fabian Franz" />
+<person posts="1" size="9" who="Raphael" />
+<person posts="1" size="7" who="Raghavan Gurumurthy" />
+<person posts="1" size="5" who="mguyard" />
+<person posts="1" size="4" who="Patrick Spinler" />
+<person posts="1" size="4" who="Raghavan Gurumurthy" />
+<person posts="1" size="3" who="Shachar Shemesh" />
+<person posts="1" size="3" who="Uwe Bonnes" />
+<person posts="1" size="2" who="David Lee Lambert" />
+<person posts="1" size="2" who="Dmitry Timoshkov" />
+<person posts="1" size="2" who="Dimitrie O. Paun" />
+<person posts="1" size="2" who="Jonathan Fosburgh" />
+<person posts="1" size="2" who="P. Christeas" />
+<person posts="1" size="2" who="Izak Burger" />
+<person posts="1" size="2" who="Maurizio Monge" />
+<person posts="1" size="2" who="Paul Davis" />
+<person posts="1" size="2" who="Bill Medland" />
+<person posts="1" size="2" who="Mike McCormack" />
+<person posts="1" size="2" who="(markus.amsler)" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="2" who="Alexandre Julliard" />
+<person posts="1" size="1" who="James Courtier-Dutton" />
+<person posts="1" size="1" who=" (Morten Welinder)" />
+<person posts="1" size="1" who="John Birrell" />
+
+</stats>
+<section 
+	title="News: The Linux Show Broadcast, eWeek Review" 
+	subject="News"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/00.html" 
+	posts="2"
+	startdate="06/05/2004"
+	enddate="06/11/2004"
+>
+<topic>News</topic>
+<p>Jeremy White appeared on 
+<a href="http://www.thelinuxshow.com/">The Linux Show</a> this
+week.  The show is archived at <a href="http://www.thelinuxshow.com/archives.shtml">http://www.thelinuxshow.com/archives.shtml</a>
+Along with that, eWeek <a href="http://www.eweek.com/article2/0,1759,1602124,00.asp">
+reviewed</a> CrossOver Office 3.0.  It's postive, though it
+lacks much in the way of detail (I get the distinct impression
+the author installed it and only ran it once.)</p>
+
+<p>Other than that, there's not much going on.  Alexandre is on vacation
+and everyone else seems to be taking a break accordingly.</p>
+
+</section>
+<section 
+	title="Kernel Bug Creating Zombies" 
+	subject="Zombie processes"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0145.html" 
+	posts="7"
+	startdate="06/07/2004"
+	enddate="06/09/2004"
+>
+<p>Shachar Shemesh asked for help tracking down what
+appears to be a kernel bug:</p>
+<quote who="Shachar Shemesh"><p>
+Mike M told me on IRC that this matter has come up before, but I have 
+not been able to find it in the archives. It seems Wine has been 
+generating lots of zombie processes when it's not 100% cleanly killed. I 
+have also seen the system hold a socket created from a wine process in 
+"ESTABLISHED" state, when no process is registered as the socket's owner.
+</p><p>
+According to Alexandre according to Mike, this is a kernel bug. Well, it 
+most certainly is. Theoretically, there is nothing a user space process 
+can do to cause zombies to stay around after their parent has exit, or 
+keep sockets open after their controlling process has quit. As wine is a 
+user space only process, this must be a kernel bug. No way around it.
+</p><p>
+However, it happened to me both on RedHat 9 with 2.4.something (NPTL 
+back ported), with both RH9's original kernel, and their most up to date 
+one. It also happened on Debian Sid's almost-vanilla kernel 2.6.6. It 
+happened with LD_ASSUME_KERNEL=2.4.1 making wine choose the standard 
+threading mode, as well as without, choosing nptl. The zombies are 
+sometimes called wine-pthread/wine-kthread, and sometimes 
+wine-preloader. In short, I think this is a long standing Linux kernel 
+bug, and Linus helps those who help themselves. I will also not be 
+surprised if it was triggered by a wine bug.
+</p><p>
+So the question is this. Is there anyone on this list who knows how to 
+submit this as a question to lkml? 
+</p></quote>
+
+<p>Shachar mentioned he had a tainted kernel due to Nvidia drivers.
+Rob Shearman confirmed he experienced the same thing though,
+<quote who="Rob Shearman">
+ I've experienced the same thing on a perfectly clean kernel (I think
+ 2.6.5-mm1), but I assumed it was because we were messing around with
+ signals. If I can reproduce the problem I will report it, although Mike
+ McCormack seems to have had quite a bit of contact already with the kernel
+ folks</quote></p>
+
+<p>Mike McCormack wrote in with a few more details,
+<quote who="Mike McCormack">
+ The problem seems to be a kernel bug.  It's been round since 2.6.0... in 
+ my experience it only seems to happen when you terminate a wine process 
+ using <tt>^C</tt> or when the program crashes tries to start the debugger, fails, 
+ then you press <tt>^C</tt></quote></p>
+
+<p>From there more reports trickled in with the same issue.
+Kernels with this problem included an untainted  2.6.5 and an
+"untainted" RedHat 2.4.20-8.  Shachar thought that offered a
+bit of insight into the problem,
+<quote who="Shachar Shemesh">
+ if I am guessing correctly, this problem has something to do 
+ with NPTL, which means it was only there in the 2.4 kernel to begin with 
+ because of a RedHat patch. However, as the problem DOES happen on 
+ vanilla 2.6 kernel, this will not be a problem to reconstruct.
+</quote></p>
+
+</section>
+<section 
+	title="Killing Wine" 
+	subject="Warning about ultra-confusing thing"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0146.html" 
+	posts="1"
+	startdate="06/07/2004"
+>
+<topic>Fixes</topic>
+<p>Killing a Wine process may not be as straight forward as you'd 
+think.  Mike Hearn gave a pointer to anyone experiencing this problem:</p>
+<quote who="Mike Hearn"><p>
+
+Sometimes it is convenient to do a "<tt>killall -9 wine-pthread</tt>" to kill Wine
+for whatever reason. This no longer works:<ul><code>
+
+$ ps ax | grep wine-pthread | grep -v grep
+10425 pts/4    S      0:00 /opt/wine/bin/wine-pthread notepad.exe<br /><br />
+
+$ killall wine-pthread<br />
+wine-pthread: no process killed<br />
+$ killall wine-preloader<br />
+$</code></ul></p><p>
+
+Huh? WTF is going on here? Well, it seems that "ps" and "killall" look at
+different places to get the process name, so despite the fact that it
+appears as wine-pthread in the process list, you must use the name
+wine-preloader in order to send it signals from the command line.
+</p><p>
+There are reasons for this, which will hopefully become clear when I
+submit my docs on the Wine init process. For now, you have been warned.
+</p></quote>
+
+
+</section>
+
+
+<section 
+	title="Detecting Wine" 
+	subject="How to determine if an application is running in Wine environment?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0173.html" 
+	posts="3"
+	startdate="06/09/2004"
+>
+<topic>Fixes</topic>
+<p>
+This topic comes up from time to time, although it's
+been a while since we've seen it.  Raghavan Gurumurthy
+asked,
+<quote who="Raghavan Gurumurthy">
+ If i want to do some special handling inside my Windows 
+ executable when running in Wine environment, what is the 
+ best way to do this?</quote></p>
+
+<p>Mike Hearn gave the preferred answer,
+<quote who="Mike Hearn">
+ if you are trying to work around a Wine bug a better
+ approach is just to fix it.</quote></p>
+
+<p>Bill Medland had the other answer - how to actually
+detect a Wine environment,
+ <quote who="Bill Medland">Unless things have changed, 
+ I think the normal suggestion is to look for the 
+ <tt>HKLM/Software/Wine</tt> registry key</quote></p>
+
+<p>Josh Walker thought working around deficiencies might
+lead to problems later if Wine needed to change the registry
+layout for compatibility reasons.  Raghavan explained that
+their intentions were simply to ensure they were able to
+provide the best compatibility possible on Linux:</p> 
+<quote who="Raghavan Gurumurthy">
+<p>The purpose of my question was to make sure that wherever we are doing
+changes to the product code to work-around limitations in Wine, we are doing
+so only when running on Wine. And, before you (or anyone else) send further
+flame mail, note that we are submitting fixes to Wine as and when we run
+into them and have a solution. </p>
+
+<p>We are not trying to limit the product in anyway on Linux - if any, we are
+trying to make sure that the end-user experience for our product when
+running on Linux is as painless and seamless as possible.</p>
+</quote>
+
+<p>Chris Morgan thought it might be a good opportunity to identify areas
+of Wine that need work,
+<quote who="Chris Morgan">
+I'd be curious as to what kinds of things you 
+are trying to work around.  It would be interesting to see in which cases 
+bugs were worked around vs. fixed and which areas were the biggest problems.
+</quote></p>
+</section>
+<section 
+	title="Winrash Update" 
+	subject="Winrash update"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0179.html" 
+	posts="1"
+	startdate="06/09/2004"
+>
+<topic>Testing</topic>
+<p>Chris Morgan updated the Winrash tool used to run
+Wine's test suite and asked for people to please register:</p>
+<quote who="Chris Morgan"><p>
+Just released a new version of winrash.  I'm sending this email because after 
+asking people who are running Winrash to send an email to the list or 
+myself , I didn't receive any emails.  This isn't usually a problem except 
+when there is an issue with Winrash.  I get error reports that have the IDs 
+people put in but no way to contact them.
+</p><p>
+So I added a field in the installer for a contact email.  This will be sent 
+along with the clientID when an error report is generated by winrash.  
+</p><p>
+In case anyone is curious the web archive for the error reports is here: 
+<ul><a href="http://www.winehq.org/hypermail/wine-tests-results/">
+http://www.winehq.org/hypermail/wine-tests-results/</a></ul>
+</p><p>
+I'd like to ask that anyone who installed winrash please run the installer 
+again so they can enter a valid contact email.  If you are one of those 
+people wondering why your results aren't found at 
+<ul><a href="http://test.winehq.org/data/">
+http://test.winehq.org/data/</a></ul> this will help both of us by letting me get a 
+hold of you ;-)
+</p><p>
+The one change I should mention is the addition of proxy support in the 0008 
+release.  There are a handful of people running behind proxies, I can tell by 
+squid html in what should be the script part of the error reports.  This 
+version of the client *should* fix things for you.  Thanks to Florian Steinel 
+for the code change.
+</p><p>
+Here is the SF link to the latest client:
+<ul><a href="http://osdn.dl.sourceforge.net/sourceforge/winrash/winrash-0008-chris-msvc.exe">
+http://osdn.dl.sourceforge.net/sourceforge/winrash/winrash-0008-chris-msvc.exe</a></ul>
+</p><p>
+Thanks to anyone running the testing suite and for the feedback on winrash 
+changes, I appreciate it.
+</p></quote>
+
+<p>In case you missed the original announcement about the automatic
+testing facility (see 
+<a href="http://www.winehq.com/wwn/224#Testing%20-%20Volunteers%20Needed">issue 
+#224</a>), Winrash is a service you can run on Windows to help
+validate the accuracy of Wine's tests.  So if you've got a spare PC
+laying around, give it a shot.  It's bandwidth requirements are minimal -
+a full Wine test suite is only about 650k.  Even if you only boot into 
+Windows occasionally it can provide useful results.</p>
+
+</section>
+<section 
+	title="Blizzard Updater Fix" 
+	subject="Blizzard Updater Problem"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/06/0123.html" 
+	posts="8"
+	startdate="06/05/2004"
+	enddate="06/08/2004"
+>
+<topic>Fixes</topic>
+<p>Erich Hoover couldn't get the Blizzard Updater to run,
+<quote who="Erich Hoover">
+ I haven't been able to get the blizzard updater to run on recent 
+ versions of wine (I've downloaded from CVS to make sure there isn't a 
+ fix).  I'm not sure if this is something wrong with my setup or a bug 
+ with wine (i recently reinstalled my system with Fedora Core 2 and am 
+ no-longer running the same version of wine).  I'm executing programs 
+ with "setarch i386 wine &lt;appname&gt;" but the blizzard updater seems hosed 
+ (though Diablo II and Warcraft III run fine).  It appears that the 
+ updater doesn't launch correctly
+</quote></p>
+
+<p>Rob Shearman asked for some more info so that he could debug
+it.  Saulius Krasuckas sort of recognized the problem; it appeared
+to affect a few other programs.  He  gave a bit of a background on it:</p>
+<quote who="Saulius Krasuckas"><p>
+ AFAICS this case may be related to already known issue [1].
+</p><p>
+ The bug is still present in the CVS.  If it's the same bug I urge to
+ reverse this patch [2] (if compiling by yourself) or just use Wine version
+ prior to the date "2004/04/19 23:02:35".  For me reversing [2] patch
+ worked out fine.
+<ul>
+[1] <a href="http://bugs.winehq.org/show_bug.cgi?id=2210">http://bugs.winehq.org/show_bug.cgi?id=2210</a><br />
+[2] <a href="http://cvs.winehq.org/patch.py?id=12071">http://cvs.winehq.org/patch.py?id=12071</a>
+</ul></p></quote>
+
+<p>Rob then created <a href="http://www.winehq.com/hypermail/wine-devel/2004/06/att-0135/01-dialog_init.diff__charset_">a
+patch</a> and asked if it fixed the problem.  Both Saulius and Erich
+reported success.</p>
+
+</section></kc>

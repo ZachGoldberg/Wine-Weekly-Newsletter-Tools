@@ -1,0 +1,1244 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="4" date="18 Jul 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the fourth release of the experimental Wine's kernel cousin publication. 
+Its main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).
+
+<p />
+
+Another publisher seems to get interested in Wine.
+
+<p />
+
+Francis Beaudet (from Macadamian) announced that they are planning to release 
+a win95 look for the file-open dialogs.
+
+<p />
+
+I'll be on vacations for the next couple of weeks, so there won't be any new issues
+until I get back.
+
+</intro>
+
+<section
+  title="Crtdll Implementation"
+  subject="Crtdll Implementation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-156.html"
+>
+
+Patrik Stridvall sent out a RFC about the implementation of the CRTDLL and
+the way to use functions (and function prototypes) defined both by Windows
+in CRTDLL and the underlying Unix OS libc.
+
+<p />
+
+Editor's note: for clarity, the reader must not be confused by
+<i>native</i>. Here, it does not refer to Windows's libraries being used by
+Wine, but rather the host OS libraries being used by Wine.
+
+<p />
+
+What Patrik wants to achieve is something like:
+
+<p />
+
+<quote who="Patrik Stridvall">
+
+<li />CRTDLL calls libc
+
+<li />Other parts of Wine calls CRTDLL when ever possible.
+
+<li />We needn't do 2 if we doesn't want to.
+
+</quote>
+
+<p />
+
+To provide at least the step 1/, Patrick proposed:
+<ul><quote who="Patrik Stridvall">
+
+<p />
+
+On thing that any solution must do is to add the CRTDLL include files,
+ctype.h, stdio.h, stdlib.h, string.h and time.h for example.
+
+<p />
+
+One problem is that both #include &lt;stdio.h&gt; and #include "stdio.h"
+will include CRTDLL stdio.h. Not good? However GNU C has a option
+-I- that fixes this problem. Only a small patch include-separation.diff
+is needed to make Wine support that.
+
+<p />
+
+Now #include &lt;stdio.h&gt; include libc stdio.h and
+#include "stdio.h" include CRTDLL stdio.h. This makes Wine dependent
+on GNU C, but at first it already is and secondly it will only be
+during the transition process as I will show later.
+
+<p />
+
+The second problem is that since CRTDLL will call libc it
+must include both libc and CRTDLL include files.
+
+<p />
+
+That is quite a problem as it will cause massive namespace collision.
+
+<p />
+
+However I think I have found an hopefully acceptable solution.
+
+<p />
+
+Using preprocessor "magic" it seems to be possible to rename the name 
+spaces to avoid collisions. Instead of doing 
+<ul><code>
+        #include &lt;stdio.h&gt; /* libc */<br />
+        #include "stdio.h" /* CRTDLL */
+</code></ul>
+you do 
+<ul><code>
+        #include "native/stdio.h" /* libc */<br />
+        #include "internal/stdio.h" /* CRTDLL */
+</code></ul>
+
+<p />
+
+Please look at the files include/internal/*.h and include/native/*.h,
+and native/*.c, to see how it is done. 
+
+<p />
+
+The files include/native/*.h and native/*.c is generated using the
+script tools/make_native using the files native/*.spec, perhaps
+the files internal/*.h should be generated as well. 
+</quote></ul>
+
+<p />
+
+Patrik noted that <quote who="Patrik Stridvall">with thr preprocess "magic"
+... it might be possible to avoid generating the files during the
+compile phase and they might be portable between platforms and in the CVS
+and only regenerated when the interface changes, that is not to often once
+things stabilize.</quote> and that <quote who="Patrik Stridvall">this scheme also
+requires that the supported platform has som sort of ELF-like dlopen.</quote>
+
+<p />
+
+Marcus Meissner quite not agree and liked better the other way round 
+(not using CRTDLL but rather libc for all the APIs). But, he
+acknoledged the use of it for some specific functions, especially 
+<quote who="Marcus Meissner">due to lack of threadsafeness of some of the FILE*
+ and memory allocation functions.</quote>
+
+<p />
+
+Patrik Stridval then precised some points:
+<ol><quote who="Patrik Stridval">
+<li />If _every_ CRTDLL function are to be implemented in a _100%_ Windows
+   compatible way, primarly for the emulator, but also for the library,
+   it is essential that we have some way to enable inclution of both libc
+   and CRTDLL includes in order to access the libc
+   structures/macros/functions that might not be exactly the same as the 
+   CRTDLL ones (alignment, order of fields, missing/extended fields) etc.
+   There might also be thread-safe problem like incomptible or misssing 
+   thread safe function. This way we might have a thread-safe CRTDLL on 
+   top of a non-thread-safe libc.
+<li />The Wine code that uses CRTDLL instead, needn't check for missing or
+   diffrently behaving libc functions since that will be checked/fixed at 
+   CRTDLL level.
+<li />It makes it possible to take this one step further a CRTDLL that only
+   calls KERNEL32 and/or NTDLL. That will be useful in ther project like 
+   ReactOS that are in themselves standalone OS:es and do not have a native
+   libc. ReactOS for example does have a KERNEL32 and/or NTDLL (I don't 
+   remember which) and their CRTDLL is quite rudimentary last time I 
+   checked. They might be other NT clones with similar problems. It is IMO
+   good design and might increase the uses of Wine and indirectly bring 
+   more programmers to help.
+<li />As I hinted in 3 this scheme is extensible beyond libc/CRTDLL. It might
+   provide as way to include both native and internal include files that has
+   namespace collisions and a way to link files with namespace collisions.
+<li />All this begs the question. Why use libc at all? Why not in the future do
+   direct syscalls since that will enable use of specific things that the
+   native kernel is particullary good at. This will be a lot more work of
+   course, but why not it will be faster. :-)
+<li />Win64: In Win64, long is 32 bit, and in 64-bit Unix it is 64-bit, this
+   might cause problems, since long in native libc is 64-bit and if we use a
+   compiler that generates 32-bit longs, linking with native directly libc
+   might be a problem, if we use 64-bit long we will get other problems,
+   especially for WineLib. Out of the ashes into the fire. :-)
+</quote></ol>
+
+<p />
+
+Patrik proposed also a stepped approach:
+<ol><quote who="Patrik Stridval">
+<li />Making CRTDLL a 100% Windows compatible libc with every function
+   implemented for use with the emulator. My preprocessor "magic" scheme might
+   help doing that.
+<li />Making WineLib applications use CRTDLL instead of libc.
+   To do this we need some sort of elf dlopen mechanism and/or possible 
+   other "preprocessor" magic, because of namespace problems.
+<li />Making Wine call CRTDLL for portabillity reasons.
+<li />Making a CRTDLL that calls KERNEL32/NTDLL instead of libc.
+</quote></ol>
+
+<p />
+
+and asked:
+<ol><quote who="Patrik Stridval">
+<li />Where should we stop?
+<li />Is my scheme robust/portable enough to do this?
+<li />Have I missed something?
+<li />What do you think?
+</quote></ol>
+
+<p />
+
+Patrik also took a look at integrating ReactOS CRTDLL  into Wine. His first
+conclusions are that <quote who="Patrik Stridval">many of the commonly used
+functions seem to be implemented using KERNEL32 calls which is exactly what
+we (or at least I) want.</quote>, but licence is an issue: <quote
+who="Patrik Stridval">some files claim to be BSD, other files claim to be
+LGPL, and there are files indirectly claiming to be GPL by referring to a
+file COPYING in the topmost directory. </quote>
+
+<p />
+
+Albert den Haan from Corel explained in details the strategies currently
+used to help porting their applications:
+<ul><quote who="Albert den Haan">
+
+<p />
+
+We have been concerned with what does the compiler link to 
+when the Wine headers are used on top of glibc headers when compiling 
+Corel's Win32 applications. And in some cases we would rather have 
+the option to call glibc functions instead of the CRTDLL ones ---
+especially for services like dynamic memory allocation.
+
+<p />
+
+Over the past few months we have had to map many of the stdlib and stdio
+functions to their CRTDLL implementations via macros in crtdll.h and
+#including crtdll.h from other strategic headers (windef.h catches most
+of the cases).  
+ 
+This allows most of the source stuff we have tried to find the
+declarations they need. It also allows us to experiment in choosing the
+combinations of implementations for various services by editing one
+header file and recompiling.
+</quote></ul>
+
+<p />
+
+Albert wishes to keep <quote who="Albert den Haan">the configurability I want
+to tune source ported programs</quote>.
+
+<p />
+
+Patrik and Albert also agreed that having all the Wine code relying on
+a single portable CRTDLL will help porting Wine from OS to OS.
+
+<p />
+
+Nevertheless, Patrick points that Albert has different objectives: <quote
+who="Patrik Stridval">You need to keep in mind that I am looking for the
+ best possible _technical_ solution in the long run, you (Corel) are 
+looking for the best possible solution for your immediate problems.
+
+<p />
+
+However there is a large overlap between us where compromises
+are possible. Fast and small footprint is _very_ important for me too,
+but I prefer good before soon.
+</quote>
+
+</section>
+
+<section
+  title="CRTDLL implementation"
+  subject="CRTDLL implementation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-187.html"
+>
+
+Albert den Haan also discussed about memory allocation under Wine:
+<ul><quote who="Albert den Haan">
+<ul>
+<li /><b>In short</b>: The current web of Wine memory allocations is an 
+inconsistent mess that will have to be cleaned up eventually; especially 
+for those of us interested in source code ports.
+<li /><b>Why I did this</b>: I noticed that some of the resources returned 
+by Wine API implementations were allocated using HEAP_* functions, others 
+using malloc, and yet others using xmalloc. Then our source compiled
+libraries would not use the correct freeing mechanism to release the
+resource again and there would be a lot of memory leakage with warnings
+of this nasty situation.
+<li /><b>What I did</b>: A few weeks ago I tried the essentially the same 
+operation on the xmalloc and xfree calls on the Corel Wine tree. This stuff 
+has been soaking for a while here and I have to say that I am frustrated with 
+the results.
+
+<p />
+
+I hacked up crtdll.h to use Wine's HEAP* allocators as much as possible.
+This involved providing maps using preprocessor macros for the ?alloc
+functions and free.
+
+<p />
+
+This was not enough. A lot of dynamic memory in wine is allocated with
+xmalloc and xcalloc because the coder did not want to specifically
+handle an error condition. That memory is (usually :) properly released
+with free; but I had mapped that to CRTDLL_free above and I saw a _lot_
+more error messages when CRTDLL_free and its HEAP_* primatives were
+properly upset when asked to free memory it didn't allocate.
+
+<p />
+
+So I mapped the x?alloc functions, and reimplemented them in terms of
+the HEAP_functions (which was gratifyingly easy), and broke wine's
+initialization into a million (O.K. a lot of) pieces.  xmalloc is used
+in a _lot_ of places.  Some of them are executed before the Wine heap
+system is up and running with the usual "undefined" results.
+</ul>
+
+<p />
+
+Analysis:
+
+<p />
+
+Wine's current implementation has been somewhat indiscriminate in its
+dynamic memory use.  The current mix of host OS allocation and HEAP
+allocation may not affect programs running under allocation (that may or
+may not exit cleanly anyway) but source ported programs seem to be
+really tweaking the problem cases.  
+
+<p />
+
+This stuff is really endemic.  It will take some time to find the
+mismatches and resolve them. This includes making sure the free's match
+the "mallocs" and that the wine implementation code still uses the most
+efficient memory management for each task at hand.  
+
+<p />
+
+For example the Wine server <b>must</b> use the host OS's allocation system
+because it cannot trust (or access?) the client's heaps.  I suspect that
+the Wine server will be used to <b>implement</b> shared memory eventually and
+we are trying to plan for the future, right? Right?
+
+<p />
+
+Other portions of the Wine implementation code could use either the host
+OS heap or the Wine HEAP implementation. I'm no expert on this, but I
+suspect the utilities that cross address spaces would be hard either way
+but I hope we can avoid the additional overhead of using the wine heap
+wherever possible!
+
+<p />
+
+Stuff that escapes Wine to be twiddled by the client applications are
+problematical.  If the client expects Win32 memory management then it
+must be given the context it expects. For the apps that are less picky
+then Wine implementors can make a choice, but they must be consistent.
+
+<p />
+
+Right now I don't know how consistent Wine's memory management strategy
+is, but what I have seen is both heartening (no disasterous stuff has
+shown up) and scary (there are a lot of xmalloc calls out there).
+
+<p />
+
+Proposals
+<ol>
+<li />Move the current xmalloc.h file from include/xmalloc.h to
+include/wine/xmalloc.h. Provide a short term stub include/xmalloc.h for
+the short term) This will provide finer control over which flavour of
+xmalloc you want to use in a given file.
+<li />Rename the Wine xmalloc implementations to WINE_xmalloc
+(HEAP_xmalloc?) and such.  (see 1.)
+<li />Start churning through the Wine implementations and start
+discriminating calls to xmalloc as outlined above.  I know which ones I
+want to fix! :)
+<li />Experiment with using the HEAP memory allocation stuff selectively. 
+If profiling shows that some operations are faster using the host O.S's
+dynamica allocation, use it!  If testing reveals that some apps require
+Win32 memory allocation then that should be configurable (runtime vs
+compiled?  We'll debate that later)
+</ol></quote></ul>
+
+<p />
+
+Patrik Stridval went a step further: <quote who="Patrick Stridval">do we
+need the special behavior of xmalloc and friends at all. Obviously, we need
+a way to choose between the heap malloc and the native libc malloc, but does
+are there any code _really_ needs the special behavior that xmalloc has? Any
+code that does should be fixed instead IMHO.</quote>
+
+<p />
+
+He also added that <quote who="Patrik Stridval">The native malloc is probably
+faster on most platforms since it is one of the most common libc calls
+they are heavily optimized on most (all?) platforms. HeapAlloc is AFAIK
+not very optimized so I wouldn't be suprised if it is _much_ slower.
+</quote>
+
+<p />
+
+Albert noted that changing xmalloc into *malloc could be not so easy because
+<quote who="Albert den Haan">xmalloc <b>does not return</b> if the
+allocation fails, it exit() the thread immediately</quote> and <quote
+who="Albert den Haan"> will be a substantial effort in itself. Many of these
+allocations happen in situations (e.g. early in wine's initialization) when
+any failure is a good reason to take wine down so the user can provide more
+resources. Granted, there are cases where fancier error recovery would be a
+good idea but let the people who need that stuff code it when the need
+it.</quote>
+ 
+Ove K&#229;ven noticed that <quote who="Ove K&#229;ven">"host OS heap" (malloc) is
+thread-unsafe under Wine.</quote> He also reminded his work in the debugger
+(changing malloc with HeapAlloc) which produced very slow results (at least
+while loading symbols).
+
+<p />
+
+Albert detailed some of the allocation issues he run into:
+<ul><quote who="Albert den Haan">
+<li />X does not like something about Wine allocated memory (This may be my
+fault), 
+<li />the g++ new and delete operators are fragile with the prototype
+implementation I tried,  
+<li />The LIBRES resources hacks are executed before Wine's HEAP
+implementation is initialized. (obvious once you look at it, this will
+go away soon, err someday, "How are those elf-dlls coming Ulrich?
+Bertho?" :)
+<li />The registry is read in before the Wine HEAP is initialized. And this
+service is <b>not</b> under the control of the server. Yet.
+</quote></ul>
+
+<p />
+
+Alexandre gave his point of view on the CRTDLL issue:
+<ul><quote who="Alexandre Julliard">
+<li /><b>CRTDLL</b>: Our CRTDLL should only implement functions that cannot be 
+used straight from libc. There is absolutely no reason to duplicate
+functions like strcpy() when the libc one can be called directly.
+Trying to make Wine portable to a platform that doesn't even
+have a libc is a complete waste of time IMNSHO.
+
+<p />
+
+We need a scheme to reroute libc calls in Winelib applications to our
+CRTDLL implementation; this can be done at compile-time with macros,
+or at link-time with ELF tricks. We probably want to implement both
+possibilities and pick the more appropriate one depending on the
+current platform capabilities. In either case, it should not be
+necessary to make a single change to the Winelib app source code.
+
+<p />
+
+The extent to which CRTDLL redefines libc calls can be different for
+different platforms; for instance on a platform where the libc wchar_t
+is 16-bit (or where we don't care about binary compatibility), we can
+call straight to libc for all wide-char functions. The principle is
+that we should use as much of the native libc as possible, as this
+will be better for performance and interoperability with other
+applications.
+
+<p />
+
+Ove's pthread hack is a good way to make more libc functions useable
+directly; it will probably be included as an option someday but I'd
+like to have a more generic solution in place first.
+
+<p />
+
+<li /><b>Include files</b>: We need to provide our own set of the standard 
+include files (stdio, stdlib, etc.) at least for definitions that need to 
+be different from the native libc. It would be nice to have a scheme that 
+allows redefining only things that need it, so that we don't have to 
+recreate a complete set of headers. Albert's patch seems a reasonable 
+approach to solve this problem.
+
+<p />
+
+An issue is that we need to have the higher level parts of Wine use
+our own standard headers, while the Wine core (CRTDLL, KERNEL, etc.)
+needs to use the libc headers. I'm afraid that doing this with
+#include &#60;xx&#62; vs. #include "xx" is very error-prone.
+
+<p />
+
+<li /><b>Memory allocation</b>: Inside Wine, libc malloc() and friends 
+should never be used directly. All memory allocations should ultimately 
+go through HeapAlloc(). It may someday be possible to have HeapAlloc 
+simply wrap a critical section around libc malloc() for better performance 
+(at least in the case of the per-process heap; the shared system heap
+obviously cannot be accessed with malloc at all).
+
+<p />
+
+The server is an exception because it is a separate application and
+doesn't use threads, so it can make use of the standard libc (and it
+doesn't have access to any of the Windows APIs anyway).
+
+<p />
+
+Existing malloc() calls in higher-level DLLs can be left alone, as
+they will be rerouted to the CRTDLL malloc() once we get this feature
+in place. malloc() calls in the core should probably be replaced by
+HeapAlloc. xmalloc() should be removed completely IMO, it's not used
+heavily anyway, apart maybe in the registry code.
+</quote></ul>
+
+<p />
+
+Patrik didn't think that tunneling through CRTDLL the existing libc
+functions is completely doable, especially when dealing with 64 bit
+Unix platforms providing a 32 bit CRTDLL.
+
+<p />
+
+But, he reexplained how his patch could help (see also previous topic):
+<ul><quote who="Patrik Stridval">
+The patch tries to solve the following problems.
+<ol>
+<li />Making it possible to include both libc and CRTDLL include files
+   in same file in order to easier implement CRTDLL using libc.
+<li />Making it possible to gradually make all non core Wine files
+   use CRTDLL instead of libc.
+<li />Making is possible to for WineLib apps to use CRTDLL instead of libc.
+<li />Making it possible for WineLib apps to choose between using 
+   the CRTDLL or the libc variant of a function. 
+</ol>
+
+<p />
+
+The current patch doesn't support 4 yet, but it is easy to add support for
+it. 
+
+<p />
+
+It introduced two new include directories include/internal and
+include/native,
+if you want the internal (mainly CRTDLL) version of a file you do<br />
+<code>#include "internal/stdio.h"</code><br />
+and if you want the native version you do<br />
+<code>#include "native/stdio.h"</code><br />
+
+<p />
+
+The files can be made work in two different modes depend on the current
+configuration. 
+<ol>
+<li />[default] internal/stdio.h renames printf to CRTDLL_printf
+   to avoid namespace collision with libc printf and native/stdio.h renames
+   NATIVE_Symbol_printf to printf. 
+<li />internal/stdio.h does no renaming at all and native/stdio.h makes
+NATIVE_Symbol_printf to a function pointer that dlopen("libc.so", "printf") 
+is assigned in the initialization code.
+</ol>
+
+<p />
+
+(1) works but, since the current implementation does nothing.
+(2) doesn't work, since to work 100% it requires that all non core libc
+calls are routed through CRTDLL. Currently it doesn't even link.
+
+<p />
+
+The idea is use mode (1) while gradually transforming the code to support
+(2), and when (2) works we make (2) the default and perhaps even remove the
+support for (1) but that can be discussed in the future.
+
+<p />
+
+To support this we unforunately has to temporary during the transition from
+(1) to (2) used the -I- option (GCC specific) so the correct headers is included.
+
+<p />
+
+Now we can fix the files on by one by changing for example <br />
+<code>        #include &lt;stdio.h&gt;</code><br />
+to<br />
+<code>        #include "internal/stdio.h"</code><br />
+and fixing the compile errors and in some cases bugs due to
+CRTDLL libc differences.
+
+<p />
+
+When (2) works and if we decide to dump support for (1) 
+remove the -I- option and just rename all #include "internal/stdio.h"
+to #include &#60;stdio.h&#62; since the internal stdio.h has priority over 
+the native stdio.h. Of course we have to rename the #include &#60;stdio.h&#62;
+include in native/stdio.h to #include "/usr/include/stdio.h" but it doesn't 
+matter since it is a generated files anyway and thus we can have configure
+easily change the path on system that the libc include is not /usr/include.
+
+<p />
+
+</quote></ul>
+
+<p />
+
+No final decision has been made yet to integrate either Patrik's or Albert's
+patches.
+
+</section>
+
+<section
+  title="Binary resources and CVS"
+  subject="Binary resources and CVS"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-225.html"
+>
+
+Francis Beaudet asks <quote who="Francis Beaudet">how I would go about
+submitting a BMP (or any binary file) to the CVS tree.</quote>
+
+<p />
+
+Ulrich Weigand proposed to <quote who="Ulrich Weigand">distribute 
+bitmaps in XPM format (which is source code), and either use
+tools (like netpbm) to convert them to BMP by Makefile rules, 
+or maybe even teach wrc to load bitmaps from XPM format directly
+(and convert them to BMP in the binary resource format)?
+</quote> Patrik Stridval disliked the use of netpbm for porting 
+issues. He'd rather see <quote who="Patrik Stridval">wrc convert XPM to BMP.
+</quote> Bertho Stultiens agreed that <quote who="Bertho Stultiens">wrc 
+should handle xpm format automagically.</quote>, and asks for a
+small and easy library to do it (out of ImageMagic which is
+too large). Ulrich Weigand proposed libXpm, but noted that it would
+<quote who="Ulrich Weigand">introduce dependency on libX11 itself as well.
+</quote>
+
+<p />
+
+Ove K&#229;ven rather proposed to embed bitmaps as hex codes as 
+Borland's Resource Workshop does. Bertho Stultiens confirmed that
+wrc knows about this syntax.
+
+<p />
+
+Pavel Roskin reminds some option from CVS:
+<ul><quote who="Pavel Roskin">
+<code>cvs add -kb picture.bmp</code>
+
+<p />
+
+"-kb" means that the file should be treated as binary. Merging, keyword
+expansion and LF-CRLF conversion are disabled for such files.
+</quote></ul>
+
+</section>
+
+<section
+  title="Wine clipboard enhancement plan"
+  subject="Wine clipboard enhancement plan"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-251.html"
+>
+
+Noel Borthwick he's <quote who="Noel Borthwick">looking into making some changes
+to the windows clipboard code in order to allow the wine clipboard to
+integrate better with the X clipboard.</quote>
+
+<p />
+
+He proposed (for comments):
+<ul><quote who="Noel Borthwick">
+
+<p />
+
+There are two X clipboard selection mechanisms which seem to be relatively
+widely used:
+<ol>
+<li />The X selection content is specified through the built in XA_PRIMARY
+selection atom in X. For example if you select something in an X terminal
+window, the terminal window takes ownership of the selection by calling
+XSetSelectionOwner() and specifying the XA_PRIMARY selection atom. When a
+client wants to paste this selection it calls XConvertSelection again
+specifying XA_PRIMARY and the target data format atom. This then triggers an
+XSelectionRequestEvent for the specified format.
+<li />The X clipboard content is specified through the CLIPBOARD selection
+atom. The CLIPBOARD atom does not appear to be predefined as part of the
+XLib standard, but it is used by many programs for example Netscape as well
+as the XClipboard clipboard viewer. (XA_CLIPBOARD is defined in an X utility
+header in X11/include/X11/Xmu/Atoms.h) If you select something in a terminal
+window the content won't show up in XClipboard. However if you copy
+something using Edit|Copy in Netscape you will see it in XClipboard (via the
+CLIPBOARD atom) as well as you can paste it to a terminal (via the
+XA_PRIMARY atom).
+</ol>
+
+<p />
+
+<h5>This is the current scenario with an app running under Wine:</h5>
+Currently the clipboard in wine only responds to the first mechanism. If you
+select and copy text to the Wine clipboard, Wine takes over ownership of
+only the XA_PRIMARY selection atom but does not deal with the CLIPBOARD
+atom. As a result of this you cannot paste a selection from Wine into
+another clipboard aware Linux app or see the selected data in XClipboard for
+example. One should be able to paste Wine's selection into a terminal
+window. However this seems to be broken. (GlobalSize fails in
+GetClipboardData in HeapValidateHeap - block xxx is not inside heap)
+
+<p />
+
+The converse works partially. You can select something in an X terminal and
+paste it into Wine using XA_PRIMARY. However if you copy something into the
+clipboard using the CLIPBOARD atom from a clipboard aware app like Netscape,
+Wine won't know about this selection since it doesn't yet know about this
+atom.
+
+<p />
+
+<h5>Proposed changes to Wine's clipboard implementation:</h5>
+<ol>
+<li />Whenever something is copied into the clipboard via SetClipboardData, in
+addition to taking ownership of the XA_PRIMARY selection atom also take
+ownership of the CLIPBOARD atom (XA_CLIPBOARD).
+(This would be done in X11DRV_CLIPBOARD_SetData) This will wire the
+XSelectionRequest event to the CLIPBOARD atom as well, allowing us to
+process it in EVENT_SelectionRequest.
+<li />Whenever GetClipboardData is called, always get the selection from the X
+clipboard first, by calling XConvertSelection instead of checking in Wine's
+internal clipboard. This is the sequence of events:
+<ul>
+<li />First check the CLIPBOARD atom. If the format is available there use it.
+<li />If nobody owns the CLIPBOARD atom try the XA_PRIMARY atom.
+</ul>
+The advantage of checking the X clipboard is that if an external app to wine
+has placed data on the clipboard we can retrieve that. If Wine itself is the
+owner of the clipboard selection this still works, since our
+EVENT_SelectionRequest will handle this request.
+The Wine GetClipboardData clipboard code which currently looks into the
+internal clipboard(via CLIPBOARD_RenderFormat) should NOW be invoked from
+EVENT_SelectionRequest. Effectively this makes Wine's internal clipboard
+behave like a cache which is accessed in response to an XSelectionRequest.
+Also see point 5 below.
+<li />Make all Windows clipboard formats route through this X-clipboard
+mechanism. i.e. we should define X atoms for each all registered windows
+clipboard formats as well as application defined formats.
+RegisterClipboardFormat should be responsible for passing on requests to
+create these atoms to the clipboard driver. The atom names could be the
+format names prefixed with something like WCF_ (Wine Clipbord Format)
+<li />Wine's EVENT_SelectionRequest should check the "target" field in
+XSelectionRequestEvent and handle the target atom name as follows:
+<ul>
+<li />If the target atom is a predefined target type such as XA_STRING or
+XA_PIXMAP or XA_BITMAP(?) we can map these into native Windows clipboard
+formats CF_TEXT or CF_BITMAP respectively and convert the clipboard content
+if available, into an X compatible format. Bitmaps could be converted to
+Pixmaps for example. Maybe would could do something intelligent with some
+other native X target types as well.
+<li />If the target atom is a Wine registered clipboard target type (prefixed by
+WCF_) we translate the name to the windows format name (stripping WCF_) and
+retrieve the appropriate format from the windows clipboard if available.
+Typically such a request would come from a Wine application, but in theory
+an external client could request a WCF_* format from a Wine application!
+</ul>
+<li />Move Wine's internal clipboard implementation details to the clipboard
+driver level (x11drv/clipboard.c). Wine's clipboard code will largely
+delegate to the driver which will maintain the clipboard cache.
+EVENT_SelectionRequest will directly manipulate the internal clipboard cache
+and if necessary send a WM_RENDERFORMAT message to the window if the format
+is set for delayed rendering.
+This will simplify Wines clipboard code and hide the implementation details
+in the clipboard driver level, where they belong.
+</ol></quote></ul>
+
+<p />
+
+G&#233;rard Patel reminded Noel about a discussion he had with Ulrich Weigand
+regarding this issue:
+<ul>
+<li />G&#233;rard's note:<ul><quote who="G&#233;rard Patel">
+I have looked a bit to the copy/paste problem, and here is my
+idea. The clipboard got broken because of the separation of threads
+in true 32 bits threads. To implement this, and to prepare to
+separate address spaces, each thread/process has a separate
+heap. What happen is that when an application copy data in the
+clipboard :<ul>
+<li />it copy the data in a data area in its private heap
+<li />it signals X that the application has placed data on the clipboard.
+</ul>
+
+<p />
+
+When another application request data from the clipboard, X 
+signals an event to the Wine application and asks for the data
+(text). Wine retrieves then the handle to the data area, get the
+data, and sends it to X. The problem is that the context is
+different. As I understand it, in an X event, Wine is in
+a different context, so uses a different heap. So the handle
+to the data, saved in a global variable, is not found in <b>this</b> heap.
+There is an error message about it that is very significant.
+
+<p />
+
+<code>err:heap:HeapValidate Heap 40330000: block 40903ba0 is not inside heap</code>
+
+<p />
+
+That's why it works (usually) in the other direction. When another
+application has placed data in the X clipboard, and a Wine
+application request data from clipboard, there is no X event,
+and so there is no context change. But you can't copy from a
+Wine application since when the other application request data,
+Wine can't find the data (it is searching it in the wrong heap)
+
+<p />
+
+Now, how to fix ? To do it, it would be necessary to implement
+a shared memory scheme and control the access through the wine
+server (this is a citation of Ulrich Weygand; I have absolutely no
+idea of how implement it in fact).
+
+<p />
+
+So a true solution will (probably) to wait for the completion of
+the separation of address spaces; at this moment, I presume that
+the Wine gurus will implement some mechanisms to share memory
+and then the clipboard will work like it should.
+</quote></ul>
+<li />Ulrich's note:<ul><quote who="Ulrich Weigand">
+Ah. Looking at the clipboard source, it seems that 32-bit clipboard
+access could <b>never</b> have worked, at least not between different 
+processes. The 32-bit GlobalAlloc has always returned a handle
+valid only in the calling process.
+
+<p />
+
+The difference now is just that the X event processing is now done
+always in a separate Wine process, while it used to be done in
+one of the running processes. So, if you were running just a
+single Windows application, it (accidentally) worked ...
+</quote></ul></ul>
+
+<p />
+
+Pavel Roskin then provided some more information on Motif's behavior
+(quoted from Lesstif documentation):
+<ul><quote who="Pavel Roskin">
+
+<p />
+
+<h5>Introduction</h5>
+To understand how the Clipboard works, you first need to understand the
+ICCCM specification (currently at version 2 in R6; you can find a
+PostScript version in docs/hardcopy/ICCCM). Read through it, frequently 
+referring to O'Reilly Volume Zero (the protocol reference) and Volume Two 
+(the Xlib reference), about how selections should work, and how the CLIPBOARD
+selection in particular should be used. It will take you about a month
+to fully understand how all this should work. Come back when you're done.
+
+<p />
+
+<h5>Basics</h5>
+Oh, you're back. Is your head swimming with visions of SelectionNotify,
+SelectionClear, XGetSelectionOwner(), and other choice nuggets? Have you
+seen the beautiful fogginess of EventHandlers, struggled with the concepts
+of Atoms, properties on windows, and format atoms?
+
+<p />
+
+Good. You're ready for the first nugget of information about the M*tif
+clipboard.
+
+<p />
+
+Forget everything you've learned, it doesn't apply in 90% of the cases.
+
+<p />
+
+There are two coexisting mechanisms in Motif; there's the Motif way, and
+there's the X way. Both work, but the differences are a little messy
+until
+you understand what gets used, and when. (talk about compliant apps like
+xclipboard vs Motif applications here). The mechanism uses selections,
+but
+doesn't do so in the traditional sense.
+
+<p />
+
+There are two selections: the XA_MOTIF_CLIP_LOCK, and the XA_CLIPBOARD.
+
+<p />
+
+The XA_MOTIF_CLIP_LOCK selection is used to serialize access to the
+CLIPBOARD selection between M*tif applications. The XA_CLIPBOARD
+selection
+is used to indicate which app just added data to the clipboard via a copy
+(normal M*tif case), or the application that just cut or copied something
+to the clipboard (X case).
+
+<p />
+
+Contrary to O'Reilly, the Motif clipboard does NOT store data that you
+pass to XmClipboardCopy in the CLIPBOARD property of the window that you
+passed in (section 18.5 or section 17.5, depending on the version of
+Volume
+Six (or Six-A, respectively) that you're reading. Instead, it's stored on
+the root window itself. Unless I've got the only version of Motif that
+does this try using xprop on the root window after you've copied something
+to the clipboard; if you don't see something like _MOTIF_CLIP_ITEM_*,
+let me know). However, ICCCM compliant applications do.
+</quote></ul>
+
+<p />
+
+Noel proposed to stick to his first XA_CLIPBOARD implementation (to be
+compatible with X and KDE) and then to deal <quote who="Noel Borthwick">with
+different X flavors ... at the Clipboard driver level. Since in any case
+I was considering moving some of the clipboard code to the driver level, 
+potentially Motif specific issues could be addressed in a different Motif 
+clipboard driver.</quote>
+
+<p />
+
+Ulrich Weigand proposed a quick fix:<quote who="Ulrich Weigand">you might simply
+change the clipboard code to allocate data on the shared heap instead of
+using GlobalAlloc. Alternatively, you might always use the 16-bit heap,
+even for storing 32-bit data, as the 16-bit heap <b>is</b> always shared.</quote>
+Regarding separate address spaces, Ulrich added <quote who="Ulrich Weigand">we'll
+need to think of a way to pass clipboard data to the other process. 
+Actually, wasn't your suggestion to <b>always</b> pass data via the X clipboard,
+even between two Wine processes? This would nicely fix that problem ...
+</quote>
+
+<p />
+
+Noel noted that this might not work because <quote who="Noel Borthwick">the X
+clipboard always works in "delayed render" mode. i.e. we need to return the
+actual WINE clipboard data in an X atom only in response to an 
+XSelectionRequest event.</quote> Ulrich confirmed that since Wine currently
+uses a single connection to X server in a service thread.
+
+<p />
+
+Albert den Haan pointed out another issue: <quote who="Albert den Haan">The solution
+described below looks to work for as long as the (single) application is up
+(and therefore its service thread) but will not work as Win#+ does when the app
+exits. It seems if we want to have this sort of persistence then the current
+wine set-up will not work. We have enough trouble with non functional
+zombies as it is!</quote>
+
+<p />
+
+Albert proposed to use the wine server thread (and mentionned some other
+possible extension for serialization and/or persistence - like the registry).
+
+<p />
+
+Noel agreed and proposed that <quote who="Noel Borthwick">the server could keep a
+copy of the data on (app) exit or alternatively the clipboard data could be 
+rendered to X atoms on app exit. So the clipboard server would just need to
+access and return the appropriate atoms to the requesting client.</quote>
+
+<p />
+
+Alexandre Julliard pointed out that <quote who="Alexandre Julliard">It can't be part of
+the Wine server because the server doesn't have an X connection; but it should
+be easy to write a small Winelib app whose only purpose is to hang on the 
+clipboard data.</quote>
+
+</section>
+
+<section
+  title="Address Space Separation / Stability vs Correctness"
+  subject="Address Space Separation / Stability vs Correctness"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-259.html"
+>
+
+Gavriel State expressed some concerns regarding address spaces:
+<ul><quote who="Gavriel State">
+
+<p />
+
+There has been a fair bit of talk on the list lately about implementing 
+address space separation for different processes.  While I agree that 
+it is certainly important to emulate the Win32 runtime architecture as 
+closely as possible, I'm a bit concerned (or perhaps just confused) 
+about the necessity of this feature.
+
+<p />
+
+At present, it is possible to run multiple Win32 apps by starting 
+separate Wine processes manually at the command line, which would then
+start separate Wine server processes along with the app.  These processes
+cannot communicate amongst each other using standard Win32 IPC APIs,
+may have problems due to unserialized access to registry files, etc.
+Some of this may be solvable by having a shared Wine server process.
+Extending the Wine server model in this way is <b>not</b> what people are 
+discussing as separate address spaces though, right?
+
+<p />
+
+Now, when a Win32 app tries to create another process using the 
+CreateProcess API, this process is currently created in a shared
+address space.  This allows us to use GlobalAllocced memory as an 
+IPC mechanism, and generally makes it easy to provide the IPC functions
+that might be expected in these circumstances.
+
+<p />
+
+The problem with the shared address space model is that it does not
+provide the memory protection that would be provided with the separated
+model, and that the new process will not have the same memory layout
+it would have had in Windows, right?
+
+<p />
+
+If that's all it is, why is it a big deal?  Unless I'm mistaken, 
+providing separated address spaces will be a <b>big</b> deal, requiring
+marshalling of all message data, and various other tweaky-to-get-right
+tasks.  On the other side of the coin, how common is the use of 
+CreateProcess amongst the apps people want to run?  Is this useful
+mostly to support the use of Program Manager/Explorer as a shell to 
+launch other apps?  Where it is used, how important is the separation
+of address spaces?  Are there apps that aren't working right because
+of the lack of this feature?  
+
+<p />
+
+Finally, what's the current state of development on this?  Have people
+actually started working on it, or is it still in the discussion stage?
+If so, are those of you working on it seeing a big reduction in 
+stability?  Or am I just being a worry-wart. 
+</quote></ul>
+
+<p />
+
+Gavriel's main question is to make the right choice between stability 
+(what Corel's looking for to release apps) and correctness (add as
+many features as possible), and main some parallel with Linux mode of
+operation between stable and experimental versions. He asked whether 
+this was something to consider in the future, and since Corel's has
+been maintaining its own stable CVS tree, <quote who="Gavriel State">I
+could envisage our tree becoming a basis for that at some point.</quote>
+
+<p />
+
+Ian Schmidt listed some programs needing this separate address space 
+feature (mainly because one programs has its relocation info stripped, so
+it can only be mapped at a precise address, and it fails it this address 
+is in use): Microsoft Visual Studio (VC++ 6.0), many games.
+
+<p />
+
+G&#233;rard Patel mentionned InstallShield based installation not working
+because of this.
+
+<p />
+
+Ulrich Weigand explained in details of the separate address space stuff:
+<ul><quote who="Ulrich Weigand">
+
+<p />
+
+Well, in a way it is: the goal would be to map the CreateProcess() API
+to fork(), so that processes created by CreateProcess() <b>are</b> more or
+less the same as processes started separately on the command line,
+but using a shared Wine server.
+
+<p />
+
+This would actually be doable right now, it would just need a small
+amount of reshuffling of the process creation sequence, and a call
+to fork() at the right place.  The reason why it isn't done yet is
+exactly that communication between processes would then stop working,
+because currently the IPC mechanisms do indeed rely on the fact the
+shared heap and all 16-bit global memory <b>are</b> shared.  So, before
+this is done, the IPC mechanisms would need to be adapted.
+
+<p />
+
+The <b>big</b> problem are the applications that are not relocatable, because
+the relocation info was stripped during link.  These *will not run*, 
+unless loaded exactly at the intended base address.
+
+<p />
+
+Well, as far as I see it, we are still in a discussion stage, although
+a lot of preparations are already being done.  In a sense, the whole
+concept of using a Wine server process <b>is</b> in fact a preparation for
+inter-address space IPC.   
+
+<p />
+
+Also, the work done lately in the area of rehashing the Win16 scheduler,
+removing the one global TASK_Reschedule loop and running each process
+in its own thread, is of course the first step towards full separation:
+currently, every process runs at least in its own thread, while not yet
+in its own address space.
+
+<p />
+
+As to stability:  Unfortunately, there are indeed stability problems,
+caused primarily by the switch towards using multiple threads.  This
+has exposed several thread-safety related problems, which are still
+largely unresolved (primarily the problem that libc is not thread-safe
+due to missing pthreads synchronization, but there are also Wine-internal
+thread-safety problems still lurking, e.g. in the area of asynchronous
+X event handling / window repainting/activation).
+
+<p />
+
+Apart from these problems (that are already there), I don't think the
+switch to separate address spaces would cause any further stability 
+problems, certainly not for single-process applications (i.e. those which 
+don't call CreateProcess() anyway).
+
+<p />
+
+As far as I can see, the main changes still to be done are these:
+<ul>
+<li />Use shared mappings to provide real shared memory between address
+  spaces for the shared heap and 16-bit global memory. 
+
+<p />
+
+  [ While this would probably affect even single-process applications,
+  a shared memory area to which only one process attaches should not
+  be any less stable than normal memory ... ]
+
+<p />
+
+<li />Marshal the parameters for inter-process messages.
+
+<p />
+
+  [ If there are no inter-process messages, this will never happen. ]
+
+<p />
+
+<li />Clean up the use of global variables (e.g. instead of a global list
+  of window classes, use per-process lists etc.  On the other hand,
+  the list of <b>windows</b> needs to be global, so this will either be 
+  moved to shared memory or to the Wine server.)
+
+<p />
+
+  [ If anything, this should <b>improve</b> stabililty, because this should
+  also improve thread-safety, even for single-process apps ... ]
+</ul>
+
+<p />
+
+To summarize:  Apart from the current thread-safety related stability
+problems (which need to be resolved in any case before Wine can be
+declared 'stable'), I don't think the necessary preparations towards
+the switch to separate address spaces will introduce fundamental 
+stability problems.  (That's not to say there is no possibility of 
+bugs being introduced here or there, of course, but as far as I can
+tell, no new <b>fundamental</b> problems, like thread-safety, should arise.)
+</quote></ul>
+
+</section>
+
+<section
+  title="DOS memory mapping (and some bits of paranoia)"
+  subject="DOS memory mapping (and some bits of paranoia)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-07/Subject/article-261.html"
+>
+
+Ian Schmidt reported some crash while running Excel 2000:
+<ul><quote who="Ian Schmidt">
+Debugging the Excel 2000 crash, it turns out to be caused by some very strange
+code.  Specifically, inside it's main message handler (the app starts up and
+runs fine waiting for a message to this point) it does the following (in rough
+pseudocode - I may be misinterpreting some things a little, but I don't want to
+post disassembled bits of Office either).
+
+<p />
+
+<ul>
+<li />Call GetVersionEx()
+<li />If it's Win9X, call a second function with hardcoded parameters 0x800 and
+0xf0000.
+<li />The second function checks if the first parameter is non-zero - if it is, it
+returns.
+<li />Otherwise it proceeds to add up all the bytes starting at where the second
+parameter points to, for as many bytes as the first parameter indicates and
+returns that as the result.  (the caller appears to ignore this result however)
+</ul>
+
+<p />
+
+On WINE 0xf0000 is invalid so this causes a nice crash.  On Win98 a test
+program I wrote that does the same thing runs fine (no faults, BSODs, etc) and
+picks up what appears to be pieces of BIOS or something (what IS at linear
+address 0xf0000 in the PC architecture?  I never did any DOS programming).  I
+assume NT would exhibit the WINE behavior - anyone wanna try it?
+</quote></ul>
+Ian also put out some paranoid questions whether this could be "anti-wine" code?
+
+<p />
+
+Ulrich Weigand answered that <quote who="Ulrich Weigand">In Win9[58], the first 4MB
+page is shared between all processes, and contains the memory image of the boot
+DOS session (1MB + 64K), followed by the low part of the 16-bit global heap.
+So it would indeed appear that at linear address 0xf0000 the BIOS ROM should be 
+visible.</quote> He also turned down the anti-wine code, but something linked
+to some features of BIOSes (noting <quote who="Ulrich Weigand">It is beyond me why a
+mere <b>application</b> should depend on BIOS implementation details; if the OS would 
+do it, it still wouldn't be nice, but a little more understandable :-/)</quote>
+
+<p />
+
+Norman Stevens also doubted it's anti wine code: <quote who="Norman Stevens">More 
+likely it is anti-piracy. The linear address 0xf0000 is the start of the bios rom, 
+so if you write the checksum into the executable as it is installed you can 
+prevent people running the program on a different computer.</quote>
+
+<p />
+
+Ian Schmidt didn't agree because <quote who="Ian Schmidt">the app run fine with just
+zeros mapped there.  So if it's anti-piracy it's broken (buggy?  Microsoft? :). It
+does execute the check every 5 seconds or so after the initial test (on a WM_TIMER).
+Maybe it's really just an attempt to make people buy faster computers so they won't 
+notice how large Win2k is :)</quote>
+
+<p />
+
+Ulrich proposed a patch for it, and added <quote who="Ulrich Weigand">If there are more 
+direct accesses to the boot DOS image, we might even think about mapping our 
+version of that image (DOSMEM_dosmem) actually at address 0 ...</quote>
+
+<p />
+
+Eric Pouech didn't like mapping all the 1MB at 0 because it would remove NULL
+pointer deref faults (at least the first page should not be mapped, thus
+disabling access to BIOS data segment at 0x00000400).
+
+<p />
+
+Alexandre Julliard proposed <quote who="Alexandre Julliard">we could map it
+there, but protect the first page, and un-protect it on the first access &gt;=
+0x400. This would still allow catching most NULL pointers accesses, and it
+could make it possible to avoid forking a separate process for running DOS
+programs (at least with ELF binaries).</quote>
+
+<p />
+
+Ian reported that patch from Ulrich didn't solve the issue, but with using 
+an expanded version of another one provided by Ove K&#229;ven, he got Excel 2000 to
+run <quote who="Ian Schmidt">minus some graphical glitches (loading / saving files
+worked, typing stuff into cells worked, graphs/charts seem to work, etc).</quote>
+
+</section>
+
+</kc>

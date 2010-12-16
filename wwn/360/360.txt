@@ -1,0 +1,2517 @@
+From thunderbird2k at gmail.com  Sun Sep 13 03:33:53 2009
+From: thunderbird2k at gmail.com (Roderick Colenbrander)
+Date: Sun, 13 Sep 2009 10:33:53 +0200
+Subject: wined3d: Add Intel GMA 4500MHD
+In-Reply-To: <3a244bad0909122315m31e2b39dm42d34a0acc24363a@mail.gmail.com>
+References: <3a244bad0909122315m31e2b39dm42d34a0acc24363a@mail.gmail.com>
+Message-ID: <c8485d470909130133v5274fc7egd2bb7458808e6e9e@mail.gmail.com>
+
+Just one minor thing make sure the right email address is configured
+in your git repository, so that the correct email address is set in
+the patch
+
+Roderick
+
+On Sun, Sep 13, 2009 at 8:15 AM, Jaime Rave <jaimerave at ubuntu-co.com> wrote:
+> More information about Intel
+> cards:?http://en.wikipedia.org/wiki/Intel_GMA#Table_of_GMA_graphics_cores_and_chipsets
+>
+>
+>
+>
+
+
+From hverbeet at gmail.com  Sun Sep 13 03:52:32 2009
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Sun, 13 Sep 2009 10:52:32 +0200
+Subject: Sept 11 with tools and tests removed
+In-Reply-To: <4d8b5aa80909121911y394b814duc97a3ac3972954e2@mail.gmail.com>
+References: <50078.39793.qm@web112607.mail.gq1.yahoo.com>
+	<d7e62e980909120819u462e3d6ak23c42a64888eae00@mail.gmail.com>
+	<4d8b5aa80909120824j65ab100dv682053f6588f3095@mail.gmail.com>
+	<4d8b5aa80909120830m513d58f4g42289f7ed15b156f@mail.gmail.com>
+	<d7e62e980909121451v522a8b66pce82296594ed43fb@mail.gmail.com>
+	<d7e40be30909121538s5623dd8w601e41f639484f83@mail.gmail.com>
+	<d658b69e0909121608l7e63f4d0g848cb672b4cf2460@mail.gmail.com>
+	<4d8b5aa80909121911y394b814duc97a3ac3972954e2@mail.gmail.com>
+Message-ID: <d658b69e0909130152w2c916892l7f723db7cbbe86b1@mail.gmail.com>
+
+2009/9/13 Mike Kaplinskiy <mike.kaplinskiy at gmail.com>:
+> Actually it does dereference something, if you think of dmFormName
+> being an int (not a pointer), then you would be subtracting an address
+> from a random value.
+
+If it were an int, sure, but "dmFormName" is a WCHAR array.
+
+
+From shacklein at gmail.com  Sun Sep 13 03:54:43 2009
+From: shacklein at gmail.com (Ben Klein)
+Date: Sun, 13 Sep 2009 18:54:43 +1000
+Subject: Sept 11 with tools and tests removed
+In-Reply-To: <d658b69e0909130152w2c916892l7f723db7cbbe86b1@mail.gmail.com>
+References: <50078.39793.qm@web112607.mail.gq1.yahoo.com>
+	<d7e62e980909120819u462e3d6ak23c42a64888eae00@mail.gmail.com> 
+	<4d8b5aa80909120824j65ab100dv682053f6588f3095@mail.gmail.com> 
+	<4d8b5aa80909120830m513d58f4g42289f7ed15b156f@mail.gmail.com> 
+	<d7e62e980909121451v522a8b66pce82296594ed43fb@mail.gmail.com> 
+	<d7e40be30909121538s5623dd8w601e41f639484f83@mail.gmail.com> 
+	<d658b69e0909121608l7e63f4d0g848cb672b4cf2460@mail.gmail.com> 
+	<4d8b5aa80909121911y394b814duc97a3ac3972954e2@mail.gmail.com> 
+	<d658b69e0909130152w2c916892l7f723db7cbbe86b1@mail.gmail.com>
+Message-ID: <d7e40be30909130154i1a8614ffwdca52a988ef53edc@mail.gmail.com>
+
+2009/9/13 Henri Verbeet <hverbeet at gmail.com>:
+> 2009/9/13 Mike Kaplinskiy <mike.kaplinskiy at gmail.com>:
+>> Actually it does dereference something, if you think of dmFormName
+>> being an int (not a pointer), then you would be subtracting an address
+>> from a random value.
+>
+> If it were an int, sure, but "dmFormName" is a WCHAR array.
+>
+
+My point was that dmW->foo dereferences dmW to get to foo, being the
+equivalent of (*dmW).foo. However at present there is no possibility
+of NULL-dereferencing here as the dmW pointer is validated in the
+parent functions.
+
+
+From stefandoesinger at gmx.at  Sun Sep 13 04:02:49 2009
+From: stefandoesinger at gmx.at (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Sun, 13 Sep 2009 11:02:49 +0200
+Subject: wined3d: Add Intel GMA 4500MHD
+In-Reply-To: <3a244bad0909122315m31e2b39dm42d34a0acc24363a@mail.gmail.com>
+References: <3a244bad0909122315m31e2b39dm42d34a0acc24363a@mail.gmail.com>
+Message-ID: <200909131102.49328.stefandoesinger@gmx.at>
+
+Am Sunday 13 September 2009 08:15:19 schrieb Jaime Rave:
+> More information about Intel cards:
+> http://en.wikipedia.org/wiki/Intel_GMA#Table_of_GMA_graphics_cores_and_chip
+>sets
+
+
++            || strstr(gl_renderer, "Intel?"))
+I don't know if it is safe check for the ?. I think its not part of the 
+standard ASCII character set, so there might be codepage issues. I don't 
+think  its necessary to check for it anyway, I think "Intel" is good enough.
+(In which case we might change the "Intel(R)" and "Intel Inc." checks as well)
+
++            if (strstr(gl_renderer, "GM45"))
++            {
++                /* GMA 4500MHD. These can take up to 2048MB */
++                *vidmem = 512;
++                return CARD_INTEL_GM45;
++            }
++        
+You are adding trailing whitespace in the last line(I think Alexandre's commit 
+scripts fiter that out though)
+
+
+From donpedro at tdcadsl.dk  Sat Sep 12 18:25:37 2009
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Sun, 13 Sep 2009 01:25:37 +0200
+Subject: ntdll: Do not accept device control requests with invalid and/or
+	incompa tible handles
+References: <1252161985.2994.2.camel@donpedro> <87my5589q9.fsf@wine.dyndns.org>
+	<20090910193018.HPOO1293.fep50.mail.dk@post.tele.dk>
+	<87pr9y4klw.fsf@wine.dyndns.org>
+Message-ID: <20090912232537.WGUS8155.fep51.mail.dk@post.tele.dk>
+
+OK. The "bad handle" is tested by the "deadbeef" handle.
+Where is the best place to get a really good "wrong class" handle?
+
+Thanks,
+
+/pedro
+
+----- Original meddelelse -----
+
+> Fra: Alexandre Julliard <julliard at winehq.org>
+> Til: Peter Dons Tychsen <donpedro at tdcadsl.dk>
+> Cc: wine-devel at winehq.org
+> Dato: Tor, 10. sep 2009 22:20
+> Emne: Re: ntdll: Do not accept device control requests with invalid
+> and/or incompa tible handles
+> 
+> Peter Dons Tychsen <donpedro at tdcadsl.dk> writes:
+> 
+> > Thanks for the comments.
+> > Not sure i understand them though.
+> >
+> > The whole point of the test was to test what happens when you use a
+> wrong
+> > handle. The actual bug i fixed was that it was possible to for
+> programs
+> > to send invalid handles to IoControl. Cygwin was infact sending
+> handles
+> > to ntdll.dll which originated from GetStdHandle().
+> >
+> > So i think using this API for testing is relevant, as the point of
+> the
+> > test is to verify that handles of the completely wrong class are
+> > rejected, and not just "bad handles".
+> 
+> Yes, but then you should explicitly construct and test both kinds of
+> handles. Using GetStdHandle will either be a wrong class or a bad
+> handle
+> depending on whether stdio is to a file or to a console, so you don't
+> really know which case you are testing. The remapping of console
+> handles
+> happens in kernel32, not in ntdll, so it doesn't really make sense to
+> pass the result of GetStdHandle straight to ntdll.
+> 
+> --
+> Alexandre Julliard
+> julliard at winehq.org
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090913/1fecee47/attachment.htm>
+
+From julliard at winehq.org  Sun Sep 13 05:25:45 2009
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Sun, 13 Sep 2009 12:25:45 +0200
+Subject: include: Add missing definitions in af_irda.h. (try 2)
+In-Reply-To: <b5b1f1f50909120709u79ca097fvbe705f0b8e45227@mail.gmail.com>
+	(Thomas Trummer's message of "Sat, 12 Sep 2009 16:09:12 +0200")
+References: <b5b1f1f50908290202u5898a86ds2244569f83983dd0@mail.gmail.com>
+	<874orq61a5.fsf@wine.dyndns.org>
+	<b5b1f1f50909120709u79ca097fvbe705f0b8e45227@mail.gmail.com>
+Message-ID: <87zl8zuonq.fsf@wine.dyndns.org>
+
+Thomas Trummer <th.trummer at gmail.com> writes:
+
+> Thanks for looking at the patch.
+>
+> 1) Is there a way to ensure that it doesn't conflict with other symbols?
+> I've created a small test program that includes the Linux Irda headers which
+> works fine for Linux but I have no idea about the Mac...
+
+Grep for each symbol in the system headers. Trying a build is not
+enough.
+
+> 2) About the AF_IRDA et al. symbols: These are already defined in the
+> winsock headers, so there are two options: Remove them and include the
+> winsock header (this would also get rid of the USE_WS macros) or leave them
+> in and add the WS_ prefix appropriately. I would create a new version of the
+> patch accordingly...
+
+You can't include winsock.h, that's not what Windows does.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From julliard at winehq.org  Sun Sep 13 05:29:02 2009
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Sun, 13 Sep 2009 12:29:02 +0200
+Subject: Sept 11 with tools and tests removed
+In-Reply-To: <4d8b5aa80909121911y394b814duc97a3ac3972954e2@mail.gmail.com>
+	(Mike Kaplinskiy's message of "Sat, 12 Sep 2009 22:11:09 -0400")
+References: <50078.39793.qm@web112607.mail.gq1.yahoo.com>
+	<d7e62e980909120819u462e3d6ak23c42a64888eae00@mail.gmail.com>
+	<4d8b5aa80909120824j65ab100dv682053f6588f3095@mail.gmail.com>
+	<4d8b5aa80909120830m513d58f4g42289f7ed15b156f@mail.gmail.com>
+	<d7e62e980909121451v522a8b66pce82296594ed43fb@mail.gmail.com>
+	<d7e40be30909121538s5623dd8w601e41f639484f83@mail.gmail.com>
+	<d658b69e0909121608l7e63f4d0g848cb672b4cf2460@mail.gmail.com>
+	<4d8b5aa80909121911y394b814duc97a3ac3972954e2@mail.gmail.com>
+Message-ID: <87ljkjuoi9.fsf@wine.dyndns.org>
+
+Mike Kaplinskiy <mike.kaplinskiy at gmail.com> writes:
+
+> As for the context note, it is perfectly valid code (segfault-less,
+> that is) as it stands, but we should either remove the null check on
+> the next line or assign the value later.
+
+No, the code is fine as it is. The bug is in cppcheck.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From juan.lang at gmail.com  Sun Sep 13 11:00:29 2009
+From: juan.lang at gmail.com (Juan Lang)
+Date: Sun, 13 Sep 2009 09:00:29 -0700
+Subject: include: Add missing definitions in af_irda.h. (try 2)
+In-Reply-To: <b5b1f1f50909120709u79ca097fvbe705f0b8e45227@mail.gmail.com>
+References: <b5b1f1f50908290202u5898a86ds2244569f83983dd0@mail.gmail.com>
+	<874orq61a5.fsf@wine.dyndns.org>
+	<b5b1f1f50909120709u79ca097fvbe705f0b8e45227@mail.gmail.com>
+Message-ID: <3a768c550909130900l7edfff39id19add981baef011@mail.gmail.com>
+
+Hi Thomas,
+
+> I've created a small test program that includes the Linux Irda headers which
+> works fine for Linux but I have no idea about the Mac...
+
+There's no IRDA support on the Mac, hence no header conflict to worry about.
+--Juan
+
+
+From wine-devel at kievinfo.com  Sun Sep 13 16:29:56 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 13 Sep 2009 15:29:56 -0600
+Subject: [3/5] comctl32/dpa: Implement DPA_SaveStream() with tests
+In-Reply-To: <1252867047.5938.8.camel@debianhome.localdomain>
+References: <1252867047.5938.8.camel@debianhome.localdomain>
+Message-ID: <4AAD6454.6030705@kievinfo.com>
+
+Nikolay Sivov wrote:
+> Changelog:
+>     - Implement DPA_SaveStream() with tests
+> 
+> +    streamData.dwSize  = curr_pos.QuadPart - initial_pos.QuadPart;
+> +    streamData.dwData2 = 1;
+> +    streamData.dwItems = streamInfo.iPos;// + 1;
+c++ comment.
+
+> +#if 0
+> +    /* crashes on XP */
+> +    hRes = pDPA_SaveStream(NULL, CB_Save, pStm, NULL);
+> +    expect(E_INVALIDARG, hRes);
+> +
+> +    hRes = pDPA_SaveStream(dpa, CB_Save, NULL, NULL);
+> +    expect(E_INVALIDARG, hRes);
+> +#endif
+Don't use #if 0 / #endif in tests. Use if (0){} instead. This will guarantee
+that code will still compile.
+
+Vitaliy.
+
+
+From wine-devel at kievinfo.com  Sun Sep 13 16:39:44 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 13 Sep 2009 15:39:44 -0600
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <1252871928-6142-2-git-send-email-razielmine@gmail.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>
+	<1252871928-6142-2-git-send-email-razielmine@gmail.com>
+Message-ID: <4AAD66A0.5040201@kievinfo.com>
+
+Ismael Barros wrote:
+> ---
+> +static DWORD WINAPI udp_listener_thread( LPVOID lpParameter )
+> +{
+> +    for ( ;; )
+> +    {
+.....
+> +    }
+> +}
+You do not have exit from the loop.
+
+> +    /* Launch thread */
+> +    listener->handle = CreateThread( NULL, 0, udp_listener_thread,
+> +                                     listener, 0, NULL );
+I haven't found the place where you closing this handle.
+
+> +    /* Launch thread */
+> +    listener->handle = CreateThread( NULL, 0,
+> +                                     ( is_tcp
+> +                                       ? tcp_listener_thread
+> +                                       : udp_listener_thread ),
+> +                                     listener, 0, NULL );
+Same here.
+
+Vitaliy.
+
+
+From wine-devel at kievinfo.com  Sun Sep 13 16:42:17 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 13 Sep 2009 15:42:17 -0600
+Subject: ntdll: Do not accept device control requests with invalid and/or
+	incompa tible handles
+In-Reply-To: <20090912232537.WGUS8155.fep51.mail.dk@post.tele.dk>
+References: <1252161985.2994.2.camel@donpedro>
+	<87my5589q9.fsf@wine.dyndns.org>	<20090910193018.HPOO1293.fep50.mail.dk@post.tele.dk>	<87pr9y4klw.fsf@wine.dyndns.org>
+	<20090912232537.WGUS8155.fep51.mail.dk@post.tele.dk>
+Message-ID: <4AAD6739.5020507@kievinfo.com>
+
+Peter Dons Tychsen wrote:
+> OK. The "bad handle" is tested by the "deadbeef" handle.
+> Where is the best place to get a really good "wrong class" handle?
+Create it. Event handle will do for example.
+
+Vitaliy.
+
+
+From wine-devel at kievinfo.com  Sun Sep 13 16:46:02 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 13 Sep 2009 15:46:02 -0600
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <4AAD66A0.5040201@kievinfo.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>	<1252871928-6142-2-git-send-email-razielmine@gmail.com>
+	<4AAD66A0.5040201@kievinfo.com>
+Message-ID: <4AAD681A.8090402@kievinfo.com>
+
+Forgot this part:
+> Ismael Barros wrote:
+> +static DWORD WINAPI tcp_listener_thread( LPVOID lpParameter )
+> +{
+> +    for ( ;; )
+> +    {
+> +        if ( clientSock == INVALID_SOCKET )
+> +        {
+> +            goto end;
+> +        }
+> +    }
+> +
+> +end:
+> +}
+It's more cleaner to use "break;" instead of goto to exit the loop.
+
+Vitaliy.
+
+
+From razielmine at gmail.com  Sun Sep 13 16:59:12 2009
+From: razielmine at gmail.com (=?UTF-8?Q?Ismael_Barros=C2=B2?=)
+Date: Sun, 13 Sep 2009 23:59:12 +0200
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <4AAD66A0.5040201@kievinfo.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>
+	<1252871928-6142-2-git-send-email-razielmine@gmail.com>
+	<4AAD66A0.5040201@kievinfo.com>
+Message-ID: <82e274890909131459h27ec39adu5468830477c0167b@mail.gmail.com>
+
+On Sun, Sep 13, 2009 at 11:39 PM, Vitaliy Margolen
+<wine-devel at kievinfo.com> wrote:
+> You do not have exit from the loop.
+>
+> I haven't found the place where you closing this handle.
+>
+> Same here.
+
+The code to close those threads and their listener sockets is meant to
+go in DPWSCB_CloseEx(), but I still haven't worked on it. But you are
+right, I should already work on the code to gracefully tear the
+listeners down.
+
+
+From razielmine at gmail.com  Sun Sep 13 17:07:28 2009
+From: razielmine at gmail.com (=?UTF-8?Q?Ismael_Barros=C2=B2?=)
+Date: Mon, 14 Sep 2009 00:07:28 +0200
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <4AAD681A.8090402@kievinfo.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>
+	<1252871928-6142-2-git-send-email-razielmine@gmail.com>
+	<4AAD66A0.5040201@kievinfo.com> <4AAD681A.8090402@kievinfo.com>
+Message-ID: <82e274890909131507t7745450cj8b49e7aeca5d6523@mail.gmail.com>
+
+On Sun, Sep 13, 2009 at 11:46 PM, Vitaliy Margolen
+<wine-devel at kievinfo.com> wrote:
+> Forgot this part:
+>> Ismael Barros wrote:
+>> +static DWORD WINAPI tcp_listener_thread( LPVOID lpParameter )
+>> +{
+>> + ? ?for ( ;; )
+>> + ? ?{
+>> + ? ? ? ?if ( clientSock == INVALID_SOCKET )
+>> + ? ? ? ?{
+>> + ? ? ? ? ? ?goto end;
+>> + ? ? ? ?}
+>> + ? ?}
+>> +
+>> +end:
+>> +}
+> It's more cleaner to use "break;" instead of goto to exit the loop.
+
+It's a way to tell between abruptly ending the thread due to an error
+(so it just executes cleanup code and returns), and ending the thread
+gracefully (which would be done with a break or a thread termination
+boolean). In this case is equivalent because there's no code between
+the end of the loop and the "end" label.
+
+If it's better to use always a break I will change it.
+
+
+From wine-devel at kievinfo.com  Sun Sep 13 17:46:37 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 13 Sep 2009 16:46:37 -0600
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <82e274890909131507t7745450cj8b49e7aeca5d6523@mail.gmail.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>	
+	<1252871928-6142-2-git-send-email-razielmine@gmail.com>	
+	<4AAD66A0.5040201@kievinfo.com> <4AAD681A.8090402@kievinfo.com>
+	<82e274890909131507t7745450cj8b49e7aeca5d6523@mail.gmail.com>
+Message-ID: <4AAD764D.1040201@kievinfo.com>
+
+Ismael Barros? wrote:
+> On Sun, Sep 13, 2009 at 11:46 PM, Vitaliy Margolen
+> <wine-devel at kievinfo.com> wrote:
+>> Forgot this part:
+>>> Ismael Barros wrote:
+>>> +static DWORD WINAPI tcp_listener_thread( LPVOID lpParameter )
+>>> +{
+>>> +    for ( ;; )
+>>> +    {
+>>> +        if ( clientSock == INVALID_SOCKET )
+>>> +        {
+>>> +            goto end;
+>>> +        }
+>>> +    }
+>>> +
+>>> +end:
+>>> +}
+>> It's more cleaner to use "break;" instead of goto to exit the loop.
+> 
+> It's a way to tell between abruptly ending the thread due to an error,
+> and ending the thread gracefully.
+That makes no sense to me. You have no other point of exit from the loop.
+Using goto for no good reason is always a bad thing.
+
+Vitaliy.
+
+
+From wine-devel at kievinfo.com  Sun Sep 13 17:49:02 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Sun, 13 Sep 2009 16:49:02 -0600
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <82e274890909131459h27ec39adu5468830477c0167b@mail.gmail.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>	
+	<1252871928-6142-2-git-send-email-razielmine@gmail.com>	
+	<4AAD66A0.5040201@kievinfo.com>
+	<82e274890909131459h27ec39adu5468830477c0167b@mail.gmail.com>
+Message-ID: <4AAD76DE.7040109@kievinfo.com>
+
+Ismael Barros? wrote:
+> On Sun, Sep 13, 2009 at 11:39 PM, Vitaliy Margolen
+> <wine-devel at kievinfo.com> wrote:
+>> You do not have exit from the loop.
+>>
+>> I haven't found the place where you closing this handle.
+>>
+>> Same here.
+> 
+> The code to close those threads and their listener sockets is meant to
+> go in DPWSCB_CloseEx(),
+Then it should be in the same patch. I guess it might have been ok if you've
+sent it as the 3rd patch in the series but you didn't.
+
+Vitaliy.
+
+
+From jjmckenzie51 at earthlink.net  Sun Sep 13 20:53:21 2009
+From: jjmckenzie51 at earthlink.net (James McKenzie)
+Date: Sun, 13 Sep 2009 18:53:21 -0700
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <4AAD681A.8090402@kievinfo.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>	<1252871928-6142-2-git-send-email-razielmine@gmail.com>	<4AAD66A0.5040201@kievinfo.com>
+	<4AAD681A.8090402@kievinfo.com>
+Message-ID: <4AADA211.4010306@earthlink.net>
+
+Vitaliy Margolen wrote:
+> Forgot this part:
+>   
+>> Ismael Barros wrote:
+>> +static DWORD WINAPI tcp_listener_thread( LPVOID lpParameter )
+>> +{
+>> +    for ( ;; )
+>> +    {
+>> +        if ( clientSock == INVALID_SOCKET )
+>> +        {
+>> +            goto end;
+>> +        }
+>> +    }
+>> +
+>> +end:
+>> +}
+>>     
+> It's more cleaner to use "break;" instead of goto to exit the loop.
+>   
+That is some ugly code there. 
+
+Ismael:  Please use a break; to get out of the loop.  It is cleaner and
+good code practice.
+
+James McKenzie
+
+
+
+From bunglehead at gmail.com  Mon Sep 14 02:04:07 2009
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Mon, 14 Sep 2009 11:04:07 +0400
+Subject: [3/5] comctl32/dpa: Implement DPA_SaveStream() with tests
+In-Reply-To: <4AAD6454.6030705@kievinfo.com>
+References: <1252867047.5938.8.camel@debianhome.localdomain>
+	<4AAD6454.6030705@kievinfo.com>
+Message-ID: <4AADEAE7.2020902@gmail.com>
+
+Vitaliy Margolen wrote:
+> Nikolay Sivov wrote:
+>   
+>> Changelog:
+>>     - Implement DPA_SaveStream() with tests
+>>
+>> +    streamData.dwSize  = curr_pos.QuadPart - initial_pos.QuadPart;
+>> +    streamData.dwData2 = 1;
+>> +    streamData.dwItems = streamInfo.iPos;// + 1;
+>>     
+> c++ comment.
+>
+>   
+>> +#if 0
+>> +    /* crashes on XP */
+>> +    hRes = pDPA_SaveStream(NULL, CB_Save, pStm, NULL);
+>> +    expect(E_INVALIDARG, hRes);
+>> +
+>> +    hRes = pDPA_SaveStream(dpa, CB_Save, NULL, NULL);
+>> +    expect(E_INVALIDARG, hRes);
+>> +#endif
+>>     
+> Don't use #if 0 / #endif in tests. Use if (0){} instead. This will guarantee
+> that code will still compile.
+>
+> Vitaliy.
+>   
+Thanks.
+
+
+
+From Joerg-Cyril.Hoehle at t-systems.com  Mon Sep 14 06:38:03 2009
+From: Joerg-Cyril.Hoehle at t-systems.com (Joerg-Cyril.Hoehle at t-systems.com)
+Date: Mon, 14 Sep 2009 13:38:03 +0200
+Subject: Is Wine printing on MacOSX?
+Message-ID: <47CC5ABB01651443A88DB8EC5B4D657B0332ED04@S4DE8PSAANK.mitte.t-com.de>
+
+Hi,
+
+Stefan D?singer wrote:
+>>All that happened [with notepad] is that the printer ejected a blank page.
+>Printing from notepad works fine for me on both Linux and OSX, fwiw
+
+Saving to file instead of printing, notepad generated a .ps file.
+
+Reading this into Apple's preview shows the text.
+Converting to pdf, then viewing also shows the text.
+
+Printing this prints a blank page!
+
+So either Apple does not like the PS generated by Wine, or only the printer,
+or that's a problem with fonts or whatever else.
+I'm using a PPC driver for an old Lexmark Z33 printer that prints documents
+from TextEdit and Safari perfectly.
+I still need to test a wine application other than notepad.
+
+BTW, the page footer says "Page &p": &p is not substituted by notepad.
+Is this a known bug in notepad or Wine's printer driver?
+
+Regards,
+	J?rg H?hle.
+
+
+From Joerg-Cyril.Hoehle at t-systems.com  Mon Sep 14 06:49:49 2009
+From: Joerg-Cyril.Hoehle at t-systems.com (Joerg-Cyril.Hoehle at t-systems.com)
+Date: Mon, 14 Sep 2009 13:49:49 +0200
+Subject: now OSS driver emulation -- and other drivers too -- works as
+	well as OSS HW mode; block size error gone?
+In-Reply-To: <3a768c550909040959v575a84ebi5bc747bece4bcfc0@mail.gmail.com>
+Message-ID: <47CC5ABB01651443A88DB8EC5B4D657B0332ED1E@S4DE8PSAANK.mitte.t-com.de>
+
+Hi,
+
+so I have submitted patches for OSS and coreaudio. ALSA will follow.
+
+I also wrote a testcase, but am unsure about one issue.
+
+The following makes sense (winmm/tests/wave.c):
+todo_wine ok(origformat.nBlockAlign = format.nBlockAlign, "nBlockAlign fixed");
+
+The problem is: whether or not I use todo_wine, the test will succeed
+with some audio drivers and fails with others. How to deal with that?
+Limit the test to wine_interactive testruns?
+
+Should I submit this test now, knowing that it'll "fail" (to be more precise:
+"succeed unexpectedly") with what people -- presumably -- use most on Linux: ALSA?
+
+Thanks for your help,
+	J?rg H?hle
+
+
+From juan.lang at gmail.com  Mon Sep 14 10:35:52 2009
+From: juan.lang at gmail.com (Juan Lang)
+Date: Mon, 14 Sep 2009 08:35:52 -0700
+Subject: [ntdll] Move file attribute logic to new function 
+	DIR_get_attributes()
+Message-ID: <3a768c550909140835q5c50c666rc5290e30148e84d@mail.gmail.com>
+
+Hi Dan,
+
+> This is a bit different from the code I posted earlier;
+> following Samba's example, it combines the
+> fd and filename cases into a single function,
+
+Since you don't actually use the fd in your patch, I think it's
+preferred style not to include it for now.
+
+Also,
++void DIR_set_attributes(int fd, DWORD attributes)
++{
++    /* Unimplemented.  Wine does not yet store win32 file attributes. */
+(snip)
++
++                    /* Try to save attributes.  We don't care too
+much if it doesn't work. */
++                    DIR_set_attributes(fd, info->FileAttributes);
+
+Adding a no-op part of the patch is a bit ugly.  Removing it allows
+you to focus on one thing in this patch, rewriting querying the file
+attributes.  You re-add setting them later.
+
+(Thanks for working on this, by the way.)
+--Juan
+
+
+From donpedro at tdcadsl.dk  Mon Sep 14 10:55:48 2009
+From: donpedro at tdcadsl.dk (Peter Dons Tychsen)
+Date: Mon, 14 Sep 2009 17:55:48 +0200
+Subject: ntdll: Do not accept device control requests with invalid and/or
+	incompa tible handles
+References: <1252161985.2994.2.camel@donpedro>
+	<87my5589q9.fsf@wine.dyndns.org>	<20090910193018.HPOO1293.fep50.mail.dk@post.tele.dk>	<87pr9y4klw.fsf@wine.dyndns.org>
+	<20090912232537.WGUS8155.fep51.mail.dk@post.tele.dk>
+	<4AAD6739.5020507@kievinfo.com>
+Message-ID: <20090914155547.QDKZ24582.fep52.mail.dk@post.tele.dk>
+
+Thanks V.
+
+However, it would seem that AJ already has commited another fix in ntdlls
+serial module (which fixes the same bug), so i guess my fix and tests are
+not valid any more.
+
+Thanks,
+
+/pedro
+
+----- Original meddelelse -----
+
+> Fra: Vitaliy Margolen <wine-devel at kievinfo.com>
+> Til: Peter Dons Tychsen <donpedro at tdcadsl.dk>
+> Cc: wine-devel at winehq.org
+> Dato: S?n, 13. sep 2009 23:42
+> Emne: Re: ntdll: Do not accept device control requests with invalid
+> and/or incompa tible handles
+> 
+> Peter Dons Tychsen wrote:
+> > OK. The "bad handle" is tested by the "deadbeef" handle.
+> > Where is the best place to get a really good "wrong class" handle?
+> Create it. Event handle will do for example.
+> 
+> Vitaliy.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090914/d18f8d88/attachment.htm>
+
+From saulius2 at ar.fi.lt  Mon Sep 14 12:08:27 2009
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Mon, 14 Sep 2009 20:08:27 +0300 (EEST)
+Subject: Wine at Ohloh
+Message-ID: <alpine.DEB.1.10.0909142006180.30905@localhost.localdomain>
+
+FYI, http://www.ohloh.net/p/wine/analyses/latest
+
+I wonder how do they find 27k lines of C++ code in Wine tree...
+
+
+From Joerg-Cyril.Hoehle at t-systems.com  Mon Sep 14 12:13:40 2009
+From: Joerg-Cyril.Hoehle at t-systems.com (Joerg-Cyril.Hoehle at t-systems.com)
+Date: Mon, 14 Sep 2009 19:13:40 +0200
+Subject: How I create wine app launcher icons on the Mac
+Message-ID: <47CC5ABB01651443A88DB8EC5B4D657B0332EF1B@S4DE8PSAANK.mitte.t-com.de>
+
+Hi,
+
+On Linux, I have been using .desktop files that freedesktop defines to keep a directory full of icons. They all launch Wine applications.  Often enough, these desktop files are initially create by Wine in ~/.local/share/applications/wine/..., along with the icon files in ~/.local/share/icons/.
+
+Here's how I now have app launcher icons on the Mac:
+
+sips -i ~/.local/share/icons/foo.png --out foo.png
+# sips -i converts and *additionaly* adds icon resource to file
+# Alas, sips does not understand .xpm
+cat sample.command > foo.png
+# > overwrites contents but keeps resource fork
+mv foo.png ~/Desktop/foo.command
+# .command is the finder's suffix for executable shell scripts
+chmod a+x foo.command
+
+sample.command contains:
+#!/bin/sh
+cd /User/me/xyz && WINEDEBUG=-gsm WINEPREFIX=$HOME/.wine exec wine xyz.exe
+
+Afterwards you edit foo.command and change the directory, environment variables and executable names to meet your needs.  Be careful to use an editor that keeps the resource fork.
+
+"Opening" this icon will launch a Terminal where all logs will go. Optionally you may use Cmd-I(nformation) to disable the display of the .command suffix in the finder (unless forced globally). Wine's X11 window opens above the Terminal window.
+
+I wonder whether this functionality could be somehow integrated into the git (winemenubuilder?), or whether developers believe this should be left to "surrounding" projects like Darwine.
+
+What do you think?
+	J?rg H?hle
+PS: You can wrap up the whole thing into a single shell script using the
+cat <<EOF syntax.
+
+
+From austinenglish at gmail.com  Mon Sep 14 12:17:22 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Mon, 14 Sep 2009 12:17:22 -0500
+Subject: Wine at Ohloh
+In-Reply-To: <alpine.DEB.1.10.0909142006180.30905@localhost.localdomain>
+References: <alpine.DEB.1.10.0909142006180.30905@localhost.localdomain>
+Message-ID: <b6bb06270909141017x450c1cdcpce9beeba3076eaa5@mail.gmail.com>
+
+On Mon, Sep 14, 2009 at 12:08 PM, Saulius Krasuckas <saulius2 at ar.fi.lt> wrote:
+> FYI, http://www.ohloh.net/p/wine/analyses/latest
+>
+> I wonder how do they find 27k lines of C++ code in Wine tree...
+
+According to that, there are also 2 files that are GPL 3, and 2 others
+that are GPL 2.0, I think their stats are a bit off.
+
+-- 
+-Austin
+
+
+From paul.vriens.wine at gmail.com  Mon Sep 14 12:28:13 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Mon, 14 Sep 2009 19:28:13 +0200
+Subject: Wine at Ohloh
+In-Reply-To: <b6bb06270909141017x450c1cdcpce9beeba3076eaa5@mail.gmail.com>
+References: <alpine.DEB.1.10.0909142006180.30905@localhost.localdomain>
+	<b6bb06270909141017x450c1cdcpce9beeba3076eaa5@mail.gmail.com>
+Message-ID: <4AAE7D2D.6020700@gmail.com>
+
+On 09/14/2009 07:17 PM, Austin English wrote:
+> On Mon, Sep 14, 2009 at 12:08 PM, Saulius Krasuckas<saulius2 at ar.fi.lt>  wrote:
+>> FYI, http://www.ohloh.net/p/wine/analyses/latest
+>>
+>> I wonder how do they find 27k lines of C++ code in Wine tree...
+>
+> According to that, there are also 2 files that are GPL 3, and 2 others
+> that are GPL 2.0, I think their stats are a bit off.
+>
+We do have two files that mention GPL 2.0 in the strings (LGPL 2.1 in 
+the header though):
+
+programs/clock/Sv.rc
+programs/progman/Sv.rc
+
+-- 
+Cheers,
+
+Paul.
+
+
+From hverbeet at gmail.com  Mon Sep 14 12:43:55 2009
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Mon, 14 Sep 2009 19:43:55 +0200
+Subject: Wine at Ohloh
+In-Reply-To: <4AAE7D2D.6020700@gmail.com>
+References: <alpine.DEB.1.10.0909142006180.30905@localhost.localdomain>
+	<b6bb06270909141017x450c1cdcpce9beeba3076eaa5@mail.gmail.com>
+	<4AAE7D2D.6020700@gmail.com>
+Message-ID: <d658b69e0909141043w759c746et9bfde26281159968@mail.gmail.com>
+
+As for C++, we do have some of that in the headers, and 27k isn't that much.
+
+
+From stefandoesinger at gmx.at  Mon Sep 14 13:22:35 2009
+From: stefandoesinger at gmx.at (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Mon, 14 Sep 2009 20:22:35 +0200
+Subject: ddraw: complete recognition of pixelformat 19: X8L8V8U8
+In-Reply-To: <47CC5ABB01651443A88DB8EC5B4D657B0332EEDF@S4DE8PSAANK.mitte.t-com.de>
+References: <47CC5ABB01651443A88DB8EC5B4D657B0332EEDF@S4DE8PSAANK.mitte.t-com.de>
+Message-ID: <200909142022.35396.stefandoesinger@gmx.at>
+
+Am Monday 14 September 2009 17:28:13 schrieb Joerg-Cyril.Hoehle at t-systems.com:
+> Hi,
+>
+> the argument for including this code is based on symmetry: Every place in
+> the Wine source tree (incl. ddraw, d3d9, wined3d) that handles L6V5U5 also
+> handles X8L8V8U8 -- except for these two places.  So I closed the gap.
+>
+> This fixes
+> err:ddraw:PixelFormat_WineD3DtoDD Can't translate this Pixelformat 19
+> Please see bug #16559 for further discussion.
+>
+> Being based on the symmetry argument means this patch is completely
+> independent on possible missing conversions between D3DFMT and WINED3DFMT
+> codes somewhere in Wine. I would not eliminate that possibility.  The above
+> error message that used to mention Pixelformats 62/63/64 nowadays mentions
+> 19/64/69/70.
+>
+> Regards,
+>  J?rg H?hle
+
+The patch seems ok to me
+
+
+
+From ken at codeweavers.com  Mon Sep 14 13:56:31 2009
+From: ken at codeweavers.com (Ken Thomases)
+Date: Mon, 14 Sep 2009 13:56:31 -0500
+Subject: [PATCH 1/1] winecoreaudio: make supported format test more
+	restrictive
+In-Reply-To: <47CC5ABB01651443A88DB8EC5B4D657B0332ECE1@S4DE8PSAANK.mitte.t-com.de>
+References: <47CC5ABB01651443A88DB8EC5B4D657B0332ECE1@S4DE8PSAANK.mitte.t-com.de>
+Message-ID: <845274A4-99D1-4C19-B1B1-09F428911D1A@codeweavers.com>
+
+On Sep 14, 2009, at 6:21 AM, <Joerg-Cyril.Hoehle at t-systems.com> <Joerg-Cyril.Hoehle at t-systems.com 
+ > wrote:
+
+> supportedformat() has been in OSS' audio.c since 2004, so the  
+> coreaudio driver was forked even before that time?!?
+
+Well, the CoreAudio driver was based on the ALSA driver.  So, if ALSA  
+was copied from the OSS driver before that change was made, then  
+effectively, yes, the CoreAudio driver was forked before that time.
+
+-Ken
+
+
+
+From bunglehead at gmail.com  Mon Sep 14 14:33:19 2009
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Mon, 14 Sep 2009 23:33:19 +0400
+Subject: [1/2] comctl32: Implement highlighting (marquee) selection support
+	in listview
+In-Reply-To: <4AAE934E.3010808@codeweavers.com>
+References: <4AAE934E.3010808@codeweavers.com>
+Message-ID: <4AAE9A7F.9050601@gmail.com>
+
+Owen Rudge wrote:
+> These patches add support for selecting multiple items in a 
+> multi-selection listview using the mouse (by dragging and highlighting).
+>
+> ---
+>  dlls/comctl32/listview.c |  172 
+> ++++++++++++++++++++++++++++++++++++++++++----
+>  1 files changed, 157 insertions(+), 15 deletions(-)
+Hi, Owen.
+
+Some comments.
+
+---
+
+@@ -201,6 +201,7 @@ typedef struct tagITEM_INFO
+   LPARAM lParam;
+   INT iIndent;
+   ITEM_ID *id;
++  UINT orig_state; /* state before highlighting operation begins */
+ } ITEM_INFO;
+
+---
+Why do you need this restoring code?
+
+If you're starting selection box with some items selected they should be 
+deselected if not Shift pressed and
+leaved untouched if Shift used. I don't see a reason to restore it - 
+when you want to toggle selected state
+moving rectangle with Ctrl pressed you could just:
+
+LISTVIEW_GetItemState() and place inverted state with following 
+LISTVIEW_SetItemState().
+
+Also such large cycles shouldn't be used if you could manage not to use 
+them.
+Currently we're not doing right sometimes with ownerdata lists which 
+leads to huge response times
+(see http://bugs.winehq.org/show_bug.cgi?id=14303).
+
+Anyway this part:
+---
++ /* Take a snapshot of all the item states */
+
++                        for (i = 0; i < infoPtr->nItemCount; i++)
++                        {
++                            hdpaSubItems = DPA_GetPtr(infoPtr->hdpaItems, i);
++                            lpItem = DPA_GetPtr(hdpaSubItems, 0);
++
++                            if (lpItem)
++                                lpItem->orig_state = lpItem->state;
++                        }
+---
+
+is wrong. You can't do it that way cause selected state could also be cached at
+parent side with corresponding callback bit set (look at LISTVIEW_GetItemT()).
+
+P.S. No need to split in two patches here, fist is useless if we can't see rectangle.
+
+
+
+From owen at owenrudge.net  Mon Sep 14 14:57:16 2009
+From: owen at owenrudge.net (Owen Rudge)
+Date: Mon, 14 Sep 2009 20:57:16 +0100
+Subject: [1/2] comctl32: Implement highlighting (marquee) selection support
+	in listview
+In-Reply-To: <4AAE9A7F.9050601@gmail.com>
+References: <4AAE934E.3010808@codeweavers.com> <4AAE9A7F.9050601@gmail.com>
+Message-ID: <4AAEA01C.4000003@owenrudge.net>
+
+Hi Nikolay,
+
+> Why do you need this restoring code?
+
+I tried to replicate the way that Windows did the selections. Testing 
+various manners of selection with Windows Explorer, that code was needed 
+for a relatively specific scenario:
+
+If you're starting a selection box with some items already selected and 
+Shift is pressed, then the items should, as you say, remain selected. If 
+you then highlight some different items, but then un-highlight them 
+before releasing the mouse button, the original items should remain 
+selected. However, if in that time you highlight some of the already 
+highlighted items, and then unhighlight them, they should not remain 
+highlighted.
+
+Due to the fact that, with this code, I'm deselecting all the items (if 
+neither shift nor ctrl are pressed) whenever the bounding box is 
+altered, we obviously need to keep a record of how the items were 
+highlighted before the selection was started.
+
+The alternative would be, I believe, to maintain a list of all the items 
+that have become highlighted or de-highlighted during the selection 
+process, so that they can be restored if need. This would probably be 
+more efficient, at least with large numbers of items, but it would be 
+more complex to implement. If need be, of course, I can try to 
+reimplement the code in this manner.
+
+> If you're starting selection box with some items selected they should be 
+> deselected if not Shift pressed and
+> leaved untouched if Shift used. I don't see a reason to restore it - 
+> when you want to toggle selected state
+> moving rectangle with Ctrl pressed you could just:
+> 
+> LISTVIEW_GetItemState() and place inverted state with following 
+> LISTVIEW_SetItemState().
+
+The issue with doing it this way is it would result in massive 
+flickering every time you moved the mouse, unless I perhaps 
+misunderstood you. Otherwise I guess there would have to be some way of 
+tracking that the pointer is still within the hit area of a certain 
+item, and has not moved out from that area, and hence the state should 
+not be inverted again.
+
+> Also such large cycles shouldn't be used if you could manage not to use 
+> them.
+
+See above - but that was indeed a concern of mine. I tested with some 
+reasonably large collections of items (in the hundreds), and it did not 
+seem noticeably slow, but I admit to not trying with thousands if items.
+
+> Anyway this part:
+ > ...
+> is wrong. You can't do it that way cause selected state could also be 
+> cached at
+> parent side with corresponding callback bit set (look at 
+> LISTVIEW_GetItemT()).
+
+I'll look into that, thanks.
+
+> P.S. No need to split in two patches here, fist is useless if we can't 
+> see rectangle.
+
+I can of course combine the two patches. However, the first isn't 
+actually useless on its own - even if the rectangle can't be seen, it is 
+obvious where the selection box is due to the highlighting of the icons. :)
+
+Thanks for your comments!
+
+-- 
+Owen Rudge
+http://www.owenrudge.net/
+
+
+From bunglehead at gmail.com  Mon Sep 14 15:53:52 2009
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Tue, 15 Sep 2009 00:53:52 +0400
+Subject: [1/2] comctl32: Implement highlighting (marquee) selection support
+	in listview
+In-Reply-To: <4AAEA01C.4000003@owenrudge.net>
+References: <4AAE934E.3010808@codeweavers.com> <4AAE9A7F.9050601@gmail.com>
+	<4AAEA01C.4000003@owenrudge.net>
+Message-ID: <4AAEAD60.2090001@gmail.com>
+
+Owen Rudge wrote:
+> Hi Nikolay,
+>
+>> Why do you need this restoring code?
+>
+> I tried to replicate the way that Windows did the selections. Testing 
+> various manners of selection with Windows Explorer, that code was 
+> needed for a relatively specific scenario:
+>
+> If you're starting a selection box with some items already selected 
+> and Shift is pressed, then the items should, as you say, remain 
+> selected. If you then highlight some different items, but then 
+> un-highlight them before releasing the mouse button, the original 
+> items should remain selected. However, if in that time you highlight 
+> some of the already highlighted items, and then unhighlight them, they 
+> should not remain highlighted.
+Exactly. So why should we deselect everything starting this selecting 
+rectangle (when some threshold distance from initial click position 
+reached)?
+Why not just let initially selected items as they are and simply alter 
+their state when selection touches them?
+>
+> Due to the fact that, with this code, I'm deselecting all the items 
+> (if neither shift nor ctrl are pressed) whenever the bounding box is 
+> altered,
+This is a problem. I don't think native does it this way - deselecting 
+all already selected items seems quite strange. And this will flicker as 
+a side effect I suppose. This could be easily seen cause native doesn't 
+send any notification while moving selection rectangle without item change.
+You could of course silence notifications in this case as a workaround 
+too :), but this approach will turn code in crap in future.
+
+Could we try it this way (just a proposal):
+
+selecting rectangle has only two working sides with and angle at current 
+cursor position. Each resize leads to two smaller rectangles resize - 
+formed these two sides and previous selection rectangle (that you 
+introduced in second patch). Remaining rectangle stays as it was.
+What if test for items to change using these two rectangles? Two 
+iterator_frameditems() calls will return items to change, next goes rule 
+to toggle or select/deselect item depending on keys state.
+> we obviously need to keep a record of how the items were highlighted 
+> before the selection was started.
+>
+> The alternative would be, I believe, to maintain a list of all the 
+> items that have become highlighted or de-highlighted during the 
+> selection process, so that they can be restored if need. This would 
+> probably be more efficient, at least with large numbers of items, but 
+> it would be more complex to implement. If need be, of course, I can 
+> try to reimplement the code in this manner.
+You're speaking about selection ranges here which aren't lists, but an 
+efficient in some sense storage for selections.
+>
+>> If you're starting selection box with some items selected they should 
+>> be deselected if not Shift pressed and
+>> leaved untouched if Shift used. I don't see a reason to restore it - 
+>> when you want to toggle selected state
+>> moving rectangle with Ctrl pressed you could just:
+>>
+>> LISTVIEW_GetItemState() and place inverted state with following 
+>> LISTVIEW_SetItemState().
+>
+> The issue with doing it this way is it would result in massive 
+> flickering every time you moved the mouse, unless I perhaps 
+> misunderstood you.
+Why will it flicker? If state didn't change LISTVIEW_SetItemState is 
+smart enough to do not any invalidation.
+> Otherwise I guess there would have to be some way of tracking that the 
+> pointer is still within the hit area of a certain item, and has not 
+> moved out from that area, and hence the state should not be inverted 
+> again.
+Same selection rule applies here, as for all other items called 
+iterator_frameditems() - don't know if it's nice to use in this case though,
+cause some intersection allowed here while moving selection rectangle 
+with mouse. You could tweak this by the way passing a bit altered 
+rectangle to this helper (not equally selection rectangle).
+>
+>
+>> Also such large cycles shouldn't be used if you could manage not to 
+>> use them.
+>
+> See above - but that was indeed a concern of mine. I tested with some 
+> reasonably large collections of items (in the hundreds), and it did 
+> not seem noticeably slow, but I admit to not trying with thousands if 
+> items.
+It's something like a known const memory amount that should suffice 
+everyone needs in future ). If we could avoid this we certainly should.
+>> Anyway this part:
+> > ...
+>> is wrong. You can't do it that way cause selected state could also be 
+>> cached at
+>> parent side with corresponding callback bit set (look at 
+>> LISTVIEW_GetItemT()).
+>
+> I'll look into that, thanks.
+
+
+
+From winehacker at gmail.com  Mon Sep 14 16:33:38 2009
+From: winehacker at gmail.com (Steven Edwards)
+Date: Mon, 14 Sep 2009 17:33:38 -0400
+Subject: How I create wine app launcher icons on the Mac
+In-Reply-To: <47CC5ABB01651443A88DB8EC5B4D657B0332EF1B@S4DE8PSAANK.mitte.t-com.de>
+References: <47CC5ABB01651443A88DB8EC5B4D657B0332EF1B@S4DE8PSAANK.mitte.t-com.de>
+Message-ID: <19e31a080909141433h2e797163r61ae8700dbf53a5d@mail.gmail.com>
+
+Hi,
+
+On Mon, Sep 14, 2009 at 1:13 PM,  <Joerg-Cyril.Hoehle at t-systems.com> wrote:
+> On Linux, I have been using .desktop files that freedesktop defines to keep a directory full of icons. They all launch Wine applications. ?Often enough, these desktop files are initially create by Wine in ~/.local/share/applications/wine/..., along with the icon files in ~/.local/share/icons/.
+
+I wrote a patch to create .app bundled is winemenubuilder that was
+rejected because it needs to be converted to use Carbon api's for
+creation and editing of the *.plist files. I think its a better
+approach/framework because it allows you to have, resource data,
+multiple icons, and perhaps the ability to add drag/drop to the
+helper.
+
+I am not sure I am following this.
+
+> Here's how I now have app launcher icons on the Mac:
+>
+> sips -i ~/.local/share/icons/foo.png --out foo.png
+> # sips -i converts and *additionaly* adds icon resource to file
+> # Alas, sips does not understand .xpm
+> cat sample.command > foo.png
+
+Do you mean >> ? wouldn't the > just overwrite the foo.png?
+
+> # > overwrites contents but keeps resource fork
+> mv foo.png ~/Desktop/foo.command
+
+I guess the resource fork is contained in a xattr right?
+
+> # .command is the finder's suffix for executable shell scripts
+> chmod a+x foo.command
+
+Right but what happened to the png image?
+
+> sample.command contains:
+> #!/bin/sh
+> cd /User/me/xyz && WINEDEBUG=-gsm WINEPREFIX=$HOME/.wine exec wine xyz.exe
+>
+> Afterwards you edit foo.command and change the directory, environment variables and executable names to meet your needs. ?Be careful to use an editor that keeps the resource fork.
+>
+> "Opening" this icon will launch a Terminal where all logs will go. Optionally you may use Cmd-I(nformation) to disable the display of the .command suffix in the finder (unless forced globally). Wine's X11 window opens above the Terminal window.
+
+Using the sample.command or whatever is there a way to always hide the terminal?
+
+> I wonder whether this functionality could be somehow integrated into the git (winemenubuilder?), or whether developers believe this should be left to "surrounding" projects like Darwine.
+
+See this patch
+
+http://www.winehq.org/pipermail/wine-patches/2009-July/076251.html
+
+> What do you think?
+
+I think somebody that is more familiar with Carbon should adopt my patch =)
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From winehacker at gmail.com  Mon Sep 14 16:36:33 2009
+From: winehacker at gmail.com (Steven Edwards)
+Date: Mon, 14 Sep 2009 17:36:33 -0400
+Subject: How I create wine app launcher icons on the Mac
+In-Reply-To: <19e31a080909141433h2e797163r61ae8700dbf53a5d@mail.gmail.com>
+References: <47CC5ABB01651443A88DB8EC5B4D657B0332EF1B@S4DE8PSAANK.mitte.t-com.de>
+	<19e31a080909141433h2e797163r61ae8700dbf53a5d@mail.gmail.com>
+Message-ID: <19e31a080909141436xce6445ey77232f9315994a68@mail.gmail.com>
+
+On Mon, Sep 14, 2009 at 5:33 PM, Steven Edwards <winehacker at gmail.com> wrote:
+> Do you mean >> ? wouldn't the > just overwrite the foo.png?
+
+Sorry for the noise, I hit send too soon. I mean don't you mean >>
+rather than just > which would just overwrite the icon you just
+converted.
+
+<snip>
+
+>> "Opening" this icon will launch a Terminal where all logs will go. Optionally you may use Cmd-I(nformation) to disable the display of the .command suffix in the finder (unless forced globally). Wine's X11 window opens above the Terminal window.
+>
+> Using the sample.command or whatever is there a way to always hide the terminal?
+
+What I mean here, is there a switch or resource fork or xattr you can
+set that implies Cmd-I for this given *.command? I mean, I am sure we
+don't want to try to enforce that for all other *.command scripts,
+just ones we create.
+
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From winehacker at gmail.com  Tue Sep 15 02:07:37 2009
+From: winehacker at gmail.com (Steven Edwards)
+Date: Tue, 15 Sep 2009 03:07:37 -0400
+Subject: How I create wine app launcher icons on the Mac
+In-Reply-To: <19e31a080909141433h2e797163r61ae8700dbf53a5d@mail.gmail.com>
+References: <47CC5ABB01651443A88DB8EC5B4D657B0332EF1B@S4DE8PSAANK.mitte.t-com.de>
+	<19e31a080909141433h2e797163r61ae8700dbf53a5d@mail.gmail.com>
+Message-ID: <19e31a080909150007w56caa5e9ya5236647bd2bab63@mail.gmail.com>
+
+On Mon, Sep 14, 2009 at 5:33 PM, Steven Edwards <winehacker at gmail.com> wrote:
+> Right but what happened to the png image?
+
+OK so I looked at it a bit more in depth and understand what your
+going for now. So you are embedding the png as a resource fork of the
+png image but then using the png as a script. You kind of lost me
+before but it makes sense now. It's creative but not the correct way
+to do what we want.
+
+All that really needs to be done to fix the patch I have is to convert
+the raw C io-ops to use the Carbon functions for writing out the plist
+and add a helper to function do the conversion from png to icns. I
+suspect we might be able to go from png to tiff to icns using OS X
+builtin tools and spawn* to do the magic. At the worst case we need to
+write a helper function to convert the format.
+
+Thanks
+-- 
+Steven Edwards
+
+"There is one thing stronger than all the armies in the world, and
+that is an idea whose time has come." - Victor Hugo
+
+
+From ggeldorp at vmware.com  Tue Sep 15 04:09:52 2009
+From: ggeldorp at vmware.com (Greg Geldorp)
+Date: Tue, 15 Sep 2009 02:09:52 -0700
+Subject: CertGetPublicKeyLength() test failures on Win7
+Message-ID: <1C77FC3365DBD149802E0F5381EBE2C90114F1303F@EXCH-MBX-4.vmware.com>
+
+Hi Juan,
+
+I see 3 test failures related to CertGetPublicKeyLength() on Win7, crypt32/tests/cert.c lines 3146/3160/3165. All 3 failures are the same, CertGetPublicKeyLength() returns 0 with last error 0x80090004 (NTE_BAD_LEN). After looking at it for a while, I'm inclined to change the condition to ok(ret == 56 || (ok == 0 && GetLastError() == NTE_BAD_LEN), ...). Do you agree that's the correct fix or do I need to dig deeper?
+
+Thanks, Ge.
+
+
+From dank at kegel.com  Tue Sep 15 05:42:35 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Tue, 15 Sep 2009 03:42:35 -0700
+Subject: [3/4] msi: GetDriveType and GetVolumeInformation require a path 
+	terminated by a slash.
+Message-ID: <a71bd89a0909150342s70db99ceg326ab0596129bbde@mail.gmail.com>
+
+Don't changes like this need corresponding conformance tests?
+Likewise with "[4/4] msi: Don't append the cabinet file name in
+find_published_source."
+
+
+From hans at codeweavers.com  Tue Sep 15 06:35:33 2009
+From: hans at codeweavers.com (Hans Leidekker)
+Date: Tue, 15 Sep 2009 13:35:33 +0200
+Subject: [3/4] msi: GetDriveType and GetVolumeInformation require a path
+	terminated by a slash.
+In-Reply-To: <a71bd89a0909150342s70db99ceg326ab0596129bbde@mail.gmail.com>
+References: <a71bd89a0909150342s70db99ceg326ab0596129bbde@mail.gmail.com>
+Message-ID: <200909151335.33151.hans@codeweavers.com>
+
+On Tuesday 15 September 2009 12:42:35 pm Dan Kegel wrote:
+
+> Don't changes like this need corresponding conformance tests?
+> Likewise with "[4/4] msi: Don't append the cabinet file name in
+> find_published_source."
+
+They seemed pretty obvious fixes to me and they fix existing installers.
+A test case isn't trivial either, it would require an installer, a cabinet
+stream and a patch file.
+
+ -Hans
+
+
+From juan.lang at gmail.com  Tue Sep 15 11:10:45 2009
+From: juan.lang at gmail.com (Juan Lang)
+Date: Tue, 15 Sep 2009 09:10:45 -0700
+Subject: CertGetPublicKeyLength() test failures on Win7
+In-Reply-To: <1C77FC3365DBD149802E0F5381EBE2C90114F1303F@EXCH-MBX-4.vmware.com>
+References: <1C77FC3365DBD149802E0F5381EBE2C90114F1303F@EXCH-MBX-4.vmware.com>
+Message-ID: <3a768c550909150910k47753cf8h420fb7dcacaab17f@mail.gmail.com>
+
+Hi Ge,
+
+> I see 3 test failures related to CertGetPublicKeyLength() on Win7, crypt32/tests/cert.c lines 3146/3160/3165. All 3 failures are the same, CertGetPublicKeyLength() returns 0 with last error 0x80090004 (NTE_BAD_LEN). After looking at it for a while, I'm inclined to change the condition to ok(ret == 56 || (ok == 0 && GetLastError() == NTE_BAD_LEN), ...). Do you agree that's the correct fix or do I need to dig deeper?
+
+Hm, that's interesting.  I'm certainly curious why that is.  I'd check
+whether Win7 can decode the public key.  From our implementation of
+CertGetPublicKeyLength():
+
+        BOOL ret = CryptDecodeObjectEx(dwCertEncodingType,
+         RSA_CSP_PUBLICKEYBLOB, pPublicKey->PublicKey.pbData,
+         pPublicKey->PublicKey.cbData, CRYPT_DECODE_ALLOC_FLAG, NULL, &buf,
+         &size);
+
+I expect this is also failing on Win7?
+--Juan
+
+
+From razielmine at gmail.com  Tue Sep 15 11:31:13 2009
+From: razielmine at gmail.com (=?UTF-8?Q?Ismael_Barros=C2=B2?=)
+Date: Tue, 15 Sep 2009 18:31:13 +0200
+Subject: [PATCH 2/2] dpwsockx: Implementation of Open callback
+In-Reply-To: <4AAD764D.1040201@kievinfo.com>
+References: <1252871928-6142-1-git-send-email-razielmine@gmail.com>
+	<1252871928-6142-2-git-send-email-razielmine@gmail.com>
+	<4AAD66A0.5040201@kievinfo.com> <4AAD681A.8090402@kievinfo.com>
+	<82e274890909131507t7745450cj8b49e7aeca5d6523@mail.gmail.com>
+	<4AAD764D.1040201@kievinfo.com>
+Message-ID: <82e274890909150931h750efeefwbdf8a1333bdb0073@mail.gmail.com>
+
+On Mon, Sep 14, 2009 at 12:46 AM, Vitaliy Margolen
+<wine-devel at kievinfo.com> wrote:
+>> It's a way to tell between abruptly ending the thread due to an error,
+>> and ending the thread gracefully.
+> That makes no sense to me. You have no other point of exit from the loop.
+> Using goto for no good reason is always a bad thing.
+>
+> Vitaliy.
+>
+
+Actually I'm considering dropping that code and using nonblocking
+sockets with WSARecv/From() and a callback, which would make the code
+much simpler, as I wouldn't have to manage my own threads.
+
+However the blocking approach (recv/from()) seems to be more popular
+in the codebase; is there any drawback I'm not aware of, or using
+nonblocking sockets is okay?
+
+
+From austinenglish at gmail.com  Tue Sep 15 12:13:13 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 15 Sep 2009 12:13:13 -0500
+Subject: Wine at Ohloh
+In-Reply-To: <4AAE7D2D.6020700@gmail.com>
+References: <alpine.DEB.1.10.0909142006180.30905@localhost.localdomain> 
+	<b6bb06270909141017x450c1cdcpce9beeba3076eaa5@mail.gmail.com> 
+	<4AAE7D2D.6020700@gmail.com>
+Message-ID: <b6bb06270909151013j36129223s56e6e18eaedd18e7@mail.gmail.com>
+
+On Mon, Sep 14, 2009 at 12:28 PM, Paul Vriens
+<paul.vriens.wine at gmail.com> wrote:
+> On 09/14/2009 07:17 PM, Austin English wrote:
+>>
+>> On Mon, Sep 14, 2009 at 12:08 PM, Saulius Krasuckas<saulius2 at ar.fi.lt>
+>> ?wrote:
+>>>
+>>> FYI, http://www.ohloh.net/p/wine/analyses/latest
+>>>
+>>> I wonder how do they find 27k lines of C++ code in Wine tree...
+>>
+>> According to that, there are also 2 files that are GPL 3, and 2 others
+>> that are GPL 2.0, I think their stats are a bit off.
+>>
+> We do have two files that mention GPL 2.0 in the strings (LGPL 2.1 in the
+> header though):
+>
+> programs/clock/Sv.rc
+> programs/progman/Sv.rc
+
+Thanks for pointing that out. I've sent patches for these two.
+
+-- 
+-Austin
+
+
+From ggeldorp at vmware.com  Tue Sep 15 13:02:48 2009
+From: ggeldorp at vmware.com (Greg Geldorp)
+Date: Tue, 15 Sep 2009 11:02:48 -0700
+Subject: CertGetPublicKeyLength() test failures on Win7
+In-Reply-To: <3a768c550909150910k47753cf8h420fb7dcacaab17f@mail.gmail.com>
+References: <1C77FC3365DBD149802E0F5381EBE2C90114F1303F@EXCH-MBX-4.vmware.com>
+	<3a768c550909150910k47753cf8h420fb7dcacaab17f@mail.gmail.com>
+Message-ID: <1C77FC3365DBD149802E0F5381EBE2C90114F13233@EXCH-MBX-4.vmware.com>
+
+> From: Juan Lang
+> > I see 3 test failures related to CertGetPublicKeyLength() on Win7,
+> > crypt32/tests/cert.c lines 3146/3160/3165. All 3 failures are the
+> > same, CertGetPublicKeyLength() returns 0 with last error 0x80090004
+> >  (NTE_BAD_LEN). After looking at it for a while, I'm inclined to
+> > change the condition to ok(ret == 56 || (ok == 0 && GetLastError()
+> >  == NTE_BAD_LEN), ...). Do you agree that's the correct fix or do
+> > I need to dig deeper?
+>
+> Hm, that's interesting.  I'm certainly curious why that is.  I'd check
+> whether Win7 can decode the public key.  From our implementation of
+> CertGetPublicKeyLength():
+>
+>         BOOL ret = CryptDecodeObjectEx(dwCertEncodingType,
+>          RSA_CSP_PUBLICKEYBLOB, pPublicKey->PublicKey.pbData,
+>          pPublicKey->PublicKey.cbData, CRYPT_DECODE_ALLOC_FLAG, NULL, &buf,
+>          &size);
+>
+> I expect this is also failing on Win7?
+
+No, it's not. Return value is TRUE, buf is allocated and contains a
+PUBKEYSTRUC followed by a RSAPUBKEY with len 56 while size contains 0x1b.
+So Win7 is capable of decoding the key.
+
+Ge.
+
+
+From juan.lang at gmail.com  Tue Sep 15 13:27:22 2009
+From: juan.lang at gmail.com (Juan Lang)
+Date: Tue, 15 Sep 2009 11:27:22 -0700
+Subject: CertGetPublicKeyLength() test failures on Win7
+In-Reply-To: <1C77FC3365DBD149802E0F5381EBE2C90114F13233@EXCH-MBX-4.vmware.com>
+References: <1C77FC3365DBD149802E0F5381EBE2C90114F1303F@EXCH-MBX-4.vmware.com>
+	<3a768c550909150910k47753cf8h420fb7dcacaab17f@mail.gmail.com>
+	<1C77FC3365DBD149802E0F5381EBE2C90114F13233@EXCH-MBX-4.vmware.com>
+Message-ID: <3a768c550909151127g70045cf9wbc268e8bd304c9f1@mail.gmail.com>
+
+> No, it's not. Return value is TRUE, buf is allocated and contains a
+> PUBKEYSTRUC followed by a RSAPUBKEY with len 56 while size contains 0x1b.
+> So Win7 is capable of decoding the key.
+
+Thanks for checking that.  That appears to be a bug to me, then,
+although it could be that it's failing for some other reason I haven't
+guessed yet.  I think broken() would be appropriate in this case,
+since Win7 is the odd man out.
+
+Thanks,
+--Juan
+
+
+From ggeldorp at vmware.com  Tue Sep 15 13:29:36 2009
+From: ggeldorp at vmware.com (Greg Geldorp)
+Date: Tue, 15 Sep 2009 11:29:36 -0700
+Subject: CertGetPublicKeyLength() test failures on Win7
+In-Reply-To: <3a768c550909151127g70045cf9wbc268e8bd304c9f1@mail.gmail.com>
+References: <1C77FC3365DBD149802E0F5381EBE2C90114F1303F@EXCH-MBX-4.vmware.com>
+	<3a768c550909150910k47753cf8h420fb7dcacaab17f@mail.gmail.com>
+	<1C77FC3365DBD149802E0F5381EBE2C90114F13233@EXCH-MBX-4.vmware.com>
+	<3a768c550909151127g70045cf9wbc268e8bd304c9f1@mail.gmail.com>
+Message-ID: <1C77FC3365DBD149802E0F5381EBE2C90114F13270@EXCH-MBX-4.vmware.com>
+
+> From: Juan Lang [mailto:juan.lang at gmail.com]
+>
+> > No, it's not. Return value is TRUE, buf is allocated and contains a
+> > PUBKEYSTRUC followed by a RSAPUBKEY with len 56 while size contains 0x1b.
+> > So Win7 is capable of decoding the key.
+>
+> Thanks for checking that.  That appears to be a bug to me, then,
+> although it could be that it's failing for some other reason I haven't
+> guessed yet.  I think broken() would be appropriate in this case,
+> since Win7 is the odd man out.
+
+Thanks, I'll submit a patch.
+
+Ge.
+
+
+
+From paul.vriens.wine at gmail.com  Wed Sep 16 04:14:40 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Wed, 16 Sep 2009 11:14:40 +0200
+Subject: Down to an average of 1% failures on my Windows boxes
+Message-ID: <4AB0AC80.7050306@gmail.com>
+
+Hi,
+
+Just wanting to let you know that I'm down to 1% average failures on my 
+Windows boxes (W95/W98/NT4/W2K/XP/W2K3/Vista).
+
+Short list:
+
+Sep-2009 : 1%
+Jun-2009 : 2%
+May-2009 : 3%
+Mar-2009 : 4%
+Feb-2009 : 5%
+
+So I doubt we get to zero before WineConf ;)
+
+-- 
+Cheers,
+
+Paul.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: winetest.png
+Type: image/png
+Size: 8271 bytes
+Desc: not available
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090916/59ae49a7/attachment.png>
+
+From Joerg-Cyril.Hoehle at t-systems.com  Wed Sep 16 04:24:16 2009
+From: Joerg-Cyril.Hoehle at t-systems.com (Joerg-Cyril.Hoehle at t-systems.com)
+Date: Wed, 16 Sep 2009 11:24:16 +0200
+Subject: [3/4] msi: GetDriveType and GetVolumeInformation require a path
+	terminated by a slash.
+In-Reply-To: <3a768c550909040959v575a84ebi5bc747bece4bcfc0@mail.gmail.com>
+Message-ID: <47CC5ABB01651443A88DB8EC5B4D657B03377DE0@S4DE8PSAANK.mitte.t-com.de>
+
+Dan Kegel asked:
+>Don't changes like this need corresponding conformance tests?
+There is one already for GetVolumeInformation in kernel32, see the commits made by Guy Albertelli in April this year.
+
+Please see my mail from June where I located all uses of GetVolumeInformation and asked for review.
+http://www.winehq.org/pipermail/wine-devel/2009-June/076733.html
+
+In hindsight, my use of "pass" was misleading. It means "reviewers, please find out and check the callers of the code to see whether their supply the now required trailing slash."
+As you can see from the list of commits, grepping for GetVolumeInformation, the change from April affected several places, some of which I found and fixed in June, another one Hans Leidekker now.
+File msi/media.c which Hans changed now was listed in this mail.  This is unfortunate.
+
+Looking at the mail above, this still leaves 5 places to check ("review" and "pass") in shell32, user32 and winedos.
+
+Regards,
+	J?rg H?hle
+
+
+From antoniosacchi85 at gmail.com  Wed Sep 16 04:47:38 2009
+From: antoniosacchi85 at gmail.com (sacchi antonio)
+Date: Wed, 16 Sep 2009 11:47:38 +0200
+Subject: [bugzilla] donate to sponsoring bug
+Message-ID: <7845d8c60909160247n4f4951c3uad05cf94c63490f2@mail.gmail.com>
+
+hello all.
+I'm new here but I'd like to suggest something,
+what do you think about this?
+http://img29.imageshack.us/img29/2940/wined.png
+
+Maybe it will be good for old/hard bugs?
+
+Thanks
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090916/69559891/attachment-0001.htm>
+
+From Nicklas.Borjesson at ws.se  Wed Sep 16 05:38:50 2009
+From: Nicklas.Borjesson at ws.se (=?iso-8859-1?Q?Nicklas_B=F6rjesson?=)
+Date: Wed, 16 Sep 2009 12:38:50 +0200
+Subject: [bugzilla] donate to sponsoring bug
+References: <7845d8c60909160247n4f4951c3uad05cf94c63490f2@mail.gmail.com>
+Message-ID: <B73E4E48704A3A43B786A9078FF1BC6D019F49D5@wsmail01.ws.se>
+
+I suppose that this only will appear on some bugs and disregarding that people might put off fixing bugs waiting for it to become a "pay-bug".
+Who's going to get the money? It seems quite common that people share credit on fixing bugs, should we burden Alexandre with the task of deciding that?
+Wouldn't this rather be on "projects", than bugs? The bug mentioned feels more like a "project". 
+
+//Nicklas
+
+-----Original Message-----
+From: wine-devel-bounces at winehq.org on behalf of sacchi antonio
+Sent: Wed 2009-09-16 11:47
+To: wine-devel at winehq.org
+Subject: [bugzilla] donate to sponsoring bug
+ 
+hello all.
+I'm new here but I'd like to suggest something,
+what do you think about this?
+http://img29.imageshack.us/img29/2940/wined.png
+
+Maybe it will be good for old/hard bugs?
+
+Thanks
+
+
+
+From twickline at gmail.com  Wed Sep 16 05:50:05 2009
+From: twickline at gmail.com (Tom Wickline)
+Date: Wed, 16 Sep 2009 06:50:05 -0400
+Subject: [bugzilla] donate to sponsoring bug
+In-Reply-To: <B73E4E48704A3A43B786A9078FF1BC6D019F49D5@wsmail01.ws.se>
+References: <7845d8c60909160247n4f4951c3uad05cf94c63490f2@mail.gmail.com>
+	<B73E4E48704A3A43B786A9078FF1BC6D019F49D5@wsmail01.ws.se>
+Message-ID: <53e3a9930909160350g11aed2f2wef0cd81f3eab3038@mail.gmail.com>
+
+Hello,
+
+You could have the money go into the general WPF or WCF "Wine Conference
+Fund"
+But the problem is if say I donate $50.00 who's to say the bug I donate to
+will be resolved
+any time soon? Paypal only allows refunds up to 60 days, so how would you go
+about a refund
+if the bug wasn't fixed in say a year or more?
+
+I think it would be hard to keep everyone happy, because as soon as people
+donate to a bug
+their going to expect something in return. And a refund most likely if the
+bug isn't fixed.
+
+Tom
+
+2009/9/16 Nicklas B?rjesson <Nicklas.Borjesson at ws.se>
+
+> I suppose that this only will appear on some bugs and disregarding that
+> people might put off fixing bugs waiting for it to become a "pay-bug".
+> Who's going to get the money? It seems quite common that people share
+> credit on fixing bugs, should we burden Alexandre with the task of deciding
+> that?
+> Wouldn't this rather be on "projects", than bugs? The bug mentioned feels
+> more like a "project".
+>
+> //Nicklas
+>
+> -----Original Message-----
+> From: wine-devel-bounces at winehq.org on behalf of sacchi antonio
+> Sent: Wed 2009-09-16 11:47
+> To: wine-devel at winehq.org
+> Subject: [bugzilla] donate to sponsoring bug
+>
+> hello all.
+> I'm new here but I'd like to suggest something,
+> what do you think about this?
+> http://img29.imageshack.us/img29/2940/wined.png
+>
+> Maybe it will be good for old/hard bugs?
+>
+> Thanks
+>
+>
+>
+>
+
+
+-- 
+http://www.wine-reviews.net/
+http://bordeauxgroup.com/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090916/7d96786d/attachment.htm>
+
+From markus.stockhausen at collogia.de  Wed Sep 16 07:52:20 2009
+From: markus.stockhausen at collogia.de (Markus Stockhausen)
+Date: Wed, 16 Sep 2009 14:52:20 +0200
+Subject: Testcase for IStorage_CreateStorage
+Message-ID: <1253105540.4354.20.camel@netzwerg>
+
+Hi,
+
+as I'm still working on a resolution to bug #9575 I have digged into
+several directions. My current opinion is that IStorage_CreateStorage
+for some unkown reason increments the reference pointer of the
+associated IStorage object. In native Windows this is not the case.
+
+My 37th try in writing a Wine testcase resulted in the following code
+that hopefully shows the difference between the two environments. I put
+it somewhere in the storage32 tests to get it running. No warranty for
+side effects.
+
+
+  static const WCHAR yyy[] = { 'x','.','t','x','t',0 };
+  r = StgOpenStorage( yyy, NULL, 
+                      STGM_TRANSACTED | STGM_SHARE_EXCLUSIVE |
+                      STGM_READWRITE , NULL, 0, &stg);
+  ok(r==S_OK, "StgCreateStorage failed\n");
+  if(stg)
+  {
+    static const WCHAR xxx[] =  
+      { 'D','a','t','a','S','p','a','c','e','I','n','f','o',0 };
+    IStorage_CreateStorage(stg,xxx,STGM_READWRITE |
+                           STGM_SHARE_EXCLUSIVE,0,0,&stg2);
+    if (stg2) {
+      r = IStorage_AddRef(stg);
+      ok(r == 2, "WINE ERROR: refcount should be 2\n");
+      IStorage_Release(stg2);
+      while ( r ) r=IStorage_Release(stg);
+    } else {
+      ok( 1 == 2, "IStorage::CreateStorage failed\n");
+      IStorage_Release(stg);
+    }   
+  }
+
+If I got everything in the right place this test should fail on Wine
+wheres it will be ok in Windows. Before doing further research I hope
+someone of the experts can check if the test really reveals the source
+of the above mentioned bug.
+
+Thanks in advance.
+
+
+
+From keith_kw_muir at blueyonder.co.uk  Wed Sep 16 07:55:21 2009
+From: keith_kw_muir at blueyonder.co.uk (Keith Muir)
+Date: Wed, 16 Sep 2009 13:55:21 +0100
+Subject: Status of Quartz
+Message-ID: <4AB0E039.5060508@blueyonder.co.uk>
+
+what's the status of wine quartz.dll at present? reason I'm asking is 
+because I'm trying to get a Computer based training(CBT) app Testout 
+Navigator to run which uses Windows Media Player 9 to show videos. Using 
+WINDEBUG with warn+dll seems to show most of the trouble is due to 
+quartz.dll interaction with ntdll.dll
+
+Regards,
+
+Keith
+
+
+
+From jacek at codeweavers.com  Wed Sep 16 14:24:52 2009
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Wed, 16 Sep 2009 21:24:52 +0200
+Subject: oleaut32: Fail the typelib test when LoadTypeLib fails.
+In-Reply-To: <33F6268AA99B6C448F07F03B2B6497D32EC926@taz.CodeWeavers.local>
+References: <33F6268AA99B6C448F07F03B2B6497D32EC926@taz.CodeWeavers.local>
+Message-ID: <4AB13B84.3080508@codeweavers.com>
+
+Hi Vincent,
+
+Vincent Povirk wrote:
+>
+> As far as I know, this failure only occurs when I do something stupid 
+> like set use_midl_tlb to 1 and don't provide a working 
+> midl_tmarshal.tlb, but I need the test to remind me that I'm an idiot 
+> when I do that. Silently skipping tests is unacceptable.
+>
+
+
+While you are at this, it would be better to test the exact hr value, so 
+the test should be:
+ok(hr == S_OK, ...).
+
+
+Jacek
+
+
+From mstefani at redhat.com  Wed Sep 16 17:43:00 2009
+From: mstefani at redhat.com (Michael Stefaniuc)
+Date: Thu, 17 Sep 2009 00:43:00 +0200
+Subject: dstlen < 0 for MultiByteToWideChar / WideChatToMultiByte
+Message-ID: <4AB169F4.6050909@redhat.com>
+
+Hello Detlef,
+
+although Smatch could have handled the task too of finding places where 
+Wine passes -1 as destlen to MultiByteToWideChar / WideChatToMultiByte 
+this can be done with the C compiler too. Please see the attached patch.
+
+This solution doesn't finds more occurrences that you have found and 
+patched already. But this is really only the stuff that the compiler can 
+figure out at compile time. It has no chance at all to catch stuff like
+
+void foo(int bar)
+{
+     int dstlen = -1;
+
+     if (bar)
+         dstlen = 10;
+
+     MultiByteToWideChar(a, b, c, d, e, dstlen)
+}
+
+Those can't be found by a grep either and I think that's why Alexandre 
+is reluctant to apply your patches.
+
+bye
+	michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: dstlen.diff
+Type: text/x-patch
+Size: 1852 bytes
+Desc: not available
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090917/8bb0ec25/attachment.bin>
+
+From wine-devel at kievinfo.com  Wed Sep 16 21:01:52 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Wed, 16 Sep 2009 20:01:52 -0600
+Subject: Disabling URL attachments.
+Message-ID: <4AB19890.4070409@kievinfo.com>
+
+Can Bugzilla admin please disable URL attachments?
+
+Number of users don't get the concept of what attachment is, and keep
+attaching urls to things like pastebin, or some file share servers. Instead
+of attaching actual files.
+
+Vitaliy.
+
+
+From dank at kegel.com  Wed Sep 16 21:32:45 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Wed, 16 Sep 2009 19:32:45 -0700
+Subject: Disabling URL attachments.
+Message-ID: <a71bd89a0909161932n587c770vc478f7926c34bf1d@mail.gmail.com>
+
+Done.
+
+
+From dmitry at codeweavers.com  Wed Sep 16 21:41:17 2009
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Thu, 17 Sep 2009 11:41:17 +0900
+Subject: dstlen < 0 for MultiByteToWideChar / WideChatToMultiByte
+References: <4AB169F4.6050909@redhat.com>
+Message-ID: <DA88BA9F1D0A4B12BDBF07B454324917@DMITRY>
+
+"Michael Stefaniuc" <mstefani at redhat.com> wrote:
+
+> +/*
+> + * Produce a compile error if we pass a dstlen < 0 to this functions.
+> + * BUILD_BUG_ON() shamelessly ripped from the Linux Kernel.
+> + */
+> +#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+
+C_ASSERT does a similar thing.
+
+-- 
+Dmitry.
+
+
+From wine-devel at kievinfo.com  Wed Sep 16 22:05:04 2009
+From: wine-devel at kievinfo.com (Vitaliy Margolen)
+Date: Wed, 16 Sep 2009 21:05:04 -0600
+Subject: Disabling URL attachments.
+In-Reply-To: <a71bd89a0909161932n587c770vc478f7926c34bf1d@mail.gmail.com>
+References: <a71bd89a0909161932n587c770vc478f7926c34bf1d@mail.gmail.com>
+Message-ID: <4AB1A760.1010905@kievinfo.com>
+
+Dan Kegel wrote:
+> Done.
+> 
+Awesome, thanks.
+
+Vitaliy.
+
+
+From paul.vriens.wine at gmail.com  Thu Sep 17 01:13:48 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Thu, 17 Sep 2009 08:13:48 +0200
+Subject: winetest: Add the ability to retrieve the dll path for com dlls
+	from the registry.
+In-Reply-To: <4aae41d4.4c44f10a.5c8e.ffffa23dSMTPIN_ADDED@mx.google.com>
+References: <4aae41d4.4c44f10a.5c8e.ffffa23dSMTPIN_ADDED@mx.google.com>
+Message-ID: <4AB1D39C.60306@gmail.com>
+
+On 09/14/2009 03:10 PM, Huw Davies wrote:
+> ---
+>   programs/winetest/main.c |   87 ++++++++++++++++++++++++++++++++++++++-------
+>   1 files changed, 73 insertions(+), 14 deletions(-)
+>
+>
+> ------------------------------------------------------------------------
+>
+>
+Hi Huw,
+
+Winetest doesn't do a complete run anymore (tested only on W2K3 and 
+Vista) for now. It ends with a 998 error during enumeration of the test 
+(oleaut32 being the last visible one).
+
+I'm crossbuilding a winetest as we speak but just thought I'd mention it.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From dmitry at codeweavers.com  Thu Sep 17 02:05:26 2009
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Thu, 17 Sep 2009 16:05:26 +0900
+Subject: user32: Skip STM_SETIMAGE message if the static control style
+	doesnot match
+References: <200909161318.20057.shpigor@etersoft.ru>
+Message-ID: <4B1174F8A29245BEA90A573E64D2D01B@DMITRY>
+
+"Ilya Shpigor" <shpigor at etersoft.ru> wrote:
+
+> This style checking is needed to the STM_SETIMAGE message processing according 
+> to MSDN:
+> 
+> http://msdn.microsoft.com/en-us/library/bb760782%28VS.85%29.aspx
+
+This change requires a test case.
+
+-- 
+Dmitry.
+
+
+From paul.vriens.wine at gmail.com  Thu Sep 17 02:41:43 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Thu, 17 Sep 2009 09:41:43 +0200
+Subject: winetest: Add the ability to retrieve the dll path for com dlls
+	from the registry.
+In-Reply-To: <4AB1D39C.60306@gmail.com>
+References: <4aae41d4.4c44f10a.5c8e.ffffa23dSMTPIN_ADDED@mx.google.com>
+	<4AB1D39C.60306@gmail.com>
+Message-ID: <4AB1E837.40205@gmail.com>
+
+On 09/17/2009 08:13 AM, Paul Vriens wrote:
+> On 09/14/2009 03:10 PM, Huw Davies wrote:
+>> ---
+>> programs/winetest/main.c | 87
+>> ++++++++++++++++++++++++++++++++++++++-------
+>> 1 files changed, 73 insertions(+), 14 deletions(-)
+>>
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+> Hi Huw,
+>
+> Winetest doesn't do a complete run anymore (tested only on W2K3 and
+> Vista) for now. It ends with a 998 error during enumeration of the test
+> (oleaut32 being the last visible one).
+>
+> I'm crossbuilding a winetest as we speak but just thought I'd mention it.
+>
+
+The attached patch fixes the issue.
+
+We are using LOAD_LIBRARY_AS_DATAFILE as we don't really want to load 
+the dll but we need some info from it. The problem is that 
+GetModuleFileName can't cope with LOAD_LIBRARY_AS_DATAFILE loaded dlls.
+
+So will using LoadLibrary introduce issues for this dll (and maybe 
+future com dlls)?
+
+The get_dll_path logic was introduced for .NET as we ourselves don't 
+always know which dll/version is actually loaded. GetModuleFileName 
+proved to be the most logic approach.
+
+As these com dlls are hardcoded in the registry I assume we don't even 
+need to call GetModuleFileName and just stick with that value from the 
+registry?
+
+-- 
+Cheers,
+
+Paul.
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: patch
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090917/b0ef15ed/attachment.txt>
+
+From huw at codeweavers.com  Thu Sep 17 04:39:39 2009
+From: huw at codeweavers.com (Huw Davies)
+Date: Thu, 17 Sep 2009 10:39:39 +0100
+Subject: winetest: Add the ability to retrieve the dll path for com dlls
+	from the registry.
+In-Reply-To: <4AB1E837.40205@gmail.com>
+References: <4aae41d4.4c44f10a.5c8e.ffffa23dSMTPIN_ADDED@mx.google.com>
+	<4AB1D39C.60306@gmail.com> <4AB1E837.40205@gmail.com>
+Message-ID: <4AB203DB.8030403@codeweavers.com>
+
+Paul Vriens wrote:
+> The attached patch fixes the issue.
+> 
+> We are using LOAD_LIBRARY_AS_DATAFILE as we don't really want to load 
+> the dll but we need some info from it. The problem is that 
+> GetModuleFileName can't cope with LOAD_LIBRARY_AS_DATAFILE loaded dlls.
+> 
+> So will using LoadLibrary introduce issues for this dll (and maybe 
+> future com dlls)?
+> 
+> The get_dll_path logic was introduced for .NET as we ourselves don't 
+> always know which dll/version is actually loaded. GetModuleFileName 
+> proved to be the most logic approach.
+> 
+> As these com dlls are hardcoded in the registry I assume we don't even 
+> need to call GetModuleFileName and just stick with that value from the 
+> registry?
+
+Hi Paul,
+
+Thanks for tracking this down.  There shouldn't be any issues with using 
+LoadLibrary, so we can either use your patch or just rely on the info 
+from the registry, I don't think it really matters.  Shall I leave you 
+to send in a patch?
+
+Thanks again,
+Huw.
+
+
+
+
+From paul.vriens.wine at gmail.com  Thu Sep 17 04:43:48 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Thu, 17 Sep 2009 11:43:48 +0200
+Subject: winetest: Add the ability to retrieve the dll path for com dlls
+	from the registry.
+In-Reply-To: <4AB203DB.8030403@codeweavers.com>
+References: <4aae41d4.4c44f10a.5c8e.ffffa23dSMTPIN_ADDED@mx.google.com>
+	<4AB1D39C.60306@gmail.com> <4AB1E837.40205@gmail.com>
+	<4AB203DB.8030403@codeweavers.com>
+Message-ID: <4AB204D4.40306@gmail.com>
+
+On 09/17/2009 11:39 AM, Huw Davies wrote:
+> Paul Vriens wrote:
+>> The attached patch fixes the issue.
+>>
+>> We are using LOAD_LIBRARY_AS_DATAFILE as we don't really want to load
+>> the dll but we need some info from it. The problem is that
+>> GetModuleFileName can't cope with LOAD_LIBRARY_AS_DATAFILE loaded dlls.
+>>
+>> So will using LoadLibrary introduce issues for this dll (and maybe
+>> future com dlls)?
+>>
+>> The get_dll_path logic was introduced for .NET as we ourselves don't
+>> always know which dll/version is actually loaded. GetModuleFileName
+>> proved to be the most logic approach.
+>>
+>> As these com dlls are hardcoded in the registry I assume we don't even
+>> need to call GetModuleFileName and just stick with that value from the
+>> registry?
+>
+> Hi Paul,
+>
+> Thanks for tracking this down. There shouldn't be any issues with using
+> LoadLibrary, so we can either use your patch or just rely on the info
+> from the registry, I don't think it really matters. Shall I leave you to
+> send in a patch?
+>
+> Thanks again,
+> Huw.
+>
+>
+
+I'll sent a patch with the LoadLibrary.
+
+-- 
+Cheers,
+
+Paul.
+
+
+From hverbeet at gmail.com  Thu Sep 17 06:34:02 2009
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Thu, 17 Sep 2009 13:34:02 +0200
+Subject: Add dxdiag help message box
+In-Reply-To: <397e83ce0909161754o4bafb572scb262fbe77094d48@mail.gmail.com>
+References: <397e83ce0909161754o4bafb572scb262fbe77094d48@mail.gmail.com>
+Message-ID: <d658b69e0909170434q4e08ff96oe1ccc5098c36e5b1@mail.gmail.com>
+
+2009/9/17 Brian Nguyen <mtxcoll at gmail.com>:
+> +/* Thread-safe function for converting to wide char strings at runtime */
+> +LPWSTR PrintWide(LPWSTR buf, size_t len, const char *s)
+> +{
+> +    size_t i;
+> +    for (i = 0; i < len && *s != '\0'; i++, s++) {
+> +        buf[i] = *s;
+> +    }
+> +    return buf;
+> +}
+That doesn't do what you want, you should use MultiByteToWideChar() to
+convert to WCHAR. However, I don't think you want to hardcode the
+strings in the first place, you should load them from the resources so
+they can be translated. Also, functions like that which are only used
+in the current file should be static.
+
+
+From Joerg-Cyril.Hoehle at t-systems.com  Thu Sep 17 10:43:12 2009
+From: Joerg-Cyril.Hoehle at t-systems.com (Joerg-Cyril.Hoehle at t-systems.com)
+Date: Thu, 17 Sep 2009 17:43:12 +0200
+Subject: please test inconsistent WAVEFORMAT on MS-Windows (compiler needed)
+Message-ID: <47CC5ABB01651443A88DB8EC5B4D657B03378563@S4DE8PSAANK.mitte.t-com.de>
+
+Hi,
+
+One MS-Windows machine passes all the attached tests, proving that MS-Windows ignores nBlockAlign and nAvgBytesPerSec. It would be helpful to get confirmation from more machines.
+Please build with the attached patch, execute it in interactive mode
+set WINETEST_INTERACTIVE=1
+winetest.exe wave
+and listen to the sound and especially the pauses.
+
+OTOH, Wine fails at least one test:
+- One waveOutGetPosition test in WAVE_MAPPER fails.
+- My recently accepted patches (for OSS and CoreAudio) do something
+  forbidden, that the test was written to reveal: they fix broken values
+  in the WAVEFORMAT description, because both winmm and dsound depend on
+  their correctness.  But Wine should not touch user-supplied data.  That
+  is a todo_wine until dsound learns how to live with broken input.  I'll
+  add todo_wine before submitting these tests as a patch.
+
+Try this out with <= 1.1.29 (test with WINETEST_INTERACTIVE=1 make test)
+and you'll hear how Wine's winmm incorrectly computes the duration of the
+sound when given inconsistent format descriptions, causing silence where
+none should be, because MS-Windows does not care about BlockAlign and
+AvgBytesPerSec. With the upcoming 1.1.30, this will be corrected for OSS
+and CoreAudio, but not yet with the WAVE_MAPPER (ALSA is still broken).
+
+Regards,
+	J?rg H?hle
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: winmm-tests.patch
+Type: application/octet-stream
+Size: 4938 bytes
+Desc: winmm-tests.patch
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090917/04f582fb/attachment.obj>
+
+From bunglehead at gmail.com  Thu Sep 17 13:40:13 2009
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Thu, 17 Sep 2009 22:40:13 +0400
+Subject: [1/5] mapi32: Scan registry for MAPI providers and load them
+In-Reply-To: <4AB27BF0.7010904@codeweavers.com>
+References: <4AB27BF0.7010904@codeweavers.com>
+Message-ID: <4AB2828D.4090005@gmail.com>
+
+Owen Rudge wrote:
+> ---
+>  dlls/mapi32/Makefile.in   |    2 +-
+>  dlls/mapi32/mapi32_main.c |    5 +-
+>  dlls/mapi32/util.c        |  148 
+> +++++++++++++++++++++++++++++++++++++++++++++
+>  dlls/mapi32/util.h        |   28 +++++++++
+>  4 files changed, 181 insertions(+), 2 deletions(-)
+>  create mode 100644 dlls/mapi32/util.h
+Hi. Few comments.
+
+> +
+> +static HMODULE mapi_provider = NULL;
+> +static HMODULE mapi_ex_provider = NULL;
+> +
+
+This is redundant, static will be initialized to zero anyway.
+
+> +static void load_mapi_provider(HKEY hkeyMail, LPCWSTR valueName, HMODULE *mapi_provider)
+> +{
+> +    static const WCHAR mapi32_dll[] = {'m','a','p','i','3','2','.','d','l','l',0 };
+> +
+> +    DWORD dwType, dwLen = 0;
+> +    LPWSTR dllPath;
+> +
+> +    if (!mapi_provider)
+> +        return;
+> +
+I don't think this check is necessary, it's your internal helper.
+
+> +cleanUp: ;
+Semicolumn isn't needed here.
+
+
+
+
+
+
+From saulius2 at ar.fi.lt  Thu Sep 17 13:46:54 2009
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Thu, 17 Sep 2009 21:46:54 +0300 (EEST)
+Subject: glean and Piglit -- OpenGL driver testing
+Message-ID: <alpine.DEB.1.10.0909172124180.5056@localhost.localdomain>
+
+Today I saw two similar projects related to OpenGL:
+
+[1]:
+
+> glean is a suite of tools for evaluating the quality of an OpenGL 
+> implementation and diagnosing any problems that are discovered. glean 
+> also has the ability to compare two OpenGL implementations and highlight 
+> the differences between them.
+
+It seems be having win32 port also.
+
+[2]:
+
+> Piglit is a collection of automated tests for OpenGL implementations.
+> 
+> The goal of Piglit is to help improve the quality of open source OpenGL 
+> drivers by providing developers with a simple means to perform 
+> regression tests.
+> 
+> Current status is that the framework is working (though rough at the 
+> edges). It contains the Glean tests, some tests adapted from Mesa as 
+> well as some specific regression tests for certain bugs. HTML summaries 
+> can be generated (see below), including the ability to compare different 
+> test runs.
+
+Could these be of any use for our graphic guys -- Stefan and co.?
+
+
+Then there is PerceptualDiff utility I found some time ago [3].  Guessed, 
+could it also usefull for finding visual regressions of Wine?  Probably 
+not, as it seems to be used for testing video codecs (but I may be wrong):
+
+> PerceptualDiff is an image comparison utility that makes use of a 
+> computational model of the human visual system to compare two images.
+> 
+> So why would I use a program to tell me if two images are similar if I 
+> can tell the difference myself by eyeballing it?
+> 
+> Well the utility of this program really shines in the context of QA of 
+> rendering algorithms.
+> 
+> During regression testing of a renderer, hundreds of images are 
+> generated from an older version of the renderer and are compared with a 
+> newer version of the renderer. This program drastically reduces the 
+> number of false positives (failures that are not actually failures) 
+> caused by differences in random number generation, OS or machine 
+> architecture differences. Also, you do not want a human looking at 
+> hundreds of images when you can get the computer to do it for you 
+> nightly on a cron job.
+
+
+
+[1] http://glean.sourceforge.net/whatis.html
+[2] http://people.freedesktop.org/~nh/piglit/
+[3] http://pdiff.sourceforge.net/
+
+
+From hverbeet at gmail.com  Thu Sep 17 15:16:11 2009
+From: hverbeet at gmail.com (Henri Verbeet)
+Date: Thu, 17 Sep 2009 22:16:11 +0200
+Subject: glean and Piglit -- OpenGL driver testing
+In-Reply-To: <alpine.DEB.1.10.0909172124180.5056@localhost.localdomain>
+References: <alpine.DEB.1.10.0909172124180.5056@localhost.localdomain>
+Message-ID: <d658b69e0909171316j261ca469ld05f46d84f549a76@mail.gmail.com>
+
+2009/9/17 Saulius Krasuckas <saulius2 at ar.fi.lt>:
+> Today I saw two similar projects related to OpenGL:
+>
+> [1]:
+>
+>> glean is a suite of tools for evaluating the quality of an OpenGL
+>> implementation and diagnosing any problems that are discovered. glean
+>> also has the ability to compare two OpenGL implementations and highlight
+>> the differences between them.
+>
+> It seems be having win32 port also.
+>
+> [2]:
+>
+>> Piglit is a collection of automated tests for OpenGL implementations.
+>>
+>> The goal of Piglit is to help improve the quality of open source OpenGL
+>> drivers by providing developers with a simple means to perform
+>> regression tests.
+>>
+>> Current status is that the framework is working (though rough at the
+>> edges). It contains the Glean tests, some tests adapted from Mesa as
+>> well as some specific regression tests for certain bugs. HTML summaries
+>> can be generated (see below), including the ability to compare different
+>> test runs.
+>
+> Could these be of any use for our graphic guys -- Stefan and co.?
+>
+Well, they're mostly useful when you're maintaining an OpenGL driver.
+Mesa already uses these.
+
+> Then there is PerceptualDiff utility I found some time ago [3]. ?Guessed,
+> could it also usefull for finding visual regressions of Wine? ?Probably
+> not, as it seems to be used for testing video codecs (but I may be wrong):
+>
+Possibly, but it would have to be in the context of a larger framework
+like e.g. CxTest or Appinstall.
+
+
+From saulius2 at ar.fi.lt  Thu Sep 17 16:35:08 2009
+From: saulius2 at ar.fi.lt (Saulius Krasuckas)
+Date: Fri, 18 Sep 2009 00:35:08 +0300 (EEST)
+Subject: glean and Piglit -- OpenGL driver testing
+In-Reply-To: <d658b69e0909171316j261ca469ld05f46d84f549a76@mail.gmail.com>
+References: <alpine.DEB.1.10.0909172124180.5056@localhost.localdomain>
+	<d658b69e0909171316j261ca469ld05f46d84f549a76@mail.gmail.com>
+Message-ID: <alpine.DEB.1.10.0909172355120.6026@localhost.localdomain>
+
+* On Thu, 17 Sep 2009, Henri Verbeet wrote:
+> * 2009/9/17 Saulius Krasuckas <saulius2 at ar.fi.lt>:
+> >
+> > Could these be of any use for our graphic guys -- Stefan and co.?
+> 
+> Well, they're mostly useful when you're maintaining an OpenGL driver. 
+> Mesa already uses these.
+
+And what about seeing if our tests (vs Win drivers) aren't really broken?
+
+For example one test-check fails with these OpenGL 1.[34].x and 2.[12].x 
+drivers for the adapters:
+
+2.1.8870  ATI Radeon HD 4200
+2.0.0     Intel 965/963 Graphics Media Accelerator
+1.4.1     GeForce4 MX 440/AGP/SSE 
+1.4.0     Intel 915GM
+1.3.0     Intel Brookdale-G
+1.3.4145  MOBILITY RADEON 7500 DDR x86/SSE2
+
+opengl.c:328: Test failed: Sharing of display lists failed for a context which already shared lists before
+
+But it doesn't fail on these:
+
+3.1.0     GeForce 8600 GTS/PCI/SSE2
+3.0.0     GeForce 9600M GT/PCI/SSE2
+2.1.2     GeForce FX 5200/AGP/SSE2
+2.1.2     GeForce 7300 LE/PCI/SSE2/3DNOW!
+2.1.1     GeForce 8600M GS/PCI/SSE2
+2.1.1     GeForce 8400M GS/PCI/SSE2
+2.0 Chrom Chromium 1.9
+1.5 Chrom Chromium 1.9
+1.1.0     GDI Generic (old w9x ar virtual boxes)
+
+Aren't you guys having hard time deciding whether this statement:
+
+ 322     /* Test 3: Share display lists with a context which already shares display lists with another context.
+ 323      * According to MSDN the second parameter cannot share any display lists but some buggy drivers might allow it */
+
+is OK ?  (No offence)
+I thought driver test suite would give a more thorough answer..
+
+> > Then there is PerceptualDiff utility I found some time ago [3]. 
+> > ?Guessed, could it also usefull for finding visual regressions of 
+> > Wine? ?Probably not, as it seems to be used for testing video codecs 
+> > (but I may be wrong):
+> 
+> Possibly, but it would have to be in the context of a larger framework 
+> like e.g. CxTest or Appinstall.
+
+And what about D3D rendering discrepancies?
+
+From austinenglish at gmail.com  Thu Sep 17 17:08:38 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Thu, 17 Sep 2009 17:08:38 -0500
+Subject: Add dxdiag help message box
+In-Reply-To: <d658b69e0909170434q4e08ff96oe1ccc5098c36e5b1@mail.gmail.com>
+References: <397e83ce0909161754o4bafb572scb262fbe77094d48@mail.gmail.com> 
+	<d658b69e0909170434q4e08ff96oe1ccc5098c36e5b1@mail.gmail.com>
+Message-ID: <b6bb06270909171508m1e433c73h68c3f038ccfc373d@mail.gmail.com>
+
+On Thu, Sep 17, 2009 at 6:34 AM, Henri Verbeet <hverbeet at gmail.com> wrote:
+> 2009/9/17 Brian Nguyen <mtxcoll at gmail.com>:
+>> +/* Thread-safe function for converting to wide char strings at runtime */
+>> +LPWSTR PrintWide(LPWSTR buf, size_t len, const char *s)
+>> +{
+>> + ? ?size_t i;
+>> + ? ?for (i = 0; i < len && *s != '\0'; i++, s++) {
+>> + ? ? ? ?buf[i] = *s;
+>> + ? ?}
+>> + ? ?return buf;
+>> +}
+> That doesn't do what you want, you should use MultiByteToWideChar() to
+> convert to WCHAR. However, I don't think you want to hardcode the
+> strings in the first place, you should load them from the resources so
+> they can be translated. Also, functions like that which are only used
+> in the current file should be static.
+
+Thanks for taking this on!
+
+-- 
+-Austin
+
+
+From austinenglish at gmail.com  Thu Sep 17 17:17:57 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Thu, 17 Sep 2009 17:17:57 -0500
+Subject: glean and Piglit -- OpenGL driver testing
+In-Reply-To: <d658b69e0909171316j261ca469ld05f46d84f549a76@mail.gmail.com>
+References: <alpine.DEB.1.10.0909172124180.5056@localhost.localdomain> 
+	<d658b69e0909171316j261ca469ld05f46d84f549a76@mail.gmail.com>
+Message-ID: <b6bb06270909171517v79767b9aqe55789165b605c55@mail.gmail.com>
+
+On Thu, Sep 17, 2009 at 3:16 PM, Henri Verbeet <hverbeet at gmail.com> wrote:
+> 2009/9/17 Saulius Krasuckas <saulius2 at ar.fi.lt>:
+>
+>> Then there is PerceptualDiff utility I found some time ago [3]. ?Guessed,
+>> could it also usefull for finding visual regressions of Wine? ?Probably
+>> not, as it seems to be used for testing video codecs (but I may be wrong):
+>>
+> Possibly, but it would have to be in the context of a larger framework
+> like e.g. CxTest or Appinstall.
+
+Would it actually be useful? I can take a look, but not if it's going
+to be a lot of effort for little gain...don't the d3d conformance
+tests already (mostly) handle this?
+
+-- 
+-Austin
+
+
+From celticht32 at yahoo.com  Thu Sep 17 18:32:03 2009
+From: celticht32 at yahoo.com (chris ahrendt)
+Date: Thu, 17 Sep 2009 16:32:03 -0700 (PDT)
+Subject: apply context draw buffer
+Message-ID: <3929.86388.qm@web112607.mail.gq1.yahoo.com>
+
+Something broke between yesterday's git tree and todays...
+went to run some applications and everything is slow as molasas...
+
+seems to be getting in a infinite loop in the apply context draw buffer
+
+
+
+
+
+
+      
+
+
+From celticht32 at yahoo.com  Thu Sep 17 19:34:18 2009
+From: celticht32 at yahoo.com (chris ahrendt)
+Date: Thu, 17 Sep 2009 17:34:18 -0700 (PDT)
+Subject: Regression
+Message-ID: <763876.24611.qm@web112612.mail.gq1.yahoo.com>
+
+b5b58e423d32666581f69046c74bb19902c35c2b is first bad commit
+commit b5b58e423d32666581f69046c74bb19902c35c2b
+Author: Henri Verbeet <hverbeet at codeweavers.com>
+Date:   Thu Sep 17 12:35:24 2009 +0200
+
+     d3d8: Add a separate function for cube texture initialization.
+
+:040000 040000 8cd1752ed711799ebfb77127de399d527add5415 
+963c6467c8b4367b8a7bd1c1e4eece07937c13d6 M	dlls
+[cahrendt at stinky wine-git]$
+
+
+Chris
+
+
+
+
+
+
+
+      
+
+
+From shacklein at gmail.com  Thu Sep 17 21:06:36 2009
+From: shacklein at gmail.com (Ben Klein)
+Date: Fri, 18 Sep 2009 12:06:36 +1000
+Subject: Regression
+In-Reply-To: <763876.24611.qm@web112612.mail.gq1.yahoo.com>
+References: <763876.24611.qm@web112612.mail.gq1.yahoo.com>
+Message-ID: <d7e40be30909171906h2d8294a1t6e15bb63a48515a4@mail.gmail.com>
+
+2009/9/18 chris ahrendt <celticht32 at yahoo.com>:
+> b5b58e423d32666581f69046c74bb19902c35c2b is first bad commit
+> commit b5b58e423d32666581f69046c74bb19902c35c2b
+> Author: Henri Verbeet <hverbeet at codeweavers.com>
+> Date: ? Thu Sep 17 12:35:24 2009 +0200
+>
+> ? ? d3d8: Add a separate function for cube texture initialization.
+>
+> :040000 040000 8cd1752ed711799ebfb77127de399d527add5415
+> 963c6467c8b4367b8a7bd1c1e4eece07937c13d6 M ? ? ?dlls
+> [cahrendt at stinky wine-git]$
+
+wine-devel is not bugzilla. Report a bug and GIVE SOME DETAIL.
+
+
+From mtxcoll at gmail.com  Fri Sep 18 03:18:23 2009
+From: mtxcoll at gmail.com (Brian Nguyen)
+Date: Fri, 18 Sep 2009 01:18:23 -0700
+Subject: Add dxdiag help message box
+Message-ID: <397e83ce0909180118m2a8e15f7j9cb87c6439543a88@mail.gmail.com>
+
+Hm, okay. I just wanted to test the waters here; I'll rework this to use a
+function that loads
+a string from a resource file. Does the help message itself look okay? I
+just used the message
+provided by the native dxdiag app, but I could rework it if there are issues
+with copyright or
+wine conventions.
+
+On Thu, Sep 17, 2009 at 6:34 AM, Henri Verbeet
+<hverbeet at ...<http://www.nabble.com/user/SendEmail.jtp?type=post&post=25500104&i=0>>
+wrote:
+> 2009/9/17 Brian Nguyen <*mtxcoll*@...<http://www.nabble.com/user/SendEmail.jtp?type=post&post=25500104&i=1>>:
+
+>> +/* Thread-safe function for converting to wide char strings at runtime
+*/
+>> +LPWSTR PrintWide(LPWSTR buf, size_t len, const char *s)
+>> +{
+>> +    size_t i;
+>> +    for (i = 0; i < len && *s != '\0'; i++, s++) {
+>> +        buf[i] = *s;
+>> +    }
+>> +    return buf;
+>> +}
+> That doesn't do what you want, you should use MultiByteToWideChar() to
+> convert to WCHAR. However, I don't think you want to hardcode the
+> strings in the first place, you should load them from the resources so
+> they can be translated. Also, functions like that which are only used
+> in the current file should be static.
+
+Thanks for taking this on!
+
+-- 
+-Austin
+
+-- 
+Brian Nguyen
+mtxcoll at gmail.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://www.winehq.org/pipermail/wine-devel/attachments/20090918/e065fe53/attachment-0001.htm>
+

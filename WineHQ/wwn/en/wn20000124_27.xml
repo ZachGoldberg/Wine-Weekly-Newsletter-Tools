@@ -1,0 +1,246 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="27" date="24 Jan 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the twenty seventh release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+WineHQ is still having some trouble after the upgrade 2 weeks
+ago. Most of the servers are up and running, even the NNTP got back
+its posted articles; however the NNTP server is no longer
+updated. This is worked upon, but, unfortunately, not yet done.
+
+</intro>
+
+<stats posts="117" size="514" contrib="39" multiples="27" lastweek="25">
+<person posts="15" size="38" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="12" size="112" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="8" size="16" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="7" size="15" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="14" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="6" size="18" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="4" size="9" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="4" size="10" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="3" size="7" who="Alex Korobka &lt;korobka@galaxy.ams.sunysb.edu&gt;" />
+<person posts="3" size="6" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="3" size="6" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="3" size="24" who="Fowler &lt;fowler@indigo.ie&gt;" />
+
+</stats>
+
+<section 
+  title="Wine license change"
+  subject="License change"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-351.html"
+  posts="1"
+  startdate="19 Jan 2000 00:00:00 -0800"
+  enddate="19 Jan 2000 00:00:00 -0800"
+>
+<p />
+After the discussions held <a href="wn19991206_20.html#0">early December
+of last year</a> regarding changing Wine's license, Alexandre
+Julliard proposed the following changes: 
+<quote who="Alexandre Julliard">
+Now that the holiday season is over and that the Y2K apocalypse is
+safely behind us, I'd like to proceed with the license change. The
+discussion we had a few weeks ago leads me to the conclusions that:
+<ul>
+   <li />most developers do not care much
+   <li />nobody seems opposed to a change
+   <li />there is a consensus that an existing license is better that
+inventing a new one 
+   <li />the X11 license is preferred over the FreeBSD one, because of
+ambiguity with the different BSD licenses 
+</ul>
+<p />
+So I propose that we switch to the X11 license.
+<p />
+I've included a copy of the license below, and I ask <b>all</b> developers
+(if your name is in the AUTHORS file you are a developer) to please
+send me a private email stating whether you can accept it or not; even
+if you don't give a d*mn about the license, please drop me a mail
+saying just that. Thanks.
+<p />
+PS: the final wording of the copyright line may be a bit different,
+maybe making reference to the AUTHORS file; we'll probably also
+include the license text in every source file. But these are
+implementation details that we can discuss once the license itself is
+agreed upon.
+<p />
+PPS: I don't need individual agreements from people working on behalf
+of Corel, since Corel is the copyright holder on their code. I will
+need an agreement from Corel Corporation itself though.
+</quote>
+<p />
+So, if you're a developer, do drop a note to Alexandre.
+<p />
+As a remainder (and for the layers who may (by mistake ?) read this
+news letter), here's the proposed license:
+<quote who="Alexandre Julliard">
+Copyright (c) 1993-2000 The Wine Project
+<p />
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+<p />
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+<p />
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</quote></section>
+<section 
+  title="Address space separation has started"
+  subject="Address space separation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-358.html"
+  posts="17"
+  startdate="19 Jan 2000 00:00:00 -0800"
+  enddate="22 Jan 2000 00:00:00 -0800"
+>
+<p />
+The long awaited work on address space separation has started. This
+internal enhancement to Wine would provide a separate address space
+(in Unix term) for every Windows process running under Wine. 
+<p />
+Here are a few reasons to put this in place:
+
+<p />
+
+<ul>
+   <li />security: under Windows 9x and NT, a process cannot directly
+access the memory of another process.
+   <li />runnability: some DLLs do not have relocation records. This is
+fine when a single process occupies the address space, but is
+problematic when two different processes try to load at the same
+address two DLLs (the address being hardwired in each DLL). Only one
+of the two DLLs can be loaded. This is the source of the (in)famous
+errors like: <code>FATAL: Need to relocate foo.dll, but no relocation
+records present (). Try to run that file directly !</code>
+</ul>
+<p />
+Alexandre Julliard sent a first patch (based on his work at
+CodeWeavers on behalf of Corel) and asked for some further
+testings. This was only the first step to provide full address space
+separation. So far, Alexandre's patch provides the following features: 
+<quote who="Alexandre Julliard">
+<ul>
+   <li />the server is now always a separate program, that can accept
+connections on a Unix socket in /tmp 
+   <li />a newly started Wine will connect to an existing server if it
+can find one running (on a per-user basis)
+   <li />the system heap is shared among all Wine sessions connected to
+the same server.
+</ul>
+<p />
+This patch does not yet change the behavior with processes started
+inside an existing Wine session through CreateProcess, so it shouldn't 
+break anything; but please test it anyway...
+</quote>
+<p />
+Hence, this patch doesn't solve the relocation of DLLs issue, but is a 
+first step towards its resolution. The following steps will likely
+include using another Unix process while handling the CreateProcess
+API, but also an in details review of all DLLs to see how they behave
+with regard to separated address spaces ; sending messages across
+processes has to be addressed as well.
+<p />
+Anyway, Alexandre's patch didn't generate bad reports (only G&#233;rard
+Patel found a badly behaving application, but which was due to
+ddeml.dll not properly handling the different address spaces), so this 
+patch is expected to make its way to CVS soon.
+<p />
+J&#246;rg Mayer pointed out some security/denial of services (DoS) issue:
+Since the socket used for communicating with the wineserver is located 
+in /tmp, under a user's name (in fact his uid), 
+<quote who="J&#246;rg Mayer">This is broken wrt security/DoS attacks. Creating
+files in /tmp is a bad idea (tm). The first dos that came to my mind
+immediately was to create a directory with your uid. So next time you
+want to run wine, you fail. I'm sure in a more subtle way I could even
+gain gain control over "your" socket. We already have a $HOME/.wine
+directory. I think $HOME/.wine/run/ would be a good place for that
+stuff.</quote>
+<p />
+Alexandre agreed that /tmp was a bad place, but he feared that $HOME/
+could be located on <i>exotic</i> file systems on which unix sockets
+are badly handled. The first file system to think of is NFS, but lots
+of people (Olivier Galibert, Peter Ganten to name a few) reported this 
+was working fine on lots of Unices. However, Michael Veksler reported
+<quote who="Michael Veksler">
+I have AFS which definitely does not allow sockets/fifos. Nevertheless 
+It was possible to run applications that establish fifos in
+$HOME/.somename/ by making $HOME/.somename link to /tmp/veksler/somename/.
+<p />
+The morale is: put it in $HOME/.wine/sockets/ and let the <b>user</b> decide if
+that is a directory or a link to the local file system. Requiring the
+sysadmin to setup /var/...../user/ or to fight DOS attacks is not very 
+user friendly.
+</quote>
+<p />
+As a conclusion, Alexandre proposed the following solution:
+<quote who="Alexandre Julliard">Maybe I should create the socket under /tmp with a
+unique name and store a pointer to it in $HOME.</quote></section>
+<section 
+  title="Merging wine and winelib startup code"
+  subject="First try at Wine/WineLib merge"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-01/Subject/article-345.html"
+  posts="13"
+  startdate="18 Jan 2000 00:00:00 -0800"
+  enddate="23 Jan 2000 00:00:00 -0800"
+>
+<p />
+Ulrich Weigand posted for review (this week has definitively been a
+review one !) a first try at merging the wine and winelib startup code.
+<quote who="Ulrich Weigand">
+The main points are:
+<ul>
+   <li />WineLib apps use a .spec file to define a normal PE header,
+complete with resources and imports and main entry point  (the special
+LIBRES hack dies; winestub is no longer necessary)
+   <li />the main Wine executable does the same, in effect it becomes
+itself just a normal WineLib app 
+   <li />initialization of the initial thread/process shares much more
+code with initialization of other threads, to remove special cases and
+possible differences in 'environment'
+</ul>
+<p />
+In fact, implementing this last point even fixes some bugs in the
+current WineLib setup: 
+<ul>
+   <li />WineLib apps were always marked as 16-bit processes in the PDB
+and TEB flags settings (influencing e.g. SendMessage() ...)
+   <li />WineLib apps were not executing on the correct thread stack
+(leading to problems with exception dispatching) 
+   <li />the wine debugger now works in WineLib as well
+</ul>
+</quote>
+<p />
+Among the issues, Ulrich noticed with is patch was that some
+applications from programs/ in the CVS tree no longer link because
+they were using the "libres hack". This hack was redefining one
+different resource structure for each supported language; when used in 
+conjonction with Ulrich path, this lead to symbol's name
+collision. Bertho Stultiens simply proposed to convert those programs
+resources to the normal resource style (which allows several languages 
+to be supported in a single resource structure). Bertho also announced 
+that he was about to release a new version of wrc which would allow
+to get rid of gcc preprocessing.
+<p />
+Alexandre Julliard and Ulrich discussed then some technical details
+linked to the process/thread creation. Alexandre was also not willing
+to have the first process being a 16 bit one (which Ulrich claimed as
+required to be able to run native USER), and also to add 16 bit
+application support for winelib applications.</section>
+</kc>

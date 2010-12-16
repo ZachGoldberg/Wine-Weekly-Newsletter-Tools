@@ -1,0 +1,141 @@
+#!/usr/bin/perl
+$file = shift || die "No file specified";
+
+$msgs=0;
+$fsa=1;
+open(I, "<$file");
+
+while ($_ = <I>) {
+    if ($fsa && $_ =~ /^From /) {
+        $msgs++;
+    }
+
+    $file[$msgs] .= $_;
+
+    chomp;
+    if (!length($_)) {
+        $fsa=1;
+    }
+    else{
+        $fsa=0;
+    }
+}
+close I;
+
+
+$prev = shift || die "No file specified";
+
+open(I, "<$prev");
+while ($_ = <I>) {
+    if ($fsa && /^From /) {
+        $msgs++;
+    }
+
+    $prev[$msgs] .= $_;
+    chomp;
+
+    if (!length($_)) {
+        $fsa=1;
+    }
+    else{
+        $fsa=0;
+    }
+}
+close I;
+
+#$count = 0;
+#while($_ = `formail +$count -1 -ds cat < ~/mail/$prev`) {
+#    last unless $_;
+#    push @prev, $_;
+#    $count++;
+#}
+
+                         # Find the number of posts
+
+
+$posts = scalar(@file);
+
+
+                      # Find the size of the list in K
+
+
+$size = int(length(join '', @file) / 1024);
+
+
+                        # Find how many people posted
+
+
+foreach (@file) {
+    /^From:\s+(.*)$/m;
+    if(! defined ($posters{$1})) {
+        $numposters++;
+    }
+    $posters{$1} += length;
+    $posterposts{$1} ++;
+}
+
+foreach (@prev) {
+    /^From:\s+(.*)$/m;
+    $prevposters{$1} += length;
+}
+
+
+                # Find how many people posted more than once
+
+
+$ot = 0;
+foreach (keys %posterposts) {
+    ($posterposts{$_} > 1) && ($ot++);
+}
+
+
+                    # Find how many posted last week too
+
+
+$lw = 0;
+foreach (keys %prevposters) {
+    if($posters{$_}) {
+        $lw++;
+    }
+}
+
+
+                   # Find the biggest posters of the week.
+
+
+sub bysizes {
+    if($posterposts{$b} == $posterposts{$a}) {
+        return $posters{$b} <=> $posters{$a};
+    }
+
+    return $posterposts{$b} <=> $posterposts{$a};
+}
+
+foreach (sort bysizes keys %posterposts) {
+    $who = $_;
+
+    #get rid of email addresses
+    if(($who =~ /\S\s+(\S*)@\S*/) || ($who =~ /(\S*)@\S*\s+\S/))
+    {
+        $who =~ s/\S*@\S*//;
+    }
+    else
+    {
+        $who =~ s/<?(\S*)@\S*/($1)/;
+    }
+
+    $who =~ s/</&lt;/g;
+    $who =~ s/>/&gt;/g;
+    $who =~ s/"/&quot;/g;
+    $who =~ s/\s*$//;
+
+    $who || next;
+    push @whos, sprintf "<person posts=\"%d\" size=\"%d\" who=\"%s\" />\n", $posterposts{$_}, $posters{$_}/1024, $who;
+}
+
+print "<stats posts=\"$posts\" size=\"$size\" contrib=\"$numposters\" multiples=\"$ot\" lastweek=\"$lw\">\n\n";
+
+print @whos;
+
+print "\n</stats>\n";
+

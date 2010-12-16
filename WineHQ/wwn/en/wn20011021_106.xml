@@ -1,0 +1,435 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="106" date="10/21/2001" />
+
+<intro>
+
+<p>
+This is the 106th release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x 
+Windows emulator).
+
+This week's press release comes out of TransGaming.
+They've licensed Macrovision's SafeDisc copy protection
+technology to incorporate into their products.  For
+more info, check out the press release:
+<a href="http://www.businesswire.com/cgi-bin/f_headline.cgi?bw.101701/212902145">
+LINK</a></p>
+</intro>
+
+<stats posts="162" size="595" contrib="51" multiples="30" lastweek="15">
+
+<person posts="27" size="73" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="11" size="29" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="9" size="30" who="lawson_whitney@juno.com" />
+<person posts="9" size="24" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="13" size="131" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="6" size="19" who="Roger Fujii &lt;rmf@lookhere.com&gt;" />
+<person posts="5" size="13" who="Andriy Palamarchuk &lt;apa3a@yahoo.com&gt;" />
+<person posts="4" size="15" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="4" size="11" who="raddy &lt;rad2k@mail.ru&gt;" />
+<person posts="4" size="10" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="3" size="12" who="Gavriel State &lt;gav@transgaming.com&gt;" />
+<person posts="3" size="8" who="Mike McCormack  &lt;mike_mccormack@start.com.au&gt;" />
+<person posts="6" size="15" who="Andreas Mohr &lt;andi@rhlx01.fht-esslingen.de&gt;" />
+<person posts="9" size="25" who="Eric Pouech &lt;eric.pouech@voila.fr&gt;" />
+<person posts="3" size="6" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="3" size="6" who="Gerard Patel &lt;gerard.patel@nerim.net&gt;" />
+<person posts="2" size="20" who="Michael Riedel &lt;mriedel@inova-semiconductors.de&gt;" />
+<person posts="2" size="19" who="Mrugan &lt;mrugan@hotmail.com&gt;" />
+<person posts="2" size="15" who="mdew &lt;rpbrown@xtra.co.nz&gt;" />
+<person posts="2" size="8" who="Johan Gill &lt;johane@lysator.liu.se&gt;" />
+<person posts="2" size="7" who="Chris Green &lt;chris_e_green@yahoo.com&gt;" />
+<person posts="2" size="6" who="Malte Starostik &lt;malte@kde.org&gt;" />
+<person posts="2" size="4" who="Duane Clark &lt;dclark@leewardfpga.com&gt;" />
+<person posts="2" size="4" who="Dan Kegel &lt;dank@kegel.com&gt;" />
+<person posts="2" size="4" who="Michael Marxmeier &lt;mike@marxmeier.com&gt;" />
+<person posts="2" size="4" who="Dmitry Timoshkov &lt;dmitry@baikal.ru&gt;" />
+<person posts="2" size="3" who="Luke Kenneth Casson Leighton &lt;lkcl@samba-tng.org&gt;" />
+<person posts="1" size="9" who="Jukka Heinonen &lt;jhei@iki.fi&gt;" />
+<person posts="1" size="3" who="Bobby Bingham &lt;uhmmmm@ameritech.net&gt;" />
+<person posts="1" size="3" who="Andreas Mohr &lt;u4t5s0yq1001@sneakemail.com&gt;" />
+<person posts="1" size="3" who="Ori Pessach &lt;ori_pessach_blah@yahoo.com&gt;" />
+<person posts="1" size="3" who="James Sutherland &lt;jas88@cam.ac.uk&gt;" />
+<person posts="1" size="3" who="Andriy P &lt;apa3a@yahoo.com&gt;" />
+<person posts="1" size="2" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="1" size="2" who="Nerijus Baliunas &lt;nerijus@users.sourceforge.net&gt;" />
+<person posts="1" size="2" who="=?US-ASCII?Q?Christian_Jiresjo?= &lt;ds98chji@thn.htu.se&gt;" />
+<person posts="1" size="2" who="Duane Clark &lt;dclark@akamail.com&gt;" />
+<person posts="1" size="2" who="510045342665-0001@t-online.de (Dirk Apitz)" />
+<person posts="1" size="2" who="giorgian &lt;giorgian@icube.it&gt;" />
+<person posts="1" size="2" who="Marcus Meissner &lt;Marcus.Meissner@caldera.de&gt;" />
+<person posts="1" size="2" who="davep &lt;davep@cyw.uklinux.net&gt;" />
+<person posts="1" size="2" who="=Hrafnkell_Eriksson &lt;he@klaki.net&gt;" />
+<person posts="1" size="1" who="Rein Klazes &lt;rklazes@xs4all.nl&gt;" />
+<person posts="1" size="1" who="Adam D. Moss &lt;adam@uk.uu.net&gt;" />
+<person posts="1" size="1" who="Nick Hudson &lt;nhudson@hiwaay.net&gt;" />
+<person posts="1" size="1" who="David Elliott &lt;dfe@tgwbd.org&gt;" />
+<person posts="1" size="1" who="Aric Stewart &lt;aric@codeweavers.com&gt;" />
+
+</stats>
+
+
+
+
+ 
+
+<section
+  title="Memory Fragmentation"
+  subject="Nasty Evil Memory Fragmentation fix"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0066.html"
+  posts="9"
+  startdate="10/10/2001"
+  enddate="10/11/2001"
+>
+<p>Gavriel State posted patch that worked around a memory allocation problem:
+</p><quote who="Gavriel State"><p>
+ We just spent about 3 days tracking down a very subtle memory 
+ fragmentation problem in an app we're working on.  The problem:
+ </p><p>
+ App allocates lots of little blocks, then a few large blocks, 
+ then lots of little blocks.  Throughout this process, many 
+ blocks would be freed from all over the heap.  Repeat ad infinitum.
+ </p><p>
+ We ended up creating a new subheap every time one of these larger 
+ blocks came along.  The new space from the subheap then went to 
+ the top of the freelist, so all the small allocations then filled 
+ it up until the next large block allocation.  IE: We never got a 
+ chance to reuse freed blocks in older subheaps - at least not 
+ very well.  
+ </p><p>
+ This fix addresses the problem by pushing 'large' freed blocks to 
+ the end of the free list, leaving 'small' blocks at the front, to 
+ be found sooner.  The size of 'large' vs 'small' is tunable.
+ </p><p>
+ Despite the workaround, we're still not too pleased with the current
+ heap allocator.  It's quite slow, and still not as efficient as 
+ it could be.  It would probably be worth the effort to integrate
+ a new allocator - anyone know if there's a high-quality Wine-license-
+ compatible allocator out there?
+</p></quote>
+
+<p>Several people jumped in and discussed how to go about 
+improving performance.  Gavriel went on to list several things
+that need to be considered.  Ove K&aring;ven mentioned,
+<quote who="Ove Kaaven">Those issues are all part of the 
+ "free block selection algorithm" I talked
+ about above. We just need to change the algorithm used there; 
+ its effect would be the same as plugging in a whole new allocator.
+</quote>.  Pretty much everyone agreed that something could be
+done to make it work better.  Whether that meant ripping out the
+current algorithms and replacing them or merely tweaking the existing 
+code was up for debate.</p>
+
+<p>Adam Moss replied, <quote who="Adam Moss">
+I remember an analysis of various allocators which was done
+for Mozilla.  This one came out very favourably (I think it
+had the lowest fragmentation, for example) and it's also
+public domain.<a href="http://g.oswego.edu/dl/html/malloc.html">
+ http://g.oswego.edu/dl/html/malloc.html</a></quote></p>.
+
+<p>So far nothing has appeared in CVS.</p>
+
+
+
+</section>  
+
+
+
+
+
+
+
+<section
+  title="Solaris x86 Port"
+  subject="Re: wine/port.h #include fixes"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0114.html"
+  posts="15"
+  startdate="10/15/2001"
+  enddate="10/18/2001"
+>
+
+<p>Francois Gouget posted a rather lengthy email about some work
+cleaning up some header files.  He ended the email with, 
+<quote who="Francois Gouget">Doing this (except for port.h) I have a tree 
+that builds on Solaris with no _FILE_OFFSET_BITS warning. So if the above 
+sounds good, I have patches that are almost ready. </quote></p>
+
+<p>This announcement prompted a few emails including one from 
+Roger Fujii:</p>
+<quote who="Roger Fujii"><p>
+does this build run on solaris?  I've been trying for the last couple of
+days to get the beast to run (compiles ok), but it segfaults in various places
+(currently in NtCurrentTeb()).  This in on a solaris 8 dual CPU unit.
+This is using gas/gld (results were worse with as/ld).  
+</p><p>
+Any pointers on debugging this thing?</p></quote>
+
+<p>Jeremy White went on to explain that it's absolutely 
+necessary to use the GNU toolchain (gas, etc) instead of
+the stock Solaris tools.  He also recommended grabbing the
+latest cvs update after Alexandre has all of Francois' 
+patches applied.   And then he added, <quote who="Jeremy
+White">FYI, the #1 bug we're hitting is that in Linux/glibc,
+you can do printf("%s", NULL), and in Solaris that
+brings righteous death.</quote></p>
+
+<p>Francois also explained:</p>
+<quote who="Francois Gouget"><p>
+   You need to first make sure that you are using the GNU toolchain to
+build Wine. Otherwise Wine will not work. I believe that not even
+"./wine" will work. Do you have warnings about an unresolved main symbol
+when you link Wine's dlls? This is one of the symptoms. Another is when
+that strip does not understand "--strip-unneeded".
+</p><p>
+   Also note that just tweaking the PATH is not enough to switch from
+the Solaris toolchain to the GNU toolchain. That's because gcc is
+hard-coded to use '/usr/bin/xxx'. What we have done is to make these
+symlinks to the GNU toolchain (an alternative is to recompile gcc with
+the right path... but it takes more time).
+</p><p>
+   We still have to investigate how to detect the Solaris toolchain and
+issue a big fat error message in the configure script. Also we should
+try to see if there is a way to tell gcc which toolchain to use.
+</p></quote>
+
+<p>The discussion delved into some of the specifics of using GNU
+tools on Solaris and some of the things that still need to be done.
+Jeremy White mentioned he had Solitaire working.  Hey, what more
+do ya need out of Windows system?</p>
+
+
+
+</section>  
+
+
+
+
+
+
+
+<section
+  title="InstallShield 6 Success"
+  subject="InstallShield 6 - success"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0111.html"
+  posts="3"
+  startdate="10/13/2001"
+  enddate="10/16/2001"
+>
+<p>Ove K&aring;ven has been working on getting the latest version
+of InstallShield based installers working.  He's submitted several
+patches into CVS lately.  On Saturday he announced:</p>
+<quote who="Ove Kaaven"><p>
+ Apart from the two patches I just submitted to wine-patches, a
+ stdole32.tlb from real Windows, and the registry entries in
+ winedefault.reg, you need my interprocess com hacks, which I've now put on
+ WineHQ: http://www.winehq.org/~ovek/install.diff
+ </p><p>
+The installation progress bar doesn't seem to display for some reason
+(might be a repaint issue or something else related to Alexandre's latest
+work, or something completely different, don't know), but anyway, even if
+it doesn't tell you its progress, it actually successfully installs now!
+</p><p>
+I hope I can get enough time to structure that interprocess com stuff
+properly, so that it can work the way MS designed it, which involves
+RPCRT4.dll and friends...
+</p></quote>
+
+<p>Dan Kegel was quite happy and wanted to know where to send the
+pizza and beer.  Gavriel replied:</p>
+<quote who="Gavriel State"><p>
+ Well, in addition to sending pizza to Ove (I don't think he likes beer),
+ you might consider telling all your friends to sign up for our subscription
+ services. 8-)</p>
+<p>
+ Ove's work has been part of the final push we're doing before going 
+ live on October 22nd.
+</p></quote>
+
+
+</section>  
+
+
+
+
+
+
+
+
+
+
+
+<section
+  title="Implementing netapi32.dll"
+  subject="Q: Unimplemented control 256 for VxD device VNETBIOS"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0138.html"
+  posts="15"
+  startdate="10/18/2001"
+  enddate="10/18/2001"
+>
+
+<p>Michael Riedel posted a note wondering what might be needed to
+get some software to work:</p>
+
+<quote who="Michael Riedel"><p>
+I am going to migrate the EDA software environment from Windows NT to 
+Linux but I have still some software components requiring Windows. 
+That's why I use Wine. I own and use some software packages licensed to 
+a valid MAC address (flexlm MAC based license) and the corresponding NIC 
+is present in the Linux system.
+</p><p>
+Using wine-20010824 I get the following message:
+</p><p><code>
+fixme:win32:DeviceIoControl Unimplemented control 256 for VxD device 
+VNETBIOS</code>
+</p><p>
+I scanned the Web resources and studied the file 'win32/device.c' a 
+little bit but I got no answers to my questions. Is there already a 
+solution/implementation for this service? I am also ready to contribute 
+(at least I hope I'm able to do so and it would be fun ;-) but I need 
+some advice (docus, especially related to the VNETBIOS VxD and some 
+general hints).
+</p><p>
+I'm looking forward for any hints.
+</p></quote>
+
+<p>Uwe Bonnes responded first, <quote who="Uwe Bonnes">
+ I guess, the license isn't bind to a physical dongle on the parallel
+ port. So one can conclude that the software tries to read the MAC. This
+ probably happens in a NETBIOS.DLL call which then probably calls the
+ NETBIOS.VXD.  I propose you run with <code>--debugmsg +relay,+snoop,+vxd</code> 
+ and try
+ to decipher what is going on before that failing VXD call. In the easiest
+ approach, you can build a fake builtin NETBIOS DLL, with the appropriate
+ function returning the MAC in the first approach hardcoded or really reading
+ it with OS calls.</quote>  Patrik Stridvall added, <quote who="Patrik
+ Stridvall">NETBIOS.DLL is not documented
+ like NETAPI32 AFAIK is so it is more likely that it calls NETAPI32.
+ Also note the NETAPI32 imports the NETBIOS.DLL function _Netbios so
+ it would be a little strange if the application called NETBIOS directly
+ but you never know. :-)</quote></p>
+
+<p>Michael sent in a trace like Uwe asked.  Patrik took a look and replied:</p>
+<quote who="Patrik Stridvall"><p>
+ Good. It seems to work exactly the way I thought (or rather hoped) it would.
+</p><p>
+ Now we can presumably forget about the VxD and the undocumented NETBIOS DLL
+ and concentrate on implementing the documented NETAPI32 DLL.
+</p><p>
+ It would be interesting to know what's the content of the NCB structure that
+ Netbios takes as pointer to as argument.
+</p><p>
+ So the next step would be to make a Wine implementation of the NETAPI32.DLL
+ with a stub with an appropriate TRACE to display to NCB structure.
+</p><p>
+ I don't think I have time do it is the next few days though.
+ Can somebody else please do it?
+</p><p>
+ PS. On second thought perhaps we should make the NETAPI32.DLL just a forward
+ to the NETBIOS.DLL. It seems from the trace above that the Netbios function
+ in NETAPI32.DLL is the same function as _Netbios in NETAPI32.DLL and Netbios
+ is the only  function in NETAPI32 while NETBIOS have more functions
+ even though they are AFAIK undocumented.
+</p><p>
+<p>Then the discussion turned toward implementing a netapi32.dll since
+the functions there were documented.  One of the first things brought
+up was how to get the MAC address of an ethernet card.  Several suggestions
+were thrown about including looking at the source for ifconfig and using
+an ioctl() on /proc/net entries.  </p>
+</p>
+</quote>
+
+
+
+</section>  
+
+
+
+
+
+
+
+
+
+
+<section
+  title="Figuring Out Media Types"
+  subject="File media type"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0167.html"
+  posts="5"
+  startdate="10/18/2001"
+  enddate="10/19/2001"
+>
+
+<p>Ove K&aring;ven posed a question:
+</p><quote who="Ove Kaaven"><p>
+ I'm trying to think of a way to make multi-CD installers work under Wine.
+ Right now, the hardest part is that when the installers tell you to change
+ discs, the Setup.exe file mappings are still open. I'm thinking of making
+ Wine not map the file, but read it straight into RAM, if the executable
+ to be mapped is on removable media.
+</p><p>
+ But since to do this, MapViewOfFile needs to know the media type, and the
+ file name is only known in CreateFile, I apparently need to store the
+ media type in the wineserver object to accomplish this.
+</p><p>
+ Would changing the wineserver protocol in this way be a good idea?
+</p></quote>
+
+<p>He included a patch to include the media type in the protocol.  Alexandre
+replied, <quote who="Alexandre Julliard">
+ It's certainly a possibility. It would be nice to be able to tell
+ directly from the file descriptor, so that we wouldn't depend on the
+ user getting the drive specifications right. But I can't think of a
+ Unix function that would allow doing this cleanly.</quote></p>
+
+<p>And that's about where the thread left off.</p>
+
+
+
+</section>  
+
+
+
+
+
+
+
+
+
+
+<section
+  title="Remote Win32 API"
+  subject="Remote Windows Registry API and other Win32 APIs now available"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/10/0181.html"
+  posts="1"
+  startdate="10/19/2001"
+  enddate="10/19/2001"
+>
+<p>Luke Leighton (of Samba fame) posted a short note about more 
+Win32 API's being available:</p>
+<quote who="Luke Leighton"><p>
+hi there, i thought i'd put up a more eye-catching
+subject line.
+</p><p>
+to clarify: yes, that's right, FreeDCE has a
+set of remote Win32 APIs.  see 
+<a href="http://sourceforge.net/projects/freedce">http://sourceforge.net/projects/freedce</a>
+for details.
+</p><p>
+if anyone would like to help get these integrated
+into wine, please contact me for more information.
+</p></quote>
+
+</section>  
+
+
+
+
+
+</kc>

@@ -1,0 +1,186 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="1" date="20 Jun 1999 00:00:00 -0800" />
+
+<intro>
+
+<p />This is the first release of Wine's kernel cousin publication. Its main
+goal is to distribute widely what's going on around Wine (the Un*x Windows
+emulator).
+
+<p />Bertho Stultiens announced that Wine's CVS server should be up and
+running again, after he upgraded the Linux kernel of the server.
+
+</intro>
+
+<section
+  title="Service thread (cont'd)"
+  subject="Windows timer broken"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-271.html"
+>
+
+
+<p />Ulrich Weigand reported that the latest modification to the service thread
+(being now instanciated in each process) broke the current windows's timer
+implementation. He also proposed a fix for this, but pointed out that the
+same type of error breaks current use of service thread (mainly multimedia
+timers and system time).
+
+<p />Eric Pouech then asked of the best way for a DLL to store information on
+a per process basis.
+
+<p />Ulrich Weigand then <a
+href="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-277.html">
+proposed</a> an extension of the module reference structure and a couple of
+functions to cope with this.
+
+</section>
+
+<section
+  title="CreateProcess for WineLib"
+  subject="CreateP for WineLib"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-230.html"
+>
+
+<p />Dave Pickles, trying to use CreateProcess() from WineLib, asked whether
+<quote who="Dave Pickles">if it is actually necessary for a new instance of
+Wine to be created in this way</quote> by forking a new Unix process, and
+also noted that <quote who="Dave Pickles">the new application does not
+inherit the DOS environment, current default drive and directory and the
+current directories on other DOS drives from its parent.</quote>
+
+<p />Ulrich Weigand explained the current evolution of Wine and WineLib regarding
+processes and address spaces:
+
+<quote who="Ulrich Weigand">
+
+<p />Well, there used to be one fundamental difference between Wine and
+WineLib: in Wine, there was the 16-bit task scheduler running (doing
+cooperative multitasking implemented in user space by stack switching),
+while in WineLib, the scheduler was short-circuited (to avoid use of 16-bit
+code in WineLib). This made it fundamentally impossible to run more than
+one task in a single WineLib instance.
+
+<p />Just recently, though, the 16-bit task scheduler was removed also from Wine
+(all tasks now run in their own thread, and cooperative multitasking is
+simulated using synchronization primitives). This and other changes should
+reduce the differences between Wine and WineLib to the point where Wine
+itself will be just a normal WineLib application.
+
+<p />So, at this point it would be possible to run several Windows processes even
+in a WineLib instance. We're not quite there yet, however ...
+
+<p />(On the other hand, the preferred development would be in the other
+direction: in the end, even Wine should rather spawn new Unix processes for
+every Windows process to implement proper address space separation for Win32
+processes.)
+
+</quote>
+
+<p />David Pickles acknowledged on the type of actions to be taken and Slava
+Monich asked <quote who="Slava Monich">Making Wine Win32 processes run each
+in separate address space is good, no doubt. But here's a potential problem:
+I can name a number of apps that do CreateProcess and then want to
+communicate with the process they have created by doing things like
+FindWindow, Post/SendMessage and such. In other words, Win32 processes
+shouldn't be *completely* independent. There must be a way (at least) to
+send a message to another process. How about that?</quote>".
+
+<p />Ulrich Weigand concluded by listing the work to be done to achieve
+address-space separation for Wine processes:
+
+<quote who="Ulrich Weigand">
+
+<p />Indeed. This is exactly the reason why we *don't* have separate address
+spaces yet ;-)
+
+<p />First, we'll need to make all necessary inter-process actions work. In
+part, this has already been done: in fact, one of the main reasons for
+introduction of the Wine server was that this makes it possible to use the
+Win32 synchronization objects correctly across address space boundaries.
+Shared memory mappings should also work already.
+
+<p />What remains to be done is mainly USER stuff: access to shared USER
+structures like windows, and inter-process message handling. There's two
+options how to do this: we might use shared memory (the 16-bit USER data
+segment could be shared, like all 16-bit segments will probably have to be,
+and the various USER data structures would then reside in this segment), or
+else we might employ the Wine server (e.g. for message passing).
+
+<p />Then there's also a lot of Wine routines that assume a single address space,
+e.g. by maintaining a linked list of objects of some sort, anchored in a
+global variable ... All this will have to be cleaned up.
+
+<p />So in short, properly implementing separate address spaces will be one of
+the next major projects ... It's necessary to do it, though, because of the
+problems caused by non-relocatable EXE files.
+
+</quote>
+
+</section>
+
+<section
+  title="Port of Wine to different Un*ces"
+  subject="Winelib ports to other Unices"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-06/Subject/article-228.html"
+>
+
+<p />Alan Shutko volunteered to help porting WineLib to different Un*ces he has
+access to (DUX/Tru64, AIX, Solaris/Sparc, Irix and HP-UX), and asked for a
+contact point.
+
+<p />Patrick Stridvall answered by listing his undergoing activities:
+
+<quote who="Patrick Stridvall">
+
+<p />
+
+<ol>
+
+<li /> Platforms (Linux, Solaris, FreeBSD, BeOS etc). I have done/am working
+on some minor fixes.
+
+<li /> Architectures (Intel, Sparc, Alpha, MIPS etc). I have been working very
+little on this part. The only non-Intel machine I have access to is a very
+slow Sparc.
+
+<li /> Compilers/Code analysis tools (GNU C, Solaris C, GNU C++, Solaris C++,
+Lint etc). I have done/are currently working on these issues even though
+parts of my C++ efforts are not appriciated by all. :-) (I have not given up
+on C++ quite yet, I still hope to get in acceptable code even if I probably
+have to motivate each change one by one).
+
+<li /> Libraries (X11, Berlin, GGI, OpenGL etc) I have separated the X11 part
+from Wine in to a separate driver that will make it possible to write
+drivers for other graphics systems (and even run in text-only mode :-).
+
+</ol>
+
+
+
+</quote>
+
+<p />and openly asked for suggestion to structure this porting acticity.
+
+<p />Zygo Blaxell (from Corel) shared with the wine developpers some inner parts
+of his private life and gave and outlook of his current activities: <quote
+who="Zygo Blaxell">For Wine I have some work in progress that improves the
+GDI-on-X11 drivers: just faster bitblt at first, then later improving font
+support and doing some of the weird things our apps want. For Winelib, I'm
+working on a set of perl scripts that make a stab at automatically
+translating NMAKE and .BAT files for building a Win32 application on Windows
+into GNU Make files and shell commands for building a Winelib application on
+Unix.</quote>
+
+<p />Patrick Stridvall closed the thread by explaining to Alan Shutko the
+potential pitfalls he wants to avoid in compiling WineLib on other Un*ces.
+
+</section>
+
+</kc>

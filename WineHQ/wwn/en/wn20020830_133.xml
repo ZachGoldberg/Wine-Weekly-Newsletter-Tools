@@ -1,0 +1,378 @@
+<?xml version="1.0" ?>
+<kc>
+
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="133" date="08/30/2002" />
+
+<intro>
+<p>
+This is the 133rd release of the Wine's kernel cousin publication. Its main
+goal is to distribute widely what's going on around Wine (the Un*x Windows
+emulator). </p>
+
+</intro>
+
+
+
+
+
+<stats posts="108" size="313" contrib="42" multiples="24" lastweek="22">
+
+<person posts="8" size="18" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="18" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+<person posts="7" size="16" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="6" size="41" who="Andriy Palamarchuk &lt;apa3a@yahoo.com&gt;" />
+<person posts="6" size="19" who="Fabian Cenedese &lt;Cenedese@indel.ch&gt;" />
+<person posts="6" size="19" who="Andreas Mohr &lt;andi@rhlx01.fht-esslingen.de&gt;" />
+<person posts="5" size="13" who="Michael Stefaniuc &lt;mstefani@redhat.de&gt;" />
+<person posts="4" size="11" who="Duane Clark &lt;dclark@akamail.com&gt;" />
+<person posts="4" size="11" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="4" size="8" who="Marcus Meissner &lt;meissner@suse.de&gt;" />
+<person posts="4" size="7" who="Sylvain Petreolle &lt;spetreolle@yahoo.fr&gt;" />
+<person posts="3" size="11" who="Ian D. Stewart &lt;idstewart@compuvative.com&gt;" />
+<person posts="3" size="7" who="Dmitry Timoshkov &lt;dmitry@baikal.ru&gt;" />
+<person posts="3" size="6" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="2" size="9" who="Martin Wilck &lt;Martin.Wilck@Fujitsu-Siemens.com&gt;" />
+<person posts="2" size="6" who="Paul Millar &lt;paulm@astro.gla.ac.uk&gt;" />
+<person posts="2" size="6" who="Raul Dias &lt;chaos@swi.com.br&gt;" />
+<person posts="2" size="5" who="Shachar Shemesh &lt;wine-devel@sun.consumer.org.il&gt;" />
+<person posts="2" size="5" who="Steven Edwards &lt;steven_ed4153@yahoo.com&gt;" />
+<person posts="2" size="5" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="5" who="Tony Lambregts &lt;tony_lambregts@telusplanet.net&gt;" />
+<person posts="2" size="5" who="Bill Medland &lt;billmedland@look.ca&gt;" />
+<person posts="2" size="4" who="tom &lt;twickline2@triad.rr.com&gt;" />
+<person posts="2" size="4" who="Supphachoke Suntiwichaya &lt;mrchoke@jedi.links.nectec.or.th&gt;" />
+<person posts="1" size="5" who="Thomas Rosch &lt;thomas@sdg.de&gt;" />
+<person posts="1" size="5" who="Mathew McBride &lt;mcbridematt@iprimus.com.au&gt;" />
+<person posts="1" size="2" who="Vincent Beron &lt;vberon@mecano.gme.usherb.ca&gt;" />
+<person posts="1" size="2" who="Joerg Mayer &lt;jmayer@loplof.de&gt;" />
+<person posts="1" size="2" who="mkyprianou@ICTV.com" />
+<person posts="1" size="2" who="Derek Broughton &lt;derek_broughton@hotmail.com&gt;" />
+<person posts="1" size="2" who="Gregg Mattinson &lt;gm138242@scot.canada.sun.com&gt;" />
+<person posts="1" size="2" who="Fausto Saporito &lt;fausto.saporito@virgilio.it&gt;" />
+<person posts="1" size="2" who="Igor Izyumin &lt;igor@mlug.missouri.edu&gt;" />
+<person posts="1" size="2" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="1" size="2" who="leanne &lt;leanne@thizlinux.com&gt;" />
+<person posts="1" size="2" who="Philipp Wollermann &lt;phil_wo@gmx.net&gt;" />
+<person posts="1" size="2" who="Jas Sandys-Lumsdaine &lt;jas.sl@tiscali.co.uk&gt;" />
+<person posts="1" size="1" who="Dimitrie O. Paun &lt;dpaun@rogers.com&gt;" />
+<person posts="1" size="1" who="David Suarez &lt;david@suave.2y.net&gt;" />
+<person posts="1" size="1" who="Rein Klazes &lt;rklazes@xs4all.nl&gt;" />
+<person posts="1" size="1" who="Dustin Navea &lt;speeddymon@yahoo.com&gt;" />
+
+</stats>
+<section 
+	title="Using Intel's Compiler" 
+	subject="Problems compiling wine with Intel Compiler" 
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/08/0324.html" 
+	posts="5" 
+	startdate="08/26/2002" 
+>
+<topic>Build Process</topic>
+
+<p>
+Someone posted a question about using Intel's compiler:</p>
+<quote who="Unknown">
+<p>
+I'm getting compiler errors when I try to compile wine with the Intel
+C++ 6.0 Compiler. This works fine with the g++ compiler.
+</p><p>
+
+It looks like the wine headers need a level of the gcc version for the
+compiler, but since I'm  not using gcc, there is no gcc version level
+set.  Has anyone built wine with the Intel Compiler?  If so, what was
+done to get this to work?
+</p><p>
+
+Is any work being done to allow the usage of the Intel compiler with wine?
+</p></quote>
+
+<p>Patrik Stridvall suggested:</p>
+<quote who="Patrik Stridvall"><p>
+The Intel compiler like the Microsoft compiler probably already supports
+<code>__int{8,16,32,64}</code>.
+</p><p>
+The typedef are protected by a 
+<ul><code>
+#ifndef _MSC_VER</code></ul>
+</p><p>
+This will have to be changed to
+<ul><code>
+#if !defined(_MSC_VER) &amp;&amp; !defined(XXX)</code></ul>
+</p><p>
+where XXX is some that indicate that the Intel compiler is used.
+Check the manual.
+</p><p>
+Presumably the Intel compiler like the Microsoft compiler already
+defined <code>__cdecl</code> and <code>__stdcall</code>. In that case similar to first
+problem above the line
+<ul><code># elif defined(_MSC_VER)</code></ul>
+</p><p>
+will have to be change to
+<ul><code># elif defined(_MSC_VER) || defined(XXX)</code></ul>
+</p><p>
+where XXX is the same as above.
+</p></quote>
+<p>Joerg Mayer suggested just building a check into autoconf and
+letting it figure it out.  However, Patrik pointed out,
+<quote who="Patrik Stridvall">
+ In the header files it can't be done that way
+ because the same header files must support
+ multiple compilers and thus they can't have
+ a shared config.h file.</quote></p>
+<p>And then Marcus Meissner asked, 
+<quote who="Marcus Meissner">
+ Does the icc have a stdcall calling convention? Otherwise it will get
+ difficult to run Win32 binaries.</quote></p>
+</section>
+
+
+
+
+
+
+
+<section 
+	title="PPC / Mac OS X Support" 
+	subject="Wine Ma os X port" 
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/08/0329.html" 
+	posts="11" 
+	startdate="08/26/2002" 
+	enddate="08/29/2002"
+>
+<topic>Ports</topic>
+
+<p>David Suarez wondered about a Mac OS X port,
+<quote who="David Suarez">
+ Im kinda new to Wine, and I hope to get into very much, however I had one 
+ question which im sure everyone has heard a lot of. Is there any way to run 
+ WINE on Mac OS X being that it is based on FreeBSD. I have played around 
+ with the mac's and have gotten several linux programs to run, however i 
+ haven't tried wine yet. I do no that os X comes with many development tools 
+ that could possible be used for porting an app, but then again i am new at 
+ this so im not sure. Any information on this would be greatly appreciated.
+</quote></p>
+
+<p>Lionel Ulmer figured there was at least some hope since the PowerPC 
+architecture was being worked on:</p>
+<quote who="Lionel Ulmer"><p>
+ Winelib already works on PPC (or at least Marcus is trying to get it to
+ work). That is already a first step :-) After, there are a lot of tricky
+ stuff to do, but no big rewrite (well, except in the core DLLs like Kernel
+ and the server).
+</p><p>
+ I wonder if anybody ever started a 'bug' or 'task' on Bugzilla to write down
+ everything that would be needed to support Wine + emulation.
+</p></quote>
+
+<p>Marcus Meissner followed that up with an explanation:</p>
+<quote who="Marcus Meissner"><p>
+There is just 1 open patch (the powerpc signal handling), which alexandre
+needs to apply and then you have winemine, notepad and some other
+sample winelib apps running on PPC.
+</p><p>
+The ABI is incompatible due to a r13 mess up in the ELF ABI, but this
+does not matter for sourcecode ported apps.
+</p></quote>
+
+<p>The discussion delved into hooking up a CPU emulator into Wine.
+Lionel Ulmer mentioned running Linux inside a Bochs emulator and
+then running Wine inside that.  He also pointed out that Windows
+itself could be run instead.</p>
+
+<p>Andriy Palamarchuk suggested looking at 
+<a href="http://bugs.winehq.org/show_bug.cgi?id=44">bug #44</a> in Bugzilla.
+This same question came up a few years ago.  At the time James Hatheway 
+posted a list of <a href="http://www.winehq.org/hypermail/wine-devel/2000/11/0004.html">
+issues</a> that might come up.  At the time Gavriel State had taken a shot
+at porting Wine but hadn't finished.</p>
+
+
+</section>
+
+
+
+
+
+<section 
+	title="Microsoft Docs From DoJ Settlement" 
+	subject="New win api docs" 
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/08/0363.html" 
+	posts="5" 
+	startdate="08/28/2002" 
+	enddate="08/28/2002"
+>
+<topic>Microsoft Windows</topic>
+
+<p>Part of Microsoft's settlement with the DoJ involved
+publishing documentation on "Microsoft Middleware", API's
+used by Microsoft in their own applications.  Supposedly this
+will open the platform for other software developers.  A lengthier
+<a href="http://www.theregister.co.uk/content/4/26803.html">
+discussion</a> of the events is available from The Register.
+It seems Microsoft went ahead and "complied" by releasing 
+documentation that is incomplete, outdated, and already known.
+Michael Stefaniuc posted a link to the 
+<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnapiover/html/api-overview.asp">
+new documentation</a>.  Dmitry Timoshkov noted:</p>
+<quote who="Dmitry Timoshkov"><p>
+ And nothing regarding undocumented comctl32 interfaces...
+ </p><p>
+ Almost all disclosed APIs are already known or useless.
+</p></quote>
+<p>Andreas Mohr was surprised they published anything at all.
+</p>
+
+</section>
+
+
+
+
+
+
+<section 
+	title="MP3 Decoder Licensing" 
+	subject="removing mp3 code" 
+	archive="http://www.winehq.org/hypermail/wine-devel/2002/08/0389.html" 
+	posts="5" 
+	startdate="08/29/2002" 
+	enddate=""
+>
+<topic>Multimedia</topic>
+<topic>Licensing</topic>
+
+<p>Last week news supposedly broke that the developers of MP3
+software, both encoders and decoders, are required
+to <a href="http://www.mp3licensing.com/royalty/software.html">pay
+royalties</a>.  The patented MP3 format has been a source of 
+<a href="http://www.mp3-mac.com/Pages/History_of_MP3.html">licensing 
+problems</a> for <a href="http://www.mp3.com/news/095.html">years</a>
+so no one was probably surprised to see that Thomson MultiMedia 
+had a page about licensing.  
+Marcus Meissner wondered about the decoder in Wine:</p>
+<quote who="Marcus Meissner"><p>
+ Apparently distributing even mp3 decoders is not royaltee free anymore,
+ according to the slashdot thread and the Thomson MultiMedia pages.</p>
+<p>
+ So we probably should remove the msacm mp3 decoder we include. :(</p>
+</quote>
+
+<p>However, Michael Stefaniuc posted link to a Heise 
+<a href="http://www.heise.de/newsticker/data/vza-29.08.02-000/">article</a>
+(Google <a href="http://translate.google.com/translate?u=http%3A%2F%2Fwww.heise.de%2Fnewsticker%2Fdata%2Fvza-29.08.02-000%2F&amp;langpair=de%7Cen&amp;hl=en&amp;ie=UTF-8&amp;oe=UTF-8&amp;prev=%2Flanguage_tools">
+translation</a>) that had a statement from Thomson that basically 
+this isn't news and free docoders are still free.</p>
+
+<p>Patrik Stridvall wondered why Wine bothered with an MP3
+decoder at all:</p>
+<quote who="Patrik Stridvall"><p>
+ At the very least we should make it compile option that is
+ by default disabled.
+</p><p>
+ I don't think we need to go that far as to remove it.
+ IIRC LAME an mp3 ENCODER (that was non royalty free even before)
+ got around it by only distributing source code and so can we.
+</p><p>
+ BTW:
+ Why do we include a mp3 decoder in the Wine tree?
+ Why not just link to an external library?
+ I can't see maintaining a mp3 decoder being in the best
+ interest of Wine anyway patents or not...
+</p></quote>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+<section 
+	title="Case Sensitivity and Filesystems" 
+	subject="DOSFS_FindUnixName and unix filesystem (was: Re: (HELP) ...)" 
+	archive="http://www.winehq.org/hypermail/wine-cvs/2002/08/thread.html" 
+	posts="7" 
+	startdate="08/28/2002" 
+	enddate="08/29/2002"
+>
+<topic>Filesystems</topic>
+
+<p>This thread goes back to June.  Martin Wilck posted
+a message describing a problem running tests:</p>
+<quote who="Martin Wilck"><p>
+<code><ul>
+$ make test<br />
+/home/martin/Software/Wine/TMP/wine/miscemu/wine: cannot find 'tests/kernel32_test.exe.so'<br />
+make: *** [tests/alloc.ok] Fehler 1</ul></code></p>
+<p>
+ What am I doing wrong? I have tried this and that, but I don't seem to be able to
+ run the tests. This happens for any tests I try.
+ It seems that wine isn't looking for "tests/kernel32_test.exe.so" below the current directory.
+</p></quote>
+
+<p>No one else really seemed to be having the same problem.  Eric Pouech reported 
+everything was working for him.</p>
+
+<p>Martin finally figured out his problem was with the way filenames
+were being matched:</p>
+<quote who="Martin Wilck"><p>
+I have finally figured this out. It has to do with some (intentional?)
+DOSFS_FindUnixName() weirdness.
+</p><p>
+My wine sources are in a directory /home/martin/Software/Wine/CVS/wine.
+/home/martin is my Windows drive Y:
+</p><p>
+Now in /home/martin/Software, I have subdirectories "Wine" and "wine".
+DOSFS_FindUnixName() uses "wine" because 
+<ol><li> DOSFS_ReadDir returns it first,</li>
+<li> The DOS short names match (the Unix names obviously don't).</li>
+</ol>
+</p><p>
+Since "wine" is the wrong path, the search fails shortly after.
+This happens even if I set the Filesystem type of drive Y: to "unix".
+</p><p>
+I guess this is the right thing to do on Windows-style file systems,
+but should it be this way on a "unix" file system, too?
+</p><p>
+The patch below does what I'd consider "sane" behaviour on Unix. 
+Alternatively, on a "unix" filesystem, one could search the whole
+directory for exact matches, and try short names only if that fails.
+</p></quote>
+
+<p>Andreas Mohr thought it seemed to make sense:</p>
+<quote who="Andreas Mohr"><p>
+Well, if your patch makes sure that on a "unix" mapping (as opposed to
+"win95" !) we only lookup the *exact* case sensitive name instead of
+iterating through all sorts of case cases (heh ! :), then I guess
+your patch is right.
+</p><p>
+I guess nobody really cared about having correct behaviour of the "unix"
+mapping mode. (since everybody should use "win95" for normal use anyway)
+</p></quote>
+<p>Alexandre thought there was no perfect solution,
+<quote who="Alexandre Julliard">
+ I'd say that DOSFS_ToDosFCBFormat should fail when the file contains
+ upper-case chars on a case-sensitive file system. This will probably
+ make it impossible to access some files in certain cases though. I'm
+ afraid it's not possible to support case-sensitive file systems 100%
+ right given that Windows apps don't preserve case correctly.</quote>
+</p>
+
+<p>Martin also thought when it was Unix filesystem that a possible 
+DOS filename should be looked for if no Unix ones match.  He supplied
+a patch, but it didn't (as of yet) get applied by Alexandre.</p>
+
+</section>
+
+
+</kc>
+

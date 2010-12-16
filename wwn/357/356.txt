@@ -1,0 +1,5157 @@
+From lkcl at lkcl.net  Sun Feb  1 02:05:03 2009
+From: lkcl at lkcl.net (Luke Kenneth Casson Leighton)
+Date: Sun, 1 Feb 2009 08:05:03 +0000
+Subject: [patch] review requested - NamedPipe Message mode (was Reliable 
+	Datagram / Stream behaviour of NT Pipes)
+In-Reply-To: <87pri3ywqa.fsf@wine.dyndns.org>
+References: <ced5f0f60901311332h39fce1fkc561f1ccd6bd3797@mail.gmail.com>
+	<ced5f0f60901311334u5a2f0f8bt1e33dddc44b7de97@mail.gmail.com>
+	<87pri3ywqa.fsf@wine.dyndns.org>
+Message-ID: <ced5f0f60902010005m28d9606er56127e7b646e9f55@mail.gmail.com>
+
+> You can't do that stuff on the client side. You either have to do all
+> pipe I/O in the server, or add named pipe support in the kernel. The
+> latter is harder, but would be much more useful.
+
+ well, not entirely knowing the difference, i'm guessing that i'm
+adding named pipe support in the kernel.  starting from
+SetNamedPipeHandleState and going from there.
+
+ comparing what i've got so far in the improvements to ReadFile,
+WriteFile, NtFsControlIo etc. with the way that it is believed that
+this _should_ be done, what is right and what is wrong?
+
+l.
+
+
+From gsh.debianlists at gmail.com  Sun Feb  1 02:11:29 2009
+From: gsh.debianlists at gmail.com (Guillaume SH)
+Date: Sun, 1 Feb 2009 09:11:29 +0100
+Subject: A basic implementation for increased security in wine proposal
+Message-ID: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+
+Hi project,
+
+Following the two previous threads, I am posting here a draft patch
+implementing my proposal.
+
+So, to begin with I will remind you the principle :
+
+    All function callable from outside wine, should be added sanity checks :
+
+    if safe_mode_on and (sanity_check1_failed or sanity_check2_failed [...]
+)
+    {
+        ExitWineCleanlyAndAdvertiseUser;
+    }
+
+    safe_mode_on value being read from registry (one and only time at wine
+startup).
+
+    So if safe_mode_on is set to true, sanity check are performed and in
+case of failure wine advertise user and terminate cleanly
+    Else, sanity check aren't performed and on a bad input wine is crashing.
+
+I've only produced a basic implementation, clearly marking as TODO items
+left to be done (by the way they are too much for me to handle, as I am no
+match for you when it comes to implementation).
+My goal here is firstly to demonstrate feasibility (hardly reached) and
+usefulness of the proposal. Secondly it is to provide something concrete.
+
+Please note than "unsafe" mode behave exactly the same than latest git
+version of wine (some more operations occur, however, so is not strictly
+equal in term of performance)
+
+I tested the two modes with the help of wine test suite, restricted to
+kernel/file.c, test_overlapped and I considered only :
+    all must-be-successful tests
+    GetOverlappedResult(0, NULL, &result, FALSE);
+    GetOverlappedResult(0, &ov, NULL, FALSE);
+(these last two cannot be used in the same run, in either mode)
+
+Results are as follow (test are wine_test calls wine on linux(1) platform
+only ) :
+    1 - all must-be-successful tests 100% succeed in the two modes
+    2 - in safe mode, the last two triggers the user message and wine exit
+    3 - in unsafe mode, the last two triggers a crash
+
+Consequently, based on theses results no regression is identified.
+
+As I received some more informations in last thread (thank you for enhancing
+my comprehension of the problem), I will again expose the problem, taking
+them into account :
+
+The problem I am considering (and I may be mistaken here as I am not an
+expert) is called "Unchecked Error Condition"(2)
+and it is a referenced weakness (CWE id 391), rated "Medium" in likelihood
+of exploit, by serious people.
+
+Personally, I don't mind that Microsoft is ignoring it and promote usage of
+early crash or whatever. You are providing a
+software, presenting security defects that you choose not to fix because
+they are compliant with your goals.
+Consequently, at the very least you should explicitly advertise your users,
+confronting them with their responsibilities.
+
+I have read(3) on winehq a warning stating that wine is beta software, not
+ready for general use. I have read too about the "bug for bug"
+compatibility.
+So user's advertisement about security is rather thin and implicit.
+
+Please consider the problem, you need to do something about it, it is your
+responsibility.
+
+And continue the good work, you rocks !
+Guillaume
+
+(1) wine version : wine 1.1.14 with the attached patch applied on top of it
+    OS : debian testing amd64
+(2) http://cwe.mitre.org/data/definitions/391.html
+(3) http://www.winehq.org/about/
+
+PS : I have observed that you are very active about fixing other security
+issues :
+        + buffer overflow
+        + NULL pointer dereference
+        + variable signedness
+        + ...
+I seems to me that hopefully, you performs those fixes without consideration
+for "Is windows doing the same ?". I will be sad the day I will see a commit
+"Remove resource release because Windows is doing the same" or "Remove
+buffer overflow fix because app A (2 million copies sold) rely on it".
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090201/e300193c/attachment.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Basic-implementation-of-sanity-check.patch
+Type: text/x-diff
+Size: 2330 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090201/e300193c/attachment.patch 
+
+From Paul.Hampson at Pobox.com  Sun Feb  1 03:18:51 2009
+From: Paul.Hampson at Pobox.com (Paul TBBle Hampson)
+Date: Sun, 1 Feb 2009 20:18:51 +1100
+Subject: A basic implementation for increased security in wine proposal
+In-Reply-To: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+Message-ID: <20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+
+On Sun, Feb 01, 2009 at 09:11:29AM +0100, Guillaume SH wrote:
+> I tested the two modes with the help of wine test suite, restricted to
+> kernel/file.c, test_overlapped and I considered only :
+>     all must-be-successful tests
+>     GetOverlappedResult(0, NULL, &result, FALSE);
+>     GetOverlappedResult(0, &ov, NULL, FALSE);
+> (these last two cannot be used in the same run, in either mode)
+
+This is potentially a flaw in the tests. The NULL-passing-in tests
+should have an exception handler wrapped around them if they are
+expected to throw an exception, an example of such was posted to this
+mailing list during an earlier discussion of this method's failure
+cases.
+
+If your automated test suite itself is crashing, you're not actually
+getting useful results.
+
+> The problem I am considering (and I may be mistaken here as I am not an
+> expert) is called "Unchecked Error Condition"(2)
+> and it is a referenced weakness (CWE id 391), rated "Medium" in likelihood
+> of exploit, by serious people.
+
+> (2) http://cwe.mitre.org/data/definitions/391.html
+
+This isn't an Unchecked Error Condition in GetOverlappedResult. It's a
+known and understood invalid input (NULL for something that the API
+specifies cannot be NULL) with an empirically determined failure action
+(throw a NULL-reference exception).
+
+An Unchecked Error Condition would occur if someone specifically wrote
+code around a GetOverlappedResult to catch the NULL-reference, and then
+ignored it and preceded on as if it hadn't given a NULL-reference.
+
+It would (at least in according to my understanding of the reasoning
+behind the Win32 API) be much more common for people to accidentally
+produce the Unchecked Error Condition flaw if a NULL going into these
+inputs (which the API specifies is invalid) were to produce an error
+code.
+
+Exceptions catch programmer's attention, they have to work to
+ignore them. They are "exceptional" events.
+
+Error codes get ignored left, right and centre.
+
+I can't see how GetOverlappedResult could be a security weakness.
+
+Program does dumb thing -> program crashes. It's not executing
+user-provided code or jumping about the stack in any way. It just
+bubbles straight up to the structured exception handler if one exists,
+or away into the night if one doesn't. Either way the code flow is
+interrupted, not redirected.
+
+If an attacker is limited to zeroing out a chunk of your stack, such
+that an otherwise-valid pointer becomes NULL and gets passed into
+GetOverlappedResult, you don't want to keep processing your
+error-handling path. Who know what other data the attacker was able to
+get onto your stack or heap? Instead, throw an exception and let the
+exception handling code (which should make significantly fewer
+assumptions about what state is valid) clean up for you.
+
+And in that case, the security issue is whatever the attacker used to
+zero out chunks of your stack.
+
+Can you actually please describe the security issue you're trying to fix
+here?
+
+> PS : I have observed that you are very active about fixing other security
+> issues :
+>         + buffer overflow
+>         + NULL pointer dereference
+>         + variable signedness
+>         + ...
+> I seems to me that hopefully, you performs those fixes without consideration
+> for "Is windows doing the same ?". I will be sad the day I will see a commit
+> "Remove resource release because Windows is doing the same" or "Remove
+> buffer overflow fix because app A (2 million copies sold) rely on it".
+
+Have a look at the ddrawex implementation. It's basically ddraw except
+it doesn't release resources as soon as they're released by the caller
+due to the way Internet Explorer and its plugins interact with the
+library. (Or at least that's the understanding I have from skimming the
+submitted patch)
+
+It'd be a sad day when we start sacrificing Win32 API implementation
+accuracy just because we think the Win32 API is wrong.
+
+-- 
+-----------------------------------------------------------
+Paul "TBBle" Hampson, B.Sc, LPI, MCSE
+Very-later-year Asian Studies student, ANU
+The Boss, Bubblesworth Pty Ltd (ABN: 51 095 284 361)
+Paul.Hampson at Pobox.com
+
+Of course Pacman didn't influence us as kids. If it did,
+we'd be running around in darkened rooms, popping pills and
+listening to repetitive music.
+ -- Kristian Wilson, Nintendo, Inc, 1989
+
+License: http://creativecommons.org/licenses/by/2.5/au/
+-----------------------------------------------------------
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090201/8e8c07c7/attachment-0001.pgp 
+
+From julliard at winehq.org  Sun Feb  1 03:29:59 2009
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Sun, 01 Feb 2009 10:29:59 +0100
+Subject: [patch] review requested - NamedPipe Message mode (was Reliable
+	Datagram / Stream behaviour of NT Pipes)
+In-Reply-To: <ced5f0f60902010005m28d9606er56127e7b646e9f55@mail.gmail.com>
+	(Luke Kenneth Casson Leighton's message of "Sun, 1 Feb 2009 08:05:03
+	+0000")
+References: <ced5f0f60901311332h39fce1fkc561f1ccd6bd3797@mail.gmail.com>
+	<ced5f0f60901311334u5a2f0f8bt1e33dddc44b7de97@mail.gmail.com>
+	<87pri3ywqa.fsf@wine.dyndns.org>
+	<ced5f0f60902010005m28d9606er56127e7b646e9f55@mail.gmail.com>
+Message-ID: <87d4e2zeqw.fsf@wine.dyndns.org>
+
+Luke Kenneth Casson Leighton <lkcl at lkcl.net> writes:
+
+>> You can't do that stuff on the client side. You either have to do all
+>> pipe I/O in the server, or add named pipe support in the kernel. The
+>> latter is harder, but would be much more useful.
+>
+>  well, not entirely knowing the difference, i'm guessing that i'm
+> adding named pipe support in the kernel.  starting from
+> SetNamedPipeHandleState and going from there.
+
+I mean the Linux kernel.
+
+>  comparing what i've got so far in the improvements to ReadFile,
+> WriteFile, NtFsControlIo etc. with the way that it is believed that
+> this _should_ be done, what is right and what is wrong?
+
+It's all wrong, because this can't be done on the client side (kernel32
+and ntdll are the client side, as opposed to the wineserver side). The
+client side is the equivalent of user space, with the wineserver being
+the equivalent of kernel space. You can't do this stuff in user space
+(hint: concurrency).
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From gsh.debianlists at gmail.com  Sun Feb  1 03:41:25 2009
+From: gsh.debianlists at gmail.com (Guillaume SH)
+Date: Sun, 1 Feb 2009 10:41:25 +0100
+Subject: A basic implementation for increased security in wine proposal
+In-Reply-To: <20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+Message-ID: <a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+
+Hi Paul,
+
+You asked me to actually describe the security I am concerned about, so I am
+going for it :
+
+Imagine an ill-intentioned people, call it the attackers. By the mean of
+simply creating the following C application (based on classical "Hello
+word") :
+
+
+#include needed header
+
+int main (int argc, char * argv[])
+    /* printf ( "Hello world!" ); */
+    GetOverlappedResult(0, NULL, NULL, FALSE);
+
+    return EXIT_SUCCESS;
+}
+
+
+Running this application on wine, I get to have my crash, with the
+possibility of an exploit. So all I have to do know is to find a vector to
+make you and some other people willing to run my application.
+
+I won't describe in detail the way to perform the exploit as :
+      1 - I don't know how to proceed and I don't want to
+      2 - It would be showing poor sense of responsibilities
+
+Guillaume
+
+---
+
+2009/2/1 Paul TBBle Hampson <Paul.Hampson at pobox.com>
+
+> On Sun, Feb 01, 2009 at 09:11:29AM +0100, Guillaume SH wrote:
+> > I tested the two modes with the help of wine test suite, restricted to
+> > kernel/file.c, test_overlapped and I considered only :
+> >     all must-be-successful tests
+> >     GetOverlappedResult(0, NULL, &result, FALSE);
+> >     GetOverlappedResult(0, &ov, NULL, FALSE);
+> > (these last two cannot be used in the same run, in either mode)
+>
+> This is potentially a flaw in the tests. The NULL-passing-in tests
+> should have an exception handler wrapped around them if they are
+> expected to throw an exception, an example of such was posted to this
+> mailing list during an earlier discussion of this method's failure
+> cases.
+>
+> If your automated test suite itself is crashing, you're not actually
+> getting useful results.
+>
+> > The problem I am considering (and I may be mistaken here as I am not an
+> > expert) is called "Unchecked Error Condition"(2)
+> > and it is a referenced weakness (CWE id 391), rated "Medium" in
+> likelihood
+> > of exploit, by serious people.
+>
+> > (2) http://cwe.mitre.org/data/definitions/391.html
+>
+> This isn't an Unchecked Error Condition in GetOverlappedResult. It's a
+> known and understood invalid input (NULL for something that the API
+> specifies cannot be NULL) with an empirically determined failure action
+> (throw a NULL-reference exception).
+>
+> An Unchecked Error Condition would occur if someone specifically wrote
+> code around a GetOverlappedResult to catch the NULL-reference, and then
+> ignored it and preceded on as if it hadn't given a NULL-reference.
+>
+> It would (at least in according to my understanding of the reasoning
+> behind the Win32 API) be much more common for people to accidentally
+> produce the Unchecked Error Condition flaw if a NULL going into these
+> inputs (which the API specifies is invalid) were to produce an error
+> code.
+>
+> Exceptions catch programmer's attention, they have to work to
+> ignore them. They are "exceptional" events.
+>
+> Error codes get ignored left, right and centre.
+>
+> I can't see how GetOverlappedResult could be a security weakness.
+>
+> Program does dumb thing -> program crashes. It's not executing
+> user-provided code or jumping about the stack in any way. It just
+> bubbles straight up to the structured exception handler if one exists,
+> or away into the night if one doesn't. Either way the code flow is
+> interrupted, not redirected.
+>
+> If an attacker is limited to zeroing out a chunk of your stack, such
+> that an otherwise-valid pointer becomes NULL and gets passed into
+> GetOverlappedResult, you don't want to keep processing your
+> error-handling path. Who know what other data the attacker was able to
+> get onto your stack or heap? Instead, throw an exception and let the
+> exception handling code (which should make significantly fewer
+> assumptions about what state is valid) clean up for you.
+>
+> And in that case, the security issue is whatever the attacker used to
+> zero out chunks of your stack.
+>
+> Can you actually please describe the security issue you're trying to fix
+> here?
+>
+> > PS : I have observed that you are very active about fixing other security
+> > issues :
+> >         + buffer overflow
+> >         + NULL pointer dereference
+> >         + variable signedness
+> >         + ...
+> > I seems to me that hopefully, you performs those fixes without
+> consideration
+> > for "Is windows doing the same ?". I will be sad the day I will see a
+> commit
+> > "Remove resource release because Windows is doing the same" or "Remove
+> > buffer overflow fix because app A (2 million copies sold) rely on it".
+>
+> Have a look at the ddrawex implementation. It's basically ddraw except
+> it doesn't release resources as soon as they're released by the caller
+> due to the way Internet Explorer and its plugins interact with the
+> library. (Or at least that's the understanding I have from skimming the
+> submitted patch)
+>
+> It'd be a sad day when we start sacrificing Win32 API implementation
+> accuracy just because we think the Win32 API is wrong.
+>
+> --
+> -----------------------------------------------------------
+> Paul "TBBle" Hampson, B.Sc, LPI, MCSE
+> Very-later-year Asian Studies student, ANU
+> The Boss, Bubblesworth Pty Ltd (ABN: 51 095 284 361)
+> Paul.Hampson at Pobox.com
+>
+> Of course Pacman didn't influence us as kids. If it did,
+> we'd be running around in darkened rooms, popping pills and
+> listening to repetitive music.
+>  -- Kristian Wilson, Nintendo, Inc, 1989
+>
+> License: http://creativecommons.org/licenses/by/2.5/au/
+> -----------------------------------------------------------
+>
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090201/c36cacc6/attachment.htm 
+
+From marcus at jet.franken.de  Sun Feb  1 04:08:28 2009
+From: marcus at jet.franken.de (Marcus Meissner)
+Date: Sun, 1 Feb 2009 11:08:28 +0100
+Subject: A basic implementation for increased security in wine proposal
+In-Reply-To: <a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+	<a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+Message-ID: <20090201100828.GA20479@galeere.jet.franken.de>
+
+On Sun, Feb 01, 2009 at 10:41:25AM +0100, Guillaume SH wrote:
+> Hi Paul,
+> 
+> You asked me to actually describe the security I am concerned about, so I am
+> going for it :
+> 
+> Imagine an ill-intentioned people, call it the attackers. By the mean of
+> simply creating the following C application (based on classical "Hello
+> word") :
+> 
+> 
+> #include needed header
+> 
+> int main (int argc, char * argv[])
+> {
+>     /* printf ( "Hello world!" ); */
+>     GetOverlappedResult(0, NULL, NULL, FALSE);
+> 
+>     return EXIT_SUCCESS;
+> }
+> 
+> 
+> Running this application on wine, I get to have my crash, with the
+> possibility of an exploit. So all I have to do know is to find a vector to
+> make you and some other people willing to run my application.
+> 
+> I won't describe in detail the way to perform the exploit as :
+>       1 - I don't know how to proceed and I don't want to
+>       2 - It would be showing poor sense of responsibilities
+
+If you can run an application ... it already can do everything!
+
+No need to protect APIs against misuse, they run at the same privilege
+level as your code.
+
+Ciao, Marcus
+
+
+From msclrhd at googlemail.com  Sun Feb  1 04:38:33 2009
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Sun, 1 Feb 2009 10:38:33 +0000
+Subject: A basic implementation for increased security in wine proposal
+In-Reply-To: <20090201100828.GA20479@galeere.jet.franken.de>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+	<a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+	<20090201100828.GA20479@galeere.jet.franken.de>
+Message-ID: <3f4fd2640902010238o151982bcnfb1f67e5b350a8b9@mail.gmail.com>
+
+2009/2/1 Marcus Meissner <marcus at jet.franken.de>:
+> On Sun, Feb 01, 2009 at 10:41:25AM +0100, Guillaume SH wrote:
+>>
+>> Running this application on wine, I get to have my crash, with the
+>> possibility of an exploit. So all I have to do know is to find a vector to
+>> make you and some other people willing to run my application.
+>>
+>> I won't describe in detail the way to perform the exploit as :
+>>       1 - I don't know how to proceed and I don't want to
+>>       2 - It would be showing poor sense of responsibilities
+>
+> If you can run an application ... it already can do everything!
+>
+> No need to protect APIs against misuse, they run at the same privilege
+> level as your code.
+
+What exactly is being exploited?
+
+Can you use this as a basis to inject your own code to change Wine's
+behaviour (e.g. using a buffer overflow exploit)?
+Can you use this to gain root privileges from a non-root user?
+Can you use it to gain access to or modify sensitive data?
+
+What you have at the moment is an application that crashes. A crash could be:
+  (a) because Wine is wrong and needs to be fixed (see the Coverity
+NULL pointer patches);
+  (b) because the application is wrong - the application needs to be
+fixed here, not Wine;
+  (c) someone has tampered with the system.
+
+Taking your example of passing a NULL to GetOverlappedResult is that
+*even though the MSDN documentation does not mention that these
+parameters are optional (indicating they must be valid)* you are
+recommending that Wine makes these parameters optional. This has the
+effect of hiding bugs in the native application - for case (b) - or
+making them harder to track down. You are also making case (c) have
+potentially successful results as this is saying "not a problem, carry
+on".
+
+If you report - as has been suggested - to the user, how is this
+useful to them? Can that be subverted to do malicious things? Why add
+to the code, providing something that has to be added to every API,
+that just increases the code size. How can you investigate and debug
+here?
+
+If someone tampered this to say "do nothing, instead of reporting to
+the user" then you have lost this mechanism and you have turned a fail
+case into a success case and the application could then potentially do
+more damage.
+
+There have been some attempts to add DrWatson functionality that will
+trap the exceptions (using a separate, overridable process), show the
+user it has crashed and gather information for a bug report. This is
+the same mechanism that winedbg uses to give the crash dump, and other
+debug tool. This is the best way to go for something like this -
+having a crash report program that displays a "report this to Wine
+developers" dialog. Microsoft, Mozilla and others use this approach.
+
+- Reece
+
+
+From gsh.debianlists at gmail.com  Sun Feb  1 04:46:59 2009
+From: gsh.debianlists at gmail.com (Guillaume SH)
+Date: Sun, 1 Feb 2009 11:46:59 +0100
+Subject: Fwd: A basic implementation for increased security in wine proposal
+In-Reply-To: <a4d9687f0902010241x2322b738w568f357003b2c63a@mail.gmail.com>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+	<a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+	<20090201100828.GA20479@galeere.jet.franken.de>
+	<a4d9687f0902010241x2322b738w568f357003b2c63a@mail.gmail.com>
+Message-ID: <a4d9687f0902010246v7a2446c7t1b911359a3c1f1a9@mail.gmail.com>
+
+---------- Forwarded message ----------
+From: Guillaume SH <gsh.debianlists at gmail.com>
+Date: 2009/2/1
+Subject: Re: A basic implementation for increased security in wine proposal
+To: Marcus Meissner <marcus at jet.franken.de>
+
+
+Hi Marcus,
+
+I stand corrected, as it appears I was way too naive in my understanding of
+software security, hence the example I provided.
+
+Regarding you explanation justifying there is no need to protect API against
+misuse, I am still not convinced, but I will think about it and try to get
+to a thorough understanding.
+
+Thank you for clarifying,
+Guillaume
+
+2009/2/1 Marcus Meissner <marcus at jet.franken.de>
+
+> On Sun, Feb 01, 2009 at 10:41:25AM +0100, Guillaume SH wrote:
+>
+> > Hi Paul,
+> >
+> > You asked me to actually describe the security I am concerned about, so I
+> am
+> > going for it :
+> >
+> > Imagine an ill-intentioned people, call it the attackers. By the mean of
+> > simply creating the following C application (based on classical "Hello
+> > word") :
+> >
+> >
+> > #include needed header
+> >
+> > int main (int argc, char * argv[])
+> > {
+> >     /* printf ( "Hello world!" ); */
+> >     GetOverlappedResult(0, NULL, NULL, FALSE);
+> >
+> >     return EXIT_SUCCESS;
+> > }
+> >
+> >
+> > Running this application on wine, I get to have my crash, with the
+> > possibility of an exploit. So all I have to do know is to find a vector
+> to
+> > make you and some other people willing to run my application.
+> >
+> > I won't describe in detail the way to perform the exploit as :
+> >       1 - I don't know how to proceed and I don't want to
+> >       2 - It would be showing poor sense of responsibilities
+>
+> If you can run an application ... it already can do everything!
+>
+> No need to protect APIs against misuse, they run at the same privilege
+> level as your code.
+>
+> Ciao, Marcus
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090201/b1272560/attachment-0001.htm 
+
+From Paul.Hampson at Pobox.com  Sun Feb  1 05:00:01 2009
+From: Paul.Hampson at Pobox.com (Paul TBBle Hampson)
+Date: Sun, 1 Feb 2009 22:00:01 +1100
+Subject: A basic implementation for increased security in wine proposal
+In-Reply-To: <a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+	<a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+Message-ID: <20090201110001.GA20394@keitarou.watson.bubblesworth.net>
+
+On Sun, Feb 01, 2009 at 10:41:25AM +0100, Guillaume SH wrote:
+> Imagine an ill-intentioned people, call it the attackers. By the mean of
+> simply creating the following C application (based on classical "Hello
+> word") :
+
+> #include needed header
+
+> int main (int argc, char * argv[])
+> {
+>     /* printf ( "Hello world!" ); */
+>     GetOverlappedResult(0, NULL, NULL, FALSE);
+
+>     return EXIT_SUCCESS;
+
+> Running this application on wine, I get to have my crash, with the
+> possibility of an exploit.
+
+A crash isn't magically a possibility of an exploit. Certain types of
+crashes (eg. user-supplied buffer overruns that hammer the return
+address on the stack) are vectors for security issues. Dereferencing a
+NULL isn't, off the top of my head.
+
+A better exploit than GetOverlappedResult(0, NULL, NULL, FALSE) at that
+point is prolly to just do whatever your exploit's payload was going to
+be.
+
+> I won't describe in detail the way to perform the exploit as :
+>       1 - I don't know how to proceed and I don't want to
+>       2 - It would be showing poor sense of responsibilities
+
+So you don't actually know what the exploit is you're trying to get us
+to break from the Win32 API to avoid, and you specifically refuse to
+describe it further?
+
+-- 
+-----------------------------------------------------------
+Paul "TBBle" Hampson, B.Sc, LPI, MCSE
+Very-later-year Asian Studies student, ANU
+The Boss, Bubblesworth Pty Ltd (ABN: 51 095 284 361)
+Paul.Hampson at Pobox.com
+
+Of course Pacman didn't influence us as kids. If it did,
+we'd be running around in darkened rooms, popping pills and
+listening to repetitive music.
+ -- Kristian Wilson, Nintendo, Inc, 1989
+
+License: http://creativecommons.org/licenses/by/2.5/au/
+-----------------------------------------------------------
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090201/41632972/attachment.pgp 
+
+From lkcl at lkcl.net  Sun Feb  1 05:27:35 2009
+From: lkcl at lkcl.net (Luke Kenneth Casson Leighton)
+Date: Sun, 1 Feb 2009 11:27:35 +0000
+Subject: [patch] review requested - NamedPipe Message mode (was Reliable 
+	Datagram / Stream behaviour of NT Pipes)
+In-Reply-To: <87d4e2zeqw.fsf@wine.dyndns.org>
+References: <ced5f0f60901311332h39fce1fkc561f1ccd6bd3797@mail.gmail.com>
+	<ced5f0f60901311334u5a2f0f8bt1e33dddc44b7de97@mail.gmail.com>
+	<87pri3ywqa.fsf@wine.dyndns.org>
+	<ced5f0f60902010005m28d9606er56127e7b646e9f55@mail.gmail.com>
+	<87d4e2zeqw.fsf@wine.dyndns.org>
+Message-ID: <ced5f0f60902010327t587d40f3i6281838521646b20@mail.gmail.com>
+
+On Sun, Feb 1, 2009 at 9:29 AM, Alexandre Julliard <julliard at winehq.org> wrote:
+> Luke Kenneth Casson Leighton <lkcl at lkcl.net> writes:
+>
+>>> You can't do that stuff on the client side. You either have to do all
+>>> pipe I/O in the server, or add named pipe support in the kernel. The
+>>> latter is harder, but would be much more useful.
+>>
+>>  well, not entirely knowing the difference, i'm guessing that i'm
+>> adding named pipe support in the kernel.  starting from
+>> SetNamedPipeHandleState and going from there.
+>
+> I mean the Linux kernel.
+
+ ohhh, ok.  yeah, you're right, it would be _incredibly_ useful to
+have message-moding / named-pipes in the linux kernel.  i do wonder
+though if the linux developers would actually appreciate its
+significance - it's "not uuunix", after all.  mind you, they _did_
+grok the change-notify stuff that was inspired by samba's
+requirements, so maybe.
+
+... but anyway, i'll leave that one to you [dear wine developers] to
+deal with, as the main linux kernel developers have no respect for
+anything i say.  it'll have to come from you.  i'll help all i can in
+designing and reviewing such a feature, but the actual proposal - and
+liasing with the linux kernel developers - will have to come from you.
+
+also, for running wine on non-linux-based (or
+non-in-kernel-message-mode-supporting unixen) you'd still need
+"emulation" anyway.
+
+>>  comparing what i've got so far in the improvements to ReadFile,
+>> WriteFile, NtFsControlIo etc. with the way that it is believed that
+>> this _should_ be done, what is right and what is wrong?
+>
+> It's all wrong, because this can't be done on the client side (kernel32
+> and ntdll are the client side, as opposed to the wineserver side).
+
+ ok, understood.
+
+> The
+> client side is the equivalent of user space, with the wineserver being
+> the equivalent of kernel space. You can't do this stuff in user space
+> (hint: concurrency).
+
+ lemme think about that, see if i can write a multi-process or
+multi-threaded test that makes what i've got here blow up.  any help
+there greatly appreciated. multiple connections to named pipes are ...
+a bit... odd!  the designers forgot to add in the equivalent of
+listen(), accept() and friends.
+
+ question: the existing code just uses server_get_unix_fd() followed
+by read-and-write on the underlying unix domain socket / unix-pipe
+(whatever).  obviously, to emulate message-mode, a read is now
+potentially _two_ read operations: one of 4 bytes to get the
+length-field, and the other read(s) will get the data.
+
+i take it that you're concerned that there will be a race condition
+where two threads reading from the same handle might do _two_ 4-byte
+reads, one correct and the other reading "data" as if it was a
+length-field?
+
+so, adding server_named_pipe_read() avoids this issue by doing locking
+(like server_get_unix_fd()) does, i see)
+
+well... you see... there could well be a problem with the existing
+code, on concurrency, because reads and writes can be broken down into
+unix-specific default buffer-reading/writing sizes (both read and
+write do a for (;;) { ... read/write } loop
+
+ oh - update: http://bugs.winehq.org/attachment.cgi?id=19145
+
+ this one passes all three tests.
+
+the rather unfortunate thing is: it has knock-on ramifications for any
+code *inside* wine that uses NamedPipes, relies on
+SetNamedPipeHandleState() working correctly!
+
+so, although the tests are passed, the bigger "test" - running wine -
+it's a bit... mair :)  how the heck does wine work _without_
+messagemode on named pipes, anyway??  surely there's something keeling
+over, somewhere.
+
+which brings me on to another quite important question: are there any
+work-arounds that have been added into rpcrt4 or any other location
+which says "yes i do messagemode" and then goes "but actually, we know
+it doesn't work so we do xyz instead"?
+
+btw, i'm dead impressed with the state of the functionality of svcctl,
+and its idl file.  if you've got svcctl working over ncacn_np then
+that's a _really_ good sign that the MSRPC interoperability is up to
+scratch (svcctl has those looovely variable-sized extensible
+structs...) - and a damn good indication that you stand a really good
+chance of being able to make this "networked", replacing the
+stub-services in samba (the ones that i kept getting told "have no
+meaning" to a unix system).  in combination with the break-out
+mechanism in samba, you will _finally_ be able to run "true" nt
+services.
+
+that'd be absolutely... wild.
+
+you'll still need to use the built-in \\pipe\netlogon, \\pipe\lsarpc
+and \\pipe\netlogon, for the time being, and if ... oh.  i'm sure i've
+got a netlogon.idl and a samr.idl file somewhere, reverse-engineered.
+but hey, you can always get the samba ones... _if_ they've put them
+under an appropriate license.  if not, let me know, i'm sure i can
+find something somewhere.
+
+http://library.pantek.com/Applications/Samba/mirror/unpacked/samba_3_X_test/source/librpc/idl/winreg.idl
+
+oh.  winreg.  i see winreg is still a .h file not a .idl file. piityyy
+:)  it'd just be absolute icing on the cake to be able to have
+/usr/local/bin/wine regedit.exe \\remotentboxsomewhere actually _do_
+something :)
+
+l.
+
+
+From gsh.debianlists at gmail.com  Sun Feb  1 06:23:49 2009
+From: gsh.debianlists at gmail.com (Guillaume SH)
+Date: Sun, 1 Feb 2009 13:23:49 +0100
+Subject: A basic implementation for increased security in wine proposal
+In-Reply-To: <20090201110001.GA20394@keitarou.watson.bubblesworth.net>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+	<a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+	<20090201110001.GA20394@keitarou.watson.bubblesworth.net>
+Message-ID: <a4d9687f0902010423t4113f4e0l9a706d320264579a@mail.gmail.com>
+
+Paul,
+
+Basically, yes I don't know what the exploit is (there's no magic in there :
+possibility for an exploit is enough to justify action). But I don't ask for
+an API breakage, I propose wine to support two modes : one with API misuse
+checks and one strictly the same behaviour as Windows.
+
+This leave the choice for users to use wine on the safe side or on the less
+safe side.
+
+As I already answered to Marcus, I will go for some reflexion/documentation
+on the subject,
+Guillaume
+
+2009/2/1 Paul TBBle Hampson <Paul.Hampson at pobox.com>
+
+> On Sun, Feb 01, 2009 at 10:41:25AM +0100, Guillaume SH wrote:
+> > Imagine an ill-intentioned people, call it the attackers. By the mean of
+> > simply creating the following C application (based on classical "Hello
+> > word") :
+>
+> > #include needed header
+>
+> > int main (int argc, char * argv[])
+> > {
+> >     /* printf ( "Hello world!" ); */
+> >     GetOverlappedResult(0, NULL, NULL, FALSE);
+>
+> >     return EXIT_SUCCESS;
+>
+> > Running this application on wine, I get to have my crash, with the
+> > possibility of an exploit.
+>
+> A crash isn't magically a possibility of an exploit. Certain types of
+> crashes (eg. user-supplied buffer overruns that hammer the return
+> address on the stack) are vectors for security issues. Dereferencing a
+> NULL isn't, off the top of my head.
+>
+> A better exploit than GetOverlappedResult(0, NULL, NULL, FALSE) at that
+> point is prolly to just do whatever your exploit's payload was going to
+> be.
+>
+> > I won't describe in detail the way to perform the exploit as :
+> >       1 - I don't know how to proceed and I don't want to
+> >       2 - It would be showing poor sense of responsibilities
+>
+> So you don't actually know what the exploit is you're trying to get us
+> to break from the Win32 API to avoid, and you specifically refuse to
+> describe it further?
+>
+> --
+> -----------------------------------------------------------
+> Paul "TBBle" Hampson, B.Sc, LPI, MCSE
+> Very-later-year Asian Studies student, ANU
+> The Boss, Bubblesworth Pty Ltd (ABN: 51 095 284 361)
+> Paul.Hampson at Pobox.com
+>
+> Of course Pacman didn't influence us as kids. If it did,
+> we'd be running around in darkened rooms, popping pills and
+> listening to repetitive music.
+>  -- Kristian Wilson, Nintendo, Inc, 1989
+>
+> License: http://creativecommons.org/licenses/by/2.5/au/
+> -----------------------------------------------------------
+>
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090201/82afcb0c/attachment.htm 
+
+From tony.wasserka at freenet.de  Sun Feb  1 07:45:06 2009
+From: tony.wasserka at freenet.de (Tony Wasserka)
+Date: Sun, 01 Feb 2009 14:45:06 +0100
+Subject: BOOL WINAPI versus BOOL in d3dx9 and d3dx8
+Message-ID: <4985A762.6080005@freenet.de>
+
+> Hi,
+>
+> the declaration of IntersectionTri is
+> BOOL IntersectionTri(.....) in d3dx8mesh.h and 
+> BOOL WINAPI? IntersectionTri(.....) in d3dx9mesh.h .
+> 
+> Is the latter one compatible with the former one (so I can forward d3dx9 function to the d3dx8 one)
+> or must I implement them separately?
+> 
+> David
+
+It's already forwarded in d3dx9_36.spec to d3dx8, so you don't need to implement it twice.
+I was pretty careful when creating that specfile, i.e. it's in 99% safe to trust it ;)
+
+As a rule of thumb, every d3dx9 function which has no device (or any other D3D9 specific interface) parameter
+and has the exact same parameter list can safely be forwarded to d3dx8.
+
+However, are you sure it's only BOOL in d3dx8? AFAIK, dll functions always have to be WINAPI,
+as the calling convention gets screwed up otherwise...
+
+Best regards, Tony
+
+
+
+
+From twickline at gmail.com  Sun Feb  1 06:53:42 2009
+From: twickline at gmail.com (Tom Wickline)
+Date: Sun, 1 Feb 2009 20:53:42 +0800
+Subject: deb packages archive down?
+Message-ID: <53e3a9930902010453yf26950cye367fc93eca5e7ae@mail.gmail.com>
+
+Hello,
+
+I have been trying to access the Wine deb archives for about
+six hours now and Ive been receiving a "connection to the server was reset"
+error. I'm not sure how long this has been the case but can the maintainer
+of the archive please look into this failure?
+
+http://wine.budgetdedicated.com/archive/index.html
+
+Cheers,
+
+Tom
+
+-- 
+http://www.wine-reviews.net/
+http://bordeauxgroup.com/
+
+
+From plr.vincent at gmail.com  Sun Feb  1 07:02:31 2009
+From: plr.vincent at gmail.com (Vincent Pelletier)
+Date: Sun, 1 Feb 2009 14:02:31 +0100
+Subject: dinput: Move gain support from effect to device
+In-Reply-To: <49825ECA.4040308@kievinfo.com>
+References: <200901292127.29631.plr.vincent@gmail.com>
+	<49825ECA.4040308@kievinfo.com>
+Message-ID: <200902011402.32065.plr.vincent@gmail.com>
+
+Le Friday 30 January 2009 02:58:34 Vitaliy Margolen, vous avez ?crit?:
+> First why do you typecase DWORD to (int) to assign to DWORD? Second DWORD
+> will always be > 0. If you want to check it against limit then just check
+> it being <= 10000 otherwise return error.
+[...]
+> You should use MulDiv instead because this can be optimized out by compiler
+> into something that won't be as accurate.
+
+I store internaly as a DWORD because of those accuracy problems.
+Thanks for pointing out this function, attached patch is now more homogeneous 
+with existing code, and does not do any casting magic.
+
+> You should be checking This->base.acquired instead of fd.
+
+Right, fixed.
+
+Also fixed in test:
+- test vs. message incoherent
+- typo in test message
+
+-- 
+Vincent Pelletier
+-------------- next part --------------
+From f7be6c024d7e888e5abc4a52100abd15ff16ff3e Mon Sep 17 00:00:00 2001
+From: Vincent Pelletier <plr.vincent at gmail.com>
+Date: Thu, 29 Jan 2009 21:26:30 +0100
+Subject: Add support for device gain.
+ Remove support for effect gain, since it incorrectly used device gain,
+ and there is no effect gain available on Linux.
+ Add test for device gain.
+
+---
+ dlls/dinput/effect_linuxinput.c   |   10 ++----
+ dlls/dinput/joystick_linuxinput.c |   37 +++++++++++++++++++++--
+ dlls/dinput/tests/joystick.c      |   60 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 97 insertions(+), 10 deletions(-)
+
+diff --git a/dlls/dinput/effect_linuxinput.c b/dlls/dinput/effect_linuxinput.c
+index 155d800..b309af9 100644
+--- a/dlls/dinput/effect_linuxinput.c
++++ b/dlls/dinput/effect_linuxinput.c
+@@ -512,12 +512,6 @@ static HRESULT WINAPI LinuxInputEffectImpl_Start(
+     }
+ 
+     event.type = EV_FF;
+-
+-    event.code = FF_GAIN;
+-    event.value = This->gain;
+-    if (write(*(This->fd), &event, sizeof(event)) == -1)
+-	FIXME("Failed setting gain. Error: %d \"%s\".\n", errno, strerror(errno));
+-
+     event.code = This->effect.id;
+     event.value = dwIterations;
+     if (write(*(This->fd), &event, sizeof(event)) == -1) {
+@@ -627,8 +621,10 @@ static HRESULT WINAPI LinuxInputEffectImpl_SetParameters(
+ 
+     /* Gain and Sample Period settings are not supported by the linux
+      * event system */
+-    if (dwFlags & DIEP_GAIN)
++    if (dwFlags & DIEP_GAIN) {
+ 	This->gain = 0xFFFF * peff->dwGain / 10000;
++	TRACE("Effect gain requested but no effect gain functionality present.\n");
++    }
+ 
+     if (dwFlags & DIEP_SAMPLEPERIOD)
+ 	TRACE("Sample period requested but no sample period functionality present.\n");
+diff --git a/dlls/dinput/joystick_linuxinput.c b/dlls/dinput/joystick_linuxinput.c
+index e1b92f7..c24ade9 100644
+--- a/dlls/dinput/joystick_linuxinput.c
++++ b/dlls/dinput/joystick_linuxinput.c
+@@ -194,6 +194,7 @@ struct JoystickImpl
+         struct list                     ff_effects;
+ 	int				ff_state;
+ 	int				ff_autocenter;
++	int				ff_gain;
+ };
+ 
+ static void fake_current_js_state(JoystickImpl *ji);
+@@ -461,6 +462,7 @@ static JoystickImpl *alloc_device(REFGUID rguid, const void *jvt, IDirectInputIm
+        Instead, track it with ff_autocenter, and assume it's initialy
+        enabled. */
+     newDevice->ff_autocenter = 1;
++    newDevice->ff_gain = 0xFFFF;
+     InitializeCriticalSection(&newDevice->base.crit);
+     newDevice->base.crit.DebugInfo->Spare[0] = (DWORD_PTR)(__FILE__ ": JoystickImpl*->base.crit");
+ 
+@@ -670,12 +672,16 @@ static HRESULT WINAPI JoystickAImpl_Acquire(LPDIRECTINPUTDEVICE8A iface)
+     }
+     else
+     {
++        struct input_event event;
++
++        event.type = EV_FF;
++        event.code = FF_GAIN;
++        event.value = This->ff_gain;
++        if (write(This->joyfd, &event, sizeof(event)) == -1)
++            ERR("Failed to set gain (%i): %d %s\n", This->ff_gain, errno, strerror(errno));
+         if (!This->ff_autocenter)
+         {
+-            struct input_event event;
+-
+             /* Disable autocenter. */
+-            event.type = EV_FF;
+             event.code = FF_AUTOCENTER;
+             event.value = 0;
+             if (write(This->joyfd, &event, sizeof(event)) == -1)
+@@ -974,6 +980,23 @@ static HRESULT WINAPI JoystickAImpl_SetProperty(LPDIRECTINPUTDEVICE8A iface,
+       fake_current_js_state(This);
+       break;
+     }
++    case (DWORD_PTR)DIPROP_FFGAIN: {
++      LPCDIPROPDWORD pd = (LPCDIPROPDWORD)ph;
++
++      TRACE("DIPROP_FFGAIN(%d)\n", pd->dwData);
++      This->ff_gain = MulDiv(pd->dwData, 0xFFFF, 10000);
++      if (This->base.acquired) {
++        /* Update immediately. */
++        struct input_event event;
++
++        event.type = EV_FF;
++        event.code = FF_GAIN;
++        event.value = This->ff_gain;
++        if (write(This->joyfd, &event, sizeof(event)) == -1)
++          ERR("Failed to set gain (%i): %d %s\n", This->ff_gain, errno, strerror(errno));
++      }
++      break;
++    }
+     default:
+       return IDirectInputDevice2AImpl_SetProperty(iface, rguid, ph);
+     }
+@@ -1085,6 +1108,14 @@ static HRESULT WINAPI JoystickAImpl_GetProperty(LPDIRECTINPUTDEVICE8A iface,
+         TRACE("autocenter(%d)\n", pd->dwData);
+         break;
+     }
++    case (DWORD_PTR) DIPROP_FFGAIN:
++    {
++        LPDIPROPDWORD pd = (LPDIPROPDWORD)pdiph;
++
++        pd->dwData = MulDiv(This->ff_gain, 10000, 0xFFFF);
++        TRACE("DIPROP_FFGAIN(%d)\n", pd->dwData);
++        break;
++    }
+ 
+     default:
+         return IDirectInputDevice2AImpl_GetProperty(iface, rguid, pdiph);
+diff --git a/dlls/dinput/tests/joystick.c b/dlls/dinput/tests/joystick.c
+index 371f7ee..944dbb1 100644
+--- a/dlls/dinput/tests/joystick.c
++++ b/dlls/dinput/tests/joystick.c
+@@ -330,6 +330,7 @@ static BOOL CALLBACK EnumJoysticks(
+         LONG cnt1, cnt2;
+         HWND real_hWnd;
+         HINSTANCE hInstance = GetModuleHandle(NULL);
++        DIPROPDWORD dip_gain_set, dip_gain_get;
+ 
+         trace("Testing force-feedback\n");
+         memset(&eff, 0, sizeof(eff));
+@@ -486,6 +487,65 @@ static BOOL CALLBACK EnumJoysticks(
+             ok(hr==DI_OK,"IDirectInputDevice_Acquire() failed: %08x\n", hr);
+             hr = IDirectInputDevice2_GetProperty(pJoystick, DIPROP_AUTOCENTER, &diprop_word.diph);
+ 
++            /* Device gain (DIPROP_FFGAIN).
++             * From MSDN:
++             *  0..10000 range, otherwise DIERR_INVALIDPARAM.
++             *  Can be changed even if device is acquired.
++             * Difference found by tests:
++             *  <0 is refused, >10000 is accepted
++             */
++            dip_gain_set.diph.dwSize       = sizeof(DIPROPDWORD);
++            dip_gain_set.diph.dwHeaderSize = sizeof(DIPROPHEADER);
++            dip_gain_set.diph.dwObj        = 0;
++            dip_gain_set.diph.dwHow        = DIPH_DEVICE;
++            dip_gain_set.dwData            = 10000;
++            dip_gain_get.diph.dwSize       = sizeof(DIPROPDWORD);
++            dip_gain_get.diph.dwHeaderSize = sizeof(DIPROPHEADER);
++            dip_gain_get.diph.dwObj        = 0;
++            dip_gain_get.diph.dwHow        = DIPH_DEVICE;
++            dip_gain_get.dwData            = 0;
++
++            /* Test device is acquisition (non)impact. */
++            hr = IDirectInputDevice_Unacquire(pJoystick);
++            ok(hr == DI_OK, "IDirectInputDevice_Unacquire() should have returned S_FALSE, got: %08x\n", hr);
++            dip_gain_set.dwData = 1;
++            hr = IDirectInputDevice_SetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_set.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_SetProperty() failed: %08x\n", hr);
++            hr = IDirectInputDevice_GetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_get.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_GetProperty() failed: %08x\n", hr);
++            ok(dip_gain_get.dwData==dip_gain_set.dwData, "Gain not udated: %i\n", dip_gain_get.dwData);
++            hr = IDirectInputDevice_Acquire(pJoystick);
++            ok(hr==DI_OK,"IDirectInputDevice_Acquire() failed: %08x\n", hr);
++            dip_gain_set.dwData = 2;
++            hr = IDirectInputDevice_SetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_set.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_SetProperty() failed: %08x\n", hr);
++            hr = IDirectInputDevice_GetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_get.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_GetProperty() failed: %08x\n", hr);
++            ok(dip_gain_get.dwData==dip_gain_set.dwData, "Gain not udated: %i\n", dip_gain_get.dwData);
++            /* Test range and internal clamping. */
++            dip_gain_set.dwData = -1;
++            hr = IDirectInputDevice_SetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_set.diph);
++            todo_wine ok(hr==DIERR_INVALIDPARAM, "IDirectInputDevice_SetProperty() should have returned %08x: %08x\n", DIERR_INVALIDPARAM, hr);
++            dip_gain_set.dwData = 0;
++            hr = IDirectInputDevice_SetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_set.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_SetProperty() failed: %08x\n", hr);
++            hr = IDirectInputDevice_GetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_get.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_GetProperty() failed: %08x\n", hr);
++            ok(dip_gain_get.dwData==dip_gain_set.dwData, "Gain not updated: %i\n", dip_gain_get.dwData);
++            dip_gain_set.dwData = 10000;
++            hr = IDirectInputDevice_SetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_set.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_SetProperty() failed: %08x\n", hr);
++            hr = IDirectInputDevice_GetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_get.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_GetProperty() failed: %08x\n", hr);
++            ok(dip_gain_get.dwData==dip_gain_set.dwData, "Gain not updated: %i\n", dip_gain_get.dwData);
++            /* WARNING: This call succeeds, on the contrary of what is stated on MSDN. */
++            dip_gain_set.dwData = 10001;
++            hr = IDirectInputDevice_SetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_set.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_SetProperty() failed: %08x\n", hr);
++            hr = IDirectInputDevice_GetProperty(pJoystick, DIPROP_FFGAIN, &dip_gain_get.diph);
++            ok(hr==DI_OK, "IDirectInputDevice_GetProperty() failed: %08x\n", hr);
++            ok(dip_gain_get.dwData==dip_gain_set.dwData, "Gain not updated: %i\n", dip_gain_get.dwData);
++
+             ref = IUnknown_Release(effect);
+             ok(ref == 0, "IDirectInputDevice_Release() reference count = %d\n", ref);
+         }
+-- 
+1.5.6.5
+
+
+From Paul.Hampson at Pobox.com  Sun Feb  1 07:10:41 2009
+From: Paul.Hampson at Pobox.com (Paul TBBle Hampson)
+Date: Mon, 2 Feb 2009 00:10:41 +1100
+Subject: A basic implementation for increased security in wine proposal
+In-Reply-To: <a4d9687f0902010423t4113f4e0l9a706d320264579a@mail.gmail.com>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<20090201091851.GA19423@keitarou.watson.bubblesworth.net>
+	<a4d9687f0902010141v48213601m5289f210c04b6e50@mail.gmail.com>
+	<20090201110001.GA20394@keitarou.watson.bubblesworth.net>
+	<a4d9687f0902010423t4113f4e0l9a706d320264579a@mail.gmail.com>
+Message-ID: <20090201131041.GA21466@keitarou.watson.bubblesworth.net>
+
+On Sun, Feb 01, 2009 at 01:23:49PM +0100, Guillaume SH wrote:
+> Basically, yes I don't know what the exploit is (there's no magic in there :
+> possibility for an exploit is enough to justify action).
+
+So without the magic, there's no demonstrated possibility for an
+exploit, so the justification goes away...
+
+Anyway, getting some unit tests written and committed is prolly your
+best way forward. Discussing behaviour is one thing, demonstrating that
+it's correct and sensible is another, more effective thing.
+
+The Wine test suite, as I understand it, is considered part of Wine's
+Win32 API documentation. And it's the place to demonstrate that a given
+behaviour is correct and consistent.
+
+-- 
+-----------------------------------------------------------
+Paul "TBBle" Hampson, B.Sc, LPI, MCSE
+Very-later-year Asian Studies student, ANU
+The Boss, Bubblesworth Pty Ltd (ABN: 51 095 284 361)
+Paul.Hampson at Pobox.com
+
+Of course Pacman didn't influence us as kids. If it did,
+we'd be running around in darkened rooms, popping pills and
+listening to repetitive music.
+ -- Kristian Wilson, Nintendo, Inc, 1989
+
+License: http://creativecommons.org/licenses/by/2.5/au/
+-----------------------------------------------------------
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090202/c8bc7600/attachment.pgp 
+
+From wine.dev at web.de  Sun Feb  1 08:25:43 2009
+From: wine.dev at web.de (Detlef Riekenberg)
+Date: Sun, 01 Feb 2009 15:25:43 +0100
+Subject: [PATCH] winspool.drv: Check return value of EnumPrintersA
+In-Reply-To: <1233495131.7909.35.camel@p4.lan>
+References: <1233495131.7909.35.camel@p4.lan>
+Message-ID: <1233498343.7909.76.camel@p4.lan>
+
+On Sa, 2009-01-31 at 11:09 +0100, Marcus Meissner wrote:
+> -    EnumPrintersA(PRINTER_ENUM_LOCAL, NULL, 5, NULL, 0, &needed,
+> &num);
+> -    if(needed) {
+> +    if (EnumPrintersA(PRINTER_ENUM_LOCAL, NULL, 5, NULL, 0, &needed,
+> &num) && needed) {
+
+EnumPrinterA must always update "needed".
+"nedded" is 0, when EnumPrintersA failed or when no printer is
+installed.
+
+Line 1555 has similar code
+
+
+-- 
+ 
+By by ... Detlef
+
+
+
+
+From marcus at jet.franken.de  Sun Feb  1 09:07:01 2009
+From: marcus at jet.franken.de (Marcus Meissner)
+Date: Sun, 1 Feb 2009 16:07:01 +0100
+Subject: [PATCH] winspool.drv: Check return value of EnumPrintersA
+In-Reply-To: <1233498343.7909.76.camel@p4.lan>
+References: <1233495131.7909.35.camel@p4.lan> <1233498343.7909.76.camel@p4.lan>
+Message-ID: <20090201150701.GC20479@galeere.jet.franken.de>
+
+On Sun, Feb 01, 2009 at 03:25:43PM +0100, Detlef Riekenberg wrote:
+> On Sa, 2009-01-31 at 11:09 +0100, Marcus Meissner wrote:
+> > -    EnumPrintersA(PRINTER_ENUM_LOCAL, NULL, 5, NULL, 0, &needed,
+> > &num);
+> > -    if(needed) {
+> > +    if (EnumPrintersA(PRINTER_ENUM_LOCAL, NULL, 5, NULL, 0, &needed,
+> > &num) && needed) {
+> 
+> EnumPrinterA must always update "needed".
+> "nedded" is 0, when EnumPrintersA failed or when no printer is
+> installed.
+> 
+> Line 1555 has similar code
+
+Hmm, yes. I see the initialization in WINSPOOL_EnumPrinters() now. :)
+
+Ciao, Marcus
+
+
+From pp at siedziba.pl  Sun Feb  1 09:54:34 2009
+From: pp at siedziba.pl (Piotr =?ISO-8859-2?Q?Paw=B3ow?=)
+Date: Sun, 01 Feb 2009 16:54:34 +0100
+Subject: [patch] review requested - NamedPipe Message mode (was Reliable
+	Datagram / Stream behaviour of NT Pipes)
+References: <ced5f0f60901311332h39fce1fkc561f1ccd6bd3797@mail.gmail.com>
+	<ced5f0f60901311334u5a2f0f8bt1e33dddc44b7de97@mail.gmail.com>
+	<87pri3ywqa.fsf@wine.dyndns.org>
+	<ced5f0f60902010005m28d9606er56127e7b646e9f55@mail.gmail.com>
+	<87d4e2zeqw.fsf@wine.dyndns.org>
+	<ced5f0f60902010327t587d40f3i6281838521646b20@mail.gmail.com>
+Message-ID: <gm4gjt$qkj$1@ger.gmane.org>
+
+Luke Kenneth Casson Leighton wrote:
+>  ohhh, ok.  yeah, you're right, it would be _incredibly_ useful to
+> have message-moding / named-pipes in the linux kernel.
+
+You may want to check the Longene project (former Linux Unified Kernel). 
+Maybe they already have it implemented in kernel.
+
+http://www.longene.org/en/index.php
+
+
+
+
+From dank at kegel.com  Sun Feb  1 10:54:25 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 1 Feb 2009 08:54:25 -0800
+Subject: wine.budgetdedicated.com down?
+Message-ID: <a71bd89a0902010854i1af9e62dua2918f637feb08c9@mail.gmail.com>
+
+I can't download debian wine packages from
+wine.budgetdedicated.com today...
+
+
+From bunglehead at gmail.com  Sun Feb  1 11:36:44 2009
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Sun, 01 Feb 2009 20:36:44 +0300
+Subject: [PATCH] kernel32: handle section=NULL in
+	WritePrivateProfileStructW (Coverity)
+In-Reply-To: <49857a16.1f2a400a.789c.ffff966bSMTPIN_ADDED@mx.google.com>
+References: <49857a16.1f2a400a.789c.ffff966bSMTPIN_ADDED@mx.google.com>
+Message-ID: <4985DDAC.2030108@gmail.com>
+
+Marcus Meissner wrote:
+> Hi,
+>
+> CID 69, section name NULL will just crash in the calls below and
+> without it we cannot work anyway. So return FALSE;
+>
+> Ciao, Marcus
+> ---
+>  dlls/kernel32/profile.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+>
+> diff --git a/dlls/kernel32/profile.c b/dlls/kernel32/profile.c
+> index 3c5ef1c..5dddc23 100644
+> --- a/dlls/kernel32/profile.c
+> +++ b/dlls/kernel32/profile.c
+> @@ -1799,6 +1799,8 @@ BOOL WINAPI WritePrivateProfileStructW (LPCWSTR section, LPCWSTR key,
+>  
+>      if (!section && !key && !buf)  /* flush the cache */
+>          return WritePrivateProfileStringW( NULL, NULL, NULL, filename );
+> +    if (!section)
+> +        return FALSE;
+>  
+>      /* allocate string buffer for hex chars + checksum hex char + '\0' */
+>      outstring = HeapAlloc( GetProcessHeap(), 0, (bufsize*2 + 2 + 1) * sizeof(WCHAR) );
+>   
+What about a test on this? Does native module crash or not?
+
+
+From dank at kegel.com  Sun Feb  1 11:48:01 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 1 Feb 2009 09:48:01 -0800
+Subject: Simple but awesome demos of Wine?
+Message-ID: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+
+I'm going to be giving a Wine presentation at
+Cebit next month.   You can see a draft of the
+presentation at
+http://kegel.com/wine/cebit2009/talk.html
+(I will say lots more than is written there; the
+slides are kept simple on purpose, with just
+the key idea in the caption.)
+
+A large part of the presentation
+will be demos of platium-rated apps.
+Can people suggest compelling apps to demo?
+Right now my list is kind of boring-sounding:
+  Framemaker 7
+  Kid Pix
+  gp-Untis
+  Photoshop cs2
+  Futuretax
+  Dreamweaver
+
+It'd be nice to also have some games, but I don't
+play enough to know which ones to pick.   I suspect
+online games are out, since I can't count on an
+internet connection.
+
+I'm tempted to write an autohotkey script to demo each
+app so I don't have to worry about fumbling mouse
+clicks while on stage.  The ability to script would be
+a nice demo itself.
+
+This show is a big opportunity for us to
+introduce Wine to a large audience, so
+any help here would be appreciated.
+
+
+From perrym3 at gmail.com  Sun Feb  1 12:32:39 2009
+From: perrym3 at gmail.com (Matt Perry)
+Date: Sun, 1 Feb 2009 10:32:39 -0800
+Subject: wine.budgetdedicated.com down?
+In-Reply-To: <a71bd89a0902010854i1af9e62dua2918f637feb08c9@mail.gmail.com>
+References: <a71bd89a0902010854i1af9e62dua2918f637feb08c9@mail.gmail.com>
+Message-ID: <46ae89fb0902011032x4332df85n70c419498357758f@mail.gmail.com>
+
+On Sun, Feb 1, 2009 at 8:54 AM, Dan Kegel <dank at kegel.com> wrote:
+> I can't download debian wine packages from
+> wine.budgetdedicated.com today...
+
+Would it be possible to host the Wine packages somewhere with higher
+availability?  Maybe at winehq.org, or apply for hosting at
+ibiblio.org or mirrors.kernel.org?
+
+
+From florian at fkoeberle.de  Sun Feb  1 13:05:37 2009
+From: florian at fkoeberle.de (=?ISO-8859-1?Q?Florian_K=F6berle?=)
+Date: Sun, 01 Feb 2009 20:05:37 +0100
+Subject: First complete test run passing on a Windows platform
+In-Reply-To: <458A911F732F4C088A9D077593912CF7@gsep1>
+References: <mailman.19172.1233293707.25122.wine-devel@winehq.org>	<D8FB6A3044A74053AAC1AA429B748540@gsep1>	<3f4fd2640901300105t6de2c849n73955639bda84bb0@mail.gmail.com>
+	<EE41F90F31024F3A99BBAE8101E2F6D5@gsep1>
+	<4982EB04.30802@fkoeberle.de>
+	<2C464EDC91274259B31837BD355DC2C7@gsep1>
+	<4982FBA0.1020901@fkoeberle.de>
+	<458A911F732F4C088A9D077593912CF7@gsep1>
+Message-ID: <4985F281.5050206@fkoeberle.de>
+
+Hello G?.
+
+I ran the test 30 times using the same way you did without any failure.
+I used a vm with 1 CPU assigned too. Installed is a Windows XP with SP2.
+
+If I start the test twice so that two tests are running parallel then I
+get test failures too, but:
+
+Do we really have the requirement that tests must be able to run in
+parallel?
+
+Best regards,
+Florian
+
+Ge van Geldorp wrote:
+> Florian,
+>
+>   
+>> From: Florian K?berle [mailto:florian at fkoeberle.de] 
+>> How many cores do your processor have?
+>> I have a dual core which might make the difference.
+>>     
+>
+> I ran inside a VM that had 1 CPU assigned, so single core.
+>
+>   
+>> How exactly do you execute the tests?
+>> I executed "../../../tools/runtest -q menu" about 20 times 
+>> without any failure.
+>>     
+>
+> I copied user32_crosstest.exe to C:\winetest, then created a small batch
+> file runtest.cmd:
+>
+> @echo off
+> cd \winetest
+> user32_crosstest menu
+> pause
+>
+> Put a shortcut to runtest.cmd on the desktop and then set the shortcut to
+> run Minimized (during my regular test runs the console is minimized too, so
+> I thought I'd mimic that as much as possible). Then double click the
+> shortcut, wait until the test is done, restore the console window and look
+> at the results. 
+>
+>   
+>> Did my patch reduce the number of failures?
+>> I am asking as I wonder, if I should send the patch anyway to 
+>> wine-patches or not.
+>>     
+>
+> It's hard to say because it doesn't reproduce consistently. My feeling is
+> that it doesn't reduce the number of failures, but no hard data to back that
+> up.
+>
+>   
+>> Does removing the Sleep(500) increase the fail rate?
+>> I tried to remove it but it had no effect for me at all.
+>>     
+>
+> No, I don't see an effect either.
+>
+> I've done some more experimenting and can get the problem to reproduce more
+> consistently (like 95% of the time instead of 25%) by launching my shortcut
+> twice (so I have two test runs going at the same time). Then both of the
+> runs will usually show problems.
+>
+> G?.
+>
+>
+>
+>   
+
+
+
+From shelnutt2 at gmail.com  Sun Feb  1 13:11:33 2009
+From: shelnutt2 at gmail.com (Seth Shelnutt)
+Date: Sun, 1 Feb 2009 14:11:33 -0500
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+
+Dan,
+
+As far as games go, off the top of my head there is WoW, and Guildwars.
+Battlefield 2/2142 both seem good choice. Counter Strike: Source and COD4
+are gold rated. Lastly Crysis is gold rated too. There is an issue with
+punkbuster but that only effects online play.
+
+3Dmark06 seems to work to some degree,
+http://appdb.winehq.org/objectManager.php?sClass=version&iId=13809 .
+
+Also it might be interesting to show off, how Wine works with CUDA,
+http://gpu2.twomurs.com/index.php?title=Main_Page . There are some emails on
+the mailing list back when I first started working on the wrapper. I think
+it shows just how advanced Wine is. Not only can it run a windows program
+but with a wrapper it transfers the calls from windows dll to linux .so to
+the GPU, with stellar performance.
+
+
+-Seth Shelnutt
+
+
+On Sun, Feb 1, 2009 at 12:48 PM, Dan Kegel <dank at kegel.com> wrote:
+
+> I'm going to be giving a Wine presentation at
+> Cebit next month.   You can see a draft of the
+> presentation at
+> http://kegel.com/wine/cebit2009/talk.html
+> (I will say lots more than is written there; the
+> slides are kept simple on purpose, with just
+> the key idea in the caption.)
+>
+> A large part of the presentation
+> will be demos of platium-rated apps.
+> Can people suggest compelling apps to demo?
+> Right now my list is kind of boring-sounding:
+>  Framemaker 7
+>  Kid Pix
+>  gp-Untis
+>  Photoshop cs2
+>  Futuretax
+>  Dreamweaver
+>
+> It'd be nice to also have some games, but I don't
+> play enough to know which ones to pick.   I suspect
+> online games are out, since I can't count on an
+> internet connection.
+>
+> I'm tempted to write an autohotkey script to demo each
+> app so I don't have to worry about fumbling mouse
+> clicks while on stage.  The ability to script would be
+> a nice demo itself.
+>
+> This show is a big opportunity for us to
+> introduce Wine to a large audience, so
+> any help here would be appreciated.
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090201/24351a93/attachment.htm 
+
+From c_korn at gmx.de  Sun Feb  1 13:16:35 2009
+From: c_korn at gmx.de (Christoph Korn)
+Date: Sun, 01 Feb 2009 20:16:35 +0100
+Subject: wine.budgetdedicated.com down?
+In-Reply-To: <46ae89fb0902011032x4332df85n70c419498357758f@mail.gmail.com>
+References: <a71bd89a0902010854i1af9e62dua2918f637feb08c9@mail.gmail.com>
+	<46ae89fb0902011032x4332df85n70c419498357758f@mail.gmail.com>
+Message-ID: <4985F513.5010408@gmx.de>
+
+The latest ubuntu packages are available here:
+https://launchpad.net/~ubuntu-wine/+archive/ppa
+
+Christoph Korn
+
+Matt Perry schrieb:
+> On Sun, Feb 1, 2009 at 8:54 AM, Dan Kegel <dank at kegel.com> wrote:
+>> I can't download debian wine packages from
+>> wine.budgetdedicated.com today...
+> 
+> Would it be possible to host the Wine packages somewhere with higher
+> availability?  Maybe at winehq.org, or apply for hosting at
+> ibiblio.org or mirrors.kernel.org?
+> 
+> 
+
+
+From kai.blin at gmail.com  Sun Feb  1 14:01:54 2009
+From: kai.blin at gmail.com (Kai Blin)
+Date: Sun, 1 Feb 2009 21:01:54 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+Message-ID: <200902012102.00928.kai.blin@gmail.com>
+
+On Sunday 01 February 2009 20:11:33 Seth Shelnutt wrote:
+> Dan,
+>
+> As far as games go, off the top of my head there is WoW, and Guildwars.
+> Battlefield 2/2142 both seem good choice. Counter Strike: Source and COD4
+> are gold rated. Lastly Crysis is gold rated too. There is an issue with
+> punkbuster but that only effects online play.
+
+You do need to take the German youth protection law into account, though. I'd 
+stay away from shooters, I guess.
+
+Cheers,
+Kai
+
+-- 
+Kai Blin
+WorldForge developer  http://www.worldforge.org/
+Wine developer        http://wiki.winehq.org/KaiBlin
+Samba team member     http://www.samba.org/samba/team/
+--
+Will code for cotton.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: This is a digitally signed message part.
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090201/443d8f88/attachment.pgp 
+
+From stefan at codeweavers.com  Sun Feb  1 14:31:34 2009
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Sun, 1 Feb 2009 21:31:34 +0100
+Subject: Fwd: A basic implementation for increased security in wine
+	proposal
+In-Reply-To: <a4d9687f0902010246v7a2446c7t1b911359a3c1f1a9@mail.gmail.com>
+References: <a4d9687f0902010011ne9e2a4cy956c1906a43e5141@mail.gmail.com>
+	<a4d9687f0902010241x2322b738w568f357003b2c63a@mail.gmail.com>
+	<a4d9687f0902010246v7a2446c7t1b911359a3c1f1a9@mail.gmail.com>
+Message-ID: <200902012131.34920.stefan@codeweavers.com>
+
+> I stand corrected, as it appears I was way too naive in my understanding of
+> software security, hence the example I provided.
+IMHO the whole discussion is moot.
+
+Any Windows app can easilly bypass *any* security measure in Wine by calling 
+int 0x80, and there's nothing we can do against that other than running 
+the .exe code in a real virtual machine(which would break the whole "Wine is 
+not an emulator" thing).
+
+And as Marcus pointed out, as soon as it is running it can already do 
+everything the Linux permission allow. It doesn't have to use broken API 
+calls to do bad things.
+
+A point where we have to take a look at security concerns is when we get data 
+from the application that is potentially from somewhere outside the app. E.g. 
+Half Life 2 loads MOTDs from servers which are HTML pages and passes them to 
+our HTML control. Or MS Paint opens a jpeg file and uses Win32 API functions 
+to parse it.
+
+Protecting Wine against the application won't work.  Protecting Wine(and the 
+application) against the application's data is what we have to do.
+
+
+From wine at eternaldusk.com  Sun Feb  1 14:33:02 2009
+From: wine at eternaldusk.com (Evil Jay)
+Date: Sun, 01 Feb 2009 14:33:02 -0600
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+Message-ID: <498606FE.8010207@eternaldusk.com>
+
+It's too bad you can't count on an internet Connection.  WoW and City of
+Heroes/Villains are two of the most impressive looking (and fast) games
+under Wine, IMHO.  Heck, even just the login screen for WoW might be a
+nice show - with the dracolich constantly landing/taking off while it's
+snowing.
+
+I wouldn't recommend Counter-Strike: Source.  It needs to be forced to
+DirectX8 mode to achieve a usable speed, and in that mode it looks
+pretty poor up next to what people are used seeing on the average
+Windows machine.
+
+Though boring to some, I think you made a good choice including
+DreamWeaver - as the native apps just haven't caught up, yet.
+
+-J
+
+
+
+Seth Shelnutt wrote:
+> Dan,
+>
+> As far as games go, off the top of my head there is WoW, and
+> Guildwars. Battlefield 2/2142 both seem good choice. Counter Strike:
+> Source and COD4 are gold rated. Lastly Crysis is gold rated too. There
+> is an issue with punkbuster but that only effects online play.
+>
+> 3Dmark06 seems to work to some degree,
+> http://appdb.winehq.org/objectManager.php?sClass=version&iId=13809
+> <http://appdb.winehq.org/objectManager.php?sClass=version&iId=13809> .
+>
+> Also it might be interesting to show off, how Wine works with CUDA,
+> http://gpu2.twomurs.com/index.php?title=Main_Page . There are some
+> emails on the mailing list back when I first started working on the
+> wrapper. I think it shows just how advanced Wine is. Not only can it
+> run a windows program but with a wrapper it transfers the calls from
+> windows dll to linux .so to the GPU, with stellar performance.
+>
+>
+> -Seth Shelnutt
+>
+>
+> On Sun, Feb 1, 2009 at 12:48 PM, Dan Kegel <dank at kegel.com
+> <mailto:dank at kegel.com>> wrote:
+>
+>     I'm going to be giving a Wine presentation at
+>     Cebit next month.   You can see a draft of the
+>     presentation at
+>     http://kegel.com/wine/cebit2009/talk.html
+>     (I will say lots more than is written there; the
+>     slides are kept simple on purpose, with just
+>     the key idea in the caption.)
+>
+>     A large part of the presentation
+>     will be demos of platium-rated apps.
+>     Can people suggest compelling apps to demo?
+>     Right now my list is kind of boring-sounding:
+>      Framemaker 7
+>      Kid Pix
+>      gp-Untis
+>      Photoshop cs2
+>      Futuretax
+>      Dreamweaver
+>
+>     It'd be nice to also have some games, but I don't
+>     play enough to know which ones to pick.   I suspect
+>     online games are out, since I can't count on an
+>     internet connection.
+>
+>     I'm tempted to write an autohotkey script to demo each
+>     app so I don't have to worry about fumbling mouse
+>     clicks while on stage.  The ability to script would be
+>     a nice demo itself.
+>
+>     This show is a big opportunity for us to
+>     introduce Wine to a large audience, so
+>     any help here would be appreciated.
+>
+>
+>
+> ------------------------------------------------------------------------
+>
+>
+>   
+
+
+
+From vit.hrachovy at sandbox.cz  Sun Feb  1 14:33:45 2009
+From: vit.hrachovy at sandbox.cz (=?ISO-8859-2?Q?V=EDt_Hrachov=FD?=)
+Date: Sun, 01 Feb 2009 21:33:45 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+Message-ID: <49860729.2060700@sandbox.cz>
+
+Hi Dan
+from top of my head -
+
+Heroes of Might and Magic III
+Wizardry 8
+Lord of the Rings: Battle for Middle-Earth 2
+
+all have free demo downloads and don't require net.
+
+I already had Heroes 3 Demo autohotkey script prepared for my 
+presentation about Windows GUI automation inside Unixes.
+
+Feel free to use it if it fits your needs, it's attached in mail.
+
+Cheers
+Hark
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: homam-3-example.ahk
+Url: http://www.winehq.org/pipermail/wine-devel/attachments/20090201/2e800509/attachment.txt 
+
+From madewokherd+8cd9 at gmail.com  Sun Feb  1 14:38:32 2009
+From: madewokherd+8cd9 at gmail.com (Vincent Povirk)
+Date: Sun, 1 Feb 2009 14:38:32 -0600
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <ced95fe0902011238v3d5d9b63l62bb9e3d8646448b@mail.gmail.com>
+
+I have to suggest Knytt:
+http://appdb.winehq.org/objectManager.php?sClass=version&iId=6849
+
+It's a simple 2d platformer. While it's not impressive in the sense of
+"look at all the amazing stuff wine must be doing for this to work",
+it's a thing that you can just download and run (with any version of
+wine since 1.0). Unlike some other games, it should be immediately
+accessible to everyone. There's a nice tutorial you can run through in
+a minute or so.
+
+It was written using multimedia fusion, meaning a native port is
+impossible without a complete rewrite.
+
+Also, it looks and sounds really nice.
+
+Just, uh, don't press escape when it's in full screen mode.
+
+Vincent Povirk
+
+
+From msclrhd at googlemail.com  Sun Feb  1 14:42:53 2009
+From: msclrhd at googlemail.com (Reece Dunn)
+Date: Sun, 1 Feb 2009 20:42:53 +0000
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <200902012102.00928.kai.blin@gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+	<200902012102.00928.kai.blin@gmail.com>
+Message-ID: <3f4fd2640902011242l21913150h5a4f1ae6e0cc524a@mail.gmail.com>
+
+2009/2/1 Kai Blin <kai.blin at gmail.com>:
+> On Sunday 01 February 2009 20:11:33 Seth Shelnutt wrote:
+>> Dan,
+>>
+>> As far as games go, off the top of my head there is WoW, and Guildwars.
+>> Battlefield 2/2142 both seem good choice. Counter Strike: Source and COD4
+>> are gold rated. Lastly Crysis is gold rated too. There is an issue with
+>> punkbuster but that only effects online play.
+>
+> You do need to take the German youth protection law into account, though. I'd
+> stay away from shooters, I guess.
+
+A lot of the Casual games work (e.g. from Oberon Media and PopCap
+Games) such as Westward III, Chuzzle, Bejeweled 2 and Peggle, but then
+again a lot don't :( - the AppDB has an entry for them.
+
+With WoW I spent my free game period downloading the ~8 GB worth of
+data :(! The other Blizzard titles (Diablo 2, StarCraft and its
+expansion, Warcraft 3 Reign of Chaos and The Frozen Throne expansion
+[1]) work.
+
+Other than that, Cepstral SwiftTalker (a text to speech program, with
+various voices) works flawlessly (if you disable pulseaudio; with
+pulseaudio it can lock up if you stop then play some text). But then
+they also have a (command line) Linux version.
+
+[1] I have had it crash sometimes between levels, but haven't had the
+time to track this down or try the Warcraft 3 save race condition game
+patch.
+
+- Reece
+
+
+From vit.hrachovy at sandbox.cz  Sun Feb  1 14:43:26 2009
+From: vit.hrachovy at sandbox.cz (=?ISO-8859-2?Q?V=EDt_Hrachov=FD?=)
+Date: Sun, 01 Feb 2009 21:43:26 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <49860729.2060700@sandbox.cz>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>	<6fc03d800902011111p3d4293b9n27fbd000400f41c@mail.gmail.com>
+	<49860729.2060700@sandbox.cz>
+Message-ID: <4986096E.7020403@sandbox.cz>
+
+Hiya,
+I've forgotten to add that .ahk script was designed to run with Wine 
+Virtual Desktop Emulation enabled, not in full screen.
+Cheers
+Hark
+
+
+V?t Hrachov? wrote:
+> Hi Dan
+> from top of my head -
+> 
+> Heroes of Might and Magic III
+> Wizardry 8
+> Lord of the Rings: Battle for Middle-Earth 2
+> 
+> all have free demo downloads and don't require net.
+> 
+> I already had Heroes 3 Demo autohotkey script prepared for my 
+> presentation about Windows GUI automation inside Unixes.
+> 
+> Feel free to use it if it fits your needs, it's attached in mail.
+> 
+> Cheers
+> Hark
+
+
+From marcus at jet.franken.de  Sun Feb  1 14:44:00 2009
+From: marcus at jet.franken.de (Marcus Meissner)
+Date: Sun, 1 Feb 2009 21:44:00 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <20090201204400.GE20479@galeere.jet.franken.de>
+
+On Sun, Feb 01, 2009 at 09:48:01AM -0800, Dan Kegel wrote:
+> I'm going to be giving a Wine presentation at
+> Cebit next month.   You can see a draft of the
+> presentation at
+> http://kegel.com/wine/cebit2009/talk.html
+> (I will say lots more than is written there; the
+> slides are kept simple on purpose, with just
+> the key idea in the caption.)
+> 
+> A large part of the presentation
+> will be demos of platium-rated apps.
+> Can people suggest compelling apps to demo?
+> Right now my list is kind of boring-sounding:
+>   Framemaker 7
+>   Kid Pix
+>   gp-Untis
+>   Photoshop cs2
+>   Futuretax
+>   Dreamweaver
+> 
+> It'd be nice to also have some games, but I don't
+> play enough to know which ones to pick.   I suspect
+> online games are out, since I can't count on an
+> internet connection.
+
+For games at least a NVIDIA or ATI card is required, so
+make sure the Laptop has one.
+
+My shiny Lenovo X61 just has Intel graphics which makes
+Wine demos difficult :(
+
+
+Btw, I will talk about Wine on FOSDEM 2009 next weekend
+in Brussel, in the openSUSE devroom.
+
+Ciao, Marcus
+
+
+From jerome.gardou at gmail.com  Sun Feb  1 15:02:15 2009
+From: jerome.gardou at gmail.com (=?ISO-8859-1?Q?J=E9r=F4me_Gardou?=)
+Date: Sun, 01 Feb 2009 22:02:15 +0100
+Subject: performance issue when OffscreenRenderingMode = "pbuffer"
+In-Reply-To: <497C7398.5010202@laposte.net>
+References: <497BC38E.4010505@laposte.net>
+	<20090125102856.267950@gmx.net>	<497C53CD.9010803@laposte.net>
+	<20090125130755.82830@gmx.net> <497C7398.5010202@laposte.net>
+Message-ID: <49860DD7.5090909@laposte.net>
+
+The patch was sent, but not accepted. Does anyone have a clue about it?
+
+http://www.winehq.org/pipermail/wine-patches/2009-January/068339.html
+
+
+From jerome.gardou at gmail.com  Sun Feb  1 15:19:26 2009
+From: jerome.gardou at gmail.com (=?ISO-8859-1?Q?J=E9r=F4me_Gardou?=)
+Date: Sun, 01 Feb 2009 22:19:26 +0100
+Subject: wined3d and winex11 hand in hand...
+Message-ID: <498611DE.4030501@laposte.net>
+
+Quite oddly enough, wined3d and winex11 don't communicate with each 
+other at all (well, wined3d uses WGL in gdi32, and gdi32 is based on 
+winex11), and this leads to problems which are tricky to resolve... For 
+instance, when a d3d application wants to disable screensavers, there is 
+no way to do this through the windows api, but xlib provides 
+XSetScreenSaver which is axactly what we need there.
+
+Would it be a good way to do this, as in user32 and gdi32, to create a 
+driver structure holding each function pointer we would need, and 
+forward them to stub if unavailable?
+
+
+From lkcl at lkcl.net  Sun Feb  1 16:37:55 2009
+From: lkcl at lkcl.net (Luke Kenneth Casson Leighton)
+Date: Sun, 1 Feb 2009 22:37:55 +0000
+Subject: [patch] review requested - NamedPipe Message mode (was Reliable 
+	Datagram / Stream behaviour of NT Pipes)
+In-Reply-To: <ced5f0f60902010327t587d40f3i6281838521646b20@mail.gmail.com>
+References: <ced5f0f60901311332h39fce1fkc561f1ccd6bd3797@mail.gmail.com>
+	<ced5f0f60901311334u5a2f0f8bt1e33dddc44b7de97@mail.gmail.com>
+	<87pri3ywqa.fsf@wine.dyndns.org>
+	<ced5f0f60902010005m28d9606er56127e7b646e9f55@mail.gmail.com>
+	<87d4e2zeqw.fsf@wine.dyndns.org>
+	<ced5f0f60902010327t587d40f3i6281838521646b20@mail.gmail.com>
+Message-ID: <ced5f0f60902011437h2aab3da0g9cb6a1be147ee93@mail.gmail.com>
+
+> so, adding server_named_pipe_read() avoids this issue by doing locking
+> (like server_get_unix_fd()) does, i see)
+
+ $ git commit -a -m '#17185 - server-based read_named_pipe.  does
+blocking in client and non-blocking reads (using recv MSG_PEEK) in the
+server. messy as hell.'
+
+says it all, really :)   bit of a marathon session that one.
+break-time.  more in a couple of days.  anyone want to take over,
+email me, you can have what i've got so far.  blocking checks
+client-side (using select) are made on the unix-pipe fd to ensure that
+there's _actually_ data that wineserver can get at.  after reading the
+message-length (done only once per message duh),  read() is replaced
+by server_named_pipe_read() - still in the for (;;;) loop.
+
+alexandre, would it be reasonable to put a CriticalSection around the
+[optional message-length-reading and] for-loop?  i really can't see
+any other way.  what i've done is protect the server from blocking on
+a read(), by making sure that recv(MSG_PEEK) - actually select() might
+be better - checks the length.  that means however that you still, in
+kernel32, in ReadFile(), still have to do the for() loop, but
+preceding each read by a blocking wait (i clear O_NONBLOCK and do an
+infinite/blocking select())
+
+it all screams "CriticalSection" protection - on a per-handle basis.
+
+anyone got any better ideas?  let me know, i'll come back to this in a
+couple of days.
+
+l.
+
+
+From pp at siedziba.pl  Sun Feb  1 17:01:38 2009
+From: pp at siedziba.pl (Piotr =?ISO-8859-2?Q?Paw=B3ow?=)
+Date: Mon, 02 Feb 2009 00:01:38 +0100
+Subject: Simple but awesome demos of Wine?
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <gm59kl$aco$1@ger.gmane.org>
+
+Dan Kegel wrote:
+
+> It'd be nice to also have some games, but I don't
+> play enough to know which ones to pick.
+
+I'd suggest FlatOut 2. It's an arcade racing game with nice graphics. The 
+only thing I couldn't get to work on Wine is online play, everything else 
+work great - sound, videos, special effects (post processing, shadows, 
+reflections etc).
+
+It looks stunning on a big screen... with all the spectacular crashes, car 
+parts, scenery parts flying around. Lots of action, plus loud rock music 
+makes it good for parties :)
+
+I'm amazed how well it works on Wine, even more so when I realize that it's 
+a DX9 game, not OpenGL. Frame rate is very good on my GeForce 8600GT, 
+perfectly smooth. I finished the whole game, and it never crashed while 
+playing, even after several hours.
+
+There is a playable demo available on the net. I just checked if it still 
+works on Wine 1.1.13. Played a few races. It crashed on exit, but otherwise 
+was OK.
+
+Regards
+
+
+
+
+From stefan at codeweavers.com  Sun Feb  1 17:37:58 2009
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Mon, 2 Feb 2009 00:37:58 +0100
+Subject: [RFC] Port of Stefan
+	=?iso-8859-1?q?D=F6singer=27s_ARB=5Fvertex=5Fprogram_fixed-function?=
+	=?iso-8859-1?q?_vertex_pipeline_replacement_to?= 1.1.14
+In-Reply-To: <20090131161556.GB13804@keitarou.watson.bubblesworth.net>
+References: <20090131161556.GB13804@keitarou.watson.bubblesworth.net>
+Message-ID: <200902020037.58974.stefan@codeweavers.com>
+
+> Towards that aim, I've ported Stefan D?singer's initial implementation
+> of this from October last year [1] to what turned out to be 1.1.14.
+I think they passed the last time I tested it. You could try to check out the 
+old wine version and test with the original patch. I could be wrong though.
+
+> It fails two more D3D9 tests than 1.1.14:
+> visual.c:914: Test failed: Transformed vertex with linear vertex fog has
+> color 0000ff00 visual.c:986: Test failed: Transformed vertex with linear
+> vertex fog has color 0000ff00
+>
+> (I don't know if these failed when it was first implemented, so I don't
+> know if the problem is the patch, the port, or even the test. This is on
+> my nVidia 8600 w/180.22 binary drivers, in case it makes a difference.)
+>
+> I haven't run it with any games yet, or profiled it. Stefan's commented
+> since that it was slower than the current system, albeit unoptimised,
+> and that was the reason he didn't undertake any further work on it.
+The main performance problem is I think the lighting code. It looks horrible 
+and probably uses much more instructions than needed. One app that is hit 
+pretty hard by drawStridedSlow is 3DMark 2000(esp. the heli test in high 
+detail). This app actually slows down instead of gaining speed.
+
+> I don't know what games use the fixed-function pipeline, so I'm open to
+> suggestions and bug report references.
+Basically everything <= d3d7 has to. But many newer games still do. I have 
+seen heavy ffp drawing in even very new games. The D3D SDK samples are also 
+very good for testing.
+
+> All but the last patch in this tarball are ports of Stefan's original,
+> and were done using git-am so still retain his original headers. The
+> sorta-nasty no_d3dcolor_swizzle code in get_color and its caller in the
+> last patch is entirely my fault though. ^_^
+There's a potential place for your fog test problems. You could disable the 
+extension in directx.c for testing/development(just comment out the line in 
+the ext table) and later on work on properly using it with the ffp code.
+
+> I'm not totally sure I've got all the hard parts of the port right. The
+> two relevant changes since these patches were applied were the
+> implementation of EXT_vertex_buffer_bgra and the rearrangement of the
+> fog code.
+>
+> For EXT_vertex_array_bgra and vertex_pipe->can_convert_d3dcolor, I'm not
+> sure if there are places that check one and should check the other, and
+> I'm not sure if the test in state.c line 4280 (streamsrc) is doing the
+> right thing. I think it is doing the right thing. The vertex program
+> recognises and handles a position_transformed vertex declaration itself.
+I think we should make this two different flags in the pipeline description, 
+and only use those in the rest of the code(or functions that return TRUE and 
+FALSE). e.g.
+
+can_convert_d3dcolor
+fixed func: GL_SUPPORT(EXT_vertex_array_bgra);
+replacement: TRUE;
+
+can_handle_rhw:
+fixed func: FALSE
+replacement: TRUE
+
+Ideally only the fixed func's can_convert_d3dcolor() function will check 
+GL_SUPPORT(EXT_vertex_array_bgra), the rest of the code just asks the 
+selected pipeline implementation.
+
+
+
+From stefan at codeweavers.com  Sun Feb  1 18:19:04 2009
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Mon, 2 Feb 2009 01:19:04 +0100
+Subject: performance issue when OffscreenRenderingMode = "pbuffer"
+In-Reply-To: <49860DD7.5090909@laposte.net>
+References: <497BC38E.4010505@laposte.net> <497C7398.5010202@laposte.net>
+	<49860DD7.5090909@laposte.net>
+Message-ID: <200902020119.04678.stefan@codeweavers.com>
+
+Am Sonntag, 1. Februar 2009 22:02:15 schrieb J?r?me Gardou:
+> The patch was sent, but not accepted. Does anyone have a clue about it?
+>
+> http://www.winehq.org/pipermail/wine-patches/2009-January/068339.html
+The vidmem counting is faked, and only counts the size of the D3D objects, not 
+the size the GL objects have.
+
+Does this patch fix any bug? (I have missed the beginning of the thread)
+
+
+From shacklein at gmail.com  Sun Feb  1 19:09:05 2009
+From: shacklein at gmail.com (Ben Klein)
+Date: Mon, 2 Feb 2009 12:09:05 +1100
+Subject: performance issue when OffscreenRenderingMode = "pbuffer"
+In-Reply-To: <200902020119.04678.stefan@codeweavers.com>
+References: <497BC38E.4010505@laposte.net> <497C7398.5010202@laposte.net>
+	<49860DD7.5090909@laposte.net>
+	<200902020119.04678.stefan@codeweavers.com>
+Message-ID: <d7e40be30902011709u3bc7e85em8aafc8050731d38e@mail.gmail.com>
+
+2009/2/2 Stefan D?singer <stefan at codeweavers.com>:
+> Am Sonntag, 1. Februar 2009 22:02:15 schrieb J?r?me Gardou:
+>> The patch was sent, but not accepted. Does anyone have a clue about it?
+>>
+>> http://www.winehq.org/pipermail/wine-patches/2009-January/068339.html
+> The vidmem counting is faked, and only counts the size of the D3D objects, not
+> the size the GL objects have.
+>
+> Does this patch fix any bug? (I have missed the beginning of the thread)
+
+Original post indicates it fixes a performance issue in Supreme
+Commander, where it drops to < 10FPS after a while, presumably due to
+graphics memory being exhausted and system memory being used instead.
+
+Also in the original post is:
+
+2009/1/25 J?r?me Gardou <jerome.gardou at gmail.com>:
+> For those who are curious, try setting VideoMemorySize to 200 instead of
+> 256. It works just like a charm.
+
+I'm not sure, because I don't have Supreme Commander, but I assume
+this is a current work-around for the performance issue (setting
+VideoMemorySize to about 50MB less than what your card actually has).
+
+
+From jwhite at winehq.org  Sun Feb  1 20:18:14 2009
+From: jwhite at winehq.org (Jeremy White)
+Date: Sun, 01 Feb 2009 20:18:14 -0600
+Subject: wine.budgetdedicated.com down?
+In-Reply-To: <46ae89fb0902011032x4332df85n70c419498357758f@mail.gmail.com>
+References: <a71bd89a0902010854i1af9e62dua2918f637feb08c9@mail.gmail.com>
+	<46ae89fb0902011032x4332df85n70c419498357758f@mail.gmail.com>
+Message-ID: <498657E6.90908@winehq.org>
+
+> Would it be possible to host the Wine packages somewhere with higher
+> availability?  
+
+My sense is that budgetdedicated has largely had a stellar track record,
+and that we should, in addition to our great thanks and praise, give
+them the benefit of the doubt.
+
+Scott, I looped you directly in the hope that you'd chime in as well.
+
+Cheers,
+
+Jeremy
+
+
+From jjmckenzie51 at earthlink.net  Sun Feb  1 20:18:25 2009
+From: jjmckenzie51 at earthlink.net (James McKenzie)
+Date: Sun, 01 Feb 2009 19:18:25 -0700
+Subject: deb packages archive down?
+In-Reply-To: <53e3a9930902010453yf26950cye367fc93eca5e7ae@mail.gmail.com>
+References: <53e3a9930902010453yf26950cye367fc93eca5e7ae@mail.gmail.com>
+Message-ID: <498657F1.7010805@earthlink.net>
+
+Tom Wickline wrote:
+> Hello,
+>
+> I have been trying to access the Wine deb archives for about
+> six hours now and Ive been receiving a "connection to the server was reset"
+> error. I'm not sure how long this has been the case but can the maintainer
+> of the archive please look into this failure?
+>
+> http://wine.budgetdedicated.com/archive/index.html
+>
+> Cheers,
+>
+> Tom
+>
+>   
+I just checked that URL at 1917 Mountain Standard Time (US) which is 217
+UTC and it was up.
+
+James McKenzie
+
+
+
+From dmitry at codeweavers.com  Sun Feb  1 23:04:38 2009
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 2 Feb 2009 13:04:38 +0800
+Subject: wined3d and winex11 hand in hand...
+References: <498611DE.4030501@laposte.net>
+Message-ID: <971C861BE6EA4B8E8B4FA07FF5D49D74@DMITRY>
+
+"J?r?me Gardou" <jerome.gardou at gmail.com> wrote:
+
+> Quite oddly enough, wined3d and winex11 don't communicate with each
+> other at all (well, wined3d uses WGL in gdi32, and gdi32 is based on
+> winex11), and this leads to problems which are tricky to resolve... For
+> instance, when a d3d application wants to disable screensavers,
+
+And how exactly does it "want" to do that?
+
+> there is
+> no way to do this through the windows api, but xlib provides
+> XSetScreenSaver which is axactly what we need there.
+
+http://www.google.com/search?q=how+to+disable+screen+saver+under+windows+programmatically
+
+http://support.microsoft.com/kb/126627
+
+> Would it be a good way to do this, as in user32 and gdi32, to create a
+> driver structure holding each function pointer we would need, and
+> forward them to stub if unavailable?
+
+Have you looked how it's currently implemented?
+
+-- 
+Dmitry. 
+
+
+
+From dank at kegel.com  Mon Feb  2 00:19:58 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Sun, 1 Feb 2009 22:19:58 -0800
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <a71bd89a0902012219j3a9f7b8v4a944692bce2731d@mail.gmail.com>
+
+On Sun, Feb 1, 2009 at 9:48 AM, Dan Kegel <dank at kegel.com> wrote:
+> I'm going to be giving a Wine presentation at
+> Cebit next month.   You can see a draft of the
+> presentation at
+> http://kegel.com/wine/cebit2009/talk.html
+
+I've updated the presentation.   Mostly I just
+added hyperlinks (some even useful) to all the images,
+and added screenshots of winehq.  I still have a lot to add.
+
+If anyone knows how to get rid of the highlighting around
+image links via css, please let me know.
+
+Thanks for the suggestions, I'll try the apps everybody
+suggested (and the autohotkey script) soon, I hope.
+And yes, the laptop will have a good nvidia chip,
+and I will make darn sure it can talk to video projectors
+well before I leave...
+
+
+From shacklein at gmail.com  Mon Feb  2 00:29:28 2009
+From: shacklein at gmail.com (Ben Klein)
+Date: Mon, 2 Feb 2009 17:29:28 +1100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902012219j3a9f7b8v4a944692bce2731d@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<a71bd89a0902012219j3a9f7b8v4a944692bce2731d@mail.gmail.com>
+Message-ID: <d7e40be30902012229o106967b7i1c4a76842c207736@mail.gmail.com>
+
+2009/2/2 Dan Kegel <dank at kegel.com>:
+> On Sun, Feb 1, 2009 at 9:48 AM, Dan Kegel <dank at kegel.com> wrote:
+>> I'm going to be giving a Wine presentation at
+>> Cebit next month.   You can see a draft of the
+>> presentation at
+>> http://kegel.com/wine/cebit2009/talk.html
+>
+> I've updated the presentation.   Mostly I just
+> added hyperlinks (some even useful) to all the images,
+> and added screenshots of winehq.  I still have a lot to add.
+>
+> If anyone knows how to get rid of the highlighting around
+> image links via css, please let me know.
+
+1) Most simple way:
+img { border: none }
+
+2) More advanced:
+img:link, img:visited { border: none }
+
+Method 1 removes borders on all images as the default. Method 2
+restricts removing the borders to hyperlinks.
+
+> Thanks for the suggestions, I'll try the apps everybody
+> suggested (and the autohotkey script) soon, I hope.
+> And yes, the laptop will have a good nvidia chip,
+> and I will make darn sure it can talk to video projectors
+> well before I leave...
+
+
+From twickline at gmail.com  Mon Feb  2 00:56:09 2009
+From: twickline at gmail.com (Tom Wickline)
+Date: Mon, 2 Feb 2009 14:56:09 +0800
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <53e3a9930902012256k69057f65v73bbac8314010d31@mail.gmail.com>
+
+Hello Dan,
+
+I would suggest maybe a demo of CrossOver Office and Office 2003 or 2007.
+Yes, I'm aware of Open Office but many business still prefer Microsoft Office
+and Outlook.. It also shows that there is a support channel available for large
+install bases.
+
+Just my $.02
+
+Tom
+
+On Mon, Feb 2, 2009 at 1:48 AM, Dan Kegel <dank at kegel.com> wrote:
+>
+> This show is a big opportunity for us to
+> introduce Wine to a large audience, so
+> any help here would be appreciated.
+>
+
+
+From jerome.gardou at gmail.com  Mon Feb  2 01:09:41 2009
+From: jerome.gardou at gmail.com (=?ISO-8859-1?Q?J=E9r=F4me_Gardou?=)
+Date: Mon, 02 Feb 2009 08:09:41 +0100
+Subject: wined3d and winex11 hand in hand...
+In-Reply-To: <971C861BE6EA4B8E8B4FA07FF5D49D74@DMITRY>
+References: <498611DE.4030501@laposte.net>
+	<971C861BE6EA4B8E8B4FA07FF5D49D74@DMITRY>
+Message-ID: <49869C35.6020105@laposte.net>
+
+Dmitry Timoshkov a ?crit :
+>
+> "J?r?me Gardou" <jerome.gardou at gmail.com> wrote:
+>
+>> Quite oddly enough, wined3d and winex11 don't communicate with each
+>> other at all (well, wined3d uses WGL in gdi32, and gdi32 is based on
+>> winex11), and this leads to problems which are tricky to resolve... For
+>> instance, when a d3d application wants to disable screensavers,
+>
+> And how exactly does it "want" to do that?
+>
+By setting presentationparameters->windowed = false and using 
+D3DCREATE_SCREENSAVER in BehaviorFlags when creating a device.
+>> there is
+>> no way to do this through the windows api, but xlib provides
+>> XSetScreenSaver which is axactly what we need there.
+>
+> http://www.google.com/search?q=how+to+disable+screen+saver+under+windows+programmatically 
+>
+>
+> http://support.microsoft.com/kb/126627
+Good catch. I will try this way.
+>> Would it be a good way to do this, as in user32 and gdi32, to create a
+>> driver structure holding each function pointer we would need, and
+>> forward them to stub if unavailable?
+>
+> Have you looked how it's currently implemented?
+>
+Yes. I don't see any major problem with this design.
+
+
+From jeremielapuree at yahoo.fr  Mon Feb  2 02:11:07 2009
+From: jeremielapuree at yahoo.fr (paulo lesgaz)
+Date: Mon, 2 Feb 2009 08:11:07 +0000 (GMT)
+Subject: BOOL WINAPI versus BOOL in d3dx9 and d3dx8
+In-Reply-To: <4985A762.6080005@freenet.de>
+Message-ID: <52940.30480.qm@web26007.mail.ukl.yahoo.com>
+
+
+
+--- En date de?: Dim 1.2.09, Tony Wasserka <tony.wasserka at freenet.de> a ?crit?:
+De: Tony Wasserka <tony.wasserka at freenet.de>
+Objet: Re: BOOL WINAPI versus BOOL in d3dx9 and d3dx8
+?: wine-devel at winehq.org
+Cc: jeremielapuree at yahoo.fr
+Date: Dimanche 1 F?vrier 2009, 14h45
+
+> Hi,
+> 
+> the declaration of IntersectionTri is
+> BOOL IntersectionTri(.....) in d3dx8mesh.h and BOOL WINAPI?
+IntersectionTri(.....) in d3dx9mesh.h .
+> 
+> Is the latter one compatible with the former one (so I can forward d3dx9
+function to the d3dx8 one)
+> or must I implement them separately?
+> 
+> David
+
+It's already forwarded in d3dx9_36.spec to d3dx8, so you don't need to
+implement it twice.
+I was pretty careful when creating that specfile, i.e. it's in 99% safe to
+trust it ;)
+
+As a rule of thumb, every d3dx9 function which has no device (or any other D3D9
+specific interface) parameter
+and has the exact same parameter list can safely be forwarded to d3dx8.
+
+However, are you sure it's only BOOL in d3dx8? AFAIK, dll functions always
+have to be WINAPI,
+as the calling convention gets screwed up otherwise...
+
+Best regards, Tony
+
+Yes, in the directx8 sdk the prototype is BOOL, not BOOL WINAPI.
+
+David
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090202/c63242d6/attachment.htm 
+
+From dmitry at codeweavers.com  Mon Feb  2 02:33:59 2009
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Mon, 2 Feb 2009 16:33:59 +0800
+Subject: [2/2] mlang: Export a couple of functions by ordinal.
+References: <200901301710.32628.hans@codeweavers.com>
+Message-ID: <A2E758C33F664823A5421A08127B3CB0@DMITRY>
+
+"Hans Leidekker" <hans at codeweavers.com> wrote:
+
+> IE7 imports these and possibly others by ordinal.
+> 
+> -Hans
+> 
+> diff --git a/dlls/mlang/mlang.spec b/dlls/mlang/mlang.spec
+> index 1e8f022..689ad27 100644
+> --- a/dlls/mlang/mlang.spec
+> +++ b/dlls/mlang/mlang.spec
+> @@ -1,14 +1,15 @@
+> +112 stdcall ConvertINetUnicodeToMultiByte(ptr long ptr ptr ptr ptr)
+> +120 stdcall LcidToRfc1766A(long ptr long)
+> +121 stdcall LcidToRfc1766W(long ptr long)
+> +
+> @ stdcall ConvertINetMultiByteToUnicode(ptr long ptr ptr ptr ptr)
+> @ stub ConvertINetReset
+> @ stdcall ConvertINetString(ptr long long ptr ptr ptr ptr)
+> -@ stdcall ConvertINetUnicodeToMultiByte(ptr long ptr ptr ptr ptr)
+> @ stdcall -private DllCanUnloadNow()
+> @ stdcall -private DllGetClassObject(ptr ptr ptr)
+> @ stdcall -private DllRegisterServer()
+> @ stdcall -private DllUnregisterServer()
+> @ stdcall GetGlobalFontLinkObject()
+> @ stdcall IsConvertINetStringAvailable(long long)
+> -@ stdcall LcidToRfc1766A(long ptr long)
+> -@ stdcall LcidToRfc1766W(long ptr long)
+> @ stdcall Rfc1766ToLcidA(ptr str)
+> @ stdcall Rfc1766ToLcidW(ptr wstr)
+
+I've compared the exports of win98 and winxp versions of mlang.dll
+and they have exactly the same ordinals assigned. So it should be
+safe to assign ordinals to all mlang exports (it's worth to mention
+that PSDK doesn't ship an mlang.lib).
+
+-- 
+Dmitry.
+
+
+From jerome.gardou at gmail.com  Mon Feb  2 04:08:09 2009
+From: jerome.gardou at gmail.com (=?ISO-8859-1?Q?J=E9r=F4me_Gardou?=)
+Date: Mon, 02 Feb 2009 11:08:09 +0100
+Subject: d3d9/tests : LockRect acquires the lock if D3DLOCK_NOSYSLOCK
+	is not specified.
+In-Reply-To: <4986C0C0.7080607@laposte.net>
+References: <4986C0C0.7080607@laposte.net>
+Message-ID: <4986C609.4040902@laposte.net>
+
+Forget this one please.
+
+
+From jerome.gardou at gmail.com  Mon Feb  2 04:36:54 2009
+From: jerome.gardou at gmail.com (=?UTF-8?B?SsOpcsO0bWUgR2FyZG91?=)
+Date: Mon, 02 Feb 2009 11:36:54 +0100
+Subject: Anything wrong with this patch?
+In-Reply-To: <b6bb06270901231546k4287f51bv9104b1bdbfd35d30@mail.gmail.com>
+References: <497A2305.4080909@laposte.net>	
+	<41eceb530901231309j79002485tba4fb427cb4d0a94@mail.gmail.com>	
+	<d7e40be30901231335r39e4bd86hc7567a14f3d8cdd4@mail.gmail.com>	
+	<497A3AF6.5060808@laposte.net>	
+	<d7e40be30901231431o399a54e2mcf66f632d802d77e@mail.gmail.com>	
+	<497A4BA6.207@laposte.net>	
+	<b6bb06270901231519g38c095f5p809244264502ae76@mail.gmail.com>	
+	<d7e40be30901231530qc7e8398w120e35be9f7e3e6c@mail.gmail.com>	
+	<497A54C1.2050003@laposte.net>
+	<b6bb06270901231546k4287f51bv9104b1bdbfd35d30@mail.gmail.com>
+Message-ID: <4986CCC6.7080405@laposte.net>
+
+Austin English a ?crit :
+> On Fri, Jan 23, 2009 at 5:37 PM, J?r?me Gardou <jerome.gardou at gmail.com> wrote:
+>   
+>> Ben Klein a ?crit :
+>>     
+>>> 2009/1/24 Austin English <austinenglish at gmail.com>:
+>>>
+>>>       
+>>>> On Fri, Jan 23, 2009 at 4:58 PM, J?r?me Gardou <jerome.gardou at gmail.com>
+>>>> wrote:
+>>>>
+>>>>         
+>>>>> Ben Klein a ?crit :
+>>>>>
+>>>>>           
+>>>>>> I just looked at bug 15616. Maybe you should look at it too.
+>>>>>>
+>>>>>> Also, please hit "Reply to all" so your message gets sent to the
+>>>>>> mailing list too :)
+>>>>>>
+>>>>>>
+>>>>>>             
+>>>>> Of course... Austin English already noticed my patch. Austin, any idea
+>>>>> why it was rejected?
+>>>>>
+>>>>> Sorry for the "reply to all", I forgot it this time...
+>>>>>
+>>>>>
+>>>>>           
+>>>> I don't know. I only noticed the empty patch. AJ would be the one to ask.
+>>>>
+>>>> Off hand though, I'd say if you're going to add support for .acm, you
+>>>> should also allow for other native files. iexplore.exe is one
+>>>> candidate, but probably controversial. There are other file extension
+>>>> types missing, I'm sure, though not sure which types off hand.
+>>>>
+>>>>
+>>>>         
+>>> Is it really about "supporting"? As AJ points out in his comment,
+>>> nothing stops you from writing in the .acm file, which is almost
+>>> certainly faster than scrolling through the whole list to find it
+>>> anyway.
+>>>
+>>> Isn't the list of DLLs in winecfg long enough already?
+>>>
+>>>
+>>>
+>>>       
+>> I like to type the beginning of a dll, and just press <tab> to get its full
+>> name. It is only a matter of comfort. :)
+>>
+>>     
+>
+> That, and developers are probably aren't using this much anyway. Most
+> of us avoid native dlls, but when using them A) use winetricks or B)
+> use WINEDLLOVERRIDES.
+>
+> Users would find it more convenient, and arguably, they should be able
+> to. I don't see any reason we shouldn't allow .acm's. Sys/drv probably
+> not. Exe, debatable.
+>
+>   
+I resent the patch quite some time ago, but it's still unaccepted...
+http://www.winehq.org/pipermail/wine-patches/2009-January/068325.html
+
+
+From fgouget at free.fr  Mon Feb  2 05:46:49 2009
+From: fgouget at free.fr (Francois Gouget)
+Date: Mon, 2 Feb 2009 12:46:49 +0100 (CET)
+Subject: Simplify dlls/comctl32/rebar.c
+In-Reply-To: <alpine.LSU.1.99.0901302239170.26342@acrux.dbai.tuwien.ac.at>
+References: <alpine.LSU.1.99.0901302239170.26342@acrux.dbai.tuwien.ac.at>
+Message-ID: <alpine.DEB.1.10.0902021244380.23908@amboise.dolphin>
+
+On Fri, 30 Jan 2009, Gerald Pfeifer wrote:
+
+> (It's not clear which parameters we'd really need if it is ever fully
+> implemented.)
+> 
+> ChangeLog:
+> Simplify.
+[...]
+> 
+> Index: dlls/comctl32/rebar.c
+[...]
+> @@ -3618,7 +3618,6 @@ REBAR_WindowProc (HWND hwnd, UINT uMsg, 
+>  
+>  /*	case RB_SETCOLORSCHEME: */
+>  /*	case RB_SETPALETTE: */
+> -/*	    return REBAR_GetPalette (infoPtr, wParam, lParam); */
+>  
+>  	case RB_SETPARENT:
+
+Once the commented out return has been removed it looks like 
+RB_SETCOLORSCHEME and RB_SETPALETTE are meant to fall through to 
+RB_SETPARENT, which does not seem right...
+
+So I'd leave a comment there, maybe /* return ...; */.
+
+
+-- 
+Francois Gouget <fgouget at free.fr>              http://fgouget.free.fr/
+             Research is the transformation of money to knowledge.
+            Innovation is the transformation of knowledge to money.
+                              -- Dr. Hans Meixner
+
+
+From jacek at codeweavers.com  Mon Feb  2 08:34:27 2009
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Mon, 02 Feb 2009 15:34:27 +0100
+Subject: [1/2] mshtml: Add support for IHTMLStyle3 interface
+In-Reply-To: <49840E8D.6090408@hotmail.com>
+References: <49840E8D.6090408@hotmail.com>
+Message-ID: <49870473.9080604@codeweavers.com>
+
+Alistair Leslie-Hughes wrote:
+> Hi,
+>
+> Changelog:
+>     mshtml: Add support for IHTMLStyle3 interface
+>
+
++
++    hres = IHTMLStyle_QueryInterface(style, &IID_IHTMLStyle3, (void**)&style3);
++    ok(hres == S_OK, "Could not get IHTMLStyle3 iface: %08x\n", hres);
++    if(SUCCEEDED(hres)) {
++        IHTMLStyle3_Release(style3);
++    }
+
+Please use style_iids to test QueryInterface calls.
+
+
+Jacek
+
+
+
+
+
+From jacek at codeweavers.com  Mon Feb  2 08:35:44 2009
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Mon, 02 Feb 2009 15:35:44 +0100
+Subject: [2/2] mshtml: Add support for IHTMLStyle4 interface
+In-Reply-To: <49840EB9.3000704@hotmail.com>
+References: <49840EB9.3000704@hotmail.com>
+Message-ID: <498704C0.20702@codeweavers.com>
+
+Alistair Leslie-Hughes wrote:
+> Hi,
+>
+> Changelog:
+>     mshtml: Add support for IHTMLStyle4 interface
+>
+
+---
+ dlls/mshtml/Makefile.in  |    1 +
+ dlls/mshtml/htmlstyle.c  |    4 ++
+ dlls/mshtml/htmlstyle.h  |    3 +
+ dlls/mshtml/htmlstyle4.c |  135 ++++++++++++++++++++++++++++++++++++++++++++++
+ dlls/mshtml/tests/dom.c  |    7 +++
+ 5 files changed, 150 insertions(+), 0 deletions(-)
+ create mode 100644 dlls/mshtml/htmlstyle4.c
+
+
+
+This interface has very few methods so it doesn't make sense to add new 
+file for it.
+
+
+Jacek
+
+
+From tsalacinski at gmail.com  Mon Feb  2 08:40:40 2009
+From: tsalacinski at gmail.com (Tomasz =?UTF-8?Q?Sa=C5=82aci=C5=84ski?=)
+Date: Mon, 02 Feb 2009 15:40:40 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <1233585640.8978.5.camel@TommyPC>
+
+Hello,
+
+In case of games, I'd suggest Prey - game works perfectly under WINE,
+and have some very nice graphics. There is a demo available somewhere.
+
+And I agree with someone who previously posted that you should try
+Flatout 2 (though NFS: Carbon and both Underground I & II work fine for
+me too). You can try Oblivion too (does have a demo, but requires a
+decent graphics card and lots of memory). All games have a demo version,
+so you don't have to own them.
+
+If you want to show some apps, try Photoshop. This is the app that most
+Linux users miss. Photoshop is big, advanced app that works almost fine
+(with few glitches, unfortunately it works slower than on Windows
+because of lack of DIB engine).
+
+Cheers
+
+
+
+From max at veneto.com  Mon Feb  2 08:57:15 2009
+From: max at veneto.com (Massimo Del Fedele)
+Date: Mon, 02 Feb 2009 15:57:15 +0100
+Subject: DIB Engine - Separated in small patches
+Message-ID: <gm71kb$oq9$1@ger.gmane.org>
+
+As requested I separated the engine in small patches, trying to keep 
+original authors when possible.
+As the post didn't appear here (problem with zipped files, maybe ?),
+I've put it on bug 421 page.
+I whish to know if it can be ok for including on wine tree.
+
+Ciao
+
+Max
+
+
+
+From thunderbird2k at gmx.net  Mon Feb  2 09:49:13 2009
+From: thunderbird2k at gmx.net (Roderick Colenbrander)
+Date: Mon, 02 Feb 2009 16:49:13 +0100
+Subject: DIB Engine - Separated in small patches
+In-Reply-To: <gm71kb$oq9$1@ger.gmane.org>
+References: <gm71kb$oq9$1@ger.gmane.org>
+Message-ID: <20090202154913.326010@gmx.net>
+
+> As requested I separated the engine in small patches, trying to keep 
+> original authors when possible.
+> As the post didn't appear here (problem with zipped files, maybe ?),
+> I've put it on bug 421 page.
+> I whish to know if it can be ok for including on wine tree.
+> 
+> Ciao
+> 
+> Max
+
+Getting large patches into Wine takes time especially drastic changes like the DIB engine. Recently I aksed him about this DIB work on IRC and while he didn't check the patches in much detail yet he has huge doubts whether the chosen design is the good one. (Allen his design wasn't good; Huw his design was better)
+
+I would recommend to invite all the people interested in a DIB engine (Alexandre, Allen, Huw and perhaps others) for a meeting on IRC to discuss the current design and how to proceed.
+
+Roderick
+-- 
+Jetzt 1 Monat kostenlos! GMX FreeDSL - Telefonanschluss + DSL 
+f?r nur 17,95 Euro/mtl.!* http://dsl.gmx.de/?ac=OM.AD.PD003K11308T4569a
+
+
+From perrym3 at gmail.com  Mon Feb  2 09:49:45 2009
+From: perrym3 at gmail.com (Matt Perry)
+Date: Mon, 2 Feb 2009 07:49:45 -0800
+Subject: wine.budgetdedicated.com down?
+In-Reply-To: <498657E6.90908@winehq.org>
+References: <a71bd89a0902010854i1af9e62dua2918f637feb08c9@mail.gmail.com>
+	<46ae89fb0902011032x4332df85n70c419498357758f@mail.gmail.com>
+	<498657E6.90908@winehq.org>
+Message-ID: <46ae89fb0902020749y624170e7y9ae9f7e2884556e3@mail.gmail.com>
+
+On Sun, Feb 1, 2009 at 6:18 PM, Jeremy White <jwhite at winehq.org> wrote:
+
+> Would it be possible to host the Wine packages somewhere with higher
+>> availability?
+>>
+>
+> My sense is that budgetdedicated has largely had a stellar track record,
+> and that we should, in addition to our great thanks and praise, give
+> them the benefit of the doubt.
+>
+
+Your sense is not measurable. Actual metrics of the site's availability
+would be more useful. I look forward to Scott's reply. Hopefully there are
+improvements that Wine users, such as myself, can contribute to improve the
+availability of the packages.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090202/940df47f/attachment.htm 
+
+From vit.hrachovy at sandbox.cz  Mon Feb  2 10:03:04 2009
+From: vit.hrachovy at sandbox.cz (Vit Hrachovy)
+Date: Mon, 02 Feb 2009 17:03:04 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <1233585640.8978.5.camel@TommyPC>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<1233585640.8978.5.camel@TommyPC>
+Message-ID: <49871938.9030403@sandbox.cz>
+
+Tomasz Sa?aci?ski wrote:
+> Hello,
+> me too). You can try Oblivion too (does have a demo, but requires a
+> decent graphics card and lots of memory). All games have a demo version,
+> so you don't have to own them.
+
+Hi Tom,
+I'm too sorry to correct you, but both Morrowind and Oblivion don't 
+provide playable demos. Only demo movies.
+
+Please correct me if I'm wrong and provide me download links - I'd 
+gladly mirror them.
+Hark
+
+
+From max at veneto.com  Mon Feb  2 10:19:54 2009
+From: max at veneto.com (max)
+Date: Mon, 02 Feb 2009 17:19:54 +0100
+Subject: DIB Engine - Separated in small patches
+In-Reply-To: <20090202154913.326010@gmx.net>
+References: <gm71kb$oq9$1@ger.gmane.org> <20090202154913.326010@gmx.net>
+Message-ID: <49871D2A.4060009@veneto.com>
+
+
+
+Roderick Colenbrander ha scritto:
+>> As requested I separated the engine in small patches, trying to keep 
+>> original authors when possible.
+>> As the post didn't appear here (problem with zipped files, maybe ?),
+>> I've put it on bug 421 page.
+>> I whish to know if it can be ok for including on wine tree.
+>>
+>> Ciao
+>>
+>> Max
+>>     
+>
+> Getting large patches into Wine takes time especially drastic changes like the DIB engine.
+Well, gdi32 part isn't that drastic.... with engine disabled is totally 
+transparent
+>  Recently I aksed him about this DIB work on IRC and while he didn't check the patches in much detail yet he has huge doubts whether the chosen design is the good one. (Allen his design wasn't good; Huw his design was better)
+>   
+Mine IS Huw design with some small changes. The changes are mostly 
+related to when the engine is loaded
+and to make it transparent to GDI32 when not loaded.
+> I would recommend to invite all the people interested in a DIB engine (Alexandre, Allen, Huw and perhaps others) for a meeting on IRC to discuss the current design and how to proceed.
+>
+>   
+Ok, I'll do it :-)
+Thank you for answer
+
+Max
+
+> Roderick
+>   
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090202/ce1c9e12/attachment.htm 
+
+From tsalacinski at gmail.com  Mon Feb  2 10:40:17 2009
+From: tsalacinski at gmail.com (Tommy)
+Date: Mon, 2 Feb 2009 17:40:17 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <49871938.9030403@sandbox.cz>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<1233585640.8978.5.camel@TommyPC> <49871938.9030403@sandbox.cz>
+Message-ID: <794e26b10902020840k4bd2a9cdje7b5e1d4f167eea9@mail.gmail.com>
+
+Hi,
+Yes, my bad... I just thought I saw the demo somewhere on the internet.
+2009/2/2 Vit Hrachovy <vit.hrachovy at sandbox.cz>
+
+> Tomasz Sa?aci?ski wrote:
+>
+>> Hello,
+>> me too). You can try Oblivion too (does have a demo, but requires a
+>> decent graphics card and lots of memory). All games have a demo version,
+>> so you don't have to own them.
+>>
+>
+> Hi Tom,
+> I'm too sorry to correct you, but both Morrowind and Oblivion don't provide
+> playable demos. Only demo movies.
+>
+> Please correct me if I'm wrong and provide me download links - I'd gladly
+> mirror them.
+> Hark
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090202/ec7a9141/attachment.htm 
+
+From dank at kegel.com  Mon Feb  2 10:41:50 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 2 Feb 2009 08:41:50 -0800
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <d7e40be30902012229o106967b7i1c4a76842c207736@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<a71bd89a0902012219j3a9f7b8v4a944692bce2731d@mail.gmail.com>
+	<d7e40be30902012229o106967b7i1c4a76842c207736@mail.gmail.com>
+Message-ID: <a71bd89a0902020841x3136cb90r3bf2826bde13c8ab@mail.gmail.com>
+
+Thanks, the simple way worked great.
+
+On Feb 1, 2009 10:29 PM, "Ben Klein" <shacklein at gmail.com> wrote:
+
+2009/2/2 Dan Kegel <dank at kegel.com>:
+
+> On Sun, Feb 1, 2009 at 9:48 AM, Dan Kegel <dank at kegel.com> wrote: >> I'm
+going to be giving a Wine...
+1) Most simple way:
+img { border: none }
+
+2) More advanced:
+img:link, img:visited { border: none }
+
+Method 1 removes borders on all images as the default. Method 2
+restricts removing the borders to hyperlinks.
+
+> Thanks for the suggestions, I'll try the apps everybody > suggested (and
+the autohotkey script) s...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090202/f8b8961a/attachment.htm 
+
+From trmanco-usenet at sapo.pt  Sun Feb  1 07:53:15 2009
+From: trmanco-usenet at sapo.pt (Tony Manco)
+Date: Sun, 01 Feb 2009 13:53:15 +0000
+Subject: deb packages archive down?
+In-Reply-To: <53e3a9930902010453yf26950cye367fc93eca5e7ae@mail.gmail.com>
+References: <53e3a9930902010453yf26950cye367fc93eca5e7ae@mail.gmail.com>
+Message-ID: <gm49gb$71d$1@ger.gmane.org>
+
+Tom Wickline wrote:
+> Hello,
+> 
+> I have been trying to access the Wine deb archives for about
+> six hours now and Ive been receiving a "connection to the server was reset"
+> error. I'm not sure how long this has been the case but can the maintainer
+> of the archive please look into this failure?
+> 
+> http://wine.budgetdedicated.com/archive/index.html
+> 
+> Cheers,
+> 
+> Tom
+> 
+
+Yes it is down.
+
+The server started having these kind of symptoms yesterday too.
+
+
+
+From max at veneto.com  Sun Feb  1 10:29:19 2009
+From: max at veneto.com (Massimo Del Fedele)
+Date: Sun, 01 Feb 2009 17:29:19 +0100
+Subject: DIB Engine - Patchset separated by original author
+Message-ID: <gm4il0$6d6$1@ger.gmane.org>
+
+As asked to me, I have separated the dib engine into a patchset, trying 
+to keep (when possible) the original author's submissions, so Huw 
+Davies, Jesse Allen and me.
+I had to change some of other author's commits in order to fit my engine 
+and to rebase it on 1.1.14, so I ask both previous authors to check if 
+they agree on the patches.
+
+I hope this will help the review, as keeping it rebased on wine tree 
+will become quite hard having it as a separated patchset.
+
+Attached here is a zipped patchset, which apply on wine 1.1.14.
+
+Ciao
+
+Max
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: dibeng-max.zip
+Type: application/zip
+Size: 57667 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090201/9c063ca8/attachment-0001.zip 
+
+From scott at open-vote.org  Mon Feb  2 13:20:46 2009
+From: scott at open-vote.org (Scott Ritchie)
+Date: Mon, 02 Feb 2009 11:20:46 -0800
+Subject: deb packages archive down?
+In-Reply-To: <53e3a9930902010453yf26950cye367fc93eca5e7ae@mail.gmail.com>
+References: <53e3a9930902010453yf26950cye367fc93eca5e7ae@mail.gmail.com>
+Message-ID: <4987478E.3090703@open-vote.org>
+
+Tom Wickline wrote:
+> Hello,
+> 
+> I have been trying to access the Wine deb archives for about
+> six hours now and Ive been receiving a "connection to the server was reset"
+> error. I'm not sure how long this has been the case but can the maintainer
+> of the archive please look into this failure?
+> 
+> http://wine.budgetdedicated.com/archive/index.html
+> 
+
+I'm the maintainer for reference.
+
+I'm not sure what caused the downtime, but it's back up now so there's
+nothing further to do.  It's possible it was a connectivity/routing
+issue rather than a software problem.
+
+Thanks,
+Scott Ritchie
+
+
+From brian.vincent at gmail.com  Mon Feb  2 13:21:21 2009
+From: brian.vincent at gmail.com (Brian Vincent)
+Date: Mon, 2 Feb 2009 12:21:21 -0700
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902020841x3136cb90r3bf2826bde13c8ab@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<a71bd89a0902012219j3a9f7b8v4a944692bce2731d@mail.gmail.com>
+	<d7e40be30902012229o106967b7i1c4a76842c207736@mail.gmail.com>
+	<a71bd89a0902020841x3136cb90r3bf2826bde13c8ab@mail.gmail.com>
+Message-ID: <3010968c0902021121g27edbee0i1eb899f4de051fed@mail.gmail.com>
+
+Dan -
+
+I just a presentation last week at our local LUG and here's what I did.
+(And for reference, this is the first time in almost 2 years I've had Linux
+and Wine loaded on my laptop - I like what you guys did with the place.)
+
+1.  I gave the presentation in Powerpoint 2003 and CrossOver Office.  I
+started the presentation on a separate desktop before anyone saw me do it,
+so they didn't know it was Powerpoint.  At the appropriate time during the
+presentation for eye candy, I pressed ESC and said - "And here's
+Powerpoint".  I also pointed out that it runs so stunningly well that's it's
+completely unimpressive.. and that's exactly what Wine should be.  I also
+started up Word quickly to show it running.
+
+2.  Oh, all of these demos were shortcuts on my desktop so I could start
+them quickly.
+
+3.  I ran Wine's iexplore.exe and let it load winehq.org.  Then I explained
+some architecture stuff like how it was a Wine MSHTML.DLL connecting to a
+Windows Gecko engine for rendering.  It was also a brief intro intro into
+what a Winelib app was.
+
+4.  Then I VERY briefly showed off Wine's regedit, mostly as an intro for
+folks to understand Wine has a registry.
+
+5.  Finally, I ran 3DMark2001SE to show off 3D.  I wish I could have gotten
+3DMark05 or 06 running, and I suspect I could have with some prodding, but
+they do seem to require a software purchase and license key to do anything
+cool.  At least 01 is D3D8 and there's good demo's that don't require a
+license key.  01 does have some good eye candy - I let the demos run for
+about 10 minutes while I used a whiteboard to illustrate some architecture
+stuff with Wine.  Note: if you run 3D demos on a projector you might want to
+consider using desktop mode.  I got lucky and the projector was ok with the
+resolution resizing and it only had a bit of a glitch.  I do suspect a lot
+of projectors will be unhappy with Wine changing resolutions.
+
+I considered showing off a real game, like WoW or Call of Duty, but the real
+problem was the sheer size of the downloads - 600MB and the install size,
+16GB, which my little laptop just wasn't up for since I was putting the 3D
+demo together at the last minute.  Also, I wanted something that would run
+automatically that I didn't have to interact with, hence the 3DMark01 demo.
+
+6.  You might want to consider showing off Google's Picasa and it's custom
+Wine implementation.  I almost did.. and you'd know even more about the guts
+of that.
+
+-Brian
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090202/e158202a/attachment.htm 
+
+From brian.vincent at gmail.com  Mon Feb  2 14:01:57 2009
+From: brian.vincent at gmail.com (Brian Vincent)
+Date: Mon, 2 Feb 2009 13:01:57 -0700
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <2cbdb1240902021135r64f81f66w7e4c676c06c76efd@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<a71bd89a0902012219j3a9f7b8v4a944692bce2731d@mail.gmail.com>
+	<d7e40be30902012229o106967b7i1c4a76842c207736@mail.gmail.com>
+	<a71bd89a0902020841x3136cb90r3bf2826bde13c8ab@mail.gmail.com>
+	<3010968c0902021121g27edbee0i1eb899f4de051fed@mail.gmail.com>
+	<2cbdb1240902021135r64f81f66w7e4c676c06c76efd@mail.gmail.com>
+Message-ID: <3010968c0902021201s6b74ee69i409dc4881503a4a2@mail.gmail.com>
+
+Oh, by the way, I was using Fedora Core 10.  I was pretty impressed with the
+distro - my Intel wireless card worked out of the box and so did sound.
+That's the first time I've had that happen on a Dell Latitude notebook.
+However, sound in Wine didn't work at all.  I made absolutely no effort to
+fix it, but a quick look at the settings showed it was trying to use ALSA.
+I was hoping Wine's sound had progressed to the point where it would at
+least work if the underlying distro was using sound in sane manner, which
+I'm kind of assuming Core 10 does.  Is it a packaging issue?
+
+-Brian
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090202/b10df7dc/attachment.htm 
+
+From mstefani at redhat.com  Mon Feb  2 15:07:31 2009
+From: mstefani at redhat.com (Michael Stefaniuc)
+Date: Mon, 02 Feb 2009 22:07:31 +0100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <3010968c0902021201s6b74ee69i409dc4881503a4a2@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>	<a71bd89a0902012219j3a9f7b8v4a944692bce2731d@mail.gmail.com>	<d7e40be30902012229o106967b7i1c4a76842c207736@mail.gmail.com>	<a71bd89a0902020841x3136cb90r3bf2826bde13c8ab@mail.gmail.com>	<3010968c0902021121g27edbee0i1eb899f4de051fed@mail.gmail.com>	<2cbdb1240902021135r64f81f66w7e4c676c06c76efd@mail.gmail.com>
+	<3010968c0902021201s6b74ee69i409dc4881503a4a2@mail.gmail.com>
+Message-ID: <49876093.6040605@redhat.com>
+
+Brian Vincent wrote:
+> Oh, by the way, I was using Fedora Core 10.  I was pretty impressed with 
+> the distro - my Intel wireless card worked out of the box and so did 
+> sound.  That's the first time I've had that happen on a Dell Latitude 
+> notebook.  However, sound in Wine didn't work at all.  I made absolutely 
+> no effort to fix it, but a quick look at the settings showed it was 
+> trying to use ALSA.  I was hoping Wine's sound had progressed to the 
+> point where it would at least work if the underlying distro was using 
+> sound in sane manner, which I'm kind of assuming Core 10 does.  Is it a 
+> packaging issue?
+Well F10 uses PulseAudio. It may work better without. I left it on on my 
+F10 netbook as it didn't break the Wine tests; that's all I care at the 
+moment about sound and Wine.
+
+bye
+	michael
+
+
+From linux at audioscience.com  Mon Feb  2 16:27:37 2009
+From: linux at audioscience.com (Eliot Blennerhassett)
+Date: Tue, 03 Feb 2009 11:27:37 +1300
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+Message-ID: <49877359.6090405@audioscience.com>
+
+Dan Kegel wrote:
+> I'm going to be giving a Wine presentation at
+> Cebit next month.   You can see a draft of the
+> presentation at
+> http://kegel.com/wine/cebit2009/talk.html
+> (I will say lots more than is written there; the
+> slides are kept simple on purpose, with just
+> the key idea in the caption.)
+> 
+> A large part of the presentation
+> will be demos of platium-rated apps.
+> Can people suggest compelling apps to demo?
+
+For the engineerings LTSpice
+
+http://www.linear.com/designtools/software/ltspice.jsp
+
+Its authors are wine-friendly. This from the online help
+
+"LTspice detects whether or not it's running under WINE. If so, it works
+around a few WINE issues. You can force LTspice to think it's running
+under WINE with the command line switch ?wine. You can force it to think
+it's not with the command line switch ?nowine in case you're interesting
+in working on WINE issues."
+
+
+
+
+
+From austinenglish at gmail.com  Mon Feb  2 19:05:20 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Mon, 2 Feb 2009 19:05:20 -0600
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <49877359.6090405@audioscience.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<49877359.6090405@audioscience.com>
+Message-ID: <b6bb06270902021705j2791f33fm6630a450a10e53f7@mail.gmail.com>
+
+On Mon, Feb 2, 2009 at 4:27 PM, Eliot Blennerhassett
+<linux at audioscience.com> wrote:
+> Dan Kegel wrote:
+>> I'm going to be giving a Wine presentation at
+>> Cebit next month.   You can see a draft of the
+>> presentation at
+>> http://kegel.com/wine/cebit2009/talk.html
+>> (I will say lots more than is written there; the
+>> slides are kept simple on purpose, with just
+>> the key idea in the caption.)
+>>
+>> A large part of the presentation
+>> will be demos of platium-rated apps.
+>> Can people suggest compelling apps to demo?
+>
+> For the engineerings LTSpice
+>
+> http://www.linear.com/designtools/software/ltspice.jsp
+>
+> Its authors are wine-friendly. This from the online help
+>
+> "LTspice detects whether or not it's running under WINE. If so, it works
+> around a few WINE issues. You can force LTspice to think it's running
+> under WINE with the command line switch ?wine. You can force it to think
+> it's not with the command line switch ?nowine in case you're interesting
+> in working on WINE issues."
+>
+>
+>
+>
+>
+>
+
+Rather than working around any bugs, they should file bugs so we know
+to fix them, ideally with testcases.
+
+A search in bugzilla shows 2 bugs with LTSpice in the name/comments.
+
+-- 
+-Austin
+
+
+From wine at eternaldusk.com  Mon Feb  2 19:09:32 2009
+From: wine at eternaldusk.com (Evil Jay)
+Date: Mon, 02 Feb 2009 19:09:32 -0600
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <49877359.6090405@audioscience.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<49877359.6090405@audioscience.com>
+Message-ID: <4987994C.2030308@eternaldusk.com>
+
+Wow... that's pretty cool of the LTspice authors to do that and not just
+leave it in their own personal debug builds!
+
+Eliot Blennerhassett wrote:
+> Dan Kegel wrote:
+>   
+>> I'm going to be giving a Wine presentation at
+>> Cebit next month.   You can see a draft of the
+>> presentation at
+>> http://kegel.com/wine/cebit2009/talk.html
+>> (I will say lots more than is written there; the
+>> slides are kept simple on purpose, with just
+>> the key idea in the caption.)
+>>
+>> A large part of the presentation
+>> will be demos of platium-rated apps.
+>> Can people suggest compelling apps to demo?
+>>     
+>
+> For the engineerings LTSpice
+>
+> http://www.linear.com/designtools/software/ltspice.jsp
+>
+> Its authors are wine-friendly. This from the online help
+>
+> "LTspice detects whether or not it's running under WINE. If so, it works
+> around a few WINE issues. You can force LTspice to think it's running
+> under WINE with the command line switch ?wine. You can force it to think
+> it's not with the command line switch ?nowine in case you're interesting
+> in working on WINE issues."
+>
+>   
+
+
+
+From wine at eternaldusk.com  Mon Feb  2 19:35:13 2009
+From: wine at eternaldusk.com (Evil Jay)
+Date: Mon, 02 Feb 2009 19:35:13 -0600
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <b6bb06270902021705j2791f33fm6630a450a10e53f7@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>	<49877359.6090405@audioscience.com>
+	<b6bb06270902021705j2791f33fm6630a450a10e53f7@mail.gmail.com>
+Message-ID: <49879F51.6010603@eternaldusk.com>
+
+Hmmm.... you make a pretty good point there.  Hopefully it's in their
+plan and they just haven't had time.
+
+Austin English wrote:
+> On Mon, Feb 2, 2009 at 4:27 PM, Eliot Blennerhassett
+> <linux at audioscience.com> wrote:
+>   
+>> Dan Kegel wrote:
+>>     
+>>> I'm going to be giving a Wine presentation at
+>>> Cebit next month.   You can see a draft of the
+>>> presentation at
+>>> http://kegel.com/wine/cebit2009/talk.html
+>>> (I will say lots more than is written there; the
+>>> slides are kept simple on purpose, with just
+>>> the key idea in the caption.)
+>>>
+>>> A large part of the presentation
+>>> will be demos of platium-rated apps.
+>>> Can people suggest compelling apps to demo?
+>>>       
+>> For the engineerings LTSpice
+>>
+>> http://www.linear.com/designtools/software/ltspice.jsp
+>>
+>> Its authors are wine-friendly. This from the online help
+>>
+>> "LTspice detects whether or not it's running under WINE. If so, it works
+>> around a few WINE issues. You can force LTspice to think it's running
+>> under WINE with the command line switch ?wine. You can force it to think
+>> it's not with the command line switch ?nowine in case you're interesting
+>> in working on WINE issues."
+>>
+>>
+>>
+>>
+>>
+>>
+>>     
+>
+> Rather than working around any bugs, they should file bugs so we know
+> to fix them, ideally with testcases.
+>
+> A search in bugzilla shows 2 bugs with LTSpice in the name/comments.
+>
+>   
+
+
+
+From dank at kegel.com  Mon Feb  2 19:39:15 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Mon, 2 Feb 2009 17:39:15 -0800
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <b6bb06270902021705j2791f33fm6630a450a10e53f7@mail.gmail.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<49877359.6090405@audioscience.com>
+	<b6bb06270902021705j2791f33fm6630a450a10e53f7@mail.gmail.com>
+Message-ID: <a71bd89a0902021739v409f8c7fq6b47f9807b994ec8@mail.gmail.com>
+
+Austin English <austinenglish at gmail.com> wrote:
+> Rather than working around any bugs, they should file bugs so we know
+> to fix them, ideally with testcases.
+
+Sometimes ISVs just want to get a product out the door.
+
+At least they have the runtime option so we can force it on or off,
+which is nice of them.
+
+It would be nice if someone could verify with them that we have
+bugs filed for everything they had to work around, and
+maybe wheedle out of them what the workaround they
+applied was.
+
+
+From shacklein at gmail.com  Mon Feb  2 19:39:38 2009
+From: shacklein at gmail.com (Ben Klein)
+Date: Tue, 3 Feb 2009 12:39:38 +1100
+Subject: Simple but awesome demos of Wine?
+In-Reply-To: <4987994C.2030308@eternaldusk.com>
+References: <a71bd89a0902010948r1858059q6b22defc1f14f4ba@mail.gmail.com>
+	<49877359.6090405@audioscience.com> <4987994C.2030308@eternaldusk.com>
+Message-ID: <d7e40be30902021739j3d07d816u3c74812e1c96a915@mail.gmail.com>
+
+2009/2/3 Evil Jay <wine at eternaldusk.com>:
+> Eliot Blennerhassett wrote:
+>> "LTspice detects whether or not it's running under WINE. If so, it works
+>> around a few WINE issues. You can force LTspice to think it's running
+>> under WINE with the command line switch ?wine. You can force it to think
+>> it's not with the command line switch ?nowine in case you're interesting
+>> in working on WINE issues."
+>>
+> Wow... that's pretty cool of the LTspice authors to do that and not just
+> leave it in their own personal debug builds!
+
+As Austin says, it would be better if they submitted bugs with test
+cases to bugs.winehq.org. It'd be even better again if they submitted
+patches to Wine. What will happen when the bugs get fixed in Wine, and
+LTspice is still trying to work around them?
+
+I've been trying to think of some good games to demo ...
+
+http://www.spore.com/trial
+Spore Creature Creator runs very well and has a trial version (which
+sounds weird to me, a trial version of a trial version). It's also
+family-friendly if that's a consideration.
+
+I was going to suggest Halo: Combat Evolved, but that's probably not
+cute and fuzzy enough (and some of the shadows don't work properly).
+
+Apparently there's a demo of Portal. That might be a good choice too.
+Seems it's available via Steam: http://store.steampowered.com/app/410/
+
+
+From jacek at codeweavers.com  Mon Feb  2 19:52:56 2009
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Tue, 03 Feb 2009 02:52:56 +0100
+Subject: jscript: Don't fail tests if IActiveScriptParse isn't supported
+In-Reply-To: <3a768c550902021343n63db2aa9vcaaf0fa254b64cc7@mail.gmail.com>
+References: <3a768c550902021343n63db2aa9vcaaf0fa254b64cc7@mail.gmail.com>
+Message-ID: <4987A378.8050508@codeweavers.com>
+
+Hi Juan,
+
+These failures are on Win64 where we should query for different 
+interface. I've sent a patch to fix it:
+http://www.winehq.org/pipermail/wine-patches/2009-February/068760.html
+
+
+Jacek
+
+
+From juan.lang at gmail.com  Mon Feb  2 19:55:59 2009
+From: juan.lang at gmail.com (Juan Lang)
+Date: Mon, 2 Feb 2009 17:55:59 -0800
+Subject: jscript: Don't fail tests if IActiveScriptParse isn't supported
+In-Reply-To: <4987A378.8050508@codeweavers.com>
+References: <3a768c550902021343n63db2aa9vcaaf0fa254b64cc7@mail.gmail.com>
+	<4987A378.8050508@codeweavers.com>
+Message-ID: <3a768c550902021755x4395bc56wf96df7ddd1f58417@mail.gmail.com>
+
+Hi Jacek,
+
+> These failures are on Win64 where we should query for different
+> interface. I've sent a patch to fix it:
+> http://www.winehq.org/pipermail/wine-patches/2009-February/068760.html
+
+Ah, right.  Sorry I missed that.
+--Juan
+
+
+From madewokherd+8cd9 at gmail.com  Mon Feb  2 20:27:21 2009
+From: madewokherd+8cd9 at gmail.com (Vincent Povirk)
+Date: Mon, 2 Feb 2009 20:27:21 -0600
+Subject: ntdll: add a warning about running wine as root (try 2)
+In-Reply-To: <b6bb06270902021801p55b5227ct81ee2660ad096e86@mail.gmail.com>
+References: <b6bb06270902021801p55b5227ct81ee2660ad096e86@mail.gmail.com>
+Message-ID: <ced95fe0902021827k6b5a7eecne7c370afb841389d@mail.gmail.com>
+
+The patch does not apply to current master.
+
+Vincent Povirk
+
+
+
+On Mon, Feb 2, 2009 at 8:01 PM, Austin English <austinenglish at gmail.com> wrote:
+> Been seeing it quite a bit recently in the forums. While the patches
+> to break using sudo/su have helped a bit, seems some users are
+> convinced they need to run wine as root. This adds a non fatal
+> message, so no functionality is lost for those that _do_ need to run
+> as root.
+>
+> Try 2:
+> Made warning a bit more verbose. Changed geteuid to getuid, since we
+> already check for that function, and geteuid is a bit is superfluous,
+> since sudo should already be prevented.
+>
+> --
+> -Austin
+>
+>
+>
+>
+
+
+From austinenglish at gmail.com  Mon Feb  2 21:45:18 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Mon, 2 Feb 2009 21:45:18 -0600
+Subject: ntdll: add a warning about running wine as root (try 2)
+In-Reply-To: <ced95fe0902021827k6b5a7eecne7c370afb841389d@mail.gmail.com>
+References: <b6bb06270902021801p55b5227ct81ee2660ad096e86@mail.gmail.com>
+	<ced95fe0902021827k6b5a7eecne7c370afb841389d@mail.gmail.com>
+Message-ID: <b6bb06270902021945k27cfc11dje8ed7b216e3712a0@mail.gmail.com>
+
+On Mon, Feb 2, 2009 at 8:27 PM, Vincent Povirk
+<madewokherd+8cd9 at gmail.com> wrote:
+> The patch does not apply to current master.
+>
+> Vincent Povirk
+>
+>
+>
+> On Mon, Feb 2, 2009 at 8:01 PM, Austin English <austinenglish at gmail.com> wrote:
+>> Been seeing it quite a bit recently in the forums. While the patches
+>> to break using sudo/su have helped a bit, seems some users are
+>> convinced they need to run wine as root. This adds a non fatal
+>> message, so no functionality is lost for those that _do_ need to run
+>> as root.
+>>
+>> Try 2:
+>> Made warning a bit more verbose. Changed geteuid to getuid, since we
+>> already check for that function, and geteuid is a bit is superfluous,
+>> since sudo should already be prevented.
+>>
+>> --
+>> -Austin
+>>
+>>
+>>
+>>
+>
+>
+>
+
+Thanks. Killed my hard drive this morning, so edited previous diff
+rather than making a new one. Resending a fresh one now.
+
+-- 
+-Austin
+
+
+From the3dfxdude at gmail.com  Mon Feb  2 23:43:50 2009
+From: the3dfxdude at gmail.com (Jesse Allen)
+Date: Mon, 2 Feb 2009 22:43:50 -0700
+Subject: DIB Engine - Patchset separated by original author
+In-Reply-To: <gm4il0$6d6$1@ger.gmane.org>
+References: <gm4il0$6d6$1@ger.gmane.org>
+Message-ID: <530468570902022143x748cce19lf88c428a3a8597dc@mail.gmail.com>
+
+On Sun, Feb 1, 2009 at 9:29 AM, Massimo Del Fedele <max at veneto.com> wrote:
+> As asked to me, I have separated the dib engine into a patchset, trying to
+> keep (when possible) the original author's submissions, so Huw Davies, Jesse
+> Allen and me.
+> I had to change some of other author's commits in order to fit my engine and
+> to rebase it on 1.1.14, so I ask both previous authors to check if they
+> agree on the patches.
+>
+> I hope this will help the review, as keeping it rebased on wine tree will
+> become quite hard having it as a separated patchset.
+>
+> Attached here is a zipped patchset, which apply on wine 1.1.14.
+>
+> Ciao
+>
+> Max
+>
+>
+>
+>
+
+Hello,
+
+I have placed the patches unchanged onto this git page:
+http://repo.or.cz/w/wine/dibdrv-max.git
+
+Hope this helps.
+
+Jesse
+
+
+From paul.vriens.wine at gmail.com  Tue Feb  3 05:27:44 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Tue, 03 Feb 2009 12:27:44 +0100
+Subject: [winetest] Make sure we can test .NET dlls on Windows (need some
+	advice)
+Message-ID: <49882A30.5010109@gmail.com>
+
+Hi,
+
+Sent to wine-devel so I don't jeopardize my rating too much ;)
+
+.NET dlls cannot be found with the existing logic in winetest, mainly because
+they are not in the search path. If the normal loading of a dll fails we now
+check against a fixed set of names (fusion only for now). If it's a .NET dll we
+check if this one is there (according to .NET's mscoree) and get the file
+information. We can use to existing version checking stuff for that part as it's
+a normal dll.
+
+Remarks, suggestions?
+
+Changelog
+   Make sure we can test .NET dlls on Windows
+
+-- 
+Cheers,
+
+Paul.
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Make-sure-we-can-test-.NET-dlls-on-Windows.patch
+Type: text/x-diff
+Size: 3872 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090203/42635035/attachment.patch 
+
+From stefan at codeweavers.com  Tue Feb  3 07:18:39 2009
+From: stefan at codeweavers.com (Stefan =?iso-8859-1?q?D=F6singer?=)
+Date: Tue, 3 Feb 2009 14:18:39 +0100
+Subject: d3d9/tests : LockRect acquires the lock if D3DLOCK_NOSYSLOCK is
+	not specified.
+In-Reply-To: <4986C609.4040902@laposte.net>
+References: <4986C0C0.7080607@laposte.net> <4986C609.4040902@laposte.net>
+Message-ID: <200902031418.39403.stefan@codeweavers.com>
+
+Am Montag, 2. Februar 2009 11:08:09 schrieb J?r?me Gardou:
+> Forget this one please.
+
+
+Still an interesting test. I'll keep that one in mind if I'm hunting strange 
+race conditions. Maybe this helps the deadlock in the Call of Duty 2 intro 
+videos
+
+
+From gerald at pfeifer.com  Mon Feb  2 18:19:49 2009
+From: gerald at pfeifer.com (Gerald Pfeifer)
+Date: Tue, 3 Feb 2009 01:19:49 +0100 (CET)
+Subject: Simplify dlls/comctl32/rebar.c
+In-Reply-To: <alpine.DEB.1.10.0902021244380.23908@amboise.dolphin>
+References: <alpine.LSU.1.99.0901302239170.26342@acrux.dbai.tuwien.ac.at>
+	<alpine.DEB.1.10.0902021244380.23908@amboise.dolphin>
+Message-ID: <alpine.LSU.1.99.0902030118460.29357@acrux.dbai.tuwien.ac.at>
+
+On Mon, 2 Feb 2009, Francois Gouget wrote:
+>>  /*	case RB_SETCOLORSCHEME: */
+>>  /*	case RB_SETPALETTE: */
+>> -/*	    return REBAR_GetPalette (infoPtr, wParam, lParam); */
+>>  
+>>  	case RB_SETPARENT:
+> Once the commented out return has been removed it looks like 
+> RB_SETCOLORSCHEME and RB_SETPALETTE are meant to fall through to 
+> RB_SETPARENT, which does not seem right...
+> 
+> So I'd leave a comment there, maybe /* return ...; */.
+
+That is a very fair point, thanks for raising this Francois!
+
+Let me adjust my patch accordingly.
+
+Gerald
+
+ChangeLog:
+Simplify.
+
+Index: dlls/comctl32/rebar.c
+===================================================================
+RCS file: /home/wine/wine/dlls/comctl32/rebar.c,v
+retrieving revision 1.166
+diff -u -3 -p -r1.166 rebar.c
+--- dlls/comctl32/rebar.c	21 Nov 2008 12:56:20 -0000	1.166
++++ dlls/comctl32/rebar.c	3 Feb 2009 00:08:59 -0000
+@@ -2255,7 +2255,7 @@ REBAR_GetBkColor (const REBAR_INFO *info
+ 
+ 
+ static LRESULT
+-REBAR_GetPalette (const REBAR_INFO *infoPtr, WPARAM wParam, LPARAM lParam)
++REBAR_GetPalette ()
+ {
+     FIXME("empty stub!\n");
+ 
+@@ -3557,7 +3557,7 @@ REBAR_WindowProc (HWND hwnd, UINT uMsg, 
+ /*	case RB_GETDROPTARGET: */
+ 
+ 	case RB_GETPALETTE:
+-	    return REBAR_GetPalette (infoPtr, wParam, lParam);
++	    return REBAR_GetPalette ();
+ 
+ 	case RB_GETRECT:
+ 	    return REBAR_GetRect (infoPtr, wParam, lParam);
+@@ -3618,7 +3618,7 @@ REBAR_WindowProc (HWND hwnd, UINT uMsg, 
+ 
+ /*	case RB_SETCOLORSCHEME: */
+ /*	case RB_SETPALETTE: */
+-/*	    return REBAR_GetPalette (infoPtr, wParam, lParam); */
++/*	    return REBAR_GetPalette (); */
+ 
+ 	case RB_SETPARENT:
+ 	    return REBAR_SetParent (infoPtr, wParam);
+
+
+From luke.leighton at googlemail.com  Tue Feb  3 06:06:55 2009
+From: luke.leighton at googlemail.com (Luke Kenneth Casson Leighton)
+Date: Tue, 3 Feb 2009 12:06:55 +0000
+Subject: ideas and questions for implementation of MessageMode in Named Pipes
+Message-ID: <ced5f0f60902030406i50b97290m6adad0f90c16eefb@mail.gmail.com>
+
+ok, alexandre: i tried moving named_pipe_read into wineserver - it's
+not possible to do completely, as you cannot do blocking-reads in
+wineserver but you still need blocking-read characteristics in the
+client (kernel32, ntdll).  if you start messing with the fd, setting
+or clearing ioctl O_NONBLOCK in one, it interferes with the other.
+there's a race-condition risk.
+
+so, i have some ideas and questions.
+
+1) is it possible for wineserver to tell a thread to wait
+indefinitely?  is there a communication channel where wineserver can
+tell "anyone who's interested" to go away, go to sleep, i'll tell you
+when to wake up"? what i want is to replace the fd blocking-read with
+something that still blocks, but doesn't interfere with the file
+descriptor.
+
+2) would a _second_ filedescriptor fit the required criteria, as
+described in 1), above?  in other words, if the message-lengths (4
+bytes) were sent on a secondary control fd - and nothing _but_
+message-lengths were sent on that fd - my intuition tells me that that
+could work, even without having any infrastructure in wineserver.  in
+fact, i get the feeling that it would be _better_ - and a lot simpler
+- than having any infrastructure in wineserver.
+
+the reasoning goes roughly something like this:
+
+* 5 threads are waiting - blocking - on a message-mode read named
+pipe.  all of them are blocking to read from the "control" channel, in
+userspace (kernel32/ntdll).
+
+* client 1 does a message-mode write, and in userspace
+(kernel32/ntdll) 4 bytes indicating the length of the message are
+sent, followed by N bytes on the unix_fd (exactly as is done at the
+moment).
+
+* one and ONLY one of the 5 threads, thanks to STANDARD linux kernel
+scheduling, happens to be awake and gets to read the 4-byte length.
+all the other 4 stay asleep.
+
+damnit, that's not right, is it.  you want the other 4 to wake up once
+ONE of them has read the 4-byte length, and for ALL of them to move on
+to blocking on the "message" pipe - the actual content.
+
+so, i suppose what you could do is have a per-read-thread
+filedescriptor (!!!) which _would_ have to involve arbitration by
+wineserver, so that when a write is performed, ALL of the clients get
+notified "wake up now, start trying to read".
+
+is there _anything_ in wine which already exists that does what is
+required, as illustrated, above?
+
+answers and information greatly appreciated so as to be able to
+improve this free software project's effectiveness.
+
+l.
+
+
+From dank at kegel.com  Tue Feb  3 07:48:13 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Tue, 3 Feb 2009 05:48:13 -0800
+Subject: wine honor roll slashdotted
+Message-ID: <a71bd89a0902030548k41a039c2q9bb53bfcc99aaff3@mail.gmail.com>
+
+http://tech.slashdot.org/article.pl?sid=09/02/03/0112249
+
+One comment mentions the grade inflation on the appdb,
+i.e. platinum apps that have not been thoroughly tested
+or don't really qualify as platinum...
+
+
+From julliard at winehq.org  Tue Feb  3 07:50:15 2009
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 03 Feb 2009 14:50:15 +0100
+Subject: winedos: Improve PIT emulation.
+In-Reply-To: <49861568.1090606@gmx.de> (Florian Tobias Schandinat's message of
+	"Sun, 01 Feb 2009 22:34:32 +0100")
+References: <49861568.1090606@gmx.de>
+Message-ID: <8763jry6i0.fsf@wine.dyndns.org>
+
+Florian Tobias Schandinat <FlorianSchandinat at gmx.de> writes:
+
+> +    /* Convert: time counter -> PIT counter
+> +     * GetSystemTimeAsFileTime:    10000000 Hz
+> +     * PIT frequency:               1193182 Hz */
+> +    val = (DWORD)(val - delta*1193182./10000000.) % (maxval + 1);
+
+You should probably use QueryPerformanceCounter as it already uses the
+correct frequency.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From jjmckenzie51 at earthlink.net  Tue Feb  3 08:03:49 2009
+From: jjmckenzie51 at earthlink.net (James Mckenzie)
+Date: Tue, 3 Feb 2009 07:03:49 -0700 (GMT-07:00)
+Subject: wine honor roll slashdotted
+Message-ID: <25032589.1233669829567.JavaMail.root@elwamui-huard.atl.sa.earthlink.net>
+
+Dan Kegel <dank at kegel.com> wrote:
+>Sent: Feb 3, 2009 6:48 AM
+>To: Wine Devel <wine-devel at winehq.org>
+>Subject: wine honor roll slashdotted
+>
+>http://tech.slashdot.org/article.pl?sid=09/02/03/0112249
+>
+>One comment mentions the grade inflation on the appdb,
+>i.e. platinum apps that have not been thoroughly tested
+>or don't really qualify as platinum...
+>
+Dan:
+
+Sadly, I agree with the grade inflation.  We need a grading interface that will generate whether or not an application is Plat/Gold/Silver/Bronze/Garbage based upon user input.  This usually stops the inflation.
+
+James McKenzie
+
+
+From kazade at gmail.com  Tue Feb  3 08:15:45 2009
+From: kazade at gmail.com (Luke Benstead)
+Date: Tue, 3 Feb 2009 14:15:45 +0000
+Subject: wine honor roll slashdotted
+In-Reply-To: <25032589.1233669829567.JavaMail.root@elwamui-huard.atl.sa.earthlink.net>
+References: <25032589.1233669829567.JavaMail.root@elwamui-huard.atl.sa.earthlink.net>
+Message-ID: <d04858af0902030615m2945eaecr98fe50f6ff4bc3d4@mail.gmail.com>
+
+2009/2/3 James Mckenzie <jjmckenzie51 at earthlink.net>:
+> Dan Kegel <dank at kegel.com> wrote:
+>>Sent: Feb 3, 2009 6:48 AM
+>>To: Wine Devel <wine-devel at winehq.org>
+>>Subject: wine honor roll slashdotted
+>>
+>>http://tech.slashdot.org/article.pl?sid=09/02/03/0112249
+>>
+>>One comment mentions the grade inflation on the appdb,
+>>i.e. platinum apps that have not been thoroughly tested
+>>or don't really qualify as platinum...
+>>
+> Dan:
+>
+> Sadly, I agree with the grade inflation.  We need a grading interface that will generate whether or not an application is Plat/Gold/Silver/Bronze/Garbage based upon user input.  This usually stops the inflation.
+>
+> James McKenzie
+>
+>
+>
+
+Perhaps, the grading should be separate from the test result
+submissions? I know a few times I've run a program under Wine and then
+only later looked up the entry on the appdb, by that stage I might not
+even be on the same PC, or have the time to submit a full test result,
+but I'd have a pretty good idea how I would rate it. It would be good
+if logged in users could just quickly say "Yes, I would give this gold
+status" then the final grade could be the average of the votes.
+
+Luke.
+
+
+From julliard at winehq.org  Tue Feb  3 08:26:39 2009
+From: julliard at winehq.org (Alexandre Julliard)
+Date: Tue, 03 Feb 2009 15:26:39 +0100
+Subject: propsys: Stub for PSRegisterPropertySchema (resent)
+In-Reply-To: <1233665566.5225.1.camel@debian.localdomain> (Nikolay Sivov's
+	message of "Tue, 03 Feb 2009 15:52:46 +0300")
+References: <1233665566.5225.1.camel@debian.localdomain>
+Message-ID: <871vufy4tc.fsf@wine.dyndns.org>
+
+Nikolay Sivov <bunglehead at gmail.com> writes:
+
+> @@ -0,0 +1,34 @@
+> +/*
+> + * Property schema routines
+> + *
+> + * Copyright 2009 Nikolay Sivov
+> + *
+> + * This library is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU Lesser General Public
+> + * License as published by the Free Software Foundation; either
+> + * version 2.1 of the License, or (at your option) any later version.
+> + *
+> + * This library is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> + * Lesser General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU Lesser General Public
+> + * License along with this library; if not, write to the Free Software
+> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+> + */
+> +
+> +#include <stdarg.h>
+> +
+> +#include "windef.h"
+> +#include "winbase.h"
+> +#include "wine/debug.h"
+> +
+> +WINE_DEFAULT_DEBUG_CHANNEL(propsys);
+> +
+> +HRESULT WINAPI PSRegisterPropertySchema(PCWSTR path)
+> +{
+> +    FIXME("stub\n");
+> +
+> +    return E_NOTIMPL;
+> +}
+
+I don't think you need a new file for this. If someday there's a lot of
+code in there it can be split off to a separate file then.
+
+-- 
+Alexandre Julliard
+julliard at winehq.org
+
+
+From austinenglish at gmail.com  Tue Feb  3 08:30:11 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 3 Feb 2009 08:30:11 -0600
+Subject: Stub DDE interface for Progman.exe
+In-Reply-To: <1233638663.1738.6.camel@jeremiah-desktop>
+References: <1233638663.1738.6.camel@jeremiah-desktop>
+Message-ID: <b6bb06270902030630m12e5c25ayd688071d65fc9a38@mail.gmail.com>
+
+On Mon, Feb 2, 2009 at 11:24 PM, Jeremiah Flerchinger
+<jeremiah.flerchinger at gmail.com> wrote:
+> Stubs basic DDE interface of Progman.exe. Similar to Progman stub in
+> shell32.dll. Both will need to be extended and a 3rd progman interface
+> will need to be added in user32.
+> ---
+>  programs/progman/main.c |  148 +++++++++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 148 insertions(+), 0 deletions(-)
+>
+> diff --git a/programs/progman/main.c b/programs/progman/main.c
+> index 83a346c..51dbcff 100644
+> --- a/programs/progman/main.c
+> +++ b/programs/progman/main.c
+> @@ -56,6 +154,12 @@ int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE prev, LPSTR cmdline, int show
+>   Globals.hGroups             = 0;
+>   Globals.hActiveGroup        = 0;
+>
+> +  /**/
+> +  DdeInitializeW(&dwDDEInst, DdeCallback, APPCLASS_STANDARD, 0);
+> +  hszProgmanTopic = DdeCreateStringHandleW(dwDDEInst, wszProgman, CP_WINUNICODE);
+> +  hszProgmanService = DdeCreateStringHandleW(dwDDEInst, wszProgman, CP_WINUNICODE);
+> +  DdeNameService(dwDDEInst, hszProgmanService, 0, DNS_REGISTER);
+> +
+
+Empty comment.
+
+> +    case WM_DDE_TERMINATE:
+> +      printf("Progman.exe: WM_DDE_TERMINATE stub \n");
+> +//      PostMessage( (HWND)wParam, WM_DDE_TERMINATE, (WPARAM)hWnd, 0);
+> +      break;
+>     }
+>   return(DefFrameProc(hWnd, Globals.hMDIWnd, msg, wParam, lParam));
+>  }
+
+C++ comments are not allowed.
+
+Thanks for helping Wine!
+
+-- 
+-Austin
+
+
+From bunglehead at gmail.com  Tue Feb  3 08:41:27 2009
+From: bunglehead at gmail.com (Nikolay Sivov)
+Date: Tue, 03 Feb 2009 17:41:27 +0300
+Subject: propsys: Stub for PSRegisterPropertySchema (resent)
+In-Reply-To: <871vufy4tc.fsf@wine.dyndns.org>
+References: <1233665566.5225.1.camel@debian.localdomain>
+	<871vufy4tc.fsf@wine.dyndns.org>
+Message-ID: <49885797.5060203@gmail.com>
+
+Alexandre Julliard wrote:
+> Nikolay Sivov <bunglehead at gmail.com> writes:
+>
+>   
+>> @@ -0,0 +1,34 @@
+>> +/*
+>> + * Property schema routines
+>> + *
+>> + * Copyright 2009 Nikolay Sivov
+>> + *
+>> + * This library is free software; you can redistribute it and/or
+>> + * modify it under the terms of the GNU Lesser General Public
+>> + * License as published by the Free Software Foundation; either
+>> + * version 2.1 of the License, or (at your option) any later version.
+>> + *
+>> + * This library is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+>> + * Lesser General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU Lesser General Public
+>> + * License along with this library; if not, write to the Free Software
+>> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+>> + */
+>> +
+>> +#include <stdarg.h>
+>> +
+>> +#include "windef.h"
+>> +#include "winbase.h"
+>> +#include "wine/debug.h"
+>> +
+>> +WINE_DEFAULT_DEBUG_CHANNEL(propsys);
+>> +
+>> +HRESULT WINAPI PSRegisterPropertySchema(PCWSTR path)
+>> +{
+>> +    FIXME("stub\n");
+>> +
+>> +    return E_NOTIMPL;
+>> +}
+>>     
+>
+> I don't think you need a new file for this. If someday there's a lot of
+> code in there it can be split off to a separate file then.
+>
+>   
+Ok. Patch sent.
+
+
+From dmitry at codeweavers.com  Tue Feb  3 08:55:33 2009
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Tue, 3 Feb 2009 22:55:33 +0800
+Subject: Stub DDE interface for Progman.exe
+References: <1233638663.1738.6.camel@jeremiah-desktop>
+Message-ID: <9F8654A4E6D2406FAE4492830CF39A84@DMITRY>
+
+"Jeremiah Flerchinger" <jeremiah.flerchinger at gmail.com> wrote:
+
+> Stubs basic DDE interface of Progman.exe. Similar to Progman stub in
+> shell32.dll. Both will need to be extended and a 3rd progman interface
+> will need to be added in user32.
+
+Progman DDE interface should be implemented by shell32.dll, nowhere else.
+
+-- 
+Dmitry.
+
+
+From dmitry at codeweavers.com  Tue Feb  3 08:58:11 2009
+From: dmitry at codeweavers.com (Dmitry Timoshkov)
+Date: Tue, 3 Feb 2009 22:58:11 +0800
+Subject: kernel32/tests: Add a CreateMutex test. (Win9X todo)
+References: <4987E40A.3020309@gmx.de>
+Message-ID: <47E54A6A0B0349118F7706F38855C11D@DMITRY>
+
+"Florian Tobias Schandinat" <FlorianSchandinat at gmx.de> wrote:
+
+> this test shows a difference between Win9X and NT. (tested on Win98SE
+> and WinXP) Some apps expect the Win9X behaviour to work. I don't know
+> what's the right way to fix it. Any advice or patch is welcome.
+
+How do that apps work under NT based Windows versions like XP or Vista?
+
+-- 
+Dmitry.
+
+
+From paul.vriens.wine at gmail.com  Tue Feb  3 11:21:41 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Tue, 03 Feb 2009 18:21:41 +0100
+Subject: shdocvw: OnAmbientPropertyChange should refresh all properties
+	with	a DISPID_UNKNOWN (try 2)
+In-Reply-To: <4988129D.5050306@hotmail.com>
+References: <4988129D.5050306@hotmail.com>
+Message-ID: <49887D25.5050604@gmail.com>
+
+Alistair Leslie-Hughes wrote:
+> Hi,
+>    Added Tests
+> 
+> Changelog:
+>     shdocvw: OnAmbientPropertyChange should refresh all properties with 
+> a DISPID_UNKNOWN
+> 
+> Best Regards
+>  Alistair Leslie-Hughes
+> 
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+Hi,
+
+These new tests fails on W98, NT4, W2K3 and Vista (no other reports are in yet). 
+Could you have a look?
+
+-- 
+Cheers,
+
+Paul.
+
+
+From jacek at codeweavers.com  Tue Feb  3 11:34:36 2009
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Tue, 03 Feb 2009 18:34:36 +0100
+Subject: shdocvw: OnAmbientPropertyChange should refresh all properties
+	with	a DISPID_UNKNOWN (try 2)
+In-Reply-To: <49887D25.5050604@gmail.com>
+References: <4988129D.5050306@hotmail.com> <49887D25.5050604@gmail.com>
+Message-ID: <4988802C.5090501@codeweavers.com>
+
+Paul Vriens wrote:
+> Alistair Leslie-Hughes wrote:
+>   
+>> Hi,
+>>    Added Tests
+>>
+>> Changelog:
+>>     shdocvw: OnAmbientPropertyChange should refresh all properties with 
+>> a DISPID_UNKNOWN
+>>
+>> Best Regards
+>>  Alistair Leslie-Hughes
+>>
+>>
+>>
+>>
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>     
+> Hi,
+>
+> These new tests fails on W98, NT4, W2K3 and Vista (no other reports are in yet). 
+> Could you have a look?
+>   
+
+Alistair, also your patch leaves tests in wrong state after call to 
+test_ambient_unknown with false is_clientsite.
+
+
+Jacek
+
+
+
+From zgold at bluesata.com  Tue Feb  3 11:44:46 2009
+From: zgold at bluesata.com (Zachary Goldberg)
+Date: Tue, 3 Feb 2009 12:44:46 -0500
+Subject: Fixing AppDB once and for all
+Message-ID: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+
+All,
+
+So it seems to be almost every other day now when somebody mentions
+how broken the appdb rating system is.  This "broken-ness" has had
+several high level discussions on Wine-Devel.  There have also been
+many, many proposed solutions to this problem.
+
+I do not wish to discuss these problems or these solutions in this
+thread.  It is time something was done about this.  By done I mean
+agreed upon (probably the harder part) then implemented in code and
+published to the winehq server(s).
+
+I'de like to arrange an IRC discussion for all those interested in
+finalizing an attack plan, and then assigning the responsibility of
+doing it to somebody who is capable and has the time (perhaps myself).
+
+Lets (arbitrarily) set a time for the chat at:
+
+When: 11PM UTC (6PM EST) 2/6/09 (Friday)
+Where: #winehackers
+
+If this arbitrary time seems to be poorly chosen for a large number of
+people then please propose an alternative well in advance so all are
+aware of it.
+
+--Zach
+
+
+From paul.vriens.wine at gmail.com  Tue Feb  3 13:03:56 2009
+From: paul.vriens.wine at gmail.com (Paul Vriens)
+Date: Tue, 03 Feb 2009 20:03:56 +0100
+Subject: advapi32:  add Security Label sids  used by IE7
+In-Reply-To: <49889312.8030906@codeweavers.com>
+References: <49889312.8030906@codeweavers.com>
+Message-ID: <4988951C.8010703@gmail.com>
+
+Aric Stewart wrote:
+> ---
+>  dlls/advapi32/security.c |    4 ++++
+>  include/winnt.h          |   16 +++++++++++++++-
+>  2 files changed, 19 insertions(+), 1 deletions(-)
+> 
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> 
+You added WinUntrustedLabelSid to winnt.h but not to security.c. Is that correct?
+
+-- 
+Cheers,
+
+Paul.
+
+
+From aric at codeweavers.com  Tue Feb  3 13:08:23 2009
+From: aric at codeweavers.com (Aric Stewart)
+Date: Tue, 03 Feb 2009 13:08:23 -0600
+Subject: advapi32:  add Security Label sids  used by IE7
+In-Reply-To: <4988951C.8010703@gmail.com>
+References: <49889312.8030906@codeweavers.com> <4988951C.8010703@gmail.com>
+Message-ID: <49889627.4020300@codeweavers.com>
+
+yes as far as i can tell there was not an Untrusted label that is 
+defined like the others.  I included it in winnt.h for completeness.
+
+-aric
+
+Paul Vriens wrote:
+> Aric Stewart wrote:
+>> ---
+>>  dlls/advapi32/security.c |    4 ++++
+>>  include/winnt.h          |   16 +++++++++++++++-
+>>  2 files changed, 19 insertions(+), 1 deletions(-)
+>>
+>>
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+> You added WinUntrustedLabelSid to winnt.h but not to security.c. Is that 
+> correct?
+> 
+
+
+From jjmckenzie51 at earthlink.net  Tue Feb  3 13:19:39 2009
+From: jjmckenzie51 at earthlink.net (James Mckenzie)
+Date: Tue, 3 Feb 2009 12:19:39 -0700 (GMT-07:00)
+Subject: Fixing AppDB once and for all
+Message-ID: <23171498.1233688779221.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+
+Zachary Goldberg <zgold at bluesata.com>
+>Sent: Feb 3, 2009 10:44 AM
+>To: Wine Devel <wine-devel at winehq.org>
+>Cc: Jeremy Newman <jnewman at codeweavers.com>
+>Subject: Fixing AppDB once and for all
+>
+>All,
+>Lets (arbitrarily) set a time for the chat at:
+>
+>When: 11PM UTC (6PM EST) 2/6/09 (Friday)
+>Where: #winehackers
+>
+This would be too early for people on the West Coast of the United States by about three hours.
+
+No time will be satisfactory for all people who work on this project.  
+
+What I feel is necessary at this point is to collect who lives in what time zone so that we incovience as few people as possible. 
+
+Since this would be Saturday in Asia, this time may work for the majority of the people on this list.
+
+Also, will there be a transcript of the discussion and where will it be placed since this has a major impact on the functionality of the Applications Database.
+
+James McKenzie
+
+
+
+From zgold at bluesata.com  Tue Feb  3 13:27:25 2009
+From: zgold at bluesata.com (Zachary Goldberg)
+Date: Tue, 3 Feb 2009 14:27:25 -0500
+Subject: Fixing AppDB once and for all
+In-Reply-To: <23171498.1233688779221.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+References: <23171498.1233688779221.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+Message-ID: <b050a5e70902031127i59ec4232od98c6ce5daa6fe4b@mail.gmail.com>
+
+2009/2/3 James Mckenzie <jjmckenzie51 at earthlink.net>:
+> This would be too early for people on the West Coast of the United States by about three hours.
+>
+> No time will be satisfactory for all people who work on this project.
+>
+> What I feel is necessary at this point is to collect who lives in what time zone so that we incovience as few people as possible.
+>
+> Since this would be Saturday in Asia, this time may work for the majority of the people on this list.
+>
+> Also, will there be a transcript of the discussion and where will it be placed since this has a major impact on the functionality of the Applications Database.
+>
+> James McKenzie
+>
+>
+
+I have made a wiki on winehq with an agenda which will be updated with
+the results (and maybe transcript?) of the conversation.
+
+http://wiki.winehq.org/AppDBUpgrades
+
+
+From wine.dev at web.de  Tue Feb  3 14:37:54 2009
+From: wine.dev at web.de (Detlef Riekenberg)
+Date: Tue, 03 Feb 2009 21:37:54 +0100
+Subject: Fixing AppDB once and for all
+In-Reply-To: <23171498.1233688779221.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+References: <23171498.1233688779221.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+Message-ID: <1233693474.7642.3.camel@p4.lan>
+
+On Di, 2009-02-03 at 12:19 -0700, James Mckenzie wrote:
+> What I feel is necessary at this point is to collect who lives in what
+> time zone so that we incovience as few people as possible. 
+
+I added a TZ column long ago, when the developer list was on the
+Fontpage.
+The infos are now here:  http://wiki.winehq.org/WhosWho
+
+
+-- 
+ 
+By by ... Detlef
+
+
+
+
+From xerox_xerox2000 at yahoo.co.uk  Tue Feb  3 15:12:02 2009
+From: xerox_xerox2000 at yahoo.co.uk (Louis Lenders)
+Date: Tue, 3 Feb 2009 21:12:02 +0000 (UTC)
+Subject: Fixing AppDB once and for all
+References: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+Message-ID: <loom.20090203T205907-677@post.gmane.org>
+
+Zachary Goldberg <zgold <at> bluesata.com> writes:
+
+> 
+> All,
+> 
+> So it seems to be almost every other day now when somebody mentions
+> how broken the appdb rating system is.  This "broken-ness" has had
+> several high level discussions on Wine-Devel.  There have also been
+> many, many proposed solutions to this problem.
+> 
+> I do not wish to discuss these problems or these solutions in this
+> thread.  It is time something was done about this.  By done I mean
+> agreed upon (probably the harder part) then implemented in code and
+> published to the winehq server(s).
+> 
+> I'de like to arrange an IRC discussion for all those interested in
+> finalizing an attack plan, and then assigning the responsibility of
+> doing it to somebody who is capable and has the time (perhaps myself).
+> 
+> Lets (arbitrarily) set a time for the chat at:
+> 
+> When: 11PM UTC (6PM EST) 2/6/09 (Friday)
+> Where: #winehackers
+> 
+
+
+I think this will be a very difficult if not impossible task to accomplish.
+If we talk about test results, it's the app maintainer that is responsible
+for the correctness of the ratings and test results. What would you want to
+do if you think that the ratings for application X are overestimated? 
+Remove the maintainer from the application entry in appdb? 
+Then you'd have to check yourself for every app, if ratings are correct.
+
+BTW, also the opposite occurs very frequently: applications that are rated 
+too low (garbage) whereas they are probably bronze or higher. When users
+send in garbage test results, i'm always tempted to try out the app myself
+if it has free download. In many cases it appears the application needs 
+additional packages like mdac, vbrun or anything. Also many garbage results
+come from installing in a busted wineprefix ( just do a winetricks dcom98, 
+and you'll get garbage results for apps in many cases), and they run just
+ fine in a new ~/.wine
+
+So if someone shouts: "Hey, the app is rated gold, but for me it crashes"
+it's not necessarily the "gold-rater" who's wrong.
+
+My conclusion really is, it's very difficult to get the ratings correct, but 
+always worth a try of course. What's more important is I think , that the 
+appdb is rich source of info on how to get application X or Y running.
+
+Regards
+
+
+So my conclusion is it will be very difficult to get 
+
+
+
+
+
+
+From sparr0 at gmail.com  Tue Feb  3 15:21:22 2009
+From: sparr0 at gmail.com (Sparr)
+Date: Tue, 3 Feb 2009 16:21:22 -0500
+Subject: Fixing AppDB once and for all
+In-Reply-To: <loom.20090203T205907-677@post.gmane.org>
+References: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+	<loom.20090203T205907-677@post.gmane.org>
+Message-ID: <811b48bd0902031321m7adc20f1g64cd9d6b7223579f@mail.gmail.com>
+
+On Tue, Feb 3, 2009 at 4:12 PM, Louis Lenders
+<xerox_xerox2000 at yahoo.co.uk> wrote:
+> Zachary Goldberg <zgold <at> bluesata.com> writes:
+> I think this will be a very difficult if not impossible task to accomplish.
+> If we talk about test results, it's the app maintainer that is responsible
+> for the correctness of the ratings and test results. What would you want to
+> do if you think that the ratings for application X are overestimated?
+> Remove the maintainer from the application entry in appdb?
+> Then you'd have to check yourself for every app, if ratings are correct.
+
+These problems could be mitigated by making it easier to submit test
+results.  Even something as simple as a 5-star "how well does it work
+for you" system that any registered user can submit with a single
+click.  Yes, the information we get will be less specific, but we will
+get a *LOT* more of it.  I would rather know that 1740 people have
+gotten a game to work and 400 haven't (and no other information than
+that) than to see just just five detailed test results saying
+gold/gold/silver/silver/garbage.
+
+
+From zgold at bluesata.com  Tue Feb  3 16:00:00 2009
+From: zgold at bluesata.com (Zachary Goldberg)
+Date: Tue, 3 Feb 2009 17:00:00 -0500
+Subject: Fixing AppDB once and for all
+In-Reply-To: <811b48bd0902031321m7adc20f1g64cd9d6b7223579f@mail.gmail.com>
+References: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+	<loom.20090203T205907-677@post.gmane.org>
+	<811b48bd0902031321m7adc20f1g64cd9d6b7223579f@mail.gmail.com>
+Message-ID: <b050a5e70902031400y5cee0802r229318748f494808@mail.gmail.com>
+
+2009/2/3 Sparr <sparr0 at gmail.com>:
+> On Tue, Feb 3, 2009 at 4:12 PM, Louis Lenders
+> <xerox_xerox2000 at yahoo.co.uk> wrote:
+>> Zachary Goldberg <zgold <at> bluesata.com> writes:
+>> I think this will be a very difficult if not impossible task to accomplish.
+>> If we talk about test results, it's the app maintainer that is responsible
+>> for the correctness of the ratings and test results. What would you want to
+>> do if you think that the ratings for application X are overestimated?
+>> Remove the maintainer from the application entry in appdb?
+>> Then you'd have to check yourself for every app, if ratings are correct.
+>
+> These problems could be mitigated by making it easier to submit test
+> results.  Even something as simple as a 5-star "how well does it work
+> for you" system that any registered user can submit with a single
+> click.  Yes, the information we get will be less specific, but we will
+> get a *LOT* more of it.  I would rather know that 1740 people have
+> gotten a game to work and 400 haven't (and no other information than
+> that) than to see just just five detailed test results saying
+> gold/gold/silver/silver/garbage.
+>
+>
+>
+
+As I mentioned previously this thread's purpose is not to decide how
+this is to be done.  Thats what the IRC meeting is for.
+
+We can go on and on about how its best to be done over wine-devel but
+unless the people who have a stake in the matter and the ability to do
+it sit down and make some hard decisions the talk won't result in
+action.
+
+
+From alex at thehandofagony.com  Tue Feb  3 16:02:12 2009
+From: alex at thehandofagony.com (Alexander Nicolaysen =?iso-8859-1?q?S=F8rnes?=)
+Date: Tue, 3 Feb 2009 23:02:12 +0100
+Subject: Fixing AppDB once and for all
+In-Reply-To: <b050a5e70902031127i59ec4232od98c6ce5daa6fe4b@mail.gmail.com>
+References: <23171498.1233688779221.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+	<b050a5e70902031127i59ec4232od98c6ce5daa6fe4b@mail.gmail.com>
+Message-ID: <200902032302.12838.alex@thehandofagony.com>
+
+Tirsdag 03 februar 2009 20:27:25 skrev Zachary Goldberg:
+> 2009/2/3 James Mckenzie <jjmckenzie51 at earthlink.net>:
+> > This would be too early for people on the West Coast of the United States
+> > by about three hours.
+> >
+> > No time will be satisfactory for all people who work on this project.
+> >
+> > What I feel is necessary at this point is to collect who lives in what
+> > time zone so that we incovience as few people as possible.
+> >
+> > Since this would be Saturday in Asia, this time may work for the majority
+> > of the people on this list.
+> >
+> > Also, will there be a transcript of the discussion and where will it be
+> > placed since this has a major impact on the functionality of the
+> > Applications Database.
+> >
+> > James McKenzie
+>
+> I have made a wiki on winehq with an agenda which will be updated with
+> the results (and maybe transcript?) of the conversation.
+>
+> http://wiki.winehq.org/AppDBUpgrades
+
+
+Great initiative!  But I don't think I can make it to the meeting. I recently 
+got appdb commit access, so I can see about making the changes.
+
+What if we add a small questionnaire which will then pick the approprite 
+Gold/Silver ... rating?
+
+
+Alexander N. S?rnes
+
+
+From dank at kegel.com  Tue Feb  3 16:09:51 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Tue, 3 Feb 2009 14:09:51 -0800
+Subject: MSVCRT: Still problems in ASCII Mode
+In-Reply-To: <18824.48481.619016.88818@elektron.ikp.physik.tu-darmstadt.de>
+References: <18824.48481.619016.88818@elektron.ikp.physik.tu-darmstadt.de>
+Message-ID: <a71bd89a0902031409o48aa4e6eibdbbb08445adef4f@mail.gmail.com>
+
+Thanks.
+Please don't use rand() in testcases, though.
+Would a constant 'a' suffice in this case?
+
+Which app did you find this in, btw?
+
+On Tue, Feb 3, 2009 at 1:55 PM, Uwe Bonnes
+<bon at elektron.ikp.physik.tu-darmstadt.de> wrote:
+> Hello,
+>
+> it seems that in ASCII mode, fseek() may disturb reading. Appended patch
+> adds a todo_wine.
+>
+> Bye
+> --
+> Uwe Bonnes                bon at elektron.ikp.physik.tu-darmstadt.de
+>
+> Institut fuer Kernphysik  Schlossgartenstrasse 9  64289 Darmstadt
+> --------- Tel. 06151 162516 -------- Fax. 06151 164321 ----------
+> diff --git a/dlls/msvcrt/tests/file.c b/dlls/msvcrt/tests/file.c
+> index 9032e51..2a72212 100644
+> --- a/dlls/msvcrt/tests/file.c
+> +++ b/dlls/msvcrt/tests/file.c
+> @@ -306,7 +306,8 @@ static void test_asciimode(void)
+>  {
+>     FILE *fp;
+>     char buf[64];
+> -    int c, i, j;
+> +    int c, i, j, done, count1, count2;
+> +
+>
+>     /* Simple test of CR CR LF handling.  Test both fgets and fread code paths, they're different! */
+>     fp = fopen("ascii.tst", "wb");
+> @@ -372,6 +373,46 @@ static void test_asciimode(void)
+>     ok((c = fgetc(fp)) == '1', "fgetc fails to read next char when positioned on \\r\n");
+>     fclose(fp);
+>
+> +    fp= fopen("ascii.tst","wb");
+> +    for (i=0; i<1000; i++)
+> +      {
+> +       unsigned char c = (rand()+ ' ') & 0x7f;
+> +       if (isgraph(c) || (c == ' '))
+> +         fputc(c, fp);
+> +       else if ((c == '\r') || (c == '\n'))
+> +         fputs("\r\n", fp);
+> +      }
+> +    fclose(fp);
+> +
+> +    done = 0;
+> +    count1 = 0;
+> +
+> +    fp = fopen("ascii.tst", "r");
+> +    while (!done)
+> +      {
+> +       c= fgetc(fp);
+> +       if (c == EOF)
+> +         done =  1;
+> +       else if (isalnum(c))
+> +         count1 ++;
+> +      }
+> +    fclose(fp);
+> +
+> +    done = 0;
+> +    count2 = 0;
+> +
+> +    fp = fopen("ascii.tst", "r");
+> +    while (!done)
+> +      {
+> +       c= fgetc(fp);
+> +       fseek(fp, 0, SEEK_CUR);
+> +       if (c == EOF)
+> +         done =  1;
+> +       else if (isalnum(c))
+> +         count2 ++;
+> +     }
+> +    fclose(fp);
+> +    todo_wine ok((count1 == count2), "fseek caused short read %d vs %d\n", count2, count1);
+>     unlink("ascii.tst");
+>  }
+>
+>
+
+
+From diaasami at gmail.com  Tue Feb  3 16:18:57 2009
+From: diaasami at gmail.com (Diaa Sami)
+Date: Wed, 04 Feb 2009 00:18:57 +0200
+Subject: wine honor roll slashdotted
+In-Reply-To: <d04858af0902030615m2945eaecr98fe50f6ff4bc3d4@mail.gmail.com>
+References: <25032589.1233669829567.JavaMail.root@elwamui-huard.atl.sa.earthlink.net>
+	<d04858af0902030615m2945eaecr98fe50f6ff4bc3d4@mail.gmail.com>
+Message-ID: <4988C2D1.80907@gmail.com>
+
+Sorry for this off-topic message but can someone add HFS(Http File 
+Server - http://www.rejetto.com/hfs/ ) to the list ?
+
+Thanks
+
+
+From diaasami at gmail.com  Tue Feb  3 16:18:57 2009
+From: diaasami at gmail.com (Diaa Sami)
+Date: Wed, 04 Feb 2009 00:18:57 +0200
+Subject: wine honor roll slashdotted
+In-Reply-To: <d04858af0902030615m2945eaecr98fe50f6ff4bc3d4@mail.gmail.com>
+References: <25032589.1233669829567.JavaMail.root@elwamui-huard.atl.sa.earthlink.net>
+	<d04858af0902030615m2945eaecr98fe50f6ff4bc3d4@mail.gmail.com>
+Message-ID: <4988C2D1.80907@gmail.com>
+
+Sorry for this off-topic message but can someone add HFS(Http File 
+Server - http://www.rejetto.com/hfs/ ) to the list ?
+
+Thanks
+
+
+
+From austinenglish at gmail.com  Tue Feb  3 16:25:06 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 3 Feb 2009 16:25:06 -0600
+Subject: wine honor roll slashdotted
+In-Reply-To: <4988C2D1.80907@gmail.com>
+References: <25032589.1233669829567.JavaMail.root@elwamui-huard.atl.sa.earthlink.net>
+	<d04858af0902030615m2945eaecr98fe50f6ff4bc3d4@mail.gmail.com>
+	<4988C2D1.80907@gmail.com>
+Message-ID: <b6bb06270902031425q1a9067f1o1be3eaaab3d7defc@mail.gmail.com>
+
+On Tue, Feb 3, 2009 at 4:18 PM, Diaa Sami <diaasami at gmail.com> wrote:
+> Sorry for this off-topic message but can someone add HFS(Http File
+> Server - http://www.rejetto.com/hfs/ ) to the list ?
+>
+> Thanks
+>
+>
+>
+
+It's a wiki, you could've done so yourself...but I've added it.
+
+-- 
+-Austin
+
+
+From scott at open-vote.org  Tue Feb  3 16:27:37 2009
+From: scott at open-vote.org (Scott Ritchie)
+Date: Tue, 03 Feb 2009 14:27:37 -0800
+Subject: Fixing AppDB once and for all
+In-Reply-To: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+References: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+Message-ID: <4988C4D9.7020302@open-vote.org>
+
+Zachary Goldberg wrote:
+> All,
+> 
+> So it seems to be almost every other day now when somebody mentions
+> how broken the appdb rating system is.  This "broken-ness" has had
+> several high level discussions on Wine-Devel.  There have also been
+> many, many proposed solutions to this problem.
+> 
+> I do not wish to discuss these problems or these solutions in this
+> thread.  It is time something was done about this.  By done I mean
+> agreed upon (probably the harder part) then implemented in code and
+> published to the winehq server(s).
+> 
+> I'de like to arrange an IRC discussion for all those interested in
+> finalizing an attack plan, and then assigning the responsibility of
+> doing it to somebody who is capable and has the time (perhaps myself).
+> 
+> Lets (arbitrarily) set a time for the chat at:
+> 
+> When: 11PM UTC (6PM EST) 2/6/09 (Friday)
+> Where: #winehackers
+> 
+> If this arbitrary time seems to be poorly chosen for a large number of
+> people then please propose an alternative well in advance so all are
+> aware of it.
+> 
+> --Zach
+
+Zach, I completely agree with this strong-armed measure.  Let's get it
+done. :)
+
+Thanks,
+Scott Ritchie
+
+
+From jjmckenzie51 at earthlink.net  Tue Feb  3 16:28:24 2009
+From: jjmckenzie51 at earthlink.net (James Mckenzie)
+Date: Tue, 3 Feb 2009 15:28:24 -0700 (GMT-07:00)
+Subject: Fixing AppDB once and for all
+Message-ID: <23358424.1233700104361.JavaMail.root@mswamui-chipeau.atl.sa.earthlink.net>
+
+Zachary Goldberg <zgold at bluesata.com>
+>Sent: Feb 3, 2009 12:27 PM
+>To: James Mckenzie <jjmckenzie51 at earthlink.net>
+>Cc: Wine Devel <wine-devel at winehq.org>, Jeremy Newman <jnewman at codeweavers.com>
+>Subject: Re: Fixing AppDB once and for all
+>
+>2009/2/3 James Mckenzie <jjmckenzie51 at earthlink.net>:
+>> This would be too early for people on the West Coast of the United States by about three hours.
+>>
+>> No time will be satisfactory for all people who work on this project.
+>>
+>> What I feel is necessary at this point is to collect who lives in what time zone so that we incovience as few people as possible.
+>>
+>> Since this would be Saturday in Asia, this time may work for the majority of the people on this list.
+>>
+>> Also, will there be a transcript of the discussion and where will it be placed since this has a major impact on the functionality of the Applications Database.
+>>
+>> James McKenzie
+>>
+>>
+>
+>I have made a wiki on winehq with an agenda which will be updated with
+>the results (and maybe transcript?) of the conversation.
+>
+>http://wiki.winehq.org/AppDBUpgrades
+
+Thank you for your forward thinking and thoughtfulness.  I look forward to reading the Wiki and reviewing what is determined during the IRC conversation as I will not be able to attend.
+
+James McKenzie
+
+
+
+From branan at gmail.com  Tue Feb  3 16:32:57 2009
+From: branan at gmail.com (Branan Riley)
+Date: Tue, 3 Feb 2009 14:32:57 -0800
+Subject: Fixing AppDB once and for all
+In-Reply-To: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+References: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+Message-ID: <cad96db0902031432k5ea7c457jdc917a37e977f7b3@mail.gmail.com>
+
+On Tue, Feb 3, 2009 at 9:44 AM, Zachary Goldberg <zgold at bluesata.com> wrote:
+> All,
+>
+> So it seems to be almost every other day now when somebody mentions
+> how broken the appdb rating system is.  This "broken-ness" has had
+> several high level discussions on Wine-Devel.  There have also been
+> many, many proposed solutions to this problem.
+>
+> I do not wish to discuss these problems or these solutions in this
+> thread.  It is time something was done about this.  By done I mean
+> agreed upon (probably the harder part) then implemented in code and
+> published to the winehq server(s).
+>
+> I'de like to arrange an IRC discussion for all those interested in
+> finalizing an attack plan, and then assigning the responsibility of
+> doing it to somebody who is capable and has the time (perhaps myself).
+>
+> Lets (arbitrarily) set a time for the chat at:
+>
+> When: 11PM UTC (6PM EST) 2/6/09 (Friday)
+> Where: #winehackers
+>
+> If this arbitrary time seems to be poorly chosen for a large number of
+> people then please propose an alternative well in advance so all are
+> aware of it.
+>
+> --Zach
+
+I have some thoughts on the subject. I'll try to be there
+
+Branan
+
+
+From austinenglish at gmail.com  Tue Feb  3 16:35:49 2009
+From: austinenglish at gmail.com (Austin English)
+Date: Tue, 3 Feb 2009 16:35:49 -0600
+Subject: Fixing AppDB once and for all
+In-Reply-To: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+References: <b050a5e70902030944x15a08a8y266ef1b63387a462@mail.gmail.com>
+Message-ID: <b6bb06270902031435i173d8e47m41595b7a3bbc1152@mail.gmail.com>
+
+On Tue, Feb 3, 2009 at 11:44 AM, Zachary Goldberg <zgold at bluesata.com> wrote:
+> All,
+>
+> So it seems to be almost every other day now when somebody mentions
+> how broken the appdb rating system is.  This "broken-ness" has had
+> several high level discussions on Wine-Devel.  There have also been
+> many, many proposed solutions to this problem.
+>
+> I do not wish to discuss these problems or these solutions in this
+> thread.  It is time something was done about this.  By done I mean
+> agreed upon (probably the harder part) then implemented in code and
+> published to the winehq server(s).
+>
+> I'de like to arrange an IRC discussion for all those interested in
+> finalizing an attack plan, and then assigning the responsibility of
+> doing it to somebody who is capable and has the time (perhaps myself).
+>
+> Lets (arbitrarily) set a time for the chat at:
+>
+> When: 11PM UTC (6PM EST) 2/6/09 (Friday)
+> Where: #winehackers
+>
+> If this arbitrary time seems to be poorly chosen for a large number of
+> people then please propose an alternative well in advance so all are
+> aware of it.
+>
+> --Zach
+>
+>
+>
+
+Thanks for taking the initiative! Count me in.
+
+-- 
+-Austin
+
+
+From jacek at codeweavers.com  Tue Feb  3 17:38:49 2009
+From: jacek at codeweavers.com (Jacek Caban)
+Date: Wed, 04 Feb 2009 00:38:49 +0100
+Subject: shdocvw: Correct OnAmbientPropertyChange regession
+In-Reply-To: <4988BD12.9030905@hotmail.com>
+References: <4988BD12.9030905@hotmail.com>
+Message-ID: <4988D589.9080708@codeweavers.com>
+
+Alistair Leslie-Hughes wrote:
+> Hi,
+>    After testing on XP, it appears that OnAmbientPropertyChange when 
+> passwed DISP_UNKNOWN doesnt check all properties.
+>
+> Changelog:
+>     shdocvw: Correct OnAmbientPropertyChange regession
+
++    CHECK_NOT_CALLED(Invoke_AMBIENT_OFFLINEIFNOTCONNECTED);
++    CHECK_NOT_CALLED(Invoke_AMBIENT_SILENT);
++    CHECK_NOT_CALLED(Invoke_AMBIENT_USERMODE);
++    CHECK_NOT_CALLED(Invoke_AMBIENT_DLCONTROL);
++    CHECK_NOT_CALLED(Invoke_AMBIENT_USERAGENT);
++    CHECK_NOT_CALLED(Invoke_AMBIENT_PALETTE);
+
+
+
+These checks don't make sense here. If you don't set these calls as 
+expected, CHECK_EXPECT will fail when they are called.
+
+
+Jacek
+
+
+From leslie_alistair at hotmail.com  Tue Feb  3 18:54:15 2009
+From: leslie_alistair at hotmail.com (Alistair Leslie-Hughes)
+Date: Wed, 4 Feb 2009 11:54:15 +1100
+Subject: shdocvw: Correct OnAmbientPropertyChange regession
+References: <4988BD12.9030905@hotmail.com> <4988D589.9080708@codeweavers.com>
+Message-ID: <gmaovn$lpe$1@ger.gmane.org>
+
+
+"Jacek Caban" <jacek at codeweavers.com> wrote in message 
+news:4988D589.9080708 at codeweavers.com...
+> Alistair Leslie-Hughes wrote:
+>> Hi,
+>>    After testing on XP, it appears that OnAmbientPropertyChange when
+>> passwed DISP_UNKNOWN doesnt check all properties.
+>>
+>> Changelog:
+>>     shdocvw: Correct OnAmbientPropertyChange regession
+>
+> +    CHECK_NOT_CALLED(Invoke_AMBIENT_OFFLINEIFNOTCONNECTED);
+> +    CHECK_NOT_CALLED(Invoke_AMBIENT_SILENT);
+> +    CHECK_NOT_CALLED(Invoke_AMBIENT_USERMODE);
+> +    CHECK_NOT_CALLED(Invoke_AMBIENT_DLCONTROL);
+> +    CHECK_NOT_CALLED(Invoke_AMBIENT_USERAGENT);
+> +    CHECK_NOT_CALLED(Invoke_AMBIENT_PALETTE);
+>
+>
+>
+> These checks don't make sense here. If you don't set these calls as
+> expected, CHECK_EXPECT will fail when they are called.
+>
+Hi Jacek.
+
+I was unsure about the SET_EXPECT.  Thanks
+
+Best Regards
+ Alistair Leslie-Hughes
+
+
+
+
+
+From bon at elektron.ikp.physik.tu-darmstadt.de  Tue Feb  3 18:56:42 2009
+From: bon at elektron.ikp.physik.tu-darmstadt.de (Uwe Bonnes)
+Date: Wed, 4 Feb 2009 01:56:42 +0100
+Subject: MSVCRT: Still problems in ASCII Mode
+In-Reply-To: <a71bd89a0902031409o48aa4e6eibdbbb08445adef4f@mail.gmail.com>
+References: <18824.48481.619016.88818@elektron.ikp.physik.tu-darmstadt.de>
+	<a71bd89a0902031409o48aa4e6eibdbbb08445adef4f@mail.gmail.com>
+Message-ID: <18824.59338.108700.626013@elektron.ikp.physik.tu-darmstadt.de>
+
+>>>>> "Dan" == Dan Kegel <dank at kegel.com> writes:
+
+    Dan> Thanks.  Please don't use rand() in testcases, though.  Would a
+    Dan> constant 'a' suffice in this case?
+
+    Dan> Which app did you find this in, btw?
+
+It the application that can be downloaded for free after registration on
+http://forms.analog.com/form_pages/rfcomms/adisimpll.asp?ref=ASC-PR-067
+running the tutorial
+
+Appended a changed test case, writing one single line. It starts to fail
+when the file, including CR and LF gets bigger then 512 bytes. This hits
+probably 
+                /* in text mode, strip \r if followed by \n.
+                 * BUG: should save state across calls somehow, so CR LF that
+                 * straddles buffer boundary gets recognized properly?
+                 */
+
+It is not clear, if this  is the real cause for the simpll.exe failure.
+
+Bye
+
+-- 
+Uwe Bonnes                bon at elektron.ikp.physik.tu-darmstadt.de
+
+Institut fuer Kernphysik  Schlossgartenstrasse 9  64289 Darmstadt
+--------- Tel. 06151 162516 -------- Fax. 06151 164321 ----------
+diff --git a/dlls/msvcrt/tests/file.c b/dlls/msvcrt/tests/file.c
+index 9032e51..cd377af 100644
+--- a/dlls/msvcrt/tests/file.c
++++ b/dlls/msvcrt/tests/file.c
+@@ -306,7 +306,7 @@ static void test_asciimode(void)
+ {
+     FILE *fp;
+     char buf[64];
+-    int c, i, j;
++    int c, i, j, done, count1, count2;
+ 
+     /* Simple test of CR CR LF handling.  Test both fgets and fread code paths, they're different! */
+     fp = fopen("ascii.tst", "wb");
+@@ -372,6 +372,44 @@ static void test_asciimode(void)
+     ok((c = fgetc(fp)) == '1', "fgetc fails to read next char when positioned on \\r\n");
+     fclose(fp);
+ 
++    fp= fopen("ascii.tst","wb");
++    for (i=0; i<511; i++)
++      {
++	fputc('a', fp);
++      }
++    fputs("\r\n", fp);
++    fclose(fp);
++
++    done = 0;
++    count1 = 0;
++    
++    fp = fopen("ascii.tst", "r");
++    while (!done)
++      {
++	c= fgetc(fp);
++	if (c == EOF)
++	  done =  1;
++	else if (isgraph(c))
++	  count1 ++;
++      }
++    fclose(fp);
++	
++    done = 0;
++    count2 = 0;
++    
++    fp = fopen("ascii.tst", "r");
++    while (!done)
++      {
++	c= fgetc(fp);
++	fseek(fp, 0, SEEK_CUR);
++	if (c == EOF)
++	  done =  1;
++	else if (isgraph(c))
++	  count2 ++;
++     }
++    fclose(fp);
++    todo_wine ok((count1 == count2), "fseek caused short read %d vs %d\n", count2, count1);
++
+     unlink("ascii.tst");
+ }
+ 
+
+
+From dank at kegel.com  Wed Feb  4 01:00:50 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Tue, 3 Feb 2009 23:00:50 -0800
+Subject: MSVCRT: Still problems in ASCII Mode
+In-Reply-To: <18824.59338.108700.626013@elektron.ikp.physik.tu-darmstadt.de>
+References: <18824.48481.619016.88818@elektron.ikp.physik.tu-darmstadt.de>
+	<a71bd89a0902031409o48aa4e6eibdbbb08445adef4f@mail.gmail.com>
+	<18824.59338.108700.626013@elektron.ikp.physik.tu-darmstadt.de>
+Message-ID: <a71bd89a0902032300x43febf78m7a6ee31613121dc7@mail.gmail.com>
+
+Uwe Bonnes <bon at elektron.ikp.physik.tu-darmstadt.de> wrote:
+> Appended a changed test case, writing one single line. It starts to fail
+> when the file, including CR and LF gets bigger then 512 bytes. This hits
+> probably
+>                /* in text mode, strip \r if followed by \n.
+>                 * BUG: should save state across calls somehow, so CR LF that
+>                 * straddles buffer boundary gets recognized properly?
+>                 */
+
+So it turns out all 'a' obscures the problem.  Here's
+a better test case.  We're seeking to one byte too far
+in the file, and in this test, the last 510 bytes returned
+are off by one.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: fseek.patch
+Type: text/x-patch
+Size: 1292 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090203/6cbd7825/attachment.bin 
+
+From dank at kegel.com  Wed Feb  4 01:57:07 2009
+From: dank at kegel.com (Dan Kegel)
+Date: Tue, 3 Feb 2009 23:57:07 -0800
+Subject: =?windows-1252?Q?Happy_user_says=3A_=22You=92ve_done_the_impossible=2C_and_?=
+	=?windows-1252?Q?it_is_good=2E=22?=
+Message-ID: <a71bd89a0902032357o8fae3c0u575cdf6a3cd7a9b6@mail.gmail.com>
+
+A user is declaring that Wine has succeeded:
+
+http://loobin.wordpress.com/2009/01/13/wine-ascendant/
+
+http://loobin.wordpress.com/2009/02/03/wine-going-production/
+
+
+From luke.leighton at googlemail.com  Tue Feb  3 11:35:22 2009
+From: luke.leighton at googlemail.com (Luke Kenneth Casson Leighton)
+Date: Tue, 3 Feb 2009 17:35:22 +0000
+Subject: ideas and questions for implementation of MessageMode in Named 
+	Pipes
+In-Reply-To: <ced5f0f60902030406i50b97290m6adad0f90c16eefb@mail.gmail.com>
+References: <ced5f0f60902030406i50b97290m6adad0f90c16eefb@mail.gmail.com>
+Message-ID: <ced5f0f60902030935od819627l633b2354e82f81fb@mail.gmail.com>
+
+mwhaaahahah, i just came up with a _horrible_ idea :)
+
+how about: ripping out the use of unix-pipes altogether, and replacing
+them with tdb (trivial database) in a mmap'd file?  the nice thing
+about tdb is that it's LGPL'd.  the messages could be saved and
+transferred via shared memory; tdb is multi-readable /
+multi-writeable, and it would save a bitch-awful job of implementing a
+shared memory sockets emulation layer (which i _have_ seen done,
+once).
+
+l.
+
+
+From FlorianSchandinat at gmx.de  Tue Feb  3 11:37:58 2009
+From: FlorianSchandinat at gmx.de (Florian Tobias Schandinat)
+Date: Tue, 03 Feb 2009 18:37:58 +0100
+Subject: winedos: Improve PIT emulation.
+In-Reply-To: <8763jry6i0.fsf@wine.dyndns.org>
+References: <49861568.1090606@gmx.de> <8763jry6i0.fsf@wine.dyndns.org>
+Message-ID: <498880F6.8090206@gmx.de>
+
+Alexandre Julliard schrieb:
+> Florian Tobias Schandinat <FlorianSchandinat at gmx.de> writes:
+> 
+>> +    /* Convert: time counter -> PIT counter
+>> +     * GetSystemTimeAsFileTime:    10000000 Hz
+>> +     * PIT frequency:               1193182 Hz */
+>> +    val = (DWORD)(val - delta*1193182./10000000.) % (maxval + 1);
+> 
+> You should probably use QueryPerformanceCounter as it already uses the
+> correct frequency.
+
+Thanks, will change it and resend the patch with some minor changes.
+
+
+From FlorianSchandinat at gmx.de  Tue Feb  3 12:01:47 2009
+From: FlorianSchandinat at gmx.de (Florian Tobias Schandinat)
+Date: Tue, 03 Feb 2009 19:01:47 +0100
+Subject: kernel32/tests: Add a CreateMutex test. (Win9X todo)
+In-Reply-To: <47E54A6A0B0349118F7706F38855C11D@DMITRY>
+References: <4987E40A.3020309@gmx.de> <47E54A6A0B0349118F7706F38855C11D@DMITRY>
+Message-ID: <4988868B.1030009@gmx.de>
+
+Dmitry Timoshkov schrieb:
+> "Florian Tobias Schandinat" <FlorianSchandinat at gmx.de> wrote:
+> 
+>> this test shows a difference between Win9X and NT. (tested on Win98SE
+>> and WinXP) Some apps expect the Win9X behaviour to work. I don't know
+>> what's the right way to fix it. Any advice or patch is welcome.
+> 
+> How do that apps work under NT based Windows versions like XP or Vista?
+> 
+
+I have to admit, that I expected it to not work on XP like a bunch of 
+other applications I have. Tried it today and saw that it worked. (that 
+XP machine isn't mine, so testing is a bit difficult)
+To summarize, this is not preventing at least this App from working at 
+this point.
+
+
+From wineappdb at googlemail.com  Tue Feb  3 17:32:23 2009
+From: wineappdb at googlemail.com (IneedAname)
+Date: Tue, 3 Feb 2009 23:32:23 +0000
+Subject: Fixing AppDB once and for all
+In-Reply-To: <200902032302.12838.alex@thehandofagony.com>
+References: <23171498.1233688779221.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
+	<b050a5e70902031127i59ec4232od98c6ce5daa6fe4b@mail.gmail.com>
+	<200902032302.12838.alex@thehandofagony.com>
+Message-ID: <20090203233223.5695d8d1@test-main>
+
+On Tue, 3 Feb 2009 23:02:12 +0100
+Alexander Nicolaysen S?rnes <alex at thehandofagony.com> wrote:
+
+> What if we add a small questionnaire which will then pick the approprite 
+> Gold/Silver ... rating?
+
+That what I like to see.
+
+
+From jeremielapuree at yahoo.fr  Wed Feb  4 02:38:41 2009
+From: jeremielapuree at yahoo.fr (paulo lesgaz)
+Date: Wed, 4 Feb 2009 08:38:41 +0000 (GMT)
+Subject: Need help for D3DXComputeSphereBounding
+Message-ID: <791645.28994.qm@web26002.mail.ukl.yahoo.com>
+
+Hello,
+
+I am trying to implement D3DXComputerSphereBounding. The attached test cases success with a native d3dx9 but fail with a native d3dx8. Can anyone could explain why?
+
+Thanks in advance
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: http://www.winehq.org/pipermail/wine-devel/attachments/20090204/615b0f92/attachment.htm 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Try-of-implementation-of-D3DXComputeSphereBounding.patch
+Type: application/octet-stream
+Size: 6091 bytes
+Desc: not available
+Url : http://www.winehq.org/pipermail/wine-devel/attachments/20090204/615b0f92/attachment.obj 
+

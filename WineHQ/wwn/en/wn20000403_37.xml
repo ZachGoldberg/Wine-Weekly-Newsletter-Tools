@@ -1,0 +1,305 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="37" date="03 Apr 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 37th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="83" size="267" contrib="34" multiples="15" lastweek="19">
+<person posts="8" size="23" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="8" size="16" who="Joshua Thielen &lt;fozey@netzero.com&gt;" />
+<person posts="7" size="18" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="7" size="13" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="6" size="11" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="13" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="3" size="7" who="Peter Hunnisett &lt;hunnise@nortelnetworks.com&gt;" />
+<person posts="2" size="5" who="Steve Langasek &lt;vorlon@dodds.net&gt;" />
+<person posts="2" size="5" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="2" size="5" who="David Lassonde &lt;davidl@macadamian.com&gt;" />
+<person posts="2" size="4" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="2" size="3" who="Rein Klazes &lt;rklazes@casema.net&gt;" />
+<person posts="2" size="3" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="2" size="13" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+</stats>
+
+
+
+<section 
+  title="Integration Wine and Samba"
+  subject="WINE&lt;-&gt;Samba integration"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-304.html"
+>
+
+<p />
+
+Gavriel State fired a discussion on integrating Samba into Wine. Samba 
+is a GPL implementation of the Microsoft SMB protocols and environment 
+which allow the sharing of resources on a network (mounting remote
+drives - known as shares in Microsoft jargon -, browsing resources of
+a distant machine - exported shares, printers... -, discovering the
+other machines attached to the same network...).
+
+<p />
+
+Gavriel's first post was in fact a public answer to a note from
+Jean-Claude Batista: 
+<quote who="Jean-Claude Batista">
+The way I see this implementation consists in three levels. The File
+I/O functions, the Windows Networking API (the WNet functions) and the
+shell functions that deal with virtual folders to implement the
+network neighborhood.
+ 
+Since a filename can consist of a UNC (Universal Naming Convention)
+and a file path, the file I/O functions must be able to find them on
+the network. I believe the less troublesome way to obtain file network
+transparency would be to use "smbmount" (Samba mount tool) to mount
+the network drive to a temporary path and then use this path to access
+the file. Once the file is no longer needed, we would unmount the
+path. I'm not sure I could call smbd functions directly and using the
+C code, it might result in a licensing conflict between Wine and
+Samba. Using smbmount might require to install it as root with the
+SUID bit enabled, so that users can mount the drives.
+
+<p />
+
+Since we need to keep track ok all the mounted drives, I think we should 
+do that in the Wine server side.
+</quote>
+
+
+<p />
+
+Gavriel agreed on the global orientation, but proposed another
+solution regarding the file I/O functions:
+<quote who="Gavriel State">
+There is a library called 'smbwrapper', that if pre-loaded before libc, 
+will replace the libc file management routines with ones that understand
+UNC pathnames. IE: You'd be able to fopen "\\server\share\file" directly.
+Also, you can list the network neighborhood by just doing an ls on /smb.
+There may be a license issue though, in which case we might have to
+use smbmount directly as described above. It's probably worth contacting
+the Samba team via email if it looks like there's a license issue.
+
+<p />
+
+Note that the Corel File Manager does exactly the same kind of thing (using
+smbmount, etc) and they may have already implemented code that might be 
+useful on the WINE side in some of their libraries.</quote>
+
+
+<p />
+
+Gavriel also preferred to mount temporary shares in ~/.wine directory (to
+deal with Unix file permissions issues, read <kcref subject="License change"
+startdate="19 Jan 2000 00:00:00 -0800">the technical details</kcref> - the same as the ones
+for wine-server's socket creation), and noted that some UI parts (like
+getting the user ID and password), and under the hood features (caching the
+passwords for a given session), already written by Corel, shall be reused.
+Printer and File dialogs will also need some more work to integrate the
+Network facilities.
+
+<p />
+
+Steve Langasek sadly posted that, 
+<quote who="Steve Langasek">
+because of a 'design decision' on the part of the glibc team,
+smbwrapper no longer works with glibc: they deliberately removed
+several shadowed function symbols in order to make it impossible to
+use userspace VFS modules. I think this was a downright crummy thing
+to do, but the decision stands for the time being.
+
+<p />
+
+OTOH, smbwrapper could be linked into Wine at a higher level; but at that
+point, you run into the problem of licensing.
+</quote>
+
+
+<p />
+
+Oleg Noskov (also from Corel, but on the CorelLinux part) gave an inner 
+look at the SMB integration shipping with Corel Linux 1.0:
+<quote who="Oleg Noskov">
+Here's what we do in brief:
+<ul>
+   <li />we have a constantly running server process (called netserv)
+which does 
+   <ul>
+      <li />UNC name resolution and handing
+      <li />Credentials (username/domain/password) caching
+      <li />Automounting of shares
+   </ul>
+   <li />we have a shared library (libmwn) which is acting as a wrapper
+for Linux file I/O. We have our wrappers for
+open/fopen/access/stat/unlink etc. library functions and system
+calls. Internally, libmwn looks if a file name is a UNC filename and
+in such case it issues a "netmap" call to the netserv process. Netserv
+mounts the corresponding share in the temporary location if necessary
+(or reuses earlier mounted share if UID of the caller is the same) and
+returns temporary local path to the libmwn. Libmwn passes that name to 
+the native function/system call and returns to the calling
+program. When mounting, netserv uses its credentials cache to find out
+which set of credentials to use. If necessary, user will be prompted
+for new set of credentials (works OK for us). Netserv monitors
+successful network access attempts and updates its cache. 
+
+<p />
+
+Additionally, netserv takes care of garbage collection, usage counters, removal of
+temporary directories,
+</ul>
+
+<p />
+
+Netserv/libmwn are working great in Corel Linux and can be used by
+WINE.
+
+<p />
+
+If WINE is running not in Corel Linux, it is still possible to use all
+of this, provided netserv is launched by some script or application
+before all the UNC-related activity begins.
+
+<p />
+
+Netserv/libmwn are distributed under CPL.
+</quote>
+
+<p />
+
+and Oleg went later on:<quote who="Oleg Noskov">
+Well, at present time libmwn depends on some KDE core libraries and on
+ccqt library (Corel's version on Qt 1.4x). Looks like if WINE team is
+interested in using netserv/libmwn, we should consider extracting UNC
+mapping/wrapping code from libmwn and making it a completely separate
+library (currently libmwn contains LOTS of other stuff needed by Corel
+File Manager).</quote>
+
+<p />
+
+Gavriel State answered:<quote who="Gavriel State">
+The licensing isn't a problem, since WINE is under a BSDish license,
+and soon to switch to the X11 license. What's much more questionable
+is how we can mix WINE code with QT code: can windows handled by WINE
+co-exist in the same process as QT's windows? 
+
+<p />
+
+If not, we have two possible approaches:
+<ol>
+   <li />Make a separate process that handles UI for browsing, etc, and
+have WINE talk to it through a socket.
+   <li />Rewrite netserv/libmwn to be completely independent of the
+underlying GUI system (ie: have them weak link to another library that
+provides UI). That way, we could do a direct WINE UI for browsing and
+password entry in addition to a KDE UI. Doing something like this will
+help the transition to KDE 2.0, and will make GNOME-based usage
+possible as well.
+</ol></quote>
+
+<p />
+
+Everyone (at least the ones who spoke out their minds) agreed that
+option (2), even if it's the most costly one, was the favored one, at 
+first for its flexibility.
+</section>
+
+
+<section 
+  title="Memory protection"
+  subject="Abort CreateDIBitmap when source bits not readable"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-412.html"
+>
+
+<p />
+
+Uwe Bonnes posted a patch which checked, while processing the data
+block of the bitmap, if those bytes were readable. If not, it was just 
+returning an error (instead of the previous behavior which was a
+naughty segmentation fault).
+
+<p />
+
+Alexandre Julliard rejected the patch because testing if the memory
+was valid (with IsBadReadPtr() API) before doing an operation doesn't
+imply, in a multi-threaded environment, that memory will still be
+valid after the check (another thread could for example free the
+memory block).
+
+<p />
+
+Alexandre was also angry at Microsoft:<quote who="Alexandre Julliard">It can be noted
+that most Win95 functions that have an exception handler do it the
+same way (set handler/touch memory/remove handler/do actual function)
+but it is of course wrong. Not that you need that in order to crash
+Win95 anyway... </quote>
+
+<p />
+
+Uwe agreed in general, but asked, regarding another patch (which was
+also using IsBadPtr()) that Alexandre accepted.
+
+<p />
+
+Alexandre pointed out that this patch was using 16 bit IsBadPtr
+functions, which <quote who="Alexandre Julliard">should stay, since we cannot use
+exceptions to trap them (because we are always doing 32-bit accesses
+we bypass the CPU selector checks).</quote>, but that 32 bit IsBadPtr
+functions should be avoided.
+
+<p />
+
+</section>
+
+
+<section 
+  title="strace for NT"
+  subject="[ANNOUNCE] strace for NT"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-04/Subject/article-12.html"
+>
+
+<p />
+
+Joerg Mayer posted the announce an interesting Windows NT tools for
+the Wine developers:
+<quote who="Todd Sabin">
+Hi,
+
+<p />
+
+I've written a debugging/investigation utility for examining the NT
+system calls made by a process. It is meant to be used like the strace
+on linux and other unix OSes.
+
+<p />
+
+An example:
+<code>
+[c:\strace] strace notepad<br />
+1 133 139 NtOpenKey (0x80000000, {24, 0, 0x40, 0, 0, "\Registry\Machine\Software\Microsoft\Windows NT\CurrentVersion\Image  File Execution Options\notepad.exe"}, ... ) == STATUS_OBJECT_NAME_NOT_FOUND<br />
+2 133 139 NtCreateEvent (0x100003, 0x0, 1, 0, ... 8, ) == 0x0<br />
+3 133 139 NtAllocateVirtualMemory (-1, 1243984, 0, 1244028, 8192, 4, ... ) == 0x0<br />
+4 133 139 NtAllocateVirtualMemory (-1, 1243980, 0, 1244032, 4096, 4, ... ) == 0x0<br />
+5 133 139 NtAllocateVirtualMemory (-1, 1243584, 0, 1243644, 4096, 4, ... ) == 0x0<br />
+6 133 139 NtOpenDirectoryObject (0x3, {24, 0, 0x40, 0, 0, "\KnownDlls"}, ... 12, ) == 0x0<br />
+7 133 139 NtOpenSymbolicLinkObject (0x1, {24, 12, 0x40, 0, 0, "KnownDllPath"}, ... 16, ) == 0x0<br />
+8 133 139 NtQuerySymbolicLinkObject (16, ... "C:\WINNT\system32", 0x0, ) == 0x0<br />
+.<br />
+.<br />
+.<br />
+</code>
+For more information and download (including source), see
+<a href="http://razor.bindview.com/tools/desc/strace_readme.html">
+http://razor.bindview.com/tools/desc/strace_readme.html</a> 
+</quote>
+</section>
+
+</kc>

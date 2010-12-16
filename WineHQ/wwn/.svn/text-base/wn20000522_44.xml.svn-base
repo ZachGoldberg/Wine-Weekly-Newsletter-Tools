@@ -1,0 +1,180 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="44" date="22 May 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 44th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="159" size="743" contrib="46" multiples="26" lastweek="21">
+<person posts="19" size="279" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="13" size="26" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="11" size="22" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="10" size="31" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="9" size="38" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="8" size="21" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="8" size="19" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="8" size="10" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="7" size="19" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+</stats>
+
+
+<section 
+  title="OpenGL optimization"
+  subject="Automatic CDECL / STDCALL translation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-1.html"
+  posts="22"
+  startdate="16 May 2000 00:00:00 -0800"
+  enddate="20 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Lionel Ulmer, while toying with the OpenGL support in Wine, wrote:
+
+<quote who="Lionel Ulmer">After doing some benchmarks, I found out that the
+OpenGL performance is not too bad compared to Windows: about 25 % slower on
+the Tirtanium benchmark when removing the X11 critical section protection,
+50 % slower with it.
+
+<p />
+
+Now, I think most of the remaining frame per second are lost in the
+CDECL -&gt; STDCALL conversion of all the OpenGL routines. I looked at
+the code GCC generated for the OpenGL code and it's not really
+efficient: it 'pops' all the arguments in registers and then pushes
+them again for the calling of the CDECL function...
+</quote>
+
+For better comprehension, the Linux OpenGL Windows routines are
+analogous in their prototypes. Only the calling convention
+differs. Linux OpenGL uses the C-decl order, whereas Windows uses the
+STDCALL (or PASCAL) calling convention.
+
+<p />
+
+Lionel was looking for optimized (maybe ASM based) solutions to do the 
+reordering of the parameters.
+
+<p />
+
+Patrik Stridval provided some code he had written for portability
+issues: Patrik wanted to compile Wine with a compiler not supporting
+the stdcall convention, but still keeping the ability to call in
+native DLLs (which export only stdcall functions). Patrik had in mind
+at that time either Solaris on ix86 with the Sun C Compiler (another
+use would be any other platform running an ix86 emulator).
+
+<p />
+
+Various versions of the patch circulated, including differences
+regarding thread safety (some locks must be set before entering the
+OpenGL functions), reentrancy (can an OpenGl function be called - thru 
+this thunking mechanism - while already executing the call to another
+OpenGL function), PIC (since the generated code can be put in a .so
+file, it needs to be Position Independent Code - all references are
+relative).
+
+<p />
+
+No final word has been spoken yet (either on a working patch, nor a
+substantial optimization).
+
+<p />
+
+</section>
+
+
+<section 
+  title="MFC and Wine"
+  subject="MFC questions"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-05/Subject/article-2.html"
+  posts="4"
+  startdate="19 May 2000 00:00:00 -0800"
+  enddate="20 May 2000 00:00:00 -0800"
+>
+
+<p />
+
+Wilbur Dale wrote 
+<quote who="Wilbur Dale">
+Over the past few months I have been working with wine and winelib in my spare
+time. Eventually I hope to port a Win32 app to linux using winelib. The next
+major hurdle in the port is MFC. I see two paths and I am seeking advice and
+help.
+
+<p />
+
+1. Compile MFC.  Several years ago we (Lumin Software) tried to compile MFC. 
+The attempt failed and we found another way to do what we wanted. MS
+documentation states that compiling MFC was deliberately made difficult.
+Considering my experience with stuff they call "easy" I am not looking forward
+to compiling MFC. We are currently using Visual Studio 5 for windows
+development.
+
+<p />
+
+2. Create some code that loads and initializes the MFC library and allows
+access to the MFC functions from within winelib. I know how to do this. I
+successfully ran the EdrTest/EdrLib example from Petzold last weekend. In my
+code, I had edrtest compiled under winelib and it ran the functions using the
+windows compiled edrlib.dll. I think this solution may be easier, but it
+requires over a thousand functions in MFC to be hooked up. However, it looks
+like the process can be automated. There is a text file (MFC42.DEF) with the MFC
+libraries that contains the ordinals and the mangled names. From this file it
+is possible to automatically create the spec file, the pointers to functions,
+and the initialization of the pointers. The automation would require a name
+de-mangler. So far I have found no documentation on MS C++ name mangling.
+</quote>
+
+Wilbur then asked for some advices on how to do it.
+
+<p />
+
+Gavriel State was the first to fire back: 
+<quote who="Gavriel State">
+At Corel, we had MFC compiled and running sample apps in WineLib in late 1998.  
+It's mostly a question of the Wine headers, which weren't originally up to snuff.
+We did quite a bit of work on them, and most of those changes have been contributed
+back to WineHQ, so it should be pretty easy now.  The other thing that was a 
+big deal was getting the startup code working properly - since MFC needs to 
+initialize static data <b>after</b> WineLib gets initialized.  I believe that that
+issue has been addressed now on the WineHQ side with some of the work done on 
+the .spec file tools recently.</quote>
+
+
+<p />
+
+Also, Jeremy White continued on the same path: 
+<quote who="Jutta Wrage">
+Despite your previous experience, and despite my earlier incorrect
+statements, I think that this is simpler than you fear. It's one of
+those tasks that's darkest before the storm - you spend all of your
+energy getting all the include files to work. Once you have <b>one</b>
+object file, the rest go much more quickly (alright, getting it to
+link is also a hairball of a job, but it's tractable &#60;g&#62;).
+
+<p />
+
+If you're not in a hurry, getting MFC to compile, and having a
+documented procedure for compiling it is on our agenda for the
+relatively near future (see the Wine 1.0 task list).</quote>
+
+
+<p />
+
+Gavriel also pointed out some interesting changes in the MFC licence
+from Microsoft. Basically, and without too much of lawyer talking,
+Microsoft removed the need to run code using MFC on a Microsoft
+OS. So, if you have a licence for MFC (of the correct type, seems that 
+SP3 for MSVC 6.0 allows it), you can, for personal use, compile and
+use the MFC lib under Linux!</section>
+
+</kc>

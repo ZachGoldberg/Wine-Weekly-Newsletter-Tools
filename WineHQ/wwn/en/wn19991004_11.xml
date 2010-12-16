@@ -1,0 +1,441 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="11" date="04 Oct 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the eleventh release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+There's been lots of network issue in Danemark this week, leading up
+to an almost inaccessible www.winehq.org site. As of today, the
+situation doesn't look any better.
+
+</intro>
+
+<stats posts="76" size="235" contrib="31" multiples="18" lastweek="18">
+
+<person posts="11" size="29" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="9" size="25" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="5" size="15" who="'Peter Hunnisett' &lt;hunnise@nortelnetworks.com&gt;" />
+<person posts="5" size="11" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="4" size="9" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="9" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="3" size="6" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="3" size="11" who="Klaas van Gend &lt;klaas@vangend.demon.nl&gt;" />
+
+</stats>
+
+<section
+  title="PrintDlg errors"
+  subject="PrintDlg errors"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-378.html"
+>
+
+Jutta Wrage reported a crash with a 16 bit dialog printer. She added
+that it was working correctly before Wine 990723, and provided a list
+made of culprit patches:<quote who="Jutta Wrage">Before the patches, the
+printer dialog was just empty (no printer). T-TARIF.EXE doesn't invoke
+the dialog on printing, so it just works fine with native printer or
+wine postscript printer.</quote>
+
+<p />
+
+Huw Davies and Klaas van Gend both admitted that current
+implementation of PrintDlg16 was rather broken, but none of them would
+put this item high on their priority list (starting with PrintDlg32).
+
+<p />
+
+Jutta also reported that she had no good solution to install a new
+printer under Wine because the control panel was needed for this
+operation (this program doesn't currently run well). Klaas proposed to
+add a new project for supporting the control panel. Any volunteer ?
+
+<p />
+
+Klaas also wrote a documentation/status/print note and requested
+comments:
+
+<quote who="Klaas van Gend">
+
+<p />
+
+<u>Current Status Wine:</u>
+
+<ul>
+
+<li />16-bit Windows printing support is (a little) broken, if it has
+  worked ever (I don't know, I'm only a year with the project)
+
+<li />Huw DM Davies has written a 16-bit-style Postscript printer driver,
+  which has recently gained some attention from Corel.
+
+<li />Klaas is working on the 32-bit Common Print Dialog, and has been
+  writing some other functionality here-and-there to have this
+  dialog function. Printing using 32-bit built-in winspool is
+  currently still not possible, and will not be in the near future.
+
+</ul>
+
+<p />
+
+<u>Current Status Microsoft &amp; Partners:</u>
+
+<ul>
+
+<li />Over the years, Microsoft has revised the printer driver system many
+  times, introducing the need for printer manufacturers to supply
+  very different drivers for the different Windows versions:
+
+<ul>
+
+<li />Win 3.x
+
+<li />Win NT (any differences between NT 3.x and 4?)
+
+<li />Win 95
+
+<li />Win 98/2000 (As far as I can remember, M$ promised to have these
+                 two use the same driver system)
+
+<li />Win CE (???)
+
+</ul>
+
+<li />The interfaces to these drivers can be split into three classes:
+
+<ul>
+
+<li />16-bit
+
+<li />32-bit (NT 4 / 95)
+
+<li />32-bit Mk II (98/2000)
+
+</ul>
+
+but the latter two have a lot in common.
+
+<li />The 32-bit systems are organized around 'mini-drivers', which are
+  essentially generic renderers for Postscript, PCL 2 (old LaserJets),
+  PCL 4 (DeskJets) and PCL 5 (LaserJets).
+  (Maybe there also is an HPGL mini-driver)
+  The different driver manufacturers need to supply a very detailed
+  configuration file to this mini-driver which tells the renderer
+  about the possibilities of the printer. Also, they can supply
+  enhancements to the renderer and a GUI for setup &amp; monitoring.
+
+<li />There are other drivers from other manufacturers,
+  e.g.
+
+<ul>
+
+<li />Adobe's own Postscript driver
+
+<li />Software 2000's Inkjet driver (at least used by Lexmark)
+  and software packages which act as a printer:
+
+<li />Microsoft's HTML generator
+
+<li />Adobe's PDF generator
+
+<li />Envoy (back to the old WordPerfect-for-Windows-days)
+
+</ul>
+
+</ul>
+
+<p />
+
+<u>Future Wine:</u>
+
+<ul>
+
+<li />To have Wine emulate all above OS'es their printing code, will be
+  an enormous task, if possible at all... M$ hasn't tried to do it
+  themselves!
+  Therefore, we must make a choice for one (or two) of the following
+  alternatives:
+
+<ul>
+
+<li /><b>Native only:</b>
+    We concentrate on allowing Wine to interface to the different
+    native windows DLLs - which will be difficult.
+    Printer drivers which access a VXD (like e.g. my DeskJet 540) won't
+    ever work.
+    This solution does not produce a printing solution for both
+    WineLib nor Linux-only installations.
+    Currently Wine development moves towards this option: only 16-bit
+    has been developed.
+
+<li /><b>Postscript only:</b>
+    Wine only uses the Postscript driver to produce PS files, which
+    are fed to e.g. Ghostscript for support to non-PS printers.
+    This reduces the number of renderers to work on to only one,
+    and gives us freedom to skip most of the underlying winspool code.
+    This will result in a solution which works for most OS'es and
+    printers in the shortest time.
+    This solution will never allow for the above mentioned
+    PDF/HTML/Envoy generators.
+
+<li /><b>Wine-internal driver system:</b>
+    It is possible to develop our own PCL4 &amp; 5 renderers
+    (a great job for a student end project ?).
+    This would also imply that writing our own HTML/XML/PDF generators
+    is possible/necessary.
+    There would have to be a generic printing layer in which
+    plug-ins can be written. And the greatest trick would be to
+    persuade all Windoze programs that there is a genuine printing
+    system below the interface.
+
+<li /><b>Composite:</b>
+    We could try to develop a combination of the first two.
+    If we choose to implement the Win98/2000 version of printing,
+    and modify the PS-driver to act like such, we can use the native
+    DLLs as example and maybe have the plug-ins also.
+    Note that drivers accessing VXD's still won't work, but most
+    users should access their printers via LPR anyway.
+    This also impacts the way Wine handles native DLLS, as it is
+    not possible to use Win 95 DLLs for Win 2000 printing code.
+    Native DLLs will only be of use for a limited number of people.
+    Unfortunately, the Win98/2000 solutions is the most difficult
+    one around :-(
+
+</ul>
+
+<li />Still I suggest we move to the last option (composite), and have
+  a serious look at keeping the 16-bit code happy...
+
+</ul>
+
+<p />
+
+This move will have a large impact on several parts of Wine, so
+I'd like to hear comments from all major developers, Alexandre and Gav!</quote>
+
+<p />
+
+It's very likely some discussion will come out from this
+proposal. Don't miss next week's WWN !
+</section>
+
+<section
+  title="DllGlue: a comeback ?"
+  subject="DllGlue: a comeback ?"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-358.html"
+>
+
+After a few weeks of calm regarding DllGlue (for more on this, look at
+those <a href="wn19990822_5.html#0">Elfdlls are coming</a> and
+<a href="wn19990905_7.html#0">ElfDLLs (cont'd)</a>), Ulrich Czekalla
+tried to help moving ElfDll inside wine CVS tree. After a warm
+acknowledgement of Bertho Stultiens' work, he proposed the following
+stepped approach:
+
+<quote who="Ulrich Czekalla"><ol>
+
+<li />Use lex/yacc for the .spec parser
+
+<li />Switch to PE header generation instead of DLL descriptors and
+modify the built-in loader accordingly
+
+<li />Add resource generation
+</ol></quote>
+
+<p />
+
+Bertho and Ulrich Weigand reiterated their previous vision of the
+process, and, as before, didn't come up to any agreement (Bertho wants
+all the .spec handling being moved outside of the 'build' tool into a
+new tool, and not having intermediate development being not, and
+Ulrich proposing a composite approach - i.e. put several DLLs into a
+single ElfDll module, because the DLLs couldn't be easily splited).
+
+<p />
+
+Alexandre Julliard gave his view on the subject:
+
+<quote who="Alexandre Julliard">I don't really care where you put what. If you absolutely want a
+separate dllglue program, OK I can live with that, even though I don't
+see the reason for two separate tools where one would work just as well.
+
+<p />
+
+What I insist on is that the development of this program, be it called
+build or dllglue, must be done in <b>incremental</b> steps; this means that
+every new feature and every structural change is submitted as a
+separate patch, reviewed, committed, tested and used by everybody
+before moving on to the next step. Trying to push a finished dllglue
+down my throat is not going to work.
+
+<p />
+
+And if you try to follow this incremental process, you'll find that
+it's more logical to put things into build, simply because making
+incremental patches against something that already exists is vastly
+easier than incrementally creating a new tool from scratch.</quote>
+
+</section>
+
+<section
+  title="Module loading"
+  subject="Module loading"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-397.html"
+>
+
+Eric Pouech reported a bug in builtin modules loading: the current
+code wouldn't let msacm.drv and msacm.dll be considered as two
+different modules, but could let one be loaded when the other was
+requested.
+
+<p />
+
+After some discussion with Ulrich, it turned out that the a solution
+was to use the filename (and no longer the module name) as the key
+while trying to load builtin modules.
+
+<p />
+
+Some fixes were needed throughout the code. Most important part is
+that from now on, all builtin modules (16 and 32 it) with a non .dll
+extension (e.g: .drv, .exe) must have a 'file' directive in their
+.spec file, and be loaded by filename and no longer by module name.
+
+<p />
+
+</section>
+
+<section
+  title="Cross-debugging"
+  subject="Cross-debugging"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-404.html"
+>
+
+Gavriel State came up with an interesting idea:
+
+<quote who="Gavriel State">We've been looking into the idea of running the MSVC cross-debugging
+nub under WINE so that we can do binary debugging from the NT side.
+I've had some initial success (after getting over the utter shock that
+most of the underlying code needed to support running debuggers under
+WINE was already there - thanks Alexandre!), but I've come across
+something that I need some help with.</quote>
+
+<p />
+
+Gavriel pointed out to a deadlock in process creation. Alexandre
+Julliard and Ulrich Weigand acknowledged the problem. This deadlock
+appears because the various events generated upon process start-up
+(the one linked to the process creation and the ones linked to DLL
+loading for this process) were not sent in the correct order. A proper
+solution is known, but Alexandre proposed a quick hack to let Gav' to
+further (but that could make native USER no longer work).
+
+<p />
+
+Later on, Gav' pointed out that (Get|Set)ThreadContext were not
+implemented under Wine. Gav' proposed a possible solution. Alexandre
+accepted it, with some restriction regarding its complete adequacy
+to the current semantic of the API, and gave some direction on a
+better long term solution.
+
+<p />
+
+As a conclusion, this cross-debugging effort seem on good tracks. We
+should have some good news in the following weeks.
+</section>
+
+<section
+  title="Marcus in Denmark"
+  subject="Marcus in Denmark"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-417.html"
+>
+
+Marcus Meissner gave some report on his recent (Wine oriented) trip to
+Denmark:
+
+<quote who="Marcus Meissner">I was invited to give two talks in Denmark last weekend (by the FLUG and
+DKUUG, but the latter skimmed out), which I did.
+
+<p />
+
+The first talk was saturday at Odense in front of approx 50 people of
+the FLUG (www.flug.dk). I did hold a talk about WINE (mostly a general
+introduction with emphasis on technical status and how a normal user
+can help) and did a small demonstration afterwards. (WinWord, Internet
+Explorer (did not work as well), playing .avi files using a Linux program
+linked to WINELIB (aviplay) and the installer of the StarWars:The Phantom
+Menace Demo (which I got on the way to denmark at Pizzahut in Hamburg
+as special deal ;))
+
+<p />
+
+I could not demonstrate "Lucas Arts:The Curse Of Monkey Island" at this
+time, because the laptop did not have a supported soundcard ... Which
+lead to a "10 minutes" (== 1 hour) fix, where I made DirectSound work
+without soundcard ;)
+
+<p />
+
+Sunday I held the talk in Arhus at the Linux User Group there in front
+of approx 30 people. The talk and demos went a bit better than Saturday.
+
+<p />
+
+Thanks again to Jesper "jews" Pedersen for inviting me, him and his
+girlfriend for providing hospitality over the weekend, the people of
+the FLUG/ALUG and the sponsors ;)</quote>
+
+</section>
+
+<section
+  title="COM headers"
+  subject="COM headers"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-7.html"
+>
+
+Peter Hunnisett, while trying to port existing Windows code thanks
+WineLib, reported the following problems:
+
+<quote who="Peter Hunnisett">
+
+<li />1) The pointer to the virtual table, "lpvtbl" in wine, is "lpVtbl"
+in all DirectX header files. An annoyingly small change which needs a
+lot of wine code changed.
+
+<li />2) The macro constructs the function name as fn##functionName
+whereas MS DirectX header files construct them as just functionName.</quote>
+
+<p />
+
+Francois Gouget said that normally behaved COM application should not
+address directly the fields of COM objects (which is implementation
+dependent), but rather use the ad hoc macros. Anyway, the first point
+is rather easy to solve, whereas the second can generate name-space
+collision (Francois found examples were it did).
+
+<p />
+
+Peter also reported some issues with type-casts not being applied, but
+without strong feeling whether this should be done by the caller of the
+macro or inside the macro itself.
+
+<p />
+
+Francois provided several patches to help porting applications, even
+if the 0-source modification rule is not reached yet (especially with
+badly written apps).
+
+</section>
+
+</kc>

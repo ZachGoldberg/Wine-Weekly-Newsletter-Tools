@@ -1,0 +1,419 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="49" date="26 Jun 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 49th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="120" size="354" contrib="36" multiples="23" lastweek="19">
+<person posts="11" size="36" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="11" size="33" who="John R . Sheets &lt;jsheets@codeweavers.com&gt;" />
+<person posts="10" size="19" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="9" size="22" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="14" who="Dave Hawkes &lt;daveh-wine@cadlink.com&gt;" />
+<person posts="5" size="10" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="8" who="Frank Ramsay &lt;fjr@marsdome.penguinpowered.com&gt;" />
+<person posts="4" size="8" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="4" size="8" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="20" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="10" who="Berend Ozceri &lt;berend@cisco.com&gt;" />
+</stats>
+
+
+<section 
+  title="Wine status page"
+  subject="Wine Status percentage"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-06/Subject/article-305.html"
+  posts="3"
+  startdate="19 Jun 2000 00:00:00 -0800"
+  enddate="19 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+After Ove K&#229;ven put on line the Wine Status
+Page, Dmitry Timoshkov asked which metric was used to get the
+completion percentage for each Wine component (mainly DLLs).
+
+<p />
+
+Ove replied on the method he uses: <quote who="Ove Kaaven">There's not much
+more metric than my own guesstimate or judgement (which I thought
+would at least be better than no metric), and any corrections the
+developers would like to tell me about. I didn't try to devise
+anything complicated...</quote>
+
+<p />
+
+Dimitry also asked whether a todo list could be provided for all the
+components (so that people could have a look at what remains to be
+done).
+
+<p />
+
+Ove liked the idea <quote who="Ove Kaaven">If developers would like to provide
+such a list, I could certainly put it online... In a few cases
+(especially if it's "almost done"), I've tried put a line under the
+percentage saying what is missing, but I didn't want to spend too much
+time on it. </quote>
+
+<p />
+
+The discussion then evolved on the completion and remaining parts of
+Unicode implementation.
+
+<p />
+
+</section>
+
+
+<section 
+  title="Wine .so files loading"
+  subject="builtin .so load dependencies"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-06/Subject/article-281.html"
+  posts="12"
+  startdate="16 Jun 2000 00:00:00 -0800"
+  enddate="19 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+Ove K&#229;ven re-posted a patch (already sent a couple of days ago, and
+still not committed to CVS tree) and asked why it has been neither committed nor 
+rejected. This patch was an attempt to let binary packages for Wine
+(like RPM) which normally are installed under /usr/local/wine work out 
+of the box.
+
+<p />
+
+This is a known cause of issues because some Linux distributions
+(including Mandrake, Red Hat) no longer include by default /usr/local
+in the /etc/ld.conf file (which defines the default directories where
+to look for .so files). Since Wine has been highly componentized (and
+components are stored in .so files), not founding the Wine .so files
+is a brutal case of breakage.
+
+<p />
+
+As some of you already now, Wine handles several kinds of components:
+<ul>
+   <li />native DLL: they reside in their own .dll file, and are
+provided in the Windows' world (hence the native name)
+   <li />builtin DLL: this one is provided by the Wine team.
+   <li />.so file: those are standard .so files from Unix, providing
+similar behavior (or interface as their Windows' buddy). OpenGL is a
+good example of this kind
+</ul>
+
+<p />
+
+Wine's final goal is to implement builtin DLL as ElfDll: this means
+that a DLL (or many DLLs) will be stored in a specific file, but all
+symbols resolution will be done in a very similar way as a native DLL
+(this implies providing the same internal imported and exported functions
+descriptions). Currently, Wine relies to implement the builtin DLLs on 
+an hybrid Windows/Unix mechanism. Once loaded the DLL will hook up in
+Wine internal lists as a native DLL (using the same structure), but
+the import/export functions resolution is done using the .so files
+mechanism (the ElfDll shall use the Window's one).
+You can have a look at 
+<a href="wn19991004_11.html#1">for more on the topic</a>
+
+<p />
+
+This shall require some extra work on Wine (like rewriting the .so
+file generation, as well as cleaning up the dependencies between
+DLLs).
+
+<p />
+
+Ove's proposal changed a little bit the way Elf symbol resolution was
+done, but also forced the use of builtin DLLs of the
+EXTRA_LD_LIBRARY_PATH environment variables.
+
+<p />
+
+Bertho Stultiens and Alexandre Julliard discussed then, with Ove,
+the pros and cons of the proposal.
+
+<p />
+
+As a conclusion, Bertho wrote 
+<quote who="Bertho Stultiens">
+The EXTRA_LD_LIBRARY_PATH was never intended to work with builtin
+DLLs.
+
+<p />
+
+The builtin dlls are <b>pure</b> ELF-libraries. For these all the normal ELF
+rules apply. Thus, when you use ELF-style linking (i.e. explicit
+linking), then you <b>must</b> use ELF-style loader features (i.e.
+LD_LIBRARY_PATH and ld.so.conf). There is no other "Right Way" because
+the underlying operating system does not support it otherwise.
+</quote>
+
+
+<p />
+
+Ove proposed then to drop (until ElfDll are in place) the
+EXTRA_LD_LIBRARY_PATH use ; Alexandre suggested to 
+<quote who="Alexandre Julliard">print a warning if there are directories in 
+EXTRA_LD_LIBRARY_PATH that are not also in LD_LIBRARY_PATH.</quote>
+
+<p />
+
+Ove's first patch hasn't been committed, but no one submitted
+something close to Alexandre latest proposal.</section>
+
+
+<section 
+  title="Wine documentation"
+  subject="Wine CVS Documentation"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-06/Subject/article-326.html"
+  posts="30"
+  startdate="21 Jun 2000 00:00:00 -0800"
+  enddate="23 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+John R Sheets wrote:
+<quote who="John R Sheets">
+As part of an effort to improve the accessibility of the Wine
+documentation, I've converted (most of) the contents of the
+wine/documentation directory into DocBook (an SGML variant).
+Naturally, quite a bit of the content is old and crusty, and perhaps
+even flat out wrong, but hopefully that can be fixed in the near
+future. The docs should be pretty current, including the new OpenGL
+docs, and the latest revisions to the wine debugger docs.
+
+<p />
+
+The current state of things is sitting at 
+<a href="http://wine.codeweavers.com/docs/">
+http://wine.codeweavers.com/docs/</a>
+
+<p />
+
+I'm interested in hearing what people think about the organization and 
+layout. I've done very little proof reading, and only added the bare
+minimum of markup to get it up and running ASAP. Quite a lot can be
+done to improve the looks; the overall appearance of the generated
+HTML is pretty customizable, too.
+</quote>
+
+
+<p />
+
+Later on, John also posted an outline of a possible table of content.
+
+<quote who="John R Sheets"><ul>
+   <li />OVERVIEW<br />
+For beginning users; assumes Wine is already installed. Very simple
+language; task-based.
+   <ol>
+      <li />Introduction
+      <ul>
+	 <li />What is Wine?
+	 <li />How do I run Wine?
+      </ul>
+      <li />Running Wine
+      <ul>
+	 <li />At the command line
+	 <li />From the GNOME Panel
+	 <li />From the KDE Panel (Taskbar?)
+      </ul>
+   </ol>
+   <li />WINE INSTALLATION GUIDE<br />
+For all users; includes FTP, CVS, RedHat, Debian, etc.
+Covers getting it on the system, but not personalizing it.
+<ol>
+   <li />Introduction
+   <ul><li />What forms does Wine take?</ul>
+   <li />Installing on RedHat/Mandrake/SuSE
+   <li />Installing on Debian
+   <li />Installing from FTP
+   <li />Installing from CVS
+   <li />Configuring Wine
+   <ul><li />Setting up wine.conf<li />With Windows Partition</ul>
+   <li />Graphical Configuration
+   <ul><li />Using TkWineSetup<li />With GNOME Control Center (NYI)<li />With KDE Control Panel (NYI)</ul>
+   <li />Testing the installation
+   <ul><li />Checklist to verify<li />Running an app</ul>
+</ol>
+   <li />WINE USER'S GUIDE<br />
+For the day-to-day user; maintaining Wine on your system.  How to
+configure the basic services, like fonts, printing, multimedia.
+<ol>
+   <li />Introduction
+   <li />Running Wine
+   <ul><li />Simplest case<li />Command line parameters</ul>
+   <li />Configuring Wine
+   <ul><li />Customizing .winerc<li />Builtin vs. native DLLs<li />x11drv<li />Look &amp; feel<li />Keyboard</ul>
+   <li />Networking
+   <li />Printing
+   <li />Fonts
+   <li />Multimedia
+   <li />Security
+   <li />OpenGL
+   <li />Troubleshooting
+   <ul><li />Making a bug report<li />Common debug flags</ul>
+   <li />FAQ
+</ol>
+   <li />WINE APPLICATIONS GUIDE<br />
+For dealing with specific applications.
+<ol>
+   <li />MS Office
+   <li />Lotus Notes
+   <li />Quicken
+   <li />StarCraft
+   <li />...
+</ol>
+   <li />WINE PORTING GUIDE<br />
+For developers trying to migrate their apps to UNIX, using Wine.
+<ol>
+   <li />Introduction
+   <li />Binary emulation
+   <li />WineLib
+   <li />FAQ
+</ol>
+   <li />WINE DEVELOPER'S GUIDE<br />
+For developers wanting to contribute to Wine.  How to submit patches,
+what policies to follow, how to debug, and a nice, juicy section on
+the Wine architecture.
+<ol>
+   <li />Architecture
+   <ul><li />The Wine Server<li />DLLs in Wine<li />Drivers<li />The Kernel<li />The graphics subsystem<li />OLE Support<li />Unicode</ul>
+<li />Debugging Wine
+   <ul><li />Debugging channels<li />The Wine debugger</ul>
+<li />Tools
+     <ul><li />wrc<li />wmc<li />winapi_check<li />build.c<li />Misc. scripts</ul>
+<li />Policies &amp; Procedures
+   <ul><li />Preparing a patch<li />Documentation</ul>
+</ol></ul>
+</quote>
+
+
+<p />
+
+Several peopled enhanced the proposal:
+<ul>
+   <li />Eric Pouech proposed to have two separate porting docs, one for
+porting Windows application to Unix using Wine, the second for porting
+Wine to unsupported Unix flavors (this latest part could be part of the
+developer's guide). Also, be a bit more specific in the developer's
+guide about 16 bit support, thunking, DLLs, but also
+providing a better split between USER and GDI functions
+   <li />Alexandre Julliard was a bit confused with the long list of
+documents and wrote <quote who="Alexandre Julliard">a user's guide and a developer's
+guide would be enough for a start. If some sections of a document
+become too large they can always be split into a separate guide, but I
+think it's better to keep it simple for now, and think more about the
+structure when we have more material.</quote>
+</ul>
+
+<p />
+
+Another part of the discussion covered the way this documentation
+shall be written and delivered (so far, only text files are used for
+both parts). Alexandre Julliard thought <quote who="Alexandre Julliard">the important
+factor is that the doc is as accessible as possible; if it requires
+the user to install a lot of tools just to be able to read the doc
+there is a problem. And this is what worries me a bit about DocBook; I
+find the raw SGML text painful to read, and I'm not sure how easy it
+is to get the right tools to format it to something readable. I think
+texinfo is better in this respect; but this is only a personal
+opinion, ultimately the choice is up to the people who actually write
+the doc. 
+
+<p />
+
+What do other people think? Any strong opinions for/against DocBook?
+</quote>
+
+<p />
+
+Lots of people do like DocBook (because it's already widely used, and
+it decorrelates the content and hierarchy in the document from its
+presentation - DocBook is <i>just</i> an XML DTD, and a couple of
+style sheets).
+
+<p />
+
+John Sheets proposed for dealing between editing documents (in DocBook 
+DTD, and generated ones - text, HTML...): <quote who="John R Sheets">These
+problems have already been tackled by large projects who are already
+using DocBook wholescale, like GNOME and KDE. We can offer separate
+tarballs of the docs. Alternatively, GNOME uses makefile targets to 
+automatically generate and bundle the HTML docs into distributions
+(meaning that only CVS developers need to generate them).</quote>
+
+<p />
+
+It seems the commonly agreed solution was to:
+<ul>
+   <li />maintain a separate (from Wine) package of documentation in
+DocBook format, 
+   <li />publish on WineHQ the various generated files (like HTML,
+text...)
+   <li />include in Wine CVS tree (EdNote: <i>perhaps for every Wine
+snapshot</i>) the generated pure TEXT files
+</ul>
+
+<p />
+
+The thread evolved then with argueing on the good sides of DocBook, 
+including its use to generate API documentation (from comments
+embedded in source code, as GTK+ and GNOME do).</section>
+
+
+<section 
+  title="Linux networking changes"
+  subject="Linux 2.2.14 vs 2.3.x networking problem"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-06/Subject/article-149.html"
+  posts="8"
+  startdate="21 Jun 2000 00:00:00 -0800"
+  enddate="22 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+Berend Ozceri reported: 
+<quote who="Berend Ozceri">
+I have a Windows application (Meeting Maker -
+http://www.meetingmaker6.com) that works fine under the latest Wine
+(built yesterday from CVS) using Linux kernel version 2.2.14. When I
+switch to a 2.3.x kernel, the application has networking problems and
+can't connect to a server.</quote>
+
+
+<p />
+
+After some analysis by Marcus Meissner and Ove K&#229;ven, it turned out
+that a specific change in 2.4 kernel series had a nasty side effect:
+when using the poll function (as the Wine server heavily do for
+sockets handling), there's a returned valid (POLLHUP) indicating that
+the connection has hung up. Linux 2.4 changed its behavior and also
+returned the POLLHUP value for not-yet-connected sockets. As a POLLHUP 
+is currently interpreted in Wine as (only) a closing connection, the
+effective connection is never seen from Wine.
+
+<p />
+
+Alexandre Julliard proposed a direction for a fix, which Berend
+implemented. But this lead to some other issues, meaning that this
+issue is not over yet. No patch has been provided so far, so be
+conscious of this pending networking issue on Linux 2.4 (and latest
+2.3) kernels for Wine.</section>
+
+</kc>

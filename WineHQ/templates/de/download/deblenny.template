@@ -1,0 +1,55 @@
+<!--TITLE:[Wine f&uuml;r Debian Lenny]-->
+<!--BLURB:[Wine f&uuml;r Debian Lenny]-->
+
+<h1 class="title"><a href="http://www.debian.org/" target="_new"><img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></a>
+Wine f&uuml;r Debian Lenny, Squeeze und Sid
+<a href="http://www.debian.org/" target="_new"><img src="{$root}/images/distro/debian.png" width="50" height="50" alt="Debian Linux" border="0"></a></h1>
+
+<p>Ubuntu und andere Debian-basierte Distributionen nutzen ein spezielles Tool, bekannt
+als APT, um Pakete zur verwalten.  APT ist in der Lage automatisch alle ben&ouml;tigten 
+Abh&auml;ngigkeiten f&uuml;r ein Softwarepaket zu installieren, als auch das Paket zu 
+aktualisieren, indem sogenannte APT-Repositories durchsucht werden.  Ubuntu hat sein eigenes
+Repository von Software, welches Wine enth&auml;lt, allerdings betreiben wir hier unser
+eigenes Repository f&uuml;r Downloads der aktuell verf&uuml;gbaren Betapakete.</p>
+
+<p><b>Warnung: Diese Pakete sind Betapakete.</b><br>
+<i>Das bedeutet, dass sie 
+in regelm&auml;&szlig;igen Abst&auml;nden 
+<a href="http://wiki.winehq.org/Regression">Regressions</a> erleiden, wodurch 
+eine Aktualisierung die Wine-Funktionalit&auml;t beeintr&auml;chtigen kann.  Wenn der aktuell
+stabile Release von Wine (zur Zeit Wine 1.0.1) bei dir funktioniert, willst du diese Betapakete
+wahrscheinlich nicht benutzen.</i></p>
+
+<p>Dieses Repository enth&auml;lt Pakete f&uuml;r i386 und amd64 Architektur.</p>
+
+<p>Um wine-Pakete zu installieren, kannst du zwei Methoden anwenden: F&uuml;ge das Repository hinzu oder lade ein .deb-Paket herunter und installiere es manuell, aber zuallererst musst du alte Wineversionen entfernen. Wenn du die erste Methode benutzt, wird Wine automatisch von APT aktualisiert, andernfalls musst Du jede neue Version manuell herunterladen und installieren.</p>
+
+<h2>Entferne eine alte Version</h2>
+<div style="position:relative;left:20px">&Ouml;ffne ein Terminal</div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#als root einloggen</font></div>
+<div style="position:relative;left:20px"><i>apt-get remove libwine wine</i> <font color="gray">#um die veraltete Version von Wine zu entfernen</font></div><p></p>
+<h2>Methode 1: Hinzuf&uuml;gen des Repositorys</h2>
+<div style="position:relative;left:20px">&Ouml;ffne ein Terminal</div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#als root einloggen</font></div>
+<div style="position:relative;left:20px"><i>gedit /etc/apt/sources.list</i> <font color="gray">#um die Repositorydatei mit einem Texteditor zu &ouml;ffnen (Du kannst gedit benutzen oder einen anderen)</font></div>
+<div style="position:relative;left:20px">F&uuml;ge diese Zeile f&uuml;r Lenny hinzu: <i>deb http://www.lamaresh.net/apt lenny main</i></div>
+<div style="position:relative;left:20px">F&uuml;ge diese Zeile f&uuml;r Squeeze hinzu: <i>deb http://www.lamaresh.net/apt squeeze main</i></div>
+<div style="position:relative;left:20px">F&uuml;ge diese Zeile f&uuml;r Sid hinzu: <i>deb http://www.lamaresh.net/apt sid main</i></div>
+<div style="position:relative;left:20px">Speichere und schlie&szlig;e sources.list</div>
+<div style="position:relative;left:20px"><i>wget -O - http://www.lamaresh.net/apt/key.gpg | apt-key add - </i> <font color="gray">#um den GPG-Key hinzuzuf&uuml;gen</font></div>
+<div style="position:relative;left:20px"><i>apt-get update</i> <font color="gray">#um die Paketliste zu aktualisieren</font></div>
+<div style="position:relative;left:20px"><i>apt-get install wine</i> <font color="gray">#um die aktuelle Wineversion zu installieren</font></div><p></p>
+<h2>Methode 2: Lade .deb und installiere es manuell</h2>
+<div style="position:relative;left:20px">W&auml;hle ein .deb-Paket von <a href="http://www.lamaresh.net/binary.php" target="_blank">der Bin&auml;rdateiliste</a> und speichere es in deinem home-Verzeichnis</div>
+<div style="position:relative;left:20px">&Ouml;ffne ein Terminal</div>
+<div style="position:relative;left:20px"><i>cd ~</i> <font color="gray">#um in dein home-Verzeichnis zu gehen</font></div>
+<div style="position:relative;left:20px"><i>su</i> <font color="gray">#als root einloggen</font></div>
+<div style="position:relative;left:20px"><i>dpkg -i wine_1.1.xxx.deb</i> <font color="gray">#&Auml;ndere xxx zu deinem gew&auml;hlten Paket, dadurch wird Wine installiert</font></div>
+
+
+<br><br><p style="font-size:12px;text-align:left;font-style: italic;">
+Homepage: <a href="http://www.lamaresh.net" target="_blank">http://www.lamaresh.net/</a><br>
+Paketquellenbetreuer:  <a href="mailto:repository@lamaresh.net">Maurilio Genovese</a><br>
+Paketbauer:  <a href="mailto:ben.klein@lamaresh.net">Ben Klein</a>
+</p>
+

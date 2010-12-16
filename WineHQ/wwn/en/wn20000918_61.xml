@@ -1,0 +1,253 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="61" date="18 Sep 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 38th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="118" size="393" contrib="49" multiples="26" lastweek="16">
+<person posts="13" size="73" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="6" size="15" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="5" size="12" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="5" size="10" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="4" size="9" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="4" size="9" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="7" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="4" size="19" who="mogul-wine-devel@gelatinous.com" />
+<person posts="4" size="12" who="David.Goodenough@dga.co.uk" />
+<person posts="3" size="8" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="3" size="8" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="3" size="7" who="Stephane Lussier &lt;stephane@macadamian.com&gt;" />
+<person posts="3" size="6" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+<person posts="3" size="6" who="Christopher Morgan &lt;cmorgan@WPI.EDU&gt;" />
+<person posts="3" size="50" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="3" size="5" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="3" size="5" who="Douglas Ridgway &lt;ridgway@winehq.org&gt;" />
+<person posts="3" size="32" who="Rein Klazes &lt;rklazes@casema.net&gt;" />
+<person posts="3" size="16" who="lawson_whitney@juno.com" />
+<person posts="3" size="14" who="Serge Ivanov &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="3" size="10" who="Douglas J. Hunley &lt;dhunley@columbus.rr.com&gt;" />
+</stats>
+
+
+<section 
+  title="Winelib portability"
+  subject="Porting winelib to non x86 platforms"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-126.html"
+  posts="4"
+  startdate="11 Sep 2000 00:00:00 -0800"
+  enddate="11 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Arie Tal asked what was the status about Wine portability across non
+x86 platforms.
+
+<p />
+
+Jeremy White gave the outlook of the situation:
+<quote who="Jeremy White">
+As far as porting Wine, I think the consensus is that it's probably
+not worth it, due to performance issues. If anyone wishes to do this,
+though (especially for Alpha), Compaq has told me that they would be
+willing to release a free run time of their x86 emulator, so that this
+could be done at high speeds. Ulrich also did a good deal of work on
+this. 
+
+<p />
+
+As far as Winelib, I think the belief is that porting to a non x86,
+Unix with X Windows should be fairly straightforward. There will be a
+fair amount of work to find and remove all of the unknown bugs with
+byte endianness and packing, but the fundamental design and plan for
+Wine is to make this easy. 
+
+<p />
+
+For non Unix and/or non X Windows systems (such as BeOS and Mac OS), it
+gets a little bit harder. BeOS seems to be much harder because it is
+missing many systems calls that Wine relies upon (Patrik is the expert
+on Be, and I believe there is a web page dedicated to Wine on
+BeOS). Mac OS &lt;= 9 is similarly hard.
+
+<p />
+
+Mac OS X, however, is another story. If you get an X server on Mac OS X,
+it should be pretty easy. If you want to do it the right way, you'd
+need to develop a Carbon driver to parallel the Wine x11 driver. That,
+while conceptually straightforward, will be a lot of work.
+</quote>
+
+
+<p />
+
+Gavriel State reported: 
+<quote who="Gavriel State">I got some simple winelib
+apps up and running on LinuxPPC in early 1999, but it was fairly
+hackish, and most of my changes didn't make it into the mainline WINE
+tree. I did some work updating the port for newer releases of LinuxPPC
+at MacHack this summer, but got stuck trying to figure out how to 
+properly deal with the thread local storage. My old code still works
+ok though, if you happen to have a LinuxPPC machine around. 
+</quote>
+
+
+<p />
+
+Ulrich Weigand spoke the last word, reporting he had Winelib working
+on Sparc: 
+<quote who="Ulrich Weigand">The main Wine tree doesn't compile out
+of the box. There's still a few problems, mostly related to alignment
+issues, that I haven't yet fixed in a clean way.
+
+<p />
+
+On machines without alignment constraints (even if big-endian), there
+shouldn't be much changes necessary. For example, just for fun I tried 
+to get Wine to compile on S/390; it took me only a few hours until  
+WineMine was running ...
+</quote>
+
+
+<p />
+
+but who would need winmine on S/390 ???
+</section>
+
+
+<section 
+  title="Implementing CRTDLL or not (cont'd)"
+  subject="CRTDLL Qtns"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-150.html"
+  posts="6"
+  startdate="12 Sep 2000 00:00:00 -0800"
+  enddate="13 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jonathon Griffiths, continuing his CRTDLL effort (please refer to 
+<kcref issuenum="37" sectionnum="3">previous article</kcref>), asked a few
+more questions:
+<quote who="Jonathonm Griffiths">
+<ul>
+	<li><b>Locking</b>: at some point I will need to add locking
+code for MT safety. Are there any issues (performance?) I need to be
+aware of using the win32 locking functions in the dll?</li>
+	<li><b>Thread-safe</b>: MS docs state that crtdll is not very
+thread-safe, however I can't see any reason why wines shouldn't be. I
+don't think any apps depend on non thread-safe behavior since by
+definition it is unpredictable. So I think it may be worthwhile to
+make it MT safe. This would mean a large part of the code could be
+shared with msvcrt.dll (way in the future).</li>
+	<li><b>#includes</b>: Wine's "process.h" will conflict with the
+crt "process.h". Is it desirable to have crt headers in the wine
+include dir, or should they be in include/crt? (note I won't be writing
+headers for some time).</li>
+</ul>
+</quote>
+
+
+<p />
+
+On the #include part, everyone agreed that Wine's internal process.h
+include file should be moved to Wine only include directories, and a
+conformant process.h should be created in the include directory.
+
+<p />
+
+On the thread safeness issue, Alexandre Julliard was strongly against
+making CRTDLL thread safe: it isn't under Windows, so it shouldn't be
+under Wine. Gav State, however, did like the idea of using CRTDLL but
+still having thread safeness. Alexandre wasn't still convinced, and
+preferred to have Wine also to provide a native msvcrt.dll (which
+would be thread safe).
+</section>
+
+
+<section 
+  title="Mailing list"
+  subject="Mailing list cutover"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-209.html"
+  posts="5"
+  startdate="16 Sep 2000 00:00:00 -0800"
+  enddate="16 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Douglas Ridgway announced:
+<quote who="Doug Ridgway">We're going to try to
+cut over the mailing lists from the old server to the new server
+today. Hopefully, we will be able to not lose subscription info
+etc. The current plan is to change over to using majordomo at the same
+time -- I'll provide some details once it's done.</quote>
+
+
+<p />
+
+Even if some people objected the use of majordomo and preferred
+mailman, the move has taken cleanly (YMMV), and the good part of it is 
+that the NNTP access to 
+<a href="news://winehq.org/wine.devel">wine-devel</a>, 
+<a href="news://winehq.org/wine.announce">wine-announce</a>, 
+<a href="news://winehq.org/wine.patches">wine-patches</a> and
+<a href="news://winehq.org/wine.cvs">wine-cvs</a> is back online.</section>
+
+
+<section 
+  title="Solving the native DLL look-up"
+  subject="solution for /usr/lib/wine library search problem"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-223.html"
+  posts="5"
+  startdate="17 Sep 2000 00:00:00 -0800"
+  enddate="17 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Ove K&#229;ven, while browsing the Debian Wine bug database, ran into a
+user's proposal which pleased him well. Lots of users had a hard time
+configuring Wine; Wine installs (by default) its .so files in
+/usr/lib/wine, which requires that either /etc/ld.conf or
+LD_LIBRARY_PATH to list this directory in the to search for
+list. However, some RPM installations (and lots of by hand
+installations) forgot to do so, leading to numerous but irritating
+questions on comp.emulators.ms-windows.wine newsgroup.
+
+<p />
+
+The main idea of the patch is to make use in the .so file link option
+of the -rpath option, which tells where to look for the .so
+file. Currently, the build options were pointing to /usr/lib instead
+of /usr/lib/wine. 
+
+<p />
+
+However, Ove also wanted to be able to drive this directory with a
+--dlldir option in configure. Steve Langasek proposed a quick way of
+doing it.
+
+<p />
+
+G&#233;rard Patel also expressed his will to still be able to keep several
+Wine binary trees in parallel (for testing reasons). Ove didn't think
+this should be too much of a problem, even if the details haven't
+sorted out yet.
+
+<p />
+
+This small patch should definitively help in installing Wine.</section>
+
+</kc>

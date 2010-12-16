@@ -1,0 +1,347 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="16" date="08 Nov 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the sixteenth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="85" size="281" contrib="34" multiples="19" lastweek="19">
+
+<person posts="12" size="22" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="9" size="29" who="Ove Kaaven &lt;ovek@arcticnet.no&gt;" />
+<person posts="5" size="30" who="Moshe Vainer &lt;moshev@easybase.com&gt;" />
+<person posts="5" size="17" who="'Juergen Schmied' &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="9" who="Rein Klazes &lt;rklazes@casema.net&gt;" />
+<person posts="4" size="10" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="3" size="8" who="Dave Pickles &lt;davep@nugate.demon.co.uk&gt;" />
+<person posts="3" size="7" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="3" size="6" who="David Blackman &lt;david@whizziwig.com&gt;" />
+<person posts="3" size="16" who="'Jeremy White' &lt;jwhite@codeweavers.com&gt;" />
+<person posts="3" size="14" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="3" size="13" who="'Dmitry Timoshkov' &lt;dmitry@sloboda.ru&gt;" />
+
+</stats>
+
+<section
+  title="Threads and WineLib"
+  subject="Threads and WineLib"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-12.html"
+>
+
+Mel Gorman reported some issues while using WineLib:
+
+<quote who="Mel Gorman">I'm writing a plugin for <a href="http://www.xmms.org/">XMMS</a> for
+playing VQF's using WineLIB and windows DLLs. I had a nice amount of
+success in getting a plugin to work but I had to separate XMMS and the
+plugin into two separate programs which is kruddy as hell. When I try
+to merge them together, there is segfaults every direction when the
+windows dll tries to thread. I'm fairly sure that it's due to the
+difference in how pthreads (used by XMMS) does threading and how Wine
+does it's own threading with clone.
+</quote>
+
+<p />
+
+Ove K&#229;ven replied:
+
+<quote who="Ove K&#229;ven">The issue is simple: for two threaded systems to be compatible with each
+other, they should use the same thread primitives. This has thus two
+solutions:
+<ol>
+
+<li />Make Wine use pthreads. Time and time again it has been discussed and
+argued that pthreads is generally not compatible with win32 threading, so
+cannot be used for the binary emulator at least. It <b>could</b> conceivably be
+used for pure Winelib if the binary compatibility part is disabled, but I
+don't think anyone have bothered. (Besides, it seems you are doing this
+for the binary compatibility, loading win32 dlls)
+
+<li />Make XMMS use Wine threads, but it doesn't sound likely to be an
+option, since this is a plugin.
+</ol>
+I think you have to stick with separate processes for XMMS and Winelib to
+accomplish what you want.
+</quote>
+
+<p />
+
+<p />
+
+Note: <a href="http://www.vqf.com/">VQF</a> is another format for
+compressed audio, and a possible (better ?) replacement for MP3. For
+more on the VQF plugin for XMMS, you can also check
+<a href="http://www.csn.ul.ie/~mel/projects/linux/vqfplugin/">Mel's
+project page</a>.
+
+</section>
+
+<section
+  title="Wine integration into Unix/X11"
+  subject="Wine integration into Unix/X11"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-23.html"
+>
+
+David Grant from Corel submitted a patch that would better integrate
+KDE look'n'feel inside Wine. It would allow to display every window
+with a KDE look'n'feel (even the child ones, which Wine currently only
+displays with the Windows look, whatever mode (-managed or not) Wine
+is run with). In details, it implements the KDE (and also Windows 98)
+gradient on windows' title bar, the menu tracking, use of KDE system
+colors for Wine defaults.
+
+<p />
+
+Eric Pouech disagreed on the approach:
+
+<quote who="Eric Pouech">Have you thought 2 seconds of what it would mean to mimic every WM on
+the field in Wine ? You've started with KDE, we could add Gnome, mwm,
+fvwm, ice, CDE, &#60;put here your favorite WM&#62;... The code would be an
+utter mess. And not maintainable, needless to say. For example, are
+you sure that KDE will always keep the same gradient, even in KDE 2 ?
+if not, you'll have to integrate another tweak for KDE2... :-(
+
+<p />
+
+There are of course parts that can be applied as it is (like gradient
+for caption), but, unless we provide a cleaner way to better integrate
+a WM look (and perhaps feel) into Wine, I fear that your patches would
+cause more harm than good.</quote>
+
+<p />
+
+Gavriel State (Corel) answered:
+
+<p />
+
+<quote who="Gavriel State">Yes, ideally we would be able to modularize more of the
+'chrome' code so that it would be easier to write additional modules to
+support the various different looks that people might want (Gnome, mwm, KDE,
+Win31, Win2K, etc). Right now though, we (Corel) don't have time to spend on
+this. We're concentrating on the KDE look primarily because KDE seems to be
+the most popular desktop WM, and we anticipate that it will continue to be
+for quite a while. Even if it doesn't look 100% right for KDE 2 (or KDE with
+themes), it's still better than the Win95 look for MDI windows for what
+we're working on.
+
+<p />
+
+Something else to consider is this: there is a potential copyright
+issue with the Windows look and feel sets - specifically with the
+maximize, minimize, and close buttons on the Window borders. Better to
+have at least one look and feel setting that doesn't look exactly like
+windows.
+
+<p />
+
+If Alexandre and the wider WINE community don't want to integrate the patch
+into the main CVS tree, it's no big deal for us - we mostly work from our
+own internal tree anyway. If someone else wants to modularize the look and
+feel code so that it's easier to support new looks (Gnome, mwm, etc), we'd
+probably be happy to move the KDE look into that structure, but I don't
+think that we're prepared to do that modularization ourselves at this
+time.</quote>
+
+<p />
+
+J&#252;rgen Schmied proposed in order to help this modularization to build
+upon the existing ownerdrawn mechanism: <quote who="J&#252;rgen Schmied">Why not plug
+all drawing functions (win31 and win95 look could be the first two)
+into the ownerdrawn mechanism? Like if its a real ownerdrawn control
+send the message and if its one of our internal drawing routines call
+the appropriate function through a calltable. All structures of the
+ownerdrawn mechanism could be reused and all the ugly if(style=win31)
+the do this and if (style=win95) the do that constructs could be
+thrown out.</quote>
+
+<p />
+
+The discussion evolved to a wider approach of the integration of
+Windows applications (run with Wine) into the Unix/X11
+environment (having all widgets with a KDE look'n'feel, how to display
+paths...). Gavriel State gave Corel's view:
+
+<ul>
+
+<li />Even with the patch, there isn't <quote who="Gavriel State">a real KDE look
+and feel for each widget, only menubars and MDI windows. Luckily, for
+KDE, the rest of the Windows widgets are very similar to KDE's
+widgets.</quote>
+
+<li /><quote who="Gavriel State">David Grant has been working on another patch
+that's basically a hack to display DOS-style paths as UNIX paths by
+simply reversing the direction of slashes and dropping the drive
+letter. The hack is turned on via a switch in the ..winerc file. Our
+apps are being built to use a .winerc file that maps C:\ to /, so that
+a path like this:
+
+<p />
+
+<code>C:\home\gavriels\myfile.xyz</code>
+
+<p />
+
+gets displayed as
+
+<p />
+
+<code>/home/gavriels/myfile.xyz</code>
+
+<p />
+
+There are complications with the file dialogs, and some other code that we
+haven't entirely resolved yet, so it'll likely be a while before we would
+send the hack in to wine-patches.
+
+<p />
+
+We also have a patch coming that will allow the use of a --prefix option
+so that a different .winerc and .wine directory can be specified for
+different apps.  This way, the use of the KDE look and filename conversion
+flags by our apps will be in a .wporc file, not your .winerc, and nothing
+other than our apps will be affected unless you make the appropriate
+modifications to your .winerc.</quote>
+
+</ul>
+
+</section>
+
+<section
+  title="Wine identification"
+  subject="Wine identification"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-27.html"
+>
+
+Gavriel State is looking for a <quote who="Gavriel State">a clean way to
+determine if we're running under WINE, and preferably the vintage as
+well.</quote>
+
+<p />
+
+He proposed a Wine only extension of return values from
+GetVersionExA().
+
+<p />
+
+Ulrich Weigand proposed:
+
+<quote who="Ulrich Weigand">The TNT toolkit (which allows to run WinNT console apps under DOS)
+exports a special symbol 'IsTNT' from its version of KERNEL32.DLL, so
+apps can simply check with GetProcAddress() whether that's there.
+
+<p />
+
+We might similarly add a KERNEL32 routine 'IsWine' or so; for extended
+info that symbol could point to a string containing version info,
+or even to a routine that could be called to query lots of
+settings...
+</quote>
+
+<p />
+
+No patch has been submitted yet.
+
+</section>
+
+<section
+  title="Of Windows' versions"
+  subject="Of Windows' versions"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-11/Subject/article-46.html"
+>
+
+While fixing some incorrect behavior in edit control in disable state,
+and finding out that the messages to be sent depend on the Windows's
+the application is running on, Rein Klazes popped up this question:
+<quote who="Rein Klazes">Now I wonder how windows can detect that an
+application is designed for windows 3.1?.</quote>
+
+<p />
+
+There is currently, three different notions of Windows' version used
+in wine (from Ulrich Weigand's explanation):
+
+<ul>
+
+<li /><quote who="Ulrich Weigand">the Windows version that the current session of
+Wine <b>emulates</b>. In the simple case, this is just a constant
+corresponding to the -winver setting</quote> (as returned by
+VERSION_GetVersion()).
+
+<li /><quote who="Ulrich Weigand">GetProcessVersion() returns the Windows version
+that the process in question <b>expects</b>. This is determined from the
+'expected_version' field of the NE header or the 'SubsystemVersion'
+fields of the PE header.</quote>
+
+<li />the tweak used for the presentation (Tweak options in ~/.winerc)
+which triggers how the look'n'feel of various controls shall be done.
+
+</ul>
+
+<p />
+
+So, to implement correctly the old and new behavior as explained by
+Rein, Ulrich proposed the following:
+
+<quote who="Ulrich Weigand">First, check VERSION_GetVersion() to find out which Windows version
+we do emulate; then, behave like <b>that</b> Windows version does.
+
+<ul>
+
+<li />If we emulate Win3.1, this means we <b>always</b> use the 'old' method,
+even if the executable expects the new one  (if the executable indeed
+relies on the new method, it probably wouldn't work on Win3.1, so if
+Wine were a perfect emulator, we'd expect that the program doesn't
+work on Wine in Win3.1 mode, either :-/)
+
+<li />If we emulate Win9x, this means that we have now to implement a
+further check, depending on the version expected by the executable
+(because that's what Win9x does). If the executable expects the
+old method, use the old, otherwise the new one...
+
+<p />
+
+Actually, to be completely compatible we shouldn't even use the
+<b>application's</b> expected version. Consider the case that a 'old'
+application links to 'new' DLLs or vice versa. If one of those
+<b>DLLs</b> now call into the Windows core, e.g. to display a private
+dialog, and that DLL specifically relies on either the old or the
+new behavior, we choose wrong if we just consider the app's expected
+version.
+
+<p />
+
+Instead, what Win9x does (in 16-bit code) is to examine the return
+address to the caller which called the core routine. Using the code
+segment selector which is part of the return address, it finds out
+which module allocated that selector, and hence which DLL performed
+the call. It then uses the expected version of <b>that</b> DLL to decide.
+
+<li />If we emulate a particular WinNT version, we should do like that
+does. I'm not completely sure myself what that is, however ;-)
+
+</ul>
+
+<p />
+
+All this gets even more complicated if we expect Wine to transparently
+select a Windows version to emulate, so that the executable runs best ...
+</quote>
+
+<p />
+
+This thread triggered a set of patches, including returning correct
+version information for builtin modules.
+
+</section>
+
+</kc>

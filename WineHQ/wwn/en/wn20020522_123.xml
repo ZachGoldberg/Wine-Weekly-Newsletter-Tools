@@ -1,0 +1,659 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="123" date="05/22/2002" />
+
+<intro>
+<p>
+This is the 123rd release of the Wine's kernel cousin publication. Its main goal is to distribute widely what's going on around Wine (the Un*x Windows emulator). 
+</p>
+<p>Over at the <a href="http://kt.zork.net/kernel-traffic/latest.html">Kernel 
+Traffic</a> Zack included a note about the new system in place here.  Since it's
+kind of interesting I'll just quote what he said:</p>
+
+<quote who="Zack Brown"><p>
+Kernel Traffic has just changed its publication system. It used 
+to use a home-grown XML parser that interfaced with a database 
+back-end to produce flat HTML, which would then be uploaded to 
+the various machines in the DNS round-robin.
+
+</p><p>The new system uses XSLT files to transform the XML into HTML, 
+and uses 'make' to ensure that only the right files are rebuilt. 
+Eventually the publication system will be released with version 
+numbers, revision control, etc., but for now you can still 
+view the files at 
+<a href="http://kt.zork.net/xslt/">
+http://kt.zork.net/xslt/</a>. 
+The key XSLT file used to produce the HTML on the site is 
+<a href="http://kt.zork.net/xslt/kt.xsl">
+http://kt.zork.net/xslt/kt.xsl</a>, 
+which in turn references files in the various subdirectories.
+</p><p>
+I'll have more to say about this, and some documentation, in 
+upcoming weeks. For now I'm just letting folks know the files 
+are there, in case anyone wants to experiment with them, and 
+maybe send me patches and feature ideas.
+</p><p>
+Special thanks go to Joerg Heinicke and Jeni Tennison from the XSL 
+mailing list, who wrote the &lt;kcref&gt; handler in 
+<a href="http://kt.zork.net/xslt/html/misc.xsl">
+http://kt.zork.net/xslt/html/misc.xsl</a>.</p>
+</quote>
+<p>
+Damian Wojslaw is now  
+<a href="http://kt.zork.net/wine/trans/polish/archives.html">
+translating</a> KC Wine into Polish.  It looks great, but since
+I'm not fluent in Polish that probably doesn't mean much.
+</p>
+</intro>
+
+
+<stats posts="428" size="1345" contrib="86" multiples="51" lastweek="49">
+
+<person posts="35" size="86" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="32" size="72" who="Andriy Palamarchuk &lt;apa3a@yahoo.com&gt;" />
+<person posts="30" size="94" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="29" size="111" who="Steven Edwards &lt;Steven_Ed4153@yahoo.com&gt;" />
+<person posts="25" size="69" who="Andreas Mohr &lt;andi@rhlx01.fht-esslingen.de&gt;" />
+<person posts="20" size="49" who="Dustin Navea &lt;speeddymon@yahoo.com&gt;" />
+<person posts="19" size="59" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="15" size="29" who="Sylvain Petreolle &lt;spetreolle@yahoo.fr&gt;" />
+<person posts="13" size="33" who="Eric Pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+<person posts="10" size="26" who="Dmitry Timoshkov &lt;dmitry@baikal.ru&gt;" />
+<person posts="9" size="40" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="9" size="34" who="Jakob Eriksson &lt;jakob@vmlinux.org&gt;" />
+<person posts="8" size="49" who="Vincent Beron &lt;vberon@mecano.gme.usherb.ca&gt;" />
+<person posts="8" size="33" who="Sean C. Farley &lt;scf@farley.org&gt;" />
+<person posts="7" size="21" who="Joerg Mayer &lt;jmayer@loplof.de&gt;" />
+<person posts="7" size="17" who="Dimitrie O. Paun &lt;dpaun@rogers.com&gt;" />
+<person posts="6" size="27" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="6" size="17" who="Tony Lambregts &lt;tony_lambregts@telusplanet.net&gt;" />
+<person posts="6" size="17" who="Lonnie Cumberland &lt;lonnie@outstep.com&gt;" />
+<person posts="6" size="13" who="Ian D. Stewart &lt;idstewart@compuvative.com&gt;" />
+<person posts="5" size="23" who="Paul Millar &lt;paulm@astro.gla.ac.uk&gt;" />
+<person posts="5" size="14" who="Dimitrie O. Paun &lt;dimi@bigfoot.com&gt;" />
+<person posts="4" size="22" who="Gavriel State &lt;gav@transgaming.com&gt;" />
+<person posts="4" size="15" who="Martin Wilck &lt;Martin.Wilck@fujitsu-siemens.com&gt;" />
+<person posts="4" size="13" who="Mehmet YASAR &lt;myasar@free.fr&gt;" />
+<person posts="4" size="13" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="4" size="12" who="Warren_Baird@cimmetry.com" />
+<person posts="4" size="11" who="Roland &lt;roland@netquant.com.br&gt;" />
+<person posts="4" size="10" who="Raul Dias &lt;chaos@swi.com.br&gt;" />
+<person posts="4" size="10" who="David Laight &lt;david@l8s.co.uk&gt;" />
+<person posts="4" size="9" who="Steven Edwards &lt;steven_ed4153@yahoo.com&gt;" />
+<person posts="3" size="12" who="winedev@admdev.com" />
+<person posts="3" size="9" who="degs  &lt;degs@giantblob.com&gt;" />
+<person posts="3" size="8" who="John K. Hohm &lt;jhohm@acm.org&gt;" />
+<person posts="3" size="8" who="admiral coeyman &lt;admiral@corner.net&gt;" />
+<person posts="3" size="7" who="Medland, Bill &lt;Bill.Medland@accpac.com&gt;" />
+<person posts="3" size="7" who="Ender &lt;winedev@admdev.com&gt;" />
+<person posts="3" size="7" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="3" size="6" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="2" size="9" who="M.H.VanLeeuwen &lt;vanl@megsinet.net&gt;" />
+<person posts="2" size="9" who="&lt;arjen@blehq.org&gt;" />
+<person posts="2" size="9" who="Michael Stefaniuc &lt;mstefani@redhat.de&gt;" />
+<person posts="2" size="8" who="Insyde &lt;insyde@insyde.com.br&gt;" />
+<person posts="2" size="7" who="Jukka Heinonen &lt;jhei@iki.fi&gt;" />
+<person posts="2" size="7" who="Roger Fujii &lt;rmf@lookhere.com&gt;" />
+<person posts="2" size="5" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="2" size="5" who="Ryan C. Stallings &lt;winehq.org@beergeek.net&gt;" />
+<person posts="2" size="4" who="Rizsanyi Zsolt &lt;rizsanyi@myrealbox.com&gt;" />
+<person posts="2" size="4" who="perlman@warpcore.org" />
+<person posts="2" size="4" who="ccrayne@crayne.org" />
+<person posts="2" size="3" who="Marcelo Welter &lt;pouback@sysmo.com.br&gt;" />
+<person posts="1" size="18" who="Ann and Jason Edmeades &lt;us@the-edmeades.demon.co.uk&gt;" />
+<person posts="1" size="15" who="Arjen Nienhuis &lt;arjen@BleHQ.org&gt;" />
+<person posts="1" size="7" who="Sander van Leeuwen &lt;sandervl@xs4all.nl&gt;" />
+<person posts="1" size="6" who="David Hammerton &lt;david@transgaming.com&gt;" />
+<person posts="1" size="4" who="Guido Draheim &lt;guidod-2002-@gmx.de&gt;" />
+<person posts="1" size="4" who="Keith Matthews &lt;keith_m@sweeney.demon.co.uk&gt;" />
+<person posts="1" size="4" who="Shachar &lt;jdates@sun.consumer.org.il&gt;" />
+<person posts="1" size="4" who="leanne &lt;leanne@thizlinux.com&gt;" />
+<person posts="1" size="4" who="Shawn &lt;shawn@warpcore.org&gt;" />
+<person posts="1" size="3" who="Geoff Thorpe &lt;geoff@geoffthorpe.net&gt;" />
+<person posts="1" size="3" who="Gregor Hoffleit &lt;gregor@hoffleit.de&gt;" />
+<person posts="1" size="3" who="Ian Pilcher &lt;pilchman@attbi.com&gt;" />
+<person posts="1" size="3" who="David Jolley &lt;dave@lucien.cx&gt;" />
+<person posts="1" size="3" who="Ryan Stallings &lt;nwn@beergeek.net&gt;" />
+<person posts="1" size="3" who="Martin Wilck &lt;Martin.Wilck@Fujitsu-Siemens.com&gt;" />
+<person posts="1" size="2" who="davep &lt;davep@cyw.uklinux.net&gt;" />
+<person posts="1" size="2" who="lists &lt;lists@giantblob.com&gt;" />
+<person posts="1" size="2" who="Paul Rupe &lt;prupe@myrealbox.com&gt;" />
+<person posts="1" size="2" who="Christian Costa &lt;titan.costa@wanadoo.fr&gt;" />
+<person posts="1" size="2" who="Jeremy Newman &lt;jnewman@codeweavers.com&gt;" />
+<person posts="1" size="2" who="Russell Howe &lt;rhowe@sarah.stg.man.ac.uk&gt;" />
+<person posts="1" size="2" who="tijs@connectux.com (Tijs van Bakel)" />
+<person posts="1" size="2" who="Russell Howe &lt;rhowe@wiss.co.uk&gt;" />
+<person posts="1" size="2" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+<person posts="1" size="2" who="Brett Glass &lt;brett@lariat.org&gt;" />
+<person posts="1" size="2" who="Vassilis Virvilis &lt;vasvir@iit.demokritos.gr&gt;" />
+<person posts="1" size="2" who="Gerald Pfeifer &lt;pfeifer@dbai.tuwien.ac.at&gt;" />
+<person posts="1" size="2" who="Laurent Pinchart &lt;laurent.pinchart@skynet.be&gt;" />
+<person posts="1" size="2" who="Aaron &lt;amj@mqqn.net&gt;" />
+<person posts="1" size="2" who="Juergen Schmied &lt;juergenschmied@lycos.de&gt;" />
+<person posts="1" size="2" who="Kari Hurtta &lt;hurtta+wine@ozone.fmi.fi&gt;" />
+<person posts="1" size="1" who="Hetz Ben Hamo &lt;hetz@kde.org&gt;" />
+<person posts="1" size="1" who="Michael Cardenas &lt;michael.cardenas@lindows.com&gt;" />
+
+</stats>
+
+
+
+
+<section
+  title="News: wine-20020509, Wine Press"
+  subject="News"
+  archive="http://www.winehq.org/news/announce.php?rel=1.62"
+  posts="6"
+  startdate="05/10/2002"
+  enddate="05/22/2002"
+>
+<topic>News</topic>
+<p>Head on over and grab the monthly wine CVS snapshot: 
+<a href="http://cvs.winehq.org/cvsweb/wine/ANNOUNCE?rev=1.62&amp;content-type=text/x-cvsweb-markup">wine-20020509.</a>
+Alexandre noted the following changes:
+<ul> More dll separation work. 
+   	<li />Many async I/O improvements. 
+	<li />Still more unit tests. 
+	<li />A lot less multimedia code. 
+	<li />Many portability fixes, esp. for ReactOS. 
+	<li />Lots of bug fixes. 
+</ul>
+
+</p><p>Francois Gouget posted some links to recent Wine articles
+in the press.  In addition, he updated the 
+   <a href="http://www.winehq.org/about/index.php?press">press section
+   </a>
+on WineHQ with some older articles.  The 
+   <a href="http://www.linuxplanet.com/linuxplanet/interviews/4202/1/">
+   first article</a> has a decent description of Wine, some of 
+   the commercial entities involved, and even a prediction Wine will
+   reach 1.0 some day.
+The <a href="http://www.desktoplinux.com/articles/AT3633344463.html">
+   second article</a> discuss Linux penetration in the
+   marketplace with a note that Wine provides an important element
+   for Linux on the desktop.
+
+</p><p>Last week's broadcast of "The Linux Show" had an interview
+with Jeremy White of CodeWeavers.I've been traveling for a few weeks 
+now (and fighting with dial-up connections) and just got a chance to listen to it.  
+Fast-forward to about 63 minutes into it to hear the interview. 
+
+</p><p>CodeWeavers released version 1.1.1 of their CrossOver Plugin.  
+Notable additions include support for Macromedia Flash Player 6, 
+Superscape Viscape plugin, and better Mozilla support.
+
+</p><p>TransGaming will be at the E3 expo on May 21-24 in LA.  If 
+you're in town, stop by and see them.  They'll be in a booth with 
+<a href="http://www.transitive.com">Transitive Technologies</a>.
+(Transitive seems to specialize in optimizing and translating
+CPU instruction sets from architecture to another.)
+</p>
+<p>Lindows.com 
+<a href="http://www.lindows.com/opposition">got to keep their name</a>.  
+Microsoft lost a motion for reconsideration of the preliminary injunction
+order from a few months ago.  They celebrated by redesigning their
+website.  </p>
+
+</section>
+
+
+
+
+
+<section
+  title="Component Owners"
+  subject="Component owners 2"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/05/0384.html"
+  posts="9"
+  startdate="05/13/2002"
+  enddate="05/14/2002"
+>
+<topic>Project Management</topic>
+<p>Andriy Palamarchuk has been spearheading an effort to
+get developers and users to use Wine's 
+<a href="http://bugs.winehq.org">Bugzilla</a>.  Part of 
+this involves assigning owners to the various parts of 
+Wine and informing those owners when bugs are entered for
+their subsystem.  Andriy submitted a list of possible
+component owners which generated a fair amount of feedback
+from people claiming or not claiming responsibility for 
+various areas.  Francois Gouget suggested looked at the
+<a href="http://www.winehq.org/about/index.php?who">list
+of developers</a> on WineHQ, but pointed out the list was
+horribly out of date.  Andriy revised his list and 
+resubmitted it:</p>
+<quote who="Andriy Palamarchuk">
+<p>
+List of developers who contacted me:<ul>
+<li> Guy L. Albetelli - common controls
+</li><li> Robert 'Admiral' Coeyman - DOS
+</li><li> Huw Davies - TrueType support, printing, gdi
+</li><li> Francois Gouget - Winelib, Winemaker, headers, icmp
+</li><li> Dustin Navea - wine tools
+</li><li> Mike McCormack - file system, serial port, named
+pipes, SMB
+</li><li> Marcus Meissner - COM, OLE
+</li><li> Andreas Mohr - documentation, installers, memory
+handling
+</li><li> Andriy Palamarchuk - wine applications
+</li><li> Juergen Schmied - console, file open dialog</li>
+</ul>
+</p><p>
+Developers who has not confirmed nor declined
+suggestion to own a component:
+<ul>
+<li> Alexandre Julliard - wineserver, kernel, IPC
+</li><li> Laurent Pinchart - copy protection
+</li><li> Dmitry Timoshkov - NLS, Unicode, keyboard I/O
+</li><li> Martin Wick - sockets</li>
+</ul>
+</p><p>
+Still available components:
+<ul>
+<li> DDE
+</li><li> loader
+</li><li> msvcrt
+</li><li> x11drv
+</li><li> window handling</li>
+</ul>
+</p><p>
+Some developers are interested by areas which are not
+components per se. For example - Andreas Mohr worked a
+lot on installers issues and would like installer bugs
+forwarded to him. The issue will be forwarded to a
+person who is the most interested in an issue.
+Everybody else is also welcome to give me your
+particular areas of interest even if they do not match
+component boundaries.
+</p><p>
+All the developers, QA engineers who is going to work
+with Bugzilla, please create an account and request
+privileges to change bugs status at
+bugs <i>at</i> codeweavers.com.
+</p><p>
+You do not need to subscribe to wine-bugs if you are
+not planning to work in the first line of the bugs
+hanlding (handling of bugs with status UNCONFIRMED).
+</p>
+Please, let me know if I missed anybody.
+Other comments are welcome too.
+</quote>
+
+<p>Andriy also worked on 
+<a href="http://bugs.winehq.org/show_bug.cgi?id=95">
+a form</a> to make bug submission easier and more accurate.</p>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<section
+  title="Patch Trading"
+  subject="Proposal for Trade: COM/DCOM for DLL Separation"
+  archive="http://www.winehq.org/hypermail/wine-license/2002/05/0044.html"
+  posts="5"
+  startdate="05/10/2002"
+  enddate="05/14/2002"
+>
+<topic>Licensing</topic>
+<p>Gavriel State wrote in with a proposal for exchanging some
+code that was developed by TransGaming:</p>
+<quote who="Gavriel State"><p>
+As we have mentioned before, TransGaming would like to offer a trade to Wine authors who
+have decided to license their code under the LGPL.  We have a number of different
+components that we have developed for WineX that are currently not in the LGPLed Wine
+tree or the X11-licensed ReWind tree.  We are willing to re-licence some these components
+and allow them to be integrated into the public tree, if we can reach an agreement with
+current copyright holders of LGPLed code.
+</p><p>
+As we have stated, we do not believe that it is possible for us to do our work within a
+pure LGPLed framework.  This is for a variety of reasons, ranging from concerns about
+copy protection issues to working with proprietary platforms.  That having been said,
+we would still like to make use of some individual LGPLed DLLs, and we will be very
+happy to make any changes we make to those DLLs available under the LGPL as well.
+</p><p>
+Currently however, we cannot easily take an LGPLed DLL and ship it with WineX due to
+changes that have happened in the Wine tree for DLL separation.  In order for us to
+do this, the DLL separation work that has gone on in the Wine tree would also have to
+be made available in the ReWind tree, under the X11 license.
+</p><p>
+We would like to see the following dll-separation related patches made
+available to ReWind:
+<ul><i>links deleted, see Archive Link above for complete list</i></ul>
+</p><p>
+We would also like to see some of the recent async I/O patches made available
+by Martin Wilck and Mike McCormack in ReWind, and patches based on that work, ie:
+<ul><i>links deleted, see Archive Link above for complete list</i></ul>
+</p><p>
+In exchange for this, we're willing to make the following code available to
+ReWind (and thus to Wine) under the X11 license:
+<ul>
+   <li> All of the current work in WineX that supports DCOM and InstallShield
+     (The WineX version of DCOM and InstallShield support works with
+      every InstallShield 6 installer that we've tried)
+
+   </li><li> Portions of our copy protection code that are related to low-level
+     CD-Reading and reentrant wineserver calls.
+
+   </li><li> A 2D DIB rasterization engine with full support for complex brushes and
+     ROP modes.  The DIBEngine is configurable from the ~/.wine/config file,
+     and coexists with the existing X11drv mechanisms for supporting DIBSections.
+     IE: If the DIBSection is in gdimod mode, it will use the X11 primitives,
+     and if it is in appmod mode it will use the DIBEngine if the DIBEngine
+     supports that primitive.  Our work on the DIBEngine is ongoing.
+
+   </li><li> Our up-to-date SDLDrv, the first really useful non-X11 backend driver
+
+   </li><li> Various DirectSound improvements</li>
+</ul></p><p>
+A number of other miscellaneous fixes, such as:
+<ul>
+    <li> Support for Gamma ramps in desktop mode
+    </li><li> WSADuplicateSocket support in WinSock
+    </li><li> Mousewheel support in DInput
+    </li><li> Left vs right alt/ctl/shift key mapping
+    </li><li> DInput keyboard buffering
+    </li><li> DirectPlay improvements</li>
+</ul>
+</p><p>
+Some of these changes are already available for viewing on the WineX tree on
+SourceForge.  Other parts (ie: the DIB Engine, etc) will be made available for
+viewing shortly.
+</p><p>
+In addition, we'll also be willing to redirect some of our engineering time to
+completing any remaining DLL separation tasks in Wine.  Also, the work we intent to sponsor
+to speedup the WineServer will be made available under licenses compatible with both ReWind
+and Wine.
+</p><p>
+We have other things we're willing to trade as well, in exchange for more LGPLed code
+being made available to ReWind, or commitments to dual-license other code:
+<ul>
+   <li> New under-development work on DCOM to get away from the current typelib marshalling
+     hacks (this will also eliminate some of the visual glitches with InstallShield Installers)
+
+   </li><li> XSharedPixmap support in the x11drv.  This vastly improves DIBSection performance
+     in some cases, and compliments the DIBEngine work.
+
+   </li><li> 3D Sound support in DirectSound
+
+   </li><li> Improved support for winelib C++ apps, including msvcrt improvements and
+     support for delayed initialization.</li>
+</ul>
+</p><p>
+Finally, Alexandre has repeatedly charged that the public availability of our WineX
+code is discouraging people from contributing games related code to Wine.  If the other
+LGPL copyright holders agree that this is a problem, we're willing to consider limiting
+the availability of our AFPLed code in some way.  We'll have to figure out exactly how
+though.
+</p>
+We look forward to your feedback.
+</quote>
+
+<p>Alexandre sent a short reply,
+<quote who="Alexandre Julliard">
+ As I explained already, I think the idea of trading patches is
+ fundamentally flawed. I also think Wine will be much better off in the
+ long run by sticking to the LGPL than by giving it up now for a small
+ short-term gain. So no, I'm not interested in trading any of my
+ patches.
+</quote></p>
+</section>
+
+
+
+
+
+
+
+
+<section
+  title="Global Wine Configuration?"
+  subject="Global Wine configuration file not consulted?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/05/0404.html"
+  posts="3"
+  startdate="05/14/2002"
+  enddate="05/14/2002"
+>
+<topic>Fixes</topic>
+<p>Gerald Pfeifer wondered what was going on with a
+global wine configuration file,
+<quote who="Gerald Pfeifer">
+ I noticed that in the absence of ~/.wine/config Wine simply refuses to
+ start, and truss (on FreeBSD) and trace (on GNU/Linux) reveal that no
+ other location is consulted for a config file.</quote>
+ 
+</p><p>Alexandre explained what was going on,
+<quote who="Alexandre Julliard">
+ The global configuration is no longer supported at this point, mainly
+ because it doesn't play well with WINEPREFIX. I'm planning to
+ implement a more general solution at some point that will again enable
+ global config files. At the moment if you want that behavior you have
+ to create a symlink from ~/.wine/config to some global config.
+</quote></p>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section
+  title="What is WineLib?"
+  subject="talk-through dll"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/05/0415.html"
+  posts="6"
+  startdate="05/14/2002"
+  enddate="05/15/2002"
+>
+<topic>Winelib</topic>
+<p>Lonnie Cumberland wondered:</p>
+<quote who="Lonnie Cumberland">
+<p>
+I have been reading over the Wine documentation but have not come
+across this yet.
+</p><p>
+I am interested in having a windows DLL that can access some
+functions native to Linux.
+</p><p>
+For instance, possibly an application under wine that allows me to
+add a new user to my Linux box.
+</p><p>
+My guess is that I should be able to write up a windows dll that will
+talk to Linux. Is this correct?
+</p></quote>
+
+<p>Geoff Thorpe agreed, and thought the benefit would be huge,
+<quote who="Geoff Thorpe">
+Won't it be wonderful when some applications will actually work *better* 
+under Wine than in native windows? Ie. under native windows, "click here" 
+will just open IE or whatever, but under wine with a "talk-through" API, it 
+could instead allow the browsing to be hosted either through the 'normal' 
+windows API (presumably launching IE) *or* be passed out to a native browser 
+of choice on the host system (mozilla, konqueror, whatever).
+</quote></p>
+
+<p>Francois Gouget pointed out that it's such a great idea that
+it's already been done,
+<quote who="Francois Gouget">
+ The way to do this would be to be writing a Winelib library. This
+ library can be used by the rest of the application, be it Winelib or
+ native Windows, and this library can call both Win32 and Unix APIs. When
+ in a Winelib library, calling a Unix API is no different from calling it
+ from any other Unix library.</quote></p>
+ 
+<p>He also added a link to a URL where Microsoft Word is showed
+ opening Mozilla to access a URL:
+ <a href="http://www.codeweavers.com/products/office/images/msword2000_url.gif">
+ http://www.codeweavers.com/products/office/images/msword2000_url.gif</a>
+</p>
+
+</section>
+
+
+
+
+
+
+
+<section
+  title="Cross-compiling Wine"
+  subject="Breakthrough! Can now crosscompile unit tests!"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/05/0279.html"
+  posts="20"
+  startdate="05/09/2002"
+  enddate="05/12/2002"
+>
+<topic>Ports</topic>
+<p>Jakob Eriksson announced getting tests to compile with 
+the Mingw compiler:</p>
+<quote who="Jakob Eriksson"><p>
+If you compile with:<br /><ul>
+ <code>
+ i586-mingw32msvc-gcc -o FILE.EXE -DREAL_EXE file.c</code>
+</ul></p><p>
+
+The magic is the defines of ok, todo_wine and START_TEST.
+</p><p>
+See this as proof of concept, I'm sure someone can make this
+look better.
+</p><p>(If you have Debian 3.0, just 
+"<code>apt-get install mingw32-runtime mingw32</code>".)
+</p><p>
+
+How do I make this happen automagically when doing "make tests"?
+</p></quote>
+
+<p>He went on to explain:</p>
+<quote who="Jakob Eriksson"><p>
+What I want is for the Wine configure to detect that mingw32
+is present, then modify Makefiles so that when "make tests"
+is run, EXE-files are modified.
+I also don't want to do #ifdef REAL_EXE or whatever in every
+c-file, I want all that to happen automagically in wine/test.h !
+I want the configure script to take care of all that and always
+compile unit tests twice, once for linux target, once for Windows
+target. (EXE)
+</p><p>
+Then a .BAT file could easily be created that runs all the EXEs.
+</p><p>
+Bang, native unit testing in a box!
+</p>
+</quote>
+
+<p>Steven Edwards offered some tips, then Alexandre offered
+a patch:</p>
+<quote who="Alexandre Julliard"><p>
+OK I have hacked the makefiles to make cross-compilation
+possible. It's a bit tricky because some parts of Wine need to be
+compiled twice, since they are used both at compile-time and at
+run-time. The way to do it is:
+<ul>
+<li> create 3 empty directories: wine-src, wine-gcc, wine-mingw</li>
+
+<li> put the full source in wine-src, making sure you don't have any
+  binaries in there</li>
+
+<li> in wine-gcc, do:<br />
+     ../wine-src/configure<br />
+     make depend<br />
+     make tools
+</li>
+<li> then in wine-mingw do:<br />
+     ../wine-src/configure --host=i586-mingw32msvc --with-wine-tools=../wine-gcc<br />
+     make depend<br />
+     make
+</li></ul></p><p>
+
+This should build a full cross-compiled Wine. Of course most of it
+doesn't actually compile at this point, but fixing that is left as an
+exercise for the reader...
+</p></quote>
+
+
+
+</section>
+
+
+<section
+  title="WineHQ: .org or .com?"
+  subject="winehq.org or winehq.org?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/05/0426.html"
+  posts="9"
+  startdate="05/15/2002"
+  enddate="05/20/2002"
+>
+<topic>Project Management</topic>
+<p>Andriy Palamarchuk saw a reference Jeremy Newman made to WineHQ.org
+and wondered why he didn't reference WineHQ.org.  Historically, 
+WineHQ was a ".com" address even though it was an open source 
+community site.  Jeremy explained:</p>
+<quote who="Jeremy Newman"><p>
+ The story is pretty simple. The .com site is the original name to WineHQ
+ before and after Corel hosted the site. CodeWeavers originally
+ registered .org to simply be a mirror of the .com site. But, since they
+ are now both hosted on the exact same server it does not really matter
+ which you use.
+</p><p>
+ It is my suggestion to use .org as the preferred as it seems to sound
+ better than .com on an open source site.
+</p></quote>
+
+<p>This generated a bunch of opinions.  Everyone felt whatever
+name was used should be used consistently throughout all Wine
+documentation and references.  Jeremy White felt if it wasn't
+broke, don't fix it.  But others pointed out that ".org" sounded
+better, and now was the time to fix it (i.e. before Wine hits
+1.0).  Alexandre complained that switching addresses would
+generate twice as much spam in his mailbox.  Andreas Mohr then
+called for a vote on the matter (which didn't seem to generate
+many public replies.)
+</p>
+</section>
+
+
+
+
+
+<section
+  title="SoundBlaster Emulation"
+  subject="Re: PATCH: Preliminary DMA and SOUNDBLASTER emulation"
+  archive="http://www.winehq.org/hypermail/wine-devel/2002/05/0325.html"
+  posts="4"
+  startdate="05/15/2002"
+  enddate="05/20/2002"
+>
+<p>
+Christian Costa sent in a patch implementing 
+preliminary support for DMA and SoundBlaster emulation.
+
+Dustin Navea wondered exactly what it was for.  Andreas
+Mohr explained that that all the old DOS games required
+it and added, <quote who="Andreas Mohr">
+Thanks for this very cool patch !!!</quote>
+</p>
+
+<p>Christian pointed out that it wasn't quite as exciting
+as it might seem because most old DOS games don't run
+under Wine.</p>
+</section>
+
+</kc>
+
+

@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="22" date="20 Dec 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the twenty second release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Because of Christmas holidays, there won't be any KC Wine next week.
+
+</intro>
+
+<stats posts="109" size="386" contrib="45" multiples="24" lastweek="23">
+
+<person posts="10" size="53" who="Peter Ganten &lt;peter@ganten.org&gt;" />
+<person posts="7" size="17" who="'Juergen Schmied' &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="6" size="15" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="5" size="8" who="Michael Cardenas &lt;Michael_Cardenas@deneba.com&gt;" />
+<person posts="5" size="13" who="'Sander van Leeuwen' &lt;sandervl@xs4all.nl&gt;" />
+<person posts="4" size="8" who="Ove Kaaven &lt;ovehk@ifi.uio.no&gt;" />
+<person posts="4" size="57" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="4" size="13" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="4" size="11" who="'Dmitry Timoshkov' &lt;dmitry@sloboda.ru&gt;" />
+
+</stats>
+
+<section
+  title="Buffers Handling"
+  subject="Buffers handling"
+>
+
+Francois Gouget had a hard time trying to fix (from crashes and also
+code re-reading) some potential buffer overflows, missing trailing
+'\0' on strings and strncpy vs lstrncpyA (the later always add a
+trailing '\0', whereas the former doesn't if the destination buffer is
+too small). Francois provided several patches for review, which
+J&#252;rgen Schmied and Andreas Mohr commented. Francois also sent a tool
+to help tracking those issues (which has been added to the unofficial
+patches list).
+
+</section>
+
+<section
+  title="Crypto APIs and US laws"
+  subject="Crypto APIs and US laws"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-293.html"
+>
+
+Shaun Morris had some concerns with implementing Windows cryptographic
+APIs:
+
+<quote who="Shaun Morris">Would there be any problem with implementing the functions of the
+CryptoAPI (CryptAcquireContext, etc.) in advapi, from an NSA knocking
+down my door perspective?  Obviously, Microsoft has done it, and the
+actual crypto goes in the provider, but I'm still a little concerned.</quote>
+
+<p />
+
+Chet Murphy provided a faq (from the Mozilla project) describing the
+details of cryptographic APIs and exportation rules from the US:
+<a href="http://www.mozilla.org/crypto-faq.html">
+http://www.mozilla.org/crypto-faq.html</a>
+
+<p />
+
+Alexandre Julliard gave his view on the subject:
+
+<quote who="Alexandre Julliard">I am not going to include in the standard distribution any patch that
+would cause Wine to fall under export restrictions. Besides I'm living
+in the US now so I wouldn't even be allowed to distribute the releases
+if I did include such a patch...
+
+<p />
+
+If there are really APIs that fall under export restrictions, they
+need to be developed and distributed from outside the US, as a patch
+to the main release. And you have to be very careful that nobody
+residing in the US takes any part in the development.</quote>
+
+<p />
+
+At the end of this thread, it was still not clear if the highest
+CryptoAPI was falling under the US export restriction (the lowest
+layer, of course, is).
+
+</section>
+
+</kc>

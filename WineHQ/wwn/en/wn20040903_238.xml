@@ -1,0 +1,627 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="238" date="09/03/2004" />
+<intro> <p>This is the 238th issue of the Wine Weekly News publication.
+Its main goal is to play blackjack. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="226" size="958" contrib="57" multiples="30" lastweek="25">
+
+<person posts="33" size="111" who="Mike Hearn" />
+<person posts="18" size="178" who="James Hawkins" />
+<person posts="17" size="46" who="Alexandre Julliard" />
+<person posts="12" size="35" who="Saulius Krasuckas" />
+<person posts="10" size="24" who="Rein Klazes" />
+<person posts="9" size="18" who="Steven Edwards" />
+<person posts="8" size="44" who="Shachar Shemesh" />
+<person posts="8" size="18" who="Juan Lang" />
+<person posts="7" size="27" who="Mike McCormack" />
+<person posts="6" size="26" who="Filip Navara" />
+<person posts="6" size="26" who="(michael)" />
+<person posts="6" size="22" who="Uwe Bonnes" />
+<person posts="6" size="15" who="Francois Gouget" />
+<person posts="5" size="29" who="Con Kolivas" />
+<person posts="5" size="21" who="Ove Kaaven" />
+<person posts="5" size="16" who="Dmitry Timoshkov" />
+<person posts="5" size="11" who="Eric Pouech" />
+<person posts="4" size="36" who="Huw D M Davies" />
+<person posts="4" size="12" who="Jacek Caban" />
+<person posts="4" size="12" who="Robert Shearman" />
+<person posts="3" size="10" who="Duane Clark" />
+<person posts="4" size="10" who="Diego Petten&#242;" />
+<person posts="3" size="6" who="Patrick Goupell" />
+<person posts="2" size="8" who="Ferenc Wagner" />
+<person posts="2" size="7" who="Michael Buesch" />
+<person posts="2" size="6" who="Jeremy Newman" />
+<person posts="2" size="5" who="Andreas Mohr" />
+<person posts="2" size="5" who="Nyef" />
+<person posts="2" size="4" who="Lionel Ulmer" />
+<person posts="1" size="46" who="Nicolai Kuntze" />
+<person posts="1" size="29" who="Mike" />
+<person posts="1" size="11" who="Roger Olson" />
+<person posts="1" size="5" who="Hans Leidekker" />
+<person posts="1" size="5" who="Chipzz" />
+<person posts="1" size="4" who="Michael Chang" />
+<person posts="1" size="3" who="Rickard Svensson" />
+<person posts="1" size="3" who="Jim White" />
+<person posts="1" size="3" who="Marcus Meissner" />
+<person posts="1" size="3" who="=?iso-8859-1?Q?Michael_Dr=FCing?=" />
+<person posts="1" size="3" who="David Lee Lambert" />
+<person posts="1" size="2" who="Shachar Shemesh" />
+<person posts="1" size="2" who="(kernel)" />
+<person posts="1" size="2" who="Pierre d'Herbemont" />
+<person posts="1" size="2" who="Tero Tamminen" />
+<person posts="1" size="2" who="Jens Collin" />
+<person posts="1" size="2" who="Vincent B&#233;ron" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Joris Huizer" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="Davide Giannotti" />
+<person posts="1" size="2" who="Ge van Geldorp" />
+<person posts="1" size="1" who="Tom" />
+<person posts="1" size="1" who="=?iso-8859-1?q?Chris=20Rankin?=" />
+<person posts="1" size="1" who="Robert van Herk" />
+
+</stats>
+<section 
+	title="Creating Type Libraries" 
+	subject="working together on stdole.tlb and an end to dcom9x"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0607.html" 
+	posts="16"
+	startdate="08/28/2004"
+	enddate="08/31/2004"
+>
+<topic>RPC / COM / OLE</topic>
+<p>Wine's DCOM has improved over the years, but it's still lacking
+some important functionality.  
+<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/automat/htm/chap9_49pv.asp">Type libraries</a> 
+are one such problematic area. Steven Edwards asked this week, 
+<quote who="Steven Edwards">
+Once again cross-posting because I would like to see if this is
+something we can work together on. What is left to do for us to be able
+ to build and have a working implementation of stdole.tlb or any other
+type libs? I ask because it seems Wine's DCOM implementaton is almost
+good enough for most apps except for this file and ReactOS is quickly
+getting to the point that it can run most of the same stuff Wine can
+without DCOM9x installed.</quote></p>
+
+<p>Mike Hearn described where the problem is:</p>
+<quote who="Mike Hearn"><p>
+It basically involves implementing the ICreateTypeLib interfaces in our
+OLE dlls. Nyef did some great work on this but for stdole32.tlb we need
+the other version, I think.
+</p><p>
+Once this is done maybe we can pull the stdole32.tlb generation program
+used in CrossOver upstream. Right now it's pretty useless for Wine as it
+has to be run on Windows to work.
+</p></quote>
+
+<p>Filip Navara asked for more details, since it appeared ICreateTypLib2 was
+already implemented.  Alastair Bridgewater replied:</p>
+<quote who="Alastair Bridgewater"><p>
+
+The ICreateTypeLib2 interface is used to create the new-style MSFT typelibs.
+The older ICreateTypeLib interface is used for the old-style typelibs. While
+the newer interface also implements the older one, when you ask for the old
+interface with CreateTypeLib() you get a completely different implementation.
+</p><p>
+I don't see why it necessarily follows that stdole32 wouldn't work as an MSFT
+typelib, but the implementation of ICreateTypeInfo2 is badly incomplete in
+places, and I would trust it to completely mess up any semi-complex type
+library you attempt to create with it. Specifically, any type library that
+involves functions or variables.
+</p></quote>
+
+<p>What he meant by that is, there are two different kinds of 
+typelibs.  It's best explained by a comment in dlls/oleaut32/typelib.h,
+<quote who="cvs">
+ There are two known file formats, those created with ICreateTypeLib
+  have the signature "SLTG" as their first four bytes, while those created
+  with ICreateTypeLib2 have "MSFT".</quote> </p>
+
+<p>Along these line, Huw Davies agreed using the MSFT format might work,
+<quote who="Huw Davies"> 
+ You're right, an MSFT stdole32 might work fine - I guess we should at
+ least try it.  So for fun I've 
+ <a href="http://www.winehq.com/hypermail/wine-devel/2004/08/att-0639/01-stdole32.c">attached</a>
+ the program we used to
+ generate CrossOver's stdole32.tlb (Actually you need to take the
+ generated file and wrap it up in a resource only dll, but that's a
+ detail).  Since it was designed to be compiled with MSVC, it uses the
+ L"" construct for olestrings - you can hack around this by compiling
+ with -fshort-wchar for now.</quote></p>
+
+<p>Filip Navara tried it out, and did get something out,
+<quote who="Filip Navara">
+I tried to change CreateTypeLib to CreateTypeLib2 and running it with 
+Wine DLLs. It produced bunch of FIXMEs, but generated the type library 
+in the end. The result is attached. Compared to the type library 
+generated using the same executable with Windows DLL only two bytes 
+differ. Is there some type library dump program that can be used to find 
+out what are the differences or am I left alone and should I try to find 
+out the actual differences other way?</quote></p>
+
+<p>Steven Edwards found something that might help figure out what was
+generated:</p>
+<quote who="Steven Edwards"><p>
+After a quick google search. I don't know if this will give you all the
+information you need but it does have a sample program that can do
+simple dumping of typelibs.
+<ul> <a href="http://www.microsoft.com/msj/0399/comtype/comtype.aspx">
+http://www.microsoft.com/msj/0399/comtype/comtype.aspx</a></ul></p></quote>
+
+<p>There was no reply and the thread ended there.</p>
+
+
+</section>
+<section
+        title="Scheduling (con't)"
+        subject="Re: [ck] Re: Threading issues? [ck-request@vds.kolivas.org: ck Digest, Vol 3, Issue 16] "
+        archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0481.html"
+        posts="21"
+        startdate="08/24/2004"
+        enddate="08/31/2004"
+>
+<topic>Architecture</topic>
+<p>If you've been following Linux kernel news, you've probably
+seen the discussions over the past year concerning schedulers.
+There's been a lot of work done in this area, but it's a very
+tricky problem to make every process run exactly the way it 
+was intended without interfering with other ones.  A few weeks
+ago (WWN <a href="http://www.winehq.com/wwn/236#Threading%20Issues?">issue #236</a>)
+Andi Mohr forwarded a message from a kernel development list
+that described a problem with Wine's interaction with the Linux
+scheduler.  More discussion occurred this week after Mike Hearn
+asked,
+<quote who="Mike Hearn">
+One thought that occurred to me, and this is just a random theory, is 
+that maybe the issue is not with the Wine code but the Win32 code run on 
+top of it. Do you know how 2.6 scheduling compares with 2.4 and Windows 
+(NT) scheduling? Could it be that some apps are written to expect 
+Windows-style scheduling and fail to work if they don't get it?</quote>
+</p>
+
+<p>Now, I'll ruin the ending of this thread right now to tell you
+that nothing seems to have been resolved.  However, it pointed out
+some fascinating things about Windows, Wine and Linux.  Con Kolivas
+thought about it for a while, but didn't have an answer.  Windows
+treats scheduling differently than Linux and Con didn't have the
+background on how that worked.  Now, Wine relies on the Linux 
+kernel to do the actual scheduling of threads, however some Windows
+applications expect scheduling to work a specific way.. something
+different than what the kernel actually does.  Ove K&#229;ven 
+explained how scheduling works on Windows and some of the pitfalls
+associated with it:</p>
+<quote who="Ove Kaaven"><p>
+A book I have described how it works...
+</p><p>
+The Windows scheduler is in its most basic form remarkably similar to
+the scheduling policy known in Linux as SCHED_RR, with a few
+"enhancements". For example, the thread owning the foreground window
+gets a priority boost relative to other threads in the system. There's
+also some stuff in there to help deal with the priority-inversion
+problem known to real-time programmers, I think. (When a low priority
+thread can keep blocking the execution of a high priority thread by
+holding a lock the high priority thread needs, with the result that
+medium priority threads get to run but the high priority thread does
+not, it's called priority inversion, if I understand right.)
+</p><p>
+Also note that Windows allows a Win32 process to boost its own priority
+all the way to what they call "real time". Only root can do this under
+Linux. I'm not sure if you need administrator privileges to do this
+under Windows (probably not), but since every Windows user runs as
+administrator anyway, it's probably not unlikely that many applications
+expect this ability anyway.
+</p><p>
+Internally, Windows assigns each thread a priority, determined by
+process priority class, thread priority class (all programmatically
+set), and some other factors such as whether it's running in the
+foreground (owns the foreground window) or not. Threads with the same
+scheduling priority are scheduled round-robin. Threads with higher
+priority preempt anything with lower priority, so that lower priority
+threads will not get to run as long as a higher priority thread is
+runnable. It is of course recommended and assumed that applications use
+high priority only for threads that won't use much CPU, since if they
+do, execution of that thread will block all threads with lower priority
+than itself.
+</p><p>
+The book described no kind of dynamic scheduling based on how much CPU
+time a thread is spending, only the aforementioned "is in foreground"
+thing. Does imply that a Win32 app running an infinite loop could run
+fine in the background, but would hang the system if brought to the
+foreground, I think (assuming Windows doesn't see that it has hung,
+which it probably checks by seeing if it responds to messages).
+</p></quote>
+
+<p>Rob Shearman then provided a link that explains more detail 
+about the priorities a thread may have:</p>
+<quote who="Robert Shearman"><p>
+As decribed here:
+<ul><a href="http://www.winntmag.com/Articles/Index.cfm?IssueID=22&amp;ArticleID=302">
+http://www.winntmag.com/Articles/Index.cfm?IssueID=22&amp;ArticleID=302</a></ul></p><p>
+There are 31 priority levels and only users with Administrator 
+privileges can set processes to the highest priorities of 16-31.
+I doubt there are programs that require these high priorities, although 
+we could find potential targets by printing a message for programs that 
+try and set their priority to a high level.
+</p></quote>
+
+<p>Ove took a look and then came back with a real world example
+of where this problem occurs:</p>
+<quote who="Ove Kaaven"><p>
+OK, so you need administrator to set a realtime priority, but you are
+still able to set a high priority on yourself without being an
+administrator under Windows. This is not possible under Linux, where a
+non-root process can only reduce, not elevate, its own priority.
+</p><p>
+For what it's worth, at TransGaming we know for a fact that some games
+(maybe it was Battlefield 1942) does; they elevate the priority of one
+of their most critical threads, and seem to use interesting mechanisms
+to regulate how much time this high-priority thread uses relative to the
+other threads. In any case it does help the game's smoothness to
+experimentally elevate this thread's priority under Linux, but this is
+not really a solution because of permissions.</p></quote>
+
+<p>Mike knew TransGaming had problems with 2.6 and wondered if
+they had solved them.  Ove explained:</p>
+<quote who="Ove Kaaven"><p>
+we still consider 2.6 too unstable to support the use of,
+but the problem is probably related to what's being discussed here,
+which is why I'm interested.
+</p><p>
+One interesting problem we've seen is the one of wineserver using a
+whole lot more CPU now than before. A scenario where this could happen
+is if the game has a relatively low-priority thread which gets to do a
+lot of waits on critical sections, and some high-priority threads that
+does interesting stuff, also usually holding those critical sections, so
+there's always contention. The game might not care much exactly how
+often the low-priority thread gets scheduled, as long as the resource
+protected by the critical section is not in use whenever it does get
+scheduled (which it probably usually isn't if the Win32 thread priority
+system is used).
+</p><p>
+Well, my theory is that in this situation, with the great new
+interactivity-boosting Linux scheduler, the wineserver is considered
+very interactive, and gets scheduled a lot more than the high-priority
+threads, just so it can satisfy the wait requests of the low-priority
+thread.
+</p><p>
+This particular situation is a problem which the shared-memory
+wineserver we have in Cedega now should help somewhat against, I
+suppose, but that probably doesn't make this problem less interesting
+for you.
+</p><p>
+And of course there are threads we use that gets penalized a lot. For
+example, the DirectSound mixing thread would by no means be considered
+interactive by the scheduler. We would love to elevate the priority of
+this thread, for example, but it's not possible because of permissions.
+</p></quote>
+
+<p>Con took it all in detailed some of the challenges being faced:</p>
+<quote who="Con Kolivas"><p>
+To be honest, knowing how linux 
+manipulates priorities dynamically and that more of the OS is threaded 
+at different layers from windows, it is a miracle than any of the high 
+performance gaming might run smoothly.
+</p><p>
+Audio runs as a separate thread outside of wine potentially through who 
+knows how many layers as a combination of both process and kernel 
+context so that's already complicating the issue by having a separate 
+thread. X does the same again. So what the win32 game is doing under 
+wine when it asks for audio or graphics to be done will be handled 
+completely differently to windows. How blocking is done between the 
+graphics and audio calls, when you have a highly cpu bound task (the 
+game) as well is definitely complex and not just the kernel that is 
+responsible here. Add to that the fact that wine itself runs a few 
+threads and as I said before, it's a miracle it runs smoothly at all.
+</p></quote>
+
+<p>He went on to explain that <tt>nice</tt> seems to be the best
+solution.  Changing the scheduler just to adapt to one program
+might not be the wisest decision and <tt>nice</tt> seems to perform
+what's required to get things to run smoothly.  Unfortunately it
+comes with the caveat Ove had explained, only root can get the
+priority levels to behave properly.  Andi Mohr thought this was a good
+reason for the idea that's been tossed around of having Linux's
+scheduler become a "pluggable" type interface,
+<quote who="Andreas Mohr">
+This shows that dynamic reloading of different schedulers
+is a very useful thing: if playing some game on Wine doesn't work with the
+currently used scheduler, you just load a specially adapted scheduler (say a
+"Wine" scheduler for close Windows scheduling compatibility ;) in order to
+have some great gaming session, and that's it.
+(of course it'd be useful to have a universally usable scheduler instead,
+but that is very difficult if not impossible to achieve)
+</quote></p>
+
+</section>
+ 
+<section 
+	title="epoll (con't)" 
+	subject="Re: wineserver epoll"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0654.html" 
+	posts="8"
+	startdate="08/29/2004"
+	enddate="08/31/2004"
+>
+<topic>IO</topic>
+<topic>Architecture</topic>
+<p>Shachar Shemesh submitted a patch to implement epoll() functionality,
+for background on this see the past two issues, 
+<a href="http://www.winehq.com/wwn/236#poll%20vs.%20epoll">#236</a> and
+<a href="http://www.winehq.com/wwn/237#poll%20vs.%20epoll%20(con't)">#237</a>:</p>
+<quote who="Shachar Shemesh"><p>
+After much talk, the patch seems ready for commit. Since there are many
+systems with slightly older glibc that have the header but do not have
+the implementation in glibc, or that have a stub implementation that is
+guaranteed to fail, we are calling the kernel functions directly. This
+also allows compiling on older systems than the code actually ships to.
+</p><p>  
+Accordingly, the autoconf checks for epoll_create in glibc were dropped.
+</p><p>
+ChangeLog:<br /> 
+Shachar Shemesh<br /> 
+configure.ac<br /> 
+configure<br /> 
+include/config.h.in
+<ul>
+
+     <li> Detect whether the sys/epoll.h header is available</li></ul></p><p>
+
+server/fd.c
+<ul>
+
+     <li> Change the type of the poll_users list to also keep track of the
+       state of the node. Change the fd pointer to a union for better
+       implementation of free list without casts.</li>
+     <li> Switch to relying solely on the free list to determine where our
+       next free node is at.</li>
+     <li> Switch the freelist to use integer offsets into poll_users, rather
+       than pointers. The list can now be realloced without being
+       invalidated.</li>
+     <li> Implement epoll waiting over the same infrastructures</li></ul></p>
+</quote>
+
+<p>Alexandre pointed out a problem with the patch,
+<quote who="Alexandre Julliard">
+That's wrong; if the libc function exists you should use it, direct
+system calls should only be used as a fallback. And when using system
+calls you must not depend on the libc header, you have to define the
+structures yourself.</quote></p>
+
+<p>Shachar thought there might be a problem with that,
+<quote who="Shachar Shemesh">
+But what to do if the library functions exist during compilation, and do 
+not during runtime? Merely linking with them will cause wineserver not 
+to load, claiming that it requires "GLIBC version 3.2.3". Some wine uses 
+(crossover office being one of them) require you to compile once and run 
+almost everywhere, which run counter to this behavior.</quote></p>
+
+<p>Shachar also wondered what was wrong with using the libc header.
+With regards to building on one version of glibc and running on an older one,
+Alexandre explained it won't really work anyway.  CrossOver gets around it
+by building <quote who="Alexandre Julliard">against a very old glibc</quote>.
+With regard to using the libc header if it's available, Alexandre 
+said, 
+<quote who="Alexandre Julliard">
+The libc definitions must be used with the libc function, and the
+kernel definitions with the system call. There is no guarantee at all
+that they will remain identical (check the 64-bit file support for an
+example of how that can happen).</quote></p>
+
+<p>Mike Hearn thought of some other ways to do it,
+<quote who="Mike Hearn">
+So I guess Shachar could use dlopen, or possibly the epoll functions are 
+weak symbols - quite a lot of glibc functions are these days. In that 
+case you can just mark them with the weak attribute and that's no problem.
+</quote></p>
+ 
+<p>Marcus Meissner didn't like that:</p>
+<quote who="Marcus Meissner"><p>
+Guys, pretty pretty please, just use the glibc function, add a regular
+configure check and use it if it does not return -ENOSYS.</p><p>
+
+All this confusing handling of dlopening etc etc is way overblown.
+</p></quote>
+
+
+</section>
+<section 
+	title="Richedit Control" 
+	subject="Richedit control"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0608.html" 
+	posts="1"
+	startdate="08/28/2004"
+>
+<topic>Architecture</topic>
+<p>Ah.. the Rich Edit control.  It's everyone's favorite control to ignore.
+What exactly is it, you ask?  Well, basically the 
+<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/CommCtls/richedit/richeditcontrols.asp">Rich Edit control</a>
+is a word processor.  Ever use wordpad?  That's the incarnation of an
+executable built around this library.  It's also a lot of work to replicate.
+Mike McCormack announced this week he's going to take a stab at working on
+it:</p>
+
+<quote who="Mike McCormack"><p>
+
+I'm going to play with the richedit control to try get it to draw RTF 
+documents with formatting.  My plan is to write a program that can 
+display but not edit, then let somebody else add the editing 
+functionality afterwards :)  Once I can get the attached program to 
+work, the plan is to change the code in text-writer.c to add the 
+formatting information to the richedit control via standard richedit 
+messages.  If anybody is already working on it, or wants to have a go, 
+let me know.
+</p></quote>
+</section>
+<section 
+	title="Darwine Display Driver" 
+	subject="Wine's X11drv integration in Mac OS X"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/08/0647.html" 
+	posts="1"
+	startdate="08/29/2004"
+>
+<topic>Status Updates</topic>
+<p>Last week (issue 
+<a href="http://www.winehq.com/wwn/237#Quartz%20Display%20Driver">#237</a>)
+we discussed a new Quartz display driver, or at least the beginnings of one.
+Well, it seems perhaps that development might be scrapped in favor of a 
+different plan.  Pierre d'Herbemont outlined the direction but went on to
+describe the challenges being faced:</p>
+<quote who="Pierre d'Herbemont"><p>
+We are currently porting Wine to Mac OS X. Currently Wine has a display  
+driver for X11, and we would like to continue to use it for the Mac OS  
+X port: to display the GUI interface, we don't need the Aqua UI  
+elements since we prefer to use Windows theming system, and given the  
+complexity and amount of work done in x11drv . But we also would like  
+to be able to build something that behaves like a normal Carbon or  
+Cocoa App, with a Dock Icon, and a Menu Bar, which would be managed by  
+some Carbon code in Wine itself.
+</p><p>
+I had a look to the X11CallCarbonAndCocoa [1] sample code, but the  
+trouble is that the X11 window still belongs to X11.app, a mouse click  
+in the Dock to get the App's Windows to the front doesn't work for the  
+X11 Window, and the menu bar for this Window is still the X11.app's  
+menu bar. So I'd like to know if there is a way for the Wine Carbon  
+instance to own the X11 Windows Wine created. At least it would be a  
+feature that we'd like to see :)</p></quote>
+
+<p>Pierre sent the email to quite a few lists, but it didn't appear
+anyone had an answer.  There was some dismay expressed at using X
+since the integration with Mac OS X apparently isn't that good.  Of
+course, the point of Pierre's request was to find out if anyone knew
+how to fix that.</p>
+
+
+</section>
+<section 
+	title="OLE For Process Control?" 
+	subject="Wine and industrial communication like OPC"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0003.html" 
+	posts="11"
+	startdate="09/02/2004"
+>
+<topic>RPC / COM / OLE</topic>
+<p>Rickard Svensson asked if Wine could be used to support some specific
+COM-based interfaces:</p>
+
+<quote who="Rickard Svensson"><p>
+I have some questions about Wine and how/if it can be used with industrial 
+communication like OPC (Microsoft Com/DCom objects, DDE and more)
+</p><p>
+My short question is:
+Can I use Wine to make OPC communication work on a Linux system?
+</p><p>
+OPC "OLE for Process Control"
+A "general" standard for communication in industrial systems, that unfortunately is totally depending on Windows(DCOM)
+</p><p>
+
+On <a href="http://www.opcfoundation.org">www.opcfoundation.org</a> there are 
+some companies who have made Unix OPC clients, but the license costs are high.
+There is also OPC true XML that is now a real product, that looks promising.
+</p><p>
+I'm in need to make/use some kind of OPC api (Wine DCom) for Linux, an api like 
+that would make many company's in the industrial computer interested.
+Or as a backup I could have a Win program running in Wine on the Linux machine 
+talking with the main app on the same computer and talking OPC to other 
+machines that need that.</p><p>
+
+I hope Wine and/or you can help me in this case. It would be a tragedy if we 
+had to switch operating system just because of this.</p></quote>
+
+<p>Mike Hearn had an optimistic answer:</p>
+<quote who="Mike Hearn"><p>
+Answer: almost certainly yes, with a catch:
+<ol>
+<li> Wine's current builtin DCOM is not up to scratch for what you want, 
+and it will take a long time to get there. Really, given how 
+unglamourous network DCOM hacking is and how few people have worked on 
+it, it's unlikely to happen until funding is available.</li>
+
+<li> So ... you'd have to use "native" DCOM. This is a redistributable 
+that can be downloaded from microsoft.com and installed into Wine. You'd 
+have to read the EULA very carefully but I suspect you need a Windows 
+license in order to use it.</li>
+</ol></p><p>
+However, even if you do, simply buying a copy of Windows then throwing 
+away the box may actually still be easier than switching your project to 
+another OS entirely.</p></quote>
+
+<p>Rein Klazes wondered if it would really be that easy,
+<quote who="Rein Klazes">
+Mike, I was hesitating to give this answer. Typically OPC will be used
+distributed, over an ethernet link. Did anyone test wine &amp; native DCOM
+in such a way? Can you actually communicate between an application
+running under Wine with an application that runs under real Windows?</quote>
+</p>
+
+<p>Mike still thought it could work:</p>
+<quote who="Mike Hearn"><p>
+I think it may have been used for Exchange5/Outlook 
+connections, but you are right in that I don't know if this works.
+</p><p>
+Wine's sockets support is good though, far better than its builtin DCOM. 
+Based on what I know of the DCOM network protocol, I don't think we'd 
+have any problems with it.
+</p><p>
+Only issue would be if you needed NT only features, as only DCOM for 
+Windows 98 works natively on Wine.
+</p><p>
+Off the top of my head, I can't think of any big issues. Maybe dcomcfg 
+doesn't quite work yet etc, but fixing any problems that arise would be 
+much easier than migrating to a totally different OS, or bringing our 
+own DCOM up to scratch</p></quote>
+
+<p>Juan Lang pointed out there are some potential problems that definitely
+aren't easily fixed:</p>
+<quote who="Juan Lang"><p>
+I can think of a couple, but they may be able to be
+worked around:<ul>
+<li> incoming connections (DCOM servers) won't be
+supported.  If this guy's clients are going with WinCE
+that won't be an issue, it doesn't support them either
+AFAIK.</li>
+<li> only DCOM over TCP is likely to be supported.  DCOM
+over named pipes definitely wouldn't be.</li></ul></p></quote>
+
+<p>With regards to using named pipes, that uses something like SMB
+for communication.  Juan Lang explained it begins delving into
+an area that has traditionally been Samba's domain - their daemons
+sit on the ports required for communication:</p>
+<quote who="Juan Lang"><p>
+The reason I've backed off from this is that it's
+hard to do correctly, and anything less than
+completely correct isn't going to be accepted by A.J. 
+Ideal for us would be a file descriptor that we can do
+atomic operations on; that'd be duplicable like the
+rest of our handles.  Not sure how we'd get that from
+smbd (see below for a different idea), and Samba3's
+public API is too high-level to be of much use to
+Wine.  (Samba4 might be better.)
+</p><p>
+The ports issue prevents us from receiving
+connections, i.e. acting as a DCOM server.  This is
+probably less important than being able to act as a
+client, at least for a while.
+</p><p>
+I asked Steve French (Linux CIFS module) whether he'd
+consider exposing named pipes in the Linux filesystem.
+ He said he would, then asked me whether I'd given any
+thought to naming convention.  I hadn't and I haven't
+had as much time to experiment with this of late, so I
+haven't responded.  This method would allow us to act
+as a CIFS (TCP port 445) client.  Acting as an SMB
+(TCP port 139) client isn't handled by the CIFS
+module, it's done by the SMBFS module.  Not sure what
+Steve's plans are here.
+</p><p>
+Anyway, any of you guys interested in seeing RPC work
+under Wine (Greg, you still lurking around here?)
+might want to play around with this if you have time. 
+I might myself once I land somewhere for a while, but
+no promises.
+</p></quote>
+
+</section></kc>

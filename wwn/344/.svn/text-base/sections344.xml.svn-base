@@ -1,0 +1,328 @@
+
+<section 
+	title="News: Crossover Games released!"
+	subject="CodeWeavers"
+	archive="http://www.codeweavers.com/products/cxgames/"
+	posts="1"
+>
+<topic>CodeWeavers</topic>
+<p>
+CodeWeavers has announced their newest product, <a href="http://www.codeweavers.com/products/cxgames/">Crossover Games</a>.  Crossover games is a custom build of wine, along with a handful of proprietary modifications and gui additions to add solid support for a number of Windows games on Linux!  CodeWeavers' official blurb and launch games list:
+</p>
+<quote>
+<p>
+Now gamers can play the games they want, on whatever platform they want! With CrossOver Games, you can run many popular Windows games on your Intel OS X Mac or Linux PC. Whatever your tastes - first-person shooters, fantasy, strategy, MMORPGs - CrossOver Games provides the capability to run many popular games titles. CrossOver comes with an easy to use, single click interface, which makes installing your games simple and fast. Once installed, your game integrates seamlessly into your Desktop. Just click and run! Best of all, you do it all easily and affordably, without needing a Microsoft operating system license.
+</p><p>
+CrossOver Games is built on the latest versions of Wine, based on contributions from both CodeWeavers and the open-source Wine community, and then lovingly hand-crafted by Stefan D&#246;singer, our very own Wine/Games connoisseur. Unlike other CrossOver products, which are aimed primarily at office productivity applications (and hence maximum stability), CrossOver Games aims to bring you the latest, greatest, bleeding edge improvements in Wine technology. This means that the newest games run faster and better under CrossOver than under other versions of CrossOver, or other version of free Wine, for that matter. You want to run your Mom's knitting software? Maybe you should look elsewhere. On the other hand, if you need better framerates on Linux or Mac so you can frag your buddies: check out CrossOver Games! 
+</p>
+<p>
+<ul>
+    <li><a href="/compatibility/browse/name?app_id=1185">World of Warcraft</a></li>
+    <li><a href="/compatibility/browse/name?app_id=1860">EVE Online</a></li>
+    <li><a href="/compatibility/browse/name?app_id=1658">Guild Wars</a></li>    
+    <li><a href="/compatibility/browse/name?app_id=1791">Prey</a></li>    
+    <li><a href="/compatibility/browse/group/?app_parent=2034;">Steam Games</a>, including:
+    <ul>
+        <li><a href="/compatibility/browse/name?app_id=1168">Half-Life 2</a></li>
+
+        <li><a href="/compatibility/browse/name?app_id=3379">Team Fortress 2</a></li>
+        <li><a href="/compatibility/browse/name?app_id=2035">Counterstrike</a></li>
+        <li><a href="/compatibility/browse/name?app_id=2036">Counterstrike: Source</a></li>
+        <li><a href="/compatibility/browse/name?app_id=1728">Civilization IV</a></li>
+        <li><a href="/compatibility/browse/name?app_id=3996">Peggle Extreme</a></li>
+        <li><a href="/compatibility/browse/name?app_id=2710">Call of Duty 2</a></li>
+
+        <li><a href="/compatibility/browse/name?app_id=49">Max Payne 2</a></li>
+        <li><a href="/compatibility/browse/name?app_id=2555">Grand Theft Auto 2</a></li>
+    </ul>
+    </li>
+    <li><a href="/compatibility/browse/group/?app_parent=4100">and more...</a></li>
+</ul>
+</p>
+</quote>
+<p>
+The people at CodeWeavers have a track record of being very honest and good quality people and as such have posted a very down to earth, <a href="http://www.codeweavers.com/products/cxgames/truth_in_advertising/the_real_dirt/">'real dirt,'</a> article on what CX Games can and cannot do. 
+</p>
+<quote>
+<p>
+At CodeWeavers, we believe strongly in truth in advertising. This section is an honest appraisal of what CrossOver Games can and cannot do, written after review of our own testing and what our testers have found. Hopefully this will help you to determine whether or not CrossOver is for you.
+</p>
+</quote> </section>
+<section 
+	title="Wine running Cygwin running Wine running [Stack Overflow Error]"
+	subject="Cygwin + Wine"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-March/063721.html"
+	posts="3"
+>
+<topic>Cygwin + Wine</topic>
+<p>
+The Wine community has a <a href="http://wiki.winehq.org/CygwinSupport">history</a> of trying to get Cygwin to work within Wine.  Cygwin is an emulation layer for POSIX on Win32, and as such is a fairly rigorous test for Wine.  Thus getting Cygwin running is a challenge, but to do so would be a great accomplishment.  Some news from Dan Kegel:
+</p>
+<quote>
+<p>
+Hey!  Cygwin actually installs and runs inside Wine!
+There are a few problems (gcc can't compile
+"hello, world" yet, symlinks like the one for vi
+don't work yet, the setup utility doesn't
+resize properly, and mkpasswd -l aborts), but the shell starts up fine
+and vim runs inside it!
+</p><p>
+Hats off to the Wine team!
+<br />
+- Dan
+</p>
+</quote>
+<p>
+I myself went ahead and tried the same program (fork) from the <a href="http://wiki.winehq.org/CygwinSupport">'CygwinSupport'</a> wiki page and on Wine 0.9.52 got much further than the wiki page but still had some stack errors, and with wine from source (inbetween .58 and .59) also got similar errors.  Well, nobody's perfect, but Wine is certainly making progress!
+</p></section>
+<section 
+	title="Detailed reports of Wine 1.0 progress"
+	subject="Wine 1.0"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-March/063887.html"
+	posts="4"
+>
+<topic>Wine 1.0</topic>
+<p>
+Dan Kegel, Wine's official "1.0 Release Manager" has begun the squeeze of the 1.0 bug list.  Over the past week or two he has periodically been aggregating numbers and lists of changes recently with respect to the 1.0 goal.  Dan's most recent update:
+</p>
+<quote>
+<p>
+<pre>
+40 days to code freeze.
+
+One bug fixed in last couple days:
+9459   -unknown        8       FIFA 2007 crashes with the recent versions
+
+One bug added:
+12246  -unknown        0       "make test" gives different results
+with and without warn+heap
+
+One bug deferred:
+4971    -unknown        3       Corel Draw 12 demo install fails
+
+History:
+3/22: 87 bugs, 76 days to go
+3/23: 82 bugs, 75 days to go
+3/24: 78 bugs, 74 days to go
+3/26: 74 bugs, 72 days to go
+3/30: 73 bugs, 69 days to go
+
+Here's the current list of open bugs:
+
+
+5948    -unknown        1       Star Trek: Armada does not install
+5061    -unknown        6       Copying from Windows Firefox in Wine and pasting to
+Linux OpenOffice pastes metadata as data
+7477    -unknown        1       Uplink demo crashes
+12097   -unknown        2       Wine 1.0 should not ship out-of-sync resource translations
+5055    -unknown        5       Deleting files from a window in wine doesn't send
+them to the Trash
+5844    -unknown        11      tray minimize
+11281   -unknown        2       CJK input many issues
+10815   -unknown        2       Cannot drag images into Adobe Photoshop 7 from the
+web / desktop
+5402    -unknown        0       Trying to run PhotoStitch 3.1
+7404    -unknown        2       ShowWindow(SW_MINIMIZE) should not generate a
+WM_PAINT message
+9916    -unknown        6       "make test" usually fails
+9178    -unknown        7       "hello world" dos program hangs
+5024    -unknown        4       Thief: Deadly Shadows crashes:page fault on read
+access to 0x0000040c
+12246   -unknown        0       "make test" gives different results with and
+without warn+heap
+8125    -unknown        0       Marratech 6.1 crashes on start
+10147   -unknown        1       Word Viewer 2003 - Tab behavior differs from Windows
+9959    -unknown        8       Make wine updates work even if the registry changed
+556     build-en        1       Reconcile the Windows and Wine spec files
+1114    comctl32        2       Winrar2.90/3.00: Comboex doesn't trigger a event
+when you mouse-click in some value of it
+2493    comctl32        2       Multi-select listview: Shift-arrow up only selects
+top two items
+11681   directx-        14      Add support for video overlay
+5955    directx-        8       DirectDrawCreate crash on non-OpenGL desktop
+9030    directx-        0       army men hangs on black screen
+82      document        2       Stabilize Winelib User Guide Table of Contents
+638     document        9       Document Wine debugging channels
+9771    gdi32   38      Steam Friends doesn't work (fails to render correctly
+or refresh)
+9926    gdi32   5       gdi32.dll should not have exported function pointers
+3270    gdi32   15      Problem with minimized top-level windows
+6519    gdi32   7       Wine blacks out rotated font bitmap
+7571    gdi32   1       Accented character glyphs are mixed up with TrueType
+fonts (affects e.g. Lotus Notes R5)
+9484    kernel32        17      Program refuses to run because of
+ProtectCD/ProtectDISC copy-protection
+5351    kernel32        9       Windows Installer 3.1 cannot install because of
+non-standard drive labeling
+5541    kernel32        0       WriteConsole can't write to stdout; affects e.g.
+wsh's cscript's usage message
+9039    kernel32        0       GS-Auftrag Professional SQL aborts on startup
+4733    kernel32        5       Get optimized/compressed/packed executables (non-upx) working
+7098    mscoree         1       RufzXP crashes on startup, needs
+mscoree.dll.CorBindToRuntimeEx
+5163    msi     12      Office XP 2002 crashes on installation
+8783    ntdll   12      USB serial ports do not work
+9356    ntdll   6       Serial communication not working since wine-0.9.33
+6607    ole     9       Drag and Drop not working
+2539    ole     3       XDND (Drag and drop for X Windows) doesn't copy text
+8095    ole     0       PQ Teaching toy crashes
+4770    ole     3       BlackBerry Device Manager fails to install under wine
+9942    ole     2       Powerpoint Viewer 2007 crashes opening .pptx files
+5926    programs        0       Wine does not provide an implementation of winhlp32.exe
+6254    richedit        4       Installer infinite loop from rich text error
+8898    shdocvw         0       Run Time Error "445": Object doesn't support this
+action in Europa Knowledgebase
+9304    shdocvw         3       Temple of Elemental Evil demo doesn't start - gui irresponsive
+3546    shdocvw         2       CLSID_InternetShortcut not available...
+6095    shdocvw         12      MOTD in counter-strike 1.6 and counter-strike
+source does not render
+8439    shell32         8       Visual Studio .NET (7) install fails
+10905   shell32         0       thinstall firefox demo requires native msvcrt
+9809    shell32         4       Autodesk Revit Architecture 2008 install fails
+11742   shlwapi         8       Small .net 1.1 app (FastMD5 1.3) fails to start up
+12074   testcase        2       The conformance tests fail on Windows
+6604    tools   2       Ship icons for the wine-tools that can be used in .desktop files
+8246    urlmon  3       invoking htmlhelp:HtmlHelpW crashes wine
+664     user32  6       The help menu functionality inside programs is broken
+(messaging problem)
+4523    user32  5       Can't copy from Firefox 1.5 and paste into OpenOffice
+2 under Wine
+3023    user32  5       Orcad - "Place Part" never tries to put down a part
+124     wineserv        2       Review of Wine Server Protocol
+11019   winex11.        3       matlab r14 and r16 (7.0.4 and 7.3.0) and
+WriteItNow3.1.0s hang if X in 24bpp mode
+7372    winex11.        12      can't copy and paste between gnome apps eg
+openoffice or gimp and wine apps such as dreamweaver or adobe
+photoshop
+2368    winex11.        7       Wine loses its X-Window when switching to another
+virt. desktop in Fvwm
+1990    winex11.        1       modifier keys not released when switching desktop
+10984   winex11.        5       sun jre 5 update 10 installer hangs in 0.9.52
+5623    winex11.        3       GetAsyncKeyState wrong if querying process doesn't have focus
+5828    winex11.        24      Command and Conquer Generals (Zero Hour) doesn't
+change the mouse cursor from the default X mouse
+3297    winex11.        12      UpdateWindow() doesn't call XFlush()
+3711    wininet         1       Musicmatch fails to install (missing registry key,
+HTTP_HttpOpenRequest() problem)
+5625    wininet         3       Wine does not handle internet proxy settings conveniently
+9787    winsock         47      Warcraft3 Battle.net Doesn't work (Needs AcceptEx)
+12005   wintab32        0       Regression in pressure sensitivity with wizardpen
+tablet driver and Photoshop 7
+</pre>
+</p>
+</quote>
+<p>
+Following this there was some mention of an additional freeze for translations to catch up, but it was decided that the freeze beggining on May 9th would be sufficient.
+</p></section>
+<section 
+	title="Wine / Pulseaudio issues"
+	subject="Audio"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-March/063703.html"
+	posts="11"
+>
+<topic>Audio</topic>
+<p>
+Ubuntu's newest release, Hardy Heron, is set to have PulseAudio be the new default sound system.
+Fortunately there is an alsa wrapper for PulseAudio that can work with Wine.  However, there are a 
+<a href="http://bugs.winehq.org/show_bug.cgi?id=10495">number</a> <a href="http://bugs.winehq.org/show_bug.cgi?id=10910">of</a> <a href="http://bugs.winehq.org/show_bug.cgi?id=10902">problems</a>  with this wrapper and Wine.  
+From my poking around it would seem that there is an assumption somewhere within Wine  that the PCM channel exists, and another
+bug in the wrapper itself causing issues.  These issues are being worked on.
+</p>
+<p>
+There is also an entire Wine pulseaudio driver being developed outside of the main tree.  <a href="http://www.mail-archive.com/wine-devel@winehq.org/msg35153.html">LINK</a>
+
+</p>
+
+<p>
+<a href="http://www.winehq.org/pipermail/wine-devel/2008-February/062849.html">Tomas Carnecky</a> wrote in with an interesting request for information and discussion on Pulse Audio:
+
+</p>
+
+<quote>
+<p>
+This subject was discussed a few months ago (around 10/2007). But it was
+rather a discussion about whether to make a PA sound driver or not. I
+personally would love to see that happen, if not only because PA has
+some very nifty features, like per-app volume, transparent sink
+switching etc, some of which are impossible to emulate through the alsa
+pulse plugin. Also, then next Ubuntu and Fedora releases will have PA
+enabled by default so if Wine doesn't work with that well there will be
+ complaints.
+</p>
+</quote>
+<p>
+To which Stefan D&#246;singer replied:
+</p>
+<quote>
+<p>
+The point was and is that we don't want yet another half working sound backend
+in Wine. We will have to maintain the Alsa one because there are things PA
+won't be able to give us by design, like HW mixing and lowest-latency direct
+access which is needed for gaming.
+</p><p>
+Of course, as you said, if someone has patches and intends to maintain it
+we're happy to accept it. But I think none of the current Wine sound
+developers(aka Maarten) has any intentions to spend time on a PA backend.
+
+</p>
+</quote>
+<p>For the most part Stefan's opinion is shared amoungst most of the developers which makes a new in-tree PulseAudio driver in the short term unlikely.</p>
+<p>
+However!  Trevor Davenport has been working on an out-of tree driver for some time.  Status:
+</p>
+<quote>
+<p>
+Status currently is that I have basic waveout all cleaned up besides
+errors (like if the pulseaudio server isn't running).
+ I've also got input and dsound working but it needs cleaned up.
+ Hopefully i'll have some time at the end of the week to at least get
+a patch submitted to start the discussion.
+</p>
+</quote>
+</section>
+<section 
+	title="Summer of Coders wanted!"
+	subject="GSoC"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-March/063162.html"
+	posts="1"
+>
+<topic>GSoC</topic>
+<p>
+Maarten Lankhorst is still working hard at putting together this year's GSoC.  Now that Wine has been accepted and Google is accepting applications from students the letters have been pouring in on the ML and IRC.  Just in case you are still interested and haven't heard all of the details, here is a re-posting of Maarten's meesage to the list:
+</p>
+<quote>
+<p>
+Hi all,
+</p><p>
+Since yesterday google is accepting applications for all participating
+projects. See<a href="http://code.google.com/soc">http://code.google.com/soc</a>for how to apply and read the
+faq linked there! The past few days a lot of good proposals were
+discussed, but you really need to submit them to the google web
+application officially to make them count. The deadline for this is 1
+april 2008 00:00 UTC, but I would recommend submitting your
+application a few days before that to be sure.
+</p><p>
+It optional, but recommended to slip a patch past Alexandre Julliard,
+he's Swiss so bribing with chocolate doesn't work! It doesn't have to
+be a big patch, just so that we know you can check out the wine git
+tree, and know how to get a patch in. Of course if you already did
+this once you don't have to do it again.
+</p><p>
+A good guideline to what should be in an application is at
+http://www.perlfoundation.org/perl5/index.cgi?gsoc2008_proposal_template
+You don't have to follow this, but it's a good indication of what an
+application should contain. It's also a good idea to separate your
+goals into must-haves and nice-to-haves. The must haves you definitely
+want to do before the end of the summer, and the nice-to-haves are for
+the goals that you want to do, but  you're not sure if you have all
+the time for them.
+</p><p>
+Cheers,
+</p><p>
+Maarten.
+</p><p>
+PS: Mentors wanted, too! If you want to be a mentor, but have
+questions or doubts, contact me privately. To sign up as mentor:
+http://tinyurl.com/29awt6
+</p>
+</quote></section>

@@ -1,0 +1,250 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="57" date="21 Aug 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 57th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+</intro>
+
+<stats posts="79" size="256" contrib="34" multiples="18" lastweek="18">
+<person posts="11" size="27" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="6" size="16" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="5" size="13" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="4" size="9" who="David Howells &lt;David.Howells@nexor.co.uk&gt;" />
+<person posts="4" size="8" who="Dimitrie O. Paun &lt;dimi@cs.toronto.edu&gt;" />
+<person posts="4" size="10" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="3" size="8" who="Jean-Claude Batista &lt;jcb@macadamian.com&gt;" />
+<person posts="3" size="58" who="Patrick Dubroy &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="3" size="58" who="Jeff Tranter &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="3" size="5" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="3" size="13" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+</stats>
+
+
+<section 
+  title="Some more Winelib usage"
+  subject="Request for Alpha sites"
+  archive=""
+  posts="1"
+  startdate="13 Aug 2000 00:00:00 -0800"
+  enddate="13 Aug 2000 00:00:00 -0800"
+>
+
+<p />
+
+Ed Snow made the following request on comp.emulators.ms-windows.wine
+
+<quote who="Ed Snow">
+A wine based application is about to begin an alpha test cycle. We are 
+looking for people interested in performing an install, testing
+functionality, and providing feedback. The approach of using Wine was 
+based on speed to market, cost, and ability to stay synchronized with
+the Windows based offering. This approach has worked extremely well,
+principally due to the maturity of wine and the efforts of the Wine
+community. However, the testing of a Wine based application is
+something that we will need your help with. The alpha test cycle will
+be by invitation (you send your email, we will send a pointer to get
+the install kit) and will be limited in size. This will be followed by
+a public beta. The emphasis is to get feedback on a wide selection of
+machines/environments quickly before the public beta.
+
+<p />
+
+To become an alpha site you need to have a multimedia enabled PC, and
+provide the following information
+<ul>
+    <li />email address
+    <li />machine class
+    <li />version of Linux
+</ul>
+As an alpha participant, we're asking you to spend at least 30 minutes 
+using our application, and then to fill out a short Customer
+Satisfaction Survey.
+</quote>
+
+
+<p />
+
+Good to see some other companies using Wine as their base porting
+tool. If you're interested don't hesitate to get in touch with Ed 
+(alphatest@ttmengineering.com).
+
+<p />
+
+</section>
+
+
+<section 
+  title="Suicidal tendencies and NE loader"
+  subject="MMSYSTEM.Suicide()"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-08/Subject/article-141.html"
+  posts="7"
+  startdate="12 Aug 2000 00:00:00 -0800"
+  enddate="14 Aug 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr reported a failed assertion in Wine code while using some 
+(old) 16 bit application. Some DLLs (like MMSYSTEM in this case) store 
+per process information ; those per process structures are allocated
+and initialized when the DLL is mapped into the process address space
+(and added to its list of loaded modules).
+
+<p />
+
+The triggered assertion occurred because some MMSYSTEM APIs were called 
+before this initialization was done.
+
+<p />
+
+After some investigation, it turned out that quite a few Wine's DLL
+can be affected by the symptoms described by Andreas.
+
+<p />
+
+As Eric Pouech explained it, native 16 bit (NE) DLLs can have two
+types of "init" functions 
+<ul>
+   <li />LibMain: is called to set up the DLLs itself, the first time
+the DLL is loaded into memory (as all 16 bit processes share the same
+address space, this is only done once even if several processes load
+this DLL). Usually, the DLL used this call to initiate its data segment
+(remember the old Windows 3.x: in a DLL ds != ss).
+   <li />DllEntryPoint: this optional function, when present in the DLL,
+lets the DLL be notified when a process loads / unloads the DLL.
+</ul>
+
+<p />
+
+As of today, some Wine builtin DLLs use the second function to create
+the instance data. However, Andreas' program was directly calling into
+MMSYSTEM after MMSYSTEM's LibMain has been called but before the
+DllEntryPoint was invoked, hence the error.
+
+<p />
+
+On the other hand, Wine builtin 16 bit DLLs don't support the LibMain
+function (but don't be confused, the Wine loader, while attaching a 16 
+bit native DLL will call its LibMain function).
+
+<p />
+
+In fact, the situation is just a bit more complex: lots of Wine's
+builtin DLL come in pairs (the 16 bit and the 32 bit DLL). As Wine's
+core tends to be more and more a 32 bit system, the 32 bit DLL can
+work without their 16 bit counterpart, whereas a 16 bit DLL relies on
+the 32 bit to do the horse work. In the area of initialization, a Wine
+builtin 16 bit DLL will load its 32 bit counter part, which in turn
+will do the initialization of the two DLLs.
+
+<p />
+
+This two DLLs are also physically stored in the same ELF .so file.
+
+<p />
+
+Eric Pouech listed a few options to solve Andreas' issue:
+
+<quote who="Eric Pouech">
+<ul>
+   <li />lazy instance data initialization
+   <li />implicit loading of the other DLL in the pair (but import is
+not supported for 16 bit DLLs)
+   <li />smart use of 'owner' field in BUILTIN16 descriptor (so far it's
+not used, but I assume that Alexandre will shortly use it for his
+elfdll implementation) 
+   <li />do the PE pair loading in LibMain instead of DllEntryPoint
+(would require init directive to be added to 16 bit modules)
+</ul>
+</quote>
+
+
+<p />
+
+Alexandre Julliard agreed on one of them:
+<quote who="Alexandre Julliard">
+Yes, the idea is to use it (<i>Ed Note: the 'owner' field</i>) to load 
+the 32-bit dll that contains the 16-bit one, since only 32-bit dlls
+will be able to import functions from other dlls. Once this is done it
+should be possible to do all dll initialization in the 32-bit dll
+which will (hopefully) ensure they are always done in the right order.
+</quote>
+
+
+<p />
+
+No patch has been issued yet.
+
+<p />
+
+</section>
+
+
+<section 
+  title="Rumors"
+  subject="Corel porting WordPerfect Office to the MacIntosh"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-08/Subject/article-168.html"
+  posts="8"
+  startdate="14 Aug 2000 00:00:00 -0800"
+  enddate="15 Aug 2000 00:00:00 -0800"
+>
+
+<p />
+
+Patrik Stridvall quoted a peguinista.org article:
+
+<quote who="Patrik Stridvall">
+According to an Email from a Corel development engineer in
+early 1999 to the Wine Project's public mailing list server
+for developers, Corel had begun work by then on porting the
+Wine tools themselves to the Mac PowerPC platform. Corel has
+left no doubts that its cross platform goals extend beyond
+the Windows and Linux platforms.
+</quote>
+
+
+<p />
+
+Unofficial Corel's answer rejected those allegations. Lots of people
+remembered a post from Gavriel State, while at Corel, reporting some
+success with Winelib port to LinuxPPC (hence the confusion).
+
+<p />
+
+Anyway, the discussion evolved a bit on the technical details of
+really doing the job (using X11 server plus MacOS/X or even a native
+Mac driver). The MacOS/X seems to provide all the needed "common" Unix 
+API (Patrik reminded that BeOS is almost stuck because of the lack of
+such features - like mmap or {send|recv}msg with file descriptor as
+parameter).
+
+<p />
+
+Douglas Ridgway had the final word
+<quote who="Doug Ridgway">
+Remember also that Corel supports Draw on the Mac. Since this would
+share most of the codebase with Draw Windows, there already exists a
+Win32-on-the-Mac compatibility layer, developed in house long before
+Wine entered the picture. Certainly the last quoted sentence is true
+(their cross platform goals extend to the Mac) and it would seem to be
+a good idea to only have to rely on one cross platform Win32 layer.
+
+<p />
+
+Of course, there's a difference between good ideas, good ideas that
+they are working on, and good ideas that they are working on that they
+are willing to talk about. Based on what Jeff says, this is probably
+just a good idea, nothing more.</quote>
+</section>
+
+</kc>

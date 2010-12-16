@@ -1,0 +1,742 @@
+<kc>
+<title>Wine Traffic</title>
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="321" date="02/17/2007"/>
+
+	<intro>
+
+	<p>
+This is the 321st issue of the Wine Weekly News publication.
+Its main goal is to fool you into thinking there's going to be issues written
+regularly again. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at 
+<a href="http://www.winehq.org">www.winehq.org</a>
+</p><p>
+Stats would normally go here about how many posts there were since the
+last issue.  The answer to that is <i>a lot</i>.</p>
+</intro>
+
+<section 
+	title="News: This Space For Rent"
+	subject="News"
+	posts="1"
+>
+<topic>News</topic>
+<p>This isn't a real issue.  It has all the semblance of a real issue, but
+it's not.  The news you're reading is all about 5 months old.  That's ok,
+there's a good chance it's news to you. </p>
+
+<p>So what exactly happened to the Wine Weekly News?  Well.. there's this
+funny little thing called real life that seems to intervene in affairs from
+time to time and it seems to be impeding the amount of time available
+for putting this together.  I moved a few months ago and got a new job.
+Unlike my last job this one actually expects me to work during the day
+and sometimes late into the night.  </p>
+
+<p>So what are we going to do about it?  Well, there's been some proposals
+for other folks to pick up the torch and write some issues.  So far there
+hasn't been a lot of work done with that.  If you look around on this web
+page you'll see a link somewhere on here for the XML source for this
+web page.  If you click on that you'll notice each thread is covered
+using &lt;section&gt; tags.  It would be possible for multiple authors
+to write issues by writing different sections and combining them all 
+together to form an issue.   Am I permanently giving this up?  Well, I'd
+like to think I'm just taking a break.  We'll see.</p>
+
+<p>How's Wine development?  You might be tempted to think the lack of WWN
+updates means Wine development has slowed down.  Don't!  Patches have
+been coming in fast and furious over the past few months.  Year after
+year we've seen huge increases in the amount of development effort going
+into Wine and this year is no exception.  January saw a huge amount of 
+patches and February is shaping up to be even bigger.  If you read the
+announcements on the front page of WineHQ you can get a feel for what
+changes have gone into recent releases.  </p>
+
+<p>Keep in mind all of the threads below were discussed in late August
+and early September.  This issue sat half-finished on my hard drive long
+enough.  </p>
+
+</section>
+<section
+	title="System Tray Support"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-August/050086.html"
+	posts="10"
+>
+<topic>Integration</topic>
+<p>Holy crap!  System tray support has finally been accepted into Wine.
+After years of having a patch languish, James Liggett finally took up the
+torch, reworked the patch to meet Alexandre's criteria, and got it in
+the tree.  It's interesting to follow along with James' announcements to
+see the revisions required to get it in:</p>
+<quote who="James Liggett"><p>
+Attached is a major update to the XEmbed systray patches that I sent
+earlier this week. After a few days of tweaking and testing the code, I
+think I have found the solution to the race conditions that have plagued
+previous versions of this work. While this is a major step forward, I
+still need some assistance with some issues with these patches:
+<ol>
+<li> I need people to test this on any window manager they can to see if
+the results that I get can be reproduced, especially on older GNOME
+versions (I tested on GNOME 2.14). I was able to run a small test app
+that I made over 120 times, and each time it docked perfectly, no zombie
+systray adapter windows like before.</li>
+
+<li> In order to accomplish this reliability, I've had to ensure that
+systray windows are *never* mapped. According to the XEmbed specs and my
+testing, we can't map systray windows ourselves--the tray has to do it,
+or we get the race conditions. However, my current solution isn't
+entirely correct. The problem is that systray windows aren't mapped
+under *any* circumstances. While this allows the docking to work
+properly, the icons don't show up at all if there's no tray to dock
+with. I've been contemplating some solutions to the problem but I'm not
+sure what the correct way to go about this is. My current idea is to add
+a function to winex11.drv that checks to see if we have a systray
+window. If the function finds one, then we don't map tray windows. If it
+doesn't return one, then we map them. Would adding a function like that
+to x11drv be a good idea?</li></ol></p></quote>
+
+<p>James took in some suggestions and announced a second revision:</p>
+<quote who="James Liggett"><p>
+Attached is the second update of the XEmbed systray patches. Changes in
+this version:
+<ol>
+<li> On the advice of Juan Lang, I only acquire the wine tsx11 lock when
+actually making X calls, and not while initializing data.</li>
+
+<li> Added the ability to detect if we have an XEmbed systray so that we
+can selectively determine if we need to map tray windows or not. Under
+the last version, the icons would not be mapped under any circumstances
+whatsoever. While it would work if we had an XEmbed-compliant tray to
+dock with, the icon wouldn't show up at all if there wasn't one. Things
+work both ways now. But, if you look at the patches, you'll notice that
+the logic in the if statements is a little ugly. Is there a cleaner way
+to do this?</li></ol></p></quote>
+
+<p>He updated the logic of those if statements in revision three and then
+took in some more comments.  Finally, on the 4th revision James had 
+everything in order.  He announced the changes with that patch:</p>
+<quote who="James Liggett"><p>
+Attached is the fourth update to my XEmbed system tray patches. For this
+version I made some fairly major changes:
+<ol>
+
+<li> Did away with the low-level checks for systrays, and instead had the
+systray icon windows created off-screen so they aren't mapped, as per
+Alexandre's suggestion.</li> 
+
+<li> systray_dock_window will put the icon windows back on the screen if
+there isn't an XEmbed tray to dock with.</li>
+
+<li> Eliminated the WS_EX_TRAYWINDOW style hack, and moved the call to
+systray_dock_window to X11DRV_CreateWindow. I used the window class name
+to see if it was a tray window being created or not. </li>
+
+<li> Consolidated all patches into one, as the individual patches weren't
+really individual changes. (Thanks to Mike McCormack for this advice.)</li></ol></p>
+</quote>
+</section>
+<section
+	title="Coverity Scans Not Updated"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-September/050809.html"
+	posts="3"
+>
+<topic>Debugging</topic>
+<p>
+Paul Vriens wanted to know what was going on with the automatic Coverity
+scans of Wine.  If you remember, a few months ago Coverity announced it
+was going to provide automatic scanning of Wine using their bug checker.
+Well, after the initial announcement there was flurry of fixes, and then
+things slowed down when the harder bugs were it.  Paul asked:</p>
+<quote who="Paul Vriens"><p>
+the latest run (with report) on the Coverity site seems to be from July
+21st. It appears that the main page is updated though (not for the lines
+of code but for the errors fixed).
+</p><p>
+Does anybody know more about the why? I've tried to contact Coverity for
+the last month and my last email (where I've requested a read-receipt,
+shame on me) was deleted without being read.
+</p></quote>
+
+<p>Detlef Riekenberg hypothesized:</p>
+<quote who="Detlef Riekenberg"><p>
+What comes in my mind, that they offered there Service to Wine
+to use it as an Advertisement like:
+"Coverity detected >800 Errors in Wine and all where fixed in less
+than 2 Month"
+</p><p>
+We started to fix them, but the fixing-Rate went down near to Zero
+very fast.
+To remember, the Announcement from Ben Chelf was on 07. April 2006:
+<ul><a href="http://www.winehq.org/pipermail/wine-devel/2006-April/046354.html">
+http://www.winehq.org/pipermail/wine-devel/2006-April/046354.html</a></ul></p><p>
+
+The first Day, we fixed 31 Defects
+<ul>(<a href="http://www.winehq.org/pipermail/wine-devel/2006-April/046433.html">
+http://www.winehq.org/pipermail/wine-devel/2006-April/046433.html</a>)</ul>,
+but the total Results are not so good:
+</p><p>
+We marked 74 Defects as RESOLVED, 78 Entries are Verified and 344 are
+still Uninspected or Pending. (Overview at <a href="http://scan.coverity.com">http://scan.coverity.com</a> )
+</p><p>
+You must also remember, that every Run is visible with annotated source.
+This cost them a lot of GB HD-Space, that is always online for us.
+</p><p>
+IMHO, they did not see enough benefit for there investigation in Wine.
+Simple: We do not pay, they stopped.
+</p></quote>
+
+<p>There was some follow up then this week resolving the situation (or
+at least informing everyone of what the plan to resolve it is):
+</p>
+<quote who=""><p>
+Got an email from a Coverity guy.
+</p><p>
+They've hired someone to work on the Scan project full time.
+Apparently they have some backlog but Wine is by no means not covered
+anymore.  Things should settle down soon and we can look forward to some nice
+reports again.
+</p></quote>
+
+<p>[<i>Feb. 16 2007, ed. note: scans of the Wine codebase have been
+occurring regularly and work has been done to fix the bugs</i>]</p>
+
+</section>
+<section
+	title="New Documentation Policy"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-September/050746.html"
+	posts="2"
+>
+<topic>Documentation</topic>
+<p>Konstantin Petrov posted a patch implementing a new library, svrapi.dll.
+It included some previously copyrighted documentation of the functions in 
+the library and it led Alexandre to make a policy regarding any documentation
+added to the source tree:</p>
+<quote who="Alexandre Julliard"><p>
+This documentation is copied straight from MSDN, that's not
+acceptable.
+</p><p>
+Since many people don't seem to understand this, from now on I'm going
+to reject all patches that add documentation, unless the submitter
+explicitly mentions that he didn't look at MSDN to write it. I'm sorry
+to penalize people who do the right thing, but I can't continue to
+waste time checking every single doc patch against MSDN.
+</p></quote>
+</section>
+<section
+	title="Direct3D State Management"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-September/050783.html"
+	posts="4"
+>
+<topic>DirectX</topic>
+<p>This topic came up during Stefan D&#246;singer's presentation at
+WineConf, but before that there was a post on wine-devel.  State
+management in Direct3D needs some help.  Ivan Gyurdiev laid out
+some ideas of what could be done:</p>
+<quote who="Ivan Gyurdiev"><p>
+State management in D3D... is currently kind of a mess.
+<ul>
+<li> some states are applied immediately (via Set* calls)</li>
+<li> some are applied at draw time (like shaders, textures, transforms, ...)</li>
+<li> some are recorded into a stateblock structure, and applied when the 
+app says apply().</li>
+<li> the GL code is all over the place, tightly coupled to the d3d code.</li>
+</ul></p><p>
+There's a number of projects going on at the moment, from what I understand:
+<ul>
+<li> Roderick is working on making wined3d -&gt; wgl</li>
+<li> Stefan D. has expressed concern about multithreaded d3d (where  the 
+D3D device state is shared, but not necessarily the GL one - or can GL 
+contexts be shared between multiple threads?)</li>
+<li> I'm trying to get FBOs to work, where the FBO needs to be bound once 
+both the render and stencil target have been assigned (that's 2 calls 
+from the app in any order) - i.e I need those states to be applied in a 
+delayed fashion, before draw</li>
+<li> Henri Verbeet wants multiple render target support added to that 
+(meaning the FBO needs to be bound once <i>all</i> render targets are 
+assigned in addition to the depth/stencil one).</li>
+</ul></p><p>
+
+All of the above have a common theme - better state management is 
+needed, with more encapsulation, and better separation between D3D and GL.
+So, let's come up with a plan, and try to implement it. How about we 
+redesign the stateblock object like this:
+<ul>
+<li> remove deltas. I.E. if a SetLightEnable() command is sent, fetch the 
+light, enable it, then save the light back - store only state, and no 
+deltas.
+  This should make the recording stateblock (updateStateBlock) the same 
+as the initial device stateblock, which stores states</li>
+
+<li> provide a uniform internal interface for accessing states inside the 
+stateblock - like:
+	<ul><code>
+      SetState(stateblock, ID_XYZ, (void*) state_data);<br />
+      GetState(stateblock, ID_XYZ, (void**) state_data);<br />
+      CaptureState(stateblock, ID_XYZ);<br />
+      ApplyState(stateblock, ID_XYZ);</code></ul>
+
+ID_XYZ could be an individual state, or a "trigger" keyword, which will 
+refer to a whole group of states.
+Those would be private functions in addition to the standard interface.</li>
+
+<li> provide a fn pointer table inside the stateblock [ which can be 
+directed to OGL or WGL or AGL ],
+  which, for each ID_XYZ, maps a get and set function using the same 
+interface</li>
+
+<li> move all device.c GL code into those functions</li>
+
+<li> now all device.c Get* and Set* requests will do is:
+	<ul>
+       <li> error checking</li>
+       <li> recording into updateStateBlock</li>
+       <li> or writing to stateBlock (which may be applied later, at our 
+discretion)</li></ul></li>
+
+<li> apply() would just loop through all the IDs and call the corresponding 
+function pointer if the states are marked dirty (we'll keep the 'dirty' 
+field)</li>
+
+<li> capture() would do the same in the get* direction.</li>
+
+<li> new object can be instantiated per device, or per device per thread to 
+address multithreading.
+  It could have an associated glContext, and can be locked as necessary.</li>
+
+<li> it would use ideas from the d3d9 test framework for stateblock, except 
+of course more competently written, and cleaner  :) </li></ul></p><p>
+
+The key idea that I care about seems to be to move GL code from device.c 
+into the data structure object, and figure out a way to apply a set of 
+delayed states at draw time. We don't have to replace everything right 
+now - we could have 2 coexisting data structures and slowly move things 
+from one to the other, but I wanted to see if people agree with that idea.
+</p><p>
+I don't like the way things are done right now - Set* functions can do 
+one of two things - record to a stateblock, or apply state. Then the 
+stateblock calls the Set* functions itself when it's applied - seems 
+very ugly to me [ and also in certain places we're forced to disable 
+recording to get a state applied immediately using a Set* function ].
+</p></quote>
+
+<p>At WineConf, Stefan pointed out the lack of state management is
+currently responsible for a performance penalty since wined3d 
+constantly needs to figure out what the GL states are.  Keeping 
+track of it could offer a noticeable improvement.  Henri Verbeet 
+replied:</p>
+<quote who="Henri Verbeet"><p>
+Ok, so the main idea is to separate the applying of GL state from the
+tracking of D3D state. Looks like a good idea. What I would like to
+add to that is something BBrox mentioned on IRC a while back...
+grouping related states together and marking that group dirty / clean.
+That way we would get a tree like structure for the states, which
+would make checking what states changed and need to be applied
+somewhat faster. While it would be possible to add that afterwards, I
+think it would be easier to just take it into account when designing
+the new stateblock structure.</p></quote>
+
+<p>Stefan liked the idea and thought it should move forward sooner 
+rather than later:</p>
+<quote who="Stefan Dosinger"><p>
+I think we should do the change quicky, even if we risk regressions. I do not 
+think that we should add comments stating "if you add new gl stuff add it to 
+&lt;new file.c&gt;". I think none of you wants that.  What we can do for sure 
+is to move render states, sampler states, matriced and bound shaders 
+separately, which we should do to keep patches small.</p><p>
+Let me illustrate my idea:
+<ul>
+<li> Move out the GL calls from Set*State. Set*State writes the values to the 
+update stateblock and updates the refcounts (maybe we should kick internal 
+refcounting from wined3d altogether)</li>
+
+<li> Keep the stateblock and update stateblock structure as they are now. I think 
+for recording stateblocks the idea is quite good</li></ul></p></quote>
+
+<p>Stefan also proposed some data structures, but there was
+some disagreement whether or not they were the right way to
+go.  </p>
+
+</section>
+<section
+	title="ASIO Driver"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-August/050626.html"
+	posts="4"
+>
+<topic>Multimedia</topic>
+<p>Robert Reif announced a new ASIO driver for Wine:</p>
+<quote who="Robert Reif"><p>
+I just uploaded a simple wine ASIO driver to 
+<a href="http://bugs.winehq.org/show_bug.cgi?id=2161">
+http://bugs.winehq.org/show_bug.cgi?id=2161</a> for testing and feedback.
+</p><p>
+Please look at it and give me feedback.  Playback works.  Recording is 
+untested due to lack of software.  Full duplex doesn't work for me but 
+I'm not sure if it's a software issue or a problem with my hardware and 
+OS setup.
+</p><p>
+The software is a long way from being ready for submission so any 
+feedback or help would be appreciated.
+</p></quote>
+
+<p>Andreas Mohr commented:</p>
+<quote who="Andreas Mohr"><p>
+Are you sure that those limited recipients were sufficient?
+(I don't think anyone here ever does a lot of ASIO app stuff)
+</p><p>
+Might want to include 
+<a href="http://linuxaudio.org/en/contact.html">http://linuxaudio.org/en/contact.html</a> and
+<a href="http://ladspavst.linuxaudio.org/">http://ladspavst.linuxaudio.org/</a> people, too...
+</p><p>
+Thanks for all your work on audio!!
+</p></quote>
+
+<p>Eric Pouech thought there might be a problem with an ASIO driver:</p>
+<quote who="Eric Pouech"><p>
+I'm afraid submission (or integration in the Wine tree) will be problematic.
+The ASIO interface is copyrighted, and you need to sign an agreement to 
+Steinberg for using the API.
+IANAL, but including derivative work of a copyrighted API will not be 
+possible.
+But, this doesn't prevent you from creating a standalone audio driver.
+</p></quote>
+</section>
+<section
+	title="Wine &amp; Desktop Menus"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-August/050210.html"
+	posts="11"
+>
+<topic>Integration</topic>
+<p>Scott Ritchie started a thread about an annoying problem
+with Linux desktops: creating menu entries.  CodeWeavers has
+a ton of custom code to handle it (I seem to recall hearing
+once they have 65,000 lines of code just to deal with setting
+up menu entries correctly.)  Anyway, Scott wanted to get to
+the bottom of it:</p>
+<quote who="Scott Ritchie"><p>
+As of right now, I'd estimate that over half of our users are using Wine
+from a terminal window to launch their applications, largely because
+their window manager doesn't put Wine's Start Menu entries into their
+applications menu.
+</p><p>
+Wine's been making .desktop files for some time, however it seems like
+they're being put in the wrong place.  There's supposedly a proper,
+standard place to put them (or there should be), and perhaps a hack can
+be put in at the package-maintainer level, but in any case this is a
+pretty big usability issue at the moment.
+</p><p>
+I'm pretty confident that someone here knows the answer to how things
+should be, and I'm also pretty sure it's a fairly simple change to make.
+Either way, we need to have a discussion about it - what's the next step
+here?
+</p></quote>
+
+<p>Dan Kegel replied:</p>
+<quote who="Dan Kegel"><p>
+
+Jeremy and I were at the meeting where the Portland project
+got started, and we've been following it off and on with great
+interest.   I just posted a question about how xdg-desktop-menu
+would work compared to what Wine already does, let's see what they say.
+</p><p>
+
+I started up xfce today,  and was surprised to see all the menu items
+for all the windows apps I'd installed over the last few months show up.
+Sadly, this was wrong, since I'd done "rm -rf .wine" many times.
+It'd be nice if the .desktop files were stored inside ~/.wine so they could
+go away when that directory did.</p></quote>
+
+<p>Travis Watkins replied with a potential solution:</p>
+<quote who="Travis Watkins"><p>
+No need for any of that, just put 1 file in
+~/.local/share/applications/ and it should work fine. Alternatively
+you could put them somewhere inside ~/.wine and set $XDG_CONFIG_HOME
+(put the files in ~/.wine/menu/share/applications and set
+$XDG_CONFIG_HOME to ~/.wine/menu/). I'm pretty sure you could add a
+line to some dot file (.xinitrc?) and have this set on login.
+</p></quote>
+
+<p>There was a bit more discussion and Dan Kegel summarized what
+the Portland folks came up with,
+<quote who="Dan Kegel">
+
+The Portland folks say that xdg-desktop-menu will install the
+.desktop file both in ~/.local and in the legacy locations .kde and .gnome.
+Wine should probably use xdg-desktop-menu someday to do its
+menu installation, but for now, it should probably just add .desktop
+entries into ~/.local in addition to where it now puts them.
+(Anyone know why it doesn't?)</quote></p>
+
+<p>Mikolaj Zalewski looked more closely at everything and described
+the situation in more detail:</p>
+<quote who="Mikolaj Zalewski"><p>
+  I was investigating the menu problems and now I'm back so I could try 
+to fix it. The problem is with the support for the new freedesktop.org 
+standard. In it the /usr/share/applications and 
+~/.local/share/applications contains a flat list of applications while 
+the menu structure is controlled by XML files. Thus adding items to 
+~/.local/share/applications is harder than adding them to legacy 
+directories as the XML files would need to be updated.
+</p><p>
+  There is however a possibility to add an XML file that includes a 
+"legacy" directory where the menu structure is given by the directory 
+structure. That would be the easiest way to quickly fix this problem. 
+</p><p>
+I've attached a simple menu file that could be created by 
+wineprefixcreate. It should be copied to ~/.config/menus/applications-merged/ and 
+~/.config/menus/kde-applications-merged/ directories and the path in it 
+should be fixed - "username" changed to the actual user name. After 
+copying the files from ~/.kde/share/applnk/Wine to ~/.wine/menu the 
+items should be visible in the menu (I think it's a good idea to keep 
+the .desktop files in ~/.wine). If anyone would test it I would be glad 
+to know how it works.</p><p>
+  There is a small problem that KDE scans the ~/.kde/applnk directory 
+(unlike Gnome that scans only the global directories /usr/share/applnk 
+and /etc/X11/applnk and that's why the menu is not visible) and after this 
+change will display the menu items twice. This can be fixed by creating 
+the ".desktop" in legacy directories with "OnlyShowIn=Old;".
+</p><p>  If this sounds good I can send patches to winecreateprefix and 
+wineshelllink with these fixes.
+</p></quote>
+
+<p>A few days later he posted some patches to wine-patches and followed
+up with what they did:</p>
+<quote who="Mikolaj Zalewski"><p>
+When creating the wineprefix, create a directory for the menu and a 
+configuration file that enables this menu in the freedesktop.org menu 
+structure. As suggested on wine-devel the menu directory is a 
+subdirectory of ~/.wine, so if the user deletes it, all menu items 
+created there will be automatically removed.</p></quote>
+<p>And:</p>
+<quote who="Mikolaj Zalewski"><p>
+When the $WINEPREFIX/menu directory is present a desktop item is created 
+there. The desktop item in legacy directories are created with 
+"ShowOnlyIn=Old;" so there will be no duplication of icons. If 
+$WINEPREFIX/menu is not present (i.e. a wineprefix created with an old 
+wineprefixcreate) the files are created as they used to be (without 
+"ShowOnlyIn=Old;").</p></quote>
+
+<p>Interestingly, this issue came up again this week, Feb. 17, 2007, when
+David Saez Padros posted 
+<a href="http://www.winehq.com/pipermail/wine-patches/2007-February/035957.html">this patch</a> changing menu support for GNOME desktops.</p>
+
+</section>
+<section
+	title="DEVELOPERS-HINTS Moved"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-August/050414.html"
+	posts="4"
+>
+<topic>Documentation</topic>
+<p>A patch led Alexandre to comment:</p>
+<quote who="Alexandre Julliard"><p>
+
+I think the DEVELOPERS-HINTS contents should really be moved to the
+Wiki, it would be a lot easier to keep up to date there. Does anybody
+feel like doing that?</p></quote>
+
+<p>The next day Tom Wickline announced the new location:</p>
+<quote who="Tom Wickline"><p>
+
+I also put a link in 
+<a href="http://wiki.winehq.org/HackingTips">http://wiki.winehq.org/HackingTips</a> under Tips &amp; Tricks.
+</p><p>
+Here's what I have: 
+<a href="http://wiki.winehq.org/Developers-Hints">http://wiki.winehq.org/Developers-Hints</a>
+</p></quote>
+
+<p>Alexandre thanked him and removed it from the source tree.</p>
+
+</section>
+<section
+	title="Printing Changes"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-August/050205.html"
+	posts="1"
+>
+<topic>Architecture</topic>
+<p>Detlef Riekenberg took up the cause of improving Wine's
+printing system a while ago.  The aim is to make it more 
+like Windows.  He posted an idea of where he'd like things
+to go next, with the interesting comment at the end about
+Wine potentially being a backend for Samba:</p>
+<quote who="Detlef Riekenberg"><p>
+The codebase in "dlls/winspool.drv/info.c" is getting really large and
+the actual code path is: winspool.drv -&gt; CUPS/LPR
+(with help from GDI).
+</p><p>
+A possible place to split the code is at the Printmonitor level.
+The Printmonitor for the standard "local ports" in Windows 
+(COM*:, LPT*:, FILE:, Windows-File) was in localmon.dll and
+merged into localspl.dll with w2k.
+</p><p>
+On IRC, Alexandre already agreed to handle Wine-specific ports
+( CUPS:*, LPR:*, pipe to a unix_app, /unix-File ) together with the
+standard Windows ports in a single Printmonitor: "localspl.dll" 
+</p><p>
+The requirement that updating the system printers in Wine must work
+automatically needs some attention when the related code
+(LoadSystemPrinters) moves from winspool.drv to localspl.dll:
+<ol>
+<li>
+Changing the code path to "winspool.drv -&gt; localspl.dll -&gt; CUPS/LPR" 
+and using the same memory functions for localspl.dll as done in Windows
+(the memory related exports from spoolss.dll) gives us a circular
+dependency when we load and call winspool.drv from spoolss.dll.
+For this reason, using HeapAlloc(GetProcessHeap(), ...) and Friends from
+kernel32.dll is a possible way to go for "localspl.dll".
+
+</li><li>
+To let printing in Wine work as similarly as possible as printing is done
+in Windows (but without RPC and without the spooler service), we can
+change the code path to 
+"winspool.drv -&gt; spoolss.dll -&gt; localspl.dll -&gt; CUPS/LPR"
+and use the exports from spoolss.dll.
+</li></ol></p><p>
+Since we need the memory exports from spoolss.dll also for other
+Printmonitors and many names/prototypes of the other 
+spoolss.dll exports are equal to the functions in winspool.drv,
+I prefer solution 2.
+</p><p>
+(Wine as an EMF-Printing-Backend for samba is only possible with 2)
+</p><p>
+As a Reference, what windows does, is:
+<ul>winspool.drv --(RPC)--&gt; 
+ <ul>spoolsv.exe(Spooler Service) --(WINAPI)--&gt; 
+  <ul>spoolss.dll -&gt;
+   <ul>localspl.dll -&gt;
+    <ul>Driver for LPT*: / COM*: </ul></ul></ul></ul></ul>
+</p><p>
+Any comments please.
+</p></quote>
+
+<p>There were no comments.  That almost always means everyone on wine-devel
+agreed with Detlef's approach.  (Or, they didn't understand it; though that
+usually garners some comments as well.)</p>
+
+</section>
+<section
+	title="Finding Regressions With Git"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-September/050818.html"
+	posts="3"
+>
+<topic>Debugging</topic>
+<p>We used to have pretty good notes on regression testing, but
+things have changed now that we have git.  The general idea remains
+the same, but the mechanics are a bit different.  If you find a 
+regression between releases, just bisect the release and see
+if the regression exists there, bisect that, and so on till you
+find the issue.  Of course, you can usually do a better job than
+that if you're tracking changes specific to a DLL.  Anyway, 
+Kapila De Silva asked:</p>
+<quote who="Kapila De Silva"><p>
+I'm trying to track down an issue that occurred between 0.9.19 and
+0.9.20, and I am using git bisect to track the issue. In the process of
+trying to identify the cause of the issue, I would like to be able to
+get the code up till a certain patch, and then apply patches one by one
+as well. 
+</p><p>
+I have not been able to find out how to do this, despite several web
+searches and man pages. Can anyone give me any pointers to this please? 
+</p></quote>
+
+<p>Matt Finnicum replied first:</p>
+<quote who="Matt Finnicum"><p>
+What I do is to follow along with things on the shortlog:
+<ul><a href="http://source.winehq.org/git/?p=wine.git;a=shortlog">http://source.winehq.org/git/?p=wine.git;a=shortlog</a></ul>
+</p><p>
+Let's say you want to move your current branch to my recent patch
+"riched20: Rewrite of scrolling and some redrawing code." - you'd
+click the link "commit" to the right of it. In the page that you'll be
+taken to, you'll see a line like this:
+<ul><code>commit	abecd9e393925e008449a80ec14682790b29042c</code></ul>
+</p><p>
+you can then do a:
+<ul><code>git reset --hard abecd9e393925e008449a80ec14682790b29042c</code></ul>
+</p><p>
+and your git will be moved to the point in time right after that
+commit. If you then want to manually apply a patch, click "commitdiff"
+to the right of its entry in the shortlog, followed by "plain" on the
+top - this will take you to a plaintext diff of the patch, which you
+could save to a file and apply with the patch command. ("patch -p1 &lt;
+thepatch.diff" usually works well for me)</p></quote>
+
+<p>Mike McCormack followed up on the last paragraph to mention two different
+ways that could be managed with git:</p>
+<quote who="Mike McCormack"><p>
+There's easier ways to do the second bit.
+<ol>
+<li> Use git cherry-pick
+<ul><code>
+    git branch master-20060913<br />
+    git reset --hard abecd9e393925e00</code><br />
+    examine the log for commits<br />
+    <code>git log master-20060913..abecd9e39392</code><br />
+    pull in commits<br />
+    <code>git cherry -r 112810a480aaee4d6d8<br />
+    git cherry -r aaca30cf039c227e</code><br />
+    etc
+</ul></li>
+<li> Use git format-patch to get all the patches in the tree before
+    resetting:
+<ul>
+    put them all in one file named mb<br />
+    <code>git format-patch --stdout abecd9e39392 &gt; mb</code><br /><br />
+
+    or create multiple files<br />
+    <code>git format-patch abecd9e393925e008</code><br /><br />
+
+    Then reset (remember to have a clean tree!)<br />
+
+    <code>git reset --hard abecd9e393925e</code><br /><br />
+
+    Then edit "mb" and "git am" the patches you want:<br />
+
+    <code>git am mb</code>
+</ul>
+</li></ol></p><p>
+You don't need the full SHA1 ID... just enough to make it unique in the 
+tree.
+</p></quote>
+</section>
+<section
+	title="TrueType Font Issue"
+	archive="http://www.winehq.com/pipermail/wine-devel/2006-September/050654.html"
+	posts="2"
+>
+<topic>Fonts</topic>
+<p>Someone ran into a problem using TTF fonts with Wine.  He
+found a workaround for the problem, and while less than elegant,
+someone else may run into it as well:</p>
+<quote who="Timm"><p>
+My one win app that makes me a devotee of WINE is TablEdit
+(demo at 
+<a href="http://www.tabledit.com/download/tabled32.exe">www.tabledit.com/download/tabled32.exe</a>)
+has a custom font , tef260.ttf, that has failed to display since
+somewhere after ver 9.6. The program installs the font into 
+c:\windows\font, but cannot display it within the program, instead
+displaying for the most part, empty squares. 
+</p><p>
+I tried putting/removing tef260.ttf into /usr/local/share/wine/fonts,
+/usr/local/share/fonts, and the wine windows/fonts directories in all
+permutations. The only way I got it to display was to remove ALL fonts
+from these three directories and install tef260.ttf into an X11 font
+directory along with other win ttf fonts. This forces WINE to build a
+cachedmetrics file like it used to, and the font is displayed properly
+in the program.
+</p><p>
+Hope this is a clue for some developer, as I merely lurk here, looking
+for clues about wine behavior. I can't do a regression back to ver 9.6
+(the version I was using that last worked) because my upgrades to
+freetype cause it to complain of missing functions.
+</p><p>
+current  (pertinent ? ) specs
+<ul>
+<li>libfreetype.so.6.3.7,       built from source</li>
+<li>libfontconfig.so.1.0.4,       built from source</li>
+<li>fontforge 20060715,       built from source</li>
+<li>WINE 0.9.20,       built from source</li>
+<li>kernel 2.6.17.11</li>
+<li>Slack current (10.2, with upgrades from "current" tree)</li></ul>
+</p></quote>
+
+<p>Dan Kegel asked for a Bugzilla entry to be created so this issue 
+could be investigated further.</p>
+
+</section></kc>

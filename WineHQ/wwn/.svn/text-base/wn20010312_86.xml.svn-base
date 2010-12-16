@@ -1,0 +1,272 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="86" date="12 Mar 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 86th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="30" size="128" contrib="16" multiples="4" lastweek="6">
+<person posts="9" size="31" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="5" size="28" who="David Howells &lt;dhowells@cambridge.redhat.com&gt;" />
+<person posts="2" size="7" who="Gavriel State &lt;gav@transgaming.com&gt;" />
+<person posts="2" size="24" who="Michael McCormack &lt;mccormac@aals27.alcatel.com.au&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+Daniel Schwarz' web site (<a href="http://www.winecentric.com/">
+http://www.winecentric.com/</a>) has been completely revamped and now
+has expanded coverage: in addition to the existing coverage of Lotus
+Notes, info for Microsoft Excel '97 have been added (How to install,
+how to use, tips and tricks, etc).
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Enhanced asynchronous I/O"
+  subject="RFC: client side implementation of async I/O"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/03/0014.html"
+  posts="7"
+  startdate="05 Mar 2001 00:00:00 -0800"
+  enddate="11 Mar 2001 00:00:00 -0800"
+>
+
+<p />
+
+Michael McCormack provided a first version of a patch to enhance the
+I/O operations in Wine: 
+<quote who="Mike McCormack">This patch moves
+responsibility for asynchronous I/O to the client process.  
+
+<p />
+
+I think this implementation is more efficient, as it makes fewer
+server calls and duplicates fewer file descriptors, while maintaining
+correctness.</quote>
+
+
+<p />
+
+However, Mike requested some feedback on his patch.
+
+<p />
+
+Alexandre Julliard objected several points:
+<ul>
+<li>first of all, the patch conflicted with underway work from
+Alexandre: <quote who="Alexandre Julliard">your approach is not going to work with the
+latest changes I made to the server. The good news is that the changes
+I'm making are in part to allow making server calls in signal
+handlers, so when this works you should be able to use SIGIO to do
+async IO.</quote></li>
+<li>secondly, Alexandre really doubted the patch improved the
+performance.</li>
+</ul>
+
+<p />
+
+Mike tried to defend a bit his changes (especially, in the area of
+performance, where Mike thought he drastically reduced the number of
+context switches and the number of server calls), but Alexandre
+remained dubious: <quote who="Alexandre Julliard">Reducing the number of server calls
+but making them more expensive is not necessarily a gain. Show me the
+numbers...</quote>
+
+<p />
+
+Later on, Mike provided a second patch (a derivation of the first one, 
+making use of Alexandre's latest improvements on the server
+communication protocol). Here are the final results of a simple test
+program Mike wrote (against Wine 2001/03/05):
+<table border="2">
+<tr><th>Wine's patch</th><th>average write time for "AT"
+command</th><th>average read time for response</th></tr> 
+<tr><td>vanilla</td><td>675 &#181;sec</td><td>634
+&#181;sec</td></tr>
+<tr><td>Mike's patch</td><td>362 &#181;sec</td><td>322
+&#181;sec</td></tr>
+</table>
+
+<p />
+
+Sounds like a big gain!!!
+
+<p />
+
+However, this doesn't fix one of Alexandre favorite topics: getting
+rid of the service thread (it's only use as of today is the handling
+of asynchronous requests). Using (SIGIO) signals should help getting
+rid of it.
+
+<p />
+
+So, this discussion is likely not finished yet. We'll keep you posted
+with its follow-up.</section>
+
+
+<section 
+  title="Wine's speed up (cont'd)"
+  subject="Speeding up wineserver syncronization objects with shared memory"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/03/0023.html"
+  posts="10"
+  startdate="06 Mar 2001 00:00:00 -0800"
+  enddate="08 Mar 2001 00:00:00 -0800"
+>
+
+<p />
+
+Following <kcref issuenum="85" sectionnum="0">last weeks' discussions
+</kcref>, David Howells, Alexandre Julliard and Gavriel State resumed
+their exchanges.
+
+<p />
+
+David re-iterated his <quote who="David Howells">main gripe against the slow speed
+of access to files... Every Read/WriteFile goes to the wineserver to
+convert the handle into a file descriptor and to check for
+locking. The FD is then passed back over a UNIX domain socket, used
+once and then closed.</quote>
+
+<p />
+
+Alexandre Julliard explained this had just been enhanced: the file
+descriptor is only transferred once. All subsequent accesses only
+check if the file descriptor on client's side is still valid, hence
+reducing the complexity and the length of the server call (but, not
+the number of calls).
+
+<p />
+
+The latency of the Wine server call is rather high as David explained:
+
+<quote who="David Howells">Context switching is the main element of
+it. Going to the wineserver and back again just for a ReadFile() call
+or a Wait*() function incurs a fairly serious penalty (particularly on
+an X86, I think). Plus there's no requirement for the kernel to pass
+the remains of your timeslice to the wineserver and back again. 
+</quote>
+
+Since the context switch also implies that <quote who="David Howells">you have to
+flush all the CPU caches, muck around with the MMU and execute
+scheduling algorithms</quote>, this can explain some of the latency.
+
+<p />
+
+However, Alexandre thinks <quote who="Alexandre Julliard">that it should be possible
+to improve that by a small kernel hack. It will never be as fast as
+doing everything in the kernel of course, but it may just be fast
+enough to avoid the need to reimplement the whole server.</quote> and
+that <quote who="Alexandre Julliard">we are doing more than two switches (though I
+haven't proved it), which is why I think there is a margin for
+improvement. You'll obviously always have the context switch cost
+unless everything is in the kernel.</quote>
+
+<p />
+
+By a <i>small kernel hack</i>, Alexandre means <quote who="Alexandre Julliard">
+having a specialized fifo, a network protocol, an ioctl,
+etc. Basically any mechanism that ensures that we do the strict
+minimum number of context switches and schedule() calls for a server
+call. And probably also a way to transfer chunks of memory from the
+client address space so that we don't need the shared memory area.
+</quote> David already suggested a new protocol (AF_WINE) which could 
+nicely fit into this category (and also let the ability to use the
+internal API on non Linux platforms, although the kernel module had to 
+be rewritten).
+
+<p />
+
+David also asked Alexandre how does he <quote who="David Howells">plan on doing
+the locking stuff for Read/WriteFile? Cache it locally? It is
+unfortunate, but you can't really make use of UNIX file locking, since
+this is mostly advisory and as such doesn't actively stop read/write
+calls.</quote> Alexandre quickly replied <quote who="Alexandre Julliard">Yes, we'll
+need to store the locks in the server and check them before each
+read/write (and probably also release them afterwards if
+necessary). There may be some optimizations possible, but we should
+probably do it the easy way first.</quote> This would, of course,
+require some more server calls.
+
+<p />
+
+Later on, Gavriel explained that Alexandre would unlikely accept a
+huge patch at once, and that he'd rather have an incremental approach.
+Alexandre answered, but also spoke out some directions for adding such 
+a kernel module David is working on into Wine: 
+<quote who="Alexandre Julliard">
+The kernel module itself may be hard to do incrementally, but you
+should really consider reusing the existing server API so that your
+module can be plugged in easily. For instance your module entry points 
+should be the same as the server requests, and use the same request
+structures.</quote>
+
+
+<p />
+
+As a reminder, David used the int 0x2E trap (as any NT system does) to
+hook the kernel module up to the Wine code, putting more into the
+Linux kernel than Wine currently does with its wineserver. However,
+this introduces another API into Wine, and makes it quite difficult to 
+maintain the two APIs (the INT 0x2E and the wineserver's).
+
+<p />
+
+Alexandre explained what he had in mind a bit more clearly: 
+<quote who="Alexandre Julliard">I'm not suggesting keeping the current socket stuff,
+just reusing the structures. So basically instead of passing the
+address of the stack arguments (which is really ugly IMO) to your
+ioctl, you pass one of the server request structures. This allows your 
+changes to be localized to wine_server_call and doesn't require
+changing any of the routines that make server calls. Obviously you'd
+need some more changes for a few calls like ReadFile/WriteFile, but
+most operations could switch to your mechanism without needing any
+change. You simply cannot require people to recompile all of Wine to
+use your module.</quote>
+
+<p />
+
+David also pointed out some strange issues with Wine loader. After
+some discussion, it turned out that alignments required by mmap did
+change between Linux 2.2 and 2.4. Wine did made the assumption that 
+<quote who="Alexandre Julliard">Page alignment is needed for the address in memory,
+not for the offset inside the file on disk; since section virtual
+addresses in PE files are always page-aligned the memory address is
+never a problem. The only problem comes from the alignment of the data
+inside the PE file, and this is where we only need block-size
+alignment to make mmap possible.</quote> David also proposed some
+enhancements for the Linux 2.4 kernel.
+
+<p />
+
+As a (temporary) conclusion, the area of optimizing the Wine
+architecture is still under heavy discussion. Many tracks are
+available, and the potential results/benefits are still not 100%
+clear. On the bright side, there's still lots of space for
+improvement.
+
+<p />
+
+</section>
+
+</kc>

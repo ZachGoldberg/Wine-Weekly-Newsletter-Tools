@@ -1,0 +1,305 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="7" date="05 Sep 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the seventh release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+<h3>Warning</h3>
+
+As of today CVS, the configuration files need some changes:
+
+<ul>
+
+<li /> the line (in [DllOverrides] section)<br />
+
+<ul>
+
+<code>mpr, winspool       = builtin, native</code>
+
+</ul>
+
+needs to be changed into<br />
+
+<ul>
+
+<code>mpr, winspool.drv       = builtin, native</code>
+
+</ul>
+
+</ul>
+
+</intro>
+
+<section
+  title="ElfDLLs (cont'd)"
+  subject="ElfDLLs (cont'd)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-08/Subject/article-422.html"
+>
+
+The discussion on ElfDLLs kept on going after a week of cease-fire
+(see previous two weeks old edition).
+
+<p />
+
+First of all, the rationale of elf-dll was clarified. Ulrich Weigand's
+point of view:
+
+<p />
+
+<quote who="Ulrich Weigand">
+
+<ol>
+
+<li />it is currently rather hard to mix native and built-in DLLs in an
+arbitrary way, due to the missing import redirection. There's already a lot
+of work-arounds, using explicit GetProcAddress, to get around this to a
+certain extent, but this is rather ugly and at other places even the
+workarounds are missing
+
+<li />the build processs currently forces the build of the one large
+libwine.so, which is somewhat annoying, as the linking of libwine.so takes
+nearly a minute on my system, even when actually only a minor change to one
+of the built-in DLL's implementation has been made
+
+<li />Of course, I see another use of elfdlls, namely to allow development of
+DLLs outside of the main Wine distribution, for use with WineLib programs.
+This is not my primary concern at this point, though.
+
+</ol>
+
+</quote>
+
+<p />
+
+Then, the process to introduce, write, debug this elfdlls feature has
+been vehemently argued.
+
+<p />
+
+Ulrich Weigand propose to extend the current code (mainly the build tool and
+enhance the builtin DLL loader with elfdll capability). This would allow to
+still use all the existing DLLs (but, this requires the ability to <quote
+who="Ulrich Weigand">allow multiple export tables in a single
+elfdll.</quote>
+
+<p />
+
+As a matter of process, Ulrich didn't like
+
+<quote who="Ulrich Weigand">to have two different solutions, performing (at
+least partially) the same task, both active in the source tree. This means I
+don't think it is a good idea to have <b>both</b> the 'build' and the
+'dllglue' tool parse .spec files, and neither is it a good idea to have
+<b>both</b> a built-in DLL and an elfdll loader. The disadvantages of this
+approach should be rather obvious: not only do you have to keep the two
+solutions in sync with every modification, but this also means that we
+cannot take full advantage of the new features. E.g. one of the main reasons
+why the .spec parsing of dllglue is preferable to the one in build is IMO
+that it is much easier to modify a lex/yacc parser to add new syntax to the
+.spec format. But, we <b>can't</b> take advantage of that as long as
+'build' <b>also</b> needs to parse the same files ...</quote>
+
+<p />
+
+Bertho Stultiens disagreed about having multiple export tables in one
+.so file (which is need to implement Ulrich's proposal, because
+current implementation of DLLs use internals of some other DLLs, e.g.
+commdlg/comdlg32) and said <quote who="Bertho Stultiens">implementing
+multiple PE/NE headers in dllglue is simply the wrong way to go IMHO. My
+motto: Fix the code, not the tools.</quote>
+
+<p />
+
+Ulrich (and later on Alexandre Julliard) disliked the process proposed
+by Bertho, mainly because most of it happens outside of the CVS tree,
+or not being widely used. They both preferred having a set of small
+changes applied to the CVS tree, rather than a separate development
+being switched to later in time when everyhing has been fixed.
+
+<p />
+
+Some more detailed discussions outlooked the modifications to be applied to
+the build tool: Bertho did propose his dllglue code to generate export
+tables, import tables and resource embedding (as well as NE &amp; PE headers).
+This would actually completely replace build (which only provides export
+tables for now). His idea was to create a brand new tool (using lex &amp; yacc
+for better readability / maintenance) for elfdlls and only use build for the
+soon obsolete built-in DLLs). Ulrich Weigand disagreed and was in favor of
+making build evolve to dllglue (even it is means starting to rewrite it,
+with the same set of features, with lex &amp; yacc). One issue of the process is
+to know whether existing .spec files (the export tables) can be used by
+both tools (or said in other words, whether the syntax will be the same).
+Patrik Stridvall noticed that as long we don't know what needs to be
+changed: <quote who="Ulrich Weigand">We _must_ properly see the problem
+before we can decide on how to change the .spec files. BTW, are we 100% sure
+that we really want to have .spec files, like they are today, why not have
+special format comments in the .c files instead.</quote>"
+
+</section>
+
+<section
+  title="DIB drawing speed-up"
+  subject="DIB drawing speed-up"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-3.html"
+>
+
+Gavriel State (finally :-) submitted the patch for enhancing speed
+for drawing DIB sections. Even if Huw Davies pointed out some issues
+(quickly fixed), some others (like Marcus Meissner) reported some
+failure (especially in GetDIBits function). Gav said this should be
+fixed later on next week and asked Alexandre to revert this
+patch. Eric Pouech disagreed, mainly because keeping the patch inside
+the CVS tree would speed up the correction phase.
+
+</section>
+
+<section
+  title="Signal handling on FreeBSD"
+  subject="Signal handling on FreeBSD"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-3.html"
+>
+
+Jurgend Lock reported some issues with signal handlers on FreeBSD. <quote
+who="Jurgend Lock"> Sometimes apparently wine's signal handlers receive %fs
+messed up (zeroed actually) and therefore crash/hang on FreeBSD (3.2-stable,
+wine current-cvs).</quote>
+
+<p />
+
+Ulrich Weigand gave some explanation of the behavior:
+
+<p />
+
+<quote who="Ulrich Weigand">Well, this problem would seem to be caused by
+Wine. The problem is that while any Wine signal handler is running, %fs
+needs to be loaded with the value %fs had in the code that was interrupted
+by the signal *if that code is 32-bit*. If *16-bit* code was interrupted,
+however, %fs needs to be loaded with the value had at the time the switch
+from 32-bit to 16-bit took place (this value was saved at the time)...
+
+<p />
+
+The reason for this is that Wine, like 32-bit Windows, uses the %fs
+register to identify the current thread. On 16-bit Windows, however,
+%fs has no special meaning and is freely used by apps...</quote>
+
+<p />
+
+Unlike Wine, FreeBSD 3.x doesn't provide the %fs value in sigcontext
+structure and current Wine code was broken. Ulrich proposed a fix. Luoqi
+Chen also added that FreeBSD 4.0 will provide this feature. Luoqi proposed a
+compilation-time check for it that Alexandre Julliard rejected (he'd better
+like a run-time check, so that the same binary can run on both OSes).
+
+</section>
+
+<section
+  title="Big fonts"
+  subject="Big fonts"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-4.html"
+>
+
+Jurgend Lock reported some strange behavior (very big fonts) on latest
+CVS. G&#233;rard Patel explained this was caused by a recent patch from
+Richard Cohen which changed the default size of system fonts. Richard
+explained that this patch assumed the existence of a previous patch of
+his that Alexandre didn't yet apply, hence the problem.
+
+<p />
+
+Richard's first patch has been applied, and this should be sorted out now.
+
+<p />
+
+</section>
+
+<section
+  title="Anonymous unions"
+  subject="Anonymous unions"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-09/Subject/article-4.html"
+>
+
+Patrik Stridval proposed last week a patch to let any compiler use the
+anonmymous unions used by Microsoft. His idea is to chose one field
+amongst the ones provided in the anonymous union. Apparently,
+Microsoft did use a construct like:
+
+<p />
+
+<code>
+#if&#160;defined(__cplusplus)&#160;||&#160;!defined(NONAMELESSUNION)<br />
+#define&#160;DUMMYUNIONNAME<br />
+#else<br />
+#define&#160;DUMMYUNIONNAME&#160;u<br />
+#endif<br />
+&#160;<br />
+typedef&#160;struct&#160;{<br />
+&#160;&#160;&#160;field1_t&#160;field1;<br />
+&#160;&#160;&#160;union&#160;{<br />
+&#160;&#160;&#160;&#160;&#160;&#160;field2_t&#160;field2;<br />
+&#160;&#160;&#160;&#160;&#160;&#160;field3_t&#160;field3;<br />
+&#160;&#160;&#160;}&#160;DUMMYUNIONNAME;&#160;<br />
+}&#160;struct_t;<br />
+&#160;<br />
+void&#160;test(struct_t&#160;*ps)<br />
+{<br />
+&#160;&#160;&#160;struct_t&#160;s;<br />
+&#160;&#160;&#160;s.DUMMYUNIONNAME.field2&#160;=&#160;ps->DUMMYNIONNAME.field1;<br />
+}<br />
+</code>
+
+<p />
+
+but, if the compiler does support anonymous structs, this is expanded into
+<code>s..field2</code> and <code>ps-&#62;.field1</code> which gcc doesn't like
+(however it seems Microsoft didn't suffer from it).
+
+<p />
+
+Marcus Meissner proposed to append the dot to DUMMYUNIONNAME and to
+use it as:
+
+<p />
+
+<code>s.DUMMYUNIONNAME&#160;field2&#160;=&#160;ps->DUMMYUNIONNAME&#160;field1;</code>
+
+<p />
+
+Alexandre Julliard proposed:
+
+<p />
+
+<code>
+#if&#160;defined(__cplusplus)&#160;||&#160;!defined(NONAMELESSUNION)<br />
+#define&#160;_U(x)&#160;u.x<br />
+#else<br />
+#define&#160;_U(x)&#160;x<br />
+#endif<br />
+&#160;<br />
+s._U(field2)&#160;=&#160;ps-&#62;_U(field1);
+</code>
+
+<p />
+
+Then, Patrik and Alexandre discussed the best (or "least worse") solution
+when porting existing Windows code using Winelib with a compiler not
+supporting anonymous structs. Alexandre found that doing a search and
+replace (to add the anonymous struct macro) was better than Patrik solution,
+which, when the used field was not the one choosen from the struct, would
+lead to design change, which are worse than pure text manipulation.
+
+</section>
+
+</kc>

@@ -1,0 +1,215 @@
+
+<section 
+	title="News: Wine 1.1.44 released"
+	subject=""
+	archive=""
+	posts=""
+>
+<topic></topic>
+<p>Wine 1.1.44 was released this week.
+</p><p>
+Highlights from this release:
+</p><p>
+<ul>
+<li>Many more new icons.</li>
+<li>Support for 32-bit prefixes with a 64-bit Wine.</li>
+<li>Many additional msvcr80/90 functions.</li>
+<li>Improvements to Bidi handling.</li>
+<li>More complete mmdevapi (Win7 audio) support.</li>
+<li>Improved handling of MSI patches.</li>
+<li>A number of fixes for desktop menus.</li>
+<li>Optimizations in OLE storage.</li>
+<li>Various bug fixes.</li>
+</ul>
+
+</p><p>
+Articles in this WWN are brought to you by Edward Savage.
+</p></section>
+<section 
+	title="Introduction to GSoC 2010 Students"
+	subject="GSoC"
+	archive="#"
+	posts="1"
+>
+<topic>GSoC</topic>
+<p>
+This year Google has allocated five places to Wine applicants
+for the Summer of Code program. In previous years students in this
+program have improved various functionality and added new features to
+Wine. Hopefully this year is no different and many exciting additions
+will be available to Wine users in a few months time!
+</p>
+<p>
+Here is a quick introduction to the five students and their plans for Wine.
+</p>
+<p>
+Alexander Soernes intends to focus on the user interface of Wines
+Internet Explorer implementation, which relies on Gecko for its page
+rendering. The user interface elements like the address bar, tool
+bars, and status bar will receive the most attention and all going
+well extra features like favourites and address history may be added.
+In the event these goals are completed by others Alexander will work
+on a control panel applet for Internet settings. Maarten Lankhorst
+will be the mentor for this project.
+</p>
+<p>
+David Hedberg will be working on implementing the IExplorerBrowser
+control in Wine. This feature has been available to Windows since the
+release of Vista several years ago and allows Windows applications to
+host an instance of Explorer in their applications. Some improvements
+Wine will see from this project include support for Windows
+applications that use this interface and simpler development of file
+dialogues and Wine Explorer. Eric Durbin is the mentor for this
+project.
+</p>
+<p>
+Mariusz Plucinski intends to write a Wine native version of the
+Windows Game Explorer and its associated communication features. This
+project includes the implementation of a Game Definition Files parser,
+a local games database, GE COM APIs, and Game Explorer itself as Shell
+Extension. With the increased dependence on Windows branded features
+in modern PC games the implementation of this part of Wine should
+improve compatibility with future game titles. Vincent Povirk will be
+mentoring Mariusz.
+</p>
+<p>
+Thomas Mullaly is going to work on implementing the IUri interface
+that was added in Internet Explorer 7. This interface and function
+will allow applications to validate and canonicalize IETF standardised
+URI's in Wine. This will improve Wine's compatibility with many web
+based applications. Jacek Caban will be mentoring Thomas for this
+project.
+</p>
+<p>
+Wilbert Ho plans to improve Wines native cmd (Command) application. On
+Windows cmd provides support for batch file processing, system
+interaction, and every day tasks like file operations. Unfortunately
+in Wine many of these tasks do not work well, or at all. Wilbert will
+be working towards fixing several bugs in the parser of cmd to make it
+more reliable and approach feature completeness. Maarten Lankhorst
+will also be mentoring this project.
+</p></section>
+<section 
+	title="Games Spotlight: Star Trek Online"
+	subject=""
+	archive="http://appdb.winehq.org/objectManager.php?sClass=version&amp;iId=19203"
+	posts="1"
+>
+<topic>Star Trek Online Works With Wine!</topic>
+<p>
+In February this year Star Trek Online was released for Windows and
+from day one the game installed and ran well under Wine. Behind the
+scenes several developers from Codeweavers and the community, notably
+Jacek Caban and Jeremy White, worked hard improving Wine to support
+the Cryptic launcher and engine features the game required. Many users
+helped during the games Open Beta to find and document serious bugs
+and provide work arounds for them.
+</p>
+<p>
+Today most users of Wine can simply buy the game, install IE7 via
+winetricks, and play in either low graphics mode for those with older
+computers or high graphics mode for those with newer hardware. Some
+users will need to deal with a minor X server bug and the work around
+is provided on the applications AppDB profile.
+</p></section>
+<section 
+	title="Games Spotlight: Team Fortress 2"
+	subject=""
+	archive="http://bugs.winehq.org/show_bug.cgi?id=21534#c35"
+	posts="1"
+>
+<topic>A Reliable Workaround For Team Fortress 2</topic>
+<p>
+On the 27th of January Valve updated Team Fortress 2 and introduced a
+change in TF2 that triggered font a bug in Wine rendering the game
+unplayable. TF2 has been working well under Wine for over two years
+and had attracted a large player base.
+</p><p>
+After three months a lot of information had been gathered by the
+community and the problem had been mostly identified. Finally, a
+couple of users figured out which fonts were causing the issues and a
+method to work around this problem. The method and changes against TF2
+have been tested by many others and the workaround makes the game
+playable again. Hopefully a longer term solution is put together soon
+or the bug is permanently fixed in Wine.
+</p><p>
+The work around from bug 21534 is described in the TF2 Appdb page
+under the <a href="http://appdb.winehq.org/objectManager.php?sClass=version&amp;iId=9901">How-To</a>.  
+</p></section>
+<section 
+	title="Wine sound rewrite using OpenAL"
+	subject=""
+	archive="#"
+	posts=""
+>
+<topic>Interview with Maarten Lankhorst on Windows Core Audio and Wine</topic>
+<p>
+Currently Wine relies on the winmm API which has been around
+since Windows 3.1 to provide sound support on various platforms. Newer
+versions of Windows, Vista and 7, now rely on Windows Core Audio to
+handle sound and applications are already using this new method with
+more to follow. Maarten Lankhorst has been working on a complete
+rewrite of winmm so that these applications are supported and future
+support of sound is straight forward.
+</p>
+<quote>
+<p>
+The new windows sound API is Windows Core Audio, and a lot of new
+applications will try to use that if available, it is a sound server
+running as a service, that handles all mixing and re-sampling, etc.
+... In order to support this API, we would need to write new drivers.
+This means that Wine would have 3 drivers for every audio API it
+supports. I didn't want to support that, so ... winmm will forward
+wavein/out to the new API, and our current drivers will be deleted."
+</p>
+</quote>
+<p>
+Maarten has made a lot of progress to this end and has a working
+sample driver for this forwarding. However the next step of
+implementing a new sound API is creating some debate. The two straight
+forward methods of doing this, using a cross platform sound API or
+writing drivers for every native sound API, of achieving this have
+drawbacks.
+</p>
+<quote>
+<p>
+The first way is writing a new driver for every API out there, for
+OSS for the BSDs, ALSA for some Linux systems, Pulseaudio for the
+other Linux systems, and a driver for OSX, and something for Solaris.
+Obviously this is not the best way to maintain something.
+</p><p>
+Instead I want to try OpenAL, there is a LGPL implementation [for
+Linux] at <a href="http://kcat.strangesoft.net/openal.html">http://kcat.strangesoft.net/openal.html</a> and OSX has its own
+implementation, so basic functionality would work. But some of the
+more fancy things like querying the speaker configuration doesn't, and
+might need extensions to work. So this wouldn't be an instant fix, and
+the OSX implementation might not pick it up either, so it will
+realistically take some time before the extensions would be available
+to Wine.
+</p>
+</quote>
+<p>
+Others interested in this problem are in favour of creating new
+drivers instead of using a cross platform API due to draw backs with
+OpenAL including the current need to use unstable builds as a result
+of serious sound delay bugs in the stable release.
+</p>
+<quote>
+<p>
+If OpenAL is chosen, it has the benefit of being able to replace our
+current dsound.dll entirely, since the calls map 1 to 1 on OpenAL, so
+a lot of ugly code goes away. ... Wine can delete a lot of code, five
+drivers, and the complete logic in dsound.dll
+</p>
+</quote>
+<p>
+In his multimedia.git tree Maarten says he has a dsound.dll that
+already does this and that choosing OpenAL would greatly reduce the
+amount of maintenance Wine sound would require. Once the new sound API
+implementation is cleaned up he hopes to have it merged in the near
+future.
+</p><p>
+These changes will also go towards solving the long standing bug
+(21248) that stops sound working in many games without an override of
+mmdevapi.
+</p></section>

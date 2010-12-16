@@ -1,0 +1,458 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="241" date="09/24/2004" />
+<intro> <p>This is the 241st issue of the Wine Weekly News publication.
+Its main goal is to glow in the dark. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="85" size="375" contrib="40" multiples="15" lastweek="26">
+
+<person posts="15" size="38" who="Alexandre Julliard" />
+<person posts="8" size="30" who="Mike Hearn" />
+<person posts="6" size="19" who="Uwe Bonnes" />
+<person posts="4" size="11" who="Robert Shearman" />
+<person posts="5" size="13" who="Dmitry Timoshkov" />
+<person posts="3" size="11" who="Rein Klazes" />
+<person posts="3" size="8" who="J. Grant" />
+<person posts="3" size="7" who="Andreas Mohr" />
+<person posts="2" size="34" who="Joris Huizer" />
+<person posts="2" size="31" who="Steven Edwards" />
+<person posts="2" size="9" who="Mike McCormack" />
+<person posts="2" size="8" who="Jens Collin" />
+<person posts="2" size="8" who="Shachar Shemesh" />
+<person posts="2" size="5" who="Dimitrie O. Paun" />
+<person posts="2" size="4" who="Richard Cohen" />
+<person posts="1" size="40" who="Alexander Yaworsky" />
+<person posts="1" size="12" who="Ronald Robin" />
+<person posts="1" size="6" who="Internet" />
+<person posts="1" size="6" who="Vincent B&#233;ron" />
+<person posts="1" size="6" who="Aneurin Price" />
+<person posts="1" size="5" who="Ewert, Mark" />
+<person posts="1" size="5" who="Ge van Geldorp" />
+<person posts="1" size="3" who="Jukka Heinonen" />
+<person posts="1" size="3" who="Eric Frias" />
+<person posts="1" size="3" who="Jeremy Newman" />
+<person posts="1" size="3" who="(Firewall/CSI)" />
+<person posts="1" size="3" who="BRC" />
+<person posts="1" size="3" who="Primorec" />
+<person posts="2" size="5" who="Marcus Meissner" />
+<person posts="1" size="2" who="Huw D M Davies" />
+<person posts="1" size="2" who="Francois Gouget" />
+<person posts="1" size="2" who="Ulrich Czekalla" />
+<person posts="1" size="2" who="Tim Ruehsen" />
+<person posts="1" size="2" who="Eric Pouech" />
+<person posts="1" size="2" who="Hans Leidekker" />
+<person posts="1" size="2" who="David Laight" />
+<person posts="1" size="2" who="Andreas Rosenberg" />
+
+</stats>
+<section 
+	title="News: SourceXtreme" 
+	subject="News"
+	archive="http://www.newsforge.com/article.pl?sid=04/09/15/1423216"
+	posts="1"
+	startdate="09/18/2004"
+	enddate="09/24/2004"
+>
+<topic>News</topic>
+<p>NewsForge 
+<a href="http://www.newsforge.com/article.pl?sid=04/09/15/1423216">announced</a>
+a product by 
+<a href="http://www.sourcextreme.com">SourceXtreme</a> to move Windows       
+application development to Linux using Wine, Qt, and some other open
+source programs.  The details provided by NewsForge are a bit scarce, 
+they state:</p>
+<quote who="NewsForge"><p> 
+ 	Working with Qt, Trolltech's cross-platform toolkit, MinGW, a 
+ minimalist set of GNU utilities for Windows, and Wine, a free implementation 
+ of the Windows API, SourceXtreme, Inc. has developed the ability to write 
+ Windows programs without ever using Windows. Its goal is to make porting 
+ applications to Qt trivial, and to move Windows developers onto a free 
+ software platform. </p></quote>
+
+<p>It does beg the question though, what exactly is Wine used for?
+Obviously apps running on Windows don't require Wine.  I asked Ian 
+Geiser of SourceXtreme about it and he outlined three different ways
+Wine comes into play:
+<ul> 
+ <li>it runs the MinGW graphical debugger</li>
+ <li>it also allows Valgrind to run for profiling</li>
+ <li>applications developed on Linux can be initially tested on Linux</li>
+</ul></p>
+
+<p> This last point is interesting because the toolkit used to develop 
+apps is Qt.  The applications developed rely on the Win32 version of Qt, 
+not the Linux one, which is in turn completely supported by Wine's 
+implementation of the Win32 API.  Ian also added,
+<quote who="Ian Geiser">
+Wine with the binfmt kernel support has been indispensable in our ability 
+to remove Microsoft from our Windows development work.</quote></p>
+
+</section>
+<section 
+	title="Fonts Status" 
+	subject="Re: fonts: 20 ppem Wine Sans Serif"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0541.html" 
+	posts="5"
+	startdate="09/20/2004"
+	enddate="09/21/2004"
+>
+<topic>Fonts</topic>
+<p>Last week (WWN issue 
+<a href="http://www.winehq.org/wwn/240#New%20Fonts">#240</a>) we
+discussed a bit of the new fonts being added.  Dimi asked this week 
+what the current status is and what remains to be done. Huw Davies
+outlined the work and where everything is at:</p>
+<quote who="Huw Davies"><p>
+We have replacements for MS Sans Serif, Courier, System and Marlett.
+Marlett is a TrueType font and that's essentially complete thanks to
+TransGaming.
+</p><p>
+The others are bitmap fonts and under Windows these come in localized
+versions and also in two resolutions (96 and 120 dpi).  I've only been
+working on the 96 dpi strikes so far and the table summarizes the
+number of strikes compeleted/no in Windows for each font in a given
+codepage.  (1250 - east europe, 1251 - cyrillic, 1252 - latin 1)
+<ul><table>
+<tr><td>&#160;</td><td>          1250</td><td>1251</td><td>    1252 </td></tr>
+<tr><td>System</td><td>                   1/1</td><td>1/1</td><td>1/1</td></tr>
+
+<tr><td>Courier</td><td>                  1/3</td><td>1/3</td><td>1/3</td></tr>
+
+<tr><td>MS Sans Serif</td><td>            2/6</td><td>2/6</td><td>3/6</td></tr>
+</table></ul>
+</p><p>
+Actually the cp1251 sets aren't quite 100% complete as there are a few
+non-Russian characters that Dmitry hasn't done.
+</p><p>
+There is nothing so far for Greek, Turkish, Hebrew or Arabic codepages.
+and we're entirely missing MS Serif, Terminal and Small fonts.
+</p><p>
+We're also missing replacement TrueType fonts for Tahoma and
+Microsoft Sans Serif (which is different from MS Sans Serif!) - these
+are considerably more effort than the bitmap ones.
+</p><p>
+On the coding side of things, we'll need a way to select which set of
+bitmap fonts are used based on the current locale.
+</p></quote>
+
+<p>Font development isn't something to be taken lightly and it led
+Mike Hearn to ask about TrueType fonts,
+<quote who="Mike Hearn">
+Are these the ones where they need to be correctly hinted which costs 
+bazillions of dollars? Or, is it actually feasible to do them just with 
+volunteer effort?
+</quote></p>
+
+<p>It seems that, while time consuming, it's certainly possible for
+someone to tackle font creation.  Steven Edwards mentioned that the
+ReactOS project is working on this as well,
+<quote who="Steven Edwards">
+We have a Tahoma replacement (Greenville) coming from ReactOS which is
+almost done the only problem is the developer is not using fontforge to
+create it. I don't remember the name of the tool but it is a very
+expensive font creation program.
+</quote></p>
+
+<p>He provided a link to a screenshot of the new 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/09/att-0601/01-Comparison_6_8_10_12_13.png">Greenville font</a>.</p>
+
+</section>
+<section 
+	title="SpecOps Labs Steps Up" 
+	subject="Contributing to WINE"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0631.html" 
+	posts="3"
+	startdate="09/22/2004"
+>
+<p>Remember Project David that got some attention a few months ago?
+(See WWN issues 
+<a href="http://www.winehq.com/wwn/220#Project%20David%20?">#220</a>,
+<a href="http://www.winehq.com/wwn/222#Project%20David%20Uses%20CodeWeavers%20CrossOver%20Office">#222</a>,
+<a href="http://www.winehq.com/wwn/225#News:%20SpecOpsLabs%20Response">#225</a>, and
+<a href="http://www.winehq.com/wwn/234#News:%20CodeWeavers%20iTunes%20Beta">#234</a> for more details.)
+We've been a bit critical of them in the past because it's not exactly 
+clear they have a product, what role Wine might play in it, or if they
+intend to keep their work behind closed doors.  Well, this week someone
+stepped forward and finally came forward to the community:</p>
+<quote who="Ronald"><p>
+
+Hi! My name is Ronald and I was wondering if any of you guys out there can
+help me get in touch with Mr. Alexandre Julliard or any of the leaders here
+in the WINE community. We've been trying to get in touch with him for months
+now and we have consistently failed to receive a response.
+</p><p>
+My company, SpecOps Labs, would like to discuss how we can contribute and
+work together with the WINE community. We believe we have a lot to
+contribute to the WINE community. However, without contact with any of the
+executives at WINEHQ, we are unable to do so. 
+</p><p>
+We want to engage in an initial dialog with Mr. Julliard. Our CTO has
+already tried emailing him twice. It's possible we don't have the right
+contact information. We'd greatly appreciate it if someone here could help
+us out.</p></quote>
+
+
+<p>Alexandre said he did reply and reiterated his response:</p>
+<quote who="Alexandre Julliard"><p>
+
+I got his mails and replied (even though they were sent as Word
+documents which was a big pain to read). I imagine he never got the
+replies, it seems your mail setup needs some work.
+</p><p>
+As I said in my replies, the best way to talk with the community is to
+post here on wine-devel; if you have patches you want to contribute to
+Wine send them to wine-patches. And please try to send your mails in
+plain text.</p></quote>
+
+<p>Shachar Shemesh described a bit about how the Wine community is 
+organized and other useful tips:</p>
+<quote who="Shachar Shemesh"><p>
+
+First, allow me to say that it is a pleasure to finally hear from
+SpecOps directly. So far, all the communication between your company and
+this project have been through press releases on your part, and public
+responses on ours. I am hoping we will all find that direct
+communication is a better way to conduct both business and development.
+</p><p>
+I cannot answer for Alexandre regarding your inquiries with him. I am
+not even sure what "leaders in the WINE community" mean. As a free
+software project, wine has no executives, as it is not a body with a
+legally standing existence.
+</p><p>
+If the cooperation discussion you wish to conduct is of a technical
+nature, the best way to conduct them is here, on this list. If it is of
+a legal nature, I'm not really sure what your legal standing would be.
+Legally, Wine belongs to its copyright holders, many of them can be
+reached through this list, but not all of them. Neither Alexandre, nor
+any other single person or entity, can approve activities that require
+all copyright holder's consent. This includes, among other things I'm
+probably forgetting, selling the code and changing the code's license to
+something not LGPL compatible.
+</p><p>
+If what you are after is hired work to help you in development, you have
+several options. First of all, to the best of my knowledge, there are
+three companies that today have the know how to provide such services.
+These are 
+<a href="http://www.codeweavers.com">CodeWeavers</a>, 
+<a href="http://www.transgaming.com/">TransGaming</a>
+who mostly work on their own proprietary
+variant of Wine, and my company, 
+<a href="http://www.lingnu.com">Lingnu</a>. There
+may also be other companies I am not aware of. Your best bet with any of
+those is to go through the "contact information" on their web site.
+</p><p>
+In addition to that, some of the wine hackers on this list also work as
+free lancers. I am sure that directing a request to this list asking for
+hired help will provide you with people willing to sell you their time
+and knowledge.</p></quote>  
+
+<p>Mike McCormack described how to go about submitting patches:</p>
+<quote who="Mike McCormack"><p>
+You submit patches against Wine, Alexandre commits them or perhaps tells
+you how the patches can be improved.  Open source means everybody gets
+to see the code, and Wine is an LGPL project.  We welcome new contributors!
+</p><p>
+If you're looking for cooperation on a product, you'll better contact
+Jeremy White of CodeWeavers.
+</p></quote>
+
+<p>Taking a look at the 
+<a href="http://www.specopslabs.com/projdav-framework.htm">SpecOps Labs 
+website</a> you can find a quite a few changes from what appeared earlier
+in the summer.  It does appear they're trying different approach than Wine, 
+though Wine is being utilized in some manner.  Interestingly, there is
+now a little footnote on the one page that reads:</p>
+<quote who="SpecOpsLabs"><p>
+ The WINE Project was one of the pioneers of Linux-Windows compatibility and we 
+ are appreciative of WINE's 10+ years of service to the Linux community. As 
+ stated above: "our DAVID Technology is utilizing certain components of the 
+ WINE Project" any modifications that we make to these components will be made 
+ available to the open source community.</p></quote>
+
+</section>
+<section 
+	title="Removing 'Optimized' Assembly" 
+	subject="optimized assembly functions in wine"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0594.html" 
+	posts="5"
+	startdate="09/21/2004"
+	enddate="09/22/2004"
+>
+<topic>Fixes</topic>
+<p>Wine has had some hand-coded assembly for a couple of multibyte capable
+string functions, strcpyW and strlenW.  Rein Klazes took a look at exactly
+why we bother and put together an interesting test:</p>
+
+<quote who="Rein Klazes"><p>
+
+Just did not feel like chasing bugs the other day. I decided to have
+some fun with something that I was wondering about for a long time: the usefulness
+of inline i86 assembly in string functions.
+</p><p>
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/09/0594.html">This</a>
+ is the test program as.c 
+</p><p>
+The function strcpyW is a copy from Wine with the #ifdef modified.
+</p><p>
+I used the following commands
+<ul><code>
+gcc-3.3 -O2  as.c -o as -DASM ; time ./as;time ./as; time ./as</code></ul></p>
+<p>
+and 
+<ul><code>
+gcc-3.3 -O2  as.c -o as ; time ./as;time ./as; time ./as</code></ul></p>
+<p>
+The resulting times are (all user time):
+<ul><table>
+<tr><td>test#</td><td>   asm</td><td>     C</td></tr>
+<tr><td>1</td><td>       15.970</td><td>  15.899</td></tr>
+<tr><td>2</td><td>       15.966</td><td>  15.943</td></tr>
+<tr><td>3</td><td>       15.959</td><td>  15.941</td></tr>
+<tr><td>&#160;</td><td>&#160;  </td><td>&#160;  </td></tr>
+<tr><td>ave</td><td>     15.964</td><td>  15.928</td></tr>
+</table></ul></p><p>
+Notes:
+<ul>
+<li> tested on a PII 450 MHz;</li>
+<li> I tested with gcc 2.95 and 3.4.2 as well, result are essentially the
+same.</li>
+<li> size of main() is 0x7a (assembly) vs 0x82 (C-code) bytes;</li>
+<li> I experimented with longer strings to see if there was any mem cache
+hit/miss effects and found none.</li></ul>
+</p><p>
+Conclusions:
+<ol>
+<li>these routines are so fast that it is hard to imagine that these
+functions will be a bottleneck, justifying such optimization;</li>
+<li> nothing shows here that inline assembly brings any advantage.</li></ol>
+</p></quote>
+
+<p>It was pointed out that the assembly could be even further optimized.  
+Still, it seemed pretty hard to justify having assembly when the compiler
+seemed to do a pretty good job.  Alexandre agreed,
+<quote who="Alexandre Julliard">
+ You are right, that assembly code is more confusing than helpful. I've
+ removed it.</quote></p>
+
+</section>
+<section 
+	title="HP-UX Port" 
+	subject="Getting winebuild to work on HP-UX"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0.html" 
+	posts="3"
+	startdate="09/22/2004"
+	enddate="09/23/2004"
+>
+<topic>Ports</topic>
+<p>Speaking of assembly language.. Warren Baird wanted to know if so much
+of it was necessary since it was causing a problem porting Winelib to other
+architectures:
+ </p>
+<quote who="Warren Baird"><p>
+As I mentioned in a previous post, I'm working on getting winelib to run on an 
+HP-UX / PA-RISC system.  The biggest problem I'm facing right now is dealing 
+with all of the assembly code that is put into the .spec file by winebuild.  
+I'm not an expert at assembly of any form, and I know absolutely nothing 
+about PA-RISC assembly.  
+</p><p>
+I guess my main question is: why is so much assembly needed there - can some 
+or all of it be replaced by C code (at least on platforms where you never 
+need to interact with real windows libs - like sparc/solaris and pa-risc/hpux)?
+</p><p>
+Any suggestions on how to get this code working on hpux would be really helpful!
+</p></quote>
+
+<p>Alexandre broke the bad news,
+<quote who="Alexandre Julliard">
+No, pretty much everything that can be done in C already is, the rest
+really needs to be in assembly. It's a perfect opportunity to learn
+PA-RISC assembly &lt;g&gt;</quote></p>
+
+<p>Eric Frias mentioned he had done some work on it, but was never able
+to finish it:</p>
+<quote who="Eric Frias"><p>
+
+I'm afraid I won't be a lot of help right now, but I might be able to offer
+some moral support.  I've spent several weeks last year trying to get
+winelib working on HP-UX, but I don't really have anything to show for it.
+Before I could get anything working, I had to abandon HP-UX and work on
+fixing up Linux and Solaris stuff because it was in higher demand.  I'll
+eventually need to get HP-UX working also, but I won't be able to devote too
+much time to it for at least a month.
+</p><p>
+I was in the same situation as you are... very rusty at x86 assembly, able
+to comprehend a little sparc assembly, but I didn't know a thing about
+pa-risc.  I was simply typing make, letting it run until it had some error
+because HP-UX wasn't supported, coming up with some fix for it, and
+repeating.  Some days I felt like I almost grasped what was going on and how
+to fix it, and some days it felt like it was miles away.  I never got all of
+wine compiling, so I have no idea if any of the fixes I made were correct or
+not.  I'd be happy to share them with you, but seeing them might do you more
+harm than good.
+</p><p>
+Anyway, good luck, and if you weren't looking for an excuse to learn pa-risc
+assembly, well, you have my sympathies.  I'm told it builds character :-)
+</p></quote>
+
+
+</section>
+
+<section 
+	title="UpdateWindow vs. WM_PAINT" 
+	subject="UpdateWindow vs. WM_PAINT"
+	archive="http://www.winehq.com/hypermail/wine-devel/2004/09/0535.html" 
+	posts="2"
+	startdate="09/20/2004"
+	enddate="09/21/2004"
+>
+<topic>Controls</topic>
+<p>Michael Kaufmann came up with a patch that fixed the way controls
+repaint themselves:</p>
+<quote who="Michael Kaufmann"><p>
+I've noticed that many Windows controls don't wait for a WM_PAINT 
+message. They redraw themselves immediately (with GetDC/ReleaseDC, 
+UpdateWindow or RedrawWindow). This is necessary if a program is 
+carrying out a lengthy operation without fetching messages. TextPad is 
+such a program: Its progress control doesn't get updated in WINE while 
+loading a file.
+</p><p>
+To see the redraw differences between Windows and WINE, I've created 
+this test program: <ul>
+<a href="http://www.michael-kaufmann.ch/WINE/ControlsRepaintTest.zip">
+http://www.michael-kaufmann.ch/WINE/ControlsRepaintTest.zip</a></ul></p><p>
+It changes properties of different controls and then calls Sleep() to 
+simulate a lengthy operation.
+</p><p>
+The big problem is that it's undocumented in which cases a control 
+should wait for a WM_PAINT message and in which cases it should redraw 
+itself immediately. I've observed that many controls redraw themselves 
+immediately if an important property of the control gets changed (e.g. 
+the position of a progress control, the text of a status bar) or if the 
+user selects an item (ListBox, ListView, TreeView) or if he presses a 
+key (Edit box). Most controls wait for WM_PAINT if the data that they 
+display was modified. But sometimes it's just arbitrary.
+
+</p><p>
+Examples (tested on Windows 2000):
+</p><p>
+Edit Control:
+<ul>
+  <li> Redraw immediately: WM_REPLACESEL, EM_SETSEL, WM_CLEAR, WM_PASTE, WM_CUT
+    </li>
+  <li> Don't redraw immediately: WM_SETTEXT, EM_UNDO, other messages</li></ul>
+</p><p>
+Listbox Control:
+<ul>
+  <li> Redraw immediately: LB_SETCURSEL, LB_SETTOPINDEX</li>
+  <li> Don't redraw immediately: LB_SETSEL, LB_RESETCONTENT, LB_ADDSTRING, 
+other messages</li></ul></p></quote>
+
+<p>Alexandre hasn't committed the patch yet, so if you have an app
+suffering from buggy drawing in controls you may want to try
+out Michael's 
+<a href="http://www.winehq.com/hypermail/wine-devel/2004/09/0535.html">patch</a>.
+</p>
+</section></kc>

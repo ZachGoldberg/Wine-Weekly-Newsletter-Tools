@@ -1,0 +1,450 @@
+<!--TITLE:[Winelib]-->
+<!--BLURB:[Winelib - Any port in a storm.]-->
+
+  <h1 class="title">Winelib</h1>
+
+  <p><i>Motto: The journey of a thousand miles starts with a single step.</i></p>
+
+  <h2>Introduction</h2>
+  <p>
+  Theoretically, any Win32 app should be compilable out of the box under Wine.
+  This, of course, is not the case. We have incompatible headers, and a bunch
+  of other problems described in 
+  <a href="http://www.winehq.org/docs/winelib-guide/index">Winelib User's Guide</a>.
+  A good way to fix these is to try to compile applications for which we
+  have the source under Winelib. 
+
+  <h3>Why</h3>
+  <p>But what do we hope to achieve? Well, the purpose of this project is four-fold:
+  <ul>
+    <li>Document our experience on porting these applications to Winelib
+    <li>Improve Winelib based on the above such that the porting process becomes very simple
+    <li>Update the <a href="http://www.winehq.org/docs/winelib-guide/index">Winelib User's Guide</a>
+        to the latest porting process
+    <li>Fixing header &amp; library problems in the process.
+  </ul>
+
+  <h3>Where</h3>
+  <p>There are many such apps around, and a lot of them are hosted at
+     <a href="http://sourceforge.net">SourceForge</a>. There are over
+     <a href="http://sourceforge.net/softwaremap/trove_list.php?form_cat=216">10,000 apps</a>
+     listed as running under Windows OS, and over
+     <a href="http://sourceforge.net/softwaremap/trove_list.php?form_cat=230">7,000</a>
+     of them are listed as running under the Win32 environment.
+   All of the above have publicly available source code, and
+   most are decent candidates for this project. 
+
+  <p>Obviously, we cannot start porting all these applications. We have to pick a
+     few important ones, and work with those.
+
+  <h3>How</h3>
+  <p>Compiling apps under Winelib should theoretically involve only makefile changes.
+  In practice, you will encounter header problems, and the likes -- for these it is
+  much better (and faster) to submit a patch, rather than document them. So for the
+  remainder of the section, let's assume the Wine headers are good enough for the
+  application in question.
+
+  <p>We are now faced with adapting the build process to Wine's needs. As things
+  stand today, we have to make another assumption: you aim at compiling the application
+  using the GNU toolchain (gmake, gcc, ld, etc.). In theory, it should be possible to
+  accomplish this with other tools, but at this point this is a rather unexplored
+  territory. That being said, we now distinguish two large application classes:
+  <dl>
+    <dt>Non-GNU tools build process</dt>
+    <dd>For these, <tt>winemaker</tt> does a decent job of generating a build system.
+	I will not cover this type of applications here, for the time being.
+        Please refer to the <tt>winemaker</tt> 
+        <a href="http://www.winehq.org/docs/winelib-guide/winelib-getting-started">documentation</a>
+        for more information.</dd>
+    <dt>GNU tools based build process</dt>
+    <dd>Fortunately, most OSS applications have a build system based around the
+        <a href="http://www.mingw.org">MinGW</a> tool chain. Sometimes they have
+        alternative build systems for the Borland and/or Microsoft tools, but more
+        often than not they have to support the MinGW tools out of necessity.
+  </dl>
+
+  <h3>What</h3>
+  If you know of applications that should be listed here, please send your suggestions
+  to <a href="mailto:dpaun@rogers.com">Dimi</a>. Currently, we have:
+  <ul>
+    <li><a href="#winvi">WinVi</a>
+    <li><a href="#upp">Ultimate++</a>
+    <li><a href="#abiword">AbiWord</a>
+    <li><a href="#winamp">WinAMP</a>
+    <li><a href="#openoffice">OpenOffice</a>
+    <li><a href="#texniccenter">TeXnicCenter</a>
+    <li><a href="#cdex">CDex</a>
+    <li><a href="#xtractor">CD-DA X-Tractor</a>
+    <li><a href="#dxsdk">DXSDK's Examples</a>
+    <li><a href="#petzold">Petzold's Examples</a>
+    <li><a href="#winboard">GNU Winboard</a>
+    <li><a href="#coolplayer">CoolPlayer</a>
+    <li><a href="#mozilla">Mozilla</a>
+    <li><a href="#visual-mingw">Visual MinGW</a>
+    <li><a href="#putty">PuTTY</a>
+    <li><a href="#devcpp">Dev-C++</a>
+    <li><a href="#gimp">Gimp</a>
+    <li><a href="#virtualdub">VirtualDub</a>
+  </ul>
+
+  <h2>Applications</h2>
+  Legend:
+  <ul>
+    <li> <span class=todo>TODO</span>: the project is waiting in the queue for someone to pick it up, and run with it
+    <li> <span class=inprogress>IN PROGRESS</span>: someone has started porting the application to Winelib
+    <li> <span class=works>WORKS</span>: the application compiles, links, and runs as a Winelib application
+    <li> <span class=done>DONE</span>: the Winelib platform has been included in the official application build system
+    <li> <span class=abandoned>ABANDONED</span>: the application has been deem unsuitable for porting using Winelib
+  </ul>
+
+  <a name="winvi"></a><h3 class=works>WinVi</h3>
+  <ul>
+    <li>worker: <a href="http://wiki.winehq.org/AndreHentschel">André Hentschel</a>
+    <li>status: Some GUI-specific differences to the original
+    <li>updated: May 02, 2009
+    <li>homepage: <a href="http://www.winvi.de">www.winvi.de</a>
+  </ul>
+  Beside the 32-Bit winelib port it is the first application ported to 64-Bit winelib and still runs.  
+
+  <a name="upp"></a><h3 class=todo>Ultimate++</h3>
+  <i>It seems to have a MinGW build system since Nov 2004.</i>
+  <ul>
+    <li>worker: wanted
+    <li>status: wishlist
+    <li>updated: Jan 27, 2005
+    <li>homepage: <a href="http://upp.sourceforge.net/">upp.sourceforge.net</a>
+  </ul>
+
+  <a name="abiword"></a><h3 class=done>AbiWord</h3>
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: builds &amp; runs cleanly, 
+	        <a href="http://www.winehq.org/hypermail/wine-devel/2004/04/0192.html">patches</a> integrated into their tree.
+    <li>updated: Apr 16, 2004
+    <li>homepage: <a href="http://www.abisource.com/">abisource.com</a>
+  </ul>
+  To build under Winelib, simply do:
+  <table width="500" border=0 cellpadding=10><tr><td class=black>
+  <span class=inverse>
+make ABI_OPT_WINELIB=1<br>
+</span>
+  </td></tr>
+  </table>
+
+
+  <a name="winamp"></a><h3 class=inprogress>WinAMP</h3>
+  <p>Suggested by <a href="mailto:vinn@theshell.com">Brian Vincent</a>: 
+  <i>Looks like Nullsoft has released the Winamp 3 code as open source.</i>
+  <ul>
+    <li>worker: <a href="mailto:boaz@hishome.net">Boaz Harrosh</a>
+    <li>status: volunteer found
+    <li>updated: Feb 24, 2004
+    <li>homepage: <a href="http://www.wasabidev.org/">www.wasabidev.org</a>
+  </ul>
+
+  <a name="openoffice"></a><h3 class=todo>OpenOffice</h3>
+  <p>Suggested by <a href="mailto:steven_ed4153@yahoo.com">Steven Edwards</a>: 
+  <i>I have just compleated a full install of OO 1.1 under WINE. No outsite
+     packages are required to install and configure OpenOffice for Win32
+     under Wine. There are a few minor bugs with some of the strings in
+     menus but I would rate it at 99%. If anyone is interested in a good
+     hobby project a Winelib port of this would be nice to see.</i>
+  <ul>
+    <li>worker: none
+    <li>status: There is a <a href="http://www.openoffice.org/issues/show_bug.cgi?id=24588">MinGW porting effort</a>, some <a href="http://tools.openoffice.org/dev_docs/build_windows_mingw.html">instructions</a> available already.
+    <li>updated: Apr 19, 2004
+    <li>homepage: <a href="http://www.openoffice.org/">www.openoffice.org</a>
+  </ul>
+
+  <a name="texniccenter"></a><h3 class=inprogress>TeXnicCenter</h3>
+  <p>Suggested by <a href="mailto:jahn.matthias@freenet.de">Matthias Jahn</a>: 
+  <i>It is a tex-shell like kde's "kile".</i>
+  <ul>
+    <li>worker: <a href="mailto:jahn.matthias@freenet.de">Matthias Jahn</a>
+    <li>status: runs with Wine, now I try to port it with Winelib
+    <li>updated: Apr 20, 2003
+    <li>homepage: <a href="http://www.toolscenter.org">http://www.toolscenter.org</a>
+  </ul>
+
+  <a name="cdex"></a><h3 class=todo>CDex</h3>
+  <p>Suggested by <a href="mailto:stuart.rowan@strr.org">Stuart Rowan</a>: 
+  <i>cdex is a great ripper tool used by many to make mp3s and oggs under windows. [...]
+     If this could be ported to winelib that would be super then I can enjoy it on linux (finally).</i>
+  <ul>
+    <li>worker: wanted
+    <li>status: wishlist
+    <li>updated: Apr 14, 2003
+    <li>homepage: <a href="http://cdexos.sourceforge.net/">cdexos.sourceforge.net</a>
+  </ul>
+
+  <a name="xtractor"></a><h3 class=todo>CD-DA X-Tractor</h3>
+  <ul>
+    <li>worker: wanted
+    <li>status: it has a MinGW build system...
+    <li>updated: Mar 30, 2003
+    <li>homepage: <a href="http://xtractor.sourceforge.net/">xtractor.sourceforge.net</a>
+  </ul>
+
+  <a name="dxsdk"></a><h3 class=todo>DXSDK's Examples</h3>
+  <p>Suggested by <a href="mailto:reif@earthlink.net">Robert Reif</a>.
+  <ul>
+    <li>worker: wanted
+    <li>status: it's a cool idea
+    <li>updated: Mar 26, 2003
+    <li>homepage: <a href="http://msdn.microsoft.com/library/default.asp?url=/downloads/list/directx.asp">msdn.microsoft.com/library</a>
+  </ul>
+
+  <a name="petzold"></a><h3 class=done>Petzold's Examples</h3>
+  <p>Suggested by <a href="mailto:j_kopplin@hotmail.com">John Kopplin</a>.
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: All but the examples from Chap21 build under Winelib
+    <li>updated: Mar 24, 2003
+    <li>homepage: <a href="http://www.computersciencelab.com/Petzold.htm">www.computersciencelab.com/Petzold.htm</a>
+  </ul>
+  <p>It took some work, but we've done it. The good news is that
+  all (but 3) examples compile just fine. This has been accomplished
+  while making absolutely <i>no</i> changes to the original source, and 
+  very few (and obvious) changes to the GNU Makefiles.
+  <p>This is very good news, as it shows we can have a common build
+  system between Wine and Windows. The only samples that don't
+  work just yet are those from Chap21 which build DLLs, and DLL
+  creation is yet not supported by winegcc. I hope this will change
+  in the near future.
+  <p>
+  The problems that needed fixing were very simple, and quite
+  obvious. They fall into 2 categories:
+  <ol>
+    <li> The samples expect to link with the msvcrt, not the
+     Unix libc, so we had to pass the <tt>-mno-cygwin</tt> flag
+     to the compiler/linker. Under mingw this is the default
+     behaviour. This change is actually beneficial for
+     the Windows port as well, as it will allow the samples
+     to be build using Cygwin's gcc also. As such, it
+     should be considered a portability fix, rather than
+     a Wine specific fix.
+    <li> The filenames used mixed case (not matching the actual
+     name on disk), and some includes use backslash (\),
+     instead of forward slash (/). This problem is typical
+     and simple to address in a portable manner if you
+     can modify the source. As we wanted to not touch
+     the examples in any way, we had to find another way
+     around it. Luckily, Unix accepts virtually any char
+     in a filename (except / of course), as well as links.
+     So we just created the appropriate symbolic links
+     where necessary, or just renamed the file if it made
+     more sense.
+  </ol>
+
+  All these renames / symlinks creation was collected in a nice
+  little installation script. So, without further delay, here
+  are the instructions on how to try the sample under Wine:
+
+  <br> <i>(place the Petzold CD in the CDROM drive)</i>
+  <table width="500" border=0 cellpadding=10><tr><td class=black>
+  <span class=inverse>
+mount /mnt/cdrom<br>
+mkdir petzold<br>
+cd petzold<br>
+cp -r /mnt/cdrom/* .<br>
+wget http://www.computersciencelab.com/Petzold.zip<br>
+unzip -a Petzold.zip<br>
+bash Wine/install.sh<br>
+make<br>
+</span>
+  </td></tr>
+  </table>
+
+  <p>Enjoy!
+
+  <a name="winboard"></a><h3 class=works>GNU Winboard</h3>
+  <p>Suggested by <a href="erwinwolffnl@microformatica.com">Erwin Wolff</a>.
+  <ul>
+    <li>worker: <a href="mailto:erwinwolffnl@microformatica.com">E. C. F. Wolff</a>,
+		<a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>.
+    <li>status: Non-computer opponent playing only so far.
+    <li>updated: Aug 18, 2003
+    <li>homepage: <a href="http://www.tim-mann.org/xboard.html">www.tim-mann.org/xboard.html</a>
+  </ul>
+  Interesting and simple chess game because it depends on email and network (TCP/IP) code to function.   
+
+  <a name="coolplayer"></a><h3 class=works>CoolPlayer</h3>
+  <p>Suggested by <a href="mailto:henrik.uggla@hem.utfors.se">Henrik Uggla</a>.
+  <ul>
+    <li>worker: <a href="mailto:vberon@mecano.gme.usherb.ca">Vincent B&eacute;ron</a>.
+    <li>status: Trying to submit the <a href="http://www.winehq.org/hypermail/wine-patches/2003/04/0237.html">changes</a> to the official Git
+    <li>updated: Apr 22, 2003
+    <li>homepage: <a href="http://coolplayer.sourceforge.net/">coolplayer.sourceforge.net</a>
+  </ul>
+  <strong>Update:</strong> (from Vincent) <i>Ok, so I got it running under Winelib. 
+  I'm listening to /usr/share/redhat-credits.ogg (only thing I could find quickly on my
+  computer :). It's so good to listen to something through it :P 
+  I'll try to get it all under small bits for both projects.</i>
+ 
+  <a name="mozilla"></a><h3 class=inprogress>Mozilla</h3>
+  <p>One of the largest free software projects that we can support with Winelib.
+     Having this one compile, and run under Winelib would be a real <i>tour de force</i>.
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: working on the MinGW port
+    <li>updated: Dec 31, 2002
+    <li>homepage: <a href="http://www.mozilla.org">www.mozilla.org</a>
+  </ul>
+  <p><strong>Update:</strong> Mozilla currently requires MS tools to build on Win32.
+     To be ported to Wine, Mozilla must first be ported over to MinGW. There is an
+     ongoing effort to do so that is tracked in bug 
+     <a href="http://bugzilla.mozilla.org/show_bug.cgi?id=134113">134113</a>.
+
+  <a name="visual-mingw"></a><h3 class=done>Visual MinGW</h3>
+  <p>Rational provided by <a href="mailto:steven_ed4153@yahoo.com">Steven Edwards</a>:
+  <p><i>[...] WINE might gain more of a market share if there was an easy way for
+     people that are writing Windows apps on Windows if they had an IDE for GCC 
+     that was cross-platform. [...] the idea is to run Visual-Mingw under WINElib 
+     and be able to just recompile your Win32 app that was built with Visual-Mingw 
+     and the w32api package plus reduce some of the redundancy Wine,
+     Mingw and ReactOS have by finding areas where we are not in sync.</i>
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: compiles, links, and runs! 
+    <li>updated: Nov 25, 2003
+    <li>homepage: <a href="http://visual-mingw.sourceforge.net/">visual-mingw.sourceforge.net</a>
+  </ul>
+
+
+  <a name="putty"></a><h3 class=done>PuTTY</h3>
+  <p>A most loved Windows tool.
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: compiles, links, and runs!
+		The <a href="http://www.winehq.org/hypermail/wine-devel/2002/12/1002.html">patch</a>
+		sent to the maintainer was accepted into the tree.
+    <li>updated: Dec 31, 2002
+    <li>homepage: <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/">www.chiark.greenend.org.uk/~sgtatham/putty</a>
+  </ul>
+
+  <a name="devcpp"></a><h3 class=abandoned>Dev-C++</h3>
+  <a href="mailto:lynchaj@yahoo.com">Andrew Lynch</a> writes:<br>
+  <i>Visual-Mingw sounds almost identical to DevEx found at
+	<a href="http://sourceforge.net/projects/wingtk">http://sourceforge.net/projects/wingtk</a>
+    and <a href="http://www.bloodshed.net">http://www.bloodshed.net</a>.
+    <br>I am using their wGLADE tool for cygwin/GTK+ development presently 
+    and it works great under Win98.</i>
+  <ul>
+    <li>worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+    <li>status: abandoned
+    <li>updated: Nov 27, 2002
+    <li>homepage: <a href="http://www.bloodshed.net/dev/devcpp.html">www.bloodshed.net/dev/devcpp.html</a>
+  </ul>
+  <p><strong>Update</strong>: This project cannot be ported using Winelib, 
+     as it is written in Pascal/Delphi.
+     It should be possible to port it to Linux using Kylix relatively easily.
+     
+  <a name="atlmfc"></a><h3 class=inprogress>ATL &amp; MFC</h3>
+  <p>This is a very common request. And due to its widespread usage, 
+     a very important project as well.
+  <ul>
+    <li>worker: <a href="mailto:jaymz@free.fr">Ronald MALLET</a>
+    <li>status: MFC successfully compiles
+    <li>updated: Dec 17, 2002
+  </ul>
+  From Ronald, on what it took to compile MFC:
+  <ul>
+    <li> I had to uncomment <tt>PSH_WIZARD97</tt> in <tt>/wine/prsht.h</tt> (fixed by Francois)
+    <li> The packing pragmas looks handled by gcc-3.2.1, so we may remove all modifications made by winemaker
+    <li> I had to force winnt.h to use nameless struct and unions (fixed by Dimi)
+    <li> I added <tt>#define EDEADLOCK EDEADLK</tt> in <tt>/wine/msvcrt/errno.h</tt> (fixed by Francois)
+    <li> I linked _alloca() to alloca() function (fixed by Alexandre)
+    <li> There was a conflict on HKEY type between  <tt>afxres.h</tt> and <tt>wine/windef.h</tt>
+    <li> Some little others syntax issues like: <tt>__try __expect, asm {}, unsigned short(x), (LPCTSTR)CString</tt>
+  </ul>
+
+  <a name="gimp"></a><h3 class=todo>Gimp</h3>
+  <p>This one's a very strange case. <a href="http://www.gimp.org/">The Gimp</a> is a native
+     Linux application built around the <a href="http://www.gtk.org/">GTK+</a> toolkit.
+     It became a native Windows application by porting over the entire GTK+ toolkit, and
+     other supporting libraries. It would thus be quite interesting to see how it can be
+     ported back to Linux, via Winelib.
+  <ul>
+    <li>worker: wanted
+    <li>status: todo
+    <li>updated: Nov 27, 2002
+    <li>homepage: <a href="http://www.gimp.org/~tml/gimp/win32/">www.gimp.org/~tml/gimp/win32</a>
+  </ul>
+
+  <a name="virtualdub"></a><h3 class=todo>VirtualDub</h3>
+  <p>Suggested by <a href="mailto:nerijus@users.sourceforge.net">Nerijus Baliunas</a> since
+     <i>it is often requested</i>.
+  <ul>
+    <li>worker: wanted
+    <li>status: todo
+    <li>updated: Nov 27, 2002
+    <li>homepage: <a href="http://www.virtualdub.org/">www.virtualdub.org</a>
+  </ul>
+
+  <h2>Winelib Fixes</h2>
+  As explained in the introduction, the primary motivation for this effort is to discover,
+  and fix Winelib shortcomings. These are the fixes that have been 
+  <a href="http://www.winehq.org/hypermail/wine-devel/2002/11/1518.html">suggested and discussed</a>
+  thus far:
+  <dl>
+    <dt>Configuration</dt>
+    <dd>Submit patch to <tt>autoconf</tt> to recognize Wine as a platform. <span class=todo>[TODO]</span>
+        <ul>
+	  <li> worker: none
+	  <li> status: not started
+	  <li> updated: Nov 28, 2002
+	</ul>
+    </dd>
+    <dt>Compilation</dt>
+    <dd>Write a small wrapper that makes gcc on Linux behave like mingw. <span class=done>[DONE]</span>
+        <ul>
+	  <li> worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+	  <li> status: patch <a href="http://www.winehq.org/hypermail/wine-patches/2002/12/0041.html">submitted</a>,
+				      and <a href="http://cvs.winehq.org/patch.py?id=6503">committed</a>.
+	  <li> updated: Dec 5, 2002
+	</ul>
+    </dd>
+    <dt>Resources</dt>
+    <dd>Make <tt>wrc</tt> compatible with <tt>windres</tt> at command line level. <span class=done>[DONE]</span>
+        <ul>
+	  <li> worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+	  <li> status: working on <a href="http://www.winehq.org/hypermail/wine-devel/2002/12/0185.html">this</a> solution,
+		       patch <a href="http://www.winehq.org/hypermail/wine-patches/2002/12/0048.html">submitted</a>,
+		       and <a href="http://cvs.winehq.org/patch.py?id=6519">committed</a>.
+	  <li> updated: Dec 6, 2002
+	</ul>
+    </dd>
+    <dt>Linking</dt>
+    <dd>Write wrapper script that takes care of generating <tt>.spec</tt> files, etc. <span class=done>[DONE]</span>
+        <p>From Alexandre: <br>
+	<i>Yes, I think we want a wrapper like dllwrap to do all that. I'm not
+	sure a script would be enough, we may want a full-fledged C program.
+	The idea would be that you do something like:</i>
+	<pre>
+  winewrap *.o *.res -o foo -lwhatever
+	</pre>
+	<i>and it builds the <tt>.spec.c</tt>, compiles it, links everything into
+	<tt>foo.exe.so</tt>, and builds a foo executable (which may be a wrapper script
+	or a real ELF binary). This also (mostly) solves the "Running" issues:
+	you still have a <tt>.exe.so</tt> file, but you don't really need to worry
+	about it. You simply run "foo" and everything works.</i>
+        <ul>
+	  <li> worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+	  <li> status: first cut <a href="http://www.winehq.org/hypermail/wine-devel/2002/12/0194.html">submitted</a> for review,
+		       patch <a href="http://cvs.winehq.org/patch.py?id=6616">committed</a>.
+	  <li> updated: Dec 16, 2002
+	</ul>
+    </dd>
+    <dt>Running</dt>
+    <dd>Arrange so that a regular Unix executable is generated. <span class=done>[DONE]</span>
+	<p>Improve the <tt>wineapploader</tt> so it can be used directly by the step above.
+        <ul>
+	  <li> worker: <a href="mailto:dpaun@rogers.com">Dimitrie O. Paun</a>
+	  <li> status: patch <a href="http://cvs.winehq.org/patch.py?id=6616">committed</a>.
+	  <li> updated: Dec 16, 2002
+	</ul>
+    </dd>
+
+  </dl>
+
+<p>&nbsp;</p>

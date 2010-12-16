@@ -1,0 +1,235 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="12" date="11 Oct 1999 00:00:00 -0800" />
+
+<intro>
+
+<p />This is the twelfth release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />Well, this week has been very calm here on wine-devel, perhaps the
+first bit(e)s of cold, forcing the bears to hibernate.
+
+</intro>
+
+<stats posts="47" size="145" contrib="22" multiples="10" lastweek="14">
+
+<person posts="6" size="19" who="Klaas van Gend &lt;klaas@vangend.demon.nl&gt;" />
+<person posts="6" size="17" who="Jutta Wrage &lt;jw@witch.westfalen.de&gt;" />
+<person posts="5" size="13" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="4" size="25" who="'Juergen Schmied' &lt;juergen.schmied@metronet.de&gt;" />
+<person posts="4" size="10" who="Karl Lessard &lt;oponvybl@umail.corel.com&gt;" />
+<person posts="3" size="7" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="8" who="'Abey George' &lt;abey@macadamian.com&gt;" />
+<person posts="2" size="6" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="2" size="4" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="2" size="4" who="'Francois Boisvert' &lt;francois@macadamian.com&gt;" />
+
+</stats>
+
+<section
+  title="Wine and printers"
+  subject="Wine and printers"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-11.html"
+>
+
+<p />After Klaas van Gend proposal's from <a href="wn19991004_11.html#0">
+last week</a>, a lot of comments / enhancements have been
+provided by the Wine developers' community.
+
+<p />Jutta Wragge, Huw Davies updated the current status of printer
+support:
+
+<ul>
+
+<li />Native 16 bit drivers are somewhat functional
+
+<li />32 bit printer drivers aren't supported
+
+<li />Builtin psdrv is fairly functional.
+
+<li />native winspool doesn't work
+
+<li />builtin winspool is fairly functional.
+
+<li />Invoking 16 bit builtin PrintDlg is broken (e.g. no printing
+with Agent or Write)
+
+<li />Invoking 16 bit native PrintDlg works (requires native commdlg)
+
+<li />Native (win95) and builtin comdlg32 (PrintDlg) work.
+
+<li />Printing with 16 bit apps works as long as the app doesn't
+invoke PrintDlg16
+
+<li />32 bit printing seems not to work without native windows 95/98
+
+<li />Installing a printer works through 16 bit code (tried with hp400)
+
+<li />Installing a printer through 32 bit work doesn't work and Wine
+doesn't take windows' 16 bit settings.
+
+</ul>
+
+<p />Huw Davies gave some more details on the status:
+
+<quote who="Huw Davies">
+
+<p />So what this means is that you can print from 16 and 32 bit apps using either
+the builtin ps driver or for example the win3.1 or win95 ps driver, given that
+you have the right things in the registry.
+
+<p />Native 16bit printer drivers (these include some of those shipped with win95
+like the PostScript driver) should work to some extent. The ones that generate
+some kind of printer control language (PS, PCL, HPGL) will work a lot better
+than ones that simply send a bitmap to the printer, because of the complete
+lack of either the dm* Brute functions or a dibeng.dll. While I may carry on
+trying to get some of these more advanced drivers to be more functional I don't
+see this as a high priority. As other people have said let's leave this to
+ghostscript (and yes I have thought about getting gs to load native windows
+printer drivers, but this still doesn't help non-intel systems without an
+emulator).
+
+<p />Native winspool while probably never work. It tries to load vxds and to be
+honest is probably not worth the effort. This is the sort of level that we
+should probably rewrite anyway. The builtin winspool is probably at the stage
+where it's fairly useful for most simple printing situations, though there are
+improvements which I need to make.
+
+<p />The builtin version of PrintDlg16 is actually not too hard to fix, before I
+left I had a semi-working version that basically just called PrintDlgA. When
+my laptop arrives (my other linux box is in Oxford and it's too painful to edit
+anything over this link) I'll finish it off.
+
+<p />I'm fairly happy with the builtin ps driver as it is, I did start working on
+device setup property sheets and such but ran out of time before I got anything
+apart from paper size/orientation done. EPS generation is probably next
+(this should be easy enough).
+
+</quote>
+
+<p />As a summary, best bets to print are either to use a 16 bit native PCL
+driver - with PCL capable printers -, or to use the builtin PS driver
+and use GhostScript as the renderer / printer for the output.
+
+<p />So, the next important step is likely to be being able to add decent
+configuration for printers in the registry (Huw Davies provided a
+patch that should solve the broken PrintDlg16 issue).
+
+<p />Richard Browne disagreed also on Klaas' overview of printing in
+Windows and provided some corrections:
+
+<quote who="Richard Browne">
+
+<p />
+
+<ul>
+
+<li />Windows 95 printer drivers are 16-bit drivers that follow
+essentially the same DDI ("Device Driver Interface") as Windows 3.1
+drivers.
+
+<li />As far as I am aware, Windows 98 drivers are basically identical
+to 95 drivers.
+
+<li />One thing that the Windows 95/98 printer DDI does have that
+Windows 3.1 didn't is a thing called DIBENG.DLL, which is a DLL that
+can perform many common 'ripping' tasks on standard format bitmaps.
+
+<li />The Windows NT DDI is a 32-bit interface that is completely
+different from the Windows 16-bit DDI. Windows NT graphics drivers have
+no relationship whatsoever to Windows 95/98 drivers.
+
+<li />It is a common misconception that Windows 98/2000 printer drivers
+are the same thing. This misconception arises from the hype
+surrounding Microsoft's WDM ("Windows Driver Model"). WDM covers
+non-GDI drivers (ie. everything but display card and printer
+drivers). Graphics drivers continue to be completely different for NT
+vs. 98.
+
+<li />For NT 3.x, graphics drivers run in user mode.
+
+<li />In NT 4.0, Microsoft changed the graphics driver DDI so it ran in
+kernel mode. At a source code level the DDI is very similar but in
+kernel mode the only operating system services a driver can access are
+exported from GDI's WIN32.SYS.
+
+<li />In NT 2000, Microsoft changed the printer DDI again to support
+user mode printer drivers (but the display driver interface remains in
+kernel mode). NT 2000 printer drivers can run in kernel or user mode.
+
+<li />Rather than requiring all printer manufacturers to implement
+drivers from scratch, Microsoft has 3 special drivers called RasDD
+(renamed to UNIDRV in NT 2000), PSCRIPT and MSPLOT. These special
+drivers are used to implement 'mini-drivers'. Essentially the printer
+manufacturer supplies a data file that describes their printer and
+RasDD et al do all the hard stuff (if required a mini-driver can
+optionally supply a DLL with custom code as well).
+
+<li />Windows 95/98 also supports minidrivers, but as far as I am aware
+they are not compatible. Although I note the NT DDK contains some
+tools to 'port' 95 data files to NT.
+
+<li />The Windows 95/98/NT/2000 printing systems contain much much more
+than just the graphics drivers. There is a whole other architecture
+commonly called the 'spooler'. The spooler consists of a number of
+rather complex components which include: the local print provider,
+network print providers, print processors, port monitors, and language
+monitors. The whole spooler subsystem is very flexible, extensible
+and, consequently, very confusing.
+
+</ul>
+
+
+
+</quote>
+
+</section>
+
+<section
+  title="WRC enhancement"
+  subject="WRC enhancement"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-32.html"
+>
+
+<p />Joshua Thielen reported an issue with wrc (the Wine resource compiler)
+which doesn't allow two resources of different types to have the same name.
+
+<p />Bertho Stultiens agreed on the bug, and said he'll provide a new version
+of wrc, correcting this problem as well as user-type patch.
+
+</section>
+
+<section
+  title="InstallShield bug-fix"
+  subject="InstallShield bug-fix"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-10/Subject/article-63.html"
+>
+
+<p />Andreas Mohr reported an issue he had with some InstallShield
+programs. He provided an in-depth analysis of what's going wrong:
+
+<blockquote>
+
+<p />basically, a 32 bit program called setup.exe was trying to launch a 16 bit
+program, called setup.exe, but sitting in a different directory. The loader,
+when checking if the module of the second setup.exe has already been loaded,
+incorrectly believes the first setup.exe is the correct one, hence resulting
+the second setup.exe not to be ran as expected.
+
+</blockquote>
+
+<p />Ulrich Weigand confirmed Andi's analysis and explained how to fix the
+issue in the NE loader.
+
+</section>
+
+</kc>
+

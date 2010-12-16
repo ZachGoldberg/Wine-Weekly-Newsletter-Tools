@@ -1,0 +1,112 @@
+# default permissions
+allow from all
+
+# Set Our Default Directory Index
+DirectoryIndex site index.html index.shtml index.cgi index.php
+
+# Website Offline
+#RewriteEngine on
+#Rewritebase /
+#RewriteRule \.(html|jpg|gif|png|css)$ - [L]
+#RewriteRule ^(.*) /down.html [R=302,L]
+
+# 404 not found document
+ErrorDocument 404 http://www.winehq.org/404
+
+# Tell PHP how we want to handle global vars
+php_value register_globals 0
+
+# We want to use ";" as variable separator (more XML compliant)
+php_value arg_separator.output ";"
+php_value arg_separator.input ";&"
+
+# force the php to accept PATH_INFO
+<Files ~ (site)$>
+  AcceptPathInfo On
+  ForceType application/x-httpd-php
+</Files>
+
+# redirect winehq services to appropriate web sites
+RedirectMatch ^/?page=(.*)$                     http://www.winehq.org/$1
+RedirectMatch ^/index\.php?page=(.*)$           http://www.winehq.org/$1
+
+# redirect old winehq pages to new locations
+RedirectPermanent /index.php                    http://www.winehq.org/
+RedirectPermanent /about.shtml                  http://www.winehq.org/about
+RedirectPermanent /about/index.php              http://www.winehq.org/about
+RedirectPermanent /community.shtml              http://www.winehq.org/contributions
+RedirectPermanent /dev.shtml                    http://www.winehq.org/cvs
+RedirectPermanent /dev.html                     http://www.winehq.org/cvs
+RedirectPermanent /devstart.shtml               http://www.winehq.org/cvs
+RedirectPermanent /documentation/               http://www.winehq.org/documentation
+RedirectPermanent /documentation                http://www.winehq.org/documentation
+RedirectPermanent /download/index.php           http://www.winehq.org/download
+RedirectPermanent /download.shtml               http://www.winehq.org/download
+RedirectPermanent /download.html                http://www.winehq.org/download
+RedirectPermanent /download-mirrors.html        http://www.winehq.org/download
+RedirectPermanent /download-mirrors.shtml       http://www.winehq.org/download
+RedirectPermanent /support.shtml                http://www.winehq.org/documentation
+RedirectPermanent /News/status.html             http://www.winehq.org/status
+RedirectPermanent /faq/                         http://wiki.winehq.org/FAQ
+RedirectPermanent /faq                          http://wiki.winehq.org/FAQ
+RedirectPermanent /FAQ/                         http://wiki.winehq.org/FAQ
+RedirectPermanent /FAQ                          http://wiki.winehq.org/FAQ
+RedirectPermanent /screenshots/                 http://appdb.winehq.org/
+RedirectPermanent /screenshots                  http://appdb.winehq.org/
+RedirectPermanent /howto/                       http://wiki.winehq.org/HowTo
+RedirectPermanent /howto                        http://wiki.winehq.org/HowTo
+RedirectPermanent /todo/                        http://www.winehq.org/TodoList
+RedirectPermanent /todo                         http://www.winehq.org/TodoList
+RedirectPermanent /docs/wine-faq/               http://wiki.winehq.org/FAQ
+RedirectPermanent /docs/wine-faq                http://wiki.winehq.org/FAQ
+RedirectPermanent /docs/wine-faq/index/         http://wiki.winehq.org/FAQ
+RedirectPermanent /docs/wine-faq/index          http://wiki.winehq.org/FAQ
+
+# Fix Old WWN links
+RedirectMatch ^/\?issue=(.*)$                   http://www.winehq.org/wwn/{$1}
+RedirectMatch ^/\?interview=(.*)$               http://www.winehq.org/interview/{$1}
+
+# fix documentation links
+RedirectMatch ^/(Docs|Docs/)$                   http://www.winehq.org/documentation
+RedirectMatch ^/(docs|docs/)$                   http://www.winehq.org/documentation
+RedirectMatch ^/Docs/(\w+-\w+)/$                http://www.winehq.org/docs/$1/index
+RedirectMatch ^/Docs/(\w+-\w+)/(.*)\.shtml$     http://www.winehq.org/docs/$1/$2 
+RedirectMatch ^/docs/(\w+-\w+)/$                http://www.winehq.org/docs/$1/index
+RedirectMatch ^/docs/(\w+-\w+)/(.*)\.shtml$     http://www.winehq.org/docs/$1/$2 
+RedirectMatch ^/docs/([a-z-]+)/$                http://www.winehq.org/docs/$1/index
+RedirectMatch ^/(docs|docs/)$                   http://www.winehq.org//documentation
+
+# redirect winehq services to appropriate web sites
+RedirectMatch ^/(APPS|Apps|apps)/$              http://appdb.winehq.org/
+RedirectMatch ^/(APPS|Apps|apps)$               http://appdb.winehq.org/
+RedirectMatch ^/(APPS|Apps|apps)/query\.cgi$    http://appdb.winehq.org/
+RedirectMatch ^/apps\.cgi$                      http://appdb.winehq.org/
+RedirectMatch ^/(FAQ|Faq)/$                     http://wiki.winehq.org/FAQ
+RedirectMatch ^/(FAQ|Faq)$                      http://wiki.winehq.org/FAQ
+RedirectMatch ^/(BUGS|Bugs|bugs)/$              http://bugs.winehq.org/
+RedirectMatch ^/(BUGS|Bugs|bugs)$               http://bugs.winehq.org/
+RedirectMatch ^/(TROUBLE|Trouble|trouble)/$     http://wiki.winehq.org/FAQ
+RedirectMatch ^/(TROUBLE|Trouble|trouble)$      http://wiki.winehq.org/FAQ
+
+# redirect soure website
+RedirectMatch ^/WineAPI(.*)$                     http://source.winehq.org/WineAPI$1
+RedirectMatch ^/source(.*)$                      http://source.winehq.org/source$1
+RedirectMatch ^/cvsweb(.*)$                      http://cvs.winehq.org/cvsweb$1
+RedirectMatch ^/patch.py(.*)$                    http://cvs.winehq.org/patch.py$1
+
+# redirect source website utils
+RedirectPermanent /ident                        http://source.winehq.org/ident
+RedirectPermanent /find                         http://source.winehq.org/find
+RedirectPermanent /search                       http://source.winehq.org/search
+RedirectPermanent /diff                         http://source.winehq.org/search
+
+# redirect old wineconf pages
+RedirectMatch ^/wineconf$                       http://wiki.winehq.org/
+RedirectMatch ^/wineconf/$                      http://wiki.winehq.org/
+
+# Enable re-writing of URLs to hide the main script
+RewriteEngine on
+Rewritebase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+) site/$1 [L]
+

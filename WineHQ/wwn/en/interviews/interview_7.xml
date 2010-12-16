@@ -1,0 +1,286 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Interview</title>
+
+<author email="vinn@theshell.com">Brian Vincent</author>
+
+<issue num="7" who="Mike McCormack" date="10 June 2003" />
+
+<intro>
+<p>
+ This is our 7th interview with Wine developers.  Check out the
+  <a href="http://www.winehq.org/interview">Interviews</a>
+  page for previous ones.</p>
+<p>
+ How many Australian Wine developers live in South Korea and work for
+ an American company?  If you said just Mike McCormack then 
+ you'd be correct.  Mike studied Electrical
+ Engineering and Computer Science at the University of Sydney but
+ now lives in Seoul half the time.  The other half he lives 
+ in Minneapolis.  Full time he's a  Wine developer working for CodeWeavers.  
+ The arrangement works well for him - he gets to see his girlfriend
+ regularly and has time to concentrate on work too.  
+</p>
+</intro>
+
+<interview>
+
+
+<question><p><i>BV: </i>
+ How did you get involved with Wine?  How long have you been
+ working on it?
+</p></question>
+
+<answer><p><i>Mike:</i>
+I was working overseas for 6 months, and bought a digital camera. The 
+camera didn't work in Linux, but I found the windows software for it 
+almost worked in Wine.  Since I had some spare time, I started hacking 
+on the serial port code.  After a bit of work, I got the software half 
+working.
+</p><p>
+After that success I decided to try get the serial port API working in 
+Wine... that was in 1999.
+</p></answer>
+
+
+
+<question><p><i>BV: </i>
+ Do you remember the first patch you submitted?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Yep. The patch to make my digital camera's software work better.
+</p></answer>
+
+
+
+
+<question><p><i>BV: </i>
+ What areas of Wine do you like to work on?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Low level stuff, file APIs, NTDLL, wineserver stuff.  It's much easier 
+than the graphics related stuff :)
+</p></answer>
+
+
+
+
+<question><p><i>BV: </i>
+ Do you mainly work on Wine at work?  Or is it a hobby too?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Well, I think it's mainly work at the moment, but sometimes I do stuff 
+out of interest.  It seems to blur between the two.
+</p></answer>
+
+<question><p><i>BV: </i>
+How did you start working for CodeWeavers? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+ I was working in Korea at that time, and Jeremy While wrote me an email. 
+ asking if I'd like to come and work on a new project he was doing.  I 
+ started working part time for CodeWeavers, but eventually the stress of 
+ working two jobs caught up with me, and I gave up my day job :)
+</p></answer>
+
+
+
+
+
+<question><p><i>BV: </i>
+ How much of your time is spent debugging something?  There was
+ a recent quote from Nat Friedman that said something like,
+  "Jeremy White from CodeWeavers will tell you that his hackers
+ spend very close to 100% of their time in gdb."  How much of
+ that is an exaggeration?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Well, I don't use gdb to debug, but I do spend lots of time debugging 
+stuff.  It's probably like 50% debugging, 30% corresponding with 
+customers, 15% admin stuff and 5% writing code.  I think we have to 
+spend large amounts of time on small (and tedious) problems, because a 
+product needs to be more polished than an free project.
+</p></answer>
+
+
+<question><p><i>BV: </i>
+ I've noticed everyone from CodeWeavers spends a lot of time on
+ the support mailing lists.  Do you have a good ticket tracking
+ system in place?  Is it hard to keep up with the volume of support
+ questions?  
+</p></question>
+
+<answer><p><i>Mike:</i>
+ Yes, it's hard to keep up, because you need to strike a balance between 
+ fixing the problems that exist, helping customers who have problems, and 
+ adding new features.  Our ticket tracking system was designed inhouse by 
+ Jeremy Newman, who's done a great job on it.
+</p></answer>
+
+
+
+
+<question><p><i>BV: </i>
+ You done a lot of work on named pipes lately. 
+ How do they work compared to unix named pipes?
+</p></question>
+
+<answer><p><i>Mike:</i>
+The main difference in capabilities, and the thing that's still missing 
+is message mode.  Message mode apparently preserves the size of data 
+written to the pipe, so reads will return data in chunks the same size 
+as those that were written.
+</p><p>
+It took me a lot of time to understand how the connections are 
+established and torn down without race conditions.  Dan Kegel's test 
+program was a great help.
+</p></answer>
+
+
+<question><p><i>BV: </i>
+ I noticed you referenced Dan's programs a few times when you
+ submitted patches.  How was it Dan was able to write the test
+ first and you were able to complete the implementation?  I can
+ definitely understand the approach since you have to have a test
+ case, but it seems a little different than what other Wine 
+ developers do.
+</p></question>
+
+<answer><p><i>Mike:</i>
+ Most developers write their own tests, but I was lucky enough to con Dan 
+ into writing one for me :)  A lot of the work that wine developers do 
+ goes into writing test programs, as it makes it easier to understand 
+ where the problems are in Wine if you can see what a program is trying 
+ to do.  It makes a lot of sense to have different people writing the 
+ tests and the implementation because developers aren't that good at 
+ testing their own code - "it all works perfectly!" :)
+</p></answer>
+
+
+
+<question><p><i>BV: </i>
+ Are there any applications that work better now because of this?
+</p></question>
+
+<answer><p><i>Mike:</i>
+Visual C++ and QuickBooks 2003 (IIRC) both use named pipes, however I 
+haven't tested them; I've only tested to Dan's program so far and have 
+had to move on to other stuff.
+</p></answer>
+
+
+
+
+<question><p><i>BV: </i>
+ You also did some file change notification work. 
+ Were there any problems implementing
+ that on top of unix-like filesystems?
+</p></question>
+
+<answer><p><i>Mike:</i>
+There's a few differences between the Linux kernel's file change 
+notification and that in Windows.  The main ones are that Windows 
+distinguishes between files and directories changing, and can do 
+recursive change notification (on a complete directory structure). Both 
+those things are not yet implemented in Wine.  The hardest thing was to 
+get the signal handling right... Alexandre helped a lot with that.
+</p></answer>
+
+<question><p><i>BV: </i>
+ Why was signal handling a problem?  
+</p></question>
+
+<answer><p><i>Mike:</i>
+The main obstacle was trying to make Alexandre comfortable with my patch 
+:) Signal handling creates many opportunities for races and I wasn't 
+fully aware of all the problems, so I learned a lot from Alexandre.
+</p></answer>
+
+
+
+
+
+
+
+
+<question><p><i>BV: </i>
+ Eric Pouech recently mentioned he was planning on doing some
+ work on the filesystem code as part of the kernel32/ntdll split.
+ How hard is that work? 
+</p></question>
+
+<answer><p><i>Mike:</i>
+Well, I think it's hard, because it hasn't been done yet :)
+</p><p>
+I've played round with some parts of the (NT) Native API for files and 
+directories here, but there's lots of work to be done.  The big problem 
+(for me at least) is to figure out how to do the changes incrementally. 
+Eric seems to be doing a pretty good job!
+</p><p>
+I think ntdll/kernel separation might allow us to share more code with 
+Reactos, and get some NT specific debugging tools to work, but it is 
+more important for dll separation than anything else.
+</p></answer>
+
+
+
+
+
+<question><p><i>BV: </i>
+ How is that API different than what's in Wine right now?
+</p></question>
+
+<answer><p><i>Mike:</i> 
+ At the moment, the file API in wine is a big mess.  It doesn't use the 
+ Native API at all.  Ideally (in my mind) we'd like to have everything 
+ talking to the NT Native API, then NTDLL doing conversions to  the posix 
+ api.</p></answer>
+
+
+<question><p><i>BV: </i>
+ What areas of Wine would you like to see worked on?  
+</p></question>
+
+<answer><p><i>Mike:</i> 
+I think tools (like Regedit/Control Panel/Explorer) are important for 
+end users.  It would also be nice to have better integration with 
+Gnome/KDE, which requires coordination across projects.
+</p></answer>
+
+<question><p><i>BV: </i>
+ You just submitted a Regedit program from ReactOS.  What work
+ needed to be done to make it ready for Wine?  
+</p></question>
+
+<answer><p><i>Mike:</i> 
+I only changed a few things, mainly the comment style, fixed a few 
+warnings, and merged only the GUI part, since I think Wine's commandline 
+regedit is a little more mature than Reactos's.  Steven Edwards also 
+helped out with the merge.
+</p></answer>
+
+<question><p><i>BV: </i>
+  Is it a fairly complete implementation?  Will much work need
+ to be done on it?
+</p></question>
+
+<answer><p><i>Mike:</i> 
+There's still quite a bit of work to be done on it. It's a read only 
+implementation. I'm hoping somebody will take ownership of it and work 
+on the remaining bits - I'm just being a facilitator.
+</p></answer>
+
+
+<question><p><i>BV: </i>
+ Thanks for the interview Mike.  Good luck learning Korean!
+</p></question>
+</interview>
+
+</kc>

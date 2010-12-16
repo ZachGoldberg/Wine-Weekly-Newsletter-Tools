@@ -1,0 +1,581 @@
+<?xml version="1.0" ?>
+
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+
+<issue num="21" date="13 Dec 1999 00:00:00 -0800" />
+
+<intro>
+
+This is the twenty first release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine 991212 has been released. The ANNOUNCE reads:
+
+<ul>
+
+<li />Registry improvements, including NT files loader.
+
+<li />DGA 2.0 support.
+
+<li />Resources in builtin NE modules.
+
+<li />TTY driver improvements.
+
+<li />Proxy ODBC32 DLL.
+
+<li />Still more features in common controls.
+
+<li />Lots of bug fixes
+
+</ul>
+
+</intro>
+
+<stats posts="130" size="656" contrib="29" multiples="21" lastweek="25">
+
+<person posts="23" size="174" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="14" size="46" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="11" size="24" who="Alexandre Julliard &lt;julliard@lrc.di.epfl.ch&gt;" />
+<person posts="9" size="28" who="David Elliott &lt;dfe@netnitco.net&gt;" />
+<person posts="8" size="21" who="Ove Kaaven &lt;ovehk@ifi.uio.no&gt;" />
+<person posts="8" size="20" who="Christopher Michael Morgan &lt;cmorgan@WPI.EDU&gt;" />
+<person posts="8" size="15" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="7" size="31" who="'Juergen Schmied' &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="5" size="39" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="4" size="9" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="3" size="7" who="'Peter Hunnisett' &lt;hunnise@nortelnetworks.com&gt;" />
+<person posts="3" size="21" who="Peter Ganten &lt;peter@ganten.org&gt;" />
+<person posts="3" size="129" who="Michael Cardenas &lt;Michael_Cardenas@deneba.com&gt;" />
+<person posts="2" size="6" who="'Sander van Leeuwen' &lt;sandervl@xs4all.nl&gt;" />
+<person posts="2" size="5" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="2" size="4" who="lawson_whitney@juno.com" />
+<person posts="2" size="4" who="Francois Gouget &lt;fgouget@psn.net&gt;" />
+<person posts="2" size="4" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="2" size="4" who="'Juha Hartikainen' &lt;juha.hartikainen@kno.fi&gt;" />
+<person posts="2" size="3" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="2" size="14" who="Alexander Larsson &lt;alla@lysator.liu.se&gt;" />
+
+</stats>
+
+<section
+  title="Porting to OS/2 (Odin project) and C/C++ flame-war"
+  subject="Porting to OS/2 (Odin project) and C/C++ flame-war"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-79.html"
+>
+
+This long discussion started with J&#252;rgend Schmied submitting a patch
+coming from the Odin project to fix some bugs in Win95 file
+dialog. The <a href="http://www.netlabs.org/odin">Odin</a> project's
+goal is to provide on OS/2 an execution environment for Windows
+applications.
+
+<p />
+
+Alexandre Julliard rejected it because part of the patch was meant to
+let code to be compiled by a C++ compiler: <quote who="Alexandre Julliard">code
+written in C is meant to be compiled with a C compiler. Making the
+code more ugly to get it to compile with a C++ compiler is not an
+improvement.</quote> and asked for only the bug fixes to be included
+in the Wine tree.
+
+<p />
+
+Patrik Stridvall, who already tried to modify Wine code to achieve the
+C++ compatibility (and mainly to be able to run lint on Wine code)
+pointed out the known portability issues from C to C++:
+
+<ul>
+
+<li /><quote who="Patrik Stridvall">renaming of the C++ reserved words</quote>
+(like class, new, template...)
+
+<li /><quote who="Patrik Stridvall">Yet another class of changes was the casts the
+C++ demanded</quote>. C allows to cast automatically void* to X* (X
+being a defined type) whereas C++ requires an explicit cast (and both
+C and C++ allows an automatic cast from X* to void*).
+
+<li />Some other changes was the treatment of <code>static int
+x;</code>. C allows doing <code>static int x; /* Some code */ static
+int x = 0;</code>, C++ doesn't. Note that <code>extern int x; /* Some
+code */ int x = 0;</code>, is OK in both C and C++ but it does mean
+the same thing, it makes <code>x</code> external not static, and doing
+<code>extern int x; /* Some code */ static int x = 0;</code>, is
+ambiguous, it means different things in different C/C++ compiler.
+
+</ul>
+
+<p />
+
+Part of the discussion tried to explain the choice of IBM VisualAge
+C++ has a compiler instead of GCC. The important reasons were spoken
+out by the Odin folks:
+
+<ul>
+
+<li />part of Odin is written in C++ (this is a design choice),
+
+<li />GCC cannot (currently) output debug information for the OS/2
+debugger (mainly IBM's IPMD),
+
+<li />IBM C compiler doesn't support the extensions needed by Wine
+(calling convention, anonymous unions...) whereas the C++ compiler
+does.
+
+</ul>
+
+<p />
+
+The Odin developers were also willing to share some of the DLLs code
+with Wine (like the comdlg32, comctl32, shell32...) but keeping their
+own for the more system oriented part (like USER, KERNEL, GDI...,
+which anyway have a greater adherence to OS/2, like Wine has with
+Unix).
+
+<p />
+
+Another part of the discussion digressed on the type castings
+differences between C and C++ regarding maintenance, portability,
+readability and compiler efficiency (mainly for error pinpointing).
+
+<p />
+
+It also seems some reasons for Alexandre Julliard not being willing to
+commit the Odin changes lies in the potential cooperation between the
+two projects:
+
+<quote who="Alexandre Julliard">Collaboration between both projects
+is certainly a desirable thing, and worth making efforts to be
+compatible; but before we start making such efforts I'd like to see
+evidence that the collaboration is going to be bidirectional.</quote>
+
+and later
+
+<quote who="Alexandre Julliard">the impression I have from your code is
+that you copy things over from Wine and hack on them to make them fit
+in your framework. This is of course the fastest way to get things
+working, but it also causes the code bases to diverge, and makes it
+much harder to merge things one way or another later on. So before we
+start modifying Wine to fit your needs, I'd like to see a global
+concept of how sharing code back and forth will work.</quote>
+
+<p />
+
+Sander van Leeuwen (from Odin project) answered:
+
+<quote who="Sander van Leeuwen">When I mentioned sharing code, I was mainly talking about high level
+dlls like comctl32, comdlg32, shell32, ole etc. Those are (with the
+exception of changes/fixes to make them compile in VAC) for the most
+part identical to the original Wine code. So any bugs we fix in those
+dlls can be easily ported back to Wine. Assuming of course that we
+don't have to make dozens of changes per source file in order to make
+the C++ compiler happy.
+
+<p />
+
+Because if we have to, we will only resync with wine with every major
+release. (as we do right now) It's too much work to keep up with the
+CVS tree.</quote>
+
+<p />
+
+Later on, Sander posted the enhancements the Odin team made to some
+DLLs they borrowed the code from Wine:<quote who="Sander van Leeuwen">
+
+<ul>
+
+<li />OLEAUT32
+
+<ul>
+
+<li />Fixes
+
+<ul>
+
+<li />Parsing of typelib improved - Several
+incorrect pointer problems fixed, esp. start of var table.
+
+<li />Parameters are returned in allocated buffers.
+
+<li />ITypeLib::FindName - now returns memberIDs.
+
+<li />ITypeInfo::GetNames - Invalid use of
+pFDesc (should be pVDesc)
+
+<li />ITypeInfo::GetIDsOfNames - ! missing from
+strcmp
+
+<li />ITypeInfo::GetIDsOfNames - Memory leak.
+
+<li />ITypeInfo::GetDocumentation - now returns
+func &amp; var data.
+
+<li />ITypeInfo2::GetFuncIndexOfMemId - now
+checks typekind.
+
+</ul>
+
+<li />New
+
+<ul>
+
+<li />Initial cut of IPicture interface
+(required for VB apps).
+
+<li />New loader for TYPELIBs where typelib is
+encoded as a resource. (not implemented for multiple resources / dll
+yet).
+
+</ul>
+
+<li />Known problems (aka work in progress)
+
+<ul>
+
+<li />Lib flags are incorrect (win32 returns different values)
+
+<li />Default values are incorrect
+
+<li />ITypeComp interface
+
+<li />Hashing (this affects a lot of apps)
+
+</ul>
+
+</ul>
+
+<li />NTDLL
+
+<ul>
+
+<li />arith64:  64-bit arithmetics as used in win32
+
+</ul>
+
+<li />COMCTL32
+
+<ul>
+
+<li />TreeView: tree with sorted client leafs
+
+<li />Changed/fixed trackbar, progress, header controls
+
+</ul>
+
+<li />USER32
+
+<ul>
+
+<li />Changes/fixes for edit, listbox, combo box &amp;
+scrollbar controls
+
+</ul>
+
+</ul>
+
+<p />
+
+We also had to make a lot of changes (again, mostly casts &amp;renaming
+variables) in shell32, comdlg32 &amp; OLE32/OLEAUT32.
+
+<p />
+
+None of the above changes should have any OS/2 specific code, so it
+should be easy to port them back to Wine.</quote>
+
+<p />
+
+Sander gave then the name of persons on Odin team who wrote the
+modifications and asked for WIne volunteers to help synchronizing the
+trees.
+
+</section>
+
+<section
+  title="Libraries to be used in Wine"
+  subject="Libraries to be used in Wine"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-157.html"
+>
+
+Patrik Stridvall and Alexandre Julliard, while reorganizing the Wine
+command line parsing, fired up a discussion on libraries required for
+compiling Wine. Currently, most of command line parsing is done in the
+X11 display driver and using X11 functions. Patrik is working on
+having also a TTY only display driver (he reported to have calc almost
+working in TTY mode - <i>graphical</i> display being done in text
+mode), so required to move parsing (at least the X11 independent part)
+away from the X11 driver.
+
+<p />
+
+David Elliot proposed to use the (LGPL GNU) popt library.
+
+<p />
+
+Ove K&#229;ven disagreed: <quote who="Ove K&#229;ven">using non-standard external
+libraries (especially ones that cannot be distributed under our
+license) is only acceptable if we don't depend on them, but only use
+them optionally. A command-line parsing library would not make sense
+to use conditionally.</quote>
+
+<p />
+
+Some other people (Juha Hartikainen, Patrik Stridvall) pointed out the
+installation troubles when depending (even optionally) on external
+libraries:
+
+<ul>
+
+<li />end users have to install them (if they need/want) the feature,
+
+<li />different versions of the library can produce different
+behaviors,
+
+<li />the library might not be ported on all platforms Wine is
+supposed to run on, giving out some other headaches,
+
+<li />and of course, licensing issues.
+
+</ul>
+
+<p />
+
+So it seems, that as a rule of thumb, Wine will not require any LGPL
+library to be able to run and compile. Some features might be available
+thru LGPL libraries (like Mesa, ncurses...), but those will be
+optional (and detected at configuration time). Anyway, this is not the
+current situation, as Patrik is still working on removing the
+requirement (making it an optional feature) on X11, and, as Ulrich
+Weigand pointed out, there's a dependency on Xpm triggering quite a
+few posts on comp.emulators.ms-windows.wine of users complaining of a
+missing libXpm.
+
+<p />
+
+</section>
+
+<section
+  title="Unicode and Win95"
+  subject="Unicode and Win95"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-180.html"
+>
+
+Christopher Morgan ran into an issue while trying to have Grand Theft
+Auto 2 run under Wine. Some investigation showed that this program
+(which is intended to run on Win9x, but not on NT) depends on some odd
+behavior: it calls CreateEventW (unicode version) and expects to get
+an error code to get going. Since the program is not intended to run
+on NT, this is a very strange attitude.
+
+<p />
+
+Chris proposed to return the appropriate error code
+ERROR_CALL_NOT_IMPLEMENTED as Win 95 does when Wine does run in ASCII
+(non Unicode mode).
+
+<p />
+
+Alexandre Julliard was not enthusiast about the proposed fix and
+said:
+
+<quote who="Alexandre Julliard">If it's confirmed that the application does absolutely depend on this
+behavior, I'd be tempted to say the app is completely broken and you
+should complain to the author. Given that such things won't work under
+Win2K either, we can probably hope to see such brain-damage corrected
+in the near future.
+
+<p />
+
+Now if we really want to make this work, we should add a single check
+in the specific function that should fail, with a large FIXME and a
+comment that this should go away someday. I certainly don't want any
+kind of large scale effort to make all Unicode functions fail under
+Win95.
+
+<p />
+
+More generally, version checks should be strictly limited to the cases
+where a real-life app depends on the version difference. If we try to
+support all quirks and differences between Windows version we'll soon
+have more version tests than actual code. Also in most cases we should
+IMO make the NT/Win2000 behavior the default, as this is where the
+Win32 API is heading.</quote>
+
+</section>
+
+<section
+  title="Display drivers and objects"
+  subject="Display drivers and objects"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/1999-12/Subject/article-211.html"
+>
+
+Patrik Stridvall, in his effort to have a TTY only display driver,
+started discussing (mainly with Huw Davies), some evolutions on Wine
+display driver function tables. As an introduction, Wine (almost)
+allows to select a driver to handle the display (graphics,
+windowing...) operations. The most known driver is the X11 one, but
+there are some others, like the TTY driver.
+
+<p />
+
+Patrik explained what he had in mind:
+
+<quote who="Patrik Stridvall">SelectObject(), while working properly, has a lot of unnecessary code
+duplication and insufficient error handling, and this is made even
+worse by the fact that SelectObject has driver versions for BITMAP,
+BRUSH, FONT, PEN.
+
+<p />
+
+Each version of each driver does approximately the following, I take
+PEN as example, but BITMAP, BRUSH and FONT has the same problem.
+
+<p />
+
+<code>
+HPEN&#160;DRV_PEN_SelectObject(DC&#160;*dc,&#160;HPEN&#160;hpen,&#160;PENOBJ&#160;*pen)<br />
+{<br />
+&#160;&#160;&#160;HPEN&#160;hPreviousPen&#160;=&#160;dc-&gt;w.hPen;<br />
+&#160;&#160;&#160;dc-&gt;w.hPen&#160;=&#160;hPen<br />
+<br />
+&#160;&#160;&#160;/*&#160;Do&#160;necessary&#160;driver&#160;preparation&#160;because&#160;of&#160;the&#160;selection<br />
+&#160;&#160;&#160;&#160;*&#160;NOTE:&#160;HPEN&#160;is&#160;never&#160;used&#160;for&#160;this&#160;AFAICS<br />
+&#160;&#160;&#160;&#160;*/&#160;<br />
+<br />
+&#160;&#160;&#160;return&#160;hPreviousPen.<br />
+}<br /></code>
+
+<p />
+
+Notice that
+<ol>
+
+<li />Change of dc-&gt;w.hPen is always done in all drivers.
+
+<li />Even driver that doesn't need any preparations for some kind of
+objects needs an implementation because of 1.
+
+<li />The pen comes as both HPEN and PENOBJ but HPEN is only needed
+because of 1.
+</ol>
+
+<p />
+
+In addition each drivers have implementation of DRV_SelectObject that
+is basically a large switch and the essentially the same for all
+drivers. Not that for REGION objects SelectClipRgn16 is done in all
+drivers which is unnecessary code duplication and not good from a
+maintenance perspective.
+
+<p />
+
+Therefore I propose that
+<ol>
+
+<li />DRV_SelectObject is eliminated and the code moved to the common
+code.
+
+<li />Change of dc-&gt;w.h{Bitmap,Brush,Pen,Font) is done in the
+common code.
+
+<li />DRV_{BITMAP,BRUSH,PEN,FONT}_SelectObject is renamed to
+DRV_Select{Bitmap,Brush,Pen,Font) and that each function is added to
+DC_FUNCS with the following prototype, example PEN: BOOL
+(*pSelectPen)(DC *dc, PEN *pen) since it in combination with 1 and 2
+
+<ul>
+
+<li />Allows error handling
+
+<li />Allows that pSelectPen is NULL which mean that no special
+preparation is necessary, just change
+dc-&gt;w.h{Bitmap,Brush,Pen,Font).
+
+</ul>
+
+</ol>
+
+<p />
+
+This will
+
+<ol>
+
+<li />Make the code more maintainable
+
+<li />Makes it possible for drivers, like the TTY driver, for cases
+that needs no special preparation to avoid implementing a lot of code.
+
+<li />Allow error handling.
+
+</ol>
+
+</quote>
+
+<p />
+
+Huw Davies agreed that <quote who="Huw Davies">the dc-&gt;w.hpen stuff should
+go on in the common code. In fact recently I changed MoveToEx,LineTo
+etc so that the current position got updated by the common code for
+the same reason</quote> but was also willing to have a closer look on
+how the DIB and bitmap handling was split between drivers and common
+code.
+
+<p />
+
+After some more investigation, Patrik reminded <quote who="Patrik Stridvall">that
+SetTextColor and SetBkColor have duplicated code in all drivers. This
+should also be fixed.</quote> and proposed:
+
+<quote who="Patrik Stridvall">DeleteObject should probably be split up in
+Delete{Bitmap,Brush,Pen,Font} in DC_FUNCS as well, it will have the
+same advantage as for SelectObject, easier maintenance and lower
+cache footprint.
+
+<p />
+
+In addition perhaps we should have a {Select,Delete}Region.</quote>
+
+<p />
+
+Patrik also pointed an optimization area in the X11 driver: currently,
+when a Windows pen (pen is taken as an example, it could be a brush or
+a font) is created, the corresponding X11 object is not created. The
+X11 object (or the device object in Patrik's terminology) will only be
+created when its windows buddy is selected in a Windows's DC. One of
+Patrik's idea was to create also the X11 (device) objects when their
+Windows counterparts are created (and hence the need for the delete
+functions on driver side, for deleting the device object).
+
+<p />
+
+But, this triggers lots of new issues, like how to keep the
+association between Windows objects, device contexts and device
+objects. Are the association one to one or one to many, can the links
+be cut at a point in time and restored afterwards. Also, Patrik (after
+some testing) demonstrated that Windows NT re-realizes (realization is
+the name of the operation that creates a device object in the display
+driver when a logical object is, for example, selected in a DC)
+selected objects when the mapping of the display changes (something
+that nobody seemed to be aware of, and of course, undocumented).
+
+<p />
+
+Then followed a more technical discussion on region selection (and
+clipping) on metafiles (regular and enhanced), showing in particular
+that MS did another "bad design" (TM) in this area.
+
+<p />
+
+Patrik sent afterwards a patch that implements part of the output of
+this discussion.
+
+</section>
+
+</kc>

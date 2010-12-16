@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="78" date="15 Jan 2001 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 78th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+
+</intro>
+
+<stats posts="104" size="360" contrib="38" multiples="22" lastweek="22">
+<person posts="10" size="30" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="24" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="7" size="22" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="7" size="21" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="6" size="18" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="6" size="15" who="gerard patel &lt;gerard.patel@asi.fr&gt;" />
+<person posts="5" size="18" who="Ulrich Weigand &lt;weigand@immd1.informatik.uni-erlangen.de&gt;" />
+<person posts="5" size="15" who="Nathan Neulinger &lt;nneul@umr.edu&gt;" />
+<person posts="4" size="16" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="4" size="14" who="Jon Griffiths &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="4" size="12" who="Shane Nifong &lt;snifong@gw.total-web.net&gt;" />
+</stats>
+
+
+<section 
+  title="Headlines"
+>
+
+<p />
+
+Wine 20010112 has been released. Main changes are:
+<ul>
+	<li>Many fixes for Winelib support on Sparc.</li>
+	<li>Major DirectDraw restructuration.</li>
+	<li>Unicode combobox and listbox.</li>
+	<li>New MSVCRT dll.</li>
+	<li>Lots of bug fixes.</li>
+</ul>
+ 
+</section>
+
+
+<section 
+  title="DirectDraw reorganization (cont'd)"
+  subject="Reenable DXGrab"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0145.html"
+  posts="11"
+  startdate="12 Jan 2001 00:00:00 -0800"
+  enddate="12 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+Gav State submitted a patch to fix a regression introduced by the huge 
+DDraw reorganization made by the TransGaming folks 
+(<kcref issuenum="76" sectionnum="1">previous issue</kcref>).
+
+<p />
+
+Alexandre Julliard got annoyed because the patch made use of an
+internal USER function from outside the USER DLL.
+
+<p />
+
+Since Gav had in mind several other areas where this feature had to be 
+used (like getting <quote who="Gavriel State">at the drawable to set up a glX
+context for 3D</quote>, he asked whether options exist.
+
+<p />
+
+Alexandre proposed several ways, like exporting a Wine only function
+from USER, or store some Wine attributes for a window as Windows'
+properties (like the X11 window matching the Wine one); this would
+help using those attributes throughout the code (when needed).
+
+<p />
+
+Ove Kaaven proposed a rather different approach 
+<quote who="Ove Kaaven">
+Instead of loading up <code>dlls/ddraw</code> with driver-dependent
+code, perhaps we should consider driver separation not only in dsound
+(like it's done now, with <code>IDsDriver</code> in the wineoss
+driver), and like I want to do with dinput (<code>IDiDriver</code> in
+winmm's joystick driver etc), but also in ddraw? 
+
+<p />
+
+So the x11drv (and any future graphics drivers) would export a
+<code>IDdDriver-or-whatever-it's-called</code> COM interface, that
+<code>dlls/ddraw</code> could then build upon, just like in
+windoze. All the DGA, DXGrab, and GLX code would then have to be moved
+into the x11drv, obviously, so it'd be a lot of work, but it'd
+certainly give us some advantages as well... </quote>
+
+
+<p />
+
+Alexandre before entering another big files shuffling liked to know if 
+it was completely acceptable (he was worried with creating new
+interfaces, and hoped MS had already defined such interfaces ; he also 
+didn't like interface that didn't provide the relevant abstraction
+level).
+
+<p />
+
+However, Gav was really in favor of the proposal:<quote who="Gavriel State">
+On further reflection, it does sound like this is the Right Thing(tm)
+to do. After all, Windows' display and input drivers have DirectX
+hooks in them, so why shouldn't Wine's?</quote> Gav, Ove and Patrik
+Stridvall exchanged some views on the best way to handle it.
+
+<p />
+
+Gav also was <quote who="Gavriel State">happy to sign us (<i>EdNote:
+TransGaming</i>)up to do this kind of restructuring, but there are
+some other things that are higher on our priority list at the moment.
+</quote>, and put the real implementation on hold for a couple of
+weeks.
+
+<p />
+
+So be prepared to get some more DDraw code modification in the future
+weeks.
+</section>
+
+
+<section 
+  title="WebBrowser DLLs"
+  subject="Initial stubbing of shdocvw.dll (IWebBrowser)"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/01/0180.html"
+  posts="2"
+  startdate="13 Jan 2001 00:00:00 -0800"
+  enddate="13 Jan 2001 00:00:00 -0800"
+>
+
+<p />
+
+John R Sheets wrote a <quote who="John R Sheets">patch that provides  basic
+stubs for the IWebBrowser interface. My test case was a simple MFC
+application with the IE browser control imported. The application
+comes up now in Wine, with a blank browser control of course. I'm not
+sure of the best way to actually implement the renderer (perhaps the
+Mozilla control...?).</quote>
+
+<p />
+
+As John put it, rewriting a full COM object that handles Web
+rendering would be a huge task (and a project of his own).
+
+<p />
+
+James Hatheway replied with some bits of a solution:
+
+<quote who="James Hatheway">
+We (Macadamian) have done some research on that topic, using Mozilla
+as our rendering engine. We haven't actually completed the work
+required, and have put development on it on hold for a while. Since it
+seems like you are ready to leap into development now, if you need any
+info about issues of tying Mozilla to Wine, feel free to ask.
+</quote>
+
+
+<p />
+
+No reply made its way to wine-devel, but it's not impossible that some 
+work has started on the matter of integrating Mozilla into Wine to
+implement the IWebBrowser COM interface in the shdocvw DLL.
+ </section>
+
+</kc>

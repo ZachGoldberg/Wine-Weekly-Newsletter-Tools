@@ -1,0 +1,393 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="289" date="08/26/2005" />
+<intro> <p>This is the 289th issue of the Wine Weekly News publication.
+Its main goal is to start looking for new skis. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="157" size="587" contrib="67" multiples="33" lastweek="26">
+
+<person posts="14" size="37" who="Alexandre Julliard" />
+<person posts="10" size="29" who="Ivan Leo Puoti" />
+<person posts="8" size="24" who="Saulius Krasuckas" />
+<person posts="7" size="25" who="Michael Jung" />
+<person posts="5" size="21" who="Jesse Allen" />
+<person posts="5" size="17" who="John Smith" />
+<person posts="4" size="13" who="Dmitry Timoshkov" />
+<person posts="4" size="12" who="Vitaliy Margolen" />
+<person posts="4" size="11" who="James Hawkins" />
+<person posts="3" size="28" who="Andrew Neil Ramage" />
+<person posts="3" size="17" who="(wino)" />
+<person posts="3" size="11" who="Glenn Wurster" />
+<person posts="3" size="11" who="Juan Lang" />
+<person posts="8" size="21" who="Stefan D&#246;singer" />
+<person posts="3" size="10" who="Hiji" />
+<person posts="3" size="10" who="Jean Magnan de Bornier" />
+<person posts="3" size="10" who="Lionel Ulmer" />
+<person posts="3" size="9" who="Jacek Caban" />
+<person posts="3" size="8" who="Robert Shearman" />
+<person posts="3" size="8" who="Andreas Mohr" />
+<person posts="3" size="7" who="Jeremy Newman" />
+<person posts="3" size="7" who="Vitaly Lipatov" />
+<person posts="2" size="27" who="MediaHost (TM)" />
+<person posts="2" size="12" who="Gaudet Michael-MGAU01" />
+<person posts="2" size="9" who="Detlef Riekenberg" />
+<person posts="2" size="9" who="Paul Vriens" />
+<person posts="2" size="7" who="Ann &amp; Jason Edmeades" />
+<person posts="2" size="7" who="Michael Kaufmann" />
+<person posts="2" size="6" who="Oliver Stieber" />
+<person posts="2" size="6" who="Russ" />
+<person posts="2" size="5" who="Kai Blin" />
+<person posts="2" size="5" who="Tom Wickline" />
+<person posts="1" size="13" who="Henning Gerhardt" />
+<person posts="1" size="9" who="Oliver =?iso-8859-1?q?M=F6ssinger?=" />
+<person posts="1" size="7" who="=?UTF-8?B?IkFsZXhhbmRlciBOLiBTw7hybmVzIg==?=" />
+<person posts="1" size="6" who="Robert Reif" />
+<person posts="1" size="5" who="Walt Ogburn" />
+<person posts="1" size="5" who="Paul Millar" />
+<person posts="1" size="4" who="Krzysztof C." />
+<person posts="1" size="4" who="Phil Krylov" />
+<person posts="1" size="4" who="Robbert Xerox" />
+<person posts="1" size="3" who="Gerald Pfeifer" />
+<person posts="1" size="3" who="Marco Pietrobono" />
+<person posts="1" size="3" who="Paul Millar" />
+<person posts="1" size="3" who="Kuba Ober" />
+<person posts="1" size="3" who="Martin Fuchs" />
+<person posts="1" size="3" who="Shachar Shemesh" />
+<person posts="1" size="3" who="Dripple" />
+<person posts="1" size="3" who="Felix Nawothnig" />
+<person posts="1" size="3" who="Filip Navara" />
+<person posts="1" size="3" who="Marcus Meissner" />
+<person posts="1" size="3" who="Andrew Neil Ramage" />
+<person posts="1" size="3" who="Vincent B&#233;ron" />
+<person posts="1" size="2" who="Hans Leidekker" />
+<person posts="1" size="2" who="Benjamin Cutler" />
+<person posts="1" size="2" who="Kevin Koltzau" />
+<person posts="1" size="2" who="Gregory M. Turner" />
+<person posts="1" size="2" who="James Liggett" />
+<person posts="1" size="2" who="Pavel Troller" />
+<person posts="1" size="2" who="Vijay Kiran Kamuju" />
+<person posts="1" size="2" who="Boaz Harrosh" />
+<person posts="1" size="2" who="Bojan" />
+<person posts="1" size="2" who="Peter Lemenkov" />
+<person posts="1" size="2" who="Troy Rollo" />
+
+</stats>
+<section 
+	title="Theming Support"
+	subject="winecfg: theming"
+	archive="http://www.winehq.com/hypermail/wine-patches/2005/08/0598.html"
+	posts="1"
+	startdate="08/23/2005"
+>
+<topic>Controls</topic>
+<p>I thought I'd take a look this week at the new theming support
+being added to Wine by Frank Richter.  We've had a bunch of patches 
+come in to improve support and it appears it's becoming quite usable.
+Unlike the older Microsoft Plus! style themes, the uxtheme engine 
+supports special .msstyles files that can retheme all of the Windows
+controls.  This is more or less the same kind of theming that modern
+Linux desktops have supported for years.  Before showing some eye 
+candy, I thought I'd write a quick list of steps you can follow
+if you'd like to try this out:
+<ol>
+<li> Download a Windows XP theme.  Be sure it contains a .msstyles file.</li>
+<li> Create a set of new directories in your fake Windows drive:
+	<ul><tt>$ mkdir -p ~/.wine/drive_c/windows/Resources/themes/<i>name-of-your-theme</i></tt></ul>
+</li>
+
+<li> Move the .msstyles to that new <i>name-of-your-theme</i> directory.</li>
+<li> Use the new <i>Appearance</i> tab of winecfg to select the new theme.
+ </li></ol></p>
+
+<p>If you're curious what the theming looks like, 
+ here's a shot of winecfg's
+<a href="http://www.winehq.org/images/wwn289-theme-1.jpg">Drives tab</a>
+showing lots of different controls.  Of course it works with non-Winelib
+apps as well.  
+<a href="http://www.winehq.org/images/wwn289-theme-2.jpg">Here's</a> Word 
+Viewer showing a document and drop down menu.  All in all, theming seems
+to be progressing nicely.  The user interface in winecfg could use a little
+work, such as browsing for .msstyles files and automatically installing
+them, but considering the <i>Appearance</i> tab is only a week old it's
+understandable.
+</p>
+</section>
+<section 
+	title="Authentication &amp; ntlm_auth"
+	subject="secur32: Added real funcionality to the NTLM provider, try 5"
+	archive="http://www.winehq.com/hypermail/wine-patches/2005/08/0723.html"
+	posts="1"
+	startdate="08/27/2005"
+>
+<topic>Integration</topic>
+<p>Kai Blin's work on getting Wine to authenticate with real Windows 
+servers seems to be picking up.  A lot of the base infrastructure
+seems to be in place and Kai's been trying to get a large patch
+in for about a week.  His latest try seems to have broken the
+patch up into three different ones, but before he did that he described
+what it did:</p>
+<quote who="Kai Blin"><p>
+base64_codec.c converts to and from base64 encoding, which is used by
+ntlm_auth.
+</p><p>
+dispatcher.c runs ntlm_auth to do authentication. This will also be
+used by the Negotiate provider. Fixed to close all file descriptors.
+Also won't use stdio anymore.
+</p><p>
+NTLM will authenticate clients against ntlm_auth. If it's a samba3
+ntlm_auth, this requires access to the winbindd privileged pipe. Client
+side authentication in samba3 will work, it's broken in samba4's
+ntlm_auth, but will work there once ntlm_auth is fixed. Will also zero
+the password that is stored in the helper once it's not needed anymore.
+</p><p>
+This version also checks if ntlm_auth is in the right version. This
+check is not really needed for the NTLM provider, but as ntlm_auth in
+samba3 can't do Negotiate correctly, it will be more useful for
+Negotiate.
+</p><p>
+The tests have been updated to succeed on either SEC_E_OK and
+SEC_E_LOGON_DENIED, as both indicate that the tests ran correctly.
+That way the tests will work as long as ntlm_auth is present.
+
+</p></quote>
+
+<p>You can find more info about
+<a href="http://www.samba.org/samba/docs/man/ntlm_auth.1.html">ntlm_auth</a>
+on the Samba website.  </p>
+</section>
+<section 
+	title="Safedisc Update"
+	subject="Safedisc1 CD checks work, it tries to start the game but fails to do so"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/08/0444.html"
+	posts="4"
+	startdate="08/22/2005"
+>
+<topic>Status Updates</topic>
+<p>Ivan Leo Puoti has been working on Safedisc support for Wine and
+this week announced things have progressed,
+<quote who="Ivan Leo Puoti">
+Safedisc1 now successfully passes all anti debugger check, and recognises the 
+CD correctly.  It then attempts to start the game, but this doesn't work yet 
+because of the nested exception on signal stack bug. Hopefully we aren't too 
+far from getting it to run.</quote></p>
+
+<p>I'm not familiar with the "nested exception on signal stack" bug, so
+I can't really fill any details in on that.  Jesse Allen volunteered
+to test some games as the patch progresses.  To help with narrowing
+down Safedisc copy protection, Oliver Stieber gave a pointer,
+<quote who="Oliver Stieber">
+There's a large list of copy protected games and the protection they use here
+<a href="http://www.gameburnworld.com/PCprotectedgames.htm">
+http://www.gameburnworld.com/PCprotectedgames.htm</a>, 
+the site also has some details on other copy protection methods and tools to 
+detect copy protection.
+</quote></p>
+
+
+
+</section>
+<section 
+	title="WineHQ Downtime"
+	subject="WineHQ will be offline tomorrow"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/08/0459.html"
+	posts="7"
+	startdate="08/23/2005"
+>
+<topic>WineHQ</topic>
+<p>There's been a planned upgrade of WineHQ for about 4 months now.
+Jeremy Newman, webmaster/sys admin/and all-round guru, announced
+last week:</p>
+<quote who="Jeremy Newman"><p> 
+ I will be taking the website offline tomorrow starting at 09:00 CDT
+ (04:00 GMT). I will be moving it to a new ISP. Expect downtime to last
+ for up to 8 hours as I will also be doing a complete reinstall of the
+ OS.
+ 
+ This will also affect the mailing lists and the CVS.</p></quote>
+
+<p>Last I talked with Newman, WineHQ would be switching to Debian.  
+Updated versions of PHP will fix some of the bugs plaguing the 
+<a href="http://appdb.winehq.org">AppDB</a> developers.  As Jeremy
+mentioned, a new ISP local to St. Paul, Minnesota will also go in
+place.  Later in day Jeremy replied that the move had been postponed
+until the end of the month since the ISP wasn't ready.  </p>
+<p>So, at some point in the near future you can expect some downtime
+for WineHQ.  Several people were concerned about that and thought
+a mirror should be set up, but really it doesn't appear to be 
+worth the effort.  Ivan Leo Puoti pointed out many things will be
+accessible:</p>
+<quote who="Ivan Leo Puoti"><p>
+Luckily we've got a CVS mirror, for those who didn't know, you can use the european mirror following 
+these instructions
+<ul><a href="http://66.102.9.104/search?q=cache:DK5XI0Uyp_MJ:www.winehq.com/cvs+&amp;hl=en">
+http://66.102.9.104/search?q=cache:DK5XI0Uyp_MJ:www.winehq.com/cvs+&amp;hl=en</a></ul></p><p>
+if you need CVS during the downtime.
+And google will kindly mirror the web pages too :-)</p></quote>
+
+</section>
+<section 
+	title="Non-continuable Exceptions"
+	subject="Re: [winedbg] Don't ever pass a NONCONTINUABLE exception"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/08/0417.html"
+	posts="7"
+	startdate="08/22/2005"
+>
+<p>Glenn Wurster posted a patch with a changelog that read,
+<quote who="Glenn Wurster">Don't pass on non-continuable exceptions.</quote>
+It led Alexandre to ask why he wanted to do that.  Glenn said:</p>
+<quote who="Glenn Wurster"><p>
+
+In short, because we're never going to be able to continue, so there's
+no point on trying to pass because that's going to fail.
+</p><p>
+In long, because I've got another patch in the pipeline (it needs some
+tweaking) that moves the calling of the debugger into the signal
+handler.  It allows the debugger to catch exceptions that would
+previously have resulted in a total crash (non-continuable
+exceptions), and it more accurately reflects how the Windows debugger
+is called.  Using a debugger will also no longer modify program memory
+as it does currently.  In all, it should allow the debugger to work in
+more circumstances than it currently does.
+
+</p></quote>
+
+<p>With regards to the exception handling, Alexandre disagreed,
+<quote who="Alexandre Julliard">
+Not really, if the app handles the exception there's no reason it
+would fail. Not passing the exception will break things like
+IsBadReadPtr.</quote>  He was skeptical Glenn could get the 
+debugger to behave better.  Glenn described more of what he
+was trying to do,
+<quote who="Glenn Wurster">
+I'm not looking to change exception handling at the application level,
+just trying to make the debugger work better.  Again,
+EXCEPTION_NONCONTINUABLE was the wrong flag to check, EH_STACK_INVALID
+is what the revised patch checks, because exceptions with this flag
+will never make it to the application at all anyway.
+
+</quote></p>  
+
+<p>He went on to describe more issues with the current handling of 
+exceptions:</p> 
+<quote who="Glenn Wurster"><p>
+
+Doing SEH via the application stack is correct in the current code.
+Passing exceptions to the debugger via the application stack is not
+correct.  I've attached a small C file which will demonstrate the
+problem.  On windows, you can single step through the assembly code
+correctly, on Wine, you cannot.  The one conclusion that we can draw
+is that the method for calling the debugger on Windows must not use
+the application stack at all.  Furthermore, if an exception does occur
+while the stack pointer is bad in windows, the debugger will trap it
+and let you examine the situation.  Right now Wine crashes.
+</p><p>
+Moving the calling of the debugger into the signal handler takes away
+the dependence on a correct signal stack.  It lets us:
+<ol>
+
+<li> Debug a program without having to modify its memory to call the
+debugger.</li>
+
+<li> Set breakpoints and single step through areas where the stack
+pointer is incorrect.</li>
+
+<li> Use the debugger even when the application is at it's upper stack
+limit (so we can see where the stack overflow exists).</li>
+
+<li> Examine exceptions and application state when an exception is
+generated while stack pointer is bad.</li>
+</ol></p><p>
+All these can be done on Windows, and therefore sending events to the
+Windows debugger must be done without relying on the program stack.
+It would make sense for the wine debugger to be equally capable.
+</p><p>
+Now, if calling the debugger shifts positions to the signal stack, it
+is possible to detect whether we can deliver a corresponding SE to the
+application's SEH.  If we can detect when the exception cannot
+actually be delivered, then we can force the debugger to stop, even if
+this is the first notification of an exception to the debugger.  The
+point behind the non-continuable change was to tell the debugger this.
+That patch was wrong.  I should have used EH_STACK_INVALID (it would
+be impossible to even pass this flag to the debugger if the debugger
+relied on the application stack).</p></quote>
+
+<p>Alexandre was still skeptical,
+<quote who="Alexandre Julliard">
+Sure, that would be nice, just be aware that it's not acceptable to
+break anything in the normal exception handling semantics, since that
+has to always take priority over the debugger support. Also note that
+we used to handle exceptions on the signal stack, and it was causing
+lots of problems, which is why I'm a bit skeptical. Now, doing only
+the first chance bit on the signal stack would probably be easier, but
+it's still far from trivial...</quote></p>
+
+</section>
+<section 
+	title="Sharing IDL Generated Headers"
+	subject="solution for including itss.h in hhctrl.ocx"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/08/0471.html"
+	posts="2"
+	startdate="08/23/2005"
+	enddate="08/24/2005"
+>
+<topic>Fixes</topic>
+<p>Wine's IDL compiler, widl, has really improved over the past few years.
+More and more code is being generated with IDL than ever before.  James
+Hawkins ran into a problem though:</p>
+<quote who="James Hawkins"><p>
+I need to be able to include itss.h from dlls/itss in order to read
+CHM files.  Mike offered the solution that I add -I($SRCDIR)../itss to
+hhctrl's Makefile.in.  The next problem comes when I run make depend. 
+make depend looks for itss.h but can't find it because it hasn't been
+built yet.  Mike then suggested adding ../dlls/itss/itss.idl to
+IDL_SRCS in include/Makefile.in.  That works fine up until make
+install which gives these two errors:
+<ul><code>
+/usr/bin/install: cannot create regular file
+`/usr/include/wine/windows/../dlls/itss/itss.idl': No such file or
+directory<br />
+/usr/bin/install: cannot create regular file
+`/usr/include/wine/windows/../dlls/itss/itss.h': No such file or
+directory</code></ul></p><p>
+
+Do you have any suggestions on how to access itss.h from hhctrl.ocx?
+</p></quote>
+
+<p>Alexandre had an easy solution,
+<quote who="Alexandre Julliard">
+No, you can't do that sort of thing. You have to move the idl file to
+the include directory (probably in include/wine).</quote></p>
+
+</section>
+<section 
+	title="Google Talk"
+	subject="Googletalk and Wine"
+	archive="http://www.winehq.com/hypermail/wine-devel/2005/08/0518.html"
+	posts="3"
+	startdate="08/26/2005"
+	enddate="08/27/2005"
+>
+<p>Google's programs have been popular for Wine users and developers
+to play with.  Picasa2 runs quite well as does the newer Google Earth
+(see WWN <a href="http://www.winehq.com/wwn/281#Google's%20Earth">#281</a>).
+This week Andrew Ramage tried out the new 
+<a href="http://www.google.com/talk/">Google Talk</a>, but ran into
+some problems:</p>
+<quote who="Andrew Ramage"><p>
+Googletalk is a free chat program from Google with integrated VoIP.  I 
+installed the program and received a message saying Googletalk required 
+Windows 2000, XP or 2003.  The program started after installation and 
+almost immediately crashed.  
+<a href="http://www.winehq.com/hypermail/wine-devel/2005/08/0518.html">Here</a>
+is the output.</p></quote>
+
+<p>James Hawkins reported the particular error Andrew was seeing had
+been fixed in the latest CVS.  Andrew tried again and this time ran into
+a different problem.  So, as it stands, Google is 2 for 3 on their 
+applications.</p>
+
+
+</section></kc>

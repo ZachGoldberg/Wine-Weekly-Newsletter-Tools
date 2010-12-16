@@ -1,0 +1,250 @@
+
+<section 
+	title="News: Wine 0.9.53 Released"
+	subject="Wine"
+	archive="http://winehq.org"
+	posts="1"
+>
+<topic>Wine</topic>
+<p>The first wine release of the new year is here!
+
+<pre>
+Wine 0.9.53 was released today, with the following main changes:
+
+    * RunOnce and Run entries now executed on startup.
+    * Beginnings of support for emulated disk devices.
+    * Many Richedit improvements.
+    * Nicer looking color dialog.
+    * Lots of bug fixes.
+</pre>
+<br /><br />
+More on RunOnce entries later in this wwn.
+</p>
+
+<p>
+In other news, Roderick Colenbrander (aka Thunderbird) has written a <a href="http://wiki.winehq.org/DirectDraw">new wiki page</a> about DirectDraw and the relevant registry keys associated with it.  I recommend anybody interested in tinkering with such settings read it over once prior to asking questions in #winehq.
+</p></section>
+<section 
+	title="News: Leopard to have wine built in?"
+	subject="OSX"
+	archive="http://blogs.computerworld.com/macworld_2008_predictions"
+	posts="0"
+>
+<topic>Wine on OSX</topic>
+<p>
+Seth Weintraub at <a href="http://blogs.computerworld.com">computerworld.com</a> has a handful of <a href="http://blogs.computerworld.com/macworld_2008_predictions">predictions</a> for the future of Leopard at the upcoming mac world.  Most of his article is irrelevant to the WINE project, until you get down to this interesting tidbit:
+</p>
+<quote>
+<p>
+Leopard runs Windows apps natively - Beta. Not all windows apps. But now Leopard has Wine libraries built in. You can play some games, run IE7, Outlook 2007 - Part of Leopard 10.5.2.
+</p>
+</quote>
+<p>
+Would certainly be interesting if this one came to pass!
+</p></section>
+<section 
+	title="Revisiting yearly states"
+	subject="Author Count"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061719.html"
+	posts="1"
+>
+<topic>Stats</topic>
+<p>You may remember <a href="http://winehq.org/?issue=338#Number%20of%20commits%20per%20year">an article</a> on the number of commits per year that was posted in WWN 338 last week.  This week, Michael Stefaniuc writes in with a similar statistic for the number of authors:</p>
+
+<quote>
+<p>
+<pre>
+[...]I wanted to send the numbers of authors.
+
+$ for y in `seq 2002 2007`; do
+   echo -n "Number of authors in $y: "
+   git shortlog -s --since="$y-01-01 00:00" --until="$y-12-31 24:00" |
+       wc -l
+done
+
+Number of authors in 2002: 185
+Number of authors in 2003: 167
+Number of authors in 2004: 183
+Number of authors in 2005: 212
+Number of authors in 2006: 195
+Number of authors in 2007: 218
+
+
+bye
+</pre>
+</p>
+</quote></section>
+<section 
+	title="BugZilla Audit"
+	subject="BugZilla"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061823.html"
+	posts="1"
+>
+<topic>BugZilla</topic>
+<p>
+A couple of weeks ago Vijay Kiran Kamuju wrote in recommending we do some annual bug cleanups
+</p>
+<quote>
+<p>
+Hi,
+<br /><br />
+just like last year we did an audit of all the bugs in bugzilla.
+I think this year also we should do the same, the bugs are growing
+large  and older bugs are being neglected.
+just wanted to say  that we need to check all the old open bugs, and
+test them/ask the user for status.
+Close the bug as Abandoned if there is no response. also test the
+application yourself on latest git.
+this is the work to be done. and we need volunteers for this work.
+<br /><br />
+need volunteers to clear up the mess(old abandoned bugs) in bugzilla
+<br /><br />
+Thanks,<br />
+vj
+</p>
+</quote>
+
+
+<p>
+Dan Kegel writes in with the status of this audit:
+</p>
+<quote>
+<p>
+Since Vijay suggested doing a bug audit two weeks ago,
+the number of open bugs has dropped by about 300, or 10%:
+<a href="http://bugs.winehq.org/reports.cgi?product=-All-&amp;datasets=NEW%3A&amp;datasets=UNCONFIRMED%3A">http://bugs.winehq.org/reports.cgi?product=-All-&amp;datasets=NEW%3A&amp;datasets=UNCONFIRMED%3A</a>
+That was quite a burst of activity!
+<br /><br />
+There are still 1800 bugs that haven't been touched in
+over 90 days (137 of them reported by me, alas),
+so we have a lot of auditing and retesting left to do.
+</p>
+</quote>
+
+<p>
+And of course, it seems that it's another week and we have another graph worth looking at from Dan Kegel
+</p>
+
+<p><center>
+<img src="http://bugs.winehq.org/graphs/-All-_NEW_UNCONFIRMED.png" />
+</center></p></section>
+<section 
+	title="Alky project shutdown"
+	subject="Alky"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061702.html"
+	posts="9"
+>
+<topic>Alky</topic>
+<p>
+
+The <a href="http://www.fallingleafsystems.com/">Alky Project</a> has recently closed shop.  One key thing about their closing though is their decision about what to do with already written code:
+</p>
+<quote>
+<p>
+However, every ending tends to open another door for opportunity and
+though we are saddened to announce our departure, we are almost as
+excited to announce the immediate availability of ALL source code for
+the Alky Project!
+</p>
+</quote>
+<p>
+This of course ignited some discussion on wine-devel.  Stefan Dösinger explains that unfortunately most of the code will not be of use to wine.
+</p>
+<quote>
+<p>
+Looking at their D3D10 implementation, it is comparable to Andras' soc code,
+with the difference that Alky has a few lines to create a gl context and send
+off vertices, but Andras has written a D3D10.idl header. Adding the
+functionality of Alky to Andras' code is a matter of hours, if we do it the
+hacky way. So all in all I think that the not yet integrated d3d10 that Wine
+has is more advanced. 
+</p><p>
+As far as other libraries go, there isn't much to see either [...]
+</p><p>
+While the code may not be of any use for us(or anyone else, since Wine
+exists), Cody seems to have written a lot of code. It might not be comparable
+to Wine, which has enjoyed the work of almost thousand developers and is
+almost 15 years old, it seems to be quite some accomplishment for a project
+which has been developed by apparently one(two?) persons. (I have no
+comparison how Wine started though. I only had a Gameboy back then :-) )
+</p>
+</quote></section>
+<section 
+	title="AutoRun/RunOnce support"
+	subject="Wine Autorun"
+	archive="http://www.winehq.org/pipermail/wine-devel/2008-January/061812.html"
+	posts="26"
+>
+<topic>Autorun</topic>
+<p>
+Alexandre Julliard recently committed <a href="http://source.winehq.org/git/wine.git/?a=commit;h=d55b2de5747da90666065b5ed2fdeb8049282419">a patch</a> which causes wineboot to be started in when a new wine process begins.  One of the biggest results of this is that now AutoRun and RunOnce programs are launched with wine.<br /><br />
+Marcus Meissner beings:
+</p>
+<quote>
+<p>
+<pre>
+> What's new in this release:
+>   - RunOnce and Run entries now executed on startup.
+
+This will probably give some fallout ;)
+
+I wanted to write earlier, but did forget about it over the last
+days.
+
+For my grown Wine installation this now starts:
+
+- 2 instances of a Windows Worm
+- Google Talk (not working)
+- Skype (crashing)
+- pccam.exe from some digital camera disk
+- the annoying Steam.exe auto-update and ask-for-subscription dialog
+- perhaps more
+
+and this even on "make check" :(
+
+We probably need some tool to edit Run and RunOnce entries now.
+
+Ciao, Marcus
+</pre>
+</p>
+</quote>
+<p>
+Most agree that some method of controlling these things is necessary.  A few options are proposed:
+</p>
+<quote>
+<p>
+(Steven Edwards)<br />
+maybe we need a tool like msconfig for managing services or a page on winecfg.
+<br /><br />
+(Vincent Povirk)<br />
+I've found Mike Lin's Startup Control Panel
+(http://mlin.net/StartupCPL.shtml) very useful for this on windows. It
+appears to work on Wine, though I don't seem to have any Run or
+RunOnce entries so can't be sure.
+<br />
+(Brian Vincent)<br />
+Until someone comes up with the addition to winecfg to edit the Run and RunOnce keys (and it really seems like that is what we need), we should probably detect if those keys have changed and pop up a dialog on the next wineboot that says: "The Run or RunOnce registry keys have changed, probably because you installed a new application.  We're now going to execute them, but be prepared for something to explode and steal your lunch money.  You can repair anything broken by running "wine regedit" and editing HKLM\Software\Microsoft\Windows\CurrentVersion\Run" 
+</p>
+</quote>
+<p>
+And then there is this very interesting discussion on msconfig from reactOS.
+</p>
+<quote><p>
+(Steven Edwards)<br />
+Winecfg is not really the place for it. Windows power users expect to
+have msconfig....its a shame we can't lift the one from ReactOS
+because they have a working LGPL replacement.<br /><br />
+(Austin English)<br />
+Why not? Was it reverse engineered? Or is there some other reason
+preventing its integration?
+<br /><br />
+(Steven Edwards)<br />
+The general policy is to no longer accept code from ReactOS though the
+Wine taskmgr and registry editor were developed by ReactOS developers.
+It should be obvious that its cleanly implemented so I don't know if
+there is any way Alexandre would make an exception to import it. There
+is really nothing to be reversed from this tool and Colin's version is
+under the correct license so I don't see any reason why it should be
+rejected. 
+</p>
+</quote></section>

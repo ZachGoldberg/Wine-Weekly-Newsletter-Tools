@@ -1,0 +1,497 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="74" date="18 Dec 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 74th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+
+<p><b>Errata</b>
+<p />
+
+Ove Kaaven pointed out that 
+<kcref issuenum="73" sectionnum="1">last week article</kcref> contained
+errors. Functions were optimized out because of the static attribute
+(not the unused) and that Alexandre patch only removed this very
+static attribute. Thanks for pointing out the mistakes.
+
+<p />
+
+
+</p>
+</intro>
+
+<stats posts="91" size="367" contrib="34" multiples="14" lastweek="17">
+<person posts="9" size="30" who="Jon &lt;tntjpgriff@tsnxt.co.uk&gt;" />
+<person posts="8" size="81" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="8" size="44" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="7" size="22" who="lawson_whitney@juno.com" />
+<person posts="7" size="20" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="7" size="18" who="Andreas Mohr &lt;amohr@codeweavers.com&gt;" />
+<person posts="6" size="19" who="Nathan Neulinger &lt;nneul@umr.edu&gt;" />
+<person posts="4" size="9" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="4" size="11" who="Dave Waller &lt;dwaller@precisiondrive.com&gt;" />
+</stats>
+
+
+<section 
+  title="Wrc and alignment"
+  subject="winebuild on arch != i386"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0169.html"
+  posts="5"
+  startdate="11 Dec 2000 00:00:00 -0800"
+  enddate="19 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Moritz Barsnick, while trying compiling Wine on Sparc/Solaris, got a
+segmentation while wrc was compiling a resource file.
+
+<p />
+
+Ulrich Weigand summarized the list of known issues when using wrc on
+non Intel CPUs:
+<quote who="Ulrich Weigand">
+Wrc is broken here; it thinks it need to byte-swap although the
+message compiler already wrote the file in big-endian. Thus, it gets
+nonsense length values and crashes subsequently.
+
+<p />
+
+Wrc is further broken in that is does not cope with unaligned data
+found in binary input files or raw data (e.g. icons etc.), and hence
+causes bus errors on Sparc. 
+
+<p />
+
+Winebuild is also broken in that it always generates i386 assembly
+code for import thunks and constructor/destructor stubs. 
+
+<p />
+
+Various parts of the main source are also not alignment safe.
+</quote>
+
+
+<p />
+
+Ulrich also said he had fixed a few of those issues, and will shortly
+provide them.
+
+<p />
+
+The others issues brought up by Moritz are more compiler portability
+fixes (like generating the correct macros for the system, and
+reimplementing when needed the inline i386 assembly). Anyway, there's
+still lots of work to be done.
+
+<p />
+
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="GDI lock and 16 bit printer drivers"
+  subject="win16lock/GDI lockup"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0174.html"
+  posts="5"
+  startdate="12 Dec 2000 00:00:00 -0800"
+  enddate="15 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr reported a deadlock. Basically, his program created a
+device context. With the new GDI object locking in place, the GDI lock 
+is acquired when creating the object, and will be released after the
+DC has been created and initialized. During the initialization phase,
+the driver is called. When the driver is a 16 bit one, the Win16 lock
+needs to be entered, potentially providing trouble since locks shall
+be acquired in the other way (the Win16 lock must be acquired before
+GDI lock, for example).
+
+<p />
+
+Andreas asked what to do.
+
+<p />
+
+Alexandre Julliard quickly answered:
+<quote who="Alexandre Julliard">
+I'm afraid there is no good solution, short of redefining the GDI
+driver interface to not call the DC functions with the GDI lock
+held. It may be easier to forget about running Win16 printer
+drivers... (does anybody really use this anyway?)</quote>
+
+
+<p />
+
+Andi quite didn't like the answer:
+<quote who="Alexandre Julliard">
+You don't really want to propose this, do you ? ;)
+
+<p />
+
+So every time we've got an incredibly stupid locking problem, we are
+supposed to give up major functionality, just
+like... poooooff.. that's it ! ? 
+
+<p />
+
+I'm pretty sure that several people still use Win16 drivers, as PSDRV
+support is still a bit weak (I never got it to run so far, but didn't
+try too hard either). 
+
+<p />
+
+So would there be a "solid" solution, other than just giving up on
+Win16 drivers completely ? 
+
+<p />
+
+Or in other words: what would need to be done in order to make it work
+again ? 
+</quote>
+
+
+<p />
+
+Malte Cornils reminded he had posted about a similar issue, but he
+didn't get any reply at that time.
+
+<p />
+
+Alexandre Julliard explained that the 'incredibly stupid locking
+problem', as Andi put it, comes from <quote who="Alexandre Julliard">that Win16 code
+is not thread-safe; go complain to Microsoft. If the choice is between
+a thread-safe GDI and Win16 printer drivers, I think most people will
+agree GDI is more important</quote>, but ended up saying to Andi
+<quote who="Alexandre Julliard">redefine the whole GDI driver interface. Not terribly
+complicated, but it's still a lot of work. Have fun ;-)</quote>
+
+<p />
+
+So Andi may (he didn't say he would) rewrite part of GDI driver
+interface so that it's called without the GDI lock acquired. Stay tuned!</section>
+
+
+<section 
+  title="Functions coverage"
+  subject="Diffing Windows and Wine"
+  archive="http://www.winehq.org/hypermail/wine-devel/2000/12/0186.html"
+  posts="3"
+  startdate="13 Dec 2000 00:00:00 -0800"
+  enddate="13 Dec 2000 00:00:00 -0800"
+>
+
+<p />
+
+
+<p />
+
+Francois Gouget submitted a new tool designed to gather information
+about the functions implemented in the various DLLs, and get a rough
+idea of what still needs to be done:
+<quote who="Francois Gouget">
+I analyzed the functions exported by each Windows Dll for Win95, Win98
+and Win2000 and compared them with what is found in the spec
+files. Here's the executive summary: 
+
+<p />
+
+<table border="2">
+   <tr><td><center>Set 1</center></td><td><center>Set 2</center></td><td><center>Removed / Missing in 2</center></td><td><center>Added/Extra in 2</center></td></tr>
+   <tr><td><center>95</center></td><td><center>98</center></td><td><center>8</center></td><td><center>982</center></td></tr>
+   <tr><td><center>98</center></td><td><center>2000</center></td><td><center>509</center></td><td><center>2813</center></td></tr>
+   <tr><td><center>95</center></td><td><center>wine</center></td><td><center>847</center></td><td><center>1805</center></td></tr>
+   <tr><td><center>98</center></td><td><center>wine</center></td><td><center>1326</center></td><td><center>1397</center></td></tr>
+   <tr><td><center>2000</center></td><td><center>wine</center></td><td><center>2835</center></td><td><center>517</center></td></tr>
+   <tr><td><center>all</center></td><td><center>wine</center></td><td><center>3000</center></td><td><center>266</center></td></tr>
+</table>
+
+<p />
+
+So it seems that there are quite a few differences. The last line
+tells us that there seems to be 3000 functions missing in our spec
+files but that we export 266 functions that are not present in any of
+the Windows versions (or it could be that we are missing 2734
+functions and have 266 that differ, or something in between).
+
+<p />
+
+I'll try to collect WinME and NT4 soon, I'll post an updated diff and
+executive summary if there is interest or it turns very different
+results)
+</quote>
+
+
+<p />
+
+So it seems that Wine doesn't cover all the API (even from Windows 95
+and 98), but also started to implement part of Windows NT and 2000
+features. On the other hand, this approach is partial: the tool can't
+tell the difference from an empty function (just returning an error
+code), from a fully implemented function. But also, don't forget that
+lots of Windows API are only used by very focused applications. Today, 
+efforts are targeted to the areas which are needed by most of the
+applications (priorization is made according to the usage). Wine will
+surely not try to be exhaustive in this area.
+
+<p />
+
+</section>
+
+
+<section 
+  title="Feature: Of Dynamic loading in Wine by Eric Pouech"
+>
+
+<p />
+
+<h3>Introduction</h3>
+Wine recently had lots of new features in the way it handles dynamic
+linking. Before diving into the details, let's have a quick reminder of
+Windows and Unix implementation of dynamic linking (DL).
+
+<p />
+
+Dynamic linking allows to separate executable code between several
+modules (each stored in a different file), but loaded in memory to
+create a process image.
+
+<p />
+
+The DL features, in both Unix and Windows, can be used in two
+different ways:
+<ul>
+<li>automatic: when you create a new module (excutable or DL library), 
+you describe at the link stage the DL libraries you depend upon. In
+that case, you can use direct call to those libraries (as they were
+directly linked to your code). When your new module is loaded into
+memory before being executed, the dependencies will be resolved and
+the other libraries loaded (or almost, see below about delay
+loading).</li> 
+<li>by hand: in the code of your program, you need to explicitly load 
+DL library <code>foo</code>, and then get the address of function
+<code>bar</code>. Using that function pointer, you can then invoke the
+function. This second method requires to write more code, but is
+required when you need to load a DL library (or invoke a function)
+whose name is not known at compilation time.
+The 'automatic' method is in fact implemented on top of the 'by hand'
+method, but is magically done by the linker and other compilation
+chain tools.</li>
+</ul>
+
+<p />
+
+Windows implement DL in DLLs (dynamic link libraries). Those DLLs can
+either contain a 16-bit or a 32-bit library. In both cases, the DLL
+file contains the following features:
+<ul>
+<li>the code for the implemented functions</li>
+<li>a list of exported functions (functions which can be called from
+outside the library) ; those functions are also known as entry
+points</li> 
+<li>a list of imported functions: a DLL can also use, in turn, another
+DLL (the first DLL then has to list the used DLL and the used
+functions from each DLL). To be more precise this feature of imported
+functions is not specific to DLL but is also shared by
+executables. (For the technology addicts, the previous feature of
+exported functions can also be implemented in executable, even if this
+is less known)</li>
+<li>a set of resources (images, dialog boxes, menus...)</li>
+<li>specific entry points (they differ from 16 and 32 bit DLL) to be
+called upon DLL loading and unloading (allowing for example,
+allocation or initialization of specific data)</li>
+</ul>
+
+<p />
+
+Windows usually stores DLL into files with .DLL extensions (some other
+extensions are used in some cases (like .DRV, .ACM...), but this is out of
+the scope of this article).
+
+<p />
+
+Lots of Unices also implement DL features; a DL library is stored into a .so
+file. Basically, the same type of information as the one for Windows is also
+needed (code of the library, imported and exported functions, init (resp.
+fini) functions called when .so file is loaded (unloaded). Of course, the
+embedding of resources is not included in the .so format. Binary formats of
+.DLL and .so files are different.
+
+<p />
+
+In Unix, the name of the .so file is derived from the name of the
+module (for example, <code>foo</code> will be stored in
+<code>libfoo.so</code> file). Unix .so files however have a nice
+feature, which MS doesn't have. You can have several versions of the
+same .so (libfoo.so.1.0, libfoo.so.1.2...). When an executable looks
+for library <code>foo</code>, the DL loader first looks for the
+requested version, like 1.2. If not found, then, it will look for a 1
+version, then for a version-less. Microsoft doesn't allow this
+directly (however, MS started it with names like MFC32.DLL MFC44.DLL,
+but it's up to the program to search for MFC44.DLL, and if it fails,
+ask to search for MFC33.DLLn thus not allowing for 'automatic' linking).
+
+<p />
+
+<h3>Implementation in Wine</h3>
+
+<p />
+
+Wine implements the various builtin DLLs in a set of .so files. A
+single .so file can contain several DLLs. Usually, the DLLs are put
+together because of their strong relationship in the code. A good
+example is the 16/32 DLLs pair always stored in the same .so
+file. But, this is not the only case for putting DLLs together.
+
+<p />
+
+The loader doesn't use the automatic dependencies on those .so files,
+but rather rely on the dependencies in the DLLs for this matter. When
+the .so file is loaded, the embedded headers (for 16 and 32 bit DLLs)
+are then registered into Wine, so that it behaves as if the embedded
+DLLs had been loaded one by one thru standard Windows mechanisms.
+
+<p />
+
+When .so file is removed from memory, the DLLs are also unregistered
+from Wine.
+
+<p />
+
+The process to build a DLL in Wine is rather simple. All the .spec
+files are first passed thru a Wine specific tool (called winebuild)
+which generates C code (and some inline assembly). This code, once
+compiled, generates the headers' description in a binary form
+compatible with Windows' implementation. It also contains the init
+(resp fini) functions.
+
+<p />
+
+The link process (using standard tools) then generates a .so file. At
+this level, this .so file doesn't have dependencies on other .so files
+also embedding DLL headers. (It may still have dependencies on other
+Wine .so files, like system .so files - libc... - or Wine specific
+DLLs - like Unicode basics).
+
+<p />
+
+On the loader side, when DLL <code>foo</code> is requested to be
+loaded as builtin, the loader tries to load the <code>libfoo.so</code>
+file. However, as we've seen, several headers are stored inside a .so 
+file. For example, in <code>SHELL</code> and <code>SHELL32</code> are
+stored in <code>libshell32.so</code>. How does Wine handle the
+multiple names? Wine  simply creates for all DLLs embedded inside a
+.so file a symbolic link to the real .so file. Per .so file, Wine
+requests one DLL to be the owner of the .so file. The resulting .so
+file is then named after the owner DLL's name (in our example
+<code>libshell32.so</code>). The build mechanism is now clear:
+generate the .so file from all the code (its name is derived from
+the owner name): for all the other DLLs (not the owner) in the .so
+file, creates a symbolic link from <code>lib<i>not_owner</i>.so</code>
+to <code>lib<i>owner</i>.so</code> (in our example, a symbolic link
+from <code>libshell.so</code> to <code>libshell32.so</code> is created).
+
+<p />
+
+<h3>Historical view</h3>
+
+<p />
+
+The process described above can be seen as Step 3 of Wine
+implementation of DLLs. Let's review the previous steps:
+<ul>
+<li>Step 1
+<ul>
+<li>each DLL already had a .spec file, but the Wine internal headers were not
+in sync with Windows one. </li>
+<li>the .spec files were used to generate the relay code (which allows to
+display the trace with <code>-debugmsg +relay</code>), but also the
+thunking code for 16 bit DLL (all entry points of 16 DLLs are
+implemented as 32 functions, so there's a need for some stubs to call
+between 16 and 32 bit code)</li> 
+<li>all code was stored in a monolithic way (a single executable)</li>
+</ul></li>
+<li>Step 2
+<ul>
+<li>the previous monolithic binary is now split in several .so files. Each .so
+file contains one or several headers (16 or 32 bits).</li>
+<li>the headers are still in a Wine only way.</li>
+<li>.so files are loaded on demand, but dependencies between DLLs are handled
+at the .so level, not a the .DLL level</li>
+</ul></li>
+<li>Step 3
+<ul>
+<li>dependencies between DLLs is now done at the DLL level, as Windows
+does</li>
+</ul></li>
+</ul>
+
+<p />
+
+The process of code modification from step 2 to Step 3 has been dubbed "DLL
+separation".
+
+<p />
+
+<h3>Future directions</h3>
+
+<p />
+
+Most of Wine DLLs has been moved to Step 3 in Wine implementation
+process. However, a few DLLs are not yet at a proper Step 3 (because
+they rely on functions internal to the Wine code, located in another
+DLL, but not exported by this DLL). This is still allowed at Step 2
+the .so files mechanism permits it (every function in a .so file is by
+default exported), but no longer works at Step 3 because the exported
+functions are listed. This is currently being worked on.
+
+<p />
+
+Unix .so file implements by default a delay loading mechanism. If DL lib A
+depends on DL lib B, the Windows standard mechanism implies that B is loaded
+when A is loaded. Unix .so file mechanism loads DL lib B when the first
+function from B is invoked.
+Windows also implements this type of mechanism (known as DELAYLOAD). Wine
+doesn't support this yet, but it is worked upon (some patches already
+circulate).
+
+<p />
+
+Another possible feature would be to keep on merging the two worlds for
+debugging information. .so files (as ELF modules) embed the debugging
+information (stabs format). PE headers also embed their debugging
+information (but each MS compiler has its own format). WineDbg (the Wine own
+debugger) allows loading debugging information from stabs and PE headers.
+For example, when the libshell32.so is loaded, WineDbg loads the debugging
+information from the stabs, but no information from the embedded DLLs. On
+the other hand, if the builtin <code>SHELL32</code> is loaded (and has
+debugging information), WineDbg loads debugging information from
+it. However, regular Windows debugger, even if they could run and
+attach processes under Wine, cannot load information from .so files.
+The idea (already seen long ago, and possibly implemented at Corel's) would
+be to translate, in the .so file build process, the stabs format into the MS
+one, so that Windows debuggers can read and understand it.
+
+<p />
+
+</section>
+
+</kc>

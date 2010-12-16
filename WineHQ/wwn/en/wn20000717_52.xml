@@ -1,0 +1,518 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="52" date="17 Jul 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 52nd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine 20000716 has been released. Main changes include:
+<ul>
+        <li />DirectSound restructured and improved.
+        <li />More builtin dlls (ws2_32, setupapi, rpcrt4, serialui).
+        <li />Several internationalisation improvements
+        <li />Lots of bug fixes.
+</ul>
+
+</intro>
+
+<stats posts="106" size="262" contrib="52" multiples="21" lastweek="19">
+<person posts="10" size="21" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="8" size="19" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="7" size="16" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="5" size="12" who="Martin Pilka &lt;mpilka@codeweavers.com&gt;" />
+<person posts="4" size="8" who="Bertho Stultiens &lt;bertho@panter.soci.aau.dk&gt;" />
+<person posts="4" size="12" who="Stephane Lussier &lt;stephane@macadamian.com&gt;" />
+<person posts="3" size="6" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="3" size="5" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+</stats>
+
+
+<section 
+  title="Jobs around Wine (cont'd)"
+  subject="Wine jobs"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-06/Subject/article-459.html"
+  posts="3"
+  startdate="30 Jun 2000 00:00:00 -0800"
+  enddate="30 Jun 2000 00:00:00 -0800"
+>
+
+<p />
+
+In <kcref issuenum="51" sectionnum="3"></kcref>, Doug Ridgway proposed three
+items to be worked upon inside the Wine community:
+
+<ul>
+   <li />Run the Wine bug database 
+   <li />Graphic redesign for WineHQ 
+   <li />Run the party fund 
+</ul>
+
+<p />
+
+Since last week, some people volunteered to take care of second
+item. The third one remains open: if you're interested, please contact
+<a href="mailto:ridgway@winehq.org">Doug</a>.
+</section>
+
+
+<section 
+  title="A visual configuration tool for Wine"
+  subject="wine.conf graphical front-end development"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-111.html"
+  posts="10"
+  startdate="10 Jul 2000 00:00:00 -0800"
+  enddate="12 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+Martin Pilka (from CodeWeavers) made the following proposal:
+
+<quote who="Martin Pilka">I'm working on graphical front-end for wine.conf
+file. the goal is to provide useful tool for both newbie and linux-guru. It
+will be something like wizard you know from windows, but it will also accept
+the command line, which allows you to directly jump into something like
+advanced section, where can you edit everything.
+
+<p />
+
+Following is the VERY PRELIMINARY draft, what should single screens
+contains. your boggles are welcomed.
+<ol>
+   <li />you can choose if you want to generate new or edit existing
+wine.conf file.
+   <li />choose a location of your wine.conf file
+   <li />add/remove disks which will be accessible from wine
+   <li />where the windows/profile/temp directory is ([wine] section of
+wine.conf file) 
+   <li />default wine look ([tweak.layout] section)
+   <li />you can choose if you want to answer more questions, or if it
+is enough and you want save it and finish configuration. If you
+choosed more questions: 
+   <ul>
+      <li />dll load order
+      <li />things like "managed windows" ([x11drv] section)
+      <li />ports ([serialports] [parallelports] [spooler] sections)
+      <li />registry ([registry] section)
+   </ul>
+   <li />complete screen, where you can see and edit everything
+</ol>
+</quote>
+
+
+<p />
+
+and asked for comments on the proposal.
+
+<p />
+
+Lots of people were enthusiast about Martin's proposal.
+
+<p />
+
+Petr Tomasek was asking for a great integration of this tool with the
+different desktops (Gnome, KDE...). Petr wanted this configuration
+tool to be written as a different application for each targeted
+desktop, but with a clean design helping to share as much code as
+possible. Even if some items were of interest (having some Wine's
+component being more integrated into the desktop (like buttons...), or 
+integrating Wine's start-menu with the desktop's one), Martin
+explained he started implementing this tool in tk/tcl. Those features
+will not be part of the first version of Martin's tool.
+
+<p />
+
+Ove K&#229;ven remembered two existing tools of interest:
+
+<quote who="Ove Kaaven">
+<ul>
+   <li />You're of course already aware of the existing (but abandoned)
+TkWine project, which it'd be nice to build on?
+   <li />Perhaps it'd also be nice if it was possible to use this in
+conjunction with tools/wineinstall.
+</ul></quote>
+
+
+<p />
+
+Martin already knew about TkWine, but described it as being a
+complement to his tool (like automatic generation tool) being later on 
+added to the graphical front-end for editing wine.conf).
+</section>
+
+
+<section 
+  title="Kernel security path"
+  subject="Kernel security Patch"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-142.html"
+  posts="5"
+  startdate="11 Jul 2000 00:00:00 -0800"
+  enddate="12 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+G&#233;rard posted some follow-up of a debugging discussion he had on 
+<a href="news:comp.emulators.ms-windows.wine">
+comp.emulators.ms-windows.wine</a> (Title was 'Wine with ASS won't run
+stripped binaries').
+
+<p />
+
+A kernel security patch changed the mapping of a program when loaded
+into memory. This had some dramatic effects on Wine, since this
+changed the memory layout of modules. Since some modules (without
+relocation records) must be loaded at their default address, already
+having some stuff mapped at this address broke the whole loader.
+
+<p />
+
+Since this patch is an unofficial one, G&#233;rard asked:<quote who="G&#233;rard Patel">
+<ol>
+   <li />what are the chances of this patch to become the default in
+some near future ?
+   <li />what could be the best way to solve such problem ?
+</ol></quote>
+
+<p />
+
+Peter Bortas quoted Linus' position regarding this Linux patch:
+<quote who="Peter Bortas">
+Linus has stated (several times) on LKML (<i>EdNote: Linux Kernel
+Mailing List</i>) that he doesn't like pseudo security fixes like that
+and that he won't let it in. So getting it in to mainstream kernels
+would involve abduction and brainwashing of Mr T. </quote>
+
+<p />
+
+Alexandre Julliard then proposed to simply <quote who="Alexandre Julliard">print a
+more explicit error message and die.</quote> Patch should by now in
+the CVS tree.</section>
+
+
+<section 
+  title="Borland's developer conference report"
+  subject="BorCon Trip Report (long)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-178.html"
+  posts="1"
+  startdate="14 Jul 2000 00:00:00 -0800"
+  enddate="14 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jim Graham (CodeWeavers' CTO) gave a long report of his trip to
+BorCon:
+<quote who="Jim Graham">
+I was at BorCon for CodeWeavers. I hosted the BOF on "Using Wine to
+Port Application Software to Linux" and also gave a talk on "Porting
+Windows Application Software To Linux" (which really covered all of
+the tools, technologies, and techniques).
+
+<p />
+
+I also worked in the booth all day Tuesday and Wednesday. CodeWeavers
+also had a BOF on porting Delphi code to Linux using Wine, but I
+missed that one, so can't talk about how it did.
+
+<p />
+
+Overall impression: good show, lot's of interest and enthusiasm in both
+Linux and Wine.
+
+<p />
+
+<b>The BOF</b>
+The BOF was surprisingly well attended, especially since it started at
+7:00am on the last day of the conference. We had about 30 people in
+all, mostly windows application developers using C/C++ &amp; Delphi.
+
+<p />
+
+I spent about 30 minutes simply talking about what Wine is, what it
+does, it's history, and status. It turned out to be a great forum for
+educating the audience about Wine, since many of them were highly
+pessimistic about it (complaints about it not being able to run Word
+or Excel are all too common - argh). Most of the questions that came
+in related to winelib, which I was glad to talk about (beats having to 
+discuss why Quicken won't work!). Most of the audience had never heard 
+of it, and even those that had misunderstood its purpose. The only
+complaints that came in were in regard to it not being perfect (duh)
+and the "poor" documentation. Other than that, it was really well
+received. I really blew them away at the end when I showed them MS
+PowerPoint2000 running on Wine (thanks to all of you!).
+
+<p />
+
+They were also excited about the future of Wine. In fact, when I
+discussed the objectives/goals of Wine 1.0, it generated a lot of
+discussion, and certainly a lot of enthusiasm.  What surprised me
+though, is that the 1.0 discussion was not about "cool, it'll work
+with all of my windows apps," but instead, "cool, it'll work well with
+some of my windows apps," and "cool, it will be better documented and
+easier to install/configure."
+
+<p />
+
+<b>The Talk</b>
+The talk focused on tools and technologies that are available for
+deploying windows software on linux. I covered everything from VMware
+to (what I call) "pure porting" (using Xlib/Xaw/Xm/libc, etc.). I
+focused on teaching the differences between the technologies, and
+showing what's good and bad about each. I emphasized Wine and winelib
+quite a bit, but again had to educate the audience about what it is. I 
+think most of the audience agreed that, even if it's not your final
+solution, using winelib to get to Linux was the best starting point. 
+
+<p />
+
+<b>The Exhibits</b>
+According to some of the other exhibitors, this year's exhibit floor
+was the biggest one yet. Personally, I thought it looked small. It
+certainly wasn't LinuxWorld. Heck, it wasn't even as big as The
+Bazaar. But it was intimate, and we were able to meet a lot of great
+people. We were also able to talk to quite a few people for a longer
+period of time, which was a nice change. Traffic through the booth was 
+near zero during the day (while sessions were running), but during
+lunch, and after the sessions ended, it was always busy. Again, a lot 
+of interest in moving to Linux. I think the Borland development
+community is suddenly taking Linux very seriously, and as Kylix
+becomes available, we'll start to see more and more interest (at least
+from the business world). That interest will drive additional
+enthusiasm, and Wine is becoming an obvious consideration for everyone
+from users to developers and ISV's.
+
+<p />
+
+That's about it for now.  Feel free to ping me if you need/want more
+details. I'll be posting the talk on www.codeweavers.com, and for
+anyone that was at the show, it'll be on the post-conference CD.  
+</quote>
+
+
+<p />
+
+
+<p />
+
+</section>
+
+
+<section 
+  title="Wine benchmarks"
+  subject="nice benchmark results (fwd)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-07/Subject/article-187.html"
+  posts="1"
+  startdate="16 Jul 2000 00:00:00 -0800"
+  enddate="16 Jul 2000 00:00:00 -0800"
+>
+
+<p />
+
+Ove K&#229;ven forwarded a note from Thomas Elger which shed some lights on 
+Wine performances (compared to Windows):
+<quote who="Thomas Elger">
+I have a computer program GAUSS for Windows NT/95, Version
+3.2.32. Aptech does provide a Linux version of the program, but they
+charge for a completely new license. It is a highly advanced
+statistical package used by many econometricians and mathematical
+statisticians. I was very pleased to find that the NT version works
+<b>flawlessly</b> on Linux using WINE. I found a benchmark program for the
+program on <a href="http://gurukul.ucc.american.edu/econ/gaussres/GAUSSIDX.HTM">
+http://gurukul.ucc.american.edu/econ/gaussres/GAUSSIDX.HTM</a>.
+
+<p />
+
+On the site, there is an extensive list of test results using various
+operating systems and computers. The author states in the benchmark
+program that it belongs to the public domain and can be used freely. 
+
+<p />
+
+My test results were as follows (On an Intel PII 400, 128n Mb RAM,
+Mandrake Linux 6.0 using the WINE distributed with Corel Photo paint
+(since it is nicely preconfigured with printing etc)): 
+
+<p />
+
+<b>GAUSS - Benchmarkprogram</b><br />
+<code>
+300x300 normal distributed random matrix^1000&#160;&#160;&#160;&#160; :   1.837  sec.<br />
+Eigenval. of a normal distr. 200x200 randommatrix :   2.777  sec.<br />
+Inverse of a 500x500 uniform distr. random matrix :   6.073  sec.<br />
+500000 values sorted ascending&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   2.113  sec.<br />
+800x800 Toeplitzmatrix&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   0.333  sec.<br />
+Cholesky decomposition of a 500x500-matrix&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   0.623  sec.<br />
+600x600 correlation matrix&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   6.963  sec.<br />
+500x500 cross-product matrix&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   3.887  sec.<br />
+FFT over 100000 values&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   0.887  sec.<br />
+Gaussian error function over a 500x500 matrix&#160;&#160;&#160;&#160; :   0.643  sec.<br />
+Gamma function over a 500x500 matrix&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   0.410  sec.<br />
+Linear regression over a 500x500 matrix&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :   5.257  sec.<br />
+<br />
+Overall Performance&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; :  31.803  sec.<br />
+</code>
+<p />
+
+These results are truly amazing. Running Gauss under WINE on Linux is
+just as fast as running gauss natively under NT 4.0 (or faster) !!! On
+the site referred above, a Dell Pentium II computer with 128 Mb RAM
+gets an overall performance of 32.484.
+
+<p />
+
+A screenshot of Gauss running the benchmark is available on:
+<a href="http://www.nek.lu.se/nektel/">
+http://www.nek.lu.se/nektel/</a>
+</quote>
+
+
+<p />
+
+If you have comparisons like this one, feel free to submit them to the <a
+href="mailto:wwn@winehq.org">editorial team</a>. If there is enough material,
+we'll build a page containing all those good (and bad ?)  figures.</section>
+
+
+<section 
+  title="Feature: Replacing Windows by Ove K&#229;ven"
+>
+
+<p />
+
+The last poll showed that people are interested in obviating the need
+for having a real MS Windows installed to run Windows applications.
+I will now attempt to explain Wine's strategy towards this end.
+
+<p />
+
+<h3>Installation Overview</h3>
+A Windows installation consists of many different parts.
+<ul>
+<li />Registry. Many keys are supposed to exist and contain meaningful
+data, even in a newly-installed Windows.
+<li />Directory structure. Applications expect to find and/or install
+things in specific predetermined locations. Most of these directories
+are expected to exist. But unlike Unix directory structures, most of
+these locations are not hardcoded, and can be queried via the Windows
+API and the registry. This places additional requirements on a Wine
+installation.
+<li />System DLLs. In Windows, these usually reside in the system (or
+system32) directories. Some Windows applications check for their
+existence in these directories before attempting to load them.
+While Wine is able to load its own internal DLLs (.so files) when
+the application asks for a DLL, Wine does not simulate the existence
+of nonexisting files.
+</ul>
+While the users are of course free to set up everything themselves, the
+Wine team will make the automated Wine installation script,
+tools/wineinstall, do everything we find necessary to do;
+running the convential "configure &amp;&amp; make depend &amp;&amp; make &amp;&amp; make install"
+cycle is thus not recommended, unless you know what you're doing.
+At the moment, tools/wineinstall is able to create a configuration file,
+install the registry, and create the directory structure itself.
+
+<p />
+
+<h3>The Registry</h3>
+The default registry is in the file "winedefault.reg". It contains
+directory paths, class IDs, and more; it must be installed before
+most INSTALL.EXEs or SETUP.EXEs will work. The registry is covered
+in more detail in an earlier article.
+
+<p />
+
+<h3>Directory Structure</h3>
+Here's the fundamental layout that Windows applications
+and installers expect. Without it, they seldom operate correctly.
+
+<p />
+<table>
+ <tr><td>C:\</td><td colspan="3"></td>
+  <td>Root directory of primary disk drive</td></tr>
+
+<p />
+
+ <tr><td></td><td>Windows\</td><td colspan="2"></td>
+  <td>Windows directory, containing .INI files, accessories, etc</td></tr>
+ <tr><td colspan="2"></td><td>System\</td><td></td>
+  <td>Win3.x/95/98/ME directory for common DLLs
+  <br />WinNT/2000 directory for common 16-bit DLLs</td></tr>
+ <tr><td colspan="2"></td><td>System32\</td><td></td>
+  <td>WinNT/2000 directory for common 32-bit DLLs</td></tr>
+ <tr><td colspan="2"></td><td>Start Menu\</td><td></td>
+  <td>Program launcher directory structure</td></tr>
+ <tr><td colspan="3"></td><td>Programs\</td>
+  <td>Program launcher links (.LNK files) to applications</td></tr>
+
+<p />
+
+ <tr><td></td><td colspan="3">Program Files\</td>
+  <td>Application binaries (.EXE and .DLL files)</td>
+</tr></table>
+
+<p />
+
+Wine emulates drives by placing their virtual drive roots to
+user-configurable points in the Unix filesystem, so it's your
+choice where C:'s root should be (tools/wineinstall will even ask you).
+If you choose, say, /var/wine, as the root of your virtual drive C,
+then you'd put this in your wine.conf:
+
+<p />
+
+<pre>[Drive C]
+Path=/var/wine
+Type=hd
+Label=MS-DOS
+Filesystem=win95
+</pre>
+
+<p />
+
+With this configuration, what windows apps think of as "c:\windows\system"
+would map to /var/wine/windows/system in the Unix filesystem. Note that
+you need to specify "Filesystem=win95", NOT "Filesystem=unix", to make
+Wine simulate a Windows-compatible (case-insensitive) filesystem,
+otherwise most apps won't work.
+
+<p />
+
+<h3>System DLLs</h3>
+The Wine team has determined that it is necessary to create fake DLL
+files to trick many applications that check for file existence to
+determine whether a particular feature (such as Winsock and its
+TCP/IP networking) is available. If this is a problem for you,
+you can create empty files in the "system" directory to make
+the application think it's there, and Wine's built-in DLL will be
+loaded when the application actually asks for it. (Unfortunately,
+tools/wineinstall does not create such empty files itself.)
+
+<p />
+
+Applications sometimes also try to inspect the version resources from
+the physical files (for example, to determine the DirectX version).
+Empty files will not do in this case, it is rather necessary to
+install files with complete version resources. This problem
+is currently being worked on. In the meantime, you may still need
+to grab some real DLL files to fool these apps with.
+
+<p />
+
+And there are of course DLLs that wine does not currently implement
+very well (or at all). If you do not have a real Windows you can steal
+necessary DLLs from, you can always get some from a DLL archive such as
+<a href="http://www.dll-files.com/dllindex/index.shtml">http://www.dll-files.com/dllindex/index.shtml</a>.
+</section>
+
+</kc>

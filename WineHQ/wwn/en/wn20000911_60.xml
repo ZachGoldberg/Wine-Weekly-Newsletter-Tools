@@ -1,0 +1,389 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="60" date="11 Sep 2000 00:00:00 -0800" />
+
+<intro>
+
+<p />
+
+This is the 37th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+
+<p />
+
+Wine-20000909 snapshot has been released. Main changes are:
+<ul>
+	<li>Better handling of Win32 dll loading.</li>
+        <li>More DBCS codepages support.</li>
+        <li>Several multimedia improvements.</li>
+        <li>Beginnings of reentrant wineserver protocol.</li>
+        <li>Lots of bug fixes.</li>
+</ul>
+
+</intro>
+
+<stats posts="104" size="354" contrib="32" multiples="18" lastweek="13">
+<person posts="12" size="74" who="David Howells &lt;David.Howells@nexor.co.uk&gt;" />
+<person posts="12" size="30" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="9" size="24" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="8" size="29" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="8" size="21" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="7" size="27" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="7" size="16" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="4" size="9" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="3" size="8" who="Piotr Dembinski &lt;pdemb@harpo14.poznan.mtl.pl&gt;" />
+<person posts="3" size="5" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="3" size="23" who="Jim Aston &lt;oponvybl@umail.corel.com&gt;" />
+</stats>
+
+
+<section 
+  title="A way to speed up Wine"
+  subject="possibility for massive wineserver speedup"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-08/Subject/article-309.html"
+  posts="31"
+  startdate="29 Aug 2000 00:00:00 -0800"
+  enddate="08 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+As already discussed <kcref issuenum="59" sectionnum="3">last week</kcref>,
+David Howells proposed a way to speed up drastically Wine.
+
+<p />
+
+David's idea was to move some of the features of the wine server into a 
+Linux kernel module, hence reducing the latency of the calls to the
+server:
+<quote who="David Howells">
+Because the current wineserver interface involves each wine process
+making a socket connection to a separate server process, which then
+arbitrates access to synchronization objects and various other things.
+
+<p />
+
+All this involves message passing and lots of process context
+switching (slow). By moving this into the kernel, advantage can be
+taken of kernel services for handling synchronization, scheduling and
+concurrency. 
+
+<p />
+
+As an additional minor benefit, the "strace" program can be modified
+to read these specific system calls.
+</quote>
+
+
+<p />
+
+David even proposed some benchmarks of his module, showing some
+(slight) gains over Windows 2000 (20%) and huge gains over current
+Wine implementation (900%).
+
+<p />
+
+However, those raw figures only demonstrate the gain that can be
+obtained in the synchronization mechanisms, but it's hard to tell the
+final gain on a reasonable program (which does many other things than
+synchronization).
+
+<p />
+
+However, Wine is intended to be used on non-Linux platforms (like
+*BSD, Solaris...), so maintenance issues between the current wine
+server and a kernel module must be tackled. Alexandre Julliard was the 
+one who opened fire:
+<quote who="Alexandre Julliard">
+The kernel module approach is interesting, but I'm afraid it's not
+really practical to re-implement the complete server in the kernel,
+unless we can somehow build both the kernel module and the user-mode
+server from the same sources. An intermediate approach that may be
+worth investigating is to keep the server in user-space but implement
+a faster request mechanism with a small kernel module; Unix sockets
+are not very well suited to the request/reply model that we need, and
+I think it should be possible to make the communication much faster
+with a specialized kernel call.
+</quote>
+
+
+<p />
+
+Alexandre also argued upon the bits to be moved inside the kernel. He
+advocate for having only a couple of specific syscalls inside Linux
+just to speed up the synchronization issues, but keep all of the work
+inside the wineserver ; David was more in favor of migrating entire
+parts of the wine server inside the kernel (handles management, thread 
+and process...).
+
+<p />
+
+As a whole, Alexandre was rather reluctant to move entire parts of the 
+wine server into the kernel, and was more attracted to improving first 
+the request/response mechanism used in wine (even if this needs adding 
+new syscalls to the kernel):
+<quote who="Alexandre Julliard">
+I'm not so sure. I did a few tests with using signals and ptrace as a
+communication mechanism instead of sendmsg/recvmsg, and the total time 
+for a server round-trip got reduced by half. I don't know how much of
+that is because of extra context switches or of sendmsg overhead, but
+there is certainly a large potential to improve things here. And
+before deciding to move everything in the kernel I think it would be a 
+good idea to investigate what we can achieve with less radical
+solutions.
+</quote>
+
+
+<p />
+
+Another area open to some improvement is file I/O mechanism. As David
+Howells put it:
+<quote who="David Howells">
+What I'm most concerned about with wine is the fact that every time a
+file operation is issued, the client makes a call to the server to
+convert the Win32 file handle into a UNIX fd (via sendmsg/recvmsg),
+which gets used once and then discarded.
+
+<p />
+
+I've seen programs that do a lot of I/O (for instance PVCS) hammer the
+server lots with requests for file handle conversion, and so they run
+quite a bit slower on Linux than on Windows.
+</quote>
+
+
+<p />
+
+David, even if his proposal and its architecture didn't fire
+Alexandre's enthusiasm, posted to linux-kernel his patch for
+comment. Linus (tm) answered:
+
+<quote who="Linus Torvalds">
+Hmm.. I have this feeling that it would be much nicer to just implement
+the NT system calls directly.
+
+<p />
+
+We used to have the iBCS2 project, and I was actually considering
+making it part of the standard kernel when it started becoming a
+non-issue simply because there started to be more native Linux
+programs than iBCS2 programs. 
+
+<p />
+
+And we've already had the vm86 mode and the BIOS trap stuff speedups
+for DOSEMU for a long time.
+
+<p />
+
+It looks like if you want to do this, it would be better to just try
+to do it outright, and have the same kind of "emulate the ones we know 
+about and care about performance" in the kernel that we already have 
+with the vm86 mode emulation.
+
+<p />
+
+I wouldn't be adverse to supporting Wine better - as long as it's
+fairly cleanly separated. This doesn't look too bad.
+</quote>
+
+
+<p />
+
+Another part of the discussion evolved into the details of mounting a
+windows registry file (call me hive) as a filesystem using the mount
+command. But it lead almost to nowhere, so don't wait too much for
+this one.
+
+<p />
+
+As a conclusion, David opened an interesting area in Wine:
+optimization. Lots remains to be done, but this is at least a good
+starting point. We'll keep you updated on the evolution of David's
+work, and its inclusion in Wine.</section>
+
+
+<section 
+  title="GDI heap overflow"
+  subject="GDI heap overflow (again)"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-49.html"
+  posts="12"
+  startdate="05 Sep 2000 00:00:00 -0800"
+  enddate="06 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Andreas Mohr posted a debug trace from an application, obviously
+crashing because of misbehaving GDI handles.
+
+<p />
+
+After some detailed trace examination, G&#233;rard Patel concluded that the 
+program was leaking GDI handles hence, the crash. This issue has been
+covered in <kcref issuenum="46" sectionnum="2">a previous WWN</kcref>.
+
+<p />
+
+However, G&#233;rard ran also some benches:
+<quote who="G&#233;rard Patel">
+Hmm, along the lines of 'let's have fun with Windows' I wrote a
+crappy test app to leak Gdi objects and here are the results under
+Windows NT 4.0 SP3 and Wine :
+
+<p />
+
+NT
+<ul>
+   <li>Brushes: after about 12000 brushes, Gdi gave up and returned errors.</li>
+   <li>Pen: same</li>
+   <li>Palette: same</li>
+   <li>DC: after somewhat 3000 DC, Windows NT stopped the test (It's a bad idea to leak DCs under NT4 SP3)</li>
+</ul>
+
+<p />
+
+Wine
+<ul>
+   <li>Brushes: 1000 was all right, the second time I pressed on the
+test button, Wine cried 'CombineRgn: invalid region'</li>
+   <li>Pen: same</li>
+   <li>Palette: 1000 all right, after that things turned ugly, my form
+did not respond	correctly anymore.</li>
+   <li>DC: 1000 already gave a memory allocation error<br />
+LOCAL_GetBlock not enough space in GDI heap<br />
+It makes sense since DC is a much bigger structure.</li>
+</ul>
+
+<p />
+
+On the bright side of things, I could <b>ask</b> for 5000 DC and still be
+able to exit cleanly my app so Wine has an edge here :-)
+</quote>
+
+
+<p />
+
+Anyway, it seems those differences on the GDI handles limits may cause 
+bad behaviors such as the one reported here. No potential fix has been 
+submitted so far (and not even foreseen).
+
+<p />
+
+</section>
+
+
+<section 
+  title="Linux 2.4 networking and Wine"
+  subject="linux 2.4 winsock fix"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-67.html"
+  posts="2"
+  startdate="06 Sep 2000 00:00:00 -0800"
+  enddate="06 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Linux 2.4 networking incompatibilities with Wine are old
+story. Problems reported in <kcref issuenum="49" sectionnum="3">previous
+issue</kcref> have found a proper fix.</section>
+
+
+<section 
+  title="Implementing CRTDLL or not"
+  subject="CRTDLL"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-74.html"
+  posts="11"
+  startdate="06 Sep 2000 00:00:00 -0800"
+  enddate="07 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Jonathon Griffiths wanted to enhance CRTDLL functionalities. He also
+asked if someone was already working on the same area, and had a few
+unanswered questions:
+
+<quote who="Jonathon Griffiths">
+<ul>
+   <li>The number of implemented functions is quite small - does this
+mean that most people (including winelib users) are using the M$
+version of this DLL?</li>
+   <li>Does anyone know of a good test suite/app with source for
+testing crt functions? Or, if I produce a testharness should it be
+booked in as a sample/tool?</li>
+   <li>Are there any other issues I should be aware of that leap out
+at anyone?</li>
+</ul>
+</quote>
+
+
+<p />
+
+Uwe Bonnes was quite against implementing CRTDLL in Wine:
+
+<quote who="Uwe Bonnes">
+<ul>
+   <li>CRTDLL is huge with a lot of (unclean and undocumented)
+entries</li>
+   <li>Native CRTDLL seems abandoned by Microsoft and the MingW people
+said that CRTDLL has problems with threads. Most newer programs use
+MSVCRT, so we would have to implement MSVCRT too</li>
+   <li>Native CRTDLL doesn't implement low level functionality
+directly but uses Kernel for that functionality. So it is save to use
+native crtdll under Wine</li>
+   <li>Native CRTDLL should be distributed with most programs that use
+it, so programs needing it would come with it.</li>
+</ul>
+</quote>
+
+
+<p />
+
+Lots of people were not very happy with Uwe's proposal. Gavriel State, 
+for example, felt that CRTDLL was quite useful with WineLib
+applications; <quote who="Gavriel State"> A WineLib apps's fopen call needs to
+get redirected to CRTDLL fopen, <b>not</b> glibc's fopen.  There's also a
+need for implementations of things like fscanf that know how to deal
+with DOS CR/LFs.</quote> Gav reminded also that this is useful for
+transforming Windows path into Unix ones (so that glibc can handle
+them), but also deal with CR/LF ugliness from the old days of DOS.
+
+<p />
+
+Uwe also pointed that some Visual Studio CDs contain the source of
+CRTDLL and/or MSVCRT, and wondered whereas the Wine native DLLs could
+be built out of this code (after sorting out the legal issues), as MFC 
+would be.
+
+<p />
+
+Finally, Jonathon decided to keep on working on enhancing CRTDLL (as a 
+first step), and perhaps, in a second step, to work also on MSVCRT.
+</section>
+
+
+<section 
+  title="Alexandre Julliard gets talkative"
+  subject="LinuxNews: WINE aging gracefully"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-09/Subject/article-105.html"
+  posts="1"
+  startdate="08 Sep 2000 00:00:00 -0800"
+  enddate="08 Sep 2000 00:00:00 -0800"
+>
+
+<p />
+
+Marcus Meissner pointed out an interview of Alexandre on 
+<a href="http://linuxtoday.com/developer/2000090801304PS">
+LinuxNews</a>, which gives some outlook on the Wine future.
+
+<p />
+
+</section>
+
+</kc>

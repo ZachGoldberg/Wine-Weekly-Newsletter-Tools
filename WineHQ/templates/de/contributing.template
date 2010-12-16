@@ -1,0 +1,438 @@
+<!--TITLE:[Mitarbeit an Wine]-->
+<!--BLURB:[Wir w&uuml;rden uns sehr &uuml;ber Deine Hilfe freuen!]-->
+
+<h1 class="title">Mitarbeit an Wine</h1>
+
+<p>Man ist schnell etwas &uuml;berw&auml;ltigt, wenn man neu bei Wine ist. Ja, es gibt viele Dinge
+  zu tun, aber wo f&auml;ngst Du am besten an? Gibt es etwas Leichtes, mit dem Du loslegen kannst?
+  Gibt es etwas, das nicht detaillierteste Kenntnisse des Windows API und der Wine-Interna verlangt?
+  Was, wenn Du C nicht kennst? Oder wenn Du gar kein Programmierer bist?</p>
+<p>Nun, hier sind ein paar Projekte, die Dir einen Einstieg geben k&ouml;nnten. Bitte beachte, dass
+  diese &Uuml;bersicht keine offizielle Ansage ist, was an Wine getan werden sollte. Es ist einfach
+  eine Liste von Dingen, die wichtig und n&uuml;tzlich sind. In jedem Fall freuen wir uns &uuml;ber
+  Deine R&uuml;ckmeldung. Ebenso lass uns bitte wissen, wenn Dir ein Projekt einf&auml;llt, das wir
+  zu dieser &Uuml;bersicht hinzuf&uuml;gen sollten.</p>
+<p>Viele Projekte k&ouml;nnen sogar durchgef&uuml;hrt werden, wenn Du kein C Programmierer bist oder
+  Du keine detaillierten Kenntenisse der Windows-Interna hast. Gib uns Bescheid, wenn Du Interesse
+  hast, ein bestimmtes Projekt anzugehen.</p>
+<p>Hier sind ein paar Anhaltspunkte, die Dir helfen, loszulegen:</p>
+
+<ol type="A">
+  <li><a href="#web_site">Allgemeine Arbeiten</a>
+    <ol>
+      <li><a href="http://wiki.winehq.org/CreateFonts">Erstelle Fonts</a></li>
+      <li><a href="#draw">Zeichne Icons f&uuml;r Wine</a></li>
+      <li><a href="#app_owners">Werde verantwortlich f&uuml;r eine Anwendung</a></li>
+      <li><a href="#support">Fehlersuche und Unterst&uuml;tzung</a></li>
+    </ol>
+  </li>
+  <li><a href="#devel">Entwicklung</a>
+    <ol>
+      <li><a href="#devel_task">Einige Entwicklungsaufgaben</a></li>
+      <li><a href="#conf_tests">Konformit&auml;tstests</a></li>
+      <li><a href="#doc_win_api">Dokumentation der Windows API Funktionen</a></li>
+      <li><a href="#port_app">Portiere Deine Windows-Anwendung auf Wine</a></li>
+      <li><a href="#code_review">F&uuml;hre einen fokussierten Code Review durch</a></li>
+    </ol>
+  </li>
+  <li><a href="#misc">Sonstiges</a>
+    <ol>
+      <li><a href="#doc">Schreiben von Dokumentation</a></li>
+      <li><a href="#localized">Lokalisierungsarbeit</a></li>
+      <li><a href="#pr_">Public Relations</a></li>
+      <li><a href="#wpf">Spenden</a></li>
+    </ol>
+  </li>
+</ol>
+
+<h3 id="draw">Zeichne Icons f&uuml;r Wine</h3>
+
+<p>Wegen des Copyrights kann Wine keine Windows-Icons eins zu eins &uuml;bernehmen. Wir
+  m&uuml;ssen sie also neu zeichnen und dabei ein &auml;hnliches Design beibehalten, damit
+  Anwender nicht vollkommen verloren sind. Trotzdem m&uuml;ssen sie unterschiedlich genug
+  sein (und eventuell sch&ouml;ner). Du kannst dies sehen, wenn du einen Dateiauswahldialog
+  &ouml;ffnest.</p>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Zeichnen</li>
+</ul>
+
+<h3 id="app_owners">AppDB: Werde verantwortlich f&uuml;r eine Anwendung</h3>
+
+<p>Ein weiterer sehr wichtiger Aspekt des Testens von Wine ist der regelm&auml;&szlig;e
+  Gebrauch oder Test von echten Anwendungen und das schnellstm&ouml;gliche Melden von
+  Regressionsfehlern an die Wine-Entwickler. So k&ouml;nnen Regressionen fr&uuml;h
+  entdeckt werden, w&auml;hrend die Anzahl der &Auml;nderungen, die durchsucht werden
+  m&uuml;ssen, noch gering und der Wine-Entwickler, der die &Auml;nderung durchgef&uuml;hrt
+  hat, noch verf&uuml;gbar ist. Ein weiterer Grund, warum <b>Deine</b> Unterst&uuml;tzung
+  besonders wertvoll ist, ist dass die Wine-Entwickler wahrscheinlich selbst keinen
+  Zugriff auf die Anwendung haben (sie k&ouml;nnen nicht alle Anwendungen kaufen) oder sie
+  nicht gut genug kennen, um sie ordentlich testen zu k&ouml;nnen.</p>
+<p>Du kannst sogar noch mehr helfen, in dem Du die Verantwortung f&uuml;r eine Anwendung
+  &uuml;bernimmst, das hei&szlig;t dass Du den Eintrag der Anwendung in der <a
+  href="http://appdb.winehq.org/">AppDB (en)</a> pflegst. Viele Anwendungen k&ouml;nnen
+  zum Laufen gebracht werden (oder besser zum Laufen gebracht werden), indem einfach nur
+  die richtige Kombination von nativen (Windows) und mitgelieferten (Wine) Bibliotheken
+  verwendet wird. Indem du die Anwendung mit verschiedenen Kombinationen von Bibliotheken
+  testest und deine Ergebnisse in dem entsprechenden Eintrag in der AppDB dokumentierst,
+  hilfst du anderen Nutzern von Wine, mit der Anwendung produktiv zu sein. Damit machst
+  Du Wine f&uuml;r eine gr&ouml;&szlig;ere Anzahl von Menschen n&uuml;tzlicher.</p>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Gute Kenntnis einer bestimmten Anwendung</li>
+  <li>Mit Leib und Seele dabei sein, diese Anwendung mit jeder neuen Wine Version
+    zu nutzen oder testen. Es ist wichtiger, eine Anwendung regelm&auml;&szlig;ig zu
+    testen, als zehn Anwendungen einmal pro Jahr.</li>
+  <li>Melde alle Regressionen an wine-devel und kooperiere mit den Entwicklern, um
+    das Problem zu diagnostizieren.</li>
+  <li>Erstelle und pflege einen HOWTO-Bereich auf der Anwendungsseite, der alle
+    T&auml;tigkeiten zusammenfasst, die notwendig sind, um die Anwendung vern&uuml;nftig
+    zum Laufen zu bekommen, z.B. aus den Kommentaren der AppDB-Besucher
+    zusammengetragen.</li>
+  <li>Entwicklerfertigkeiten sind <strong>nicht notwendig</strong>.</li>
+</ul>
+
+<h3 id="support">Fehlersuche und Unterst&uuml;tzung</h3>
+<p>Weil es so viele Windows-Anwendungen gibt, und weil nur sehr wenige von
+  diesen perfekt funktionieren, bekommen wir viele Fragen von Anwendern,
+  viele Fehlerbeschreibungen, die diagnostiziert werden m&uuml;ssen, und dann
+  viele Fehler, die behoben werden m&uuml;ssen.</p>
+<p>Deswegen sind Fehlerdiagnose und Unterst&uuml;tzung zwei eng verwandte
+  Aktivit&auml;ten, die sehr wichtig f&uuml;r Wine sind. Wir brauchen also
+  Leute, die Willens sind, die Fragen und Probleme, die in der Newsgroup, auf
+  wine-users und in Bugzilla auftauchen, zu beantworten und anschlie&szlig;end
+  zu vorzusortieren:</p>
+<ul>
+  <li>Generelle Wine-Probleme k&ouml;nnen meistens direkt beantwortet werden</li>
+  <li>Bei anwendungsspezifischen Problemen sollte man sich an den Verantwortlichen
+    f&uuml;r diese Anwendung wenden (falls es einen gibt), um herauszufinden, ob
+    dieses Problem bekannt ist. Idealerweise werden diese Probleme in dem Eintrag
+    in der AppDB aufgef&uuml;hrt.</li>
+  <li>Andere Probleme verlangen mehr Aufwand um herauszufinden, ob das Problem
+    reproduzierbar ist und ob es nur in bestimmten Umgebungen auftritt, und Log-Dateien
+    zu erhalten, mit denen die Wine-Entwickler herausfinden k&ouml;nnen, woher das
+    Problem kommt. Das setzt allerdings voraus, dass man eine grobe Vorstellung hat,
+    woher das Problem kommen k&ouml;nnte, um die richtigen Debug-Einstellungen
+    vorschlagen zu k&ouml;nnen. Sobald dies passiert ist, wird es viel einfacher
+    f&uuml;r die Wine-Entwickler, die tats&auml;chliche Ursache des Problems zu
+    finden und es zu beheben. Falls ein Problem nicht schnell in der Newsgroup oder
+    auf wine-users gel&ouml;st werden kann, muss eine Fehlermeldung in Bugzilla
+    eingestellt werden. Durchsuche die unbest&auml;tigten und neuen Fehlermeldungen
+    und bring sie f&uuml;r die Entwickler in eine ordentliche Verfassung. Melde Dich
+    bei wine-bugs (<a href="mailto:wine-bugs@winehq.org">wine-bugs@winehq.org</a>)
+    an. Diese nur-Lesen Mailingliste erh&auml;lt alle Eintr&auml;ge von noch nicht
+    zugeordneten Fehlern. Unbest&auml;tigte Fehler zu best&auml;tigen und
+    Debugging-Vorschl&auml;ge zu machen sind nur einige der T&auml;tigkeiten, die
+    gemacht werden m&uuml;ssen.</li>
+</ul>
+<p>Auf Dan Kegels <a href="http://kegel.com/wine/qa/">Wine QA Project (en)</a> Website
+  findest du eine Schritt f&uuml;r Schritt Anleitung f&uuml;r neue Freiwillige f&uuml;r
+  die Wine-Qualit&auml;tssicherung.</p>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Allgemeine Kenntnisse der Wine-Konfiguration, um Anwendern erkl&auml;ren zu
+    k&ouml;nnen, wie sie das Window-Management von managed auf unmanaged umschalten,
+    wie die FreeType-Unterst&uuml;tzung ausgeschaltet wird usw.</li>
+  <li>Allgemeine Wissen &uuml;ber Wine-Probleme, dieses kann man sich haupts&auml;chlich
+    durch das Verfolgen der Mailinglisten und der Newsgroup aneignen.</li>
+  <li>Wissen, wie man von nativen zu mitgelieferten Bibliotheken und umgekehrt
+    umschaltet.</li>
+  <li>In der Lage sein, eine Log-Datei zu analysieren, um herauszufinden, welche
+    Bibliotheken von mitgeliefert zu nativ und umgekehrt gewechselt werden m&uuml;ssen,
+    w&auml;re ein Plus.</li>
+</ul>
+
+<h2 id="devel">Entwicklung</h2>
+
+<h3 id="devel_task">Einige Entwicklungsaufgaben</h3>
+
+<p>Der vollst&auml;ndige Implementierungsstatus kann auf der
+  <a href="{$root}/site/status">Wine Status Seite</a> &uuml;berpr&uuml;ft werden.</p>
+<p>In der folgenden Liste kannst Du eine Entwicklungsaufgabe finden:</p>
+<ul>
+  <li id="tasklets"><a href="http://bugs.winehq.org/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;product=Wine&amp;keywords=tasklet&amp;keywords_type=anywords">Aufg&auml;bchen (en)</a>:
+    Diese Liste umfasst Aufgaben, die einen genau umrissenen und
+    begrenzten Umfang haben. Wenn Du neu bei Wine dabei bist oder nur
+    begrenzt Zeit hast, ist diese Liste f&uuml;r Dich. Die Aufgaben in dieser
+    Liste haben meistens mit Fehlerbehebungen zu tun, die nur wenige
+    Funktionen betreffen, implementieren einige neue und angemessen
+    einfache APIs, oder implementieren einfache Erweiterungen eines
+    bestehenden APIs. Einige k&ouml;nnen einen gr&ouml;&szlig;eren
+    Umfang haben, sind dann aber in kleinere Einheiten aufgeteilt,
+    so dass Du einzelne Einheiten umsetzen kannst, und trotzdem am Ende etwas
+    hast, was submitted werden kann. Einige Aufgaben verlangen Wissen,
+    das nichts mit Wine zu tun hat. Zum Beispiel kann eine Aufgabe
+    verlangen, dass Du mit Lex/Yacc umgehen kannst. Falls du also
+    spezielles Dom&auml;nenwissen hast, dann guck doch mal &uuml;ber
+    die Liste dr&uuml;ber.</li>  
+  <li id="tasklist"><a href="http://bugs.winehq.org/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;product=Wine&amp;keywords=tasklist&amp;keywords_type=anywords">Aufgaben (en)</a>:
+    Hier sind die gr&ouml;&szlig;eren Entwicklungsaufgaben aufgef&uuml;hrt.
+    Guck hier nach, wenn du an einem der gr&ouml;&szlig;eren /
+    l&auml;ngerfristigen Projekte beteiligt sein willst. Fehler, die hier
+    aufgef&uuml;hrt werden, haben die folgenden Eigenschaften:
+    <ul>
+      <li>sie betreffen eher Neuentwicklungen (z.B. neue Funktionalit&auml;t,
+        signifikante Umstrukturierung existierender Funktionalit&auml;t
+        oder neue Treiber f&uuml;r Sound/Video/usw.) als einfache
+        Fehlerbehebungen wie oben beschrieben</li>
+      <li>sie sind relativ gut definiert, zumindest was die erwartete
+        Funktionalit&auml;t betrifft, eventuell auch bez&uuml;glich der
+        Implementierungsdetails</li>
+      <li>sie beinhalten normalerweise eine Erkl&auml;rung, warum diese
+        Entwicklung gew&uuml;nscht ist</li>
+    </ul>
+  </li>
+<!-- [Maik] the following two sections seem obsolete -->
+<!--
+  <li id="wine_1_x"><a href="http://bugs.winehq.org/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;product=Wine&amp;target_milestone=1.0.0&amp;order=bugs.bug_severity">Wine 1.x</a> task overviews: 
+    Regroups the issues that need to be resolved before Wine 1.0 can
+    be released. One word about Wine 1.0: Wine 1.0 does not mean that
+    Wine will run all Windows applications. It means that:
+    <ul>
+      <li>Wine is ready for use by the general public for selected
+        applications (that set will be determined by what Wine supports,
+        not the other way around)</li>
+      <li>Applications based on an old version of Wine/Wine lib will
+        work with a new version of the Wine server</li>
+      <li>The stable branches of Wine should not suffer major
+        regressions. An application that works in 1.0.x should work in
+        1.0.y if y&gt;x.</li>
+    </ul>
+  </li>
+  <li>Wine 0.9.0 is the first step towards these goals:
+    <ul>
+      <li>When the items in this list have been completed, we release
+        0.9.0</li>
+      <li>at this point we should be ready to have increased user
+        participation for using, testing and documenting Wine</li>
+      <li>During 0.9.1, 0.9.2, etc. we do a progressive code freeze</li>
+      <li>Then when everything is frozen we release 1.0</li>
+      <li>After 1.0.0 we will have stable and unstable branches</li>
+    </ul>
+  </li>
+-->
+</ul>
+
+<h3 id="conf_tests">Konformit&auml;tstests</h3>
+
+<p>Das Ziel der Konformit&auml;tstests f&uuml;r Wine ist sicherzustellen, dass das Verhalten
+  der Wine APIs konform zu den entsprechenden Windows APIs ist. Da es viele Windows-Versionen
+  von 95 bis XP gibt, brauchen wir sowohl Leute, die die Tests schreiben, als auch Freiwillge,
+  die die Tests unter Windows ausf&uuml;hren. Die Test-Suite ist noch weit davon entfernt,
+  komplett zu sein, aber jedes kleine Bisschen hilft.</p>
+<ul>
+  <li>Da sie automatisiert und regelm&auml;&szlig;ig ausgef&uuml;hrt werden
+    k&ouml;nnen, helfen die Tests, Regressionen in Wine zu entdecken.</li> 
+  <li>Die Tests k&ouml;nnen vor der Implementierung von Wine Features geschrieben
+    werden und helfen dem Wine-Entwickler sicherzustellen, dass seine Implementierung
+    korrekt ist.</li>
+  <li>Tests k&ouml;nnen sogar unter Windows von Nicht-Wine-Entwicklern geschrieben werden</li>
+  <li>Tests k&ouml;nnen von Nicht-Programmierern ausgef&uuml;hrt werden</li>
+</ul>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>C Programmierung</li>
+  <li>Kenntnis der getesteten APIs</li>
+  <li>Linux/Unix Kentnisse sind <strong>nicht notwendig</strong>; Konformit&auml;tstests
+    k&ouml;nnen unter Windows geschrieben werden.</li>
+  <li>Eine Windows-Installation zum Testen... 95, 98, 98SE, ME, NT, 2000, XP, Vista</li>
+  <li>Entwicklungskenntnisse sind <strong>nicht notwendig</strong>, um die Tests auszuf&uuml;hren.</li>
+</ul>
+
+<h3 id="doc_win_api">Dokumentation der Windows API Funktionen</h3>
+
+<p><strong>Der Hauptgrund ist, dass MS beim Wechsel zu neuen APIs dazu tendiert, die komplette
+  Dokumentation der alten (z.B. Windows 3.1) zu entfernen.</strong> Das Ziel ist, eine
+  unabh&auml;ngige Dokumentation des Windows APIs zu schreiben. Da wir das komplette API neu
+  implementieren, w&auml;re es eine gute Praxis, das was wir implementieren auch zu dokumentieren.
+  Wir sollten uns insbesondere auf die Askpekte konzentrieren, die in der "offiziellen"
+  Dokumentation nicht gut abgedeckt sind, wie z.B. Unterschiede zwischen Dokumentation und
+  tats&auml;chlichem Verhalten, Fehler, plattformspezifische Aspekte und alles das, was
+  normalerweise unvollst&auml;ndig ist (was passiert, wenn man einen NULL Pointer &uuml;bergibt,
+  wenn der Puffer zu klein ist, ...) Ohne solch eine Dokumentation gibt es f&uuml;r neue
+  Entwickler keine M&ouml;glichkeit herauszufinden, ob eine seltsame Eigenart in der
+  Implementierung unbedeutend oder ein (Un-)Feature ist, auf das sich einige Programme verlassen.
+  W&auml;hrend Wine reift werden diese Probleme wichtiger und wichtiger.</p>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Kenntnis eines Dokumentationsgenerators f&uuml;r denjenigen, der versucht, die
+    Generierung der Dokumentation zu vereinfachen</li>
+  <li>Ein wenig C, um die APIs selbst zu dokumentieren</li>
+</ul>
+
+<h3 id="port_app">Portiere Deine Windows-Anwendung auf Wine</h3>
+
+<p>Wenn Du selbst an einer Windows-Anwendung arbeitest, k&ouml;nnte eine Portierung auf Wine
+  der beste Anfang sein, Code zu Wine beizutragen. Du kannst damit anfangen, zu versuchen,
+  die Anwendung unter Wine laufen zu lassen und sie danach mit Wine zu kompilieren. Ich
+  schlage deshalb vor, mit einer Anwendung zu beginnen, an der Du normalerweise arbeitest,
+  weil du nat&uuml;rlich Zugriff auf den Quellcode hast. Und au&szlig;erdem wei&szlig;t Du,
+  wie sie funktioniert, weil du sie programmierst. Dar&uuml;berhinaus kannst Du Probleme von
+  beiden Seiten angehen: f&uuml;ge Traces sowohl in Deine Anwendung als auch in Wine ein.
+  Kombiniert vereinfacht es die Suche danach, was wo warum schiefl&auml;uft, sehr. Und
+  da Du schon wei&szlig;t, was Wine eigentlich tun sollte, bist du dann auch besser dazu
+  in der Lage, den Fehler in Wine zu beheben. Alternativ kannt Du auch Beispiele aus
+  Programmierlehrb&uuml;chern testen. Ein Paket, mit dem Du direkt loslegen und die
+  Ergebnisse auf einer Website dokumentieren kannst, findest du
+ <a href="http://fgouget.free.fr/wine/booktesting-en.shtml">hier (en)</a>.</p>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Testen</li>
+  <li>Fehlerbeschreibungen schreiben</li>
+  <li>Debuggen, um die Fehler, falls m&ouml;glich, zu beheben</li>
+  <li>C/C++ Programmierung, falls Du versuchen willst, Programme mit den Wine Bibliotheken
+    zu kompilieren</li>
+</ul>
+
+<h3 id ="code_review">F&uuml;hre einen fokussierten Code Review durch</h3>
+
+<p>Ein normaler 'allgemeiner' Code Review kann ziemlich langweilig und ineffizient sein.
+  Wenn Du allerdings nach etwas speziellem suchst, kann das eine produktive Art und Weise
+  sein, Fehler zu finden und zu beheben. Normalerweise f&auml;ngst Du damit an, dir ein
+  Thema auszusuchen. Ich habe beispielsweise einmal Code gefunden, der strncpy verwendet
+  hat, ohne sicherzustellen, dass das Ergebnis mit '\0' abschlie&szlig;t. Meistens
+  verbessert man dann nur den Code an dieser Stelle und macht dann mit anderen Sachen weiter.
+  Aber wieviele &auml;hnliche schwer zu findene Fehler w&uuml;rde das an anderen Stellen
+  bestehen lassen? Also traf ich die Entscheidung, alle Verwendungen von strncpy
+  zu &uuml;berpr&uuml;fen. Das kann einige Zeit kosten und so nicht immer m&ouml;glich sein
+  (schreib mir falls Du einen speziellen Fehler im Auge, aber keine Zeit daf&uuml;r hast).
+  Auf jeden Fall ist es eine nette Weise, sich in den Code hineinzufinden und Du kannst
+  Fehler finden, ohne monatelange Erfahrung mit Wines Code zu brauchen.</p>
+<p>Sei allerdings vorgewarnt, dass deine &Auml;nderungen von vielen Entwicklern kritisch
+  durchleuchtet werden, da sie &uuml;ber viele Bereiche verteilt sein werden. Da deine
+  &Auml;nderungen au&szlig;erdem wahrscheinlich keine offensichtlichen Fehlerbehebungen
+  sein werden, kannst du auf (begr&uuml;ndeten) Widerstand treffen. Stell sicher, dass
+  deine &Auml;nderungen tats&auml;chlich einen Fehler beheben und nicht einfach nur ein
+  Problem unter den Teppich kehren (insbesondere, wenn es sich um Compiler-Warnungen
+  handelt). Kosmetische Verbesserungen oder unn&ouml;tige &Auml;nderungen sind generell
+  nicht willkommen (aber ich gebe zu, dass es manchmal schwer ist, zu widerstehen).</p>
+<p><strong>Hier sind einige Vorschl&auml;ge:</strong></p>
+<ul>
+  <li>Arrays fester Gr&ouml;&szlig;e wie 'foo[100]'. Woher kommt 100?</li>
+  <li>Arrays mit einer Gr&ouml;&szlig;e von 255, 256, 512 oder 1024. Das sind aller
+    Wahrscheinlichkeit nach Variablen, die einen Pfad beinhalten sollen. Dann sollten
+    sie allerdings eins der Standard-Macros wie z.B. MAX_PATH, MAX_PATHNAME_LEN oder so
+    verwenden. Welches?</li>
+  <li>Aufrufe von sprintf mit falscher Buffer-Gr&ouml;&szlig;e</li>
+  <li>Ineffiziente Verwendung von strcat (nicht wirklich ein Fehler und nicht wirklich
+    &uuml;berlebensnotwendig)</li>
+</ul>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>C-Programmierung</li>
+</ul>
+
+<h2 id="misc">Sonstiges</h2>
+
+<h3 id="doc">Schreiben von Dokumentation</h3>
+
+<p>Wine hat einen st&auml;ndigen Bedarf an Aktualisierungen der Dokumentation. Wine
+  hat seine "<a href="{$root}/site/documentation">Anleitungen (en)</a>", wie den Wine User
+  Guide etc. Die SGML-Quellen der Anleitungen befinden sich in einem
+  <a href="http://www.winehq.org/site/cvs#docs">separatem CVS Zweig auf
+  Sourceforge</a>.</p>
+<p>Weitere wichtige Dokumentationen sind die README Datei und die man pages und
+  anderen Dateien im documentation Verzeichnis.</p>
+<p>Deine Aufgabe w&auml;re es sicherzustellen, dass jeder Patch, der von einem
+  Entwickler beigetragen wird, der das Konfigurationsverhalten von Wine irgendwie
+  &auml;ndert, so schnell wie m&ouml;glich ordentlich dokumentiert wird. Dazu
+  m&uuml;sstest Du neue Funktionalit&auml;ten testen und eventuell auch die
+  Entwickler fragen, was ihr Patch im Einzelnen macht (und vergiss nicht, den
+  Entwicklern einen zu verpassen, die die Arbeitsweise ihres Patches &uuml;berhaupt
+  nicht dokumentiert haben!).</p>
+<p>Die Aktualisierung der Dokumentation findet statt, in dem Du "CVS Diffs" der
+  entsprechenden Dateien an wine-patches schickst.</p>
+
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Vorzugsweise relativ gutes Verst&auml;ndnis von Programmierung und Wine</li>
+  <li>Vorzugsweise sicherer Umgang mit SGML/DocBook und den entsprechenden Tools</li>
+  <li>Durchhalteverm&ouml;gen (st&auml;ndige &Auml;nderungen!)</li>
+</ul>
+
+<h3 id="localized">Lokalisierungsarbeit</h3>
+
+<p>Des weiteren brauchen wir lokalisierte Versionen der Wine Guides und
+  man pages. Daf&uuml;r brauchen wir viele Helfer, die Willens sind,
+  &Auml;nderungen an der englischen Dokumentation in Fremdsprachen zu
+  &uuml;bersetzen. Falls Du uns mit einer bestimmten Sprache helfen willst,
+  dann melde Dich bitte bei uns daf&uuml;r an!</p>
+<p>Momentan suchen wir Helfer f&uuml;r folgende &Uuml;bersetzungen:</p>
+<ul>
+  <li>Die README Datei inkl. weiterer Pflege der &Uuml;bersetzung</li>
+  <li>Die Wine Ressource Dateien und Meldungen, die Wine ausgibt (aber nat&uuml;rlich
+    nicht die Debug-Meldungen). Mittels der <a href="http://source.winehq.org/transl/">Wine-&Uuml;bersetzungsstatistik</a> kannst Du f&uuml;r Deine Sprache &uuml;berpr&uuml;fen, wieviel es dort zu tun gibt.</li>
+</ul>
+<p>Wir brauchen au&szlig;erdem ein "QuickStart/Howto" Dokument, das grundlegende Hilfe
+  f&uuml;r die Installation und Konfiguration von Wine mit etwas mehr Details als die
+  README-Datei gibt, aber gleichzeitig viel k&uuml;rzer als der Wine User Guide ist
+  (k&ouml;nnte auch ein Kapitel dieser Anleitung sein). Dieses Dokument m&uuml;sste dann
+  in mehrere Sprachen &uuml;bersetzt werden, was es zumindest etwas einfacher f&uuml;r
+  Anwender, die kein Englisch sprechen, machen w&uuml;rde, Wine zu installieren und
+  einzurichten.</p>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Vorzugsweise relativ gutes Verst&auml;ndnis von Programmierung und Wine</li>
+  <li>Vorzugsweise sicherer Umgang mit SGML/DocBook und den entsprechenden Tools</li>
+  <li>Durchhalteverm&ouml;gen (st&auml;ndige &Auml;nderungen!)</li>
+  <li>Sprachfertigkeit</li>
+</ul>
+
+<h3 id="pr_">Public Relations</h3> 
+
+<p>Momentan haben wir fast gar kein Public Relationship Management. Das sollte sich
+  verbessern.</p>
+<p>Die einzige Form von PR, die wir momentan haben, l&auml;uft auf "Eulen nach Athen
+  tragen" hinaus, da wir nur Artikel auf IT Websites haben (die allermeisten befassen sich
+  ausschlie&szlig;lich mit Linux!). Wir sollten eine viel breitere Berichterstattung
+  auf den traditionellen, eher Windows-lastigen Websites haben, und, am wichtigsten, in
+  Zeitungen, um der Allgemeinheit Erleuchtung zu bringen!</p>
+<p>Daher ginge bei dieser Arbeit darum, Artikel zu schreiben, die sowohl in regionalen
+  als auch &uuml;berregionalen Zeitungen und Online Publikationen erscheinen sollen.</p>
+<p>Ben&ouml;tigte Fertigkeiten/Kenntnisse:</p>
+<ul>
+  <li>Einigerma&szlig;en erfahrener Wine-Anwender</li>
+  <li>Willens, Wine auf LUG-Treffen, Computermessen und &auml;hnlichen Veranstaltungen
+    vorzuf&uuml;hren</li>
+  <li>Bestehende Pressekontakte sind erw&uuml;nscht aber werden auf keinen Fall
+    vorausgesetzt</li>
+</ul>
+
+<h3 id="wpf">Spenden</h3>
+
+<p>Durch die Unterst&uuml;tzung des Wine Party Fonds kannst du Deine
+  Anerkennung der Wine Entwickler demonstrieren. Die Einnahmen werden
+  f&uuml;r Entwickler-Treffen wie z.B. zuk&uuml;nftige Wine Konferenzen
+  verwendet, oder in einigen F&auml;llen, um Dokumentation zu kaufen.</p>
+<p>Die Organisation <a href="http://conservancy.softwarefreedom.org/">
+  Software Freedom Conservancy (en)</a> verwaltet momentan unsere Spenden.
+  Falls Du Fragen hast oder sonstige Hilfestellung brauchst, besuch
+  bitte die SFC Website.</p>
+<p>Die Software Freedom Conservancy Organisation erf&uuml;llt die
+  Anforderungen nach Artikel 501(c)(3), so dass Spenden an diese, so weit das
+  Gesetz erlaubt, von der Steuer abgesetzt werden k&ouml;nnen (gilt
+  f&uuml;r die USA).</p>
+<p><strong>M&ouml;glichkeiten zu spenden:</strong></p>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<div>
+  <input type="hidden" name="cmd" value="_xclick">
+  <input type="hidden" name="business" value="donate@winehq.org">
+  <input type="hidden" name="item_name" value="Wine donation">
+  <input type="image" src="{$root}/images/ppdonate.png" name="submit"
+    align="absmiddle" alt="Spende an Wine &uuml;ber PayPal!"> Unser PayPal Konto
+</div>
+</form>
+
+<p>Wir haben au&szlig;erdem ein PayPal Konto bei
+  <a href="http://sourceforge.net/donate/index.php?group_id=6241">SourceForge</a></p>
+
+<p>Dar&uuml;berhinaus kannst Du Bargeld, Schecks oder internationale Zahlungsanweisungen
+  in US W&auml;hrung an untenstehende Adresse senden:</p>
+<address>Wine Project
+Software Freedom Conservancy
+1995 Broadway FL 17
+New York, NY 10023-5882</address>
+<p>Kauf B&uuml;cher oder Musik bei <a href="http://www.amazon.com/exec/obidos/redirect-home/winehq">
+  Amazon.com</a> oder <a href="http://www.cdnow.com/from=sr-1093221">CDnow</a> (nutze
+  ausschlie&szlig;lich diese speziellen Links, so dass der Wine Party Fonds das
+  Guthaben erh&auml;lt).</p>

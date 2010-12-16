@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="32" date="28 Feb 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 32nd release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+Wine20000227 has been released. Main changes are:
+<ul>
+	<li />Most builtin DLLs are now separate shared libraries.
+	<li />Tons of code merged from the Corel tree.
+        <li />Many more common controls and shell stuff.
+        <li />Lots of bug fixes.
+</ul>
+<p />
+Check it out !!
+<p />
+
+</intro>
+
+<stats posts="78" size="239" contrib="26" multiples="15" lastweek="16">
+<person posts="7" size="18" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="7" size="18" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="7" size="16" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="7" size="14" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="6" size="12" who="Ulrich Weigand &lt;weigand@informatik.uni-erlangen.de&gt;" />
+<person posts="5" size="9" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="5" size="7" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="21" who="Bradley Baetz &lt;bbaetz@student.usyd.edu.au&gt;" />
+<person posts="4" size="1" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="3" size="8" who="gerard patel &lt;g.patel@wanadoo.fr&gt;" />
+<person posts="3" size="11" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="3" size="10" who="Dave Pickles &lt;davep@nugate.demon.co.uk&gt;" />
+</stats>
+
+
+<section 
+  title="Alexandre Julliard's Interview"
+  subject="press: olinux interview Alexandre Julliard"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-257.html"
+>
+
+<p />
+
+Marcus Meissner posted that Alexandre Julliard
+got interviewed by Olinux. Not too many surprizing items, except for a 
+potential first release this year...</section>
+
+
+<section 
+  title="Wine on Solaris"
+  subject="More non-GCC fixes"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-02/Subject/article-285.html"
+>
+
+<p />
+
+Patrik Stridvall continued his effort to port Wine code to compile
+with a compiler different from GCC. One of his proposed fix contained
+a change in the shared libraries symbol loading. Ulrich Weigand
+disagreed on the proposal (replacing GOTOFF by GOT):
+
+<quote who="Ulrich Weigand">
+The linker/loader maintain a global offset table, which consists
+of an array of pointers to exported variables. All access to those
+variables is supposed to go through these pointers, if the variable
+<b>could</b> reside within another dynamic object.  
+
+<p />
+
+If 'variable' is an exported symbol, then 'variable@GOT' is replaced
+by the linker with a constant: the offset of the GOT slot containing
+the pointer to variable.  So, if the %ebx register contains the start
+address of the GOT, you can retrieve this pointer via
+<p />
+
+<code>
+	movl variable@GOT(%ebx), %eax
+</code>
+
+<p />
+
+If you want the <b>value</b> of the variable, you need another indirection:
+<p />
+
+<code>
+	movl (%eax), %eax
+</code>
+
+<p />
+
+If you <b>know</b>, however, that the variable in question <b>must</b> reside
+in the same dynamic object as the user, then you can avoid that double
+indirection, by using the GOTOFF facility.  'variable@GOTOFF' is
+replaced by the linker with <b>another</b> constant: the difference between
+the absolute address of the variable and the address of the global 
+offset table (of the current dynamic object). Thus, you can retrieve
+the value of the variable in one step using:
+<p />
+
+<code>
+	movl variable@GOTOFF(%ebx), %eax
+</code>
+</quote>
+
+
+<p />
+
+However, it turned out that GOTOFF was not available with Solaris
+tools (only GOT is proposed). Anyway, Patrik had now a proper fix
+(with the double indirection). He reported: <quote who="Patrik Stridvall">Now both
+MSHearts and WinMine work on Solaris too (with the same shell32
+problem <i>Ed. note: as on Linux</i>). :-)</quote></section>
+
+</kc>

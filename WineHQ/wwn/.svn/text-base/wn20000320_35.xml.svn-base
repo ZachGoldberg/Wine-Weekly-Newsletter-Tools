@@ -1,0 +1,113 @@
+<?xml version="1.0" ?>
+
+<kc>
+<title>Kernel Cousin Wine</title>
+<author email="eric.pouech@lemel.fr">Eric Pouech</author>
+<issue num="35" date="20 Mar 2000 00:00:00 -0800" />
+
+<intro>
+<p />
+This is the 35th release of the Wine's kernel cousin
+publication. Its main goal is to distribute widely what's
+going on around Wine (the Un*x Windows emulator).
+<p />
+
+</intro>
+
+<stats posts="89" size="223" contrib="28" multiples="14" lastweek="14">
+<person posts="12" size="33" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="11" size="22" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="8" size="25" who="Dmitry Timoshkov &lt;dmitry@sloboda.ru&gt;" />
+<person posts="7" size="16" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="6" size="14" who="Matthew Cline &lt;matt@nightrealms.com&gt;" />
+<person posts="6" size="12" who="Eric Pouech &lt;Eric.Pouech@wanadoo.fr&gt;" />
+<person posts="6" size="12" who="Andreas Mohr &lt;amohr@student.ei.uni-stuttgart.de&gt;" />
+<person posts="5" size="9" who="Juergen Schmied &lt;juergen.schmied@debitel.net&gt;" />
+<person posts="4" size="10" who="Alex Korobka &lt;korobka@galaxy.ams.sunysb.edu&gt;" />
+</stats>
+
+
+<section 
+  title="XFree86 and Wine"
+  subject="Wine problem with XFree 4.0"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-241.html"
+>
+
+<p />
+
+Lionel Ulmer reported some serious problems running Wine with XFree86
+4.0. This is because XFree86 4.0 includes OpenGL and other extensions
+that depends on the standard threading system (normally pthreads),
+while Wine implements its own threading system to mimic Win32's.
+
+<p />
+
+Before a reasonable fix is found, several (more or less nasty)
+workarounds are available:
+<ul>
+   <li />You may want to apply Ove's updated 
+<a href="http://www.winehq.org/unoff/">unofficial pthread hack</a> to
+see if it helps the situation. (Previous discussions of this hack and
+why it is not in the official Wine releases can be found 
+<a href="wn19990718_4.html#1">here</a> and 
+<a href="wn19990914_8.html#3">here</a>) 
+   <li />disable OpenGL support in Wine (at compilation time)
+   <li />wait before upgrading to XFree86 (ok, that's not a decent
+long term proposal, but before a fix is applied, it may be the easiest 
+one)
+</ul>
+
+<p />
+
+</section>
+
+
+<section 
+  title="Socket bug hunt"
+  subject="Help on winsock problem..."
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-157.html"
+>
+
+<p />
+
+Matthew Cline reported some socket connections issues with Real Player 
+7. He investigated a bit the issue, and it turned out that the server
+was confused by receiving two simultaneous events (some data are to be 
+read, and the connection has been closed), and wasn't reporting all
+the information (and the data) back to the application.
+
+<p />
+
+Ove K&#229;ven promptly proposed a fix, but was unsure of the utter
+correctness of it. Alexandre Julliard confirmed that it was the way to 
+go, even if the implementation details remained to be revisited
+(mostly by changing a bit the socket handling).
+
+<p />
+
+Ove, Alexandre and Alex Korobka discussed then further the implementation.</section>
+
+
+<section 
+  title="Another Wine CVS mirror"
+  subject="Announce: CVS mirror"
+  archive="http://www.integrita.com/cgi-local/lwgate.pl/WINE-DEVEL/archives/2000-03/Subject/article-221.html"
+>
+
+<p />
+
+Andreas Mohr announced that he put up another CVS mirror for the Wine
+tree.<br /><code>
+CVSROOT=:pserver:cvs@rhlx01.fht-esslingen.de:/home/wine<br /></code>
+and password is cvs.
+
+<p />
+
+Andreas also added that users shouldn't been annoyed by the harmless<br />
+<code>
+cvs server: cannot open /root/.cvsignore: Permission denied</code><br />
+message: <quote who="Andreas Mohr">Many CVS servers have this problem and nobody
+seems to know how to prevent the server from accessing
+/root/.cvsignore. </quote></section>
+
+</kc>

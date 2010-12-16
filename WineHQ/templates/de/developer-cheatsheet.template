@@ -1,0 +1,642 @@
+<!--TITLE:[Entwickler-Spickzettel]-->
+<!--BLURB:[F&uuml;nf-Minuten Einf&uuml;hrung in die Wine-Entwicklung]-->
+
+    <h1 class="title">F&uuml;nf-Minuten Einf&uuml;hrung in die Wine-Entwicklung</h1>
+    
+    <p>
+      Dies ist eine fl&uuml;chtige Zusammenstellung von Tipps und Tricks,
+      die f&uuml;r Wine-Entwickler n&uuml;tzlich sein k&ouml;nnen. Sie
+      orientiert sich grob an dem OpenOffice.org Entwicklerleitfaden.
+    </p>
+
+    <p>
+      Das Wine Entwicklerhandbuch ist eine hervorragende Referenz, die
+      viel weiter als dieses Dokument ins Detail geht, insbesondere
+      was Wines Architektur und die einzelnen Komponenten betrifft.
+      Solltest Du jedoch eine &Uuml;bersicht daf&uuml;r suchen, wie Du
+      am besten anf&auml;ngst, bist Du hier richtig.
+    </p>
+
+    <h1> Debug Logging </h1>
+
+    <p>
+      Das m&auml;chtigste Werkzeug, das Dir zur Verf&uuml;gung steht um
+      herauszufinden, warum eine Anwendung nicht unter Wine l&auml;uft,
+      ist das Logging System. Die Verwendung ist denkbar einfach. Jeder
+      Teil des Quellcodes (abgesehen vom Server) loggt in einen
+      "Debug-Kanal" und jeder Kanal hat vier Klassen: trace, warn, err
+      und fixme. Per Voreinstellung werden ERR und FIXME Nachrichten
+      angezeigt, wogegen TRACE und WARN Nachrichten ausgeblendet bleiben.
+      Um sie einzublenden:
+    </p>
+
+    <code> WINEDEBUG=+channel1,+channel2 wine myprogram.exe </code>
+
+    <p>
+      Es gibt einige Kan&auml;le, die besonders n&uuml;tzlich sind:
+    </p>
+
+    <ul>
+      <li><u>+seh</u> : Structured Exception Handling wird verwendet,
+        wenn eine Anwendung eine unzul&auml;ssige Operation ausf&uuml;hrt
+        (also abst&uuml;rzt) oder wenn hin und wieder ein Programm seine
+        eigene Exception ausl&ouml;st. UNIX-Signale werden von Wine in
+        SEH Exceptions umgewandelt und Du kannst ihre Ausbreitung durch
+        diesen Kanal verfolgen. Das ist deswegen n&uuml;tzlich, weil
+        Anwendungen h&auml;ufig ihre eigenen Abst&uuml;rze abfangen, um
+        zum Beispiel eine Notfallspeicherung vorzunehmen. Die
+        h&auml;ufigste Exception, nach der man Ausschau halten sollte,
+        ist die STATUS_ACCESS_VIOLATION oder <b>0xC0000005</b>, die
+        einem Win32-Segfault am n&auml;chsten kommt. Du k&ouml;nntest
+        auch auf Codes treffen, die nicht in den Headern vorkommen.
+        Dies sind normalerweise programmiersprachenspezifische Exceptions,
+        die von dem Compiler, der benutzt wurde, um das jeweilge .EXE
+        zu erstellen, verwendet werden. <b>0xEEDFADE</b> ist der Code
+        f&uuml;r eine interne Delphi Exeception. <b>0xE06D7363</b> ist
+        eine Microsoft Visual C++ Exception. Sie hat den Wert
+        <b>0x19930520</b> in info[0] stehen, den man sich leicht merken
+        kann, weil er wie ein Datum aussieht (und wahrscheinlich eins
+        ist). Falls Du diese antriffst, hat wahrscheinlich ein Win32
+        API-Aufruf einen Fehlercode ungleich Null irgendwo
+        zur&uuml;ckgegeben.  <p>
+      </li>
+
+      <li>
+        <u>+tid</u> : Dieser Kanal stellt jeder Debugzeile die ID des
+        Threads voran, der sie erzeugt hat. Zum Debuggen von Anwendungen
+        mit mehreren Threads ist das unverzichtbar, da jederzeit ein
+        Kontextwechsel stattfinden kann. Ohne diese Ausgabe gibt es
+        h&auml;ufig keine M&ouml;glichkeit herauszufinden, was in
+        dem Programm vor sich geht. Falls Du Dir nicht sicher bist,
+        ob ein Programm mehrere Threads nutzt, verwende die Option
+        einfach (sie ist billig aber nicht kostenlos).<p>
+      </li>
+
+      <li>
+        <u>+relay</u> : Dieser Kanal ist meistens Dein erster Anlaufpunkt,
+        wenn Dir nicht klar ist, was schiefl&auml;uft. Er zeigt Dir
+        jeden Aufruf in und aus Wine-Modulen an den DLL-Grenzen. Das
+        beinhaltet Aufrufe zwischen Wine-DLLs, z.B. von GDI32 in
+        KERNEL32. Guck Dir die RelayInclude und RelayExclude String-Werte
+        in [HKCU\Software\Wine\Debug] an, falls Du von einigen Funktionen
+        &uuml;berw&auml;ltigt wirst. Ein brauchbarer Startwert f&uuml;r
+        RelayExclude ist:<p>
+
+        <code> RtlEnterCriticalSection;RtlLeaveCriticalSection;_EnterSysLevel;_LeaveSysLevel;
+        _CheckNotSysLevel;RtlAllocateHeap;RtlFreeHeap;LOCAL_Lock;LOCAL_Unlock 
+        </code><p>
+
+        Die Mehrzahl dieser Funktionen wird h&auml;ufig aufgerufen, gibt
+        aber normalerweise keinen Hinweis, warum ein Programm nicht
+        funktioniert. <p>
+      </li>
+
+      <li>
+        <u>+snoop</u> : Dieser Kanal macht das Gleiche wie relay, arbeitet
+        allerdings zwischen nativen DLLs. Seine Informationen
+        sind nicht so gut wie die relay-Daten, da es keine Angaben zu
+        den verwendeten Parametern gibt. Snoop inspiziert den Stack und
+        disassembliert Funktionsprologe um erraten zu k&ouml;nnen, was
+        die Parameter sind und kann so die Anwendung destabilisieren. <p>
+      </li>
+
+      <li>
+        <u>+heap</u> : Dieser Kanal stellt eine Verfolgung s&auml;mtlicher
+        Heap-Aktivit&auml;ten des Programms zur Verf&uuml;gung. Er schaltet
+        au&szlig;erdem kontinuierliche Integrit&auml;tspr&uuml;fungen ein:
+        Falls Du eine Anwendung hast, die die Heap-Bereiche zerst&ouml;rt,
+        kann Dir ein <code>+relay,+heap</code> Trace dabei helfen,
+        einzugrenzen, wo das Problem auftritt. Wenn eine Inkonsistenz
+        entdeckt wird, wird der Inhalt des Bereichs ausgegeben und das
+        Programm abgebrochen. Eine Zerst&ouml;rung des Heap-Bereichs kann
+        unterschiedliche Ursachen haben; die h&auml;ufigste ist, dass Wine
+        die Grenzen eines internen Puffers &uuml;berschreibt. Neuer Wine-Code
+        nutzt intern meistens die HeapAlloc/HeapFree APIs, und einer der
+        Gr&uuml;nde daf&uuml;r ist, dass das eingebaute Heap Debugging von
+        Wine nicht sehr hilfreich ist. <p>
+      </li>
+
+      <li>
+        <u>+olerelay</u> : Dieser Kanal gibt jeden Aufruf aus, der durch
+        den typelibrary Marshaller ging. Er ist &auml;hnlich zu +relay,
+        funktioniert aber besser f&uuml;r eine bestimmte Kategorie von
+        DCOM-Aufrufen, die sonst nicht sichtbar w&auml;ren. Leider ist
+        das jedoch kein allgemeiner COM-Weiterleitungsmechanismus. Er
+        kann beim Debuggen von InstallShield-Problemen weiterhelfen.
+        Allerdings sind InstallShield/DCOM-Probleme eher etwas f&uuml;r
+        Fortgeschrittene; wir empfehlen daher, dass du Unterst&uuml;tzung
+        anfragst, wenn Du diese debuggen willst. <p>
+      </li>
+
+      <li>
+        <u>+server</u> : Dieser Kanal zeigt jeden wineserver RPC.
+        Normalerweise ist das nicht n&ouml;tig, kann sich aber als
+        n&uuml;tzlich erweisen, wenn Du Probleme in der Interaktion mit
+        dem wineserver verfolgst. Weiter unten findest Du Informationen
+        zum wineserver.<p>
+      </li>
+
+      <li>
+        <u>+loaddll</u> : Gibt Dir eine Benachrichtigung jeder DLL, wenn
+        sie geladen wird. Eine leichtgewichtige Alternative zum Dependency
+        Walker (depends.exe), falls dieser nicht verf&uuml;gbar ist.<p> 
+      </li>
+    </ul>
+
+    <hr>
+    
+    <h1> Grundlegende Debugging Tipps </h1>
+
+    <ul>
+      <li>
+        Falls ein Programm beim Absturz eine Message Box darstellt
+        und Du den Grund des Problems nicht kennst, versuche es mit
+        einem +relay,+msgbox Trace. Guck Dir dann das Log in Deinem
+        Lieblingseditor oder -textbetrachter (less ist recht gut) an
+        und suche nach trace:msgbox. Guck Dir jetzt die Weiterleitungsdaten
+        direkt vor dem MessageBox API-Aufruf an. Suche insbesondere
+        nach fehlgeschlagenen API-Aufrufen. Der Fehler wird nicht
+        notwendigerweise durch einen Aufruf verursacht, der direkt
+        vor dem Fehler stattfindet! Denke auch daran, dass die
+        Bedeutung von R&uuml;ckgabewerten innerhalb der Windows APIs
+        nur selten konsistent ist; Du musst Dich an das, was
+        verwendet wird, gew&ouml;hnen. Viele APIs verwenden Werte
+        ungleich Null f&uuml;r Erfolgsmeldungen und Null f&uuml;r
+        Fehler, aber manchmal ist es andersherum. <p>
+      </li>
+      
+      <li>
+        Falls ein Programm schon beim Start abst&uuml;rzt und Du
+        nicht wei&szlig;t warum, kannst Du den +all Trace verwenden.
+        Falls es weit von einem API-Aufruf entfernt abst&uuml;rzt,
+        kannst du es disassemblieren und &uuml;berpr&uuml;fen, ob
+        es auf Parameter, die an WinMain &uuml;bergeben werden,
+        zugreift (Dungeon Keeper z.B. st&uuml;rzt ab, wenn man
+        f&uuml;r argv[0] keinen absoluten Pfad verwendet). <p>
+      </li>
+
+      <li>
+        Falls Dir die Logs zu gro&szlig; sind, um damit arbeiten zu
+        k&ouml;nnen, kannst Du es mit dem debug-delay Patch
+        versuchen, der in den wine-patches Archiven verf&uuml;gbar ist.
+        Mit diesem kannst Du das Logging &uuml;ber die F12-Taste ein-
+        und ausschalten. Du kannst au&szlig;erdem die Debug-Kan&auml;le
+        direkt aus dem Quellcode heraus mit den libwine APIs
+        kontrollieren. <p>
+      </li>
+
+      <li>
+        Das Debuggen von Darstellungsfehlern geht am besten, indem man
+        sich die Stilvorgaben der Anwendung an das fehlerhafte Control
+        anguckt und dann den Quellcode des Widgets durchsieht. Es
+        gibt keine tollen Tricks, die Du hier anwenden kannst, Du
+        musst einfach mit dem Darstellungs-Code experimentieren und
+        so versuchen herauszufinden, wo das Problem steckt.
+        Gl&uuml;cklicherweise funktioniert das native Windows 98
+        comctl32 gut, so dass Du dieses immer als Referenz nehmen
+        kannst. <p>
+      </li>
+
+      <li>
+        Schrecke nicht davor zur&uuml;ck, einen Testfall f&uuml;r ein
+        bestimmtes API zu schreiben, wenn Du Zweifel bez&uuml;glich
+        dessen Implementierung hast. Und wenn Du selbst nicht &uuml;ber
+        die Werkzeuge verf&uuml;gst, eine Test-EXE zu kompilieren, wird
+        sich jemand anderes finden, der diese hat. H&auml;ufig ist ein
+        Test die zuverl&auml;ssigste M&ouml;glichkeit herauszufinden,
+        ob tats&auml;chlich ein Bug vorliegt (und nicht nur ein Symptom
+        eines Fehlers, der woanders steckt) und gegen&uuml;ber Alexandre
+        zu beweisen, dass Deine &Auml;nderung korrekt ist. <p>
+      </li>
+
+      <li>
+        Die Quellcode-Struktur wird aufger&auml;umt, aber jeglicher Code
+        au&szlig;erhalb von loader/, tools/, libs/ und programs/ wird
+        &uuml;ber Makefiles innerhalb des dlls/ Verzeichnis gebaut. <p> 
+      </li>
+
+      <li>
+        Falls sich ein Programm dar&uuml;ber beschwert, dass ein
+        Debugger l&auml;uft, musst Du herausfinden warum es das
+        denkt und die Ursache beheben. Wine meldet in der Grundeinstellung
+        keinen Debugger, da aber IsDebuggerPresent() leider so leicht
+        zu umgehen ist, nutzen viele Programme, insbesondere Spiele,
+        ausgefeiltere Techniken. Einige beinhalten Anti-Disassmblierungscode.
+        G&auml;ngige Anti-Debugger Techniken findest Du, in dem Du
+        Blackhat/Warez Cracker Websites liest: Tu es nur nicht auf der
+        Arbeit. Falls Du Versuche findest, SICE.VXD oder NTICE.VXD zu laden,
+        dann siehst Du eine &Uuml;berpr&uuml;fung auf den popul&auml;ren
+        SoftIce Debugger und kannst dies ignorieren. <p>
+      </li>
+
+      <li>
+        Falls Du eine Windows-Lizenz hast (also jemals einen PC von der
+        Stange gekauft hast), kannst Du native DLLs von
+        <a href="http://www.dll-files.com/">dll-files.com</a>
+        herunterladen. Das ist auch recht hilfreich falls Dir diverse
+        Runtime DLLs fehlen, deren Vorhandensein kleinere Anwendungen
+        h&auml;ufig voraussetzen. Durch die Verwendung nativer DLLs kann
+        man gut herausfinden, wie sich ein API verh&auml;lt, ohne
+        cross-kompilieren zu m&uuml;ssen.
+      </li>
+      
+    </ul>
+
+    <hr>
+    
+    <h1> Implementierung von Win32 </h1>
+
+    <ul>
+      <li>
+        <p> Versuche, dem Code-Stil im Rest der Datei treu zu bleiben,
+        wenn Du Patches schreibst. Die Wine-Entwickler sind sehr
+        entspannt was Code-Stil angeht, du wirst viel Abwechselung
+        sehen. Mach es nicht noch weniger konsistent, als es jetzt
+        schon ist. Im Fall von gr&ouml;&szlig;eren Mengen neuen
+        Codes kannst Du aber gerne so arbeiten, wie es Dir am
+        besten gef&auml;llt.
+      </li>
+      
+      <li>
+        <p> Microsoft hat Unicode-Unterst&uuml;tzung implementiert,
+          indem sie jeden API-Aufruf, der Strings entweder direkt als
+          Parameter oder in einer Datenstruktur akzeptiert, dupliziert
+          und zus&auml;tzlich Konvertierungsfunktionen geschrieben
+          haben. Da Windows UCS-2 (16 Bits per Zeichen) f&uuml;r
+          Unicode-Strings nutzt, enden die Funktionen, die Unicode
+          akzeptieren, mit W (f&uuml;r wide) und die, die kein Unicode
+          akzeptieren, mit A f&uuml;r ANSI. Unter Windows kann der
+          Compiler Unicode-Stringkonstanten erzeugen, aber unter Linux
+          k&ouml;nnen wir uns leider nicht auf &auml;quivalente
+          Unterst&uuml;tzung seitens gcc verlassen, da er Strings nicht
+          im richtigen Format erzeugt. Mit anderen Worten kannst Du
+          Folgendes nicht schreiben: </p>
+          
+        <code> SomeRandomFunctionW( "Hello" ); </code> <p>
+
+          ebensowenig das hier: <p>
+
+        <code> SomeRandomFunctionW( L"Hello" ); </code> <p>
+        
+
+        <p>
+          Stattdessen musst Du Folgendes schreiben:
+        </p>
+
+        <code> 
+          static const WCHAR helloW[] = {'H','e','l','l','o',0};<br>
+          SomeRandomFunctionW( helloW );
+        </code>
+
+        <p>
+          Ja, es nervt. Emacs-Anwender k&ouml;nnen sich ein Makro
+          definieren, das Long Strings automatisch in Character Arrays
+          umwandelt.
+        </p>
+        
+        <p>
+          Desweiteren m&uuml;ssen String-L&auml;ngen bei der
+          Unicode-Unterst&uuml;tzung beachtet werden: Wenn Du einen
+          Puffer f&uuml;r Unicode-Strings allozierst, musst Du
+          <code>sizeof(string)*sizeof(WCHAR)</code> verwenden.
+          Technisch gesehen ist auch das wegen der M&ouml;glichkeit
+          von Bonded Pairs nicht korrekt, allerdings ignoriert
+          Wines Code dies meistens, da man vorher wei&szlig;, dass
+          keine Zeichen au&szlig;erhalb des Basic Multilingual Plane
+          genutzt werden.
+        </p>
+
+        <p>
+          Da nun jedes Zeichen statt 1 Byte 2 braucht, musst Du also
+          auch die Wide-Versionen jeder String-Funktion verwenden,
+          z.B. strlenW statt strlen. Jede Funktion, die einen
+          Null-terminierten String erwartet, ben&ouml;tigt eine
+          &Auml;quivalent in Wide, da angenommen wird, dass Wide-Strings
+          Null-Bytes beinhalten.
+        </p>
+
+        <p>
+          Nachrichten, die mit Strings zu tun haben, gibt es auch in
+          A/W-Versionen und sowohl in Windows als auch in Wine
+          existiert umfangreiche Infrastruktur, um zwischen diesen
+          zu konvertieren, falls notwendig. Stell sicher, dass wir
+          die richtige Message-Variante abh&auml;ngig vom String-Encoding
+          des Zielfensters schicken. Der Unterscheidungsmechanismus
+          ist nicht immer gleich, einige Widgets nutzen IsWindowUnicode
+          und andere schicken eine Message an das Ziel mit der Frage,
+          welches Format es braucht.
+        </p>
+
+        <p>
+          Abschlie&szlig;ende Bemerkung zu Unicode: Da Wide-Strings
+          Null-Bytes beinhalten, kannst Du sie nicht mit printf
+          ausgeben, was wiederum von Wines Debugging-Infrastruktur
+          verwendet wird. Falls Du einen Wide-String f&uuml;r ein
+          Debug Log (TRACE, ERR, WARN etc.) beibehalten willst, mach es so:
+        </p>
+
+        <code> TRACE("das ist ein Wide-String: %s\n", debugstr_w(widestr)); </code> <p>
+      </li>
+
+      <li>
+        Es gibt mehrere Sets von Fehler-Codes, die in Windows verwendet
+        werden. Die "nativen" NT APIs nutzen die Werte aus ntstatus.h,
+        wie z.B. STATUS_ACCESS_DENIED. Wenn man diese Ergebnisse an
+        normale Windows-Funktionen &uuml;bergibt, m&uuml;ssen sie
+        in Fehler-Codes aus winerror.h konvertiert werden. Diese
+        Konvertierung wird mit RtlNtStatusToDosError() durchgef&uuml;hrt.
+        Andere k&ouml;nnen HRESULTs zur&uuml;ckgeben, was in den COM
+        APIs durchg&auml;ngig genutzt wird. HRESULTs kannst Du mit den
+        SUCCEEDED/FAILED Makros auswerten.<p>
+      </li>
+
+      <li>
+        Wo wir gerade davon reden, der Inhalt der ntdll ist nicht
+        dokumentiert. Erspare es dir also zu versuchen, auf MSDN
+        herauszufinden, was er tut. Unser Code ist eine gute
+        Absch&auml;tzung, allerdings solltest Du diese APIs nutzen,
+        wenn Du an Code innerhalb von kernel32 oder ntdll arbeitest.
+        Frage nach Unterst&uuml;tzung wenn du h&auml;ngenbleibst. Die
+       meisten sind selbsterkl&auml;rend, einige sind es nicht. <p>
+      </li>
+
+      <li>
+        Sei vorsichtig mit Fehler-Codes: obwohl MSDN die Fehler-Codes,
+        die eine Funktion zur&uuml;ckliefern kann, dokumentiert, ist
+        diese Dokumentation leider h&auml;ufig falsch. Und selbst dann,
+        wenn sie korrekt ist, ist nicht immer klar, welcher Zustand zu
+        welchem Fehler-Code f&uuml;hrt. Viele Anwendungen verlassen
+        sich darauf, dass bestimmte Codes in bestimmten Szenarien
+        zur&uuml;ckgegeben werden: um sicherzugehen, schreibt man
+       am besten einen Testfall. <p>
+      </li>
+
+      <li>
+        Begehe nicht den Fehler, Dich zu sehr auf MSDN zu verlassen.
+        Es enth&auml;lt fehlerhafte Informationen - h&auml;ufig ist es
+        nicht von den gleichen Leuten geschrieben worden, die den
+        Code geschrieben haben. <p>
+      </li>
+      
+      <li>
+        Win32 Code verwendet HeapAlloc(GetProcessHeap(), 0, allocsize)
+        anstelle von malloc(allocsize) und deshalb arbeitet Wine genauso.
+        In der Praxis wird diese Regel nicht streng befolgt, deshalb
+        kannst Du beides finden. <p>
+      </li>
+    </ul>
+
+    <hr>
+
+    <h1> Verwendung des Debuggers </h1>
+
+    <p> Winedbg hat mehrere n&uuml;tzliche F&auml;higkeiten. Die
+      wichtigsten sind die M&ouml;glichkeiten, einen Backtrace von
+      Threads mit Win32 und eingebaute Debugging-Informationen zu
+      bekommen. Normalerweise sind diese aus Windows-Programmen
+      entfernt, so dass das nichts bringt, es kann sich aber als
+      n&uuml;tzlich erweisen, wenn man native DLLs nutzt. Einen
+      Backtrace bekommst Du mit dem <b>bt</b>-Befehl. Einen
+      Backtrace eines bestimmten Threads bekommst du, indem Du die
+      hexadezimale Thread-ID anh&auml;ngst, z.B. <b>bt 0x9</b>.
+      Anstelle einer Thread-ID kannst du auch "all" angeben. </p>
+
+    <p> Er unterst&uuml;tzt eine Untermenge der gdb-Befehle. Die
+      gebr&auml;uchlichsten sind vorhanden, Du kannst z.B. <b>info
+      proc</b> und <b>info thread</b> nutzen und den Debugger dann an
+      einen bestimmten Prozess dranh&auml;ngen. Das ist n&uuml;tzlich,
+      um einen Backtrace von Deadlocks zu erhalten. </p>
+    
+    <p> Er kann auch Code disassemblieren. Du solltest nicht zu
+      enthusiastisch werden, Disassemblierung enth&uuml;llt nur selten
+      brauchbare Informationen. Manchmal ist es jedoch die einzige
+      M&ouml;glichkeit, eine Untersuchung voranzubringen, z.B. um
+      herauszufinden, warum ein Programm abst&uuml;rzt. Verwende den
+      <b>disas</b>-Befehl um einen Code-Abschnitt zu disassemblieren.
+      Versuche ausgerichtete Adressen zu verwenden wenn Du Dich von
+      einer bestimmten Adresse aus zur&uuml;ckarbeitest, sonst
+      riskierst Du, die Disassemblierung mitten in einer Instruktion
+      zu beginnen, was nur M&uuml;ll produziert. Wenn Dir x86-Assembler
+      noch fremd ist, versuche dich erstmal an ELF-Programmen, die Du
+      selbst kompiliert hast, damit Du Dich an den Anblick
+      gew&ouml;hnst. Der Intel-Befehlssatz ist sehr umfangreich, aber
+      nur wenige Instruktionen werden h&auml;ufig genutzt. Wenn Du
+      wei&szlig;t, was Du zu erwarten hast, kommst Du nicht durch
+      schlechte Disassemblierung oder Anti-Disassemblierungstricks,
+      die die Ausgabe unbrauchbar machen k&ouml;nnen, ins Stolpern. </p>
+
+    <p> Erstens ist es wichtig, dass Du wei&szlig;t was Du tust, wenn Du
+      Dich entscheidest, ein Programm zu disassemblieren. Es ist klar,
+      dass Du nicht einfach beliebigen Code in Deinen eigenen Programmen
+      wiederverwenden kannst. Versuch erst gar nicht, dekompilierten Code
+      als Serie von Patches beizutragen, das haben schon Andere probiert
+      und wir wissen, wie sowas aussieht. Alexandre wird jeden Patch, der
+      so aussieht als w&auml;re er dekompiliert oder das Resultat einer
+      Disassemblierung, zur&uuml;ckweisen. </p>
+
+    <p> Zweitens, verstehe was Du siehst. Hier sind ein paar Tipps: </p>
+
+    <ul>
+      <li> Code, der Werte in 0x0(%fs) schreibt, setzt wahrscheinlich
+        einen SEH Handler Frame auf.  <p> </li>
+
+      <li> Der R&uuml;ckgabewert einer Funktion wird in allen
+        Aufrufkonventionen unter Windows in %eax gespeichert. Wenn Du
+        also einen Funktionsaufruf siehst, dem eine &Uuml;berpr&uuml;fung
+        dieses Registers folgt, hast du aller Wahrscheinlichkeit nach eine
+        &Uuml;berpr&uuml;fung auf einen Fehlercode vor Dir. <p> </li>
+
+      <li> Aufrufinstruktionen, die einen Wert wie folgt dereferenzieren:
+        "call *0x12345678" sind normalerweise Funktionsaufrufe in andere
+        DLLs (h&auml;ufig API-Aufrufe). Winedbg sollte in der Lage sein,
+        Dir zu zeigen, welches API die Instruktion aufruft.
+        Befehlssequenzen, die erst einen Wert in ein Register schreiben
+        und diesen dann in einer Aufrufinstruktion dereferenzieren
+        k&ouml;nnen gut Aufrufe von COM-Methoden sein. <p> </li>
+
+      <li> Mit Microsoft Visual C++ (unter Windows der popul&auml;rste
+        C++ Compiler) kompilierte C++ Anwendungen nutzen die thiscall
+        Aufrufkonvention, in der der Instanzzeiger in %ecx gespeichert
+        wird. Wenn du auf einen Absturz st&ouml;&szlig;t, in dem der
+        Wert von %ecx in einem C++ Programm dereferenziert wird,
+        k&ouml;nntest Du eine Nullpointer-Dereferenz einer Objektinstanz
+        sehen. Das ist besonders wahrscheinlich wenn der Offset recht
+        gro&szlig; ist, d.h. ein Absturz, der auf 0x36 zugreift, ist ein
+        recht guter Hinweis, dass es sich um ein C++ Objekt und nicht
+        nur um eine sehr gro&szlig;e C-Struktur handelt. <p> </li>
+
+      <li> Optimierende Compiler stellen eine Menge interessanter Dinge
+        an, wie z.B. Instruktionen umordnen, um sie besser an interne
+        Scheduling-Algorithmen von superskalaren Prozessoren anzupassen.
+        Das kann die Assembler-Instruktionenfolge stark verschleiern, sei
+        also nicht erstaunt, wenn es Dir schwer lesbar vorkommt. Ein
+        gebr&auml;uchlicher Trick ist es, "xorl %eax, %eax" anstelle des
+        intuitiveren "movl $0, %eax" zu verwenden, um das %eax Register
+        zu l&ouml;schen. Warum? Weil die Instruktion kleiner ist und so
+        weniger Speicher verwendet und deshalb den icache der CPU
+        effektiver nutzt. <p> </li>
+
+      <li> Die Disassemblierung nativer Windows DLLs ist in fast allen
+        F&auml;llen nutzlos. Disassemblierung wird normalerweise als
+        Technik genutzt um herauszufinden, warum die Anwendung in einem
+        sonst nicht erkl&auml;rbaren Fall abst&uuml;rzt. <p> </li>
+    </ul>
+
+    <hr>
+
+    <h1> Der wineserver </h1>
+
+    <p> Was ist der wineserver? Einfach ausgedr&uuml;ckt ist er das
+      &Auml;quivalent des Kernels in einem echten Windows-System. Er
+      ist der zentrale Nexus eines emulierten Windows-Systems: alle
+      Win32-Prozesse, die unter dem gleichen User laufen, verbinden
+      sich mit der diesem User zugeordneten Kopie des wineservers.
+      Ein Beispiel f&uuml;r einen Zustand, den mehrere Win32 Programme
+      teilen sollten, ist der Zustand der Registry. Das Erstellen oder
+      &Auml;ndern eines Keys in der Registry wird sofort in der Sicht
+      der Registry jedes anderen Prozesses wiedergespiegelt. Unter
+      Windows passiert das, weil die Registry eine gro&szlig;e
+      Datenbank ist, die im Kernel-Speicherbereich gehalten wird.
+      Unter Wine werden Zugriffe auf die Registry in Remote Procedure
+      Calls auf den Server konvertiert, der die Stammkopie der
+      Datenbank h&auml;lt.
+    </p>
+
+    <p>
+      Die Kommunikation mit dem Server l&auml;uft &uuml;ber ein
+      einfaches selbstentwickeltes RPC-Protokoll. Die Definiton des
+      Protokolls kann in <code>server/protocol.def</code> gefunden
+      werden. Diese Datei wird genutzt, um andere zu generieren;
+      jedes Mal, wenn die Generierung neu ausgef&uuml;hrt wird, wird
+      die Protokollversion erh&ouml;ht. Wine weigert sich zu starten,
+      wenn die Server- und Client-Protokollversionen nicht
+      &uuml;bereinstimmen. Wenn Du das Protokoll ver&auml;nderst,
+      musst Du das komplette Projekt neubauen. Einen wineserver-Aufruf
+      kannst Du sehen, wenn Du mit grep nach SERVER_START_REQ suchst.
+    </p>
+
+    <p>
+      Hier ist ein kurzer Abriss einiger der Aufgaben des wineservers:
+      Nachrichtenzustellung, die Registry, Debugging API, Synchronisation,
+      ein Teil des Fenstermanagements, Thread-Verfolgung, Manipulation von
+      Regionen. In der Zukunft wird er noch viel mehr Aufgaben
+      &uuml;bernehmen (der Windows-Kernel hat sehr viele Aufgaben).
+    </p>
+    
+    <hr>
+
+    <h1> DLL-Einteilung </h1>
+
+    <p> Wine war urspr&uuml;nglich nach Themengebieten organisiert,
+      so dass jeder zusammengeh&ouml;rige Bereich von APIs sein
+      eigenes Verzeichnis hatte. Leider hat sich das nicht gerade
+      gut bew&auml;hrt, da Windows selbst eher schlecht organisiert
+      ist, insbesondere in den &auml;lteren Bereichen. Hier ist nun
+      eine &Uuml;bersicht dar&uuml;ber, wo der wichtigste Quellcode
+      zu finden ist. In der Datei DEVELOPER-HINTS findest Du einen
+      Einzeiler als Beschreibung f&uuml;r jede DLL.
+
+      <ul>
+        <li> NTDLL - Der Kern des Windows-Systems. Diese DLL existiert
+          unter Windows 9x nicht, sie existiert nur unter Windows
+          NT/2000/XP. Im echten Windows-System ist sie nur wenig mehr
+          als eine Unterlegscheibe zwischen dem User- und dem Kernel-Bereich,
+          aber unter Wine dient sie haupts&auml;chlich als Schnittstelle
+          entweder zum wineserver oder zum darunterliegenden Unix-Kernel.
+          Sie enth&auml;lt au&szlig;erdem Dinge wie den PE (EXE/DLL-Format)
+          dynamischen Linker. <p> </li>
+
+        <li> KERNEL32 - Unter NT leiten viele dieser Aufrufe einfach
+          an NTDLL weiter. Unter Windows 9x ist der Hauptteil des Codes
+          aus der NTDLL hier zu finden. Der Gedanke hinter dieser
+          Aufteilung war der, dass NT in der Lage sein sollte, mehrere
+          Module f&uuml;r verschiedene Betriebssystem-APIs
+          unterst&uuml;tzen zu k&ouml;nnen, d.h. es h&auml;tte ein
+          POSIX-Modul und ein OS/2-Modul geben k&ouml;nnen und kernel32
+          w&auml;re das Win32-Modul gewesen. In der Praxis hat
+          Microsoft die Konkurrenz so effektiv ausgel&ouml;scht, dass
+          diese Abstraktion niemals wirklich gebraucht oder benutzt
+          wurde. Deshalb ist die NT kernel32 DLL heutzutage
+          haupts&auml;chlich eine Ansammlung von Weiterleitungen. In
+          Wine ist die Migration des Codes von kernel32 zur ntdll noch
+          nicht abgeschlossen, deshalb haben wir eine relativ
+          gleichm&auml;&szlig;ige Aufteilung. <p> </li>
+
+        <li> USER32 - Der "User"-Code ist f&uuml;r den Hauptteil des
+          Kerns des Window-Managements / der Nachrichtenzustellung
+          zust&auml;ndig, sowie verschiedenste andere Dinge wie die
+          Zwischenablage, Netzwerkunterst&uuml;tzung und eine
+          Implementierung von wsprintf. Urspr&uuml;nglich <i>war</i>
+          user32 die Windows API, bis sie genug gewachsen war, dass
+          es Sinn machte, mehrere DLLs zu haben. Daher die eher
+          seltsame und unzusammenh&auml;ngende Sammlung von Code in
+          dieser DLL. Grundlegend kann man sagen, dass die sehr alten
+          Mechanismen, die zur Windows 3.1 &Auml;ra zur&uuml;ckdatieren,
+          eher hier oder in kernel32 zu finden sind. <p></li>
+
+        <li> OLE32, OLEAUT32, RPCRT4 - Hier sind COM und DCOM
+          implementiert. </li>
+      </ul>
+    
+    <hr>
+    
+    <h1> H&auml;ufige Probleme </h1>
+
+    <p> Einige Fehler sind einfacher zu beheben als andere. Hier ist eine
+      kurze &Uuml;bersicht &uuml;ber die hartn&auml;ckigeren so dass Dir
+      klar ist, worauf Du Dich einl&auml;sst: </p>
+    
+    <ul>
+      <li>
+        Alles, was mit DCOM/Marshalling zu tun hat, ist relativ verzwickt
+        und aller Wahrscheinlichkeit nach nichts, was schnell behoben
+        werden kann. Es gibt einige Hacks in unseren mitgelieferten DLLs
+        um InstallShield zufriedenzustellen, weil das das gebr&auml;uchlichste
+        Programm ist, das DCOM-Funktionalit&auml;t ben&ouml;tigt. Falls du hier
+        etwas &auml;nderst, dann stelle sicher, dass du erst mit einigen
+        InstallShields testest. <p>
+      </li>
+
+      <li>
+        Fenster, die den Tastaturfokus nicht annehmen (typisches
+        Symptom: Deine Eingaben gehen ans Terminal) sind aus
+        irgendeinem Grund auf unmanaged gestellt worden. Jeder
+        Fenstermanager kann das unterschiedlich handhaben, aber die
+        h&auml;ufigste Variante ist, dass das Fenster st&auml;ndig im
+        Vordergrund steht, auf jeder Arbeitsfl&auml;che erscheint und
+        den Fokus nicht annehmen kann. Manchmal ist das erw&uuml;nscht:
+        bei Men&uuml;s und Tooltipps soll das so sein. Meistens ist es
+        das jedoch nicht. Managed versus unmanaged ist ein
+        eher schwieriges Problem, frag auf der wine-devel Liste nach
+        Unterst&uuml;tzung falls Du die Heuristik daf&uuml;r
+        &auml;ndern willst. <p>
+      </li>
+
+      <li>
+        Ein Programm st&uuml;rzt mit der mitgelieferten comctl32 ab,
+        funktioniert jedoch mit der nativen: Das kann h&auml;ufig ein
+        Hinweis auf eine fehlende Benachrichtigung oder einen fehlenden
+        Callback sein, oder auf eine gest&ouml;rte Nachrichtenreihenfolge.
+        Die meisten GUI-Anwendungen sind sehr sensibel was ihre
+        Callback-Reihenfolge angeht, und wenn ein Callback gar nicht
+        oder au&szlig;erhalb der Reihenfolge ausgef&uuml;hrt wird,
+        initialisieren einige Programme interne Strukturen nicht
+        ordentlich, was zu einem Absturz zu irgendeinem Zeitpunkt in der
+        Zukunft f&uuml;hrt. Die L&ouml;sung? Schreibe Testf&auml;lle, die
+        beweisen, dass die Nachrichtenreihenfolge richtig (oder falsch)
+        ist - es gibt Beispiele daf&uuml;r in den user32-Tests.<p>
+      </li>
+
+      <li>
+        Ein Fehler, der von Wine auf stderr ausgegeben wird, der
+        <code>RtlpWaitForCriticalSection</code> erw&auml;hnt, deutet
+        auf eine Deadlock-Situation hin. Gelegentlich kann dies mal ein
+        Fehler in der Anwendung sein, meistens ist es jedoch ein Fehler
+        in Wine. Wenn ein Programm in einer kritischen Sektion in eine
+        Deadlock-Situation ger&auml;t, ist es eine gute Idee, sich mit
+        Winedbg daranzuh&auml;ngen und sich einen Backtrace aller
+        Threads zu holen. Falls Du nicht wei&szlig;t, wovon ich hier
+        gerade spreche, dann lies den Abschnitt &uuml;ber Threading
+        im Wine-Entwicklerhandbuch.
+      </li>
+    </ul>

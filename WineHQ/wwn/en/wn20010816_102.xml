@@ -1,0 +1,560 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Kernel Cousin Wine</title>
+
+<author email="brianv@ski-copper.com">Brian Vincent</author>
+
+<issue num="102" date="08/16/2001" />
+
+<intro>
+
+<p>This is the 102nd release of the Wine's kernel cousin publication. Its
+main goal is to distribute widely what's going on around Wine (the Un*x
+Windows emulator).</p>
+
+</intro>
+
+
+
+<stats posts="157" size="473" contrib="48" multiples="25" lastweek="21">
+
+<person posts="25" size="62" who="Alexandre Julliard &lt;julliard@winehq.org&gt;" />
+<person posts="12" size="29" who="Bill Medland &lt;medbi01@accpac.com&gt;" />
+<person posts="10" size="30" who="Uwe Bonnes &lt;bon@elektron.ikp.physik.tu-darmstadt.de&gt;" />
+<person posts="9" size="29" who="Dmitry Timoshkov &lt;dmitry@baikal.ru&gt;" />
+<person posts="8" size="40" who="Dan Kegel &lt;dank@kegel.com&gt;" />
+<person posts="8" size="36" who="Patrik Stridvall &lt;ps@leissner.se&gt;" />
+<person posts="7" size="20" who="Ian Pilcher &lt;ian.pilcher@home.com&gt;" />
+<person posts="6" size="16" who="Bobby Bingham &lt;uhmmmm@ameritech.net&gt;" />
+<person posts="5" size="35" who="Ladislav Sladecek &lt;lsla@post.cz&gt;" />
+<person posts="5" size="12" who="Guy L. Albertelli &lt;galberte@neo.lrun.com&gt;" />
+<person posts="4" size="14" who="lawson_whitney@juno.com" />
+<person posts="4" size="9" who="Craig Chandler &lt;craig.chandler@interdynamics.com&gt;" />
+<person posts="3" size="8" who="Richard Canada &lt;richard.canada@mrlinternational.com&gt;" />
+<person posts="3" size="8" who="Jeremy White &lt;jwhite@codeweavers.com&gt;" />
+<person posts="3" size="8" who="eric pouech &lt;eric.pouech@wanadoo.fr&gt;" />
+<person posts="3" size="7" who="Rudi De Vos &lt;rudi.de.vos@simac.be&gt;" />
+<person posts="3" size="6" who="Marco Bizzarri &lt;m.bizzarri@icube.it&gt;" />
+<person posts="2" size="7" who="Andreas Mohr &lt;a.mohr@mailto.de&gt;" />
+<person posts="2" size="6" who="Huw D M Davies &lt;h.davies1@physics.ox.ac.uk&gt;" />
+<person posts="2" size="6" who="Mike McCormack  &lt;mike_mccormack@start.com.au&gt;" />
+<person posts="2" size="4" who="Medland, Bill &lt;Bill.Medland@accpac.com&gt;" />
+<person posts="2" size="4" who="Robert Laverick &lt;csujo@scabserver.com&gt;" />
+<person posts="2" size="4" who="Mike Bond &lt;mbond@cox.rr.com&gt;" />
+<person posts="2" size="4" who="Rein Klazes &lt;rklazes@xs4all.nl&gt;" />
+<person posts="2" size="4" who="Ove Kaaven &lt;ovehk@ping.uio.no&gt;" />
+<person posts="1" size="7" who="David.Goodenough@dga.co.uk" />
+<person posts="1" size="3" who="Phillip Schmitz &lt;phillip@maths.wits.ac.za&gt;" />
+<person posts="1" size="3" who="Marco Bizzarri &lt;m.bizzarri@icube.it&gt;" />
+<person posts="1" size="3" who="Daniel Walker &lt;diwalker@earthlink.net&gt;" />
+<person posts="1" size="2" who="Gavriel State &lt;gav@transgaming.com&gt;" />
+<person posts="1" size="2" who="Gerard Patel &lt;gerard.patel@nerim.net&gt;" />
+<person posts="1" size="2" who="James Hatheway &lt;james@macadamian.com&gt;" />
+<person posts="1" size="2" who="Nick Bauer &lt;nickb@mail.twtelecom.net&gt;" />
+<person posts="1" size="2" who="Christoph Hellwig &lt;hch@caldera.de&gt;" />
+<person posts="1" size="2" who="Marcus Meissner &lt;marcus@jet.franken.de&gt;" />
+<person posts="1" size="2" who="Timo Kujala &lt;tkujala@lut.fi&gt;" />
+<person posts="1" size="1" who="r.maurizzi@gvs.it" />
+<person posts="1" size="1" who="mm@caldera.de (Marcus Meissner)" />
+<person posts="1" size="1" who="Francois Gouget &lt;fgouget@free.fr&gt;" />
+<person posts="1" size="1" who="mdew &lt;rpbrown@xtra.co.nz&gt;" />
+<person posts="1" size="1" who="Robert Lunnon &lt;bob@yarrabee.net.au&gt;" />
+<person posts="1" size="1" who="davep &lt;davep@cyw.uklinux.net&gt;" />
+<person posts="1" size="1" who="Lionel Ulmer &lt;lionel.ulmer@free.fr&gt;" />
+<person posts="1" size="1" who="Duane Clark &lt;dclark@akamail.com&gt;" />
+<person posts="1" size="1" who="Ricahrd Canada &lt;richard.canada@mrlinternational.com&gt;" />
+<person posts="1" size="1" who="richard.canada@mrlinternational.com" />
+<person posts="1" size="1" who="Vitaly Kuznetsov &lt;vitty@dts.ru&gt;" />
+</stats>
+
+
+
+<section
+  title="16-bit Printer Drivers"
+  subject="Re: CS_PARENTDC with WS_CLIPSIBLINGS"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0014.html"
+  posts="9"
+  startdate="08/02/2001"
+  enddate="08/08/2001"
+>
+
+<p>
+Ladislav Sladecek had a problem getting a program working and traced 
+the problem to the handling of some flags in GetDCEx.  Alexandre Julliard 
+replied that he thought all of those should be fixed in the latest version
+of CVS.  Ladislav thought the fix was fine, but was still unable to get
+the app, prowin.exe from Progress RDBMS, to run.  It's a 16-bit app and
+according to Ladislav, <quote who="Ladislav Sladecek">
+  After the menu is drawn, the application stops responding and complains 
+  about some illegal string operations  and then about unknown driver ,, 
+  in GetDCA.</quote></p>  
+  
+<p>He attached a trace with all of the debugging information in it.  From
+that Andreas Mohr concluded the program was dainbread:</p>
+<quote who="Andreas Mohr"><p>
+Wine is not guilty at all, AFAICS.
+It's a totally dainbread application, that's why.</p>
+<p>It checks win.ini<br />
+	<ul><code>[windows] <br />
+		 device=XXX</code></ul><br />
+and as this entry doesn't exist (it's "HP LaserJet 5M,PCL5EMS,LPT1:" here),
+the app does all sorts of very strange things</p>
+
+<p>
+My guess is that this application exhibits so braindead, non-checking behaviour
+since this win.ini entry is absolutely expected to exist.</p>
+<p>
+Unfortunately I can't see from this short log why it checks the printer at all.
+We might want to make sure that in case we get asked for a printer, we also
+have a device= line in place, and if this isn't the case, then issue a fat
+warning to the end user. So OTOH Wine is probably guilty by not making sure
+that there is a device= line in case of psdrv or something.</p>
+<p>
+What happens if you run this program on a windoze box without any printer
+installed ? (and thus the device= line should not exist, there, too...) 
+Does it fail the same way or does it seem to recognize somehow that there
+is no printer installed ?</p></quote>
+
+<p>Ladislav said Windows had no problems if a printer wasn't installed.
+However, he found a patch from 7/26/2001 that indicated 16-bit printer driver
+support does not ever get initialized, regardless if a printer is installed.  
+Alexandre replied, <quote who="Alexandre Julliard">actually the 16-bit driver 
+support is temporarily broken (not that it really worked well before anyway). 
+It shouldn't be too hard to fix, but I haven't had time yet. Volunteers are 
+welcome...</quote></p>
+
+<p>Ladislav dug a little deeper and discovered that the unknown driver 
+error has actually always been occurring, but the message only recently
+appeared because Alexandre had it printed out.  However, he found,
+<quote who="Ladislav Sladecek">
+The real reason for the crash is that the application calls Escape16 with
+hdc equal to 0 and function equal to GETPRINTINGOFFSET. I do not understand
+why, they did not even start to print.  Maybe, this is an undocumented windows
+function?  After I temporarily disabled Escape16, the application began to
+work. </quote>  To reenable Escape16 he would require working 16-bit
+printer drivers.  What Alexandre wondered though was, 
+<quote who="Alexandre Julliard">
+It's not supposed to crash even if the hdc is invalid. Do you have a
+backtrace of the crash?</quote></p>
+<p>Ladislav replied:</p><quote who="Ladislav Sladecek"><p>
+I ovelooked that the EscapeXXXX functions changed too.</p>
+<p>
+The function is called like this:<br />
+<ul><code>
+0806c1c8:Call GDI.38: ESCAPE(0x0000,0x000d,0x0000,0x00000000,0657:e8f4) ret=0ff7:4428 ds=1207
+</code></ul><br />                                             
+The in_data pointer is null but the code assigns to it, that's why it
+crashes. I think that the result should be assigned to the output parameter.</p>
+</quote>
+
+<p>Alexandre realized, <quote who="Alexandre Julliard">
+Yes of course, stupid typo on my part. Thanks for spotting it.</quote></p>
+
+</section>
+
+
+
+
+<section
+  title="Unable to use RegisterClass(&amp;WndClass);"
+  subject="Unable to use RegisterClass(&amp;WndClass);"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0106.html"
+  posts="9"
+  startdate="08/09/2001"
+  enddate="08/14/2001"
+>
+
+<p>Craig Chandler's question:</p>
+<quote who="Craig Chandler"><p>
+when i use the RegisterClass(&#038;WndClass); under wine the call fails. I'm
+using it to sub class the button class. Does wine not support this?</p>
+</quote>
+
+<p>Dmitry Timoshkov asked to see the offending code which Craig 
+provided.  Craig has had the program working under all versions of
+Windows for years.  Dmitry suggested, <quote who="Dmitry Timshkov">
+As a temporary workaround you could use unique class names for local classes. </quote>
+In addition he provided some patches to try out.</p>
+
+<p>Craig tried this and replied, <quote who="Craig Chandler">
+ok, played around with both patches, both refuse to start the application
+with errors in invalid class names. Changed my own source to rename the
+"button" class to my own custom name ("ifbutton") and it starts fine. (so
+the original class.c works). Had a whole lot of other errors but i'll get to
+them later. I'm reading up on how to debug wine at the moment (i'm a new
+user) so hopefully i'll get some more useful info to you later.</quote></p>
+
+
+</section>
+
+
+
+
+
+<section
+  title="Navigating Through Wine"
+  subject="Wine call graph; wineserver; the big picture"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0107.html"
+  posts="7"
+  startdate="08/15/2001"
+  enddate="08/16/2001"
+>
+
+<p>Phillip Schmitz wanted to start working on implementing COM/DCOM 
+functionality.  What he was having a hard time understanding was
+the relationship of the various parts of Wine and the interdependencies
+of the code.  He wrote:</p>
+<quote who="Phillip Schmitz"><p>
+I've read most of the developer docs and some relevant source but I'm still having problems 
+grokking the interrelationships between different parts of wine and the role(s) of wineserver. 
+I have a general understanding of Win32 from a programmatic point of view rather than wine's
+implementation details. While I'm quite willing to "read the source" there's rather a lot of it :) 
+and rather deep dependencies (even with tags one jumps around for a while trying to understand 
+what does what). </p>
+<p>
+Does anyone have a call graph for wine or a (decent, open-source) program for making one. 
+I've considered Source-Navigator but it seems like the required database would be twice 
+the size of the wine source! </p></quote>
+
+<p>Gavriel State and a few others wrote back about the work going
+on right now to support out of process COM.  They pointed out some
+work that could be done in that area.  Mike McCormack wrote a 
+description about the features of the wineserver:</p>
+<quote who="Mike McCormack"><p>
+The wineserver does the job of the Windows NT kernel in wine. Here's a summary of what i've 
+worked out about the wineserver: </p>
+<p><ul>
+<li>the wineserver is responsible for all system level synchronization of wine processes, and maintaining integrity of handles </li>
+<li>the wineserver is the sole repository for all HANDLE data in the wine process group. </li>
+<li>wineserver communicates with each wine process thru a socket and shared memory. There is one socket and one shared memory area per wine process. </li>
+<li>the main task of wineserver is a loop which polls on all the wine process sockets, and handles timeouts. </li>
+<li>the wineserver processes requests one by one (it is a single thread). </li>
+<li>each request is triggered by the wine process writing to its socket, and ended when the wineserver writes back to the socket. During the request, the wine process is effectively stopped. </li>
+<li>request data may be read to or written from the shared memory, but the shared memory is not used for synchronization. Synchronization is maintained solely by socket reads and writes. </li>
+<li>the wineserver should end each request before processing the next </li>
+<li>the wineserver must never wait for or depend upon any wine processes. All wine processes must be assumed to be unstable and unreliable. (even if they're not) </li>
+<li>the wineserver design is reliable, but rather slow due to all the context switching required by each request. David Howells made an effort to turn it into a Linux kernel module... he hasn't finished yet. </li>
+</ul>
+</p></quote>
+
+<p>Phillip also wanted to know what people use in term of test suites.  He
+would really like to be able to use many small test apps.  Dan Kegel
+replied:</p>
+<quote who="Dan Kegel"><p>
+There *is* a COM conformance test suite; see 
+<a href="http://www.microsoft.com/msj/1298/ntUnix/ntUnix.aspx"> 
+http://www.microsoft.com/msj/1298/ntUnix/ntUnix.aspx</a>
+I doubt that Microsoft would let Wine developers use it, though. 
+</p><p>
+On the other hand, the Open Group sells 
+COM/DCOM implementations packaged with the interoperability test suite at a "nominal fee"; see 
+<a href="http://www.opengroup.org/comsource/datasheet.htm">
+http://www.opengroup.org/comsource/datasheet.htm</a>
+</p><p>
+They have released things like Motif as open source in the past... I wonder if they'd be willing to 
+contribute their DCOM or the test suite? That would rock. 
+</p><p>
+Anyone know anyone who works at the Open Group? :-) </p></quote>
+
+
+</section>
+
+
+
+
+
+<section
+  title="Winelib Application Debugging"
+  subject="winelib application debugging"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0069.html"
+  posts="2"
+  startdate="08/09/2001"
+  enddate="08/09/2001"
+>
+
+<p>This was just a question and answer.  Vitaly Kuznetsov wondered,
+<quote who="Vitaly Kuznetsov">
+Is there currently any way to debug winelib application? I read winedbg
+doc, but there are only samples for windows executables. </quote></p>
+<p>Eric
+Pouech replied, <quote who="Eric Pouech">
+you can also debug winelib applications with winedbg and you should get
+access to both the executable information and the different loaded DLL
+(counting the Wine builtin ones).</quote></p>
+</section>
+
+
+
+
+
+
+
+<section
+  title="Using WinHelp"
+  subject="Does Wine's winhlp work?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0157.html"
+  posts="4"
+  startdate="08/16/2001"
+  enddate="08/17/2001"
+>
+
+<p>David Hagood was wondering about the status of using Wine's WinHelp 
+program to open up help files:</p>
+
+<quote who="David Hagood">
+<p>Is Wine's WinHelp program supposed to work? By that I mean, if I invoke that program with 
+a Windows help file, is it supposed to be able to display the contents of the help file as Window's 
+winhelp.exe would?</p>
+
+<p>I ask because 1) I have a program (DeLorme's AAA MapNGo) that uses 
+WinHelp format documents for some of its normal operation, and 2) I have a WinHelp format file 
+I'd dearly like to be able to access directly from Wine. </p>
+
+<p>When I try to launch Wine's Winhelp, it 
+brings up a window, but the window is empty. If I go to File-&gt;Open and try to open a WinHelp 
+file, I get the same result. Is there some setup I'm missing?
+</p>
+</quote>
+
+<p>Several other people were experiencing the same thing.  Bobby Bingham suggested
+using winhlp32.exe from Windows, <quote who="Bobby Bingham">
+I get the same thing. I think Wine's winhelp isn't supposed to work yet. If you have access 
+to the windows winhlp32.exe, it runs perfectly under wine (afaict better than in windows. 
+I have a help file that creating a search index always crashes it under windows. Under wine 
+it doesn't work, but it recovers without crashing). </quote></p>
+
+</section>
+
+
+
+
+
+
+
+<section
+  title="Ignored Sockets"
+  subject="not-yet-connected sockets?"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0159.html"
+  posts="9"
+  startdate="08/16/2001"
+  enddate="08/17/2001"
+>
+
+<p>Daniel Walker was having a problem with the <code>poll()</code>
+implementation in the 2.4 kernel:</p>
+<quote who="Daniel Walker"><p>
+The problem is that poll returns POLLHUP when a socket isn't connected, then wine ignores 
+the socket and it's events .. I realize this has been known for a some time(since linux 2.4), 
+but why hasn't it been fix? Doesn't this effect a lot of non-blocking socket applications?
+</p></quote>
+
+<p>Specifically:</p>
+<quote who="Daniel Walker"><p>
+a socket is created using socket() then, say, ioctl() is run on it. ioctl() then ,through the 
+wineserver, runs sock_reselect() then poll() returns POLLHUP in revents and the 
+wineserver stop watching the socket .. Since most non-blocking applications run socket() 
+then ioctl() I would think that several applications would be effected.. 
+</p></quote>
+
+<p>Ove K&aring;ven didn't understand what the problem was since a patch had
+been submitted a year and half ago fixing the problem.  He gave a link to it
+at:<a href="http://cvs.winehq.org/cvsweb/wine/server/sock.c">
+http://cvs.winehq.org/cvsweb/wine/server/sock.c</a>.
+Daniel's problem seemed to be with running Bearshare and he submitted a one-liner
+commenting out the sock_reselect() so that the poll() doesn't happen.</p>
+
+
+</section>
+
+
+
+
+
+
+
+<section
+  title="Adding FIXME's"
+  subject="Protocol for adding FIXMEs"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0140.html"
+  posts="2"
+  startdate="08/16/2001"
+  enddate="08/16/2001"
+>
+
+<p>Bill Medland was wondering what the procedure was for adding
+FIXME's to the code:</p>
+<quote who="Bill Medland"><p>
+I seem to have a knack for finding things that are probably going to need fixing 
+at some point but for which I do not have time or knowledge currently. My 
+first temptation is to add a FIXME macro in the code directly. 
+</p><p>
+However I am occasionally frustrated by the number of times I see the same 
+FIXME (e.g. the pthread_rwlock* and the "kill other threads" one). I 
+also recognise from posts that these disconcert newbies whereas after 
+a couple of weeks one gets used to them. 
+</p><p>
+So maybe it is better to use FIXME comments where one knows that 
+something is wrong but it doesn't seem to matter. 
+</p><p>
+I know that the manual (wine-devel 8.0) says to add FIXMEs I am 
+concerned that this could lead to ridiculously large traces that hide 
+the important stuff (to say nothing of upsetting timing) </p>
+</quote>
+<p>Alexandre explained, <quote who="Alexandre Julliard">
+FIXME macros should be used in cases where we know something 
+is wrong but we don't expect this part of the code to ever get used. 
+This way if some app triggers the wrong code we can hear about it. 
+It doesn't make sense to add FIXME output to parts of the code 
+we know are going to be called, it just generates noise; a comment 
+is much better in this case. </quote></p>
+
+
+
+</section>
+
+
+
+
+
+
+
+<section
+  title="Using the Debugger"
+  subject="Stupid Winedbg question"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0137.html"
+  posts="3"
+  startdate="08/16/2001"
+  enddate="08/16/2001"
+>
+
+<p>Bobby Bingham wondered:</p>
+<quote who="Bobby Bingham">
+ <p>Ok, I feel like an idiot for having to ask this, but it's my first time 
+ realing using the debugger.  When wine starts the debugger on an exception, 
+ it opens it up in another xterm.  Is there an easy way to copy it's output?  
+ The usual select and middle-click isn't working because it doesn't let me 
+ select the text to begin with.</p>
+</quote>
+
+<p>James Hatheway suggested, <quote who="James Hatheway">
+		Hold the Shift key while selecting the text.  Or, in your 
+		<code>~/.wine/user.reg</code>
+		change the <code>[Software\Wine\WineDbg] </code> 
+		UseXTerm key from 01 to 00.
+		I find that is more useful so that all the output can be put 
+		into a file for later perusal. (ie. I usually run the debugger 
+		with:
+		<code>./debugger/winedbg 2&gt;&amp;1 | tee output.log</code> )
+</quote>
+</p>
+
+</section>
+
+<section
+  title="Finding Locking Bugs"
+  subject="patch.py?id=997918367324549717828631"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0141.html"
+  posts="3"
+  startdate="08/16/2001"
+  enddate="08/16/2001"
+>
+
+<p>This thread will dovetail into the next one.  Lawson Whitney 
+posted a report:</p>
+<quote who="Lawson Whitney"><p>
+I guess native riched32.dll does something nasty to provoke the new DbgBreakPoint in 
+_CheckNotSysLevel. Builtin riched32 doesn't, of course, but then the app won't start. 
+</p><p>
+I can't remember that I've ever seen the fixme that was here before, but I'll check again 
+when I send this. 
+</p><p>
+I've attached a backtrace. I'd appreciate some guidance on what else 
+might be useful, or maybe a pointer to some doco on critical sections in Wine, even it is 
+in .sgml, .c or .h in case I have to debug it myself. 
+</p></quote>
+
+<p>Alexandre replied with a patch and a note that said, 
+<quote who="Alexandre Julliard">
+No, the CheckNotSysLevel calls were not done before. 
+I added a few of them in GDI to find potential locking bugs; 
+seems pretty successful so far ;-) </quote>  Lawson tested
+the patch and found it worked.</p>
+
+</section>
+
+
+
+
+<section
+  title="DC lock in CreateDIBitmap"
+  subject="DC lock in CreateDIBitmap"
+  archive="http://www.winehq.org/hypermail/wine-devel/2001/08/0149.html"
+  posts="3"
+  startdate="08/16/2001"
+  enddate="08/16/2001"
+>
+
+<p>I almost never include parts of posts that include traces.  Many
+times they're quite long and are often easier explained in English.
+However, I realize a lot of people reading this may never have
+looked at them and might find it interesting.  Here's a short one
+that came up this week and it's relatively straight forward.  Uwe
+Bonnes wrote:</p>
+
+<quote who="Uwe Bonnes">
+<p>with the new <code>GDI_CheckNotLock()</code> stuff, some application (gcprevue 9) fails with<br />
+<code>&gt; err:win32:_CheckNotSysLevel Holding lock 0x4079b9e8 level 3 </code></p>
+
+<p>Backtrace is:<br />
+Backtrace: =&gt;
+<ul><code>0 0x400e21d1 (_CheckNotSysLevel+0x51(lock=0x4079b9e8) [syslevel.c:152] in libntdll.so) (ebp=405c6090)<br /> 
+1 0x4078261c (GDI_CheckNotLock+0x1c [gdiobj.c:510] in libgdi32.so) (ebp=405c60a0) <br />
+2 0x4077823d (CreateDCA+0x1d(driver=0x407909d3, device=0x0, output=0x0, initData=0x0, s=0x0, s=0x0, s=0x407909d3) [dc.c:558] in libgdi32.so) (ebp=405c61e8) <br />
+3 0x4077bbc6 (CreateDIBitmap+0x166(hdc=0xdec, header=0x41eadb50, init=0x0, bits=0x0, data=0x41eadb50, coloruse=0x0) [dib.c:881] in libgdi32.so) (ebp=405c6218) <br />
+4 0x409f9479 (X11DRV_DIB_CreateDIBSection+0x359(dc=0x404225f4, bmi=0x41eadb50, usage=0x0, bits=0x411000d8, section=0x0, offset=0x0, ovr_pitch=0x0) [dib.c:3914] in libx11drv.so) (ebp=405c62a0) <br />
+5 0x4077bd75 (DIB_CreateDIBSection+0x65(hdc=0xdec, bmi=0x41eadb50, usage=0x0, bits=0x411000d8, section=0x0, offset=0x0, ovr_pitch=0x0) [dib.c:944] in libgdi32.so) (ebp=405c62d4) <br />
+6 0x4077bdd1 (CreateDIBSection+0x31(hdc=0xdec, bmi=0x41eadb50, usage=0x0, bits=0x411000d8, section=0x0, offset=0x0) [dib.c:961] in libgdi32.so) (ebp=405c6304) <br />
+7 0x00401fba (gcprevue.exe..text+0xfba in D:\cae\gcp9.0.0.8\gcprevue.exe) (ebp=ffffffff)</code></ul></p>
+
+<p>CreateDIBitmap is called with the HDC lock hold, and when the (fColor) clause is true, 
+<code>CreateDCA()</code> checks that the lock is not hold. A laymans approach to release hdc before 
+<code>CreateDCA()</code> and reopen it afterwards resulted in this report asr startup, with no visual output: </p>
+<p><code><ul>
+fixme:win32:PE_CreateModule Security directory ignored <br />
+err:win32:_LeaveSysLevel (0x4079ba08, level 3): Invalid state: count 0 mutex (nil). <br />
+err:ntdll:RtlpWaitForCriticalSection section 0x4010fb88 "rtl.c: peb_lock" wait timed out, retrying (60 sec) fs=030f <br />
+err:ntdll:RtlpWaitForCriticalSection section 0x4010fb88 "rtl.c: peb_lock" wait timed out, retrying (60 sec) fs=031f <br />
+err:ntdll:RtlpWaitForCriticalSection section 0x4079ba08 "gdiobj.c: GDI_level" wait timed out, retrying (60 sec) fs=008f <br />
+</ul></code></p>
+
+<p>How to cure this problem? </p>
+
+</quote>
+
+<p>Alexandre replied with a small patch and explained, <quote who="Alexandre Julliard">
+I don't think we should be using CreateDC at all in CreateDIBitmap. Could you try this? <br /><br />
+<ul><code>
+diff -u -r1.59 dib.c <br />
+--- objects/dib.c 2001/08/15 23:33:20 1.59 <br />
++++ objects/dib.c 2001/08/16 21:08:12 <br />
+@@ -875,12 +875,7 @@<br />
+/* Now create the bitmap */<br />
+- if (fColor) <br />
+- { <br />
+- HDC tmpdc = CreateDCA( "DISPLAY", NULL, NULL, NULL ); <br />
+- handle = CreateCompatibleBitmap( tmpdc, width, height ); <br />
+- DeleteDC( tmpdc ); <br />
+- } <br />
++ if (fColor) handle = CreateCompatibleBitmap( hdc, width, height );<br />
+&nbsp;&nbsp;else handle = CreateBitmap( width, height, 1, 1, NULL ); <br />
+&nbsp;&nbsp;if (!handle) return 0; <br />
+</code></ul>
+</quote></p>
+
+<p>Uwe reported success.  And as a side note, that entire exchange of email
+from bug report to patch occurred over the span of about 1.5 hours on Thursday.</p>
+
+</section>
+
+</kc>

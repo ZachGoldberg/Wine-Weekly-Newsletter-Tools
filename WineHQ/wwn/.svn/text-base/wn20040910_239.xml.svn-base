@@ -1,0 +1,951 @@
+<?xml version="1.0" ?>
+<kc>
+
+<title>Wine Traffic</title>
+
+<author contact="http://www.theshell.com/~vinn">Brian Vincent</author>
+<issue num="239" date="09/10/2004" />
+<intro> <p>This is the 239th issue of the Wine Weekly News publication.
+Its main goal is to play poker. It also serves to inform you of what's going on around Wine. Wine is an open source implementation of the Windows API on top of X and Unix.  Think of it as a Windows compatibility layer.  Wine does not require Microsoft Windows, as it is a completely alternative implementation consisting of 100% Microsoft-free code, but it can optionally use native system DLLs if they are available.   You can find more info at <a href="http://www.winehq.org">www.winehq.org</a></p> </intro>
+<stats posts="238" size="910" contrib="76" multiples="40" lastweek="35">
+
+<person posts="32" size="112" who="Mike Hearn" />
+<person posts="16" size="71" who="Mike McCormack" />
+<person posts="13" size="33" who="Alexandre Julliard" />
+<person posts="10" size="33" who="James Hawkins" />
+<person posts="9" size="41" who="Michael Kaufmann" />
+<person posts="9" size="33" who="Uwe Bonnes" />
+<person posts="8" size="23" who="Mike Hearn" />
+<person posts="7" size="20" who="Diego Petten&#242;" />
+<person posts="7" size="18" who="Hans Leidekker" />
+<person posts="6" size="33" who="Shachar Shemesh" />
+<person posts="6" size="17" who="Vincent B&#233;ron" />
+<person posts="6" size="16" who="Dimitrie O. Paun" />
+<person posts="5" size="19" who="(michael)" />
+<person posts="5" size="11" who="Lionel Ulmer" />
+<person posts="4" size="33" who="Stefan =?iso-8859-1?q?D=F6singer?=" />
+<person posts="4" size="13" who="Dmitry Timoshkov" />
+<person posts="4" size="12" who="Andreas Mohr" />
+<person posts="4" size="11" who="Robert Shearman" />
+<person posts="4" size="11" who="Robert Reif" />
+<person posts="4" size="9" who="Saulius Krasuckas" />
+<person posts="4" size="9" who="Eric Pouech" />
+<person posts="3" size="68" who="Roger Olson" />
+<person posts="3" size="11" who="Rickard Svensson" />
+<person posts="3" size="8" who="Jason Edmeades" />
+<person posts="3" size="8" who="Francois Gouget" />
+<person posts="3" size="7" who="Steven Edwards" />
+<person posts="2" size="10" who="Roderick Colenbrander" />
+<person posts="2" size="9" who="Filip Navara" />
+<person posts="2" size="8" who="Chris Rankin" />
+<person posts="2" size="7" who="Rolf Kalbermatter" />
+<person posts="2" size="6" who="Dan Kegel" />
+<person posts="2" size="6" who="Ulrich Czekalla" />
+<person posts="2" size="5" who="Gerald Pfeifer" />
+<person posts="2" size="5" who="Rein Klazes" />
+<person posts="2" size="5" who="Nikolay A. Liber" />
+<person posts="2" size="5" who="Kevin Koltzau" />
+<person posts="2" size="4" who="Acke Carlsson" />
+<person posts="2" size="4" who="Pablo Szuster" />
+<person posts="2" size="4" who="Brian Vincent" />
+<person posts="2" size="4" who="Krzysztof Foltman" />
+<person posts="1" size="31" who="Mike" />
+<person posts="1" size="11" who="(gupta.lokesh)" />
+<person posts="1" size="9" who="Andre Johansen" />
+<person posts="1" size="6" who="Jeroen Janssen" />
+<person posts="1" size="5" who="Nicolai Kuntze" />
+<person posts="1" size="5" who="Peter Petrakis" />
+<person posts="1" size="4" who="Pablo Szuster" />
+<person posts="1" size="4" who="Gavriel State" />
+<person posts="1" size="3" who="Belxjander Serechai" />
+<person posts="1" size="3" who="Con Kolivas" />
+<person posts="1" size="3" who="Chris Morgan" />
+<person posts="1" size="3" who="Joris Huizer" />
+<person posts="1" size="3" who="Erik de Castro Lopo" />
+<person posts="1" size="2" who="Jukka Heinonen" />
+<person posts="1" size="2" who="Stefan Leichter" />
+<person posts="1" size="2" who="Dominik Strasser" />
+<person posts="1" size="2" who="Chris Morgan" />
+<person posts="1" size="2" who="Zach Gorman" />
+<person posts="1" size="2" who="Jacek Caban" />
+<person posts="1" size="2" who="Juan Lang" />
+<person posts="1" size="2" who="Duane Clark" />
+<person posts="1" size="2" who="Peter \Firefly\ Lund" />
+<person posts="1" size="2" who="Huw D M Davies" />
+<person posts="1" size="2" who="Gregory M. Turner" />
+<person posts="1" size="2" who="Boaz Harrosh" />
+<person posts="1" size="2" who="Rolf Kalbermatter" />
+<person posts="1" size="2" who="Nikolas Dahn" />
+<person posts="2" size="4" who="Marcus Meissner" />
+<person posts="1" size="2" who="Florian Zumbiehl" />
+<person posts="1" size="2" who="Fabian Cenedese" />
+<person posts="1" size="1" who="Adriano Bonat" />
+<person posts="1" size="1" who="Jonathan Wilson" />
+<person posts="1" size="1" who="Todd S." />
+<person posts="1" size="1" who="Vitaliy Margolen" />
+
+</stats>
+<section 
+	title="Intro Developers Guide" 
+	subject="Wine Developer Cheatsheet, v1"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/09/0098.html" 
+	posts="14"
+	startdate="09/04/2004"
+	enddate="09/07/2004"
+>
+<topic>Documentation</topic>
+<p>We had a discussion at Wineconf last winter about what barriers
+prevent people from helping out with Wine.  One of the problems is
+that it takes some time to come up to speed with how Wine tries to
+recreate a Windows environment.  When things go wrong it's difficult
+to figure out what happened.  Mike Hearn wrote up something this
+week:</p><quote who="Mike Hearn"><p>
+
+Back in February at WineConf one of the issues (I) raised was that
+there's a lot of stuff you just have to know in order to hack Wine, and
+that raises the barrier to entry.
+</p><p>
+So, I wrote this. If anybody has stuff they think should be added, let
+me know. If the community likes it, I'll submit it as a patch against
+the website</p></quote>
+
+<p>I'll reproduce it here just to give everyone a preview:</p>
+<quote who="Mike Hearn">
+
+
+    <h2> 5 minutes intro to Wine development </h2>
+    
+    <p>
+      This is a quick collection of tips and tricks that may be useful
+      for Wine hackers. It's loosely modelled after the
+      <a href="http://ooo.ximian.com">OpenOffice.org hackers guide</a>
+
+      though I'm afraid this document doesn't feature a comedy build
+      system :)
+    </p>
+
+    <p>
+      A great reference is the Wine Developer Guide, which goes into
+      far more depth than this document will, especially about the
+      architecture of Wine and information on the individual
+      components. However, if you want a 5 minutes getting started
+      guide, this is it.
+    </p>
+
+    <h3> Debug logging </h3>
+
+    <p>
+
+      The most powerful tool you have to find out why an app breaks
+      on Wine is the logging system. Using it is simple enough, each
+      part of the code (apart from the server) logs to a "debug
+      channel" and each channel has four classes: trace, warn, err
+      and fixme. By default ERR and FIXME messages are displayed,
+      whilst TRACE and WARN are not. To enable them:
+    <ul>
+
+    <code> WINEDEBUG=+channel1,+channel2 wine myprogram.exe </code>   </ul></p>
+
+    <p>
+      There are some channels which are particularly useful:
+    
+    <ul>
+
+      <li>+seh : Structured Exception Handling is invoked either when
+        an application performs an illegal operation (ie crashes) or
+        occasionally a program will throw their own exceptions. UNIX
+        signals are converted into SEH exceptions by Wine and you can
+        watch their propagation using this channel. It's handy because
+        often applications will trap their own crash to, for instance,
+        perform an emergency save. The most common exception to watch
+        for is STATUS_ACCESS_VIOLATION or 0xC0000005 which is the closest
+        equivalent in Win32 to a segfault. You may also see codes
+        which don't appear in the headers, these are typically
+        language-specific exceptions used by whichever compiler was
+        used to produce the EXE. 0xeedfade for instance is the code
+        for a Delphi internal exception. If you see it thrown it
+        probably means a call returned a non-zero error code somewhere.  
+      </li>
+
+      <li>
+        +tid : This prefixes each line of debug output with the ID of
+        the thread which generated it. It's invaluable for debugging
+        multithreaded applications as a context switch can occur at
+        any time. Without it there's often no way to tell exactly
+        what's going on inside the program. 
+      </li>
+
+      <li>
+        +relay : This is often your first port of call when you aren't
+        sure what's going wrong. It shows you each call into and out
+        of Wine modules at the DLL boundaries. This includes calls
+        between Wine DLLs: for instance, from GDI32 to
+        KERNEL32. Investigate the RelayInclude and RelayExclude keys
+        in the [Debug] section if you're being overwhelmed by certain
+        functions. 
+
+      </li>
+
+      <li>
+        +snoop : This does the same thing as relay but works between
+        two native DLLs. The information produced by this channel is
+        not as good as relay data, as there is no information on the
+        parameters used. Snoop inspects the stack and disassembles
+        function prologues to try and guess what the parameters are,
+        and so may destabilise the application. 
+      </li>
+
+      <li>
+        +heap : This gives a trace of all heap activity in the
+        program. It also switches on constant integrity checks: if
+        you have an app which is trashing the heap arenas, doing a
+        +relay,+heap trace will let you narrow down where it's
+        happening. When an inconsistency is detected the contents of
+        the arena will be dumped and the program terminated. Heap arena
+        trashing can be caused by a number of things, the most common
+        is Wine overrunning an internal buffer. Most new Wine code
+        uses the HeapAlloc/HeapFree APIs internally, and one of the reasons
+        is that Wine's builtin heap debugging is so useful. 
+      </li>
+
+      <li>
+        +olerelay : This channel dumps each call made through the
+        typelibrary marshaller. It's a bit like +relay but works for
+        a certain class of DCOM calls that wouldn't normally show
+        up. Unfortunately this isn't a generic COM relay
+        mechanism. It can be useful for debugging InstallShield problems.
+      </li>
+
+      <li>
+        +server : This shows each wineserver RPC. You don't normally
+        need this but it may prove handy when tracking wineserver
+        interaction issues. 
+      </li>
+
+      <li>
+        +loaddll : Let's you see a notification of each DLL as it's
+        loaded. A lightweight alternative to Dependency Walker
+        (depends.exe) if you don't have it available. 
+      </li>
+    </ul></p>
+
+    <h3> Basic debugging tips </h3>
+
+    <p><ul>
+
+      <li>
+        If a program is displaying a message box when it fails, and you
+        don't know what is causing the problem, try performing a
+        +relay,+msgbox trace. Then load up the log in your favourite
+        editor or text viewer (less is quite good) and search for
+        trace:msgbox. Now look at the relay data just before the
+        MessageBox API call. In particular, look for failing API
+        calls. The problem may not be caused by a call that happens
+        immediately before the error!  
+      </li>
+      
+      <li>
+        If a program is failing at startup, and you don't know why,
+        you can use a +all trace. If it seems to be failing a long
+        way from an API call, disassemble it and see if it's
+        accessing some of the parameters passed in to WinMain (for
+        instance, Dungeon Keeper crashes if you run it without an
+        absolute path for argv[0]). 
+      </li>
+
+      <li>
+        If you're finding the logs too big to work with try
+        applying the debug delay patch which is available in the
+        wine-patches archives. It lets you toggle logging on and off
+        using the F12 key. You can also control the debug channels from
+        within the source. 
+      </li>
+
+      <li>
+        Visual glitches are best debugged by looking at the styles
+        given by the application to the offending control then simply
+        reading the widget code by hand. There are no fancy tricks
+        you can use here, you just have to play with the drawing code
+        and see if you can figure out where the problem
+        is. Fortunately, native Windows 98 comctl32 works well, so
+        you can always use that as a reference. 
+      </li>
+
+      <li>
+        Don't be afraid to write a test case for a particular API if
+        you have doubts about its implementation. Even if you don't
+        have the tools on hand to compile a test EXE, somebody else
+        will. Often writing a test is the best way to check that a
+        bug is real (and not simply a symptom of a problem elsewhere)
+        as well as proving to Alexandre that your change is correct. 
+
+      </li>
+
+      <li>
+        The source tree is being cleaned up, but all code outside of
+        loader/, tools/, libs/ and programs/ is built by Makefiles inside
+        the dlls/ directory.  
+      </li>
+
+      <li>
+        If a program is complaining about a debugger being present,
+        you need to find out why it thinks that and fix it. Wine does
+        not report a debugger by default, but unfortunately as
+        IsDebuggerPresent() is so easy to work around many programs,
+        especially games, use more devious techniques. Some contain
+        anti-disassembly code. You can find common anti-debugger
+        techniques by reading blackhat/warez cracking sites: just don't do it
+        at work ;) If you see attempts to load SICE.VXD or NTICE.VXD
+        then you're seeing a check for the popular SoftIce debugger, you can
+        ignore this. 
+      </li>
+
+      <li>
+        If you have a Windows license (i.e., if you ever bought a
+        PC from a high street store) you can go grab native DLLs from
+        <a href="http://www.dll-files.com/">dll-files.com</a>. This
+        can also be handy if you're missing various runtime DLLs
+        smaller apps often assume are present. Using native DLLs is a
+        good way to check how an API behaves without doing a full
+        blown crosscompile.
+      </li>
+      
+    </ul></p>
+
+    <h3> Implementing Win32 </h3>
+
+    <p><ul>
+      <li>
+        Try and stick to the code style in the surrounding file
+        when writing patches. The Wine developers are pretty relaxed
+        about code style, you'll see a wide variety in use in the
+        code. Don't make it more inconsistent than it already is,
+        though for large amounts of new code, use whatever you feel
+        most comfortable with.
+      </li>
+      
+      <li>
+         Microsoft implemented Unicode support by duplicating every
+          API call that accepts strings whether directly in a parameter
+          or via a structure, and then by having conversion functions to
+          map between them. Because Windows uses UCS-2 (16 bits per
+          character) for its Unicode strings, the functions which accept
+          unicode end with a W (for wide) and the ones that take
+          non-unicode (i.e. strings encoded in whatever the current
+          codepage is) end in A for ANSI. In Windows the compiler can
+          produce unicode constant strings but unfortunately on Linux we
+          can't rely on gccs equivalent support, as it doesn't produce
+          strings of the right format. So, you can't do this:  
+         <ul> 
+        <code> SomeRandomFunctionW( "Hello" ); </code> </ul>
+
+          nor this: 
+	 <ul>
+        <code> SomeRandomFunctionW( L"Hello" ); </code> </ul>
+        
+
+        <p>
+          Instead, you have to do this:
+
+        <ul><code> 
+          static const WCHAR helloW[] = {'H','e','l','l','o',0};<br />
+
+          SomeRandomFunctionW( helloW );
+        </code></ul></p>
+        
+        <p>
+          Other things to watch with Unicode support are string sizes:
+          when allocating buffers for unicode strings
+          use <code>sizeof(string)*sizeof(WCHAR)</code>. Technically
+          even this is incorrect due to the possibility of bonded
+          pairs, however most Wine code ignores this possibility as
+          it's known ahead of time that no characters outside the
+          Basic Multilingual Plane (?) will be used.
+        </p>
+
+        <p>
+          Because each character now takes 2 bytes instead of 1, you
+          also have to use the wide equivalents of every string
+          function, e.g. strlenW rather than strlen. Any function which
+          expects a null terminated string requires a wide
+          equivalent, as it's legal for wide strings to have null
+          bytes in them.
+        </p>
+
+        <p>
+          Messages that deal with strings also have A/W versions, and
+          there is a big chunk of infrastructure in both Windows and
+          Wine to convert between them as necessary. Make sure you
+          send the right type of message depending on the string
+          encoding of the target window. The mechanism used to decide
+          varies, some widgets use IsWindowUnicode, others send
+          messages asking the target what format it wants.
+        </p>
+
+        <p>
+          Final note on Unicode: because wide strings contain embedded
+          null bytes you can't print them with printf, which is what
+          the Wine debugging infrastructure uses. If you want to stick
+          a wide string in a debug log (TRACE, ERR, WARN etc) do this:
+        <ul>
+
+        <code> TRACE("this is a wide string: %s\n", debugstr_w(widestr)); </code> </ul></p>
+
+      </li>
+
+      <li>
+        There are several sets of error codes used throughout
+        Windows, in particular the NT "native" APIs use the values in
+        ntstatus.h which look like STATUS_ACCESS_DENIED - when
+        passing these results back up to the standard (documented)
+        Windows functions they must be converted to error codes in
+        winerror.h. This conversion is done by RtlNtStatusToDosError().
+        Others may return HRESULTS, which is used throughout the COM APIs.
+        For HRESULTs you can use the SUCCEEDED/FAILED macros to test them.
+      </li>
+
+      <li>
+        Speaking of which, the contents of ntdll are undocumented, so
+        don't bother attempting to find out what they do from
+        MSDN. Our current code represents a best guess, however when
+        working on code inside kernel32 or ntdll itself you must use these
+        APIs. Ask for help if you get stuck. Most are self
+        explanatory, a few are not. 
+      </li>
+
+      <li>
+        Be careful with error codes: unfortunately while MSDN
+        documents what error codes a function can return this
+        information is often wrong, and even when correct it usually
+        does not say exactly what conditions equate to which error
+        code. Many apps rely on particular codes being returned in
+        particular scenarios: the best way to be sure is to write a
+        test case. 
+      </li>
+
+      <li>
+        Don't make the mistake of trusting MSDN too much. It can
+        contain incorrect information - it's often not written by the
+        same people who wrote the code. 
+      </li>
+      
+      <li>
+
+        Win32 code uses HeapAlloc(GetProcessHeap(), 0, allocsize)
+        instead of malloc(allocsize) and therefore so does Wine. In
+        practice this rule isn't strictly enforced so you may see both. 
+      </li>
+    </ul></p>
+
+    <h3> Using the debugger </h3>
+
+    <p> Winedbg has several useful abilities. The most important are
+      being able to get a backtrace of threads with Win32 and builtin
+      debugging info: usually Windows binaries are stripped so this
+      won't be helpful but it can prove handy when using native
+      DLLs. To get a backtrace use the <b>bt</b> command, to get a
+      backtrace of a particular thread postfix it with the thread id
+      in hex, eg <b>bt 0x9</b>. You can also specify "all" instead of
+      a thread id. </p>
+
+    <p> It supports a subset of the gdb commands. The most common
+      ones are all there, for instance you can use <b>info proc</b> and
+      <b>info thread</b>, and then attach to a given process. This is
+      useful for getting a backtrace of deadlocks. </p>
+    
+    <p> It can also disassemble code. Disassembly isn't something you
+      should be too enthusiastic to use, it often reveals no useful
+      information. However, at times it is the only way to move an
+      investigation forward - for instance, to find out why a program
+      is crashing. Use the <b>disas</b> command to disassemble a piece
+      of code. When working backwards from a particular address try
+      and choose aligned addresses, otherwise you risk starting the
+      disassembly from the middle of an instruction which will produce
+      garbage. If you aren't already familiar with x86 assembly, try
+      using the disassembly feature in gdb on ELF binaries you've
+      compiled yourself so you can get used to what it looks like. The
+      Intel instruction set is vast but very few instructions are used
+      frequently. If you know what to expect, you won't be tripped up
+      by bad disassemblies or anti-disassembly tricks which can
+      corrupt the output. </p>
+
+    <p> Firstly, if you do decide to disassemble a program, be aware of what
+      you're doing. Obviously you can't take any code you find
+      there and use it in your own programs. Don't try submitting
+      decompiled code as part of patches, it's been tried before
+      and we know what it looks like. Alexandre will reject any
+      patches that look like they were decompiled or produced from
+      disassembly. </p>
+
+    <p> Secondly, understand what you're seeing. Here are some tips: 
+
+    <ul>
+      <li> Code which moves values into 0x0(%fs) is probably setting
+        up an SEH handler frame. You can ignore this.  </li>
+
+      <li> The return code of a function is stored in %eax on all
+        calling conventions used in Windows, so if you see a function
+        call followed by a check against this register, you're very
+        likely to be seeing a check for an error code. </li>
+
+      <li> Call instructions which dereference a value like so: "call
+        *0x12345678" are usually calls into other DLLs (often API
+        calls). Winedbg should be able to show you which API the call
+        instruction is invoking. Instruction sequences that move a
+        value into a register from the stack and then dereference it in
+        a call instruction could well be COM method invocations. </li>
+
+      <li> C++ applications compiled using Microsoft Visual C++ (the
+        most popular C++ compiler on Windows) use the thiscall calling
+        convention, in which the instance pointer is stored in %ecx. If
+        you get a crash dereferencing the value of %ecx in a C++
+        program, you might be seeing a null pointer dereference on an
+        object instance.  </li>
+
+      <li> Optimizing compilers do a lot of interesting things, such
+        as rearranging instructions to better match the internal
+        scheduling algorithms on superscalar processors. This can
+        seriously obfuscate the assembly stream, so don't be at all
+        surprised if you find it hard to read. A common trick is to
+        use "xorl %eax, %eax" to clear the %eax register rather than
+        the more intuitive "movl $0, %eax". Why? Because the
+        instruction is smaller, so it takes less space, so it uses
+        the CPU icache more effectively.   </li>
+
+      <li> Disassembling native Windows DLLs is virtually always useless,
+        as a technique it's usually used to find out why the
+        application is crashing in an otherwise unexplainable
+        way.  </li>
+    </ul></p>
+
+
+    <h3> Common problems </h3>
+
+    <p> Some bugs are easier to fix than others. Here is a quick list
+      of the more persistent ones so you know what you're getting into: 
+    
+    <ul>
+      <li>
+        Anything related to COM/OLE marshalling is quite tricky and
+        unlikely to be a quick fix. There are several hacks in our
+        builtin DLLs to satisfy InstallShield as that is the most
+        common program which needs DCOM functionality. If you modify
+        things there, make sure to test it against some InstallShields
+        first. 
+
+      </li>
+
+      <li>
+        Windows that don't accept keyboard focus (typical symptom:
+        what you type goes to the terminal) have been made unmanaged
+        for some reason. Each WM can treat this differently but the
+        most common response is that the window becomes always on
+        top, appears on every desktop and cannot accept
+        focus. Sometimes this is desirable: for menus and tooltips
+        it's what you want. Often it isn't. Managed vs unmanaged is a
+        rather difficult problem, ask on the wine-devel list for help
+        if you wish to change the mode heuristics. 
+      </li>
+
+      <li>
+        A program crashes with builtin comctl32 but works with
+        native: this can often indicate a missing notification/callback
+        or an out of order message stream. Most GUI apps are very
+        sensitive to callback ordering and if a callback is not run,
+        or run out of sequence, some software won't initialize
+        internal structures properly leading to a crash at some
+        unspecified future time. Solution? Write test cases to show
+        we have the message ordering right (or wrong) - there are
+        examples of how to do this in the user32 tests.
+      </li>
+
+      <li>
+        An error printed to stderr by Wine which
+        mentions <b>RtlpWaitForCriticalSection</b> indicates a
+        deadlock. Occasionally this can be a bug in the app, more often
+        it's a bug in Wine. If a program is deadlocking on a critical
+        section, a good place to start is by attaching to it with
+        winedbg and getting a backtrace of all the threads. If you
+        don't have any idea what I'm on about, read the threading
+        section of the Wine developer guide.
+      </li>
+        
+    </ul></p></quote>
+
+<p>Various people had comments, but everyone really seemed to like
+it.  Diego Petten&#242; mentioned he wondered what kind of coding standards
+were required.  In particular, he had submitted a patch a while ago
+and it was rejected based on the style he used.  Mike took a quick 
+look and commented:</p>
+<quote who="Mike Hearn"><p>
+
+A few things that jump out at me (not really reviewed the code itself):
+<ul>
+
+<li> No C++ // style comments, I'm afraid. They aren't portable enough.</li>
+<li> Use HeapAlloc() over malloc(), as it says in the cheatsheet</li>
+<li> Are you sure there is a debugstr_a?? I can't think what it would do,
+  ANSI strings can just be printed by regular printf</li>
+<li> You have to declare all the variables at the start of a block. Yes,
+  it's a pain. Another C portability rule. So, can't do this:
+  <ul><code>
+  LPSTR foo = bar;<br />
+  StrCpyA(a, b);<br />
+  int i;</code></ul>
+
+  They all have to go at the top.</li>
+
+<li> Minor stylistic note: you can use strcpy rather than StrCpyA. But I
+  doubt this was a problem.</li>
+<li> Usually best to space stuff out, ie rather than this:
+   <ul><code>
+  if ( temp_out == temp_out2 ) { temp_in += 3; continue; }</code></ul>
+
+  use this:
+  <ul><code>
+  if ( temp_out == temp_out2 )<br />
+  {
+  <ul>
+      temp_in += 3;<br />
+      continue;</ul>
+  }</code></ul>
+
+  ... again I doubt Alexandre would reject the patch because of this.</li>
+
+<li> //if ( *temp_in == '.' )  ... wine code generally doesn't do this. If
+  you find it hard to match up a closing brace with the statement that
+  opened it maybe you need ... *fanfare* EMACS! :)</li>
+
+<li> Is it possible to implement the ANSI version by converting to unicode
+  then calling the wide version, rather than duplicate it?</li></ul></p><p>
+
+The rest looks fine, I expect it was just the C portability stuff that
+tripped you up. Please do try again!
+</p></quote>
+
+
+
+</section>
+<section 
+	title="Transport Layer Security: SSL vs. GnuTLS" 
+	subject="Possible fun project/todo list item?"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/09/0036.html" 
+	posts="12"
+	startdate="09/02/2004"
+	enddate="09/06/2004"
+>
+<topic>Integration</topic>
+<p>We sort of discussed this topic back in July (WWN issue
+<a href="http://www.winehq.com/?issue=230#OpenSSL%20vs.%20NSS">#230</a>),
+but Mike Hearn brought it up again.  It seems OpenSSL using OpenSSL in
+Wine's crypto code leaves something to be desired.   If you follow the
+link above, Steven Edwards raises some points about licensing.  This
+week Mike Hearn brought up some technical problems and thought it might
+be something to add to the 
+<a href="http://www.winehq.com/site/fun_projects">Fun Projects</a> list:</p>
+
+<quote who="Mike Hearn"><p>
+The OpenSSL library we use in wininet/netconnection.c is a very unstable
+library, with somewhat odd licensing as well. By unstable I'm talking
+about the interfaces it exports: unfortunately they break backwards
+compatibility very frequently with the result that a build of Wine
+compiled on one system may bail out when using SSL on another, as the
+soname/abi of OpenSSL it's looking for has changed *yet again*.
+</p><p>
+This also means that some distros deliberately ship older versions and
+just backport security fixes, as upgrading OpenSSL to newer versions is
+quite painful. Fedora at least does this.
+</p><p>
+If anybody is looking for work to do then, addressing this problem may
+be useful. Probably the best way forward is to talk to the GnuTLS people
+(<a href="http://www.gnu.org/software/gnutls/gnutls.html">
+http://www.gnu.org/software/gnutls/gnutls.html</a>) and see if you can get
+written confirmation from them that they have a strong commitment to
+binary compatibility (at least, more than OpenSSL does). It also seems
+to be a fairly stable project: the new maintainer is more focussed on
+portability enhancements and a slow release cycle than making huge
+changes to the code.
+</p><p>
+If so, it might be worth porting wininet over to GnuTLS, or
+alternatively, rather than remove the OpenSSL code just add code to use
+GnuTLS and then fall back to OpenSSL if it cannot be found (or vice-versa).
+</p><p>
+One interesting thing about GnuTLS is that it has some OpenSSL
+compatibility code, but from a look at their website it seems that this
+is GPLd. Maybe we could get an exemption from them.
+</p><p>
+The downside is that while OpenSSL is frequently going to not be found
+as it's the wrong version, GnuTLS is also not widely installed by
+default so it might not get us much in the short term.
+</p><p>
+The good news is that Gaim packages are often built against it, so in
+any modern distro that packages Gaim (which is a very popular chat
+client) in its repositories, there's a good chance GnuTLS is packaged as
+well.
+</p></quote>
+
+<p>Steven suggested a different library,
+<quote who="Steven Edwards">
+
+A better solution is to use the Mozilla Network Security Services
+(NSS). NSS is everywhere mozilla is and is much more mature.</quote></p>
+
+<p>Mike disagreed:</p>
+<quote who="Mike Hearn"><p>
+
+Yes, that's another approach. Gaim did this though and then implemented
+support for GnuTLS as well, because having a chat program depend on a
+web browser was a bit odd and people were prone to go "Ooh look, a new
+Mozilla is out! rpm -e mozilla, tar xzvf mozilla-1.7.tar.gz" and such,
+and then their IM client mysteriously no longer connects to MSN.
+</p><p>
+I think it's better to depend on an actual library, as opposed to a
+component of another application. Maybe if Mozilla split it out into a
+separate project with separate releases, packaging etc, it might be
+better. Maybe they already have ...
+</p></quote>
+
+<p>A couple people corrected Mike by mentioning NSS was already available
+as a separate package.  Vincent B&#233;ron pointed out that even
+so it would be necessary to have the development headers installed
+in order to compile with it.</p>
+
+</section>
+<section 
+	title="FreeBSD Breakage - IPX Packets" 
+	subject="dlls/winsock/socket breakage"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/09/0296.html" 
+	posts="3"
+	startdate="09/09/2004"
+>
+<topic>Ports</topic>
+<p>Roderick Colenbrander posted a large patch that
+changed the behavior of IPX networking.  It seemed to
+be fine for Linux, but Gerald Pfeifer reported a 
+problem with FreeBSD:</p>
+<quote who="Gerald Pfeifer"><p>
+The following change
+<ul>
+   revision 1.155<br />
+   date: 2004/09/07 20:47:03;  author: julliard;  state: Exp;  lines: +113 -0<br />
+   Roderick Colenbrander &lt;thunderbird2k_at_gmx.net&gt;<br />
+   - set ipx packet type<br />
+   - add support for retrieving some ipx info<br /></ul></p><p>
+
+breaks FreeBSD 4.10 quite a bit:
+<ul><code>
+   socket.c: In function `WS2_send':<br />
+   socket.c:1120: error: `SOL_IPX' undeclared (first use in this function)<br />
+   socket.c:1120: error: (Each undeclared identifier is reported only once<br />
+   socket.c:1120: error: for each function it appears in.)<br />
+   socket.c:1120: error: `IPX_TYPE' undeclared (first use in this function)<br />
+   socket.c:1123: error: structure has no member named `sipx_type'<br />
+   socket.c: In function `WS_getsockopt':<br />
+   socket.c:1585: error: `SOL_IPX' undeclared (first use in this function)<br />
+   socket.c:1585: error: `IPX_TYPE' undeclared (first use in this function)<br />
+   socket.c: In function `WS_setsockopt':<br />
+   socket.c:2312: error: `SOL_IPX' undeclared (first use in this function)<br />
+   socket.c:2312: error: `IPX_TYPE' undeclared (first use in this function)<br />
+   gmake: *** [socket.o] Error 1</code></ul></p><p>
+
+Concerning the error in socket.c, line 1120, SOL_IPX is not defined on 
+FreeBSD 4.10, but there is a constant SOL_SOCKET which is supposed to
+be passed as the second parameter of getsockopt with the following 
+description: "To manipulate options at the socket level, level is 
+specified as SOL_SOCKET".  Would that do the job?
+</p><p>
+Concerning the error in socket.c, line 1123, struct sockaddr_ipx looks as
+follows on FreeBSD 4.10:
+<ul><code>
+   struct sockaddr_ipx {	
+   <ul>
+         u_char          sipx_len;<br />
+         u_char          sipx_family;<br />
+         struct ipx_addr sipx_addr;<br />
+         char            sipx_zero[2];</ul>
+   };</code></ul></p><p>
+
+Finally, I could not find anything remotely similiar to IPX_TYPE.
+</p><p>
+
+I hope this will allow you to fix this breakage?  (To check for FreeBSD, 
+you can use #ifdef __FreeBSD_...)
+
+</p></quote>
+
+<p>Roderick wasn't sure what the solution was,
+<quote who="Roderick Colenbrander">
+The problem is like this. In case of the ipx protocol you can select different 
+ipx types of ipx packets. On linux there's an entry in the sockaddr_ipx 
+struct in which you can change and further you can change it at the ipx 
+socket level using that SOL_IPX stuff. I wasn't aware that this stuff doesn't 
+exist on freebsd. Unfortunately I don't have any freebsd experience, so I 
+don't know about the way to do it on your OS. I will try to find a solution, 
+if none can be found I'm affraight we need some #ifdef stuff.</quote></p>
+
+<p>He took a closer look and reported:</p>
+<quote who="Roderick Colenbrander"><p>
+I made some more progress with the fix but I'm not fully sure how it works. I 
+checked the freebsd source code to figure out how it works. Compared to the 
+linux source the code was very complicated as in linux there's a special ipx 
+setsockopt option and so on. We have to pass SO_DEFAULT_HEADERS to setsockopt 
+with as option SOPT_GET/SOPT_SET when we want go get/set the packet type. The 
+structure to use is "struct ipx".
+</p><p>
+Perhaps you can try to build a fix as I don't have access to any FreeBSD box 
+and can't test the patch. Note that in the function ws2_send we don't need to 
+retrieve the ipx packet type as that won't be needed for freebsd as the 
+linux/freebsd ipx sockaddr structure is different.</p></quote>
+
+<p>This issue was published before a solution was found.</p>
+
+</section>
+<section 
+	title="Fix for Broken Delphi Menus" 
+	subject="Revised menu patch"
+	archive="http://www.winehq.org/hypermail/wine-devel/2004/09/0229.html" 
+	posts="10"
+	startdate="09/07/2004"
+	enddate="09/08/2004"
+>
+<topic>Fixes</topic>
+<p>Michael Kaufman posted a patch to fix some menuing problems
+in Delphi applications:</p>
+<quote who="Michael Kaufman"><p>
+
+My last menu patch didn't pass a test case. I've commented out this test 
+case, because it tests undocumented behavior. We should re-activate this 
+testcase as soon as WINE passes it. This will be the case when the menu 
+code is moved to WineServer, as Dmitry pointed out.
+</p><p>
+I've also added more bugfixes to the patch: Now WINE supports the (very 
+rare) case where a menu is assigned to multiple windows. To test this, 
+I'll attach a program which displays two windows using the same menu. 
+The windows are from different window classes in order to test if WINE 
+sends the ownerdraw messages to the correct window.
+</p></quote>
+
+<p>Dmitry Timoshkov disagreed with disabling a test case:</p>
+<quote who="Dmitry Timoshkov"><p>
+
+That's a very bad idea, then you need to comment out half of the test
+cases in Wine. The tests show *the real* behaviour, it doesn't really
+matter whether it's documented or not, it's known that MSDN has lots
+of misleading and missing information.
+</p><p>
+it has a good chance that the bug will be never fixed at all.
+A commented out test does not differ from a not existent one, and
+has zero chance to be revived.
+</p><p>
+First I'd suggest to add another test to the set of existing menu tests.
+Next, a fake fix is not going to help as all previous attempts didn't,
+especially when a proper way to fix the problem is known.
+</p></quote>
+
+<p>Michael thought adding the patch was justified:</p>
+<quote who="Michael Kaufman"><p>
+ How do you define the "real behavior" ? The behavior of Windows XP? Have
+ you checked that Windows 2003 still passes this test? You can't be sure.
+ There's no real behavior in this case.
+</p><p>
+ I promise that I'll remember you to reactivate this testcase. If we
+ don't modify DestroyMenu NOW, there's also a good chance that this bug
+ will never be fixed. Remember, a lot of Delphi applications don't work
+ because of this bug which is simple to fix and breaks only one single
+ testcase. Is it really more important that WINE passes this test but
+ fails on Delphi apps again and again? What will the users of WINE think?
+</p><p>
+ To fix it properly, we have to move the menu code to WineServer. When
+ will this happen? In a year? In two years? Never? Until then, many
+ Delphi apps won't work. For me, this is not acceptable.
+</p></quote>
+
+<p>Uwe Bonnes suggested adding another test for the behavior Michael
+was fixing:</p>
+<quote who="Uwe Bonnes"><p>
+
+can we perhaps create a test case, that mimics the Delphi behaviour and
+succeeds on WinXX but fails on Wine? Then the behaviour is well documented
+and there is less reason to not fix it while breaking another test.
+</p><p>
+There are other things that seem (on the first glance) " not acceptable" to
+me, when problems I try to pinpoint are not solved. But hey, we are an open
+project, and as long as nobody pays for the Delphi fix, nobody has a "right"
+on a fix. We have to work together to get it right...</p></quote>
+
+<p>With regard to that last point, Mike Hearn then explained a little
+about Alexandre's process of accepting a patch:</p>
+<quote who="Mike Hearn"><p>
+
+When this sort of thing happens, it boils down to a judgement call on
+the part of Alexandre. He has to decide:
+<ul>
+<li> What is the cost of putting in this known-incorrect fix?</li>
+<li> What are the benefits?</li></ul></p><p>
+
+Now sometimes Alexandre does allow in incorrect fixes because the cost
+is low and the benefit is high, or because he knows a correct fix is a
+long time away (maybe never). Most of our DCOM code falls into this
+category :)
+</p><p>
+In this case, he has to decide:
+<ul>
+<li> Will this fix actually break other programs?</li>
+<li> Will its presence make development of a correct fix more unlikely?</li>
+<li> Are the programs it fixes popular enough to warrant it?</li></ul></p><p>
+
+This is all part of figuring out the cost and the benefit. In this case,
+I have no idea what he will think. Alexandre does tend to be
+conservative - i.e. dropping patches he isn't sure about rather than
+accept them and hoping for the best.
+</p><p>
+Wine has been around for a very long time, and correctness is very
+important simply because if you don't consider it, nearly every fix you
+make will break something else and you end up going round and round in
+mad circles constantly moving but never getting nearer to the goal of
+100% compatibility.
+</p><p>
+Even given a large and growing test suite, huge numbers of testers, a
+conservative maintainer and so on, Wine still suffers a high rate of
+regressions.
+</p><p>
+Now, I don't know anything about the menu code, so I'm not going to
+comment on whether the patch should go in or not. I think given how
+popular Delphi is for writing apps the cost of not including it is quite
+high but if the fix is clearly going to cause problems then we have no
+choice but to wait for Ulrich's menu->wineserver patch.
+</p><p>
+So hopefully you understand better the factors that go into these
+decisions. I know what you must be thinking, I've been there before with
+things like the system tray patch which is still not committed because
+it extends incorrect code rather than rewrites it but eventually you
+realise that in the long term it's for the best.
+</p></quote>
+
+<p>Mike alluded to some work that Ulrich Czekalla has done that
+changes how menus are handled.  Alexandre felt that work was the
+proper direction and it was the only way to handle the situation,
+<quote who="Alexandre Julliard">
+ There have been a number of similar hacks done in
+the menu code already, but they all had to be removed because they
+broke too many things; I have no reason to believe your proposed fix
+will be any different. The issue is a fundamental problem with the way
+menus are implemented, and it can't simply be hacked around, it has to
+be fixed right.</quote></p>
+
+<p>Michael then happened to stumble upon a much simpler fix:</p>
+
+<quote who="Michael Kaufman"><p>
+The fix is as simple as updating the menu bar's hWnd member every time
+the user clicks on a menu bar. This is even necessary if the menu is
+displayed in multiple windows, so it's not a "Delphi-only" fix.
+
+</p><p>
+My patch is here:
+<ul><a href="http://www.winehq.org/hypermail/wine-patches/2004/09/0154.html">
+http://www.winehq.org/hypermail/wine-patches/2004/09/0154.html</a></ul></p>
+</quote>
+
+<p>It's a one-liner, but thus far Alexandre hasn't committed it.</p>
+
+</section></kc>
